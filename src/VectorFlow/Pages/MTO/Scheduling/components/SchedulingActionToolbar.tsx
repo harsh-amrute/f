@@ -14,6 +14,7 @@ import {
   VFSelectedFiltersPlaceHolder,
   VFSelectedFiltersWrapper,
 } from "../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/styles";
+import { useSearchParams } from "react-router-dom";
 
 const ToolbarWrapper = styled.div`
   width: calc(100% + 24px);
@@ -300,6 +301,7 @@ const SchedulingActionToolbar = ({
   const [dropdownPosition, setDropdownPosition] = useState<CSSProperties>({});
   const buttonRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const handleClickOutside = (e: MouseEvent) => {
     if (
@@ -363,6 +365,7 @@ const SchedulingActionToolbar = ({
         <GoBackButton
           onClick={() => {
             onGoBack();
+            setSearchParams(undefined)
           }}
         >
           <img
@@ -502,6 +505,7 @@ const SchedulingActionToolbar = ({
           <ToggleButton
             onClick={() => {
               setCurrentView("ResourceView");
+              setSearchParams({ page: "ResourceView"});
             }}
           >
             {resourceViewIcon(currentView === "ResourceView")}
@@ -515,6 +519,7 @@ const SchedulingActionToolbar = ({
           <ToggleButton
             onClick={() => {
               setCurrentView("JobView");
+              setSearchParams({ page: "JobView"})
             }}
           >
             {JobViewIcon(currentView === "JobView")}
@@ -551,6 +556,7 @@ const SchedulingActionToolbar = ({
               <ToggleButton
                 onClick={() => {
                   setCurrentView("GridViewR");
+                  setSearchParams({ page: "GridViewR"})
                 }}
               >
                 {gridViewResourceIcon(currentView === "GridViewR")}
@@ -562,6 +568,7 @@ const SchedulingActionToolbar = ({
               <ToggleButton
                 onClick={() => {
                   setCurrentView("GridViewJ");
+                  setSearchParams({ page: "GridViewJ"})
                 }}
               >
                 {gridViewJobIcon(currentView === "GridViewJ")}

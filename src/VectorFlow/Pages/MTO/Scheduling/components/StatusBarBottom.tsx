@@ -26,19 +26,18 @@ const LeftSection = styled.span`
     margin-left: 20px;
 `
 
-const StatusBarBottom = ({status,isRunEnabled=true, isGoToFinalResult=true,last_success_run, onGoToFinalResult, StartRun}: any) => {
+const StatusBarBottom = ({status,isRunEnabled=true, isGoToFinalResult,last_success_run, onGoToFinalResult, StartRun}: any) => {
     const themeUi = useUserData().user.user.theme_ui;
   return (
     <StatusBarWrapper>
         <LeftSection>
-
         <VFButton style={{fontSize: '1.1rem', height: '3.2rem', width: 'fit-content', padding: '4px 16px', display: 'flex', gap: '8px', alignItems: 'center', justifyContent:'center'}} themeUi={themeUi} onClick={() => {StartRun()}} disabled={!isRunEnabled}>
             <span>
                 Run Now
             </span>
             <img src="/assets/img/scheduling/play.svg" alt="Run Now" style={{ width: '14px', height: '14px' }} />
         </VFButton>
-        <VFButton style={{fontSize: '1.1rem', height: '3.2rem', width: 'fit-content', padding: '4px 16px', display: 'flex', gap: '8px', alignItems: 'center', justifyContent:'center'}} themeUi={themeUi} onClick={onGoToFinalResult} disabled={!isRunEnabled}>
+        <VFButton style={{fontSize: '1.1rem', height: '3.2rem', width: 'fit-content', padding: '4px 16px', display: 'flex', gap: '8px', alignItems: 'center', justifyContent:'center'}} themeUi={themeUi} onClick={onGoToFinalResult} disabled={!isGoToFinalResult}>
             <span>
                 Go To Final Result
             </span>

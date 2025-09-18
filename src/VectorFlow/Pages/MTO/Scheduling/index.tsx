@@ -109,13 +109,12 @@ const Scheduling = () => {
     const getRunActionBar = () => {
         const onGoToFinalResult = async() => {
 
-            
             try{
                 const result = await getFinalRunResult();
                 if(result.status===200){
                     notifySuccess("Fetched Run Result Successfully");
                     setFinalResult(result.data.data);
-                    setSearchParams({ page: "result" });
+                    setSearchParams({ page: "ResourceView" });
                     setStep("Final Result");
                 }
             }
