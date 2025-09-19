@@ -658,6 +658,8 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
             justifyContent: "center",
             alignItems: "center",
             boxShadow: "rgba(133, 132, 132, 0.247) -5px 4px 10px",
+            opacity: isPivot ? 0.5 : 1,
+            pointerEvents: isPivot ? 'none' : 'auto',
             gap: "10px",
           }}
         >
@@ -716,12 +718,18 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
     </>
   );
 
-  const onSelectChange = (props: any, option: any, index: number) => {
-  
-    const updatedData = { ...props.data, oca: option.value };
-    props.node.setData(updatedData); 
-    props.api.refreshCells({ rowNodes: [props.node], columns: ['oca'], force: true });
 
+const onSelectChange = (props: any, option: any, index: number) => {
+  const updatedData = { ...props.data, oca: option.value };
+  props.node.setData(updatedData); 
+  props.api.refreshCells({ rowNodes: [props.node], columns: ['oca'], force: true });
+
+
+  setMasterSelectedRowData((currentMasterData:any) => 
+    currentMasterData.map((row:any) => 
+      row.ok === props.data.ok ? { ...row, oca: option.value } : row
+    )
+  );
 };
 
   const DropDownCellRenderer = (props: any) => {
@@ -1252,7 +1260,7 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
           const element = masterSelectedRowData[index];
           if (element.ok === node.data.ok) {
             node.data.Remark = element.Remark;
-            // node.data.oca = element.oca;
+            node.data.oca = element.oca;
           }
         }
         nodesToSelect.push(node);
