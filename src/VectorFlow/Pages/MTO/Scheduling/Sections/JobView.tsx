@@ -135,7 +135,7 @@ const JobView = ({ResourceData}: any) => {
         key={taskIdx}
         left={left}
         width={width}
-        backgroundColor={colors[task.stage] ?? "#cecece"}
+        backgroundColor={colors?.[task.stage] ?? "#cecece"}
       >
         {task.stage + " : "+ task.work_station}
       </TaskBar>

@@ -265,7 +265,7 @@ const MyChart = ({
                             key={taskIdx}
                             left={left}
                             width={width}
-                            backgroundColor={colors[task.task_type] ?? "#cecece"}
+                            backgroundColor={colors?.[task.task_type] ?? "#cecece"}
                             >
                             {task.jobId ? task.jobId : task.task_type}
                           </TaskBar>

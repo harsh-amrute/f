@@ -95,7 +95,7 @@ const SkeletonTile = styled.div`
   }
 `;
 
-const FileUploadSection = () => {
+const FileUploadSection = ({setIsRunEnabled}:any) => {
   const [fileObjects, setFileObjects] = useState<any>([]);
   const themeUi = useUserData().user.user.themeUi;
 
@@ -129,11 +129,17 @@ const FileUploadSection = () => {
     }
   };
 
+  useEffect(()=>{
+    if(fileObjects && fileObjects.length>0){
+      const allUploaded = fileObjects.every((file: any) => file.last_updated !== null);
+      setIsRunEnabled(allUploaded);
+    }
+  },[fileObjects])
+
   const user = useUserData().user.user;
 
   const UploadFile = async ({
     file,
-    file_type,
     file_name,
   }: {
     file: File;
@@ -213,7 +219,7 @@ const FileUploadSection = () => {
   useEffect(() => {
     const updateTime = () => setTimeAgo(getTimeAgo(lastRefreshTime));
 
-    updateTime(); // initial
+    updateTime(); 
     const interval = setInterval(updateTime, 1000); // update every sec
 
     return () => clearInterval(interval);

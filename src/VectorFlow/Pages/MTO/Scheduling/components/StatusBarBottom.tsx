@@ -53,7 +53,7 @@ const StatusBarBottom = ({status,isRunEnabled=true, isGoToFinalResult,last_succe
         {
             status === "FAILED" &&
 
-            <VFButtonOutline style={{fontSize: '1.1rem', height: '3.2rem', width: 'fit-content', padding: '4px 16px', display: 'flex', gap: '8px', alignItems: 'center', justifyContent:'center'}} themeUi={themeUi} onClick={onGoToFinalResult} disabled={!isRunEnabled}>
+            <VFButtonOutline style={{fontSize: '1.1rem', height: '3.2rem', width: 'fit-content', padding: '4px 16px', display: 'flex', gap: '8px', alignItems: 'center', justifyContent:'center'}} themeUi={themeUi} onClick={onGoToFinalResult}>
             <span>
                 Download Error File
             </span>

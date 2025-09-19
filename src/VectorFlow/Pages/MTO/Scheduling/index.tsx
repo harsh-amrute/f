@@ -8,6 +8,7 @@ import FinalResultSection from './FinalResultSection';
 import { notifyError, notifySuccess } from '../../../../helpers/notify';
 import OverlayLoader from '../Common/Loader';
 import { useSearchParams } from 'react-router-dom';
+import { useUserData } from '../../../../context';
 
 
 
@@ -21,6 +22,8 @@ const Scheduling = () => {
         endTime: null,
         message: null,
     });
+
+    const user = useUserData().user
 
     const [finalResult, setFinalResult] = useState<any>(null);
 
@@ -63,11 +66,12 @@ const Scheduling = () => {
         GetRunStatus();
     },[])
 
+    const [isRunEnabled, setIsRunEnabled] = useState(false);
 
     const getStep = ()=>{
         switch (step) {
             case "Upload":
-                return <FileUploadSection/>
+                return <FileUploadSection setIsRunEnabled={setIsRunEnabled}/>
             case "Final Result":
                 return <FinalResultSection setStep={setStep} finalResult={finalResult}/>
             default:
@@ -89,8 +93,7 @@ const Scheduling = () => {
 
     const StartRun = async()=>{
         try{
-
-            const response = await postStartSchedulingRun({user_id: "1", user_name: "Admin"});
+            const response = await postStartSchedulingRun({user_id: user.user.id.toString(), user_name: user.user.name});
             if(response.status === 200){
                 notifyError("Run started successfully");
                 setTimeout(()=>{
@@ -113,19 +116,24 @@ const Scheduling = () => {
                 const result = await getFinalRunResult();
                 if(result.status===200){
                     notifySuccess("Fetched Run Result Successfully");
+                    console.log("result", result.data.data);
                     setFinalResult(result.data.data);
                     setSearchParams({ page: "ResourceView" });
                     setStep("Final Result");
                 }
+                else{
+                    notifyError("Failed to fetch run result");
+                }
             }
             catch(e){
+                notifyError("Failed to fetch run result");
                 console.error(e);
             }
         }
         switch (step) {
             case "Upload":
                 return (
-                    <StatusBarBottom onGoToFinalResult={onGoToFinalResult} StartRun={StartRun}/>
+                    <StatusBarBottom isRunEnabled={isRunEnabled} isGoToFinalResult onGoToFinalResult={onGoToFinalResult} StartRun={StartRun}/>
                 );
             case "Final Result":
                 return null;

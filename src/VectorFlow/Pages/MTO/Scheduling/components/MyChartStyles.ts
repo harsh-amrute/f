@@ -130,6 +130,7 @@ export const TaskBar = styled.div<{left: number, width: number, backgroundColor?
     left: ${props => props.left}px;
     width: ${props => props.width}px;
     cursor: pointer;
+    word-wrap: break-word;
 
     &:hover {
       opacity: 0.8;
