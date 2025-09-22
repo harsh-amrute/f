@@ -35,6 +35,7 @@ interface FormDataType {
   application_name: string;
   id: number;
   urls: Array<any>;
+  features:Array<any>
 }
 
 const EditRole = (props: { data: any; cb: () => void }) => {
@@ -175,6 +176,7 @@ const EditRole = (props: { data: any; cb: () => void }) => {
     return Object.keys(formData).every((k) => {
       const key = k as keyof FormDataType;
       const value = formData[key];
+      if (key === "features") return true; 
       return (
         value !== null &&
         value !== undefined &&

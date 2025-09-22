@@ -206,7 +206,55 @@ export namespace MDMService {
     })
   }
 
+  export const getAllUIReportConfiguration = async()=>{
+    return await axios.get(process.env.REACT_APP_API_HOST + 'api/mta/GetAllUIReportConfig',{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
 
+  export const getAllUIMDMConfiguration = async()=>{
+    return await axios.get(process.env.REACT_APP_API_HOST + 'api/mta/GetAllUIMDMConfig',{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+  export const useGetAllAdminPermissions = async()=>{
+    return await axios.get(process.env.REACT_APP_API_HOST + 'api/mta/GetAllPermissionsAdmin',{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+  
+  export const useAddProductPermissions = async(body:any)=>{
+    return await axios.post(process.env.REACT_APP_API_HOST + 'api/mta/AddPermissionsAdmin',body,{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
+  export const useAddLocationPermissions = async(body:any)=>{
+    return await axios.post(process.env.REACT_APP_API_HOST + 'api/mta/AddPermissionsAdmin',body,{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
+  export const useBulkUploadPermission = async (formData: FormData) => {
+    return await axios.post(process.env.REACT_APP_API_HOST + 'api/mta/BulkUploadPermissions', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    });
+  };
+
+  export const useEditReportConfiguration = async(body:any)=>{
+    return await axios.put(process.env.REACT_APP_API_HOST + 'api/mta/UpdateUIReportConfig',body,{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+  
+  export const useEditMDMConfiguration = async(body:any)=>{
+    return await axios.put(process.env.REACT_APP_API_HOST + 'api/mta/UpdateUIMDMConfig',body,{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+  
 
   /**This get the  MTO Masters Data*/
   export const getMTOMastersData = async () => {

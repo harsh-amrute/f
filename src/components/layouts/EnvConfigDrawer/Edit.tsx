@@ -80,6 +80,11 @@ const getChangedFields = (original: any,current: any,keysToIgnore: string[] = []
     return Object.keys(formData).every((k) => {
       const key = k as keyof FormDataType;
       const value = formData[key];
+      if (formData?.["ConfigKey"] === "CLIENT_NAME" || formData?.["ConfigKey"] === "CLIENT_LOGO") {
+        if (key === "ConfigValue" && value === "") {
+          return true;
+        }
+      }
       return (
         value !== null &&
         value !== undefined &&
@@ -112,7 +117,6 @@ const getChangedFields = (original: any,current: any,keysToIgnore: string[] = []
           <Label htmlFor="ConfigValue"> Config Value</Label>
           <Input
             type={"text"}
-            required
             name="ConfigValue"
             placeholder="Any Config Value"
             themeUi={themeUi}
@@ -150,7 +154,7 @@ const getChangedFields = (original: any,current: any,keysToIgnore: string[] = []
           Cancel
         </SecondaryButton>
         <PrimaryButton disabled={!isFormValid ||  !isChanged} themeUi={themeUi}>
-          Update Role
+          Update Env Config
         </PrimaryButton>
       </div>
     </URLsForm>
