@@ -1,0 +1,428 @@
+import { useEffect, useMemo, useRef, useState } from "react";
+import { ChartWrapper, GraphViewWrapper } from "../../../../../../../VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMOrderwiseCoverage/GraphView/styles";
+import { SCChartContainer, SCHorizontalDivider } from "../../STPLAndFullKits/styles";
+import { AgCharts } from "ag-charts-react";
+import { ApplyZoomOut } from "../../../OrderRescheduling/styles";
+import VFFloatingTab from "../../../../../../../components/VectorFLOW/commons/VFFloatingTab";
+import { MyFutureOrderTabsFix } from "../styles";
+import CustomLegend from "../../../../../../../VectorFlow/Pages/MTO/Common/CustomLegend/index 1";
+
+const tabs = [
+  { label: "Daily", value: "daily", id: "daily" },
+  { label: "Weekly", value: "weekly", id: "weekly" },
+  { label: "Monthly", value: "monthly", id: "monthly" },
+];
+
+const GraphView = ({ currView, setCurrView,selectedCCR, horizonData, graphData, cwl, selectedAction, currTab }: any) => {
+  
+  const [cwlValue, setCwlValue] = useState(0);
+  const [selectedCCRHorizonDate, setSelectedCCRHorizonDate] = useState<any>('');
+  const [horizonDateRange, setHorizonDateRange] = useState<{startDate: string, endDate: string} | null>(null);
+
+  useEffect(() => {
+    if (selectedCCR?.value && horizonData && horizonData.length > 0) {
+      const ccrHorizonItem = horizonData.find((item: any) => item.ccr === selectedCCR.value);
+      let horizonDate = ccrHorizonItem?.horizon_date || null;
+      
+      setSelectedCCRHorizonDate(horizonDate);
+      
+      if (horizonDate) {
+        const today = new Date();
+        const todayString = today.toISOString().split('T')[0];    
+        setHorizonDateRange({
+          startDate: todayString,
+          endDate: horizonDate
+        });
+        
+      } else {
+        setHorizonDateRange(null);
+      }
+    } else {
+      setSelectedCCRHorizonDate(null);
+      setHorizonDateRange(null);
+    }
+  }, [selectedCCR, horizonData]);
+
+  useEffect(() => {
+    if (graphData?.data && cwl) {
+      const a = graphData?.data?.map((item: any) => item.ccr);
+      const b = cwl.map((item: any) => item.value);
+      const matchedCCR = a.find((ccr: any) => b.includes(ccr));
+      const matchedCWL = matchedCCR ? cwl.find((item: any) => item.value === matchedCCR)?.cwl : 0;
+    
+      setCwlValue(matchedCWL);
+    }
+  }, [graphData, cwl]);
+
+  // Helper function to check if a date falls within the horizon range
+  const isDateInHorizonRange = (dateToCheck: string) => {
+    if (!horizonDateRange) return false;
+    
+    const checkDate = new Date(dateToCheck);
+    const startDate = new Date(horizonDateRange.startDate);
+    const endDate = new Date(horizonDateRange.endDate);
+    
+    return checkDate >= startDate && checkDate <= endDate;
+  };
+
+  const transformedData = useMemo(() => {
+    if (!graphData?.data) return [];
+
+    return graphData.data.map((item: any) => {
+      const isInHorizonRange = isDateInHorizonRange(item.date);
+
+      if (currView === "daily") {
+        return {
+          date: item.date,
+          load: item.load, //500 for test
+          holiday: item.is_holiday,
+          past: item.past, //300 
+          limit: cwlValue, 
+          type: item.is_holiday ? "holiday" : "load",
+          horizonDate: selectedCCRHorizonDate,
+          isInHorizonRange,
+        };
+      }
+
+      if (currView === "weekly") {
+        return {
+          date: `${item.week_start} - ${item.week_end}`,
+          load: item.load,
+          holiday: item.is_holiday,
+          past: item.past,
+          limit: cwlValue,
+          type: "weekly",
+          horizonDate: selectedCCRHorizonDate,
+          isInHorizonRange,
+        };
+      }
+
+      if (currView === "monthly") {
+        return {
+          date: `${item.month_start} - ${item.month_end}`,
+          load: item.load,
+          holiday: item.is_holiday,
+          past: item.past,
+          limit: cwlValue,
+          type: "monthly",
+          horizonDate: selectedCCRHorizonDate,
+          isInHorizonRange,
+        };
+      }
+      return {};
+    });
+  }, [graphData, currView, cwlValue, selectedCCRHorizonDate, horizonDateRange]);
+  
+
+  let a = graphData?.data?.map((item: any) => {
+  return item.is_holiday
+    
+  })
+  
+  const [chartoptions, setChartOptions] = useState<any>({
+    series: [
+      {
+        type: 'bar',
+        xKey: 'date',
+        yKey: 'load',
+        stacked: true,
+        visible: true,
+        fill: '#F4BD8E',
+        stroke: '#F4BD8E',
+        legendItemName: 'Load',
+        tooltip: {
+          renderer: ({ datum }: any) => {
+            return `<div style="background: white; color: #000; padding: 8px;">
+              <div style="color:#F4BD8E">Load</div>
+              <div>Value: ${datum.load}</div>
+            </div>`;
+          }
+        },
+        // Only show this series for non-holiday items
+        itemStyler: ({ datum }: any) => {
+          if (datum.type === 'holiday') {
+            return { fillOpacity: 0, strokeOpacity: 0 }; // Hide for holidays
+          }
+          return {
+            fill: '#F4BD8E',
+            stroke: '#F4BD8E',
+          };
+        },
+      },
+            {
+        type: 'bar',
+        xKey: 'date',
+        yKey: 'load',
+        yName:'Holiday',
+        stacked: true,
+        visible: true,
+        fill: '#999999',
+        stroke: '#999999',
+        legendItemName: 'Holiday',
+        name:'holiday',
+        tooltip: {
+          renderer: ({ datum }: any) => {
+            return `<div style="background: white; color: #000; padding: 8px;">
+              <div style="color:#999999">Holiday</div>
+              <div>Value: ${datum.load}</div>
+            </div>`;
+          }
+        },
+        // Only show this series for holiday items
+        itemStyler: ({ datum }: any) => {
+          if (datum.type === 'holiday') {
+            return {
+              fill: '#999999',
+              stroke: '#999999',
+            };
+          }
+          return { fillOpacity: 0, strokeOpacity: 0 }; // Hide for non-holidays
+        },
+      },
+      {
+        type: 'bar',
+        xKey: 'date',
+        yKey: 'past',
+        stacked: true,
+        visible: true,
+        stroke: '#FF5959',
+        fill: '#FF5959',
+        strokeWidth: 2,
+        legendItemName: 'Past',
+        tooltip: {
+          renderer: ({ datum }: any) =>
+            `<div style="background: white; color: #000; padding: 8px;">
+              <div style="color:#FF5959">Past</div>
+              <div>Past: ${datum.past}</div>
+            </div>`
+        },
+        itemStyler: ({ datum }: any) =>
+          datum.past ? {} : { fillOpacity: 0, strokeOpacity: 0 }
+      },
+      {
+        type: 'line',
+        xKey: 'date',
+        yKey: 'limit',
+        stroke: '#820f4c',
+        strokeWidth: 2,
+        strokeDashArray: [5, 5],
+        visible: true,
+        legendItemName: 'Limit',
+        marker: {
+          enabled: false
+        },
+        tooltip: {
+          renderer: ({ datum }: any) =>
+            `<div style="background: white; color: #000; padding: 8px;">
+              <div style="color:#820f4c">Limit</div>
+              <div>Limit: ${datum.limit}</div>
+            </div>`
+        }
+      }
+    ],
+    axes: [
+      {
+        type: 'category',
+        position: 'bottom',
+        title: { text: 'Timeline For Upcoming Orders', fontSize: 12, fontWeight: 300 },
+        label: { fontSize: 10, fontWeight: 300, color: '#111' }
+      },
+      {
+        type: 'number',
+        position: 'left',
+        title: {
+          text: currTab=="Load Wise"?'Load in Days':'Pending CCR Quantity',
+          fontSize: 12, fontWeight: 300
+        },
+        label: { fontSize: 10, fontWeight: 300, color: '#111' }
+      }
+    ],
+    height: 370,
+    legend: {
+      enabled: false,
+    }
+  });
+
+  // Update chart data when transformedData changes
+  useEffect(() => {
+    setChartOptions((prevOptions:any) => ({
+      ...prevOptions,
+      data: transformedData
+    }));
+  }, [transformedData, currTab]);
+
+  // Add gray background using an area series approach - only if selectedAction is 'ANS'
+  useEffect(() => {
+    if (selectedAction === 'ANS' && horizonDateRange ) {
+    
+      const grayAreaData = transformedData.map((item:any) => {
+        const isInRange = item.isInHorizonRange;
+        
+        return {
+          date: item.date,
+          grayArea: isInRange ? 8000 : null,
+        };
+      });
+
+      // Update chart options to include gray area series
+      setChartOptions((prevOptions:any) => ({
+        ...prevOptions,
+        series: [
+          {
+            type: 'area',
+            xKey: 'date',
+            yKey: 'grayArea',
+            yName:'Horizon',
+            fill: 'rgba(200, 200, 200, 0.3)',
+            stroke: 'none',
+            visible: true,
+            showInLegend: false,
+            tooltip: { enabled: false },
+            connectMissingData: false, 
+          },
+          ...prevOptions.series.filter((series: any) => series.yKey !== 'grayArea') // Remove any existing gray area series
+        ],
+        data: transformedData.map((item:any) => ({
+          ...item,
+          grayArea: item.isInHorizonRange ? 8000 : null
+        }))
+      }));
+    } else {
+      // Remove gray area series if selectedAction is not 'ANS'
+      setChartOptions((prevOptions:any) => ({
+        ...prevOptions,
+        series: prevOptions.series.filter((series: any) => series.yKey !== 'grayArea'),
+        data: transformedData
+      }));
+    }
+  }, [horizonDateRange, transformedData, currView]); //selectedAction 
+
+  useEffect(() => {
+    setChartOptions((prevOptions:any) => {
+      const limitSeries = prevOptions.series.find((s: any) => s.legendItemName === 'Limit');
+      const isLimitVisible = limitSeries ? limitSeries.visible : true;
+      
+      return {
+        ...prevOptions,
+        axes: [
+          prevOptions.axes[0], 
+          {
+            ...prevOptions.axes[1],
+            title: {
+              text: currTab === "Load Wise" ? 'Load in Days' : 'Pending CCR Quantity',
+              fontSize: 12,
+              fontWeight: 300
+            },
+            crossLines: isLimitVisible ? [
+              {
+                type: "line",
+                value: cwlValue,
+                label: {
+                  text: `Limit: ${cwlValue}`,
+                  position: 'topRight',
+                  color: '#820f4c',
+                  fontSize: 10
+                }
+              },
+            ] : []
+          }
+        ]
+      };
+    });
+  }, [cwlValue, currTab, chartoptions.series, currView]);
+
+  useEffect(() => {
+    setChartOptions((prevOptions:any) => ({
+      ...prevOptions,
+      axes: [
+        prevOptions.axes[0], // Keep category axis
+        {
+          ...prevOptions.axes[1],
+          title: {
+            text: currTab === "Load Wise" ? 'Load in Days' : 'Pending CCR Quantity',
+            fontSize: 12,
+            fontWeight: 300
+          }
+        }
+      ]
+    }));
+  }, [currTab]);
+  
+  const containerRef = useRef<HTMLDivElement>(null);
+  const chartRef = useRef<any>(null);
+
+
+  const downloadChartWithHeader = () => {
+    if (containerRef.current) {
+      const chartCanvas = containerRef.current.querySelector('canvas');
+      if (!chartCanvas) return;
+      const headerHeight = 40;
+      const combinedCanvas = document.createElement('canvas');
+      combinedCanvas.width = chartCanvas.width;
+      combinedCanvas.height = chartCanvas.height + headerHeight;
+      const ctx = combinedCanvas.getContext('2d');
+      if (!ctx) return;
+      const titleText = `Future Order Load Chart`;
+      ctx.font = 'bold 16px Arial';
+      const textWidth = ctx.measureText(titleText).width;
+      const xCoordinate = (combinedCanvas.width - textWidth) / 2;
+      ctx.fillStyle = 'white';
+      ctx.fillRect(0, 0, combinedCanvas.width, headerHeight);
+      ctx.fillStyle = 'black';
+      ctx.fillText(titleText, xCoordinate, 25);
+      ctx.drawImage(chartCanvas, 0, headerHeight);
+      const link = document.createElement('a');
+      link.href = combinedCanvas.toDataURL('image/png');
+      link.download = titleText || 'chart.png';
+      link.click();
+    }
+  };
+
+  return (
+    <GraphViewWrapper style={{ height: '80%' }}>
+      <SCChartContainer
+        height={'100%'}
+        style={{
+          border: '1px solid #CCCCCC',
+          margin: '-10px',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        <div className="title" style={{ backgroundColor: 'white', height: '40px', display: 'flex', justifyContent: 'right', alignItems: 'center' }}>
+          <div style={{ fontSize: '12px', margin: '0 auto', fontWeight: 500, textAlign: 'center' }}>
+            Future Order Load Chart
+          </div>
+          <div style={{ display: 'flex' }}>
+            <div style={{ paddingRight: '10px', cursor: "pointer" }} onClick={downloadChartWithHeader}>
+              <img height={12} width={12} src="/assets/img/mto/RMPMBufferTrend/download.svg" alt="Download" />
+            </div>
+          </div>
+        </div>
+        <SCHorizontalDivider />
+        <ApplyZoomOut style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', zoom: 0.6, paddingBottom: '10px' }}>
+          <MyFutureOrderTabsFix>
+            <VFFloatingTab
+              handleClick={(e) => setCurrView(e.id)}
+              tabs={tabs}
+              defaultTab={tabs.findIndex(tab => tab.id === currView) || 0}
+            />
+          </MyFutureOrderTabsFix>
+        </ApplyZoomOut>
+        <ChartWrapper>
+          <div style={{ height: '100%', width: '100%' }} ref={containerRef}>
+            <div className='chart-wrapper' style={{ flex: 1, height: "90%" }}>
+              <CustomLegend chartOptions={chartoptions} setChartOptions={setChartOptions} />
+              <div className='chart-scroll' style={{ overflowX: chartoptions?.data?.length > 15 ? "scroll" : "hidden", overflowY:'hidden' }}>
+                <AgCharts ref={chartRef} style={{ height: "100%", width: chartoptions?.data?.length > 15 ? `${50*chartoptions?.data?.length + "px"}` : "100%" }} options={chartoptions} />
+              </div>
+            </div>
+          </div>
+        </ChartWrapper>
+      </SCChartContainer>
+    </GraphViewWrapper>
+  );
+};
+
+export default GraphView;

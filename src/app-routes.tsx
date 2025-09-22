@@ -89,6 +89,7 @@ import BulkUploadPage from './module-store-transfer/pages/bulk-upload'
 import ElephantOrder from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/ElephantOrders'
 import Scheduling from './VectorFlow/Pages/MTO/Scheduling'
 import ManageEnvConfig from './components/VectorFLOW/layouts/VectorAdmin/ManageEnvConfig'
+import FutureOrderLoadChart from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/FutureOrderLoadChart'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -194,6 +195,8 @@ const lazyLoad = (children: React.ReactNode) => {
     '/mto/manufacturing-intelligence-hub/delivery-performance/otif-analysis',
     '/mto/manufacturing-intelligence-hub/delivery-performance/ot-and-if-analysis',
     '/mto/manufacturing-intelligence-hub/delivery-performance/lead-time',
+    '/mto/manufacturing-intelligence-hub/future-order-load-chart',
+
 
     '/mto/manufacturing-intelligence-hub/congestion-analysis/elapsed-time',
     '/mto/manufacturing-intelligence-hub/congestion-analysis/orders-at-risk',
@@ -1174,7 +1177,17 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/mto/manufacturing-intelligence-hub/delivery-performance/ot-and-if-analysis',
+      path: '/mto/manufacturing-intelligence-hub/future-order-load-chart',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<FutureOrderLoadChart />)
+        }
+      ]
+    },
+    {
+      path: '/manufacturing-intelligence-hub/delivery-performance/ot-and-if-analysis',
       element: <AppLayout />,
       children: [
         {

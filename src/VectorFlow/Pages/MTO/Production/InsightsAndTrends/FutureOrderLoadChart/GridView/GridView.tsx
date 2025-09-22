@@ -1,0 +1,134 @@
+// import VFTable from "../../../../Common/VFTable";
+
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-alpine.css";
+import VFTable from "../../../../../../../VectorFlow/Pages/MTO/Common/VFTable";
+
+import { useEffect, useRef, useState } from "react";
+import { TabsSection,MyFutureOrderTabsFix } from "../styles";
+import VFFloatingTab from '../../../../../../../components/VectorFLOW/commons/VFFloatingTab';
+import { ApplyZoomOut } from '../../../OrderRescheduling/styles';
+import { VFWrapper } from "../../../DepartmentWiseBMReport/styles";
+
+import CustomPageSizeInput from "../../../../../../../VectorFlow/Pages/MTO/Common/VFPagination/CustomPageSizeInput";
+import { GridFilterWrapper, TextBtn } from "../../../../../../../VectorFlow/Pages/MTO/Common/VFPagination/styles";
+
+import { useUserData } from "../../../../../../../context/index";
+import { VFTableWrapper } from "./style";
+
+
+
+
+
+const GridView = ({ setCurrentGridRef,context, currentGridRef, columnState, colDef, userPageSize, handlePageChange, totalRows,ccr, currentPage, savePageSize, agGridProps, rowData, setCurrView, currView, ccrOptions }: any) => {
+    const gridRef = useRef<any>(null);
+    const [isDisabled, setIsDisabled] = useState<boolean>(true)
+     const { user } = useUserData();
+        const theme_ui = user.user.theme_ui
+    
+    const tabs = [
+        { label: "Daily", value: "Daily", id: "daily" },
+        { label: "Weekly", value: "Weekly", id: "weekly" },
+        { label: "Monthly", value: "Monthly", id: "monthly" },
+      
+      ];
+
+        useEffect(() => {
+            if (currentGridRef?.current && columnState?.length && colDef.length > 0) {
+                const result = currentGridRef.current.api.applyColumnState({
+                    state: columnState,
+                    applyOrder: true
+                });
+                if (!result) {
+                    console.error('Failed to apply column state');
+                }
+            }
+        },[columnState]);
+
+     const clearGridFilter = () =>{
+          gridRef?.current?.api.setFilterModel(null);
+            setIsDisabled(true);
+      }
+      
+        const CustomStatusPanel = () => {
+              return (
+                  <GridFilterWrapper>
+                      <TextBtn  onClick={clearGridFilter} style={{marginTop:'15px'}} disabled={isDisabled} themeUi={theme_ui}>
+                          Clear All Grid Filters
+                      </TextBtn>  
+                  </GridFilterWrapper>           
+              );
+    }; 
+    
+    
+  const customPage = () => (
+    <div style={{ display: 'flex', justifyContent: 'end', gap: '1rem', width: '100%',paddingBottom: '3px' }}>
+      <CustomPageSizeInput
+        savePageSize={savePageSize}
+        userPageSize={userPageSize}
+      />
+    </div>
+  );
+    
+    
+  const getRowStyle = (params: any) => {
+    if (params.node.rowIndex % 2 === 0) {
+      return { background: "white" };
+    }
+    return { background: "#F4F4F4" };
+  };
+    return (
+        <>
+            
+            <TabsSection style={{paddingTop:'6px'}}>
+                <ApplyZoomOut>
+                    <MyFutureOrderTabsFix>
+                    <VFFloatingTab
+                        handleClick={(e) => setCurrView(e.id)}
+                        tabs={tabs}
+                         defaultTab={tabs.findIndex(tab => tab.id === currView) || 0}
+                        />
+                    </MyFutureOrderTabsFix>
+              </ApplyZoomOut>
+            </TabsSection>
+            
+            <VFTableWrapper style={{height: '72vh', marginTop: '30px'}}>
+                <VFTable 
+                {...agGridProps}
+                columnDefs={colDef}
+                    rowData={rowData}
+                    getRowStyle={getRowStyle}
+                    tooltipHideDelay={100000}
+                    gridOptions={{
+                        sideBar: {
+                          toolPanels: ["agColumnsToolPanel"],
+                        },
+                      }}
+                    tooltipShowDelay={0}
+                    statusBar={{
+                        statusPanels: [{ statusPanel: customPage, align:'right' },
+                          { statusPanel: CustomStatusPanel, align: "left" },
+                        ],
+                      }}
+                   
+                    tooltipMouseTrack={true}
+                    pagination={true}
+                    paginationPageSize={userPageSize}
+                    paginationPageSizeSelector={false}
+                // paginationPageSize={pagination.mtoPageSize}
+                ref={gridRef}
+                    // pagination={false}
+                    context={context}
+                maintainColumnOrder
+                onGridReady={(params: any) => {
+                    params.api.autoSizeAllColumns();
+                    setCurrentGridRef(gridRef);
+                    }}
+                    onFilterChanged={()=>{Object.keys((currentGridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
+                />
+            </VFTableWrapper>
+         </>
+    )
+}
+
+export default GridView
