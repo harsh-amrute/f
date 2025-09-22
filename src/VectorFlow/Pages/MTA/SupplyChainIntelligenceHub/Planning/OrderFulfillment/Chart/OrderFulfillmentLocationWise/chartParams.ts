@@ -1,7 +1,7 @@
 export const chartParams1 = {
-    title:'Top 10 Locations: Maximum Overdue Orders',
+    title:'Top 10 Locations: Categorization Of Pending Quantity',
     chartType:'stackedColumn',
-    downloadName:'Top 10 Loc (Max Overdue Orders)',
+    downloadName:'Top 10 Loc (Category of Pending Quantity)',
     LabelPosition:'bottom',
     Labels:{
         Xaxis:'Location Name',

@@ -90,6 +90,9 @@ import ElephantOrder from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/Ele
 import Scheduling from './VectorFlow/Pages/MTO/Scheduling'
 import ManageEnvConfig from './components/VectorFLOW/layouts/VectorAdmin/ManageEnvConfig'
 import FutureOrderLoadChart from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/FutureOrderLoadChart'
+import ManagePermissions from './components/VectorFLOW/layouts/VectorAdmin/ManagePermissions'
+import ManageUIReportConfig from './components/VectorFLOW/layouts/VectorAdmin/ManageUIReportConfig'
+import ManageUIMDMConfig from './components/VectorFLOW/layouts/VectorAdmin/ManageUIMDMConfig'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -901,7 +904,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/planning/simulative-fullkit',
+      path: '/mto/planning/simulative-fullkit',
       element: <AppLayout />,
       children: [
         {
@@ -1369,6 +1372,21 @@ export const initRoutes = (): RouteObject[] => {
           index: true,
           element: <ManageEnvConfig/>,
           path:'/vector-admin/manage-env-configuration'
+        },
+        {
+          index: true,
+          element: <ManagePermissions/>,
+          path:'/vector-admin/manage-permissions'
+        },
+        {
+          index: true,
+          element: <ManageUIReportConfig/>,
+          path:'/vector-admin/manage-ui-report-configuration'
+        },
+        {
+          index: true,
+          element: <ManageUIMDMConfig/>,
+          path:'/vector-admin/manage-ui-mdm-configuration'
         }
       ]
     },
