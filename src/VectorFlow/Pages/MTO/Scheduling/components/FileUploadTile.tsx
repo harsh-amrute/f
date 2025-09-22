@@ -147,7 +147,7 @@ const FileUploadTile: React.FC<ReportActionCardProps> = ({
 
         <ManualStyle.SCManualUploadInput
               type="file"
-              accept={"."+expected_extension}
+              accept={expected_extension}
               onChange={handleFileChange}
               ref={inputRef}
               value=""
