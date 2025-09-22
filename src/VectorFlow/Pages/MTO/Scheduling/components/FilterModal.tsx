@@ -3,149 +3,7 @@ import styled from "styled-components";
 import { useUserData } from "../../../../../context";
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
-import * as globalStyles from "../../../../../styles/global";
-
-const FilterWrapper = styled.div`
-  height: 78vh;
-  width: 75vw;
-  background-color: white;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-`;
-
-const FilterHeaderWrapper = styled.div`
-  height: 35px;
-  width: 100%;
-  border-bottom: 1px solid #ccc;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  position: sticky;
-  top: 0;
-  display: flex;
-  justify-content: space-between;
-  padding: 4px 8px;
-  align-items: center;
-  background: white;
-  font-size: 1.2rem;
-  font-weight: 500;
-`;
-
-const FilterHeaderTitle = styled.div`
-  font-size: 1.2rem;
-  font-weight: 500;
-  display: flex;
-  gap: 8px;
-  align-items: center;
-`;
-const CloseButton = styled.button`
-  background: none;
-  border: none;
-  font-size: 2.6rem;
-  font-weight: 200px;
-`;
-
-const FilterContent = styled.div`
-  height: 80%;
-  width: 100%;
-  overflow: auto;
-`;
-
-const FilterTabLayout = styled.div`
-    display: flex;
-    gap: 26px;
-    padding: 16px 40px;
-    width: fit-content;
-    height; fit-content;
-`;
-
-const FilterTab = styled.div`
-  padding: 8px 0;
-  border-radius: 4px;
-  background: white;
-  cursor: pointer;
-  width: 220px;
-  border: 1px solid #ccc;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease-in-out;
-  &:hover {
-    transform: scale(1.01);
-  }
-  &.active {
-    background: #9c0d64;
-    color: white;
-  }
-`;
-
-const FilterTabHeader = styled.div`
-  font-size: 1.1rem;
-  font-weight: 500;
-  padding: 4px 8px 4px 16px;
-  text-align: left;
-  border-bottom: 1px solid #ccc;
-`;
-
-const FilterSearchBar = styled.input`
-  width: 90%;
-  margin: 12px auto;
-  padding: 8px 12px;
-  border: 1px solid #ccc;
-  border-radius: 18px;
-  font-size: 1rem;
-  background: #f9f9f9;
-  display: block;
-  &:focus {
-    outline: none;
-    border-color: #9c0d64;
-    box-shadow: 0 0 5px rgba(156, 13, 100, 0.5);
-  }
-`;
-
-const FilterList = styled.div`
-  max-height: 220px;
-  overflow-y: auto;
-  margin-top: 8px;
-  padding: 0 8px;
-`;
-
-const FilterBottomSection = styled.div`
-  width: 100%;
-  display: flex;
-  padding: 12px 20px;
-  justify-content: space-between;
-  align-items: center;
-  border-top: 1px solid #ccc;
-`;
-
-const FilterBottomLeft = styled.div``;
-const FilterBottomRight = styled.div`
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  justify-content: center;
-`;
-
-export const Checkbox = styled.input<{theme:string}>`
-    width: 2.5rem !important;
-    height: 2.5rem !important;
-    border-radius: 2px;
-    border: 2px solid rgb(148, 154, 171);
-    background-color: white;
-    appearance: none;
-    cursor: pointer;
-    &:checked {
-        background-color: ${props => globalStyles.chooseThemeColor[props.theme]?.color4};
-        border-color: ${props => globalStyles.chooseThemeColor[props.theme]?.color4};
-        background-repeat: no-repeat;
-        background-position: center;
-        background-size: contain;
-        background-image: url(/assets/img/mto/dueDateQuotation/checked.svg);
-    }
-`
-
-Checkbox.defaultProps = {
-    type: "checkbox"
-}
+import { Checkbox, CloseButton, FilterBottomLeft, FilterBottomRight, FilterBottomSection, FilterContent, FilterHeaderTitle, FilterHeaderWrapper, FilterList, FilterSearchBar, FilterTab, FilterTabHeader, FilterTabLayout, FilterWrapper } from "./FilterModalStyles";
 
 const FilterModal = ({ setIsFilterModalOpen, ResourceData, setAppliedFilters, appliedFilters }: any) => {
   const allJobs: any = [];
@@ -184,11 +42,18 @@ const FilterModal = ({ setIsFilterModalOpen, ResourceData, setAppliedFilters, ap
 
   const themeUi = useUserData().user.user.theme_ui;
 
-
   const [selectedFilters, setSelectedFilters] = React.useState<any>(appliedFilters);
+  
+  // Search states for each tab
+  const [searchTerms, setSearchTerms] = React.useState({
+    stages: "",
+    workStations: "",
+    jobs: "",
+    actionPreferences: ""
+  });
 
   const onSelectValue = (key: string, value: string) => {
-    setSelectedFilters((prev:any) => {
+    setSelectedFilters((prev: any) => {
       return prev[key].includes(value)
         ? {
             ...prev,
@@ -200,7 +65,38 @@ const FilterModal = ({ setIsFilterModalOpen, ResourceData, setAppliedFilters, ap
           };
     });
   };
-  
+
+  const updateSearchTerm = (tabKey: string, value: string) => {
+    setSearchTerms(prev => ({
+      ...prev,
+      [tabKey]: value
+    }));
+  };
+
+  // Filter functions for each list
+  const filterStages = () => {
+    return allStages.filter((stage: string) => 
+      stage.toLowerCase().includes(searchTerms.stages.toLowerCase())
+    );
+  };
+
+  const filterWorkStations = () => {
+    return allWorkStations.filter((ws: string) => 
+      ws.toLowerCase().includes(searchTerms.workStations.toLowerCase())
+    );
+  };
+
+  const filterJobs = () => {
+    return allJobs.filter((job: string) => 
+      job.toLowerCase().includes(searchTerms.jobs.toLowerCase())
+    );
+  };
+
+  const filterActionPreferences = () => {
+    return allActionPreferences.filter((pref: string) => 
+      pref.toLowerCase().includes(searchTerms.actionPreferences.toLowerCase())
+    );
+  };
 
   return (
     <FilterWrapper>
@@ -221,9 +117,14 @@ const FilterModal = ({ setIsFilterModalOpen, ResourceData, setAppliedFilters, ap
           {/* Stage */}
           <FilterTab>
             <FilterTabHeader>Stage</FilterTabHeader>
-            <FilterSearchBar type="text" placeholder="Search Stage..." />
+            <FilterSearchBar 
+              type="text" 
+              placeholder="Search Stage..."
+              value={searchTerms.stages}
+              onChange={(e) => updateSearchTerm("stages", e.target.value)}
+            />
             <FilterList>
-              {allStages.map((stage: any, index: number) => {
+              {filterStages().map((stage: any, index: number) => {
                 const id = `stage-${index}`;
                 return (
                   <div
@@ -254,9 +155,14 @@ const FilterModal = ({ setIsFilterModalOpen, ResourceData, setAppliedFilters, ap
           {/* WorkStation */}
           <FilterTab>
             <FilterTabHeader>WorkStation</FilterTabHeader>
-            <FilterSearchBar type="text" placeholder="Search WorkStation..." />
+            <FilterSearchBar 
+              type="text" 
+              placeholder="Search WorkStation..." 
+              value={searchTerms.workStations}
+              onChange={(e) => updateSearchTerm("workStations", e.target.value)}
+            />
             <FilterList>
-              {allWorkStations.map((ws: any, index: number) => {
+              {filterWorkStations().map((ws: any, index: number) => {
                 const id = `workstation-${index}`;
                 return (
                   <div
@@ -287,9 +193,14 @@ const FilterModal = ({ setIsFilterModalOpen, ResourceData, setAppliedFilters, ap
           {/* Job List */}
           <FilterTab>
             <FilterTabHeader>Job List</FilterTabHeader>
-            <FilterSearchBar type="text" placeholder="Search Job..." />
+            <FilterSearchBar 
+              type="text" 
+              placeholder="Search Job..." 
+              value={searchTerms.jobs}
+              onChange={(e) => updateSearchTerm("jobs", e.target.value)}
+            />
             <FilterList>
-              {allJobs.map((job: any, index: number) => {
+              {filterJobs().map((job: any, index: number) => {
                 const id = `job-${index}`;
                 return (
                   <div
@@ -320,8 +231,14 @@ const FilterModal = ({ setIsFilterModalOpen, ResourceData, setAppliedFilters, ap
           {/* Action Preference */}
           <FilterTab>
             <FilterTabHeader>Action Preference</FilterTabHeader>
+            <FilterSearchBar 
+              type="text" 
+              placeholder="Search Action Preference..."
+              value={searchTerms.actionPreferences}
+              onChange={(e) => updateSearchTerm("actionPreferences", e.target.value)}
+            />
             <FilterList>
-              {allActionPreferences.map((pref: any, index: number) => {
+              {filterActionPreferences().map((pref: any, index: number) => {
                 const id = `actionPref-${index}`;
                 return (
                   <div
@@ -356,14 +273,20 @@ const FilterModal = ({ setIsFilterModalOpen, ResourceData, setAppliedFilters, ap
           <VFButtonOutline
             style={{ fontSize: "1.1rem", height: "3.2rem" }}
             themeUi={themeUi}
-            onClick={()=>setSelectedFilters(
-                {
-                    stages: [],
-                    workStations: [],
-                    jobs: [],
-                    actionPreferences: [],
-                }
-            )}
+            onClick={() => {
+              setSelectedFilters({
+                stages: [],
+                workStations: [],
+                jobs: [],
+                actionPreferences: [],
+              });
+              setSearchTerms({
+                stages: "",
+                workStations: "",
+                jobs: "",
+                actionPreferences: ""
+              });
+            }}
           >
             Reset Filter
           </VFButtonOutline>

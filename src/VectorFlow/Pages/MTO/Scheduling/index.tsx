@@ -32,6 +32,7 @@ const Scheduling = () => {
     const {mutateAsync: postStartSchedulingRun} = usePostStartSchedulingRun();
 
     const {mutateAsync: getFinalRunResult, isLoading: finalResultLoading} = useGetFinalRunResult();
+    const [runId, setRunId] = useState<string | null>(null);
 
     const GetRunStatus = async()=>{ 
         try{
@@ -80,22 +81,78 @@ const Scheduling = () => {
     }
 
     const [isModalOpen, setIsModalOpen] = useState(true);
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    const onGoToFinalResult = async() => {
+
+        try{
+            const result = await getFinalRunResult();
+            if(result.status===200){
+                notifySuccess("Fetched Run Result Successfully");
+                console.log("result", result.data.data);
+                setFinalResult(result.data.data);
+                setSearchParams({ page: "ResourceView" });
+                setStep("Final Result");
+            }
+            else{
+                notifyError("Failed to fetch run result");
+            }
+        }
+        catch(e){
+            notifyError("Failed to fetch run result");
+            console.error(e);
+        }
+    }
 
     const getRunStatusModal = (runStatus:any) => {
         if(["SUCCESS", "FAILED", "ABORT", "RUNNING", 'FAILED_TO_FETCH'].includes(runStatus.status)){
             return(
             <VFOverlayModal parentSelector="#main-content" openModal={isModalOpen}  >
-            <RunStatusModal runStatus={runStatus} closeModal={()=>setIsModalOpen(false)} goTofinalResult={()=>setStep("Final Result")}/>
+            <RunStatusModal runStatus={runStatus} closeModal={()=>setIsModalOpen(false)} goTofinalResult={onGoToFinalResult}/>
             </VFOverlayModal>
             )        
         }
     }
 
+    useEffect(() => {
+        if(runId){
+    
+            const socket = new WebSocket(`ws://10.8.1.11:10050/ws/scheduler/${runId}/`);
+            
+            socket.onopen = () => {
+                console.log("WebSocket connection opened");
+                setRunStatus((prev: any) => ({ ...prev, status: "RUNNING" }));
+                // StartRun()
+            };
+            
+            socket.onmessage = (event) => {
+                console.log("WebSocket message received:", event.data);
+            };
+            
+            socket.onerror = (error) => {
+                console.error("WebSocket error:", error);
+                notifyError("Failed to connect to WebSocket. Couldn't fetch run progress!!");
+            };
+            
+            socket.onclose = () => {
+                console.log("WebSocket connection closed");
+            };
+            
+            return () => {
+                socket.close();
+            };
+        }
+      
+    }, [runId]);
+
     const StartRun = async()=>{
         try{
             const response = await postStartSchedulingRun({user_id: user.user.id.toString(), user_name: user.user.name});
             if(response.status === 200){
-                notifyError("Run started successfully");
+                const run_id = response.data.run_id;
+                setRunId(run_id)
+                setRunStatus((prev: any)=>({ ...prev, status: "RUNNING", startTime: new Date().toISOString(), endTime: null, message: "initializing..."}));
+                notifySuccess("Run started successfully");
                 setTimeout(()=>{
                     GetRunStatus();
                 },3000)
@@ -107,29 +164,10 @@ const Scheduling = () => {
         }
     }
 
-    const [searchParams, setSearchParams] = useSearchParams();
+    
 
     const getRunActionBar = () => {
-        const onGoToFinalResult = async() => {
-
-            try{
-                const result = await getFinalRunResult();
-                if(result.status===200){
-                    notifySuccess("Fetched Run Result Successfully");
-                    console.log("result", result.data.data);
-                    setFinalResult(result.data.data);
-                    setSearchParams({ page: "ResourceView" });
-                    setStep("Final Result");
-                }
-                else{
-                    notifyError("Failed to fetch run result");
-                }
-            }
-            catch(e){
-                notifyError("Failed to fetch run result");
-                console.error(e);
-            }
-        }
+        
         switch (step) {
             case "Upload":
                 return (
