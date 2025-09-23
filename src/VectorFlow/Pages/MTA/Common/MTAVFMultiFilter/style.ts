@@ -13,12 +13,13 @@ export const ModalContent = styled.div`
 export const FilterLayout = styled.div`
   display: flex;
   flex: 1;
-  min-height: 400px;
+  min-height: 580px;
+  min-width: 800px;
   overflow: hidden;
 `;
 
 export const SidebarSection = styled.div`
-  width: 200px;
+  width: 170px;
   background: #f8f9fa;
   border-right: 1px solid #e9ecef;
   padding: 1rem 0;
@@ -47,12 +48,11 @@ export const ContentSection = styled.div`
   padding: 1.5rem 2rem;
   display: flex;
   flex-direction: column;
-  background: #fff;
   overflow-y: auto;
 `;
 
 export const FooterSection = styled.div`
-  background: #f8f9fa;
+  background: #ffffffff;
   padding: 0.4rem 2rem;
   border-top: 1px solid #e9ecef;
   border-bottom-left-radius: 8px;
