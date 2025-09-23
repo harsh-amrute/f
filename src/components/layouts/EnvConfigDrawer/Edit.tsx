@@ -37,13 +37,12 @@ const EditRole = (props: { data: any; cb: () => void }) => {
 
 
 
-const handleChange = (
+  const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-
 
 const handleChangeValue = (
   e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -128,18 +127,18 @@ const getChangedFields = (original: any,current: any,keysToIgnore: string[] = []
             readOnly 
           />
         </InputWrapper>
-    <InputWrapper style={{ marginLeft: "10px" }}>
-  <Label htmlFor="ConfigValue"> Config Value</Label>
-  <Input
-    type={"text"}
-    name="ConfigValue"
-    placeholder="Any Config Value"
-    themeUi={themeUi}
-    value={formData.ConfigValue}
-    onChange={handleChangeValue}
-    maxLength={50}
-  />
-</InputWrapper>
+        <InputWrapper style={{ marginLeft: "10px" }}>
+          <Label htmlFor="ConfigValue"> Config Value</Label>
+          <Input
+            type={"text"}
+            name="ConfigValue"
+            placeholder="Any Config Value"
+            themeUi={themeUi}
+            value={formData.ConfigValue}
+            onChange={handleChangeValue}
+            maxLength={50}
+          />
+        </InputWrapper>
       </div>
      
       <InputWrapper>
