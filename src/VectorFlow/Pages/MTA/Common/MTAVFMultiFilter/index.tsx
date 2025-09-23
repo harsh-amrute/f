@@ -144,7 +144,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
 
   return (
     <VFModalCard
-      zoom={'0.78'}
+      zoom={'0.73'}
       openModal={isOpen}
       closeModal={onClose}
       headerIcon={'/assets/img/MTAVFMultiFilter/filter-vertical.svg'} 
