@@ -131,6 +131,7 @@ const ActionToolBar = ({
   };
  
 
+
   const currentPageRecordCount = useMemo(() => {
     switch (currCategory) {
       case "GITFromParent":
@@ -187,6 +188,9 @@ const ActionToolBar = ({
       pathname !== "/mta/supply-chain-intelligence-hub/total-requirement-report"
     ) {
       setIsFilterButtonVisible(true);
+    }
+    if(pathname === "/mta/insights-and-trends/buffer-trend-report"){
+      toggleFilter(true);
     }
   }, [pathname]);
 
@@ -504,7 +508,7 @@ const ActionToolBar = ({
         if (pathname === "/mta/insights-and-trends/buffer-trend-report" && onChangeHorizon) {
           return (
             <VFMultiFilter
-            isFilterOpen={isFilterOpen}
+            isFilterOpen={true}
               onApplyFilter={handleApplyFilter}
               onGoBack={() => toggleFilter(false)}
               multiFilter={multiFilter}

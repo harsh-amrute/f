@@ -37,13 +37,20 @@ const EditRole = (props: { data: any; cb: () => void }) => {
 
 
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
+const handleChange = (
+  e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+) => {
+  const { name, value } = e.target;
+  if(data?.Datatype === "Number"){
+  const naturalNumberRegex = /^[1-9]\d*$/;
+  if (value === "" || naturalNumberRegex.test(value)) {
     setFormData({ ...formData, [name]: value });
-  };
-
+  }
+  }
+  else{
+     setFormData({ ...formData, [name]: value });
+  }
+};
 
 const isChanged = useMemo((): boolean => {
   return JSON.stringify(formData) !== JSON.stringify(data);
@@ -113,18 +120,19 @@ const getChangedFields = (original: any,current: any,keysToIgnore: string[] = []
             readOnly 
           />
         </InputWrapper>
-        <InputWrapper style={{ marginLeft: "10px" }}>
-          <Label htmlFor="ConfigValue"> Config Value</Label>
-          <Input
-            type={"text"}
-            name="ConfigValue"
-            placeholder="Any Config Value"
-            themeUi={themeUi}
-            value={formData.ConfigValue}
-            onChange={handleChange}
-            maxLength={50}
-          />
-        </InputWrapper>
+    <InputWrapper style={{ marginLeft: "10px" }}>
+  <Label htmlFor="ConfigValue"> Config Value</Label>
+  <Input
+    type={"text"}
+    inputMode="numeric" // Shows numeric keypad on mobile
+    name="ConfigValue"
+    placeholder="Any Config Value"
+    themeUi={themeUi}
+    value={formData.ConfigValue}
+    onChange={handleChange}
+    maxLength={50}
+  />
+</InputWrapper>
       </div>
      
       <InputWrapper>

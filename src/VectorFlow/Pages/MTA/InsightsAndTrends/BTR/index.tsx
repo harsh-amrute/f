@@ -101,23 +101,25 @@ const BufferTrendReport = () => {
                             tabs={[
                                 {
                                     id: "1",
-                                    value: 'both',
-                                    label: "Both On-Hand & Pipeline View"
+                                      value: 'on-hand',
+                                    label: "On-Hand Inv. View"
+                                  
                                 },
                                 {
                                     id: "2",
-                                    value: 'on-hand',
-                                    label: "On-Hand Inv. View"
+                                     value: 'pipeline',
+                                    label: "Pipeline Inv. View"
+                                   
                                 },
                                 {
                                     id: "3",
-                                    value: 'pipeline',
-                                    label: "Pipeline Inv. View"
+                                     value: 'both',
+                                    label: "Both On-Hand & Pipeline View"
                                 }
                             ]}
                         />
                     </div>
-                    {currentTab?.id === '1' && (
+                    {currentTab?.id === '3' && (
                         <ToggleViewBtnWrapper>
                             <SCViewBackground>
                                 <SCViewContainer onClick={() => toggleVerticalView(true)}>
