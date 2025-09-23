@@ -38,6 +38,14 @@ const EditRole = (props: { data: any; cb: () => void }) => {
 
 
 const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+
+const handleChangeValue = (
   e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
 ) => {
   const { name, value } = e.target;
@@ -68,7 +76,7 @@ const getChangedFields = (original: any,current: any,keysToIgnore: string[] = []
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const changedData = getChangedFields(data ,formData , ['Id', 'ConfigKey']) as any;
+    const changedData = getChangedFields(data ,formData , ['Id', 'ConfigKey' , 'ConfigValue']) as any;
     changedData.LastModifiedByUserEmail = user?.user?.email;
     try {
       const response = await editEnvConfiguration(changedData);
@@ -124,12 +132,11 @@ const getChangedFields = (original: any,current: any,keysToIgnore: string[] = []
   <Label htmlFor="ConfigValue"> Config Value</Label>
   <Input
     type={"text"}
-    inputMode="numeric" // Shows numeric keypad on mobile
     name="ConfigValue"
     placeholder="Any Config Value"
     themeUi={themeUi}
     value={formData.ConfigValue}
-    onChange={handleChange}
+    onChange={handleChangeValue}
     maxLength={50}
   />
 </InputWrapper>
