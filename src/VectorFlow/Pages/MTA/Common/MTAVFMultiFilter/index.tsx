@@ -187,22 +187,12 @@ const FilterModal: React.FC<FilterModalProps> = ({
             <VFButtonOutline 
               themeUi={user.user.theme_ui} 
               onClick={handleReset}
-              style={{ 
-                padding: '0.75rem 2rem',
-                fontSize: '14px',
-                fontWeight: '500'
-              }}
             >
               Reset Filters
             </VFButtonOutline>
             <VFButton 
               themeUi={user.user.theme_ui} 
               onClick={handleApply}
-              style={{ 
-                padding: '0.75rem 2rem',
-                fontSize: '14px',
-                fontWeight: '500'
-              }}
             >
               Apply Filter 
             </VFButton>
