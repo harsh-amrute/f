@@ -30,6 +30,7 @@ import { RootState } from "../../../../../../redux/store/store";
 import useGetLocation from "../../../../../../hooks/useGetLocation";
 import { Skeleton } from "../../../../../../components/commons/styled";
 import ConfirmationDataModal from "../../../DBM/DBMNormSuggestions/ConfirmationModal";
+import MTAVFMultiFilter from "../../../Common/MTAVFMultiFilter";
 
 interface ActionToolBarProps {
   view: string;
@@ -129,7 +130,19 @@ const ActionToolBar = ({
   const handleResetAllState = () => {
     onResetAllState(`${currCategory}${currentTab}`);
   };
- 
+  
+  const [isNewFilterOpen, setIsFilterOpen] = useState(false);
+
+  const handleApplyFilters = (filters: any) => {
+    console.log('Applied filters:', filters);
+    setIsFilterOpen(false);
+    // You can pass these filters to your parent component or context
+  };
+
+  const handleResetFilters = () => {
+    console.log('Filters reset');
+    // Handle reset logic if needed beyond the modal
+  };
 
   const currentPageRecordCount = useMemo(() => {
     switch (currCategory) {
@@ -315,26 +328,31 @@ const ActionToolBar = ({
       case "BPR":
         if (pathname === "/mta/supply-chain-intelligence-hub/bpr") {
           return (
-            <VFMultiFilter
-            isFilterOpen={isFilterOpen}
-              onApplyFilter={handleApplyFilter}
-              onGoBack={() => toggleFilter(false)}
-              multiFilter={multiFilter}
-              setMultiFilter={setMultiFilter}
-              productFilterActive={true}
-              supplyChainNodeFilterActive={true}
-              locationFilterActive={true}
-              availabilityFilterActive={true}
-              generalFilterActive={false}
-              generalFilterOptions={generalFilterOptions}
-              supplyChainForLocationCheckBoxList={
-                locations
-              }
-              supplyChainForChildrenOfCheckBoxList={
-                locations
-              }
-              currCategory={currCategory}
-
+            // <VFMultiFilter
+            // isFilterOpen={isFilterOpen}
+            //   onApplyFilter={handleApplyFilter}
+            //   onGoBack={() => toggleFilter(false)}
+            //   multiFilter={multiFilter}
+            //   setMultiFilter={setMultiFilter}
+            //   productFilterActive={true}
+            //   supplyChainNodeFilterActive={true}
+            //   locationFilterActive={true}
+            //   availabilityFilterActive={true}
+            //   generalFilterActive={false}
+            //   generalFilterOptions={generalFilterOptions}
+            //   supplyChainForLocationCheckBoxList={
+            //     locations
+            //   }
+            //   supplyChainForChildrenOfCheckBoxList={
+            //     locations
+            //   }
+            //   currCategory={currCategory}
+            <MTAVFMultiFilter
+              isOpen={isFilterOpen}
+              onClose={() => toggleFilter(false)}
+              onApply={handleApplyFilters}
+              onReset={handleResetFilters}
+              
             />
           );
         }
