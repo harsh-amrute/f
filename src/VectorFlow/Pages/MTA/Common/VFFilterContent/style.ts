@@ -1,12 +1,14 @@
 import styled from 'styled-components';
 
 export const FilterGroup = styled.div`
-  margin-bottom: 2rem;
-  display: flex;
-  gap: 1.5rem;
-  align-items: flex-start;
-  flex-wrap: wrap;
-`;
+    height:80px;
+    background-color:white;
+    display:flex;
+    align-items: flex-start;
+    gap:20px;
+    padding: 0;
+    margin-top: -10px;
+`
 
 export const FilterColumn = styled.div`
   flex: 1;
@@ -14,13 +16,29 @@ export const FilterColumn = styled.div`
   max-width: 300px;
 `;
 
-export const FilterTitle = styled.h4<{ subTitle?: boolean }>`
+
+export const FilterTitle = styled.h3<{ subTitle?: boolean }>`
   margin: 0 0 0.5rem 0;
   color: ${props => props.subTitle ? '#666' : '#333'};
   font-weight: ${props => props.subTitle ? '400' : '500'};
   font-size: ${props => props.subTitle ? '13px' : '14px'};
   font-style: ${props => props.subTitle ? 'italic' : 'normal'};
+  font-family: 'Roboto', sans-serif;
 `;
+
+export const DropDownWrapper = styled.div`
+    height:50px;
+`
+
+export const TextWrapper = styled.div`
+    display: flex;
+    font-family:Roboto;
+    font-weight:500;
+    font-size:14px;
+    line-height:24px;
+    margin: 0 0 0.5rem 0;
+    align-items:center;
+`
 
 export const InputField = styled.input`
   width: 100%;
