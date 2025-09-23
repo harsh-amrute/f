@@ -8,6 +8,8 @@ export const FilterGroup = styled.div`
     gap:20px;
     padding: 0;
     margin-top: -10px;
+    margin-left: 5px;
+    margin-right: 5px;
 `
 
 export const FilterColumn = styled.div`
