@@ -1,6 +1,7 @@
 import React from 'react';
-import { FilterGroup, FilterColumn, FilterTitle, InputField, SelectField } from './style';
-
+import { FilterGroup, FilterColumn, FilterTitle, InputField, SelectField, TextWrapper, DropDownWrapper } from './style';
+import Select from 'react-select'
+import { useThemeStyles } from '../../../../../hooks/useVFFilterContent'; 
 interface FilterSectionProps {
   filters: any;
   onFilterChange: (field: string, value: string) => void;
@@ -8,71 +9,48 @@ interface FilterSectionProps {
 
 // Supply Chain Node Filter Component
 export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({ filters, onFilterChange }) => {
+  const styles = useThemeStyles();
   return (
     <>
       <FilterGroup>
         <FilterColumn>
-          <FilterTitle>Location Type</FilterTitle>
-          <SelectField 
-            value={filters.locationType}
-            onChange={(e) => onFilterChange('locationType', e.target.value)}
-          >
-            <option value="">Select Location Type</option>
-            <option value="warehouse">Warehouse</option>
-            <option value="store">Store</option>
-            <option value="distribution">Distribution Center</option>
-          </SelectField>
+          <TextWrapper>For Location</TextWrapper>
+          <DropDownWrapper >
+            <Select placeholder={"Location Type"} styles={styles} components={{ IndicatorSeparator: () => null }}></Select>
+          </DropDownWrapper>
         </FilterColumn>
         
         <FilterColumn>
-          <FilterTitle>Select Location</FilterTitle>
-          <SelectField 
-            value={filters.selectedLocation}
-            onChange={(e) => onFilterChange('selectedLocation', e.target.value)}
-          >
-            <option value="">Choose Location</option>
-            <option value="loc1">Location 1</option>
-            <option value="loc2">Location 2</option>
-            <option value="loc3">Location 3</option>
-          </SelectField>
+          <TextWrapper>For Children</TextWrapper>
+          <DropDownWrapper >
+            <Select placeholder={"Location Type"} styles={styles} components={{ IndicatorSeparator: () => null }}></Select>
+          </DropDownWrapper>
         </FilterColumn>
       </FilterGroup>
 
-      <FilterGroup>
-        <FilterColumn>
-          <FilterTitle>Search by name</FilterTitle>
-          <InputField 
-            type="text"
-            placeholder="Enter name..."
-            value={filters.searchByName}
-            onChange={(e) => onFilterChange('searchByName', e.target.value)}
-          />
-        </FilterColumn>
-      </FilterGroup>
-
-      <FilterGroup>
-        <FilterColumn>
-          <FilterTitle>For Children</FilterTitle>
-          <FilterTitle subTitle>Location Type</FilterTitle>
-          <SelectField 
-            value={filters.childrenLocationType}
-            onChange={(e) => onFilterChange('childrenLocationType', e.target.value)}
-          >
-            <option value="">Select Children Location Type</option>
-            <option value="child-warehouse">Child Warehouse</option>
-            <option value="child-store">Child Store</option>
-          </SelectField>
-        </FilterColumn>
-        
-        <FilterColumn>
-          <FilterTitle style={{ opacity: 0 }}>Placeholder</FilterTitle>
-          <FilterTitle subTitle>Q</FilterTitle>
-          <InputField 
-            type="text"
-            placeholder="Enter quantity..."
-            value={filters.quantity}
-            onChange={(e) => onFilterChange('quantity', e.target.value)}
-          />
+      <FilterGroup style={{paddingTop:'10px'}}>
+        <FilterColumn style={{ maxWidth: "100%", flex: 1, width: "100%" }}>
+          <TextWrapper>Select Location</TextWrapper>
+          <DropDownWrapper >
+            <Select 
+              placeholder={"Search By name"} 
+              styles={styles} 
+              components={{ 
+                IndicatorSeparator: () => null,
+                DropdownIndicator: () => (
+                  <img 
+                    src={"/assets/img/VectorFLOW/NMS/search.svg"} 
+                    style={{
+                      marginRight:'8px',
+                      width: '14px',
+                      height: '14px'
+                    }} 
+                    alt="search" 
+                  />
+                )
+              }} 
+            />
+          </DropDownWrapper>
         </FilterColumn>
       </FilterGroup>
     </>
