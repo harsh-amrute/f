@@ -29,6 +29,14 @@ import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../.
 import useColDef from '../../../../../hooks/useColDef';
 import CustomLegend from '../../Common/CustomLegend';
 
+interface GraphDataRow {
+  ccr_name: string;
+  stpl_in_days: number;
+  allowed_full_kits: number;
+  cumulative_wip_limit?: number; // optional
+  fol_gap: number;
+}
+
 const APIFilterConfig = {
   filSecVisConfig: {
     "Prod_FullKit_Assignment": {
@@ -46,7 +54,7 @@ const FullKitAssignment = () => {
   const hasChangeRoute = user?.feature_permission?.includes("Change_Route");
   const hasDeselectOrder = user?.feature_permission?.includes("Deselect_Orders");
   const themeUi = user?.user?.theme_ui;
-  const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
+  const { mutateAsync: getPageWiseFilterData, isLoading: isGetFilterData } = useGetFilterData()
   const [filterData, setFilterData] = useState({});
 
   const [HeaderData, setHeaderData] = useState([]);
@@ -56,10 +64,6 @@ const FullKitAssignment = () => {
 
   const graph = useRef<any>();
   const grid = useRef<any>();
-
-  // const [showOrdersWithFullKitReady, setShowOrdersWithFullKitReady] = useState(true);
-  // const [loadGraph, setLoadGraph] = useState(false);
-  // const [loadDataAfterSimulation, setLoadDataAfterSimulation] = useState(false)
 
   const [orderDetails, setOrderDetails] = useState<any>({});
   const [orders, setOrders] = useState([]);
@@ -89,7 +93,7 @@ const FullKitAssignment = () => {
   const { mutateAsync: updateExcludedOrdersForFullkitAssignment, isLoading: excludeOrdersLoading } = useUpdateExcludedOrdersForFullkitAssignment();
   const { mutateAsync: updateOrSimulateStockAllocation, isLoading: simulationLoading } = useUpdateOrSimulateStockAllocation();
   const { mutateAsync: updateFullkitOnSimulation, isLoading: isSimulationResultsUpdating } = useUpdateFullkitOnSimulation();
-  const { mutateAsync: getUIConfigData } = useGetUIConfigData();
+  const { mutateAsync: getUIConfigData, isLoading: isGetUIConfigData } = useGetUIConfigData();
   const { 
     state: currFilter, 
     setState: setCurrFilter, 
@@ -109,7 +113,6 @@ const FullKitAssignment = () => {
 
   const defaultColDefCustomisation = useRef({
     Route: {
-      // tooltipField: "r"
       cellRenderer: (params: any) => {
         return (
           <div style={{ display: "flex", alignItems: "center", justifyContent: "end", gap: "1rem", width: "100%", height: "100%" }}>
@@ -261,54 +264,31 @@ const fetchOrders = async (isExcelExport = false, page?:number, pageSize?:number
       }
     }
     else if (loadDataParams.load_graph_data) {
-      const graph: any = [];
+      const graph: any[] = [];
       const newGraphdata = data?.data?.data?.results?.graphdata;
+      const categories = ["underloaded", "overloaded", "balanced"];
+
       if (newGraphdata) {
-        //underload
-        newGraphdata["underloaded"].forEach((row: any) => {
-          const data = {
-            category: ["underloaded", row.ccr_name],
-            "CCR Name": row.ccr_name,
-            "Released WIP": row.stpl_in_days,
-            "Allocated Full Kits": row.allowed_full_kits,
-            "Limit": row.cumulative_wip_limit,
-            "FOL Gap":row.fol_gap
-          }
-          graph.push(data)
+        categories.forEach(category => {
+          const categoryData = newGraphdata[category] as GraphDataRow[]; // Explicitly type this
+          categoryData.forEach(({ ccr_name, stpl_in_days, allowed_full_kits, cumulative_wip_limit, fol_gap }) => {
+            graph.push({
+              category: [category, ccr_name],
+              "CCR Name": ccr_name,
+              "Released WIP": stpl_in_days,
+              "Allocated Full Kits": allowed_full_kits,
+              "Limit": cumulative_wip_limit ?? 0,
+              "FOL Gap": fol_gap
+            });
+          });
         });
-        //overload
-        newGraphdata["overloaded"].forEach((row: any) => {
-          const data = {
-            category: ["overloaded", row.ccr_name],
-            "CCR Name": row.ccr_name,
-            "Released WIP": row.stpl_in_days,
-            "Allocated Full Kits": row.allowed_full_kits,
-            "Limit": row.cumulative_wip_limit,
-            "FOL Gap":row.fol_gap
-          }
-          graph.push(data)
-        })
-        //balanced
-        newGraphdata["balanced"].forEach((row: any) => {
-          const data = {
-            category: ["balanced", row.ccr_name],
-            "CCR Name": row.ccr_name,
-            "Released WIP": row.stpl_in_days,
-            "Allocated Full Kits": row.allowed_full_kits,
-            "Limit": row.cumulative_wip_limit,
-            "FOL Gap":row.fol_gap
-          }
-          graph.push(data);
-        })
-        //modify griddata for adding tags
-        const newRows = calculateTagsAndOrderinFullkitToday(griddata, newGraphdata)
-        setOrders(newRows);
-        setChartOptions({ ...chartoptions, data: graph });
-        graphDataOgFormat.current = newGraphdata;
       }
-     
-    }
-    else {
+      //modify griddata for adding tags
+      const newRows = calculateTagsAndOrderinFullkitToday(griddata, newGraphdata)
+      setOrders(newRows);
+      setChartOptions({ ...chartoptions, data: graph });
+      graphDataOgFormat.current = newGraphdata;
+    } else {
       const newRows = calculateTagsAndOrderinFullkitToday(griddata, graphDataOgFormat.current) // already fetched graph data
       setOrders(newRows);
     }
@@ -678,12 +658,6 @@ const fetchOrders = async (isExcelExport = false, page?:number, pageSize?:number
         strokeWidth: 0,
         visible: true,
         fill: barColors["Released WIP"],
-        formatter: (params: any) => {
-          return {
-            fillOpacity: params.datum.selected ? 1 : 0.5,
-            fill: params.datum.selected ? params.fill : barColors["Released WIP"]
-          }
-        },
         tooltip: {
           position: { placement: "right" },  // anchor to bar
           renderer: TooltipRenderer
@@ -697,11 +671,6 @@ const fetchOrders = async (isExcelExport = false, page?:number, pageSize?:number
         strokeWidth: 0,
         visible: true,
         fill: barColors["Allocated Full Kits"],
-        formatter: (params: any) => {
-          return {
-            fill: params.datum.selected ? params.fill : barColors["Allocated Full Kits"]
-          }
-        },
         tooltip: {
           position: { placement: "right" },  // anchor to bar
           renderer: TooltipRenderer
@@ -742,7 +711,7 @@ const fetchOrders = async (isExcelExport = false, page?:number, pageSize?:number
             }
           },
           {
-            tick: { enabled: true, stroke: 'black', interval: 1 },
+            tick: { enabled: true, stroke: 'black' },
             label: { fontWeight: "bold", avoidCollisions: true }
           },
         ],
@@ -820,7 +789,7 @@ const fetchOrders = async (isExcelExport = false, page?:number, pageSize?:number
         quickFilter={<div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}><Checkbox style={{ cursor: editMode != "View" ? "not-allowed" : "pointer" }} disabled={editMode != "View"} checked={loadDataParams.is_fullkit} onChange={(e: any) => setLoadDataParams({ ...loadDataParams, load_graph_data: true, is_fullkit: e.target.checked })} theme={themeUi} /> &nbsp;&nbsp; <strong>Show Orders with Full Kit Ready</strong></div>}
       />
       {/* <button onClick={() => setShowModal(true)}>Click</button> */}
-      {(isDataLoading || isUpdateUserConfig || isGetUserConfig || excludeOrdersLoading || simulationLoading || isSimulationResultsUpdating) && <OverlayLoader />}
+      {(isGetFilterData || isGetUIConfigData || isDataLoading || isUpdateUserConfig || isGetUserConfig || excludeOrdersLoading || simulationLoading || isSimulationResultsUpdating) && <OverlayLoader />}
       <VFTable
         ref={grid}
         rowData={orders}
