@@ -14,6 +14,8 @@ import {
 import { useUserData } from "../../../context";
 import { notifyError, notifySuccess } from "../../../helpers/notify";
 import { useEditEnvironmentConfiguration } from "../../../VectorFlow/Services/MTA/MDM/index";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store/store";
 
 interface FormDataType {
   ConfigKey: string;
@@ -22,7 +24,7 @@ interface FormDataType {
   Category:string
 }
 
-const EditRole = (props: { data: any; cb: () => void }) => {
+const EditEnvConfig = (props: { data: any; cb: () => void }) => {
   const { data, cb } = props;
 
   const { user } = useUserData();
@@ -35,6 +37,9 @@ const EditRole = (props: { data: any; cb: () => void }) => {
 
   const {mutateAsync : editEnvConfiguration} = useEditEnvironmentConfiguration();
 
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const EnvProductPermissionArray = EnvConfig['EnvProductPermissionArray']; 
+    const EnvLocationPermissionArray = EnvConfig['EnvLocationPermissionArray']; 
 
 
   const handleChange = (
@@ -94,6 +99,19 @@ const getChangedFields = (original: any,current: any,keysToIgnore: string[] = []
     return Object.keys(formData).every((k) => {
       const key = k as keyof FormDataType;
       const value = formData[key];
+      if (data?.Category === "ProductPermission") {
+          const isDuplicate = EnvProductPermissionArray.includes(value) && value !== data.ConfigValue;
+          if (isDuplicate) {
+              return false; 
+          }
+      }
+
+      if (data?.Category === "LocationPermission") {
+          const isDuplicate = EnvLocationPermissionArray.includes(value) && value !== data.ConfigValue;
+          if (isDuplicate) {
+              return false; 
+          }
+      }
       if (formData?.["ConfigKey"] === "CLIENT_NAME" || formData?.["ConfigKey"] === "CLIENT_LOGO") {
         if (key === "ConfigValue" && value === "") {
           return true;
@@ -175,4 +193,4 @@ const getChangedFields = (original: any,current: any,keysToIgnore: string[] = []
   );
 };
 
-export default EditRole;
+export default EditEnvConfig;
