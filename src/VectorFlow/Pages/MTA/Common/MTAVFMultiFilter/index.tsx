@@ -92,9 +92,13 @@ const FilterModal: React.FC<FilterModalProps> = ({
       display: 'flex', 
       alignItems: 'center', 
       gap: '0.65rem',
-      color: 'white' 
+      color: 'white',
     }}>
-      <span>Filter</span>
+      <span style={{
+          marginLeft: '-13px',
+          fontSize: '1.8rem',
+          fontWeight: '410',
+      }}>Filter</span>
       {currentActiveFilters > 0 && (
         <span style={{
           background: '#fffafdff',
@@ -106,7 +110,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
           alignItems: 'center',
           justifyContent: 'center',
           fontSize: '1.2rem',
-          fontWeight: '500'
+          fontWeight: '530'
         }}>
           {currentActiveFilters}
         </span>
@@ -149,11 +153,12 @@ const FilterModal: React.FC<FilterModalProps> = ({
       closeModal={onClose}
       headerIcon={'/assets/img/MTAVFMultiFilter/filter-vertical.svg'} 
       headerText={<CustomHeader/>}  
-      closeIcon={'/assets/img/MTAVFMultiFilter/cross-small.svg'} 
+      closeIcon={'/assets/img/VectorFLOW/NMS/close-white.svg'} 
       paddingLeftAndRight={0}   
       backgroundColor={'#f4f4f4'}
       headerBgColor={'#000000'}
       data-testid="vfmultifilter-img"
+      absolute={true}
     >
       <ModalContent>
         <FilterLayout>
@@ -187,12 +192,22 @@ const FilterModal: React.FC<FilterModalProps> = ({
             <VFButtonOutline 
               themeUi={user.user.theme_ui} 
               onClick={handleReset}
+               style={{
+                fontSize: "15px",
+                fontWeight: 450,
+                height: "45px",
+              }}
             >
               Reset Filters
             </VFButtonOutline>
             <VFButton 
               themeUi={user.user.theme_ui} 
               onClick={handleApply}
+              style={{
+                fontSize: "15px",
+                fontWeight: 450,
+                height: "45px",
+              }}
             >
               Apply Filter 
             </VFButton>
