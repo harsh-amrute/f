@@ -52,7 +52,7 @@ const BufferTrendReport = () => {
     return (
         <GridStateContext.Provider
             value={{
-                ref: currentTab.id === "2" ? techRef : currentTab.id === "3" ? ecoRef : "",
+                ref: currentTab.id === "1" ? techRef : currentTab.id === "2" ? ecoRef : "",
                 exportExcelColumns: exportExcelColumns,
                 setExportExcelColumns: setExportExcelColumns,
                 tempDownloadData: tempDownloadData,
