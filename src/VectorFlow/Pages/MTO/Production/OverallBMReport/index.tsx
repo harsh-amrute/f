@@ -486,11 +486,9 @@ const onCheckBoxToggle = (e: any) => {
     setIsCheckboxChecked(totalRows > 0 && selectedNodes?.length === totalRows);
   };
 
-// AFTER (The fix)
 const handleActionChange = (option: any) => {
   setSelectedAction(option);
 
-  // Exit if no option is selected or the grid is not ready
   if (!option || !refGraph2.current?.api) {
     return;
   }
@@ -498,7 +496,6 @@ const handleActionChange = (option: any) => {
   const selectedNodes = refGraph2.current.api.getSelectedRows();
   const selectedKeys = new Set(selectedNodes.map((row: OrderItem) => row.ok));
 
-  // 1. Update the visual data for the currently displayed page
   setGridData((currentGridData:any) =>
     currentGridData.map((row:any) => {
       if (selectedKeys.has(row.ok)) {
@@ -508,7 +505,6 @@ const handleActionChange = (option: any) => {
     })
   );
 
-  // 2. Also update the persistent master selection state so the choice is remembered
   setMasterSelectedRowData((currentMasterData:any) =>
     currentMasterData.map((masterRow:any) => {
       if (selectedKeys.has(masterRow.ok)) {
@@ -869,7 +865,6 @@ const onSelectChange = (props: any, option: any, index: number) => {
   };
 
   const excelColorArr = ["Black", "Red", "White", "Green", "Yellow", "Blue"]
-  console.log("bomActive", bomActive)
 
 
   const mapApiResponseToColDefs = (apiResponse: ApiResponseItem[]): any => {
@@ -1324,7 +1319,6 @@ const onPivotModeChanged = (event: any) => {
                 defaultColDef: {
                   flex: 1,
                   suppressMenu: true,
-                  headerCheckboxSelectionFilteredOnly: true,
                   cellStyle: {
                     fontSize: "16px",
                     display: "flex",
