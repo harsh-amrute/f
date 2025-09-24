@@ -189,7 +189,7 @@ const ActionToolBar = ({
     ) {
       setIsFilterButtonVisible(true);
     }
-    if(pathname === "/mta/insights-and-trends/buffer-trend-report"){
+    if(pathname === "/mta/insights-and-trends/buffer-trend-report" || pathname === "/mta/supply-chain-intelligence-hub/bpr"){
       toggleFilter(true);
     }
   }, [pathname]);
