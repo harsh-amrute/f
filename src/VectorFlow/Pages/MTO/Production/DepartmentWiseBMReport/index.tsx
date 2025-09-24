@@ -46,6 +46,7 @@ import moment from 'moment';
 import { useGetDate } from '../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting';
 import BomExcelModal from '../../Common/BomExcelModal';
 import useColDef from '../../../../../hooks/useColDef';
+import { createDynamicColumnDefs } from '../../../../../helpers/gridUtils';
 
 
 interface ApiResponse {
@@ -314,29 +315,29 @@ const DptWiseBMReport = () => {
         }, [bomHeader]);
 
 
-    const setColumnDef = async () => {
-        try {
-            const reportName = "DeptWiseReport";
-            const response = await getUIConfigData(reportName);
-            getGroupedColDef(response)
-
-            // const modifiedResponse = addDefaultAttributes(response?.data?.data);
-
-            const modifiedResponse: ApiResponseItem[] = addDefaultAttributes(response?.data?.data);
-
-
-            // setResetColDef(modifiedResponse);
-            const coldef = mapApiResponseToColDefs(
-                modifiedResponse
-            );
-            setColdef(coldef);
-            // setTempColdef(removeUtilcolumns(coldef))
-            // getUserColumnConfig();
-        }
-        catch (e) {
-            console.log(e);
-        }
-    }
+        const setColumnDef = async () => {
+            try {
+                const reportName = "DeptWiseReport";
+                const response = await getUIConfigData(reportName);
+                getGroupedColDef(response?.data?.data);
+        
+                const feature_permission = user?.feature_permission || [];
+                const canAddComments = feature_permission.includes("Add_Comments");
+        
+                const gridOptions = {
+                    bomActive: bomActive,
+                    canAddComments: canAddComments,
+                    onOpenRemarkHistory: onOpenRemarkHistory,
+                    pinRemarkColumns: true,
+                };
+        
+                const colDefsData = createDynamicColumnDefs(response?.data?.data || [], gridOptions);
+                setColdef(colDefsData);
+            } catch (e) {
+                console.log(e);
+                notifyError("Failed to build grid columns.");
+            }
+        };
 
     const addDefaultAttributes = (apiResponse: ApiResponseItem[]): ApiResponseItem[] => {
         const modifiedResponse: ApiResponseItem[] = [];
