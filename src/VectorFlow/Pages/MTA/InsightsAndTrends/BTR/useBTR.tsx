@@ -217,16 +217,14 @@ const useBTR = () => {
     }
 
     const getUserColumnConfig = async () => {
-        console.log("CURRRR TAB",currentTab.id);
-        
+
         if (currentTab.id === "1") {
             const stateData = await getState({ "reportname": UserUIColumnConfigName.BTROnHand });
-            console.log("VAAAIIIIII",stateData);
+
             
             if (stateData.data.data.length !== 0) {
                 const parsedContent = JSON.parse(stateData.data.data)
                 setTechGridState(parsedContent)
-                console.log("OOOOOOOOO",parsedContent);
                 
             } else {
                 console.log("State Data not available for BTROnHand");
@@ -294,7 +292,6 @@ const useBTR = () => {
     }
 
     const getDataEco = async (filter: any, pageNumber: number) => {
-        console.log("HJJJJJJJJJJJ",filter);
         
         const payload = {
             id: 0,
@@ -564,7 +561,6 @@ const useBTR = () => {
     useEffect(() => {
     if (initialColumnState) {
         if (currentTab.id === "1" && techColDefs.length && techInternalRef?.api) {
-            console.log("WAAAAAAA",techInternalRef);
             setTechMasterUIConfig(techInternalRef?.api.getColumnState());
         }
     }
@@ -579,7 +575,6 @@ const useBTR = () => {
     useEffect(() => {
         if (techInternalRef && techGridState && techGridState.columns) {
             const result = techInternalRef?.api.applyColumnState({ state: techGridState.columns, applyOrder: true });
-            console.log("REEE",result);
             
             techInternalRef.api.sizeColumnsToFit();  
             if (!result) {
