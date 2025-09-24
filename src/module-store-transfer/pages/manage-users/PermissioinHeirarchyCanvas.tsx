@@ -457,7 +457,6 @@ export default function PermissionHeirarchyCanvas({
     return { nodes, edges };
   };
 
-  const { user } = useUserData();
 
   const [nodes, setNodes] = React.useState<any>([]);
   const [edges, setEdges] = React.useState<any>([]);
@@ -465,7 +464,7 @@ export default function PermissionHeirarchyCanvas({
   useEffect(() => {
     if (checked && checked.length && opened && opened.length) {
       const { nodes: generatedNodes, edges: generatedEdges } =
-        generateTreeNodesAndEdges(selectedAppAllPermissions[permissionType]);
+        generateTreeNodesAndEdges(selectedAppAllPermissions?.[permissionType] || {});
       setNodes(generatedNodes);
       setEdges(generatedEdges);
     }

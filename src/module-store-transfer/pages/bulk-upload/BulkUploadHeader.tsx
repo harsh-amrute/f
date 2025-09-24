@@ -6,6 +6,8 @@ import { DropdownWrapper } from "../../../components/commons/CustomDropdown/styl
 import { SCGoBackContainer, SCGoBackText } from "../../../components/VectorFLOW/commons/MTO/ActionToolBar/styles";
 import { GridRef } from "../../../VectorFlow/types/MDM";
 import { ActionButton } from "./style";
+import { notifyWarning } from "../../../helpers/notify";
+import _ from "lodash";
 
 /**
  * Props for the BulkUploadHeader component.
@@ -88,6 +90,43 @@ const BulkUploadHeader = ({
     setOpen(!open);
   };
 
+
+  const areValidRoles = () => {
+    let isValid = true;
+    const applicationNameSet = new Set<string>();
+  
+    gridRef.current.api.forEachNode((node: any) => {
+      if (node.isSelected()) {
+        const roles = node.data.roles || [];
+        if (roles.size > 0) {
+          const roleArr:any = [];
+          roles.forEach((role: any) => {
+            if (role.application_name) {
+              roleArr.push(role.application_name);
+            }
+          });
+          const uniqueApps = _.uniq(roleArr).sort();
+          applicationNameSet.add(uniqueApps.join(","));
+        }
+        else{
+          isValid = false;
+        }
+      }
+    });
+  
+    if (!isValid) {
+      notifyWarning("All the users must have roles of the same applications.");
+      return false;
+    }
+  
+    if (applicationNameSet.size > 1) {
+      notifyWarning("All selected users must have roles with the same application name.");
+      return false;
+    }
+  
+    return true;
+  };
+
   return (
     <div
       style={{
@@ -162,6 +201,7 @@ const BulkUploadHeader = ({
               {/* Roles Action */}
               <ActionButton
                 onClick={() => {
+                  
                   setIsRoleModalOpen(true);
                   setOpen(false);
                 }}
@@ -172,6 +212,9 @@ const BulkUploadHeader = ({
               {/* Permissions Action */}
               <ActionButton
                 onClick={() => {
+                  if(!areValidRoles()){
+                    return;
+                  }
                   setIsPermissionModalOpen(true);
                   setOpen(false);
                 }}

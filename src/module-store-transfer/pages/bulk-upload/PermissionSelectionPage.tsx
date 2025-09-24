@@ -20,6 +20,7 @@ import OverlayLoader from "../../../VectorFlow/Pages/MTO/Common/Loader";
 import { SCGoBackContainer, SCGoBackText } from "../../../components/VectorFLOW/commons/MTO/ActionToolBar/styles";
 import _ from "lodash";
 import { notifyError, notifySuccess } from "../../../helpers/notify";
+import { useUserData } from "../../../context";
 
 type Role = {
   id: number;
@@ -61,6 +62,15 @@ const PermissionSelectionPage = ({
       }
     });
   };
+
+  const user = useUserData();
+  const activeApplications  = [];
+  if(user.user.config_data.MTO_ACTIVE===true){
+    activeApplications.push('Orders');
+  }
+  if(user.user.config_data.MTA_ACTIVE===true){
+    activeApplications.push('Distribution');
+  }
 
   const updatePermissionsForSelected = (selectedPermissions: Set<string>) => {
     gridRef.current?.api.forEachNode((node: any) => {
@@ -273,6 +283,7 @@ const PermissionSelectionPage = ({
       // return;
       try{
         const finalData = optimizePermissionsAndRoles(transformUserData(userDataAll));
+        console.log("finalData", finalData);
         const response = await postPostBulkUploadUsers({...finalData})
         if(response.status===200){
           // setIsFinalView(true);
@@ -353,6 +364,9 @@ const PermissionSelectionPage = ({
         themeUi={themeUi} >Edit Role</VFButton>}: RoleViewCellRenderer,
         cellRendererParams: {
           allRoles: listRoles,
+          allPermissions: dataAllPermissions,
+          setIsPermissionModalOpen: setIsPermissionModalOpenForRow,
+          setRowIndex: setRowIndex
         },
         cellStyle: (props:any)=>{
           if (isFinalView && props.data.error) {
@@ -560,11 +574,13 @@ const PermissionSelectionPage = ({
           >
             {/* <PermissionHeirarchyCanvas  allPermissions={dataAllPermissions}/> */}
             <PermissionSelectionModal
+              gridRef={gridRef}
               dataAllPermissions={dataAllPermissions}
               updatePermissions={updatePermissionsForSelected}
               closeModal={() => {
                 setIsPermissionModalOpen(false);
               }}
+              activeApplications={activeApplications}
             />
           </VFModalCard>
         }
@@ -589,6 +605,7 @@ const PermissionSelectionPage = ({
               closeModal={() => {
                 setIsPermissionModalOpenForRow(false);
               }}
+              activeApplications={activeApplications}
             />
           </VFModalCard>
         }
@@ -603,6 +620,7 @@ const PermissionSelectionPage = ({
             }}
           >
             <RoleSelectionModal
+              activeApplications={activeApplications}
               listRoles={listRoles}
               updateRoles={updateRolesForSelected}
               closeModal={() => {
