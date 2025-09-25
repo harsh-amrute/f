@@ -113,6 +113,10 @@ const BulkUploadHeader = ({
         }
       }
     });
+    if(applicationNameSet?.size===0){
+      notifyWarning("First select the roles for the users before assigning permissions.");
+      return false;
+    }
   
     if (!isValid) {
       notifyWarning("All the users must have roles of the same applications.");

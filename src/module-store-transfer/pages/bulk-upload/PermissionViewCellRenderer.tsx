@@ -39,11 +39,10 @@ const PermissionViewCellRenderer = (params: MyCellRendererProps) => {
             }
           }}
         >
-          {"Edit Permissions"}
+          {"View / Edit Permissions"}
         </VFButton>
       ) : (
         <VFButton
-          
           style={{ width: "140px", height: "25px", fontSize: "1rem" }}
           themeUi={themeUi}
           onClick={() => {
