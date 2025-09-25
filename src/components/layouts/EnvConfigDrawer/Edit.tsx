@@ -40,7 +40,7 @@ const EditEnvConfig = (props: { data: any; cb: () => void }) => {
     const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
     const EnvProductPermissionArray = EnvConfig['EnvProductPermissionArray']; 
     const EnvLocationPermissionArray = EnvConfig['EnvLocationPermissionArray']; 
-
+    const PermissionArray = [...EnvProductPermissionArray , ...EnvLocationPermissionArray ]
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -99,16 +99,10 @@ const getChangedFields = (original: any,current: any,keysToIgnore: string[] = []
     return Object.keys(formData).every((k) => {
       const key = k as keyof FormDataType;
       const value = formData[key];
-      if (data?.Category === "ProductPermission") {
-          const isDuplicate = EnvProductPermissionArray.includes(value) && value !== data.ConfigValue;
+      if (data?.Category === "ProductPermission" || data?.Category === "LocationPermission") {
+          const isDuplicate = PermissionArray.includes(value) && value !== data.ConfigValue;
           if (isDuplicate) {
-              return false; 
-          }
-      }
-
-      if (data?.Category === "LocationPermission") {
-          const isDuplicate = EnvLocationPermissionArray.includes(value) && value !== data.ConfigValue;
-          if (isDuplicate) {
+            notifyError("Each permission key value must be unique")
               return false; 
           }
       }
