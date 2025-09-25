@@ -246,9 +246,9 @@ const useRRRColorBandwise = () => {
   }
 
   const onApplyFilter = async (filter: any) => {
+    await getRRRColorBandWiseUiConfig();
     await handleGetRecordsCount(filter);
     await loadGridData(1, filter);
-     await getRRRColorBandWiseUiConfig();
     setCurrFilter(filter);
     setCurrentPage(1);
   };
