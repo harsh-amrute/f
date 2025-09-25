@@ -3,6 +3,7 @@ import { FilterGroup, FilterColumn, FilterTitle, InputField, SelectField, TextWr
 import Select, { components } from "react-select";
 import { useThemeStyles } from '../../../../../hooks/useVFFilterContent'; 
 import { useFilterRows } from './useVFFilterContent';
+import { stringOpertors } from './useVFFilterContent';
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
 interface FilterSectionProps {
   filters: any;
@@ -27,7 +28,12 @@ export const ProductFilters: React.FC<FilterSectionProps> = ({ filters, onFilter
               <Select placeholder={"Select Column"} styles={styles} components={{ IndicatorSeparator: () => null }} />
             </DropDownWrapper>
             <DropDownWrapper>
-              <Select placeholder={"Select Operation"} styles={styles} components={{ IndicatorSeparator: () => null }} />
+              <Select 
+                options={stringOpertors}
+                placeholder={"Select Operation"} 
+                styles={styles} 
+                components={{ IndicatorSeparator: () => null }} 
+              />
             </DropDownWrapper>
             <DropDownWrapper>
               <Select 
@@ -45,6 +51,7 @@ export const ProductFilters: React.FC<FilterSectionProps> = ({ filters, onFilter
                 options={[]} 
               />
             </DropDownWrapper>
+            <div style={{display:'flex', alignItems:'center', marginBottom:'2px'}}>
             <IconWrapper>
               <img src={"/assets/img/MTAVFMultiFilter/Error.svg"}/>
             </IconWrapper>
@@ -60,6 +67,7 @@ export const ProductFilters: React.FC<FilterSectionProps> = ({ filters, onFilter
             >
               <img src={"/assets/img/MTAVFMultiFilter/minus-sign-circle.svg"}/>
             </IconWrapper>
+            </div>
           </DropDownRow>
           ))}
         </FilterColumn>

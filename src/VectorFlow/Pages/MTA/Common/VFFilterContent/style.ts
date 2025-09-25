@@ -41,7 +41,7 @@ export const DropDownRow = styled.div`
 `;
 export const DropDownWrapper = styled.div`
     flex: 1;           
-    min-width: 0;      
+    min-width: 0px;      
     height: 50px;
     box-sizing: border-box;
 `
@@ -62,7 +62,7 @@ export const IconWrapper = styled.div<{ disabled?: boolean }>`
   justify-content: center;
   margin-left: 8px;
   margin-bottom: 11px;
-  gap: 10px;
+  gap: 8px;
   
   img {
     display: block;

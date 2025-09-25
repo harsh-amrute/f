@@ -15,7 +15,7 @@ export const FilterLayout = styled.div`
   display: flex;
   flex: 1;
   min-height: 620px;
-  min-width: 900px;
+  min-width: 950px;
   overflow: hidden;
 `;
 

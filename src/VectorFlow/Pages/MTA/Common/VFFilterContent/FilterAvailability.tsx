@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FilterGroup, FilterColumn, FilterTitle, InputField, SelectField, TextWrapper, DropDownWrapper, DropDownRow, IconWrapper } from './style';
 import Select, { components } from "react-select";
 import { useThemeStyles } from '../../../../../hooks/useVFFilterContent'; 
-import { useFilterRows } from './useVFFilterContent';
+import { numericOperators } from './useVFFilterContent';
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
 interface FilterSectionProps {
   filters: any;
@@ -12,6 +12,7 @@ interface FilterSectionProps {
 // Availability Filter Component
 export const AvailabilityFilters: React.FC<FilterSectionProps> = ({ filters, onFilterChange }) => {
   const styles = useThemeStyles();
+  const [checked, setChecked] = useState(false);
   return (
     <>
       <FilterGroup>
@@ -33,7 +34,12 @@ export const AvailabilityFilters: React.FC<FilterSectionProps> = ({ filters, onF
               />
             </DropDownWrapper>
             <DropDownWrapper>
-              <Select placeholder={"Select an Operation"} styles={styles} components={{ IndicatorSeparator: () => null }} />
+              <Select 
+                options={numericOperators}
+                placeholder={"Select an Operation"} 
+                styles={styles} 
+                components={{ IndicatorSeparator: () => null }} 
+              />
             </DropDownWrapper>
             <DropDownWrapper>
               <Select 
@@ -181,6 +187,30 @@ export const AvailabilityFilters: React.FC<FilterSectionProps> = ({ filters, onF
               <img src={"/assets/img/MTAVFMultiFilter/refresh.svg"}/>
             </IconWrapper>
           </DropDownRow>
+        </FilterColumn>
+      </FilterGroup>
+
+      <FilterGroup style={{marginTop: '1px'}}>
+        <FilterColumn>
+          <TextWrapper>On Hand Inventory Color</TextWrapper>
+          <DropDownWrapper>
+          <DropDownWrapper>
+            <Select placeholder={"Select Color"} styles={styles} components={{ IndicatorSeparator: () => null }}></Select>
+          </DropDownWrapper>
+          </DropDownWrapper>
+        </FilterColumn>
+
+        <FilterColumn>
+          <TextWrapper>On Hand Inventory Color</TextWrapper>
+          <DropDownWrapper>
+            <Select placeholder={"Select Color"} styles={styles} components={{ IndicatorSeparator: () => null }}></Select>
+          </DropDownWrapper>
+        </FilterColumn>
+      </FilterGroup>
+
+      <FilterGroup style={{marginTop: '1px'}}>
+        <FilterColumn>
+          <TextWrapper>Tags</TextWrapper>
         </FilterColumn>
       </FilterGroup>
     </>

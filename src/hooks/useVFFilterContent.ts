@@ -12,7 +12,7 @@ export const useThemeStyles = () => {
           ? "#FCA311"
           : "#BC3D80"
         : "white",
-      fontSize: "14px", // Increased option font size
+      fontSize: "14px",
       "&:hover": {
         color: "black",
         backgroundColor:
@@ -44,6 +44,13 @@ export const useThemeStyles = () => {
       ...baseStyles,
       zIndex: 9999,
       position: "absolute",
+      maxHeight: "none", 
+      overflow: "visible",
+    }),
+    menuList: (baseStyles: any) => ({
+      ...baseStyles,
+      maxHeight: "none", 
+      overflow: "visible", 
     }),
     placeholder: (baseStyles: any) => ({
       ...baseStyles,
