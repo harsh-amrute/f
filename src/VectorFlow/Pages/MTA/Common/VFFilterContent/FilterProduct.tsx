@@ -4,18 +4,24 @@ import Select, { components } from "react-select";
 import { useThemeStyles } from '../../../../../hooks/useVFFilterContent'; 
 import { useFilterRows } from './useVFFilterContent';
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
+import { useUserData } from "../../../../../context";
+
 interface FilterSectionProps {
   filters: any;
   onFilterChange: (field: string, value: string) => void;
 }
 
+const handleApply = () => {
+  console.log("Search Button.................");
+};
 
 
 // Product Filter Component
 export const ProductFilters: React.FC<FilterSectionProps> = ({ filters, onFilterChange }) => {
   const styles = useThemeStyles();
   const { filterRows, addFilterRow, removeFilterRow, isMaxRows, isMinRows } = useFilterRows();
-
+  const { user } = useUserData();
+  
   return (
     <>
       <FilterGroup>
@@ -64,6 +70,59 @@ export const ProductFilters: React.FC<FilterSectionProps> = ({ filters, onFilter
           ))}
         </FilterColumn>
       </FilterGroup>
+
+      <FilterGroup style={{ paddingTop: "10px" }}>
+        <FilterColumn>
+          <TextWrapper>Select Location</TextWrapper>
+          <DropDownRow>
+            <DropDownWrapper style={{ flex: 1 }}>
+              <Select
+                placeholder="Enter value"
+                styles={styles}
+                components={{
+                  IndicatorSeparator: () => null,
+                  DropdownIndicator: () => null,
+                  Menu: () => null,
+                }}
+                isSearchable={true}
+                inputValue={filters.someValue || ""}
+                onInputChange={(inputValue) =>
+                  onFilterChange("someValue", inputValue)
+                }
+                menuIsOpen={false}
+                options={[]}
+              />
+            </DropDownWrapper>
+
+            <VFButton
+              themeUi={user.user.theme_ui}
+              onClick={handleApply}
+              width={100}
+              style={{
+                fontSize: 15,
+                fontWeight: 350,
+                height: 37,
+                marginBottom: 10,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "6px" }}
+              >
+                <img
+                  src={"/assets/img/MTAVFMultiFilter/Search-white.svg"}
+                  alt="search"
+                  style={{ width: 16, height: 16 }}
+                />
+                <span>Search</span>
+              </div>
+            </VFButton>
+          </DropDownRow>
+        </FilterColumn>
+      </FilterGroup>
+
     </>
   );
 };
