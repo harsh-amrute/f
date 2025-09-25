@@ -128,6 +128,8 @@ const RRRColorBandwise = () => {
                   }
                 }}
               />  
+              {
+              rowData?.length &&
               <VFPagination 
                 selectedRows={0} 
                 totalRows={recordsCount} 
@@ -137,6 +139,7 @@ const RRRColorBandwise = () => {
                 resetGridRef={ref} 
                 isDisabled={isDisabled}
               />  
+              }
         </div>
     
         <div style={{display:'none'}}>                

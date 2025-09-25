@@ -72,15 +72,15 @@ const useRRR =()=>{
 
     const {date:lastRunDate} = useGetLastRunData()
   
-    useEffect(()=>{       
-        const fetchData = async () => {
-            await getDataCount();
-            await getRRRRowData(currentPage);
-            await getRRRUiConfig();
-            setGeneralFilterOptions(convertUiConfigToOptions(initialColumnState))
-        };
-        fetchData();
-    }, []);
+    // useEffect(()=>{       
+    //     const fetchData = async () => {
+    //         await getDataCount();
+    //         await getRRRRowData(currentPage);
+    //         await getRRRUiConfig();
+    //         setGeneralFilterOptions(convertUiConfigToOptions(initialColumnState))
+    //     };
+    //     fetchData();
+    // }, []);
 
     useEffect(() => {
         const getTableState = async () => {
@@ -224,6 +224,7 @@ const useRRR =()=>{
           setCurrentPage(1);
           if(rowData.data.data && Array.isArray(rowData.data.data))setRRRRowData(rowData?.data?.data);
           else setRRRRowData([])
+          await getRRRUiConfig();
           toast.dismiss();
           notifySuccess("Data Loaded Successfully")
         } catch (err: any) {

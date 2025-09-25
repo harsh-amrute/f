@@ -145,17 +145,20 @@ const BuyerOrderReportColorBandwise = ()=>{
                     }
                   }}
                 />
-                <VFPagination
+             { 
+             rowData?.length &&
+             <>
+             <VFPagination
                   selectedRows={0}
                   totalRows={recordCount}
                   currentPage={currentPage}
                   rowsPerPage={parseInt(BOR_COLORBANDWISE_ROWS_PER_PAGE || '100')}
                   handleChangePage={handleChangePage}
                   resetGridRef={ref} 
-                  isDisabled={isDisabled}  />
-
+                  isDisabled={isDisabled}/>           
                 <VFSaveRemark onSubmitRemarks={onSubmitRemarks} />
-
+                </>
+             }
               </div>
           <div style={{ display: 'none' }}>
             <VFTable
