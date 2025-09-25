@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const FilterGroup = styled.div`
-    height:80px;
+    min-height:80px;
     background-color:white;
     display:flex;
     align-items: flex-start;
@@ -10,12 +10,14 @@ export const FilterGroup = styled.div`
     margin-top: -10px;
     margin-left: 5px;
     margin-right: 5px;
+    flex-wrap: wrap;
 `
 
 export const FilterColumn = styled.div`
   flex: 1;
+  flex-direction: column;
   min-width: 250px;
-  max-width: 300px;
+  max-width: none;
 `;
 
 
@@ -28,8 +30,20 @@ export const FilterTitle = styled.h3<{ subTitle?: boolean }>`
   font-family: 'Roboto', sans-serif;
 `;
 
+export const DropDownRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;          // Reduced gap to save space
+  flex-wrap: nowrap;  
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+`;
 export const DropDownWrapper = styled.div`
-    height:50px;
+    flex: 1;           
+    min-width: 0;      
+    height: 50px;
+    box-sizing: border-box;
 `
 
 export const TextWrapper = styled.div`
@@ -42,11 +56,47 @@ export const TextWrapper = styled.div`
     align-items:center;
 `
 
+export const IconWrapper = styled.div<{ disabled?: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
+  margin-bottom: 11px;
+  gap: 10px;
+  
+  img {
+    display: block;
+    height: 24px;
+    width: 24px;
+    cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
+    opacity: ${props => props.disabled ? '0.3' : '0.7'}; // Reduced opacity further for disabled state
+    padding: 4px;
+    border: 1px solid ${props => props.disabled ? '#757575' : 'transparent'};
+    border-radius: 4px;
+    background-color: ${props => props.disabled ? '#9e9e9e' : 'transparent'};
+    box-sizing: content-box;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background-color: ${props => props.disabled ? '#9e9e9e' : 'white'};
+      border: 1px solid ${props => props.disabled ? '#757575' : '#B93B7E'};
+      opacity: ${props => props.disabled ? '0.3' : '1'}; // Keep low opacity for disabled even on hover
+    }
+    
+    &:active {
+      border-color: ${props => props.disabled ? '#757575' : '#B93B7E'};
+    }
+  }
+`;
+
 export const InputField = styled.input`
   width: 100%;
+  height: 40px;
+  border-radius: 12px;
+  border: 2.5px solid #000000;
   padding: 0.75rem;
   border: 1px solid #ddd;
-  border-radius: 6px;
+  background: white;
   font-size: 14px;
   transition: border-color 0.2s ease;
 

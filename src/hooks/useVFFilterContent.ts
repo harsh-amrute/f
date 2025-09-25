@@ -12,7 +12,7 @@ export const useThemeStyles = () => {
           ? "#FCA311"
           : "#BC3D80"
         : "white",
-      fontSize: "12px",
+      fontSize: "14px", // Increased option font size
       "&:hover": {
         color: "black",
         backgroundColor:
@@ -23,19 +23,37 @@ export const useThemeStyles = () => {
     }),
     control: (baseStyles: any, { isFocused }: any) => ({
       ...baseStyles,
-      borderColor: isFocused ? "#BC3D80" : "none",
+      borderColor: isFocused ? "#BC3D80" : "#c7c0c0ff",
       borderWidth: isFocused ? "2px" : "1px",
       borderRadius: "10px",
-      fontSize: "12px",
+      fontSize: "14px",
       boxShadow: "none",
+      minHeight: "40px",         
       "&:hover": {
-        borderColor: isFocused ? "#BC3D80" : "none",
+        borderColor: isFocused ? "#BC3D80" : "#c7c0c0ff",
       },
+    }),
+    input: (baseStyles: any) => ({
+      ...baseStyles,
+      fontSize: "14px", // Set input font size here
+      fontFamily: "Roboto, sans-serif",
+      margin: 0,
+      padding: 0,
     }),
     menu: (baseStyles: any) => ({
       ...baseStyles,
       zIndex: 9999,
       position: "absolute",
+    }),
+    placeholder: (baseStyles: any) => ({
+      ...baseStyles,
+      fontSize: "14px",
+      color: "#757575",
+    }),
+    singleValue: (baseStyles: any) => ({
+      ...baseStyles,
+      fontSize: "14px", 
+      color: "black",
     }),
   };
 

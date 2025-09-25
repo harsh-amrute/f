@@ -15,12 +15,12 @@ export const FilterLayout = styled.div`
   display: flex;
   flex: 1;
   min-height: 620px;
-  min-width: 800px;
+  min-width: 900px;
   overflow: hidden;
 `;
 
 export const SidebarSection = styled.div`
-  width: 165px;
+  width: 180px;
   background: #f8f9fa;
   border-right: 1px solid #e9ecef;
   padding: 1rem 0;
