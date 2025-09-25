@@ -147,7 +147,7 @@ const FileUploadSection = ({setIsRunEnabled}:any) => {
     file_name: string;
   }) => {
 
-    if (file.name !== file_name) {
+    if (file.name.split('.')[0] !== file_name) {
       notifyError(
         `Please upload a file with the correct name and extension: ${file_name}`
       );

@@ -3,7 +3,7 @@ import VFTable from '../../Common/VFTable'
 import styled from 'styled-components';
 
 const GridWrapper = styled.div`
-  position: relative; /* important for absolute positioning of the tab */
+  position: relative;
   overflow: hidden;
   display: flex;
   padding-left: 20px;
@@ -38,8 +38,25 @@ const GridViewResource = ({ResourceData, setExcelGridRef}: any) => {
   const gridRef = useRef<any>(null)
 
   useEffect(() => {
-    // Define column structure
-    const columnDefs = [
+    if (!ResourceData?.Resource_Data) {
+      setColumns([]);
+      return;
+    }
+
+    // Extract unique task types from all resources
+    const taskTypes = new Set<string>();
+    Object.values(ResourceData.Resource_Data).forEach((resource: any) => {
+      resource.task_list?.forEach((task: any) => {
+        if (task.task_type) {
+          taskTypes.add(task.task_type);
+        }
+      });
+    });
+
+    console.log('Available task types:', Array.from(taskTypes)); // Debug log
+
+    // Define base column structure
+    const columnDefs:any = [
       {
         headerName: "Stage",
         field: "stage",
@@ -109,10 +126,9 @@ const GridViewResource = ({ResourceData, setExcelGridRef}: any) => {
         },
       )
     });
-    
-    
+
     setColumns(columnDefs);
-  }, []);
+  }, [ResourceData]);
 
   useEffect(() => {
     if (!ResourceData?.Resource_Data) return;
@@ -155,23 +171,26 @@ const GridViewResource = ({ResourceData, setExcelGridRef}: any) => {
         const endTime = task.end_time;
         const taskType = task.task_type;
         
-        // Update min times (earliest task)
-        if (startTime < minStartTime) {
-          minStartTime = startTime;
-          minEndTime = endTime;
+        // Update min and max times only for "job" task types
+        if (taskType === "job") {
+          // Update min times (earliest job task)
+          if (startTime < minStartTime) {
+            minStartTime = startTime;
+            minEndTime = endTime;
+          }
+          
+          // Update max times (latest job task)  
+          if (endTime > maxEndTime) {
+            maxEndTime = endTime;
+            maxStartTime = startTime;
+          }
         }
         
-        // Update max times (latest task)  
-        if (endTime > maxEndTime) {
-          maxEndTime = endTime;
-          maxStartTime = startTime;
-        }
-        
-        // Calculate task duration and add to total
+        // Calculate task duration and add to total (for all tasks)
         const taskDuration = (endTime - startTime) / 3600; // Convert seconds to hours
         totalTaskDuration += taskDuration;
         
-        // Update task type counters
+        // Update task type counters (for all tasks)
         if (taskType && taskTypeData[taskType]) {
           taskTypeData[taskType].count += 1;
           taskTypeData[taskType].hours += taskDuration;

@@ -499,7 +499,7 @@ const SchedulingActionToolbar = ({
             setIsFilterModalOpen(true);
           }}
         >
-          {isAnyFilterApplied(appliedFilters) ? "Edit Filter" : "Apply Filter"}
+          {isAnyFilterApplied(appliedFilters) ? "Edit Filter" : "+ Add Filter"}
         </VFButtonOutline>
         <ToggleButtonWrapper>
           <ToggleButton
