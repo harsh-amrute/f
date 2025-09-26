@@ -20,6 +20,14 @@ export const FilterColumn = styled.div`
   max-width: none;
 `;
 
+export const MultiSelectCheckBoxComponent = styled.div<{theme:string}>`
+margin-bottom:16px;
+display:flex;
+justify-content:flex-start;
+align-items:center;
+gap:6px;
+accent-color:${(props)=>props.theme==="REGALBLAZE"?"#C7810E":"#82104C"};
+`
 
 export const FilterTitle = styled.h3<{ subTitle?: boolean }>`
   margin: 0 0 0.5rem 0;
