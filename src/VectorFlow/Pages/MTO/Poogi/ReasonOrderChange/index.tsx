@@ -25,6 +25,7 @@ import CustomCellEditor from './MajorDropDownRenderer';
 import PlannedReleaseRenderer from './PlannedReleaseRenderer';
 import { Wrapper } from './styles';
 import VFButtonOutline from '../../../../../components/VectorFLOW/commons/VFButtonOutline';
+import { filter } from 'lodash';
 
 const APIFilterConfig = {
     filSecVisConfig: {
@@ -162,6 +163,7 @@ const ReasonForDelayOrder = () => {
             },
             enablePivot: false,
             enableRowGroup: false,
+            filter: false,
         },
         MajorReason: {
             pinned: "right",
@@ -173,16 +175,11 @@ const ReasonForDelayOrder = () => {
                 'border': "none",
             },
             cellRenderer: (props: any) => {
-                if (!props.data) return props.value;
                 return <CustomCellEditor {...props} selectedValue={props.data.maj} selectedMinorReason={props.data.min} />
             },
             enablePivot: true,
             enableRowGroup: true,
-            valueGetter: (params: any) => {
-                if (!params.data || !reasonData?.data?.data) return null;
-                const majorReason = reasonData.data.data.find((r: any) => r.id === Number(params.data.maj));
-                return majorReason ? majorReason.maj : null;
-            },
+            filter:false
         },
         MinorReason: {
             pinned: "right",
@@ -194,20 +191,12 @@ const ReasonForDelayOrder = () => {
                 'border': "none",
             },
             cellRenderer: (props: any) => {
-                if (!props.data) return props.value;
                 return <CustomCellEditor {...props} selectedValue={props.data.maj} selectedMinorReason={props.data.min} />
             },
             enablePivot: true,
             enableRowGroup: true,
-            valueGetter: (params: any) => {
-                if (!params.data || !reasonData?.data?.data) return null;
-                const majorReason = reasonData.data.data.find((r: any) => r.id === Number(params.data.maj));
-                if (majorReason) {
-                    const minorReason = majorReason.min.find((m: any) => m.id === Number(params.data.min));
-                    return minorReason ? minorReason.min : null;
-                }
-                return null;
-            },
+            filter:false
+        
         },
         ElapsedDays: {
             cellStyle: {
