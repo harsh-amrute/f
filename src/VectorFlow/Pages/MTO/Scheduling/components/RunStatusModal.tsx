@@ -51,7 +51,8 @@ const ProgressWrapper = styled.div`
 `;
 
 const ProgressContainer = styled.div`
-  width: 100%;
+  width: 40vw;
+  margin: 0 auto;
   height: 14px;
   //   background-color:rgba(124, 123, 123, 0.56);
   border-radius: 50px;
@@ -62,7 +63,15 @@ const ProgressContainer = styled.div`
 const ProgressFill = styled.div<{ value: number }>`
   height: 100%;
   width: ${({ value }) => value}%;
-  background-color: #b52670;
+  background: linear-gradient(
+    90deg, /* left → right */
+    #b52670,
+    #ff69b4,
+    #b52670
+  );
+  background-size: 200% 200%;
+  animation: gradientFlow 3s linear infinite;
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -71,7 +80,17 @@ const ProgressFill = styled.div<{ value: number }>`
   font-weight: bold;
   font-size: 1rem;
   transition: width 0.3s ease-in-out;
+
+  @keyframes gradientFlow {
+    0% {
+      background-position: 0% 50%;
+    }
+    100% {
+      background-position: 200% 50%; /* move rightward */
+    }
+  }
 `;
+
 
 const ProgressMessage = styled.div`
   margin: 0 auto;
@@ -92,7 +111,6 @@ const DateTimeWrapper = styled.span`
 const RunStatusModal = ({
   runStatus,
   closeModal,
-  progress = 50,
   message = "Run Failed",
   goTofinalResult,
 }: any) => {
@@ -147,11 +165,11 @@ const RunStatusModal = ({
       );
     }
     return (
-      <ModalWrapper>
+      <ModalWrapper style={{width: '58vw'}}>
         <ImageWrapper src={"/assets/img/scheduling/run-in-progress.svg"} />
         <ProgressWrapper>
           <ProgressContainer>
-            <ProgressFill value={progress}>{runStatus.progress}</ProgressFill>
+            <ProgressFill value={(isNaN(runStatus.progress.split('%')[0]))?0: Math.max(+runStatus.progress.split('%')[0],8)}>{runStatus.progress}</ProgressFill>
           </ProgressContainer>
           <ProgressMessage>{runStatus.current_step}...</ProgressMessage>
         </ProgressWrapper>
@@ -174,7 +192,8 @@ const RunStatusModal = ({
             </p>
           </DateTimeWrapper>
 
-          <VFButton
+          {/* Todo: uncomment after abort implementation on backend  */}
+          {/* <VFButton
             style={{
               display: "flex",
               gap: "8px",
@@ -196,7 +215,7 @@ const RunStatusModal = ({
               style={{ width: "16px", height: "16px" }}
             />
             <p>Abort</p>
-          </VFButton>
+          </VFButton> */}
         </FooterWrapper>
       </ModalWrapper>
     );
@@ -208,8 +227,11 @@ const RunStatusModal = ({
         <ModalHeader>
           <CloseButton onClick={closeModal}>✕</CloseButton>
         </ModalHeader>
-        <ImageWrapper src={"/assets/img/scheduling/run-complete.svg"} />
-        <ProgressMessage style={{ fontSize: "1.3rem", paddingBottom: "15px" }}>
+        <ImageWrapper style={{height: '38vh'}} src={"/assets/img/scheduling/run-complete.svg"} />
+        <ProgressContainer>
+            <ProgressFill value={(isNaN(runStatus.progress.split('%')[0]))?0: Math.max(+runStatus.progress.split('%')[0],8)}>{runStatus.progress}</ProgressFill>
+          </ProgressContainer>
+        <ProgressMessage style={{paddingBottom: '10px'}}>
           {"Run Completed Successfully"}
         </ProgressMessage>
         <FooterWrapper>
@@ -319,6 +341,7 @@ const RunStatusModal = ({
           <CloseButton onClick={closeModal}>✕</CloseButton>
         </ModalHeader>
         <ImageWrapper src={"/assets/img/scheduling/run-failed.svg"} />
+
         <ProgressMessage style={{ fontSize: "1.3rem", paddingBottom: "15px" }}>
           {message}
         </ProgressMessage>

@@ -151,8 +151,9 @@ const Scheduling = () => {
             if(response.status === 200){
                 const run_id = response.data.run_id;
                 setRunId(run_id)
-                setRunStatus((prev: any)=>({ ...prev, status: "RUNNING", startTime: new Date().toISOString(), endTime: null, message: "initializing..."}));
+                setRunStatus((prev: any)=>({ ...prev, status: "RUNNING",progress: '0%', startTime: new Date().toISOString(), endTime: null, message: "initializing..."}));
                 notifySuccess("Run started successfully");
+                setIsModalOpen(true);
                 setTimeout(()=>{
                     GetRunStatus();
                 },3000)
