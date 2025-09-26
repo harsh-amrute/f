@@ -69,6 +69,8 @@ import { InputCheckBox } from "./styles";
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import BomExcelModal from "../../Common/BomExcelModal";
 import useColDef from "../../../../../hooks/useColDef";
+import { createDynamicColumnDefs } from "../../../../../helpers/gridUtils";
+import CustomHeaderCheckbox from "../../../../../VectorFlow/Pages/MTO/Common/CustomHeaderCheckbox";
 
 
 interface ApiResponse {
@@ -307,24 +309,26 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
     }
     },[bomActive])
 
-  const setColumnDef = async () => {
-    try {
-      const reportName = "BMReport";
-      const response = await getUIConfigData(reportName);
-      getGroupedColDef(response)
-      
+const setColumnDef = async () => {
+  try {
+    const reportName = "BMReport";
+    const response = await getUIConfigData(reportName);
+    getGroupedColDef(response);
 
-      const modifiedResponse: ApiResponseItem[] = addDefaultAttributes(
-        response?.data?.data
-      );
+    const gridOptions = {
+      bomActive: bomActive,
+      orderClosingEnable: canShowOrderClosing,
+      canAddComments: false,
+      onOpenRemarkHistory: onOpenRemarkHistory,
+    };
 
-     
-      const coldef = mapApiResponseToColDefs(modifiedResponse);
-      setColdef(coldef);
-    } catch (e) {
-      console.log(e);
-    }
-  };
+    const colDefsData = createDynamicColumnDefs(response?.data?.data || [], gridOptions);
+    setColdef(colDefsData);
+  } catch (e) {
+    console.log(e);
+    notifyError("Failed to build grid columns.");
+  }
+};
   
   const addDefaultAttributes = (
     apiResponse: ApiResponseItem[]
@@ -457,24 +461,22 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
   const [totalOrderCount, setTotalOrderCount] = useState<any>(0);
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
 
-  const onCheckBoxToggle = (e: any) => {
-    setIsGridLoading(true);
-    
-    const isChecked = e.target.checked;
+  // AFTER (The fix)
+const onCheckBoxToggle = (e: any) => {
+  setIsGridLoading(true);
+  const isChecked = e.target.checked;
+  setIsCheckboxChecked(isChecked);
 
-     setIsCheckboxChecked(isChecked);
-      if (refGraph2.current?.api) {
-        
-        if (isChecked) {
-          refGraph2.current.api.selectAll();
-          // refGraph2.current.api.selectAllFiltered();          // Selects all filtered rows
-
-        } else {
-          refGraph2.current.api.deselectAll();
-        }
+  if (refGraph2.current?.api) {
+    if (isChecked) {
+      // This method respects the current filter and only selects visible rows
+      refGraph2.current.api.selectAllFiltered();
+    } else {
+      // This deselects all rows (filtered or not), which is usually the desired behavior on uncheck
+      refGraph2.current.api.deselectAll();
     }
-    
-  };
+  }
+};
   
 
   const toggleCheckBox = () => {
@@ -484,18 +486,34 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
     setIsCheckboxChecked(totalRows > 0 && selectedNodes?.length === totalRows);
   };
 
-  const handleActionChange = (option: any) => {
-    setSelectedAction(option);
-    // const mySelectedNodes = refGraph2.current.api.getSelectedRows();
-    const newData: any = [];
-    gridData?.forEach((ele: any) => {
-      const newEle = _.cloneDeep(ele);
-      newEle.oca = option.value;
-      newData.push(newEle);
-    });
+const handleActionChange = (option: any) => {
+  setSelectedAction(option);
 
-    setGridData([...newData]);
-  };
+  if (!option || !refGraph2.current?.api) {
+    return;
+  }
+
+  const selectedNodes = refGraph2.current.api.getSelectedRows();
+  const selectedKeys = new Set(selectedNodes.map((row: OrderItem) => row.ok));
+
+  setGridData((currentGridData:any) =>
+    currentGridData.map((row:any) => {
+      if (selectedKeys.has(row.ok)) {
+        return { ...row, oca: option.value };
+      }
+      return row;
+    })
+  );
+
+  setMasterSelectedRowData((currentMasterData:any) =>
+    currentMasterData.map((masterRow:any) => {
+      if (selectedKeys.has(masterRow.ok)) {
+        return { ...masterRow, oca: option.value };
+      }
+      return masterRow;
+    })
+  );
+};
 
   const updateActionAPI = async (action: string, order_ids: any) => {
     try {
@@ -582,6 +600,7 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
           setGridData(newGridData);
           setMasterSelectedRowData([]); // after short/complete close reset selected rows
 
+          setSelectedAction(null);
           notifySuccess("Order closed successfully!");
         } else {
           notifySuccess("something went wrong!");
@@ -658,6 +677,8 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
             justifyContent: "center",
             alignItems: "center",
             boxShadow: "rgba(133, 132, 132, 0.247) -5px 4px 10px",
+            opacity: isPivot ? 0.5 : 1,
+            pointerEvents: isPivot ? 'none' : 'auto',
             gap: "10px",
           }}
         >
@@ -686,13 +707,13 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
           themeUi={themeUi}
           disabled={false}
           style={{
-            cursor: isRightArrowEnabled ? "pointer" : "not-allowed",
+            cursor: isRightArrowEnabled && !isPivot ? "pointer" : "not-allowed",
             height: "50px",
             width: "60px",
-            borderRadius: "3px",
-            opacity: isRightArrowEnabled ? 1 : 0.5, // Visual cue for disabled
-            pointerEvents: isRightArrowEnabled ? "auto" : "none", // Prevent click when disabled
-          }}
+            borderRadius: "3px",  
+            opacity: isRightArrowEnabled && !isPivot ? 1 : 0.5, 
+            pointerEvents: isRightArrowEnabled && !isPivot ? "auto" : "none",
+            }}
         >
           <img
             src="/assets/img/rightArrowHorizontal.svg"
@@ -716,12 +737,18 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
     </>
   );
 
-  const onSelectChange = (props: any, option: any, index: number) => {
-  
-    const updatedData = { ...props.data, oca: option.value };
-    props.node.setData(updatedData); 
-    props.api.refreshCells({ rowNodes: [props.node], columns: ['oca'], force: true });
 
+const onSelectChange = (props: any, option: any, index: number) => {
+  const updatedData = { ...props.data, oca: option.value };
+  props.node.setData(updatedData); 
+  props.api.refreshCells({ rowNodes: [props.node], columns: ['oca'], force: true });
+
+
+  setMasterSelectedRowData((currentMasterData:any) => 
+    currentMasterData.map((row:any) => 
+      row.ok === props.data.ok ? { ...row, oca: option.value } : row
+    )
+  );
 };
 
   const DropDownCellRenderer = (props: any) => {
@@ -1030,6 +1057,7 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
       AgeingCellRenderer: AgeingCellRenderer,
       RemarkHistoryRenderer: RemarkHistoryRenderer,
       DropDownCellRenderer: DropDownCellRenderer,
+      customHeaderCheckbox: CustomHeaderCheckbox,
     }),
     []
   );
@@ -1128,7 +1156,7 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
     setCurrentPage(currPage);
     setIsCheckboxChecked(false);
     getInitialGridData(currPage);
-  }, []);
+  }, [getInitialGridData]);
 
   const savePageSize = (pageSize: any) => {
     if (pageSize) {
@@ -1252,7 +1280,7 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
           const element = masterSelectedRowData[index];
           if (element.ok === node.data.ok) {
             node.data.Remark = element.Remark;
-            // node.data.oca = element.oca;
+            node.data.oca = element.oca;
           }
         }
         nodesToSelect.push(node);
@@ -1263,10 +1291,12 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
     toggleCheckBox();
   };
 
-  const onPivotModeChanged = (event: any) => {
-    const isPivotOn = event.api.isPivotMode();
-    setIsPivot(isPivotOn);
-  };
+const onPivotModeChanged = (event: any) => {
+  const isPivotOn = event.api.isPivotMode();
+  setIsPivot(isPivotOn);
+  
+  event.api.getColumnApi()?.setColumnVisible('chckbx', !isPivotOn);
+};
 
       const detailCellRendererParamsConfig = useMemo(() => {
           const itemNameColumnDef = columnBomDefs.find((a: any) => a.colId === "ItemName");
