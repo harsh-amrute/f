@@ -313,7 +313,7 @@ const setColumnDef = async () => {
   try {
     const reportName = "BMReport";
     const response = await getUIConfigData(reportName);
-    getGroupedColDef(response?.data?.data);
+    getGroupedColDef(response);
 
     const gridOptions = {
       bomActive: bomActive,

@@ -319,7 +319,7 @@ const DptWiseBMReport = () => {
             try {
                 const reportName = "DeptWiseReport";
                 const response = await getUIConfigData(reportName);
-                getGroupedColDef(response?.data?.data);
+                getGroupedColDef(response);
         
                 const feature_permission = user?.feature_permission || [];
                 const canAddComments = feature_permission.includes("Add_Comments");

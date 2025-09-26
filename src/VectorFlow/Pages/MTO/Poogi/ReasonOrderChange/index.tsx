@@ -159,7 +159,9 @@ const ReasonForDelayOrder = () => {
             cellRenderer: RemarkHistoryRenderer,
             cellRendererParams: {
                 onClick: (oid: string) => handleModal(oid)
-            }
+            },
+            enablePivot: false,
+            enableRowGroup: false,
         },
         MajorReason: {
             pinned: "right",
@@ -169,11 +171,18 @@ const ReasonForDelayOrder = () => {
             cellStyle: {
                 'background': 'none',
                 'border': "none",
-            },    
+            },
             cellRenderer: (props: any) => {
-                return <CustomCellEditor {...props} selectedValue={props.data.maj} selectedMinorReason={props.data.min}
-                />
-            }
+                if (!props.data) return props.value;
+                return <CustomCellEditor {...props} selectedValue={props.data.maj} selectedMinorReason={props.data.min} />
+            },
+            enablePivot: true,
+            enableRowGroup: true,
+            valueGetter: (params: any) => {
+                if (!params.data || !reasonData?.data?.data) return null;
+                const majorReason = reasonData.data.data.find((r: any) => r.id === Number(params.data.maj));
+                return majorReason ? majorReason.maj : null;
+            },
         },
         MinorReason: {
             pinned: "right",
@@ -185,10 +194,20 @@ const ReasonForDelayOrder = () => {
                 'border': "none",
             },
             cellRenderer: (props: any) => {
-                return <CustomCellEditor {...props} selectedValue={props.data.maj} selectedMinorReason={props.data.min}
-                />
+                if (!props.data) return props.value;
+                return <CustomCellEditor {...props} selectedValue={props.data.maj} selectedMinorReason={props.data.min} />
             },
-
+            enablePivot: true,
+            enableRowGroup: true,
+            valueGetter: (params: any) => {
+                if (!params.data || !reasonData?.data?.data) return null;
+                const majorReason = reasonData.data.data.find((r: any) => r.id === Number(params.data.maj));
+                if (majorReason) {
+                    const minorReason = majorReason.min.find((m: any) => m.id === Number(params.data.min));
+                    return minorReason ? minorReason.min : null;
+                }
+                return null;
+            },
         },
         ElapsedDays: {
             cellStyle: {
@@ -197,12 +216,15 @@ const ReasonForDelayOrder = () => {
         },
         PlannedReleaseDate: {
             cellRenderer: PlannedReleaseRenderer,
+
         },
         QuotedDueDate: {
             cellRenderer: PlannedReleaseRenderer,
+
         },
         BPP: {
             cellRenderer: BPPRenderer,
+
         }
     }
 
