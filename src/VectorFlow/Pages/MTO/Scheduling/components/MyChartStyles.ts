@@ -106,6 +106,7 @@ export const CalendarCell = styled.th<{ span?: number }>`
   color: white;
   background: black;
   min-width: 100px;
+  width: 100px;
   height: 20px;          /* ✅ Fix: bound height */
   line-height: 22px;     /* ✅ vertically center */
   white-space: nowrap;
