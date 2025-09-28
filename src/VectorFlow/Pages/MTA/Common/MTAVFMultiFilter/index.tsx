@@ -5,6 +5,7 @@ import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCar
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import { useUserData } from "../../../../../context";
+
 import {
   ModalContent,
   FilterLayout,
@@ -24,6 +25,7 @@ import {
 } from "../VFFilterContent/index";
 
 import { RootState } from "../../../../../redux/store/store";
+import { BPRFilterState } from "../../../../../VectorFlow/types/BPR";
 
 interface FilterModalProps {
   isOpen: boolean;
@@ -31,6 +33,7 @@ interface FilterModalProps {
   onApply: (filters: any) => void;
   onReset: () => void;
   activeFilterCount?: number;
+  multiFilter: BPRFilterState;
 }
 
 interface SectionType {
@@ -79,6 +82,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
   onClose,
   onApply,
   onReset,
+  multiFilter: initialMultiFilter,
 }) => {
   const { user } = useUserData();
   const EnvConfig = useSelector((state: RootState) => state.mta.EnvConfig);
@@ -86,7 +90,6 @@ const FilterModal: React.FC<FilterModalProps> = ({
 
   const availableSections = useMemo<SectionType[]>(() => {
     if (!EnvConfig) {
-      // No config → show all filters
       return Object.entries(filterConfigMap).map(
         ([key, { label, component }]) => ({
           key,
@@ -114,11 +117,9 @@ const FilterModal: React.FC<FilterModalProps> = ({
     const hasAnyConfig = sections.some((s) => s.values.length > 0);
 
     if (!hasAnyConfig) {
-      // DB is empty → show all filters
       return sections;
     }
 
-    // DB has config → only show filters explicitly mapped to current report
     return sections.filter((s) => s.values.includes(upperReportCode));
   }, [EnvConfig, reportCode]);
 
@@ -150,21 +151,56 @@ const FilterModal: React.FC<FilterModalProps> = ({
     loc: "",
   });
 
+  const [multiFilter, setMultiFilter] = useState<BPRFilterState>(
+    initialMultiFilter || {
+      supplyChainFilter: { id: "1", label: "SupplyChain", filters: [] },
+      locationFilter: { id: "2", label: "Location", filters: [] },
+      productFilter: { id: "3", label: "Product", filters: [] },
+      availabilityFilter: { id: "4", label: "Availability", filters: [] },
+      coverageFilter: { id: "5", label: "Coverage", filters: [] },
+      colorFilter: { id: "6", label: "Color", filters: [] },
+      generalFilter: { id: "7", label: "General", filters: [] },
+    }
+  );
+
+  useEffect(() => {
+    if (initialMultiFilter) {
+      setMultiFilter(initialMultiFilter);
+    }
+  }, [initialMultiFilter]);
+
+  const handleApply = () => {
+    onApply(multiFilter);
+  };
+
+  const handleReset = () => {
+    const resetMultiFilter: BPRFilterState = {
+      supplyChainFilter: { id: "1", label: "SupplyChain", filters: [] },
+      locationFilter: { id: "2", label: "Location", filters: [] },
+      productFilter: { id: "3", label: "Product", filters: [] },
+      availabilityFilter: { id: "4", label: "Availability", filters: [] },
+      coverageFilter: { id: "5", label: "Coverage", filters: [] },
+      colorFilter: { id: "6", label: "Color", filters: [] },
+      generalFilter: { id: "7", label: "General", filters: [] },
+    };
+
+    setMultiFilter(resetMultiFilter);
+    setFilters(
+      Object.keys(filters).reduce((acc, k) => ({ ...acc, [k]: "" }), {})
+    );
+    onReset();
+  };
+
+  const handleMultiFilterChange = (newMultiFilter: BPRFilterState) => {
+    setMultiFilter(newMultiFilter);
+  };
+
   const currentActiveFilters = Object.values(filters).filter(
     (v) => v !== ""
   ).length;
 
   const handleInputChange = (field: string, value: string) =>
     setFilters((prev) => ({ ...prev, [field]: value }));
-
-  const handleApply = () => onApply(filters);
-
-  const handleReset = () => {
-    setFilters(
-      Object.keys(filters).reduce((acc, k) => ({ ...acc, [k]: "" }), {})
-    );
-    onReset();
-  };
 
   const CustomHeader = () => (
     <div
@@ -207,6 +243,8 @@ const FilterModal: React.FC<FilterModalProps> = ({
     const FilterComponent = section.component;
     return (
       <FilterComponent
+        multiFilter={multiFilter}
+        onMultiFilterChange={handleMultiFilterChange}
         filters={filters}
         onFilterChange={handleInputChange}
         availableValues={section.values}
