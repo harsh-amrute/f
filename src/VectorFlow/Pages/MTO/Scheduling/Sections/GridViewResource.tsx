@@ -172,7 +172,7 @@ const GridViewResource = ({ResourceData, setExcelGridRef}: any) => {
         const taskType = task.task_type;
         
         // Update min and max times only for "job" task types
-        if (taskType === "job") {
+        if (taskType === "JOB") {
           // Update min times (earliest job task)
           if (startTime < minStartTime) {
             minStartTime = startTime;

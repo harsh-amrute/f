@@ -1,48 +1,99 @@
 import styled from "styled-components";
 
-export const ChartWrapper = styled.div`
+export const ChartWrapper = styled.div<{ height: number }>`
   width: 100%;
-  height: 100%;
+  height: ${({ height }) => height}px;
   border-radius: 8px;
   overflow: hidden;
   display: flex;
+  position: relative;
 `;
 
-export const ColumnSection = styled.table`
+export const ColumnSection = styled.div`
   display: flex;
   flex-direction: column;
-  border-collapse: collapse;
   min-width: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  border-right: 1px solid #ccc;
+  background: white;
+  z-index: 0;
+`;
+
+export const ColumnHeaderWrapper = styled.div`
+  position: sticky;
+  top: 0;
+  z-index: 0;
+  background: black;
+  border-bottom: 1px solid #ccc;
+`;
+
+export const ColumnBodyWrapper = styled.div`
+  flex: 1;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  
+  /* Show scrollbar but make it invisible to match right side spacing */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: transparent;
+  }
+`;
+
+export const CalendarSection = styled.div`
+  border: 1px solid #ccc;
+  border-radius: 0 8px 0 0;
+  background: white;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+`;
+
+export const CalendarHeaderWrapper = styled.div`
+  position: sticky;
+  top: 0;
+  z-index: 0;
+  background: black;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-bottom: 1px solid #ccc;
+  
+  /* Sync horizontal scroll with body */
+  &::-webkit-scrollbar {
+    height: 0;
+  }
 `;
 
 export const CalendarBodyWrapper = styled.div`
   flex: 1;
-  max-height: 500px;   /* adjust as needed */
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: auto;
 `;
-export const CalendarSection = styled.div`
-  border: 1px solid #ccc;
-  border-radius: 0 8px 0 0;
-  background: black;
-  flex: 1 1 0;
-  overflow-x: auto;
-  overflow-y: hidden;
-  // display: flex;
-  // flex-direction: column;
+
+export const ColumnTable = styled.table`
+  border-collapse: collapse;
+  width: 100%;
+`;
+
+export const CalendarTable = styled.table`
+  border-collapse: collapse;
+  width: max-content;
+  min-width: 100%;
 `;
 
 export const ColumnHeaderRow = styled.tr`
   height: 50px;
   background: black;
-  border: 1px solid #ccc;
 `;
 
 export const ContentRow = styled.tr`
   height: 30px;
   position: relative;
-  border: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
   &:nth-child(odd) {
     background: #f5f5f5;
   }
@@ -54,12 +105,13 @@ export const ContentRow = styled.tr`
 export const HeaderCell = styled.th<{ width: number }>`
   position: relative;
   padding: 8px;
-  height: 100%;
+  height: 56px;
   border-right: 1px solid #ccc;
   color: white;
   text-align: center;
   width: ${({ width }) => width}px;
   min-width: ${({ width }) => width}px;
+  background: black;
 `;
 
 export const ResizeHandle = styled.div`
@@ -73,30 +125,21 @@ export const ResizeHandle = styled.div`
 `;
 
 export const ContentCell = styled.td<{ width: number }>`
-  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
   text-align: center;
   font-size: 0.9rem;
   font-weight: 300;
   min-width: ${({ width }) => width}px;
   width: ${({ width }) => width}px;
+  padding: 4px;
 `;
 
-
-export const CalendarTable = styled.table`
-    border-collapse: collapse;
-    width: 100%;
-    height: 100%;
-`
-
 export const CalendarHeaderRow = styled.tr`
-    height: 20px;
+  height: 25px;
   background: black;
-  border: 1px solid #ccc;
   color: white;
   text-align: center;
-  flex: 0 0 auto;
-`
-
+`;
 
 export const CalendarCell = styled.th<{ span?: number }>`
   border: 1px solid #ccc;
@@ -107,69 +150,87 @@ export const CalendarCell = styled.th<{ span?: number }>`
   background: black;
   min-width: 100px;
   width: 100px;
-  height: 20px;          /* ✅ Fix: bound height */
-  line-height: 22px;     /* ✅ vertically center */
+  height: 25px;
+  line-height: 25px;
   white-space: nowrap;
 `;
 
 export const TaskContainer = styled.td`
-  position: relative;   /* ✅ anchor absolute TaskBars here */
+  position: relative;
   height: 30px;
   padding: 0;
   border-left: 1px solid #ccc;
+  min-width: 100px;
+  width: 100px;
 `;
 
 export const TaskBar = styled.div<{left: number, width: number, backgroundColor?: string}>`
-    position: absolute;
-    background: ${props => props.backgroundColor || 'green'};
-    height: 20px;
-    border-radius: 2px;
-    top:4px;
-    border: 0.5px solid #333;
-    text-align: center;
-    color: white;
-    left: ${props => props.left}px;
-    width: ${props => props.width}px;
-    cursor: pointer;
-    word-wrap: break-word;
+  position: absolute;
+  background: ${props => props.backgroundColor || 'green'};
+  height: 20px;
+  border-radius: 2px;
+  top: 4px;
+  border: 0.5px solid #333;
+  text-align: center;
+  color: white;
+  left: ${props => props.left}px;
+  width: ${props => props.width}px;
+  cursor: pointer;
+  word-wrap: break-word;
+  font-size: 0.8rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding: 0 2px;
+  line-height: 20px;
 
-    &:hover {
-      opacity: 0.8;
-      transform : scale(1.01);
-    }
+  &:hover {
+    opacity: 0.8;
+    transform: scale(1.01);
+    z-index: 10;
+  }
 `;
-
 
 export const LegendWrapper = styled.div`
   display: flex;
   align-items: center;
-  height: 20px;
+  height: 30px;
   width: 100%;
   justify-content: center;
-`
+  padding: 5px 0;
+  background: white;
+  border-top: 1px solid #ccc;
+`;
 
 export const SectionWrapper = styled.div`
-
-`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+`;
 
 export const ZoomSection = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-`
+  padding: 5px;
+  background: white;
+`;
+
 export const ZoomButtonWrapper = styled.div`
   display: flex;
   align-items: center;
   border: 1px solid #ccc;
-  border-radius: 0 0 4px 4px;
+  border-radius: 4px;
   overflow: hidden;
   gap: 4px;
   padding: 2px;
-`
+`;
+
 export const ZoomButton = styled.button<{active?: boolean}>`
   background: ${props => props.active ? '#cecece' : 'white'};
-    color: ${props => props.active ? 'none' : '#333'};;
-  border: ${props => props.active ? 'none' : '1px solid #333'};;
+  color: ${props => props.active ? '#333' : '#333'};
+  border: ${props => props.active ? 'none' : '1px solid #333'};
   border-radius: 4px;
   padding: 3px 6px;
   cursor: pointer;
@@ -182,21 +243,23 @@ export const ZoomButton = styled.button<{active?: boolean}>`
     outline: none;
     box-shadow: 0 0 0 2px #333;
   }
-`
+`;
 
 export const ColorPallete = styled.div<{color: string}>`
-    width: 15px;
-    height: 15px;
-    background: ${props => props.color || 'grey'};
-    border-radius: 3px;
-    margin-right: 6px;
-    border: 0.4px solid #333;
-`
+  width: 15px;
+  height: 15px;
+  background: ${props => props.color || 'grey'};
+  border-radius: 3px;
+  margin-right: 6px;
+  border: 0.4px solid #333;
+`;
+
 export const Label = styled.span`
-    font-size: 0.9rem;
-    color: #333;
-    margin-right: 16px;
-`
+  font-size: 0.9rem;
+  color: #333;
+  margin-right: 16px;
+`;
+
 export const TooltipWrapper = styled.div`
   padding: 8px;
   background: rgba(60, 59, 59, 0.88);

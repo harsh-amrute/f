@@ -5,6 +5,26 @@ import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButt
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import { Checkbox, CloseButton, FilterBottomLeft, FilterBottomRight, FilterBottomSection, FilterContent, FilterHeaderTitle, FilterHeaderWrapper, FilterList, FilterSearchBar, FilterTab, FilterTabHeader, FilterTabLayout, FilterWrapper } from "./FilterModalStyles";
 
+const DateRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+`;
+
+const DateWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 8px;
+  flex: 1;
+`;
+
+const DateLabel = styled.label`
+  font-size: 0.9rem;
+  font-weight: 500;
+`;
+
 const FilterModal = ({ setIsFilterModalOpen, ResourceData, setAppliedFilters, appliedFilters }: any) => {
   const allJobs: any = [];
   const AllResourceIds = Object.keys(ResourceData.Resource_Data);
@@ -40,9 +60,37 @@ const FilterModal = ({ setIsFilterModalOpen, ResourceData, setAppliedFilters, ap
 
   const allActionPreferences: any = Object.keys(ResourceData.Task_master);
 
+  // Calculate min and max dates from Resource_Data
+  const calculateDateRange = () => {
+    let minTimestamp = Infinity;
+    let maxTimestamp = -Infinity;
+
+    AllResourceIds.forEach((resource: any) => {
+      ResourceData.Resource_Data[resource].task_list.forEach((task: any) => {
+        if (task.start_time) {
+          minTimestamp = Math.min(minTimestamp, task.start_time);
+        }
+        if (task.end_time) {
+          maxTimestamp = Math.max(maxTimestamp, task.end_time);
+        }
+      });
+    });
+
+    // Convert timestamps to Date objects (assuming they are in seconds, multiply by 1000 for milliseconds)
+    const minDate = minTimestamp !== Infinity ? new Date(minTimestamp * 1000) : new Date();
+    const maxDate = maxTimestamp !== -Infinity ? new Date(maxTimestamp * 1000) : new Date();
+
+    return { minDate, maxDate };
+  };
+
+  const { minDate, maxDate } = calculateDateRange();
+
   const themeUi = useUserData().user.user.theme_ui;
 
-  const [selectedFilters, setSelectedFilters] = React.useState<any>(appliedFilters);
+  const [selectedFilters, setSelectedFilters] = React.useState<any>({
+    ...appliedFilters,
+    timePreference: appliedFilters.timePreference || { startDate: null, endDate: null }
+  });
   
   // Search states for each tab
   const [searchTerms, setSearchTerms] = React.useState({
@@ -51,6 +99,42 @@ const FilterModal = ({ setIsFilterModalOpen, ResourceData, setAppliedFilters, ap
     jobs: "",
     actionPreferences: ""
   });
+
+  // Helper function to format date for input[type="date"]
+  const formatDateForInput = (date: Date | string | null) => {
+    if (!date) return '';
+    const dateObj = date instanceof Date ? date : new Date(date);
+    return dateObj.toISOString().split('T')[0];
+  };
+
+  // Calculate dynamic min/max for start and end dates
+  const getStartDateConstraints = () => {
+    const min = formatDateForInput(minDate);
+    // Start date max should be either maxDate or selected endDate (whichever is earlier)
+    const endDateSelected = selectedFilters.timePreference.endDate;
+    let max = formatDateForInput(maxDate);
+    
+    if (endDateSelected) {
+      const endDateFormatted = formatDateForInput(endDateSelected);
+      max = endDateFormatted < max ? endDateFormatted : max;
+    }
+    
+    return { min, max };
+  };
+
+  const getEndDateConstraints = () => {
+    // End date min should be either minDate or selected startDate (whichever is later)
+    const startDateSelected = selectedFilters.timePreference.startDate;
+    let min = formatDateForInput(minDate);
+    
+    if (startDateSelected) {
+      const startDateFormatted = formatDateForInput(startDateSelected);
+      min = startDateFormatted > min ? startDateFormatted : min;
+    }
+    
+    const max = formatDateForInput(maxDate);
+    return { min, max };
+  };
 
   const onSelectValue = (key: string, value: string) => {
     setSelectedFilters((prev: any) => {
@@ -97,6 +181,19 @@ const FilterModal = ({ setIsFilterModalOpen, ResourceData, setAppliedFilters, ap
       pref.toLowerCase().includes(searchTerms.actionPreferences.toLowerCase())
     );
   };
+
+  const handleDateChange = (dateType: 'startDate' | 'endDate', date: Date | null) => {
+    setSelectedFilters((prev: any) => ({
+      ...prev,
+      timePreference: {
+        ...prev.timePreference,
+        [dateType]: date
+      }
+    }));
+  };
+
+  const startDateConstraints = getStartDateConstraints();
+  const endDateConstraints = getEndDateConstraints();
 
   return (
     <FilterWrapper>
@@ -227,6 +324,38 @@ const FilterModal = ({ setIsFilterModalOpen, ResourceData, setAppliedFilters, ap
               })}
             </FilterList>
           </FilterTab>
+
+          {/* Time Preference */}
+          <FilterTab>
+            <FilterTabHeader>Time Preference</FilterTabHeader>
+            <DateRow>
+              <DateWrapper>
+                <DateLabel htmlFor="start-date">Start Date</DateLabel>
+                <input
+                  style={{width: '90px', fontSize: '1rem', borderRadius: '4px', border: '1px solid #cecece', padding: '4px'}}
+                  type="date"
+                  id="start-date"
+                  min={startDateConstraints.min}
+                  max={startDateConstraints.max}
+                  value={formatDateForInput(selectedFilters.timePreference.startDate)}
+                  onChange={(e) => handleDateChange('startDate', e.target.value ? new Date(e.target.value) : null)}
+                />
+              </DateWrapper>
+              <DateWrapper>
+                <DateLabel htmlFor="end-date">End Date</DateLabel>
+                <input
+                  style={{width: '90px', fontSize: '1rem', borderRadius: '4px', border: '1px solid #cecece', padding: '4px'}}
+                  type="date"
+                  id="end-date"
+                  min={endDateConstraints.min}
+                  max={endDateConstraints.max}
+                  value={formatDateForInput(selectedFilters.timePreference.endDate)}
+                  onChange={(e) => handleDateChange('endDate', e.target.value ? new Date(e.target.value) : null)}
+                />
+              </DateWrapper>
+            </DateRow>
+          </FilterTab>
+      
   
           {/* Action Preference */}
           <FilterTab>
@@ -279,6 +408,7 @@ const FilterModal = ({ setIsFilterModalOpen, ResourceData, setAppliedFilters, ap
                 workStations: [],
                 jobs: [],
                 actionPreferences: [],
+                timePreference: { startDate: null, endDate: null }
               });
               setSearchTerms({
                 stages: "",
@@ -302,7 +432,10 @@ const FilterModal = ({ setIsFilterModalOpen, ResourceData, setAppliedFilters, ap
           <VFButton
             style={{ fontSize: "1.1rem", height: "3.2rem" }}
             themeUi={themeUi}
-            onClick={() => {setAppliedFilters(selectedFilters), setIsFilterModalOpen(false)}}
+            onClick={() => {
+              setAppliedFilters(selectedFilters);
+              setIsFilterModalOpen(false);
+            }}
           >
             Apply Filter
           </VFButton>
@@ -310,7 +443,6 @@ const FilterModal = ({ setIsFilterModalOpen, ResourceData, setAppliedFilters, ap
       </FilterBottomSection>
     </FilterWrapper>
   );
-  
 };
 
 export default FilterModal;

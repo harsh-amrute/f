@@ -237,6 +237,7 @@ const FileUploadSection = ({setIsRunEnabled}:any) => {
             display: "flex",
             width: "100%",
             gap: "40px",
+            marginTop: "50px",
             flexDirection: "column",
           }}
         >
@@ -305,7 +306,7 @@ const FileUploadSection = ({setIsRunEnabled}:any) => {
           }
 
 {
-  fileObjects.some((file: any) => file.file_from === "UI") && (
+  fileObjects.some((file: any) => file.file_from === "FTP") && (
 
           <GridContainer>
             <SideTab>Automated Files</SideTab>

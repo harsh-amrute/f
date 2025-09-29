@@ -15,6 +15,7 @@ import {
   VFSelectedFiltersWrapper,
 } from "../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/styles";
 import { useSearchParams } from "react-router-dom";
+import _ from "lodash";
 
 const ToolbarWrapper = styled.div`
   width: calc(100% + 24px);
@@ -316,12 +317,13 @@ const SchedulingActionToolbar = ({
   };
 
   const isAnyFilterApplied = (appliedFilters: any) => {
-    return Object.values(appliedFilters).some((filter) => {
+    const {timePreference,...lengthCheckFilters} = appliedFilters
+    return Object.values(lengthCheckFilters).some((filter) => {
       if (Array.isArray(filter)) {
         return filter.length > 0;
       }
       return filter !== null && filter !== undefined && filter !== "";
-    });
+    }) || timePreference?.startDate!==null || timePreference?.endDate!==null;
   };
 
   useEffect(() => {
@@ -557,6 +559,7 @@ const SchedulingActionToolbar = ({
                 onClick={() => {
                   setCurrentView("GridViewR");
                   setSearchParams({ page: "GridViewR"})
+                  setOpen(!open);
                 }}
               >
                 {gridViewResourceIcon(currentView === "GridViewR")}
@@ -569,6 +572,7 @@ const SchedulingActionToolbar = ({
                 onClick={() => {
                   setCurrentView("GridViewJ");
                   setSearchParams({ page: "GridViewJ"})
+                  setOpen(!open);
                 }}
               >
                 {gridViewJobIcon(currentView === "GridViewJ")}

@@ -32,18 +32,37 @@ const GridWrapper = styled.div`
 `;
 
 const WorkStationDropDown = styled.select`
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    width: fit-content;
-    font-size: 1rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    &:focus {
-        outline: none;
-        border-color: #9c0d64;
-        box-shadow: 0 0 5px rgba(156, 13, 100, 0.5);
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: fit-content;
+  font-size: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+    border-color: #9c0d64;
+    box-shadow: 0 0 5px rgba(156, 13, 100, 0.5);
+  }
+
+  option {
+    background-color: white; /* default option background */
+    color: #333;
+
+    &:checked {
+      background-color: #b52670; /* selected */
+      color: white;
     }
+
+    &:hover {
+      background-color: #ffb6c1; /* pink shade on hover */
+      color: #333;
+    }
+  }
 `;
+
 
 const Tab = styled.div`
   position: absolute;
@@ -115,7 +134,25 @@ const options = ["Percentage Wise", "Day Wise", "Hrs Wise", "Count Wise"];
 
       defaultColDef: {
           sortable: true,
-          filter: true,
+          cellRenderer: (params:any) => {
+            if(active === "Count Wise") return params?.value;
+            if (params?.value == null) return "";
+            if(isNaN(params?.value))return params?.value;
+            if(!params?.value?.toFixed)return params?.value;
+            const [intPart, decPart = ""] = String(params?.value?.toFixed(2)).split(".");
+            return (
+              <>
+              <span style={{display: "inline-block", textAlign: "right", minWidth: '40px'}}>
+                {intPart}
+              </span>
+              <span  style={{display: "inline-block", textAlign: "left", minWidth: '20px'}}>
+                .{decPart}
+              </span>
+              </>
+            );
+          },
+          cellStyle: { fontFamily: "monospace" },
+          filter: 'agMultiColumnFilter',
           resizable: true,
           floatingFilter: true,
           flex: 1,
@@ -142,17 +179,17 @@ const options = ["Percentage Wise", "Day Wise", "Hrs Wise", "Count Wise"];
 
   useEffect(()=>{
       const ColDef = [
-          { headerName: 'Workstation', colId: 'work_station', field: 'work_station', width: 120, flex: 1, position: 1 },
+          { headerName: 'Workstation', colId: 'work_station',filter: 'agMultiColumnFilter', field: 'work_station', width: 120, flex: 1, position: 1 },
       ];
   
       const TaskTypes = Object.keys(ResourceData.Task_master || {});
   
       TaskTypes.forEach((type: any, index: number) => {
-          ColDef.push({ headerName: type, colId: type, field: type, width: 120, flex: 1, position: index + 2 });
+          ColDef.push({ headerName: type,filter: 'agNumberColumnFilter', colId: type, field: type, width: 120, flex: 1, position: index + 2 });
       });
 
       if(active !== "Percentage Wise"){
-        ColDef.push({headerName: "Total", colId: "total", field: "total", width: 120, flex: 1, position: TaskTypes.length + 2})
+        ColDef.push({headerName: "Total", colId: "total", field: "total",filter: 'agNumberColumnFilter', width: 120, flex: 1, position: TaskTypes.length + 2})
       }
 
       setColDef(ColDef);
@@ -226,14 +263,14 @@ const options = ["Percentage Wise", "Day Wise", "Hrs Wise", "Count Wise"];
 
         if (active === "Percentage Wise") {
           entry[type] = totalTimeSpanHours > 0
-            ? ((duration / totalTimeSpanHours) * 100).toFixed(2) + "%"
-            : "0%";
+            ? ((duration / totalTimeSpanHours) * 100)
+            : 0;
         } else if (active === "Day Wise") {
           // Convert hours to days
-          entry[type] = (duration / 24).toFixed(2) + " days";
+          entry[type] = (duration / 24);
         } else if (active === "Hrs Wise") {
           // Show hours directly
-          entry[type] = duration.toFixed(2) + " hrs";
+          entry[type] = duration;
         } else if (active === "Count Wise") {
           // Show count of tasks
           entry[type] = count;
@@ -246,10 +283,10 @@ const options = ["Percentage Wise", "Day Wise", "Hrs Wise", "Count Wise"];
           entry["total"] = totalCount;
         } else if (active === "Day Wise") {
           const totalTaskDuration = Object.values(taskTypeDuration).reduce((sum: number, val: any) => sum + val, 0);
-          entry["total"] = (totalTaskDuration / 24).toFixed(2) + " days";
+          entry["total"] = (totalTaskDuration / 24)?.toFixed(2) ;
         } else if (active === "Hrs Wise") {
           const totalTaskDuration = Object.values(taskTypeDuration).reduce((sum: number, val: any) => sum + val, 0);
-          entry["total"] = totalTaskDuration.toFixed(2) + " hrs";
+          entry["total"] = totalTaskDuration?.toFixed(2);
         }
       }
   
