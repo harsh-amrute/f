@@ -1,5 +1,10 @@
 
 const PlannedReleaseRenderer = (params: any) => {
+
+    if (!params.data) {
+        return params.value || null;
+    }
+
     return (
         params.colDef.colId === "PlannedReleaseDate" ?
             <div style={{ display: 'flex', width: '100%', alignItems: 'center' }
