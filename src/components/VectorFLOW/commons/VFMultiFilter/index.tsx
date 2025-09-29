@@ -288,16 +288,12 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
         {value:'l1',label:LOCATION_PERMISSION_L1},
         {value:'l2',label:LOCATION_PERMISSION_L2},
         {value:'l3',label:LOCATION_PERMISSION_L3},
-        {value:'l4',label:'L4'},
-        {value:'l5',label:'L5'}, 
     ]
 
     const filterProductOptions = [
         {value:'p1',label:PRODUCT_PERMISSION_L1},
         {value:'p2',label:PRODUCT_PERMISSION_L2},
         {value:'p3',label:PRODUCT_PERMISSION_L3},
-        {value:'p4',label:'P4'},
-        {value:'p5',label:'P5'},  
     ]
 
     const colorFilterOptions = [
