@@ -96,10 +96,10 @@ const useBPR =()=>{
     const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
     const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
     const BPR_ROWS_PER_PAGE = EnvConfig['BPR_ROWS_PER_PAGE'];    
-    useEffect(() => {   
-        getInitialBPRRowData()
-        getBPRUiConfig();
-    }, []);
+    // useEffect(() => {   
+    //     getInitialBPRRowData()
+    //     getBPRUiConfig();
+    // }, []);
     
     const getBPRUiConfig = async () => {
         try {
