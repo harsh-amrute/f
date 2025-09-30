@@ -80,10 +80,11 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
                 />
               </DropDownWrapper>
             <div style={{display:'flex', alignItems:'center', marginBottom:'2px'}}>
-                <IconWrapper>
+                <IconWrapper theme_ui={user.user.theme_ui}>
                   <img src={"/assets/img/MTAVFMultiFilter/Error.svg"} />
                 </IconWrapper>
                 <IconWrapper
+                  theme_ui={user.user.theme_ui}
                   disabled={isMaxRows}
                   onClick={!isMaxRows ? addFilterRow : undefined}
                 >
@@ -92,6 +93,7 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
                 />
                 </IconWrapper>
                 <IconWrapper
+                  theme_ui={user.user.theme_ui}
                   disabled={isMinRows}
                   onClick={() => !isMinRows && removeFilterRow(row.id)}
                 >
@@ -118,14 +120,14 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
                       ...base,
                       minHeight: "48px",
                       border: state.isFocused
-                        ? "2px solid #BC3D80"
+                        ? user.user.theme_ui === "REGALBLAZE" ? "2px solid #FCA311" : "2px solid #BC3D80"
                         : "1px solid #c7c0c0ff",
                       borderRadius: "10px",
                       boxShadow: "none",
                       outline: "none",
                       "&:hover": {
                         border: state.isFocused
-                          ? "2px solid #BC3D80"
+                          ? user.user.theme_ui === "REGALBLAZE" ? "2px solid #FCA311" : "2px solid #BC3D80"
                           : "1px solid #c7c0c0ff",
                       },
                   }),
@@ -163,14 +165,14 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
                       ...base,
                       minHeight: "39px",
                       border: state.isFocused
-                        ? "2px solid #BC3D80"
+                        ? user.user.theme_ui === "REGALBLAZE" ? "2px solid #FCA311" :"2px solid #BC3D80"
                         : "1px solid #c7c0c0ff",
                       borderRadius: "7px",
                       boxShadow: "none",
                       outline: "none",
                       "&:hover": {
                         border: state.isFocused
-                          ? "2px solid #BC3D80"
+                          ? user.user.theme_ui === "REGALBLAZE" ? "2px solid #FCA311" : "2px solid #BC3D80"
                           : "1px solid #c7c0c0ff",
                       },
                 }),

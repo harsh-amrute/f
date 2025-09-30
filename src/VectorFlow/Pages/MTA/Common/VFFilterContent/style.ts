@@ -64,7 +64,7 @@ export const TextWrapper = styled.div`
     align-items:center;
 `
 
-export const IconWrapper = styled.div<{ disabled?: boolean }>`
+export const IconWrapper = styled.div<{ disabled?: boolean; theme_ui: string; }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -87,12 +87,12 @@ export const IconWrapper = styled.div<{ disabled?: boolean }>`
     
     &:hover {
       background-color: ${props => props.disabled ? '#9e9e9e' : 'white'};
-      border: 1px solid ${props => props.disabled ? '#757575' : '#B93B7E'};
+      border: 1px solid ${props => props.disabled ? '#757575' : props.theme_ui === "REGALBLAZE" ? "#FCA311" : '#B93B7E'};
       opacity: ${props => props.disabled ? '0.3' : '1'}; // Keep low opacity for disabled even on hover
     }
     
     &:active {
-      border-color: ${props => props.disabled ? '#757575' : '#B93B7E'};
+      border-color: ${props => props.disabled ? '#757575' : props.theme_ui === "REGALBLAZE" ? "#FCA311" : '#B93B7E'};
     }
   }
 `;
