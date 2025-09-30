@@ -23,14 +23,18 @@ export const useThemeStyles = () => {
     }),
     control: (baseStyles: any, { isFocused }: any) => ({
       ...baseStyles,
-      borderColor: isFocused ? "#BC3D80" : "#c7c0c0ff",
+      borderColor: isFocused ? theme_ui === "REGALBLAZE"
+        ? "#FCA311"
+        : "#BC3D80" : "#c7c0c0ff",
       borderWidth: isFocused ? "2px" : "1px",
       borderRadius: "10px",
       fontSize: "14px",
       boxShadow: "none",
-      minHeight: "40px",         
+      minHeight: "40px",
       "&:hover": {
-        borderColor: isFocused ? "#BC3D80" : "#c7c0c0ff",
+        borderColor: isFocused ? theme_ui === "REGALBLAZE"
+          ? "#FCA311"
+          : "#BC3D80" : "#c7c0c0ff",
       },
     }),
     input: (baseStyles: any) => ({
@@ -44,13 +48,13 @@ export const useThemeStyles = () => {
       ...baseStyles,
       zIndex: 9999,
       position: "absolute",
-      maxHeight: "none", 
+      maxHeight: "none",
       overflow: "visible",
     }),
     menuList: (baseStyles: any) => ({
       ...baseStyles,
-      maxHeight: "none", 
-      overflow: "visible", 
+      maxHeight: "none",
+      overflow: "visible",
     }),
     placeholder: (baseStyles: any) => ({
       ...baseStyles,
@@ -59,7 +63,7 @@ export const useThemeStyles = () => {
     }),
     singleValue: (baseStyles: any) => ({
       ...baseStyles,
-      fontSize: "14px", 
+      fontSize: "14px",
       color: "black",
     }),
   };

@@ -26,6 +26,8 @@ import {
 
 import { RootState } from "../../../../../redux/store/store";
 import { BPRFilterState } from "../../../../../VectorFlow/types/BPR";
+import { ColorFilters } from "../VFFilterContent/FilterColor";
+import { CoverageFilters } from "../VFFilterContent/FilterCoverage";
 
 interface FilterModalProps {
   isOpen: boolean;
@@ -61,6 +63,14 @@ const filterConfigMap: Record<
     label: "Attributes - SKU Loc",
     component: AttributesFilters,
   },
+  FILTER_COLOR: {
+    label: "Color",
+    component: ColorFilters,
+  },
+  FILTER_COVERAGE:{
+    label: "Coverage",
+    component: CoverageFilters,
+  }
 };
 
 const getConfigValues = (raw?: string) =>
@@ -271,6 +281,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
           <SidebarSection>
             {availableSections.map(({ label }) => (
               <SidebarItem
+                theme_ui={user.user.theme_ui}
                 key={label}
                 active={activeSection === label}
                 onClick={() => setActiveSection(label)}
