@@ -350,6 +350,7 @@ const ActionToolBar = ({
             <MTAVFMultiFilter
               isOpen={isFilterOpen}
               onApply={handleApplyFilter}
+              multiFilter={multiFilter}
               onClose={() => toggleFilter(false)}
               onReset={handleResetFilters}
               

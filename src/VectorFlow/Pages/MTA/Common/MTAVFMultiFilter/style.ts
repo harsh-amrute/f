@@ -28,19 +28,21 @@ export const SidebarSection = styled.div`
   flex-direction: column;
 `;
 
-export const SidebarItem = styled.div<{ active: boolean }>`
+export const SidebarItem = styled.div<{ active: boolean; theme_ui: string }>`
   padding: 0.875rem 1.5rem;
   cursor: pointer;
-  background: ${props => props.active ? '#fce4f0' : 'transparent'};
-  color: ${props => props.active ? '#B93B7E' : '#000000ff'};
+  background: ${props => props.active ? props.theme_ui === 'REGALBLAZE' ? '#fca2113d' : '#fce4f0' : 'transparent'};
+  color: ${props => props.active
+    ? (props.theme_ui === "REGALBLAZE" ? "#FCA311" : "#BC3D80")
+    : '#000000ff'};
   transition: all 0.2s ease;
   font-size: 15px;
   font-weight: ${props => props.active ? '480' : '400'};
   margin-right: ${props => props.active ? '-1px' : '0'};
 
   &:hover {
-    background: ${props => props.active ? '#fce4f0' : '#e9ecef'};
-    color: #B93B7E;
+    background: ${props => props.active ? props.theme_ui === 'REGALBLAZE' ? '#fca2111b' : '#fce4f0'  : '#e9ecef'};
+    color: ${props => props.theme_ui === "REGALBLAZE" ? "#FCA311" : "#BC3D80"};
   }
 `;
 

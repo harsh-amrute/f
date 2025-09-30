@@ -112,32 +112,87 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
             <DropDownWrapper style={{ flex: 1 }}>
               <Select
                 placeholder="Enter value"
-                styles={styles}
+                styles={{
+                  ...styles,
+                  control: (base: any, state: any) => ({
+                      ...base,
+                      minHeight: "48px",
+                      border: state.isFocused
+                        ? "2px solid #BC3D80"
+                        : "1px solid #c7c0c0ff",
+                      borderRadius: "10px",
+                      boxShadow: "none",
+                      outline: "none",
+                      "&:hover": {
+                        border: state.isFocused
+                          ? "2px solid #BC3D80"
+                          : "1px solid #c7c0c0ff",
+                      },
+                  }),
+                  valueContainer: (base: any) => ({
+                    ...base,
+                    paddingLeft: "175px", 
+                  }),
+                  placeholder: (base: any) => ({
+                    ...base,
+                    fontSize: "14px",
+                    marginLeft: "1px",
+                  }),
+              }}
                 components={{
                   IndicatorSeparator: () => null,
                   DropdownIndicator: () => null,
-                  Menu: () => null,
+                  // Menu: () => null,
                 }}
-                isSearchable={true}
+                // isSearchable={true}
+                isClearable
                 inputValue={filters.someValue || ""}
                 onInputChange={(inputValue) =>
                   onFilterChange("someValue", inputValue)
                 }
-                menuIsOpen={false}
-                options={[]}
+                // menuIsOpen={false}
+                options={[{ value: 'apple', label: 'Apple' }, {value: 'b', label: 'B'}]}
               />
               
+              <div style={{ width: 165, marginTop: -44, marginLeft: 4.5}}>
+                <Select
+                  placeholder="SKU Code"
+                  styles={{
+                  ...styles,
+                  control: (base: any, state: any) => ({
+                      ...base,
+                      minHeight: "39px",
+                      border: state.isFocused
+                        ? "2px solid #BC3D80"
+                        : "1px solid #c7c0c0ff",
+                      borderRadius: "7px",
+                      boxShadow: "none",
+                      outline: "none",
+                      "&:hover": {
+                        border: state.isFocused
+                          ? "2px solid #BC3D80"
+                          : "1px solid #c7c0c0ff",
+                      },
+                }),
+              }}
+                  components={{ IndicatorSeparator: () => null }}
+                  options={[
+                    { value: "SKU Code", label: "SKU Code" },
+                    { value: "SKU Description", label: "SKU Description" },
+                  ]}
+                />
+              </div>
             </DropDownWrapper>
 
             <VFButton
               themeUi={user.user.theme_ui}
               onClick={handleApply}
-              width={100}
+              width={120}
               style={{
                 fontSize: 15,
                 fontWeight: 350,
-                height: 37,
-                marginBottom: 10,
+                height: 44,
+                marginBottom: 4,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
