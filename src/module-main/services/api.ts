@@ -94,7 +94,7 @@ export namespace MainService {
 
   export const login = async (payload: LoginRequest) => {
     return await axios
-      .post(`/${API_USER}/login/`, payload)
+      .post(`/${API_USER}/login/`, payload,{withCredentials: true})
       .then(async (resp) => {
         localStorage.setItem(
           LOCAL_STORAGE_KEY.TOKEN_PAYLOAD,
@@ -131,7 +131,7 @@ export namespace MainService {
   }
 
   export const getProfile = async () => {
-    return await axios.get(`/${API_USER}/profile/`)
+          return await axios.get(`/${API_USER}/profile/`,{withCredentials: true})
   }
   export const getProductFilter = async (url: string) => {
     return await axios.get(url)

@@ -13,6 +13,7 @@ export const setupAxios = () => {
   }
 
   axios.defaults.baseURL = process.env.REACT_APP_API_HOST;
+  axios.defaults.withCredentials = true
   axios.interceptors.request.use(async function (config: any) {
     if (config.url && (!config.headers || !config.headers['Authorization'])) {
       const token = await MainService.acquireToken();
@@ -23,10 +24,11 @@ export const setupAxios = () => {
       } else {
         config.headers = {
           ...config.headers,
-          Authorization: `Bearer ${token?.access}`,
+          // Authorization: `Bearer ${token?.access}`,
           'User-ID': localStorage.getItem('User-ID'),
-          'User-Name': localStorage.getItem('User-Name')
-        }
+          'User-Name': localStorage.getItem('User-Name'),
+
+               }
       }
     }
     return config
@@ -67,7 +69,7 @@ export const setupAxios = () => {
           .then(async (token: any) => {
             originalRequest.headers = {
               ...originalRequest.headers,
-              Authorization: `Bearer ${token?.access}`
+              // Authorization: `Bearer ${token?.access}`
             }
             return await axios(originalRequest)
           })
