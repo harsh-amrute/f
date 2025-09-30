@@ -49,3 +49,13 @@ export const numericOperators = [
   { label: "Less than equal to", value: "lessEq"},
   { label: "Not equal", value: "notEq"},
 ]
+
+export const colorOptions = [
+  { value: "red", label: "Red", color: "red" },
+  { value: "yellow", label: "Yellow", color: "gold" },
+  { value: "green", label: "Green", color: "green" },
+  { value: "black", label: "Black", color: "black" },
+  { value: "white", label: "White", color: "lightgrey" },
+  { value: "blue", label: "Blue", color: "blue" },
+  { value: "grey", label: "Grey", color: "grey" },
+];
