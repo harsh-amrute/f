@@ -14,7 +14,7 @@ export const ModalContent = styled.div`
 export const FilterLayout = styled.div`
   display: flex;
   flex: 1;
-  min-height: 620px;
+  min-height: 700px;
   min-width: 950px;
   overflow: hidden;
 `;

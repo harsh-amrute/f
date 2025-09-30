@@ -1,18 +1,154 @@
 import React, { useState } from 'react';
-import { FilterGroup, FilterColumn, FilterTitle, InputField, SelectField, TextWrapper, DropDownWrapper, DropDownRow, IconWrapper } from './style';
+import { FilterGroup, FilterColumn, FilterTitle, InputField, SelectField, TextWrapper, DropDownWrapper, DropDownRow, IconWrapper, CheckboxWrapper } from './style';
 import Select, { components } from "react-select";
-import { useThemeStyles } from '../../../../../hooks/useVFFilterContent'; 
-import { numericOperators } from './useVFFilterContent';
+import { useThemeStyles, useColorThemeStyles } from '../../../../../hooks/useVFFilterContent'; 
+import { numericOperators, colorOptions } from './useVFFilterContent';
+import { useUserData } from '../../../../../context';
+import { RootState } from '../../../../../redux/store/store';
+import './styles.css';
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
+import { useSelector } from 'react-redux';
+
 interface FilterSectionProps {
   filters: any;
   onFilterChange: (field: string, value: string) => void;
+}
+interface TagsFilterProps {
+  name: string;
+  checked: boolean;
+  onChange: (name: string, checked: boolean) => void;
+}
+
+const MAX_VISIBLE = 3;
+const CustomMultiValueContainer = (props: any) => {
+  const { index, selectProps } = props;
+  const selected = selectProps.value || [];
+  const max = MAX_VISIBLE;
+
+  if (index < max) {
+    return <components.MultiValue {...props} />;
+  }
+  if (index === max) {
+    return (
+      <div style={{ padding: "0 8px", fontSize: 13, color: "#888" }}>
+        +{selected.length - max} more
+      </div>
+    );
+  }
+  return null;
+};
+
+const CustomOption = (props: any) => {
+  return (
+    <components.Option {...props}>
+      <div className="flex items-center gap-2">
+        <input
+          type="checkbox"
+          checked={props.isSelected}
+          onChange={() => null}
+        />
+        <span>{props.label}</span>
+        <span
+          style={{
+            backgroundColor: props.data.color,
+            width: "16px",
+            height: "16px",
+            borderRadius: "3px",
+            display: "inline-block",
+          }}
+        />
+      </div>
+    </components.Option>
+  );
+};
+
+const CustomMultiValue = (props: any) => {
+  return (
+    <components.MultiValue {...props}>
+      <span
+        style={{
+          backgroundColor: props.data.color,
+          width: "12px",
+          height: "12px",
+          borderRadius: "3px",
+          display: "inline-block",
+          marginRight: "5px",
+        }}
+      />
+      {props.children}
+    </components.MultiValue>
+  );
+};
+
+const TagsFilter: React.FC<TagsFilterProps> = ({ name, checked, onChange }) => {
+  const { user } = useUserData();
+  const theme_ui = user.user.theme_ui;
+  const themeColor = theme_ui === "REGALBLAZE" ? "#FCA311" : "#BC3D80";
+
+  const handleClick = () => {
+    onChange(name, !checked);
+  };
+
+  return (
+    <CheckboxWrapper 
+      style={{
+        alignItems: 'center', 
+        gap: "8px",
+        cursor: 'pointer',
+        backgroundColor: checked ? `${themeColor}15` : 'white',
+        borderColor: checked ? themeColor : '#c7c0c0ff',
+        borderWidth: checked ? '2px' : '1px',
+        // transform: checked ? 'scale(1.02)' : 'scale(1)',
+        boxShadow: checked ? `0 2px 8px ${themeColor}25` : 'none'
+      }}
+      onClick={handleClick}
+    >
+      <input 
+        style={{
+          height:"18px", 
+          width: "18px",
+          accentColor: themeColor,
+          pointerEvents: 'none' 
+        }}
+        type="checkbox" 
+        id={name.toLowerCase()}
+        checked={checked}
+        onChange={() => {console.log('Clicked')}}
+        readOnly
+      />
+      <label 
+        style={{
+          marginTop:"1px",
+          cursor: 'pointer',
+          userSelect: 'none',
+          color: checked ? themeColor : 'black',
+          fontWeight: checked ? '600' : '400',
+          transition: 'all 0.1s ease-in-out'
+        }} 
+        htmlFor={name.toLowerCase()}
+      >
+        {name}
+      </label>
+    </CheckboxWrapper>
+  );
 }
 
 // Availability Filter Component
 export const AvailabilityFilters: React.FC<FilterSectionProps> = ({ filters, onFilterChange }) => {
   const styles = useThemeStyles();
-  const [checked, setChecked] = useState(false);
+  const colorStyles = useColorThemeStyles();
+  const [tagStates, setTagStates] = useState<{ [key: string]: boolean }>({
+    PIPO: false,
+    Seasonality: false,
+  });
+    const handleTagChange = (name: string, checked: boolean) => {
+    setTagStates(prev => ({
+      ...prev,
+      [name]: checked
+    }));
+    // Optionally call onFilterChange to pass the tag state up to parent
+    onFilterChange('tags', JSON.stringify({...tagStates, [name]: checked}));
+  };
   return (
     <>
       <FilterGroup>
@@ -194,14 +330,25 @@ export const AvailabilityFilters: React.FC<FilterSectionProps> = ({ filters, onF
         <FilterColumn>
           <TextWrapper>On Hand Inventory Color</TextWrapper>
           <DropDownWrapper>
-          <DropDownWrapper>
-            <Select placeholder={"Select Color"} styles={styles} components={{ IndicatorSeparator: () => null }}></Select>
-          </DropDownWrapper>
+            <Select
+              options={colorOptions}
+              isMulti
+              closeMenuOnSelect={false}
+              hideSelectedOptions={false}
+              components={{
+                Option: CustomOption,
+                MultiValue: CustomMultiValueContainer,
+                IndicatorSeparator: () => null,
+                ClearIndicator:() => null
+              }}
+              styles={colorStyles}
+              placeholder="Select Color"
+            />
           </DropDownWrapper>
         </FilterColumn>
 
         <FilterColumn>
-          <TextWrapper>On Hand Inventory Color</TextWrapper>
+          <TextWrapper>Pipeline Inventory Color</TextWrapper>
           <DropDownWrapper>
             <Select placeholder={"Select Color"} styles={styles} components={{ IndicatorSeparator: () => null }}></Select>
           </DropDownWrapper>
@@ -211,6 +358,10 @@ export const AvailabilityFilters: React.FC<FilterSectionProps> = ({ filters, onF
       <FilterGroup style={{marginTop: '1px'}}>
         <FilterColumn>
           <TextWrapper>Tags</TextWrapper>
+          <DropDownRow style={{gap: "20px"}}>
+            <TagsFilter name="PIPO" checked={tagStates.PIPO} onChange={handleTagChange}/>
+            <TagsFilter name="Seasonality" checked={tagStates.Seasonality} onChange={handleTagChange}/>
+          </DropDownRow>
         </FilterColumn>
       </FilterGroup>
     </>

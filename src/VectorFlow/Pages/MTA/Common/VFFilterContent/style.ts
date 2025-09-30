@@ -37,7 +37,7 @@ export const DropDownRow = styled.div`
   flex-wrap: nowrap;  
   width: 100%;
   box-sizing: border-box;
-  margin-bottom: 10px;
+  margin-bottom: 0.5px;
 `;
 export const DropDownWrapper = styled.div`
     flex: 1;           
@@ -86,6 +86,31 @@ export const IconWrapper = styled.div<{ disabled?: boolean }>`
     &:active {
       border-color: ${props => props.disabled ? '#757575' : '#B93B7E'};
     }
+  }
+`;
+
+export const CheckboxWrapper = styled.div`
+  border: 1px solid #c7c0c0ff;
+  border-radius: 10px;
+  min-height: 40px;
+  width: auto;
+  padding: 2px 10px;
+  font-size: 14px;
+  font-family: Roboto, sans-serif;
+  display: flex;
+  align-items: center;
+  background-color: white;
+  
+  
+  &:hover {
+    border-color: #BC3D80;
+    box-shadow: 0 2px 4px rgba(188, 61, 128, 0.1);
+  }
+  
+  &:focus-within {
+    border-color: #BC3D80;
+    border-width: 2px;
+    outline: none;
   }
 `;
 
