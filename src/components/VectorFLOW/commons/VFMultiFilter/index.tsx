@@ -824,6 +824,11 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         }
     }, []);
 
+    const hasAppliedFilters = () => {
+        if (!filterState) return false;
+        return Object.values(filterState).some(filterGroup => filterGroup.filters && filterGroup.filters.length > 0);
+    };
+
     return(
         <>
         <VFModalCard zoom={'0.73'} openModal={isFilterOpen} closeModal={onGoBack} headerIcon={'/assets/img/VectorFLOW/BPR/select-filter.svg'} headerText={loading?<Skeleton style={{height:20,width:80}}/>:'Select Filter'}  closeIcon={'/assets/img/VectorFLOW/NMS/close-dark.svg'} paddingLeftAndRight={0} backgroundColor={'#f4f4f4'} data-testid="vfmultifilter-img">
@@ -1273,7 +1278,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                             }
                         }}
                         >
-                        Apply Filter
+                        {hasAppliedFilters() ? 'Apply Filter' : 'Show All'}
                     </VFButton>
                 </ButtonContainer>
             </ButtonFilterWrapper>
