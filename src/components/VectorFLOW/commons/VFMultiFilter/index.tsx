@@ -1261,9 +1261,12 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
             
             <ButtonFilterWrapper>
                 <ButtonContainer>
+                   {
+                   hasAppliedFilters() &&
                     <VFButtonOutline themeUi={user.user.theme_ui} onClick={resetFilters}>
                        Reset Filters
                     </VFButtonOutline>
+                    }
                     <VFButton
                         themeUi={user.user.theme_ui}
                         onClick={() => {
