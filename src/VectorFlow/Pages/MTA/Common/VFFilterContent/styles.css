@@ -23,3 +23,15 @@
 .chip.active {
   color: white;
 }
+
+.hidden-scrollbar {
+  max-height: 300px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.hidden-scrollbar::-webkit-scrollbar {
+  display: none;
+}
