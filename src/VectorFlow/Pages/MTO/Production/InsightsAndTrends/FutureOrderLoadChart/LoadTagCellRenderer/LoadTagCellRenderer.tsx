@@ -1,28 +1,24 @@
-
-
-
-
-
-
 import styled from "styled-components";
- 
+import React, { useState } from "react";
+
 const getTagStyles = (tag: string) => {
   if (!tag) {
     return { arrow: "#cccccc", bg: "#fff", text: "#000", border: "none" };
   }
-  const lower = tag.toLowerCase();
+
+  let lower = tag.toLowerCase();
   if (lower === "past scheduling") {
-    return { arrow: "#E5493A", bg: "#E5493A", text: "#fff", border: "none" };
+    return { arrow: "#E53F3F", bg: "#E53F3F", text: "#2F2B2B", border: "none" };
   }
   if (lower === "within scheduling") {
-    return { arrow: "#E5E5E5", bg: "#E5E5E5", text: "#444", border: "none" };
+    return { arrow: "#A8A8A8", bg: "#A8A8A8", text: "#2F2B2B", border: "none" };
   }
   if (lower === "beyond scheduling") {
-    return { arrow: "#f5f5f0", bg: "#f5f5f0", text: "#111", border: "none" };
+    return { arrow: "#f5f5f0", bg: "#f5f5f0", text: "#2F2B2B", border: "none" };
   }
   return { arrow: "#c1c1c1", bg: "#fff", text: "#111", border: "none" };
 };
- 
+
 const TagArrow = styled.div<{ arrowcolor: string; bordercolor: string }>`
   width: 0;
   height: 0;
@@ -53,21 +49,61 @@ const TagWrapper = styled.div`
   height: 22px;
 `;
  
-// AG Grid passes params with value property
 const LoadTagCellRenderer = (params: any) => {
-  const text = params.value;
-  const { arrow, bg, text: txt, border } = getTagStyles(text);
-  console.log('textttttttttttt', text)
+  const tags = Array.isArray(params.value) ? params.value : [params.value].filter(Boolean);
+  const [hover, setHover] = useState(false);
 
- 
+  if (tags.length === 0) return null;
+
   return (
-    <TagWrapper>
-      <TagArrow arrowcolor={arrow} bordercolor={border} />
-      <TagLabel bgcolor={bg} textcolor={txt} bordercolor={border}>
-      {text}
-      </TagLabel>
-    </TagWrapper>
+    <div
+      style={{ display: "flex", alignItems: "center", position: "relative" }}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+    >
+      {/* First tag - main */}
+      {tags[0] && (
+        <TagWrapper style={{ zIndex: 2 }}>
+          <TagArrow
+            arrowcolor={getTagStyles(tags[0]).arrow}
+            bordercolor={getTagStyles(tags[0]).border}
+          />
+          <TagLabel
+            bgcolor={getTagStyles(tags[0]).bg}
+            textcolor={getTagStyles(tags[0]).text}
+            bordercolor={getTagStyles(tags[0]).border}
+          >
+            {tags[0]}
+          </TagLabel>
+        </TagWrapper>
+      )}
+
+      {/* Second tag - overlapped behind */}
+      {tags[1] && (
+        <TagWrapper
+          style={{
+            marginLeft: "-135px",// overlap,
+            marginTop:'8px',
+            // filter: "brightness(0.97)",
+            zIndex: 1,
+          }}
+        >
+          <TagArrow
+            arrowcolor={getTagStyles(tags[1]).arrow}
+            bordercolor={getTagStyles(tags[1]).border}
+          />
+          <TagLabel
+            bgcolor={getTagStyles(tags[1]).bg}
+            textcolor={getTagStyles(tags[1]).text}
+            bordercolor={getTagStyles(tags[1]).border}
+          >
+            {tags[1]}
+          </TagLabel>
+        </TagWrapper>
+      )}
+     
+    </div>
   );
 };
- 
+
 export default LoadTagCellRenderer;

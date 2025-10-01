@@ -43,6 +43,9 @@ const GraphView = ({ currView, setCurrView,selectedCCR, horizonData, graphData, 
     }
   }, [selectedCCR, horizonData]);
 
+
+  // console.log('horizon date', selectedCCRHorizonDate)
+
   useEffect(() => {
     if (graphData?.data && cwl) {
       const a = graphData?.data?.map((item: any) => item.ccr);
@@ -57,11 +60,103 @@ const GraphView = ({ currView, setCurrView,selectedCCR, horizonData, graphData, 
   // Helper function to check if a date falls within the horizon range
   const isDateInHorizonRange = (dateToCheck: string) => {
     if (!horizonDateRange) return false;
-    
+
     const checkDate = new Date(dateToCheck);
     const startDate = new Date(horizonDateRange.startDate);
     const endDate = new Date(horizonDateRange.endDate);
+
+    if (currView === 'weekly') {
+      // ["31st Aug", "6th Sep"]
+      const dateParts = dateToCheck.split(' - ');
+      if (dateParts.length === 2) {
+        const weekEndStr = dateParts[1].trim(); //2 part of date (6)
+        
+        // Extract day and month 
+        const weekEndMatch = weekEndStr.match(/(\d+)(?:st|nd|rd|th)?\s+([A-Za-z]+)/); //6-09-2025
+        console.log('weekEnd Macth', weekEndMatch)
+
+        if (weekEndMatch) {
+          const day = weekEndMatch[1]; //6
+          const month = weekEndMatch[2]; //sep
+          
+          const horizonYear = new Date(horizonDateRange.endDate).getFullYear(); //2026
+          const startYear = new Date(horizonDateRange.startDate).getFullYear(); //2025
+          
+          // Parse start date of the week
+          const weekStartStr = dateParts[0].trim(); //1st part 31 aug
+          const weekStartMatch = weekStartStr.match(/(\d+)(?:st|nd|rd|th)?\s+([A-Za-z]+)/);
+          if (weekStartMatch) {
+            const startDay = weekStartMatch[1]; //31
+            const startMonth = weekStartMatch[2]; //aug
+            
+            // Determine year for week start (could be current year or next year)
+            let weekStartDate = new Date(`${startMonth} ${startDay} ${startYear}`);
+            let weekEndDate = new Date(`${month} ${day} ${startYear}`);
+            
+            // Dec 2025 - Jan 2026
+            if (weekEndDate < weekStartDate) {
+              weekEndDate = new Date(`${month} ${day} ${startYear + 1}`);
+            }
+            
+            // If week is entirely in the future beyond horizon, try next year
+            if (weekStartDate.getFullYear() === startYear && weekStartDate < startDate) {
+              weekStartDate = new Date(`${startMonth} ${startDay} ${startYear + 1}`);
+              weekEndDate = new Date(`${month} ${day} ${startYear + 1}`);
+            }
+            
+            const weekOverlapsHorizon = weekStartDate <= endDate && weekEndDate >= startDate;
+            
+            return weekOverlapsHorizon;
+          }
+        }
+      }
+      return false;
+    }
+
+  
+    if (currView === 'monthly') {
+      //  "Sep 25'
+      const monthMatch = dateToCheck.match(/([A-Za-z]+)\s+(\d{2,4})/);
+      if (monthMatch) {
+        const month = monthMatch[1]; //sep
+        let year = parseInt(monthMatch[2]); //25
+        
+        if (year < 100) {
+          year = 2000 + year; // 25 to 2025 convert
+        }
+        
+        // Create month start and end dates
+        // Using month names with Date constructor
+        const monthStartDate = new Date(`${month} 1, ${year}`);
+        const monthEndDate = new Date(year, monthStartDate.getMonth() + 1, 0);
+        
+        // Normalize times for comparison
+        monthStartDate.setHours(0, 0, 0, 0);
+        monthEndDate.setHours(23, 59, 59, 999);
+        
+        const todayNormalized = new Date(startDate);
+        todayNormalized.setHours(0, 0, 0, 0);
+        
+        const horizonNormalized = new Date(endDate);
+        horizonNormalized.setHours(23, 59, 59, 999);
+        
+        // console.log(`Monthly check for ${dateToCheck}:`, {
+        //   monthStart: monthStartDate.toISOString(),
+        //   monthEnd: monthEndDate.toISOString(),
+        //   today: todayNormalized.toISOString(),
+        //   horizon: horizonNormalized.toISOString(),
+        //   overlaps: monthStartDate <= horizonNormalized && monthEndDate >= todayNormalized
+        // });
+        
+       
+        const monthOverlapsHorizon = monthStartDate <= horizonNormalized && monthEndDate >= todayNormalized;
+        
+        return monthOverlapsHorizon;
+      }
+      return false;
+    }
     
+ //daily view
     return checkDate >= startDate && checkDate <= endDate;
   };
 
@@ -75,8 +170,8 @@ const GraphView = ({ currView, setCurrView,selectedCCR, horizonData, graphData, 
         return {
           date: item.date,
           load: item.load, //500 for test
-          holiday: item.is_holiday,
-          past: item.past, //300 
+          holiday:item.is_holiday,
+          past: item.past, //300
           limit: cwlValue, 
           type: item.is_holiday ? "holiday" : "load",
           horizonDate: selectedCCRHorizonDate,
@@ -85,13 +180,16 @@ const GraphView = ({ currView, setCurrView,selectedCCR, horizonData, graphData, 
       }
 
       if (currView === "weekly") {
+       
+      
         return {
-          date: `${item.week_start} - ${item.week_end}`,
+          date:item.date, //item.date
           load: item.load,
           holiday: item.is_holiday,
           past: item.past,
           limit: cwlValue,
-          type: "weekly",
+          // type: "weekly",
+          type: item.is_holiday ? "holiday" : "load",
           horizonDate: selectedCCRHorizonDate,
           isInHorizonRange,
         };
@@ -99,12 +197,13 @@ const GraphView = ({ currView, setCurrView,selectedCCR, horizonData, graphData, 
 
       if (currView === "monthly") {
         return {
-          date: `${item.month_start} - ${item.month_end}`,
+          date: item.date,
           load: item.load,
           holiday: item.is_holiday,
           past: item.past,
           limit: cwlValue,
-          type: "monthly",
+          // type: "monthly",
+          type: item.is_holiday ? "holiday" : "load",
           horizonDate: selectedCCRHorizonDate,
           isInHorizonRange,
         };
@@ -114,10 +213,12 @@ const GraphView = ({ currView, setCurrView,selectedCCR, horizonData, graphData, 
   }, [graphData, currView, cwlValue, selectedCCRHorizonDate, horizonDateRange]);
   
 
-  let a = graphData?.data?.map((item: any) => {
-  return item.is_holiday
+  // let a = graphData?.data?.map((item: any) => {
+  // return item.is_holiday
     
-  })
+  // })
+
+  let x = true;
   
   const [chartoptions, setChartOptions] = useState<any>({
     series: [
@@ -149,7 +250,7 @@ const GraphView = ({ currView, setCurrView,selectedCCR, horizonData, graphData, 
           };
         },
       },
-            {
+       {
         type: 'bar',
         xKey: 'date',
         yKey: 'load',

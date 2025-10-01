@@ -15,6 +15,7 @@ import { GridFilterWrapper, TextBtn } from "../../../../../../../VectorFlow/Page
 
 import { useUserData } from "../../../../../../../context/index";
 import { VFTableWrapper } from "./style";
+import LoadTagTooltip from "../LoadTagToolTip";
 
 
 
@@ -33,6 +34,28 @@ const GridView = ({ setCurrentGridRef,context, currentGridRef, columnState, colD
       
       ];
 
+    const defaultColDef = {
+          // suppressMenu: true,
+          autoHeaderHeight: true,
+          filter: "agTextColumnFilter",
+          floatingFilter: true,
+          enableRowGroup: true,
+          floatingFilterComponentParams: { suppressFilterButton: true },
+          tooltipComponent: LoadTagTooltip,
+          initialWidth: 110,
+          cellStyle: {
+              'text-align': 'center',
+              'height': '50px',
+              "font-style": "normal",
+              "font-variant": "normal",
+              "font-size": "12px",
+              "font-family": "Roboto",
+              'text-overflow': 'ellipsis',
+              'white-space': 'nowrap',
+              'resizable': 'true',
+  
+          },
+      }
         useEffect(() => {
             if (currentGridRef?.current && columnState?.length && colDef.length > 0) {
                 const result = currentGridRef.current.api.applyColumnState({
@@ -53,7 +76,7 @@ const GridView = ({ setCurrentGridRef,context, currentGridRef, columnState, colD
         const CustomStatusPanel = () => {
               return (
                   <GridFilterWrapper>
-                      <TextBtn  onClick={clearGridFilter} style={{marginTop:'15px'}} disabled={isDisabled} themeUi={theme_ui}>
+                      <TextBtn  onClick={clearGridFilter}  disabled={isDisabled} themeUi={theme_ui}>
                           Clear All Grid Filters
                       </TextBtn>  
                   </GridFilterWrapper>           
@@ -77,6 +100,7 @@ const GridView = ({ setCurrentGridRef,context, currentGridRef, columnState, colD
     }
     return { background: "#F4F4F4" };
   };
+
     return (
         <>
             
@@ -97,6 +121,7 @@ const GridView = ({ setCurrentGridRef,context, currentGridRef, columnState, colD
                 {...agGridProps}
                 columnDefs={colDef}
                     rowData={rowData}
+                    defaultColDef={defaultColDef}
                     getRowStyle={getRowStyle}
                     tooltipHideDelay={100000}
                     gridOptions={{

@@ -16,7 +16,6 @@ import { UIGridCode } from '../../../Common/Enum';
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import useColDef from '../../../../../../hooks/useColDef';
 import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from "../../../../../../helpers/utils";
-import { useGetSTPLAndFullKitData, useGetSTPLAndFullKitExcelData } from '../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/STPLAndFullKits';
 import useFilter from '../../../../../../hooks/useFilter';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig';
 import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
@@ -77,12 +76,9 @@ const FutureOrderLoadChart = () => {
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
   const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
   const [isSubmitLoading, setIsSubmitLoading] = useState(false);
-  // const { mutateAsync: getSTPLandFullkitInDaysExcelData } = useGetSTPLAndFullKitExcelData();
   const {data}=useGetFutureOrderFOLHorizonDate() //folhorizon
-  const {mutateAsync: geFutureOrderLoadChart}=useGetFutureOrderLoadChartData()
+  const {mutateAsync: geFutureOrderLoadChart, isLoading}=useGetFutureOrderLoadChartData()
   const isDateDisabled = !(selectedCCR && selectedAction);
-
-      const [isExcelLoading, setIsExcelLoading] = useState<boolean>(false);
   
 
   const [selectedCCRHorizon, setSelectedCCRHorizon] = useState('')
@@ -100,15 +96,15 @@ const FutureOrderLoadChart = () => {
     toDateRef.current = toDate;
   }, [toDate]);
   
-  // const colDefCustomizations = {
-  //   tag: {
-  //     tooltipValueGetter: (params: any) => params.value,
-  //     cellRenderer: LoadTagCellRenderer,
+  const colDefCustomizations = {
+    Tag: {
+      tooltipValueGetter: (params: any) => params.value,
+      cellRenderer: LoadTagCellRenderer,
      
-  //     minWidth:100,
-  //   },
+      minWidth:100,
+    },
   
-  // }
+  }
 
   const tabs = [
     {
@@ -146,7 +142,9 @@ const FutureOrderLoadChart = () => {
 
   //   const setColumnDef = async () => {
   //     try {
-  //       const response = await getUIConfigData(reportName);
+  //       // const response = await getUIConfigData(currTab==='Load Wise' ? 'FutureOrderLoadWiseChart' :'FutureOrderPendingChart');
+  //       const response = await getUIConfigData('FutureOrderLoadChart');
+
   //       getColDef(response);
   //        console.log(response)
   //       setColDef(getColumnDefinations(response.data.data,colDefCustomizations,[]));
@@ -156,52 +154,83 @@ const FutureOrderLoadChart = () => {
   //     }
   // }
 
-    const setColumnDef = async () => {
-      try {
-        const response = await getUIConfigData(currTab==='Load Wise' ? 'FutureOrderLoadWiseChart' :'FutureOrderPendingChart');
-        getColDef(response);
-        let columnDefs = getColumnDefinations(response.data.data, []);    
-        const isANS = selectedAction?.value === "ANS";
+  const setColumnDef = async () => {
+    try {
+      const response = await getUIConfigData('FutureOrderLoadChart');
+      getColDef(response);
+      
+      let columnDefs = getColumnDefinations(response.data.data, colDefCustomizations, []);
+      
+      const isLoadWise = currTab === 'Load Wise';
+      const isANS = selectedAction?.value === 'ANS';
+      
+      const allowedHeaders = isLoadWise
+        ? isANS 
+          ? ['Date', 'CCR', 'Load in Days', 'Tags']
+          : ['Date', 'CCR', 'Load in Days']
+        : isANS
+          ? ['Date', 'Pending CCR Quantity', 'Tags', 'CCR']
+          : ['Date', 'Pending CCR Quantity', 'CCR'];
+      
+      columnDefs = columnDefs.filter((col: any) => 
+        allowedHeaders.includes(col.headerName || col.header)
+      );
+      
+      setColDef(columnDefs);
+    }
+    catch (e) {
+      console.log(e);
+    }
+}
+
+// const setColumnDef = async () => {
+//       try {
+//         const response = await getUIConfigData('FutureOrderLoadChart');
+//         getColDef(response);
         
-        if (isANS) {
-          const hasTagColumn = columnDefs.some((col:any) => col.field === 'tag');
-          if (!hasTagColumn) {
-            columnDefs.push({
-              colId: 'Tag',
-              headerName: 'Tags',
-              field: 'tag',
-              cellRenderer: LoadTagCellRenderer,
-              minWidth: 150,
-              tooltipValueGetter: (params: any) => params.value || 'No Tag',
-              filter: 'agMultiColumnFilter',
-              enablePivot: true,
-              flex: 1,
-              filterParams: { buttons: ['reset'] },
-              cellStyle: { justifyContent: 'left' },
-            });
-          } else {
-            // If tag column exists, update it to include cellRenderer
-            columnDefs = columnDefs.map((col:any) => {
-              if (col.field === 'tag') {
-                return {
-                  ...col,
-                  cellRenderer: LoadTagCellRenderer,
-                  minWidth: 150,
-                };
-              }
-              return col;
-            });
-          }
-        } else {
-          // Removeddd tag column if BFH is selected
-          columnDefs = columnDefs.filter((col:any) => col.field !== 'tag');
-        }
-        setColDef(columnDefs);
-      } catch (e) {
-        console.error("Error setting column defs:", e);
-      }
-  };
-  
+//         let columnDefs = getColumnDefinations(response.data.data, colDefCustomizations, []);
+      
+//         if (currTab === 'Load Wise') {
+//           if (selectedAction.value == 'ANS') {
+//             columnDefs = columnDefs.filter((col: any) => {
+//               const headerMatch = ['Date', 'CCR', 'Load in Days', 'Tags'].includes(col.headerName || col.header);
+//               return headerMatch;
+//             });
+//           }
+//           else {
+//             columnDefs = columnDefs.filter((col: any) => {
+//               const headerMatch = ['Date', 'CCR', 'Load in Days'].includes(col.headerName || col.header);
+//               return headerMatch ;
+//             });
+//           }
+            
+        
+//         } else {
+
+//           if (selectedAction.value === 'ANS') {
+//             columnDefs = columnDefs.filter((col: any) => {
+//               const headerMatch = ['Date', 'Pending CCR Quantity', 'Tags', 'CCR'].includes(col.headerName || col.header);
+//               return headerMatch;
+//             });
+//           }
+
+//             else {
+//               columnDefs = columnDefs.filter((col: any) => {
+//                 const headerMatch = ['Date', 'Pending CCR Quantity', 'CCR'].includes(col.headerName || col.header);
+//                 return headerMatch ;
+//               });
+            
+//           }
+         
+//         }
+        
+//         setColDef(columnDefs);
+//       }
+//       catch (e) {
+//         console.log(e);
+//       }
+//   }
+
   const getCCROptions = async () => {
     const CCRMasterData = await getCCRMasterData({})
     const CCRMaster = CCRMasterData?.data?.data;
@@ -235,7 +264,8 @@ const FutureOrderLoadChart = () => {
     const date = new Date(dateObj);
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0'); 
-    const day = date.getDate();
+    // const day = date.getDate();
+    const day = String(date.getDate()).padStart(2, '0'); 
     return `${year}-${month}-${day}`;
   }
 
@@ -245,62 +275,72 @@ const FutureOrderLoadChart = () => {
       return;
     }
     
-  setIsSubmitLoading(true);
-  setFilterPayload(payload);
+    setIsSubmitLoading(true);
+    setFilterPayload(payload);
   
-  try {
-    const response = await geFutureOrderLoadChart(payload);
+    try {
+      const response = await geFutureOrderLoadChart(payload);
 
-    if (isGridView) {
-      let transformedData = response?.data?.data?.data || [];
-      let pastOrderLoad = response?.data?.data?.pastorder_load
-      
-      if (currView === 'weekly') {
-        transformedData = transformedData.map((item: any, index: number) => {
-          return {
+      if (isGridView) {
+        let transformedData = response?.data?.data?.data || [];
+        let pastOrderLoad = response?.data?.data?.pastorder_load
+        
+        if (currView === 'weekly') {
+          transformedData = transformedData.map((item: any, index: number) => {
+            console.log(transformedData)
+          
+            const a = item?.tag?.map((e: any) => e);
+            // console.log('a is', a);
+
+            return {
+              ccr: item.ccr,
+              load: index === 0 ? pastOrderLoad : item.load,
+              // tag: index === 0 ? 'past scheduling' : item.tag,
+              tag:a,
+            date:item.date
+            };
+          });
+        }
+
+        else if (currView === 'monthly') {
+        
+          transformedData = transformedData.map((item: any, index: number) => {
+            const a = item?.tag?.map((e: any) => e);
+            return {
+    
+              ccr: item.ccr,
+              load: index === 0 ? pastOrderLoad : item.load,
+              tag: a,
+              date: item.date,
+            }
+            // ccr: item.ccr,
+            // load: index===0 ? pastOrderLoad: item.load,
+            // tag: index === 0 ? 'Past Scheduling' : item.tag , 
+            // date: item.date,
+          });
+          
+        } else {
+          // Daily view
+          transformedData = transformedData.map((item: any, index: number) => ({
             ccr: item.ccr,
-            load: index === 0 ? pastOrderLoad : item.load,
-            tag: index === 0 ? 'past scheduling' : item.tag,
-           date:item.date
-          };
-        });
-      }
-
-      else if (currView === 'monthly') {
-        const formatMonthYear = (dateStr: string) => {
-          const date = new Date(dateStr);
-          return date.toLocaleDateString("en-US", { month: "short", year: "numeric" });
-        };
-        
-        transformedData = transformedData.map((item: any, index: number) => ({
-          ccr: item.ccr,
-          load: index===0 ? pastOrderLoad: item.load,
-          tag: index === 0 ? 'past scheduling' : item.tag , 
-          date: item.date,
-        }));
-        
+            load: index===0 ? pastOrderLoad: item.load,
+            tag: index === 0 ? 'Past Scheduling' : item.tag , 
+            date: item.date || new Date().toLocaleDateString("en-US")
+          }));
+        }
+        setGridData(transformedData);
+        setTotalRow(response?.data?.data?.count || transformedData.length);
       } else {
-        // Daily view
-        transformedData = transformedData.map((item: any, index: number) => ({
-          ccr: item.ccr,
-          load: index===0 ? pastOrderLoad: item.load,
-          tag: index === 0 ? 'past scheduling' : item.tag , 
-          date: item.date || new Date().toLocaleDateString("en-US")
-        }));
+        setGraphData(response?.data?.data || [])
       }
-      setGridData(transformedData);
-      setTotalRow(response?.data?.data?.count || transformedData.length);
-    } else {
-      setGraphData(response?.data?.data || [])
-    }
-  } catch (error) {
-    console.error(error);
-    notifyError("Failed to fetch data!");
-    }
-  finally {
-    setIsSubmitLoading(false);
-    }
-};
+    } catch (error) {
+      console.error(error);
+      notifyError("Failed to fetch data!");
+      }
+    finally {
+      setIsSubmitLoading(false);
+      }
+  };
 
   useEffect(() => {
     if (isGridView) {
@@ -448,7 +488,6 @@ const getFilterData = async () => {
   }
   };
   
-
   
   const GetExcelData = async () => {
     getGraphData({graphflag : 0 , isExcelExport : true , appliedFilters})
@@ -468,6 +507,7 @@ const getFilterData = async () => {
         const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
         setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
         setColumnState(newConfig.cs);
+        console.log('column state', columnState)
   
         if (!data) {
           console.error('Failed to apply column state');
@@ -525,53 +565,54 @@ const getFilterData = async () => {
       setMasterUIConfig(currentGridRef?.current.api.getColumnState());
       getUserColumnConfig();
     }
-  }, [colDef]);  //colDef,isGridView
+  }, [colDef, isGridView]);  //colDef,isGridView
 
-    const { mutateAsync: getSTPLandFullkitInDaysData, isLoading, isError, isSuccess } = useGetSTPLAndFullKitData()
 
   const getGridData = async (params: any, pageSize?: any) => {
   try {
     const formatedFilters = formatFilterJSON(appliedFilters);
     const GridPayload = {
       ...payload,
-      formatedFilters,
+      ...formatedFilters,
       page_size: pageSize || userPageSize 
     };
 
     const response = await geFutureOrderLoadChart(GridPayload);
     const results = response?.data?.data?.data || [];
-    let pastOrderLoad = response?.data?.data?.pastorder_load;
-    let transformedData = results;
+    // let pastOrderLoad = response?.data?.data?.pastorder_load;
+    // let transformedData = results;
     
-    if (currView === 'weekly') {
-      transformedData = transformedData.map((item: any, index: number) => {
-        return {
-          ccr: item.ccr,
-          load: index === 0 ? pastOrderLoad : item.load,
-          tag: index === 0 ? 'past scheduling' : item.tag,
-          date:item.date,    
-        };
-      });
-    }
+    // if (currView === 'weekly') {
+    //   transformedData = transformedData.map((item: any, index: number) => {
+    //     return {
+    //       ccr: item.ccr,
+    //       load: index === 0 ? pastOrderLoad : item.load,
+    //       tag: index === 0 ? 'Past Scheduling' : item.tag,
+    //       date:item.date,    
+    //     };
+    //   });
+    // }
 
-    else if (currView === 'monthly') {  
-      transformedData = results.map((item: any, index: number) => ({
-        ccr: item.ccr,
-        load: index===0 ? pastOrderLoad: item.load,
-        tag: index === 0 ? 'past scheduling' : item.tag ,
-        date: item.date,
-      }));
+    // else if (currView === 'monthly') {  
+    //   transformedData = results.map((item: any, index: number) => ({
+    //     ccr: item.ccr,
+    //     load: index===0 ? pastOrderLoad: item.load,
+    //     tag: index === 0 ? 'Past Scheduling' : item.tag ,
+    //     date: item.date,
+    //   }));
       
-    } else {
-      // Daily view
-      transformedData = results.map((item: any, index: number) => ({
-        ccr: item.ccr,
-        load: index===0 ? pastOrderLoad: item.load,
-        tag: index === 0 ? 'past scheduling' : item.tag , 
-        date: item.date || new Date().toLocaleDateString("en-US")
-      }));
-    }
-    setGridData(transformedData);
+    // } else {
+    //   // Daily view
+    //   transformedData = results.map((item: any, index: number) => ({
+    //     ccr: item.ccr,
+    //     load: index===0 ? pastOrderLoad: item.load,
+    //     tag: index === 0 ? 'Past Scheduling' : item.tag , 
+    //     date: item.date || new Date().toLocaleDateString("en-US")
+    //   }));
+    // }
+    // setGridData(transformedData);
+    
+    setGridData(results)
   } catch (e) {
     console.log(e);
     notifyError("Failed to fetch Grid data!");
