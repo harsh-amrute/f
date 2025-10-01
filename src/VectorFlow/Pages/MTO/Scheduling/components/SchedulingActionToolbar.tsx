@@ -16,6 +16,7 @@ import {
 } from "../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/styles";
 import { useSearchParams } from "react-router-dom";
 import _ from "lodash";
+import { format } from "date-fns";
 
 const ToolbarWrapper = styled.div`
   width: calc(100% + 24px);
@@ -118,6 +119,23 @@ const DropDownArrow = styled.span`
   border-right: 8px solid transparent;
   border-bottom: 8px solid rgba(229, 228, 228, 0.55);
   filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.1));
+`;
+
+// Small bulge container for date filter
+const DateBulge = styled.div`
+  background: white;
+  border: 1px solid rgb(188, 61, 129);
+  height: 30px;
+  border-radius: 8px;
+  padding: 4px 8px;
+  z-index: 4;
+  width: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  font-size: 0.9rem;
 `;
 
 const gridViewIcon = (isSelected: boolean) => {
@@ -295,6 +313,8 @@ const SchedulingActionToolbar = ({
   appliedFilters,
   setAppliedFilters,
   gridRef,
+  startDate,
+  endDate
 }: any) => {
   const themeUi = useUserData().user.user.themeUi;
 
@@ -374,11 +394,35 @@ const SchedulingActionToolbar = ({
             style={{ marginBottom: "3.2px" }}
             src="/assets/img/VectorFLOW/BPR/goback.svg"
             alt="Go Back"
-            width={18}
-            height={18}
+            width={16}
+            height={16}
           />
-          <p>Go Back</p>
+          <p style={{fontSize: '1.2rem'}}>Go Back</p>
         </GoBackButton>
+        <DateBulge>
+        <img
+            style={{ marginBottom: "3.2px" }}
+            src="\assets\img\scheduling\calendar-date.svg"
+            alt="Go Back"
+            width={14}
+            height={14}
+          />
+          {
+
+            !!(startDate || appliedFilters?.timePreference?.startDate) && 
+            !!(endDate || appliedFilters?.timePreference?.endDate) ? 
+            (
+              <p style={{ fontSize: "1.1rem", marginLeft: "6px" }}>
+            {format(new Date(appliedFilters?.timePreference?.startDate), "dd MMM")} -{" "}
+            {format(new Date(appliedFilters?.timePreference?.endDate), "dd MMM yyyy")}
+          </p>) 
+          : (
+          <p style={{ fontSize: "1.2rem", marginLeft: "6px" }}>
+            {format(new Date(startDate), "dd MMM")} -{" "}
+            {format(new Date(endDate), "dd MMM yyyy")}
+          </p>)}
+
+            </DateBulge>
       </ToolbarLeftSection>
 
       <ToolbarRightSection>
@@ -390,7 +434,7 @@ const SchedulingActionToolbar = ({
               style={{
                 width: "fit-content",
                 overflowY: "hidden",
-                maxWidth: "500px",
+                maxWidth: "380px",
                 padding: "2px",
                 height: "36px",
                 border: "0.8px solid #cecece",
@@ -584,6 +628,7 @@ const SchedulingActionToolbar = ({
           </DropdownWrapper>
         </Portal>
       )}
+     
     </ToolbarWrapper>
   );
 };

@@ -8,9 +8,11 @@ const SectionWrapper = styled.div`
   display: flex;
   flex-direction: column;
   padding: 16px 0 16px 16px;
+  position: relative;
 `;
 
 const ChartWrapper = styled.div`
+  position: relative; /* so child can be positioned */
   flex: 1;
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -19,6 +21,8 @@ const ChartWrapper = styled.div`
   background: white;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 `;
+
+
 
 const shimmer = keyframes`
   0% {

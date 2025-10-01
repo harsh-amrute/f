@@ -1,134 +1,185 @@
-import React, { useEffect, useState } from 'react'
-import styled from 'styled-components';
-import Scheduling from '.';
-import SchedulingActionToolbar from './components/SchedulingActionToolbar';
-import ResourceView from './Sections/ResourceView';
-import JobView from './Sections/JobView';
-import GridViewResource from './Sections/GridViewResource';
-import GridViewJob from './Sections/GridViewJob';
-import VFOverlayModal from '../../../../components/VectorFLOW/commons/VFOverlayModal';
-import FilterModal from './components/FilterModal';
-import _ from 'lodash';
-
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import Scheduling from ".";
+import SchedulingActionToolbar from "./components/SchedulingActionToolbar";
+import ResourceView from "./Sections/ResourceView";
+import JobView from "./Sections/JobView";
+import GridViewResource from "./Sections/GridViewResource";
+import GridViewJob from "./Sections/GridViewJob";
+import VFOverlayModal from "../../../../components/VectorFLOW/commons/VFOverlayModal";
+import FilterModal from "./components/FilterModal";
+import _ from "lodash";
 
 const FinalResultSectionWrapper = styled.div`
-height: fit-content;
-postion: relative;
-`
+  height: fit-content;
+  postion: relative;
+`;
 
-const FinalResultSection = ({setStep, finalResult}:any) => {
+const FinalResultSection = ({ setStep, finalResult, startDate, endDate }: any) => {
   const [excelGridRef, setExcelGridRef] = useState<any>(null);
   const [currentView, setCurrentView] = useState("ResourceView");
-  
-  const [data, setData] = useState(finalResult)
-  const getCurrentView = ()=>{
-    switch(currentView){
+
+  const [data, setData] = useState(finalResult);
+  const getCurrentView = () => {
+    switch (currentView) {
       case "ResourceView":
-        return <ResourceView ResourceData={data} setExcelGridRef={setExcelGridRef}/>
+        return (
+          <ResourceView ResourceData={data} setExcelGridRef={setExcelGridRef} />
+        );
       case "JobView":
-        return <JobView ResourceData={data}/>
+        return <JobView ResourceData={data} />;
       case "GridViewR":
-        return <GridViewResource ResourceData={data} setExcelGridRef={setExcelGridRef}/>
+        return (
+          <GridViewResource
+            ResourceData={data}
+            setExcelGridRef={setExcelGridRef}
+          />
+        );
       case "GridViewJ":
-        return <GridViewJob ResourceData={data} setExcelGridRef={setExcelGridRef}/>
+        return (
+          <GridViewJob ResourceData={data} setExcelGridRef={setExcelGridRef} />
+        );
       default:
-        return <ResourceView/>;
+        return <ResourceView />;
     }
-  }
+  };
+
 
   const [appliedFilters, setAppliedFilters] = React.useState<any>({
-      stages: [],
-      workStations: [],
-      jobs: [],
-      actionPreferences: [],
-      timePreference: { startDate: null, endDate: null }
+    stages: [],
+    workStations: [],
+    jobs: [],
+    actionPreferences: [],
+    timePreference: { startDate: null, endDate: null },
+  });
+
+  useEffect(() => {
+    // Here you can add logic to filter 'data' based on 'appliedFilters'
+    const FilteredResourceData: any = _.cloneDeep(finalResult); // Start with the original data
+    const { stages, workStations, jobs, actionPreferences, timePreference } =
+      appliedFilters;
+
+    // Helper function to check if a timestamp falls within the date range
+    const isWithinDateRange = (timestamp: number) => {
+      if (
+        !timePreference ||
+        (!timePreference.startDate && !timePreference.endDate)
+      ) {
+        return true; // No date filter applied
+      }
+
+      const taskDate = new Date(timestamp * 1000); // Convert Unix timestamp to Date
+      const startDate = timePreference.startDate
+        ? new Date(timePreference.startDate)
+        : null;
+      const endDate = timePreference.endDate
+        ? new Date(timePreference.endDate)
+        : null;
+
+      // Set time to start/end of day for proper comparison
+      if (startDate) {
+        startDate.setHours(0, 0, 0, 0);
+      }
+      if (endDate) {
+        endDate.setHours(23, 59, 59, 999);
+      }
+
+      // Check if task falls within the date range
+      const afterStartDate = !startDate || taskDate >= startDate;
+      const beforeEndDate = !endDate || taskDate <= endDate;
+
+      return afterStartDate && beforeEndDate;
+    };
+
+    // Filter resources based on stages and workStations
+    Object.keys(FilteredResourceData.Resource_Data).forEach((resourceId) => {
+      const resource = FilteredResourceData.Resource_Data[resourceId];
+
+      if (
+        (stages.length > 0 && !stages.includes(resource.stage)) ||
+        (workStations.length > 0 &&
+          !workStations.includes(resource.work_station))
+      ) {
+        delete FilteredResourceData.Resource_Data[resourceId];
+      } else {
+        // If resource is kept, filter its task_list based on jobs, actionPreferences, and date range
+        resource.task_list = resource.task_list.filter((task: any) => {
+          const jobMatch = jobs.length === 0 || jobs.includes(task.Job_id);
+          const actionPrefMatch =
+            actionPreferences.length === 0 ||
+            actionPreferences.includes(task.task_type);
+
+          // Date range filtering - check if task overlaps with selected date range
+          let dateMatch = true;
+          if (
+            timePreference &&
+            (timePreference.startDate || timePreference.endDate)
+          ) {
+            // A task matches if either its start_time or end_time falls within the range,
+            // or if the task spans across the entire selected range
+            const taskStartWithinRange =
+              task.start_time && isWithinDateRange(task.start_time);
+            const taskEndWithinRange =
+              task.end_time && isWithinDateRange(task.end_time);
+
+            // Check if task spans across the selected date range
+            const taskSpansRange =
+              timePreference.startDate &&
+              timePreference.endDate &&
+              task.start_time &&
+              task.end_time &&
+              new Date(task.start_time * 1000) <=
+                new Date(timePreference.startDate) &&
+              new Date(task.end_time * 1000) >=
+                new Date(timePreference.endDate);
+
+            dateMatch =
+              taskStartWithinRange || taskEndWithinRange || taskSpansRange;
+          }
+
+          return jobMatch && actionPrefMatch && dateMatch;
+        });
+      }
     });
 
-
-    useEffect(() => {
-      // Here you can add logic to filter 'data' based on 'appliedFilters'
-      const FilteredResourceData: any = _.cloneDeep(finalResult); // Start with the original data
-      const { stages, workStations, jobs, actionPreferences, timePreference } = appliedFilters;
-    
-      // Helper function to check if a timestamp falls within the date range
-      const isWithinDateRange = (timestamp: number) => {
-        if (!timePreference || (!timePreference.startDate && !timePreference.endDate)) {
-          return true; // No date filter applied
-        }
-    
-        const taskDate = new Date(timestamp * 1000); // Convert Unix timestamp to Date
-        const startDate = timePreference.startDate ? new Date(timePreference.startDate) : null;
-        const endDate = timePreference.endDate ? new Date(timePreference.endDate) : null;
-    
-        // Set time to start/end of day for proper comparison
-        if (startDate) {
-          startDate.setHours(0, 0, 0, 0);
-        }
-        if (endDate) {
-          endDate.setHours(23, 59, 59, 999);
-        }
-    
-        // Check if task falls within the date range
-        const afterStartDate = !startDate || taskDate >= startDate;
-        const beforeEndDate = !endDate || taskDate <= endDate;
-    
-        return afterStartDate && beforeEndDate;
-      };
-    
-      // Filter resources based on stages and workStations
-      Object.keys(FilteredResourceData.Resource_Data).forEach((resourceId) => {
-        const resource = FilteredResourceData.Resource_Data[resourceId];
-        
-        if (
-          (stages.length > 0 && !stages.includes(resource.stage)) ||
-          (workStations.length > 0 && !workStations.includes(resource.work_station))
-        ) {
-          delete FilteredResourceData.Resource_Data[resourceId];
-        } else {
-          // If resource is kept, filter its task_list based on jobs, actionPreferences, and date range
-          resource.task_list = resource.task_list.filter((task: any) => {
-            const jobMatch = jobs.length === 0 || jobs.includes(task.Job_id);
-            const actionPrefMatch = actionPreferences.length === 0 || actionPreferences.includes(task.task_type);
-            
-            // Date range filtering - check if task overlaps with selected date range
-            let dateMatch = true;
-            if (timePreference && (timePreference.startDate || timePreference.endDate)) {
-              // A task matches if either its start_time or end_time falls within the range,
-              // or if the task spans across the entire selected range
-              const taskStartWithinRange = task.start_time && isWithinDateRange(task.start_time);
-              const taskEndWithinRange = task.end_time && isWithinDateRange(task.end_time);
-              
-              // Check if task spans across the selected date range
-              const taskSpansRange = timePreference.startDate && timePreference.endDate && 
-                task.start_time && task.end_time &&
-                new Date(task.start_time * 1000) <= new Date(timePreference.startDate) &&
-                new Date(task.end_time * 1000) >= new Date(timePreference.endDate);
-    
-              dateMatch = taskStartWithinRange || taskEndWithinRange || taskSpansRange;
-            }
-    
-            return jobMatch && actionPrefMatch && dateMatch;
-          });
-        }
-      });
-    
-      setData(FilteredResourceData);
-    }, [appliedFilters]);
+    setData(FilteredResourceData);
+  }, [appliedFilters]);
 
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
   return (
     <FinalResultSectionWrapper>
-      <SchedulingActionToolbar onGoBack={()=>{setStep("Upload")}} on currentView={currentView} setCurrentView={setCurrentView} setIsFilterModalOpen={setIsFilterModalOpen} appliedFilters={appliedFilters} setAppliedFilters={setAppliedFilters} gridRef={excelGridRef}/>
-        {getCurrentView()}
-      {
-        isFilterModalOpen && 
-          <VFOverlayModal parentSelector="#main-content" openModal={isFilterModalOpen}  >
-            <FilterModal setIsFilterModalOpen={setIsFilterModalOpen} ResourceData={finalResult} appliedFilters={appliedFilters} setAppliedFilters={setAppliedFilters}/>
-          </VFOverlayModal>
-      }
-    </FinalResultSectionWrapper>
-  )
-}
+      <SchedulingActionToolbar
+        onGoBack={() => {
+          setStep("Upload");
+        }}
+        on
+        currentView={currentView}
+        setCurrentView={setCurrentView}
+        setIsFilterModalOpen={setIsFilterModalOpen}
+        appliedFilters={appliedFilters}
+        setAppliedFilters={setAppliedFilters}
+        gridRef={excelGridRef}
+        startDate={startDate}
+        endDate={endDate}
+      />
 
-export default FinalResultSection
+      {getCurrentView()}
+      {isFilterModalOpen && (
+        <VFOverlayModal
+          parentSelector="#main-content"
+          openModal={isFilterModalOpen}
+        >
+          <FilterModal
+            setIsFilterModalOpen={setIsFilterModalOpen}
+            ResourceData={finalResult}
+            appliedFilters={appliedFilters}
+            setAppliedFilters={setAppliedFilters}
+          />
+        </VFOverlayModal>
+      )}
+    </FinalResultSectionWrapper>
+  );
+};
+
+export default FinalResultSection;
