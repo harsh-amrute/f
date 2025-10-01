@@ -4,10 +4,9 @@ import {
   FilterColumn,
   TextWrapper,
   DropDownWrapper,
-  MultiSelectCheckBoxComponent,
 } from "./style";
 import Select, { components } from "react-select";
-import { useThemeStyles } from "../../../../../hooks/useVFFilterContent";
+import { useColorThemeStyles } from "../../../../../hooks/useVFFilterContent";
 import useGetLocation from "../../../../../hooks/useGetLocation";
 import { useUserData } from "../../../../../context";
 import { useGetAllLocations } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
@@ -20,25 +19,30 @@ interface FilterSectionProps {
   onMultiFilterChange: (newMultiFilter: BPRFilterState) => void;
 }
 
-interface FilterMultiSelectCheckboxProps {
-  filterOptions: Array<{ label: string; id: string; value: string }>;
-  filterState: Array<any>;
-  header?: string;
-  onChange: (
-    e: React.ChangeEvent<HTMLInputElement>,
-    option: any,
-    header: string
-  ) => void;
-  filterId?: any;
-}
+const CustomOption = (props: any) => {
+  const optionStyles = useColorOptionStyles();
+
+  return (
+    <components.Option {...props}>
+      <div style={optionStyles.optionContainer}>
+        <input
+          type="checkbox"
+          checked={props.isSelected}
+          style={optionStyles.checkbox}
+          readOnly
+        />
+        <span style={optionStyles.colorName}>{props.data.label}</span>
+      </div>
+    </components.Option>
+  );
+};
 
 export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
   multiFilter,
   onMultiFilterChange,
 }) => {
   const { locations } = useGetLocation();
-  const styles = useThemeStyles();
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const colorStyles = useColorThemeStyles();
 
   const [selectedOptions, setSelectedOptions] = useState<{
     ForLocation: string[];
@@ -63,109 +67,10 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
   const locationOptionsWithValue = locations.map((location: any) => ({
     label: location.label,
     id: location.id,
-    value: location.id || location.label, 
+    value: location.id || location.label,
   }));
 
-  const FilterMultiSelectCheckbox = ({
-    filterOptions,
-    header,
-    onChange,
-  }: FilterMultiSelectCheckboxProps) => {
-    const colorMap: string[] = ["#9A0101", "#EBBF2B", "#418D18"];
-    const { user } = useUserData();
-
-    const themeUi = user.user.theme_ui;
-
-    const handleCheckboxChange = (
-      e: React.ChangeEvent<HTMLInputElement>,
-      option: any
-    ) => {
-      onChange(e, option, header || "");
-    };
-
-    const isChecked = (optionLabel: string) => {
-      return (
-        selectedOptions[header as keyof typeof selectedOptions]?.includes(
-          optionLabel
-        ) || false
-      );
-    };
-
-    return (
-      <>
-        {filterOptions.map(
-          (
-            option: { label: string; id: string; value: string },
-            index: number
-          ) => {
-            const color = colorMap[index];
-            return (
-              <MultiSelectCheckBoxComponent key={option.id} theme={themeUi}>
-                <input
-                  type="checkbox"
-                  name={option.value}
-                  value={option.value}
-                  style={{
-                    width: "15px",
-                    height: "20px",
-                    marginLeft: 15,
-                    marginRight: 4,
-                    borderRadius: "2px",
-                  }}
-                  onChange={(e) => handleCheckboxChange(e, option)}
-                  checked={isChecked(option.value)}
-                />
-                {header === "Coverage" ? (
-                  <div
-                    style={{
-                      height: "12px",
-                      width: "12px",
-                      backgroundColor: color,
-                    }}
-                  ></div>
-                ) : null}
-                <label
-                  style={{
-                    fontFamily: "Roboto",
-                    fontWeight: "500",
-                    fontSize: "13px",
-                    color: "#313131",
-                  }}
-                >
-                  {option.label}
-                </label>
-              </MultiSelectCheckBoxComponent>
-            );
-          }
-        )}
-      </>
-    );
-  };
-
-  const handleCheckboxChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    option: any,
-    header: string
-  ) => {
-    const { checked, value } = e.target;
-
-    setSelectedOptions((prev) => {
-      const currentSelected =
-        prev[header as keyof typeof selectedOptions] || [];
-
-      if (checked) {
-        return {
-          ...prev,
-          [header]: [...currentSelected, value],
-        };
-      } else {
-        return {
-          ...prev,
-          [header]: currentSelected.filter((item) => item !== value),
-        };
-      }
-    });
-
+  const handleSelectChange = (newValue: any, header: string) => {
     const filterId =
       header === "ForLocation"
         ? "SCF1"
@@ -177,145 +82,32 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
 
     const parentId = "supplyChainFilter";
 
-    onFilterChange(
-      filterId,
-      e,
-      parentId as keyof BPRFilterState,
-      "value",
-      header
+    const selectedValues = newValue
+      ? newValue.map((item: any) => item.value)
+      : [];
+
+    setSelectedOptions((prev) => ({
+      ...prev,
+      [header]: selectedValues,
+    }));
+
+    const existingFilters = multiFilter[parentId].filters.filter(
+      (f: BPRFilter) => f.name !== filterId
     );
-  };
 
-  const onFilterChange = (
-    filterId: string,
-    e: any,
-    parentId: keyof BPRFilterState,
-    property: string,
-    header?: string,
-    updateLabel?: boolean
-  ) => {
-    const filterObj: BPRFilter = {
-      attributeName: "",
-      value: "",
-      operator: "",
-      label: "",
+    const newFilters = selectedValues.map((value: string) => ({
+      attributeName: header,
+      value: value,
+      operator: "=",
+      label: header,
       name: filterId,
-    };
-
-    if (filterId === "SCF1") {
-      filterObj.attributeName = "ForLocation";
-      filterObj.label = "ForLocation";
-      filterObj.operator = "=";
-    } else if (filterId === "SCF2") {
-      filterObj.attributeName = "ForChildren";
-      filterObj.label = "ForChildren";
-      filterObj.operator = "=";
-    } else if (filterId === "SCF3") {
-      filterObj.attributeName = "ForChildrenLocationCode";
-      filterObj.label = "ForChildrenLocationCode";
-      filterObj.operator = "=";
-    }
-
-    let finalValue: any | [];
-    let selectedValues: any = [];
-    const finalLabel: string = e.label;
-
-    const getTrimmedValue = (finalValue: any) => {
-      return finalValue.split(" ")[0];
-    };
-
-    if (e.value) {
-      finalValue = e.value;
-    } else if (e.target && e.target.type === "checkbox") {
-      finalValue = e.target.name;
-
-      filterObj.value = finalValue;
-      filterObj.name = filterId;
-
-      const newFilterObj = { ...filterObj, value: finalValue };
-
-      selectedValues = [...multiFilter[parentId].filters];
-
-      if (
-        !selectedValues.some(
-          (obj: any) => obj.value === finalValue && obj.name === filterId
-        )
-      ) {
-        selectedValues.push(newFilterObj);
-      } else {
-        selectedValues = selectedValues.filter(
-          (obj: any) => !(obj.value === finalValue && obj.name === filterId)
-        );
-      }
-
-      const updatedMultiFilter = {
-        ...multiFilter,
-        [parentId]: {
-          ...multiFilter[parentId],
-          filters: [...selectedValues],
-        },
-      };
-
-      onMultiFilterChange(updatedMultiFilter);
-      return;
-    } else if (e.target) {
-      finalValue = e.target.value;
-    } else if (Array.isArray(e)) {
-      finalValue = e.map((ele: any) => {
-        const newfilterObj = { ...filterObj };
-        newfilterObj.value = getTrimmedValue(ele.label);
-        return newfilterObj;
-      });
-    }
-
-    const currFilter: BPRFilter | undefined = multiFilter[
-      parentId
-    ].filters.find((filter: BPRFilter) => {
-      return filter.name === filterId;
-    });
-
-    let updatedFilters: BPRFilter[];
-
-    if (currFilter) {
-      if (Array.isArray(e)) {
-        let tempFilteredArray = multiFilter[parentId].filters.filter(
-          (f: BPRFilter) => f.name !== filterId
-        );
-        tempFilteredArray = [...tempFilteredArray, ...finalValue];
-        updatedFilters = tempFilteredArray;
-      } else {
-        updatedFilters = multiFilter[parentId].filters.map(
-          (filter: BPRFilter) => {
-            if (filter.name === filterId) {
-              const result: any = { ...filter };
-              if (finalLabel && updateLabel) {
-                result["label"] = finalLabel;
-              }
-              if (finalValue !== undefined) {
-                result[property] = finalValue;
-              }
-              return result;
-            }
-            return filter;
-          }
-        );
-      }
-    } else {
-      if (Array.isArray(e) && e.length === 1) {
-        filterObj[property as keyof BPRFilter] = finalValue[0].value;
-        updatedFilters = [...multiFilter[parentId].filters, { ...filterObj }];
-      } else {
-        filterObj[property as keyof BPRFilter] = finalValue;
-        if (finalLabel && updateLabel) filterObj["label"] = finalLabel;
-        updatedFilters = [...multiFilter[parentId].filters, { ...filterObj }];
-      }
-    }
+    }));
 
     const updatedMultiFilter = {
       ...multiFilter,
       [parentId]: {
         ...multiFilter[parentId],
-        filters: updatedFilters,
+        filters: [...existingFilters, ...newFilters],
       },
     };
 
@@ -352,80 +144,68 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
       <FilterGroup>
         <FilterColumn>
           <TextWrapper>For Location</TextWrapper>
-          <DropDownWrapper>
+          <DropDownWrapper style={{ gap: "20px" }}>
             <Select
-              placeholder={"Location Type"}
+              options={locationOptionsWithValue}
+              isMulti
+              closeMenuOnSelect={false}
+              hideSelectedOptions={false}
+              components={{
+                Option: CustomOption,
+                IndicatorSeparator: () => null,
+                ClearIndicator: () => null,
+              }}
               styles={{
-                ...styles,
+                ...colorStyles,
                 menuList: (base) => ({
                   ...base,
-                  maxHeight: 400,
+                  maxHeight: 500,
                   overflowY: "auto",
+                  scrollbarWidth: "none",
                 }),
               }}
-              components={{
-                IndicatorSeparator: () => null,
-                MenuList: (props) => (
-                  <components.MenuList {...props}>
-                    <FilterMultiSelectCheckbox
-                      header={"ForLocation"}
-                      filterOptions={locationOptionsWithValue}
-                      filterState={multiFilter.supplyChainFilter.filters}
-                      onChange={handleCheckboxChange}
-                    />
-                  </components.MenuList>
-                ),
-              }}
-              isMulti
-              isSearchable={false}
-              menuIsOpen={openDropdown === "ForLocation"}
-              onMenuOpen={() => setOpenDropdown("ForLocation")}
-              onMenuClose={() => setOpenDropdown(null)}
+              placeholder="Location Type"
               value={selectedOptions.ForLocation.map((option) => ({
                 label: option,
                 value: option,
               }))}
-              options={[]}
+              onChange={(newValue) =>
+                handleSelectChange(newValue, "ForLocation")
+              }
             />
           </DropDownWrapper>
         </FilterColumn>
 
         <FilterColumn>
           <TextWrapper>For Children</TextWrapper>
-          <DropDownWrapper>
+          <DropDownWrapper style={{ gap: "20px" }}>
             <Select
-              placeholder={"Location Type"}
+              options={locationOptionsWithValue}
+              isMulti
+              closeMenuOnSelect={false}
+              hideSelectedOptions={false}
+              components={{
+                Option: CustomOption,
+                IndicatorSeparator: () => null,
+                ClearIndicator: () => null,
+              }}
               styles={{
-                ...styles,
+                ...colorStyles,
                 menuList: (base) => ({
                   ...base,
-                  maxHeight: 400,
+                  maxHeight: 500,
                   overflowY: "auto",
+                  scrollbarWidth: "none",
                 }),
               }}
-              components={{
-                IndicatorSeparator: () => null,
-                MenuList: (props) => (
-                  <components.MenuList {...props}>
-                    <FilterMultiSelectCheckbox
-                      header={"ForChildren"}
-                      filterOptions={locationOptionsWithValue}
-                      filterState={multiFilter.supplyChainFilter.filters}
-                      onChange={handleCheckboxChange}
-                    />
-                  </components.MenuList>
-                ),
-              }}
-              isMulti
-              isSearchable={false}
-              menuIsOpen={openDropdown === "ForChildren"}
-              onMenuOpen={() => setOpenDropdown("ForChildren")}
-              onMenuClose={() => setOpenDropdown(null)}
+              placeholder="Location Type"
               value={selectedOptions.ForChildren.map((option) => ({
                 label: option,
                 value: option,
               }))}
-              options={[]}
+              onChange={(newValue) =>
+                handleSelectChange(newValue, "ForChildren")
+              }
             />
           </DropDownWrapper>
         </FilterColumn>
@@ -434,23 +214,17 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
       <FilterGroup style={{ paddingTop: "10px" }}>
         <FilterColumn style={{ maxWidth: "100%", flex: 1, width: "100%" }}>
           <TextWrapper>Select Location</TextWrapper>
-          <DropDownWrapper>
+          <DropDownWrapper style={{ gap: "20px" }}>
             <Select
-              placeholder={"Search By name"}
-              styles={{
-                ...styles,
-                menuList: (base) => ({
-                  ...base,
-                  maxHeight: 400,
-                  overflowY: "auto",
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr 1fr",
-                  gap: "8px",
-                  padding: "8px",
-                }),
-              }}
+              options={locationCheckboxOptions}
+              isMulti
+              isSearchable={true}
+              closeMenuOnSelect={false}
+              hideSelectedOptions={false}
               components={{
+                Option: CustomOption,
                 IndicatorSeparator: () => null,
+                ClearIndicator: () => null,
                 DropdownIndicator: () => (
                   <img
                     src={"/assets/img/VectorFLOW/NMS/search.svg"}
@@ -462,31 +236,73 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
                     alt="search"
                   />
                 ),
-                MenuList: (props) => (
-                  <components.MenuList {...props}>
-                    <FilterMultiSelectCheckbox
-                      header={"ForChildrenLocationCode"}
-                      filterOptions={locationCheckboxOptions}
-                      filterState={multiFilter.supplyChainFilter.filters}
-                      onChange={handleCheckboxChange}
-                    />
-                  </components.MenuList>
-                ),
               }}
-              isMulti={true}
-              menuIsOpen={openDropdown === "ForChildrenLocationCode"}
-              onMenuOpen={() => setOpenDropdown("ForChildrenLocationCode")}
-              onMenuClose={() => setOpenDropdown(null)}
+              styles={{
+                ...colorStyles,
+                menuList: (base) => ({
+                  ...base,
+                  maxHeight: 400,
+                  overflowY: "auto",
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr 1fr",
+                  gap: "8px",
+                  padding: "8px",
+                  scrollbarWidth: "none",
+                }),
+              }}
+              placeholder="Search By name"
               value={selectedOptions.ForChildrenLocationCode.map((option) => ({
                 label: option,
                 value: option,
               }))}
-              isSearchable={false}
-              options={[]}
+              onChange={(newValue) =>
+                handleSelectChange(newValue, "ForChildrenLocationCode")
+              }
             />
           </DropDownWrapper>
         </FilterColumn>
       </FilterGroup>
     </>
   );
+};
+
+export const useColorOptionStyles = () => {
+  const { user } = useUserData();
+  const theme_ui = user.user.theme_ui;
+  const themeColor = theme_ui === "REGALBLAZE" ? "#FCA311" : "#BC3D80";
+
+  return {
+    checkbox: {
+      width: "16px",
+      height: "16px",
+      accentColor: themeColor,
+      cursor: "pointer",
+      flexShrink: 0,
+    },
+    colorPanel: {
+      width: "20px",
+      height: "20px",
+      borderRadius: "4px",
+      border: "1px solid #ddd",
+      flexShrink: 0,
+      boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+      order: 2,
+    },
+    colorName: {
+      fontSize: "14px",
+      fontFamily: "Roboto, sans-serif",
+      fontWeight: "400",
+      color: "#333",
+      flex: 1,
+      textAlign: "left" as const,
+      order: 1,
+    },
+    optionContainer: {
+      display: "flex",
+      alignItems: "center",
+      gap: "10px",
+      width: "100%",
+      padding: "4px 0",
+    },
+  };
 };

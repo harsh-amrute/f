@@ -5,6 +5,8 @@ import { useThemeStyles } from '../../../../../hooks/useVFFilterContent';
 import { useFilterRows } from './useVFFilterContent';
 import { stringOpertors } from './useVFFilterContent';
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
+import { useUserData } from "../../../../../context";
+
 interface FilterSectionProps {
   filters: any;
   onFilterChange: (field: string, value: string) => void;
@@ -13,6 +15,8 @@ interface FilterSectionProps {
 // Attributes Filter Component
 export const AttributesFilters: React.FC<FilterSectionProps> = ({ filters, onFilterChange }) => {
   const styles = useThemeStyles();
+  const { user } = useUserData();
+  
   const { filterRows, addFilterRow, removeFilterRow, isMaxRows, isMinRows } = useFilterRows();
   return (
     <>
@@ -48,16 +52,18 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({ filters, onFil
               />
             </DropDownWrapper>
             <div style={{display:'flex', alignItems:'center', marginBottom:'2px'}}>
-            <IconWrapper>
+            <IconWrapper theme_ui={user.user.theme_ui}>
               <img src={"/assets/img/MTAVFMultiFilter/Error.svg"}/>
             </IconWrapper>
             <IconWrapper 
+              theme_ui={user.user.theme_ui}
               disabled={isMaxRows} 
               onClick={!isMaxRows ? addFilterRow : undefined}
             >
               <img src={"/assets/img/MTAVFMultiFilter/plus-sign-circle.svg"}/>
             </IconWrapper>
             <IconWrapper 
+              theme_ui={user.user.theme_ui}
               disabled={isMinRows}
               onClick={() => !isMinRows && removeFilterRow(row.id)}
             >

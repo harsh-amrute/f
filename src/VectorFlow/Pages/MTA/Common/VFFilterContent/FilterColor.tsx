@@ -11,6 +11,7 @@ import Select from "react-select";
 import { useThemeStyles } from "../../../../../hooks/useVFFilterContent";
 import { useFilterRows } from "./useVFFilterContent";
 import { stringOpertors } from "./useVFFilterContent";
+import { useUserData } from "../../../../../context";
 
 interface FilterSectionProps {
   filters: any;
@@ -21,6 +22,7 @@ export const ColorFilters: React.FC<FilterSectionProps> = ({
   filters,
   onFilterChange,
 }) => {
+  const { user } = useUserData();
   const styles = useThemeStyles();
   const { filterRows, addFilterRow, removeFilterRow, isMaxRows, isMinRows } =
     useFilterRows();
@@ -85,6 +87,7 @@ export const ColorFilters: React.FC<FilterSectionProps> = ({
                 }}
               >
                 <IconWrapper
+                  theme_ui={user.user.theme_ui}
                   disabled={isMaxRows}
                   onClick={!isMaxRows ? addFilterRow : undefined}
                 >
@@ -93,6 +96,7 @@ export const ColorFilters: React.FC<FilterSectionProps> = ({
                   />
                 </IconWrapper>
                 <IconWrapper
+                  theme_ui={user.user.theme_ui}
                   disabled={isMinRows}
                   onClick={() => !isMinRows && removeFilterRow(row.id)}
                 >

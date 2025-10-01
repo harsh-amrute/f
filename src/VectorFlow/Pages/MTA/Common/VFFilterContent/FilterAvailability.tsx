@@ -160,6 +160,8 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
 }) => {
   const styles = useThemeStyles();
   const colorStyles = useColorThemeStyles();
+  const { user } = useUserData();
+
   const [tagStates, setTagStates] = useState<{ [key: string]: boolean }>({
     PIPO: false,
     Seasonality: false,
@@ -217,10 +219,10 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
                 options={[]}
               />
             </DropDownWrapper>
-            <IconWrapper>
+            <IconWrapper theme_ui={user.user.theme_ui}>
               <img src={"/assets/img/MTAVFMultiFilter/Error.svg"} />
-            </IconWrapper>
-            <IconWrapper>
+            </IconWrapper >
+            <IconWrapper theme_ui={user.user.theme_ui}>
               <img src={"/assets/img/MTAVFMultiFilter/refresh.svg"} />
             </IconWrapper>
           </DropDownRow>
@@ -265,10 +267,10 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
                 options={[]}
               />
             </DropDownWrapper>
-            <IconWrapper>
+            <IconWrapper theme_ui={user.user.theme_ui}>
               <img src={"/assets/img/MTAVFMultiFilter/Error.svg"} />
             </IconWrapper>
-            <IconWrapper>
+            <IconWrapper theme_ui={user.user.theme_ui}>
               <img src={"/assets/img/MTAVFMultiFilter/refresh.svg"} />
             </IconWrapper>
           </DropDownRow>
@@ -313,10 +315,10 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
                 options={[]}
               />
             </DropDownWrapper>
-            <IconWrapper>
+            <IconWrapper theme_ui={user.user.theme_ui}>
               <img src={"/assets/img/MTAVFMultiFilter/Error.svg"} />
             </IconWrapper>
-            <IconWrapper>
+            <IconWrapper theme_ui={user.user.theme_ui}>
               <img src={"/assets/img/MTAVFMultiFilter/refresh.svg"} />
             </IconWrapper>
           </DropDownRow>
@@ -361,10 +363,10 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
                 options={[]}
               />
             </DropDownWrapper>
-            <IconWrapper>
+            <IconWrapper theme_ui={user.user.theme_ui}>
               <img src={"/assets/img/MTAVFMultiFilter/Error.svg"} />
             </IconWrapper>
-            <IconWrapper>
+            <IconWrapper theme_ui={user.user.theme_ui}>
               <img src={"/assets/img/MTAVFMultiFilter/refresh.svg"} />
             </IconWrapper>
           </DropDownRow>
