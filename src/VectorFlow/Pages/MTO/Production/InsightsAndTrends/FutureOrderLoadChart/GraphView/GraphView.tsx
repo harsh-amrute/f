@@ -22,7 +22,7 @@ const GraphView = ({ currView, setCurrView,selectedCCR, horizonData, graphData, 
   useEffect(() => {
     if (selectedCCR?.value && horizonData && horizonData.length > 0) {
       const ccrHorizonItem = horizonData.find((item: any) => item.ccr === selectedCCR.value);
-      let horizonDate = ccrHorizonItem?.horizon_date || null;
+      const horizonDate = ccrHorizonItem?.horizon_date || null;
       
       setSelectedCCRHorizonDate(horizonDate);
       
@@ -42,9 +42,6 @@ const GraphView = ({ currView, setCurrView,selectedCCR, horizonData, graphData, 
       setHorizonDateRange(null);
     }
   }, [selectedCCR, horizonData]);
-
-
-  // console.log('horizon date', selectedCCRHorizonDate)
 
   useEffect(() => {
     if (graphData?.data && cwl) {
@@ -73,7 +70,6 @@ const GraphView = ({ currView, setCurrView,selectedCCR, horizonData, graphData, 
         
         // Extract day and month 
         const weekEndMatch = weekEndStr.match(/(\d+)(?:st|nd|rd|th)?\s+([A-Za-z]+)/); //6-09-2025
-        console.log('weekEnd Macth', weekEndMatch)
 
         if (weekEndMatch) {
           const day = weekEndMatch[1]; //6
@@ -89,7 +85,6 @@ const GraphView = ({ currView, setCurrView,selectedCCR, horizonData, graphData, 
             const startDay = weekStartMatch[1]; //31
             const startMonth = weekStartMatch[2]; //aug
             
-            // Determine year for week start (could be current year or next year)
             let weekStartDate = new Date(`${startMonth} ${startDay} ${startYear}`);
             let weekEndDate = new Date(`${month} ${day} ${startYear}`);
             
@@ -98,7 +93,6 @@ const GraphView = ({ currView, setCurrView,selectedCCR, horizonData, graphData, 
               weekEndDate = new Date(`${month} ${day} ${startYear + 1}`);
             }
             
-            // If week is entirely in the future beyond horizon, try next year
             if (weekStartDate.getFullYear() === startYear && weekStartDate < startDate) {
               weekStartDate = new Date(`${startMonth} ${startDay} ${startYear + 1}`);
               weekEndDate = new Date(`${month} ${day} ${startYear + 1}`);
@@ -125,12 +119,10 @@ const GraphView = ({ currView, setCurrView,selectedCCR, horizonData, graphData, 
           year = 2000 + year; // 25 to 2025 convert
         }
         
-        // Create month start and end dates
-        // Using month names with Date constructor
+      
         const monthStartDate = new Date(`${month} 1, ${year}`);
         const monthEndDate = new Date(year, monthStartDate.getMonth() + 1, 0);
         
-        // Normalize times for comparison
         monthStartDate.setHours(0, 0, 0, 0);
         monthEndDate.setHours(23, 59, 59, 999);
         
@@ -139,16 +131,6 @@ const GraphView = ({ currView, setCurrView,selectedCCR, horizonData, graphData, 
         
         const horizonNormalized = new Date(endDate);
         horizonNormalized.setHours(23, 59, 59, 999);
-        
-        // console.log(`Monthly check for ${dateToCheck}:`, {
-        //   monthStart: monthStartDate.toISOString(),
-        //   monthEnd: monthEndDate.toISOString(),
-        //   today: todayNormalized.toISOString(),
-        //   horizon: horizonNormalized.toISOString(),
-        //   overlaps: monthStartDate <= horizonNormalized && monthEndDate >= todayNormalized
-        // });
-        
-       
         const monthOverlapsHorizon = monthStartDate <= horizonNormalized && monthEndDate >= todayNormalized;
         
         return monthOverlapsHorizon;
@@ -169,9 +151,9 @@ const GraphView = ({ currView, setCurrView,selectedCCR, horizonData, graphData, 
       if (currView === "daily") {
         return {
           date: item.date,
-          load: item.load, //500 for test
-          holiday:item.is_holiday,
-          past: item.past, //300
+          load: item.load, 
+          holiday:item.is_holiday, 
+          past: item.past, 
           limit: cwlValue, 
           type: item.is_holiday ? "holiday" : "load",
           horizonDate: selectedCCRHorizonDate,
@@ -180,10 +162,8 @@ const GraphView = ({ currView, setCurrView,selectedCCR, horizonData, graphData, 
       }
 
       if (currView === "weekly") {
-       
-      
         return {
-          date:item.date, //item.date
+          date:item.date, 
           load: item.load,
           holiday: item.is_holiday,
           past: item.past,
@@ -213,19 +193,13 @@ const GraphView = ({ currView, setCurrView,selectedCCR, horizonData, graphData, 
   }, [graphData, currView, cwlValue, selectedCCRHorizonDate, horizonDateRange]);
   
 
-  // let a = graphData?.data?.map((item: any) => {
-  // return item.is_holiday
-    
-  // })
-
-  let x = true;
-  
   const [chartoptions, setChartOptions] = useState<any>({
     series: [
       {
         type: 'bar',
         xKey: 'date',
         yKey: 'load',
+        yName:'Load',
         stacked: true,
         visible: true,
         fill: '#F4BD8E',
@@ -234,8 +208,8 @@ const GraphView = ({ currView, setCurrView,selectedCCR, horizonData, graphData, 
         tooltip: {
           renderer: ({ datum }: any) => {
             return `<div style="background: white; color: #000; padding: 8px;">
-              <div style="color:#F4BD8E">Load</div>
-              <div>Value: ${datum.load}</div>
+              <div style="color:black", font-weight:500;>${datum.type}</div> 
+              <div> ${datum.load}</div>
             </div>`;
           }
         },
@@ -259,13 +233,15 @@ const GraphView = ({ currView, setCurrView,selectedCCR, horizonData, graphData, 
         visible: true,
         fill: '#999999',
         stroke: '#999999',
-        legendItemName: 'Holiday',
+         legendItemName: 'Holiday',
         name:'holiday',
         tooltip: {
           renderer: ({ datum }: any) => {
+            console.log("dataums", datum)
+
             return `<div style="background: white; color: #000; padding: 8px;">
-              <div style="color:#999999">Holiday</div>
-              <div>Value: ${datum.load}</div>
+              <div style="color:black", font-weight:500;>${datum.type}</div> 
+              <div> ${datum.load}</div>
             </div>`;
           }
         },
@@ -290,11 +266,14 @@ const GraphView = ({ currView, setCurrView,selectedCCR, horizonData, graphData, 
         fill: '#FF5959',
         strokeWidth: 2,
         legendItemName: 'Past',
+        label: {
+          enabled: false  
+        },
         tooltip: {
           renderer: ({ datum }: any) =>
             `<div style="background: white; color: #000; padding: 8px;">
               <div style="color:#FF5959">Past</div>
-              <div>Past: ${datum.past}</div>
+              <div> ${datum.past}</div>
             </div>`
         },
         itemStyler: ({ datum }: any) =>
@@ -316,7 +295,7 @@ const GraphView = ({ currView, setCurrView,selectedCCR, horizonData, graphData, 
           renderer: ({ datum }: any) =>
             `<div style="background: white; color: #000; padding: 8px;">
               <div style="color:#820f4c">Limit</div>
-              <div>Limit: ${datum.limit}</div>
+              <div> ${datum.limit}</div>
             </div>`
         }
       }

@@ -21,7 +21,7 @@ import LoadTagTooltip from "../LoadTagToolTip";
 
 
 
-const GridView = ({ setCurrentGridRef,context, currentGridRef, columnState, colDef, userPageSize, handlePageChange, totalRows,ccr, currentPage, savePageSize, agGridProps, rowData, setCurrView, currView, ccrOptions }: any) => {
+const GridView = ({ setCurrentGridRef,context, currentGridRef, columnState, colDef, userPageSize, handlePageChange, totalRows,ccr, currentPage, savePageSize, agGridProps, rowData, setCurrView, currView, ccrOptions, currTab, selectedAction, isGridView }: any) => {
     const gridRef = useRef<any>(null);
     const [isDisabled, setIsDisabled] = useState<boolean>(true)
      const { user } = useUserData();
@@ -31,7 +31,6 @@ const GridView = ({ setCurrentGridRef,context, currentGridRef, columnState, colD
         { label: "Daily", value: "Daily", id: "daily" },
         { label: "Weekly", value: "Weekly", id: "weekly" },
         { label: "Monthly", value: "Monthly", id: "monthly" },
-      
       ];
 
     const defaultColDef = {
@@ -57,16 +56,32 @@ const GridView = ({ setCurrentGridRef,context, currentGridRef, columnState, colD
           },
       }
         useEffect(() => {
-            if (currentGridRef?.current && columnState?.length && colDef.length > 0) {
+          if (currentGridRef?.current && columnState?.length ) {
+            const isLoadWise = currTab === 'Load Wise';
+            const isANS = selectedAction?.value === 'ANS';
+
+            console.log("LoadWise", isLoadWise);
+            console.log("Ans",selectedAction?.value)
+            const currentGridIndex =  isLoadWise
+            ? isANS 
+              ? 0
+              : 1
+            : isANS
+              ? 2
+                : 3;
+            
+            console.log("index apply", currentGridIndex)
+            
+            console.log("columnState apply krr rhaa", columnState[currentGridIndex]);
                 const result = currentGridRef.current.api.applyColumnState({
-                    state: columnState,
+                    state: columnState[currentGridIndex],
                     applyOrder: true
                 });
                 if (!result) {
                     console.error('Failed to apply column state');
                 }
             }
-        },[columnState]);
+        },[currentGridRef, columnState, isGridView,currTab, selectedAction]);
 
      const clearGridFilter = () =>{
           gridRef?.current?.api.setFilterModel(null);
@@ -116,7 +131,7 @@ const GridView = ({ setCurrentGridRef,context, currentGridRef, columnState, colD
               </ApplyZoomOut>
             </TabsSection>
             
-            <VFTableWrapper style={{height: '72vh', marginTop: '30px'}}>
+            <VFTableWrapper style={{height: '72vh', marginTop: '30px', paddingLeft: '25px'}}>
                 <VFTable 
                 {...agGridProps}
                 columnDefs={colDef}
@@ -146,7 +161,7 @@ const GridView = ({ setCurrentGridRef,context, currentGridRef, columnState, colD
                     context={context}
                 maintainColumnOrder
                 onGridReady={(params: any) => {
-                    params.api.autoSizeAllColumns();
+                  params.api.autoSizeAllColumns();
                     setCurrentGridRef(gridRef);
                     }}
                     onFilterChanged={()=>{Object.keys((currentGridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}

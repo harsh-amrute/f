@@ -49,7 +49,7 @@ const FutureOrderLoadChart = () => {
 } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Future_Order_Load_Chart);
   const [currTab, setCurrTab] = useState("Pending CCR Quantity");
   const [isGridView, setIsGridView] = useState(false);
-  const [selectedAction, setSelectedAction] = useState<any>(null);
+  const [selectedAction, setSelectedAction] = useState<any>({ value: "BFH", label: "Not Scheduled beyond FOL Horizon" });
   const [selectedCCR, setSelectedCCR] = useState<any>(null);
   const [ccrOptions, setCcrOptions] = useState<any>();
   const { colDefMap, getColDef } = useColDef();
@@ -57,15 +57,15 @@ const FutureOrderLoadChart = () => {
   const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
   const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
   const [userPageSize, setUserPageSize] = useState<any>();
-  const [masterUIConfig, setMasterUIConfig] = useState([]);
+  const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
   const [gridData, setGridData] = useState<any>([]);
   const [totalRow, setTotalRow] = useState<number>(0)
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [currView, setCurrView] = useState("daily");
   const [currGridView, setCurrGridView] = useState('daily')
   const [graphData, setGraphData] = useState<any>(null);
-  const [fromDate, setFromDate] = useState<any>(new Date());
-  const [toDate, setToDate] = useState<any>(new Date());
+  const [fromDate, setFromDate] = useState<any>(null);
+  const [toDate, setToDate] = useState<any>(null);
   const [colDef, setColDef] = useState([{}]);
   const [currentGridRef, setCurrentGridRef] = useState<any>(null);
   const [isReset, setIsReset] = useState<any>(undefined);
@@ -79,6 +79,7 @@ const FutureOrderLoadChart = () => {
   const {data}=useGetFutureOrderFOLHorizonDate() //folhorizon
   const {mutateAsync: geFutureOrderLoadChart, isLoading}=useGetFutureOrderLoadChartData()
   const isDateDisabled = !(selectedCCR && selectedAction);
+  const [uiConfig, setUiConfig] = useState([]);
   
 
   const [selectedCCRHorizon, setSelectedCCRHorizon] = useState('')
@@ -117,15 +118,19 @@ const FutureOrderLoadChart = () => {
       value: "Load Wise",
       id: "Load Wise",
     },
-    ];
+  ];
 
   const OrderOptions = [
     { value: "BFH", label: "Not Scheduled beyond FOL Horizon" },
     { value: "ANS", label: "All Not Scheduled" },
   ]
 
+
+  const formattedFilters = formatFilterJSON(appliedFilters);
+
   const payload = { loadwise: currTab === "Load Wise" ? 2 : 1,
     view: currView,
+    ...formattedFilters,
     filters: {
       ccr: selectedCCR?.value,
       orderOption: selectedAction?.value,
@@ -140,26 +145,10 @@ const FutureOrderLoadChart = () => {
   }
   
 
-  //   const setColumnDef = async () => {
-  //     try {
-  //       // const response = await getUIConfigData(currTab==='Load Wise' ? 'FutureOrderLoadWiseChart' :'FutureOrderPendingChart');
-  //       const response = await getUIConfigData('FutureOrderLoadChart');
-
-  //       getColDef(response);
-  //        console.log(response)
-  //       setColDef(getColumnDefinations(response.data.data,colDefCustomizations,[]));
-  //     }
-  //     catch (e) {
-  //       console.log(e);
-  //     }
-  // }
 
   const setColumnDef = async () => {
     try {
-      const response = await getUIConfigData('FutureOrderLoadChart');
-      getColDef(response);
-      
-      let columnDefs = getColumnDefinations(response.data.data, colDefCustomizations, []);
+      let columnDefs = getColumnDefinations(uiConfig, colDefCustomizations, []);
       
       const isLoadWise = currTab === 'Load Wise';
       const isANS = selectedAction?.value === 'ANS';
@@ -181,55 +170,29 @@ const FutureOrderLoadChart = () => {
     catch (e) {
       console.log(e);
     }
-}
+  }
 
-// const setColumnDef = async () => {
-//       try {
-//         const response = await getUIConfigData('FutureOrderLoadChart');
-//         getColDef(response);
-        
-//         let columnDefs = getColumnDefinations(response.data.data, colDefCustomizations, []);
-      
-//         if (currTab === 'Load Wise') {
-//           if (selectedAction.value == 'ANS') {
-//             columnDefs = columnDefs.filter((col: any) => {
-//               const headerMatch = ['Date', 'CCR', 'Load in Days', 'Tags'].includes(col.headerName || col.header);
-//               return headerMatch;
-//             });
-//           }
-//           else {
-//             columnDefs = columnDefs.filter((col: any) => {
-//               const headerMatch = ['Date', 'CCR', 'Load in Days'].includes(col.headerName || col.header);
-//               return headerMatch ;
-//             });
-//           }
-            
-        
-//         } else {
+  const getUIReportData = async () => {
+    
+    try {
+      const response = await getUIConfigData('FutureOrderLoadChart');
+      getColDef(response);
+      setUiConfig(response.data.data)
+    }
+    catch (e) {
+      console.error(e);
+    }
+  }
+  
+  useEffect(() => {
+    getUIReportData();
+  },[])
 
-//           if (selectedAction.value === 'ANS') {
-//             columnDefs = columnDefs.filter((col: any) => {
-//               const headerMatch = ['Date', 'Pending CCR Quantity', 'Tags', 'CCR'].includes(col.headerName || col.header);
-//               return headerMatch;
-//             });
-//           }
+  useEffect(() => {
+    setCcrHorizonData(data?.data?.data);
+  },[data])
 
-//             else {
-//               columnDefs = columnDefs.filter((col: any) => {
-//                 const headerMatch = ['Date', 'Pending CCR Quantity', 'CCR'].includes(col.headerName || col.header);
-//                 return headerMatch ;
-//               });
-            
-//           }
-         
-//         }
-        
-//         setColDef(columnDefs);
-//       }
-//       catch (e) {
-//         console.log(e);
-//       }
-//   }
+
 
   const getCCROptions = async () => {
     const CCRMasterData = await getCCRMasterData({})
@@ -249,8 +212,12 @@ const FutureOrderLoadChart = () => {
   }, [])
 
   useEffect(() => {
-    setColumnDef();
-  }, [currTab])
+    if (uiConfig && currTab && selectedAction ) { 
+      setColumnDef();
+      setMasterUIConfig(createMasterConfig());
+      getUserColumnConfig()
+    }
+  }, [currTab,selectedAction,uiConfig])
   
   useEffect(() => {
     if (isReset) {
@@ -264,7 +231,6 @@ const FutureOrderLoadChart = () => {
     const date = new Date(dateObj);
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0'); 
-    // const day = date.getDate();
     const day = String(date.getDate()).padStart(2, '0'); 
     return `${year}-${month}-${day}`;
   }
@@ -275,6 +241,7 @@ const FutureOrderLoadChart = () => {
       return;
     }
     
+    
     setIsSubmitLoading(true);
     setFilterPayload(payload);
   
@@ -283,19 +250,16 @@ const FutureOrderLoadChart = () => {
 
       if (isGridView) {
         let transformedData = response?.data?.data?.data || [];
-        let pastOrderLoad = response?.data?.data?.pastorder_load
+        const pastOrderLoad = response?.data?.data?.pastorder_load
         
         if (currView === 'weekly') {
           transformedData = transformedData.map((item: any, index: number) => {
-            console.log(transformedData)
           
             const a = item?.tag?.map((e: any) => e);
-            // console.log('a is', a);
 
             return {
               ccr: item.ccr,
               load: index === 0 ? pastOrderLoad : item.load,
-              // tag: index === 0 ? 'past scheduling' : item.tag,
               tag:a,
             date:item.date
             };
@@ -313,10 +277,6 @@ const FutureOrderLoadChart = () => {
               tag: a,
               date: item.date,
             }
-            // ccr: item.ccr,
-            // load: index===0 ? pastOrderLoad: item.load,
-            // tag: index === 0 ? 'Past Scheduling' : item.tag , 
-            // date: item.date,
           });
           
         } else {
@@ -376,56 +336,11 @@ const getFilterData = async () => {
   }
 
   useEffect(() => {
-    // setColumnDef(); //yeh hatae
     getGraphData({ graphflag: 1 });
     getFilterData();
   }, [])
 
-  
-  //  const getGraphData = async (params: any) => {
-  //    const { isExcelExport, graphflag } = params;
-  //    const payload = { loadwise: currTab === "Load Wise" ? 2 : 1,
-  //     view: currView,
-  //     filters: {
-  //       ccr: selectedCCR?.value,
-  //       orderOption: selectedAction?.value,
-  //       from: formatDateToYMD(fromDate),
-  //       to: formatDateToYMD(toDate),
-  //     }}
-  //     if(isExcelExport) {
-  //       const headersdata = currentGridRef?.current?.api?.getColumnState();
-  //       const formattedFilters = formatFilterJSON(appliedFilters)
-  //       const bodyExcel = getBodyForExcelExport({ headersdata, appliedFilters: formattedFilters, colDefMap })
 
-  //       const excelPayload = {
-  //         ...payload,
-  //         ...bodyExcel,
-  //         report_name: "FutureOrderLoadChart", 
-  //         isExcelExport: 1,
-  //         graphflag:1,
-  //       };
-  //       try{
-  //         const response = await geFutureOrderLoadChart(excelPayload);
-  //         // const response = await getSTPLandFullkitInDaysExcelData(excelPayload)
-  //           DownloadExcel(response, 'FutureOrderLoadChart')
-  //       }
-  //       catch(e){
-  //         console.log(e)
-  //       }
-  //     }
-  //     else{
-  //       try {
-  //         // const response = await getSTPLandFullkitInDaysData(params);
-  //         const response = await geFutureOrderLoadChart(payload);
-  //         // setGraphData(response.data.data);
-  //       }
-  //       catch (e) {
-  //         console.log(e);
-  //         notifyError('Failed to fetch Graph data!');
-  //       }
-  //     }
-  //   }
-  
   const { mutateAsync: getFutureOrderLoadChartExcelData } = useGetFutureOrderLoadChartExcelData();
 
   const getGraphData = async (params: any) => {
@@ -447,7 +362,6 @@ const getFilterData = async () => {
     const headersdata = currentGridRef?.current?.api?.getColumnState();
     const formattedFilters = formatFilterJSON(appliedFilters);
     const body = getBodyForExcelExport({ headersdata, appliedFilters: formattedFilters, colDefMap });
-    
     try {
       const response = await getFutureOrderLoadChartExcelData({
         body,
@@ -507,7 +421,6 @@ const getFilterData = async () => {
         const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
         setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
         setColumnState(newConfig.cs);
-        console.log('column state', columnState)
   
         if (!data) {
           console.error('Failed to apply column state');
@@ -521,7 +434,16 @@ const getFilterData = async () => {
 
     try {
       if (coldefs) {
-        const fullConfig = {cs: coldefs, pageSize: page_size || userPageSize };
+        const isLoadWise = currTab === 'Load Wise';
+        const isANS = selectedAction?.value === 'ANS';
+        const currentGridIndex =  isLoadWise
+        ? isANS 
+          ? 0
+          : 1
+        : isANS
+          ? 2
+        :3;
+        const fullConfig = {cs: coldefs[currentGridIndex], pageSize: page_size || userPageSize };
         const payload = {
           un: user.user.name,
           rn_id: UIGridCode.ProdStplAndFullKit,
@@ -545,7 +467,19 @@ const getFilterData = async () => {
         if (currentGridRef?.current?.api) {
 
           const config = currentGridRef.current.api.getColumnState();
-          const fullConfig = {  cs: config,  pageSize: userPageSize };
+          const updatedColState = [...columnState];
+          const isLoadWise = currTab === 'Load Wise';
+          const isANS = selectedAction?.value === 'ANS';
+          const currentGridIndex =  isLoadWise
+          ? isANS 
+            ? 0
+            : 1
+          : isANS
+            ? 2
+              : 3;
+          updatedColState[currentGridIndex] = config;
+
+          const fullConfig = {  cs: updatedColState,  pageSize: userPageSize };
           const payload = {
             un: user.user.name,
             rn_id: UIGridCode.ProdStplAndFullKit,
@@ -559,13 +493,45 @@ const getFilterData = async () => {
       console.error(error);
     }
   }
+
+  const createMasterConfig = () => {
+    
+
+    const columnDefs = getColumnDefinations(uiConfig, colDefCustomizations, []);
+      
+      const isLoadWise = currTab === 'Load Wise';
+      const isANS = selectedAction?.value === 'ANS';
+      
+      const allowedHeaders = isLoadWise
+        ? isANS 
+          ? ['Date', 'CCR', 'Load in Days', 'Tags']
+          : ['Date', 'CCR', 'Load in Days']
+        : isANS
+          ? ['Date', 'Pending CCR Quantity', 'Tags', 'CCR']
+        : ['Date', 'Pending CCR Quantity', 'CCR'];
+    
+    const header1 = ['Date', 'CCR', 'Load in Days', 'Tags']
+    const header2 = ['Date', 'CCR', 'Load in Days']
+    const header3 = ['Date', 'Pending CCR Quantity', 'Tags', 'CCR']
+    const header4 = ['Date', 'Pending CCR Quantity', 'CCR']
+
+    const colDef1 = columnDefs.filter((col: any) =>
+      header1.includes(col.headerName || col.header)
+    )
+    const colDef2 = columnDefs.filter((col: any) =>
+      header2.includes(col.headerName || col.header)
+    ) 
+    const colDef3 = columnDefs.filter((col: any) =>
+      header3.includes(col.headerName || col.header)
+    )
+    const colDef4 = columnDefs.filter((col: any) =>
+      header4.includes(col.headerName || col.header)
+    )
+
+
+    return [colDef1, colDef2, colDef3, colDef4];
+  }
   
-  useEffect(() => {
-    if (colDef && colDef.length && currentGridRef?.current && !masterUIConfig.length) {
-      setMasterUIConfig(currentGridRef?.current.api.getColumnState());
-      getUserColumnConfig();
-    }
-  }, [colDef, isGridView]);  //colDef,isGridView
 
 
   const getGridData = async (params: any, pageSize?: any) => {
@@ -579,38 +545,7 @@ const getFilterData = async () => {
 
     const response = await geFutureOrderLoadChart(GridPayload);
     const results = response?.data?.data?.data || [];
-    // let pastOrderLoad = response?.data?.data?.pastorder_load;
-    // let transformedData = results;
-    
-    // if (currView === 'weekly') {
-    //   transformedData = transformedData.map((item: any, index: number) => {
-    //     return {
-    //       ccr: item.ccr,
-    //       load: index === 0 ? pastOrderLoad : item.load,
-    //       tag: index === 0 ? 'Past Scheduling' : item.tag,
-    //       date:item.date,    
-    //     };
-    //   });
-    // }
-
-    // else if (currView === 'monthly') {  
-    //   transformedData = results.map((item: any, index: number) => ({
-    //     ccr: item.ccr,
-    //     load: index===0 ? pastOrderLoad: item.load,
-    //     tag: index === 0 ? 'Past Scheduling' : item.tag ,
-    //     date: item.date,
-    //   }));
-      
-    // } else {
-    //   // Daily view
-    //   transformedData = results.map((item: any, index: number) => ({
-    //     ccr: item.ccr,
-    //     load: index===0 ? pastOrderLoad: item.load,
-    //     tag: index === 0 ? 'Past Scheduling' : item.tag , 
-    //     date: item.date || new Date().toLocaleDateString("en-US")
-    //   }));
-    // }
-    // setGridData(transformedData);
+   
     
     setGridData(results)
   } catch (e) {
@@ -644,51 +579,68 @@ const getFilterData = async () => {
       
   }
 
+  
   /* Logic for disabling date from aaj ka din to FOL Horizon Date */
-
-  const getCCRHorizonData = async () => {
-    const response = data
-    setCcrHorizonData(response?.data?.data);
-
-    const a = ccrHorizonData.find(item => item.ccr === selectedCCR.value)?.horizon_date;
-
-  setSelectedCCRHorizon(a)
-  
-  };
-  
-  
   useEffect(() => {
-    if (selectedCCR && ccrHorizonData.length > 0) {
-      const horizonDate = ccrHorizonData.find(item => item.ccr === selectedCCR.value)?.horizon_date;
-      setSelectedCCRHorizon(horizonDate || '');
-    }
-  }, [selectedCCR, ccrHorizonData]);
+    if (ccrHorizonData && selectedCCR) {
+      const a = ccrHorizonData.find((item:any) => item.ccr === selectedCCR.value)?.horizon_date;
 
-  useEffect(() => {
-    if (selectedAction?.value) {
-      getCCRHorizonData();
+      setSelectedCCRHorizon(a)
     }
-  }, [selectedAction]);
+  },[ccrHorizonData, selectedCCR])
+
+
 
   const getSelectedCCRDate = () => {
-    if (!selectedCCR) return ;
+    if (!selectedCCR) return;
     const a = ccrHorizonData.find((item) => item.ccr === selectedCCR.value)?.horizon_date || null;
     return a;
 
   };
   const today = new Date();
 
-  const disabledFOLHorizonDate = (current: Date) => {
+
+  const disabledFOLHorizonDateFrom = (current: Date) => {
     if (selectedAction?.value !== "BFH") return false;
 
-    const horizonDateStr = getSelectedCCRDate(); //fol ka date (2025-09-10)
+    const horizonDateStr = getSelectedCCRDate();
     if (!horizonDateStr) return false;
 
     const horizonDate = new Date(horizonDateStr);
+    
+    // Set time to start of day for accurate comparison
+    const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const currentStart = new Date(current.getFullYear(), current.getMonth(), current.getDate());
+    const horizonStart = new Date(horizonDate.getFullYear(), horizonDate.getMonth(), horizonDate.getDate());
 
-    return current >= today && current <= horizonDate;
+    // Disable dates from today (inclusive) to horizon date (inclusive)
+    return currentStart >= todayStart && currentStart <= horizonStart;
   };
 
+  const disabledFOLHorizonDateTo = (current: Date) => {
+    if (selectedAction?.value !== "BFH") return false;
+
+    const horizonDateStr = getSelectedCCRDate();
+    if (!horizonDateStr) return false;
+
+    const horizonDate = new Date(horizonDateStr);
+    
+    // Set time to start of day for accurate comparison
+    const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const currentStart = new Date(current.getFullYear(), current.getMonth(), current.getDate());
+    const horizonStart = new Date(horizonDate.getFullYear(), horizonDate.getMonth(), horizonDate.getDate());
+
+    // If fromDate is selected, disable dates before fromDate
+    if (fromDate) {
+      const fromDateObj = new Date(fromDate);
+      const fromDateStart = new Date(fromDateObj.getFullYear(), fromDateObj.getMonth(), fromDateObj.getDate());
+      // Disable dates from today to horizon date OR dates before fromDate
+      return (currentStart >= todayStart && currentStart <= horizonStart) || currentStart < fromDateStart;
+    }
+
+    // Otherwise, just disable dates from today to horizon date
+    return currentStart >= todayStart && currentStart <= horizonStart;
+  };
   return (
     <>
     {(isLoading|| isUpdateUserConfig || isGetUserConfig || isSubmitLoading) && <OverlayLoader />}
@@ -712,7 +664,6 @@ const getFilterData = async () => {
           </>
         }
 
-        <ToolbarAbsolute style={{marginTop: isGridView?'50px':'5px', width:'85%'}}>
           <MTOActionToolBar
             comp={"orderReschedule"}
             isChartGridToggle
@@ -734,7 +685,6 @@ const getFilterData = async () => {
             onFilterRemove={onFilterRemove}
             isMfgSelected={isMfgSelected}
           />
-        </ToolbarAbsolute>
       </TabsToolbarRow>
 
       {!isGridView ?
@@ -765,9 +715,10 @@ const getFilterData = async () => {
               <VFDatePicker
                   date={fromDate}
                   onDateChange={setFromDate}
-                  minDate={new Date()} 
+                    minDate={new Date()} 
                     disabled={isDateDisabled}
-                    disabledFOLHorizonDate={disabledFOLHorizonDate} 
+                    // disabledFOLHorizonDate={disabledFOLHorizonDate} 
+                    disabledFOLHorizonDate={disabledFOLHorizonDateFrom}
                   dateInputStyle={{
                     fontSize: "10px",
                     fontWeight: 300,
@@ -798,7 +749,9 @@ const getFilterData = async () => {
                 date={toDate}
                 onDateChange={setToDate}
                 disabled={isDateDisabled}
-                disabledFOLHorizonDate={disabledFOLHorizonDate} 
+                    // disabledFOLHorizonDate={disabledFOLHorizonDate} 
+                    disabledFOLHorizonDate={disabledFOLHorizonDateTo}
+
                 minDate={new Date()} 
                 dateInputStyle={{
                   fontSize: "10px",
@@ -855,7 +808,10 @@ const getFilterData = async () => {
         userPageSize={userPageSize}
         currView={currView}
         setCurrView={setCurrView}
-        key={currTab}
+          key={currTab}
+          currTab={currTab}
+          selectedAction={selectedAction}
+          isGridView={isGridView}
         />
        
     ) : (

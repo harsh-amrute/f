@@ -4695,6 +4695,8 @@ export const getBodyForExcelExport = ({
 
   );
 
+  console.log("filteredHeadersDAta",  filteredHeadersData)
+
   try {
     // Grouped data
     if (groupedColDefsRef?.current) {
