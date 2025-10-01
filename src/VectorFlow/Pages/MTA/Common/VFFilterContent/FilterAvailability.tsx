@@ -25,42 +25,17 @@ import "./styles.css";
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import { useSelector } from "react-redux";
 
-interface FilterSectionProps {
+interface AvailabilityFilterProps {
   filters: any;
-  onFilterChange: (field: string, value: string) => void;
+  onFilterChange: (field: string, value: any) => void;
+  onApplyFilter: (filters: any) => void;
+  initialFilters?: any;
 }
 interface TagsFilterProps {
   name: string;
   checked: boolean;
   onChange: (name: string, checked: boolean) => void;
 }
-
-// const CustomOption = (props: any) => {
-//   return (
-//     <components.Option {...props}>
-//       <div className="flex items-center gap-2">
-//         <input
-//           type="checkbox"
-//           checked={props.isSelected}
-//           onChange={() => null}
-//         />
-//         <span>{props.label}</span>
-//         <span
-//           style={{
-//             backgroundColor: props.data.color,
-//             width: "16px",
-//             height: "16px",
-//             borderRadius: "3px",
-//             display: "inline-block",
-//           }}
-//         />
-//       </div>
-//     </components.Option>
-//   );
-// };
-
-// ...existing code...
-
 
 const CustomCategoryOption = (props: any) => {
   const optionStyles = useColorOptionStyles();
@@ -122,29 +97,6 @@ const CustomMultiValue = (props: any) => {
   );
 };
 
-const CustomCheckboxMultiValue = (props: any) => {
-  const optionStyles = useColorOptionStyles();
-
-  return (
-    <components.MultiValue {...props}>
-      <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-        <input
-          type="checkbox"
-          checked={true}
-          style={{
-            width: "12px",
-            height: "12px",
-            accentColor: props.data.themeColor,
-            pointerEvents: "none",
-          }}
-          readOnly
-        />
-        <span style={{ fontSize: "14px" }}>{props.data.label}</span>
-      </div>
-    </components.MultiValue>
-  );
-};
-
 const TagsFilter: React.FC<TagsFilterProps> = ({ name, checked, onChange }) => {
   const { user } = useUserData();
   const theme_ui = user.user.theme_ui;
@@ -200,9 +152,11 @@ const TagsFilter: React.FC<TagsFilterProps> = ({ name, checked, onChange }) => {
 };
 
 // Availability Filter Component
-export const AvailabilityFilters: React.FC<FilterSectionProps> = ({
+export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
   filters,
   onFilterChange,
+  onApplyFilter,
+  initialFilters,
 }) => {
   const styles = useThemeStyles();
   const colorStyles = useColorThemeStyles();
@@ -495,7 +449,6 @@ export const AvailabilityFilters: React.FC<FilterSectionProps> = ({
               hideSelectedOptions={false}
               components={{
                 Option: CustomCategoryOption,
-                MultiValue: CustomCheckboxMultiValue,
                 IndicatorSeparator: () => null,
                 ClearIndicator: () => null,
               }}

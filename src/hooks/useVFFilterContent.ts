@@ -155,7 +155,7 @@ export const useColorThemeStyles = () => {
       whiteSpace: "nowrap",
       overflow: "hidden",
       textOverflow: "ellipsis",
-      maxWidth: "100px", // Reduce label width
+      maxWidth: "100px", 
     }),
     multiValueRemove: (baseStyles: any) => ({
       ...baseStyles,
@@ -173,10 +173,10 @@ export const useColorThemeStyles = () => {
       flexWrap: 'nowrap', 
       overflowX: 'auto',
       overflowY: 'hidden',
-      width: "calc(100% - 40px)", // Account for indicators
+      width: "calc(100% - 40px)", 
       maxWidth: "calc(100% - 40px)",
       minWidth: "0",
-      flex: "1 1 auto", // Allow to shrink
+      flex: "1 1 auto",
       scrollbarWidth: "none",
       msOverflowStyle: "none",
       "&::-webkit-scrollbar": {
@@ -191,17 +191,17 @@ export const useColorThemeStyles = () => {
       fontFamily: "Roboto, sans-serif",
       margin: 0,
       padding: 0,
-      width: "0px", // Zero width
+      width: "0px", 
       minWidth: "0px", 
       maxWidth: "0px", 
       border: "none",
       outline: "none",
       background: "transparent",
-      opacity: 0, // Make completely invisible
+      opacity: 0,
     }),
     indicatorsContainer: (baseStyles: any) => ({
       ...baseStyles,
-      flexShrink: 0, // Prevent indicators from shrinking
+      flexShrink: 0, 
     }),
   };
 
