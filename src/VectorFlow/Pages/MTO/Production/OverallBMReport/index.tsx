@@ -323,126 +323,130 @@ const setColumnDef = async () => {
     };
 
     const colDefsData = createDynamicColumnDefs(response?.data?.data || [], gridOptions);
+    console.log('coldefsData', colDefsData)
+
     setColdef(colDefsData);
   } catch (e) {
     console.log(e);
     notifyError("Failed to build grid columns.");
   }
 };
+
+console.log(groupedColDefsRef)
   
-  const addDefaultAttributes = (
-    apiResponse: ApiResponseItem[]
-  ): ApiResponseItem[] => {
-    const modifiedResponse: ApiResponseItem[] = [];
-    const cpMap: { [key: string]: number } = {};
+  // const addDefaultAttributes = (
+  //   apiResponse: ApiResponseItem[]
+  // ): ApiResponseItem[] => {
+  //   const modifiedResponse: ApiResponseItem[] = [];
+  //   const cpMap: { [key: string]: number } = {};
 
-    // Create the specified default objects for the item's ch array
+  //   // Create the specified default objects for the item's ch array
 
-    const defaultSecondObject: any = {
-      cc: "ic",
-      cp: 2,
-      hd: "",
-      v: true,
-      cla: "centre",
-      scc: "ic",
-    };
+  //   const defaultSecondObject: any = {
+  //     cc: "ic",
+  //     cp: 2,
+  //     hd: "",
+  //     v: true,
+  //     cla: "centre",
+  //     scc: "ic",
+  //   };
 
-    apiResponse.forEach((item) => {
-      const modifiedItem = { ...item };
-      // Initialize cp for this cc if not already done
-      if (!(item.cc in cpMap)) {
-        cpMap[item.cc] = 3; // Start from 3 since 1 and 2 are taken by default objects
-      }
-      // Add new properties to the outer object
-      modifiedItem.cp = cpMap[item.cc]++;
-      modifiedItem.hd = item.hd || item.cc; // Set hd to the name of cc
-      modifiedItem.cla = "Centre"; // Fixed value
-      modifiedItem.scc = item.scc; // Set scc to the name of ccc
+  //   apiResponse.forEach((item) => {
+  //     const modifiedItem = { ...item };
+  //     // Initialize cp for this cc if not already done
+  //     if (!(item.cc in cpMap)) {
+  //       cpMap[item.cc] = 3; // Start from 3 since 1 and 2 are taken by default objects
+  //     }
+  //     // Add new properties to the outer object
+  //     modifiedItem.cp = cpMap[item.cc]++;
+  //     modifiedItem.hd = item.hd || item.cc; // Set hd to the name of cc
+  //     modifiedItem.cla = "Centre"; // Fixed value
+  //     modifiedItem.scc = item.scc; // Set scc to the name of ccc
 
  
   
 
-      if (item.cc) {
-        if (item.cc.includes("Dept") && modifiedItem.ch) {
-          modifiedItem.ch = item.ch?.map((child) => {
-            return { ...child, scc: `ddtl.${item.cc}.${child.scc}` };
-          });
-        }
+  //     if (item.cc) {
+  //       if (item.cc.includes("Dept") && modifiedItem.ch) {
+  //         modifiedItem.ch = item.ch?.map((child) => {
+  //           return { ...child, scc: `ddtl.${item.cc}.${child.scc}` };
+  //         });
+  //       }
 
-      }
+  //     }
 
-      // If it's the first object, add default items to the ch array
+  //     // If it's the first object, add default items to the ch array
 
-      // Push the modified item to the response array
-      modifiedResponse.push(modifiedItem);
-    });
-    // Add a default object outside each main object
-    const defaultOuterObject: ApiResponseItem = {
-      cc: "chckbx",
-      v: true,
-      cp: 0,
-      hd: "",
-      cla: "Centre",
-      scc: "chckbx",
-      pinned: "left",
-    };
+  //     // Push the modified item to the response array
+  //     modifiedResponse.push(modifiedItem);
+  //   });
+  //   // Add a default object outside each main object
+  //   const defaultOuterObject: ApiResponseItem = {
+  //     cc: "chckbx",
+  //     v: true,
+  //     cp: 0,
+  //     hd: "",
+  //     cla: "Centre",
+  //     scc: "chckbx",
+  //     pinned: "left",
+  //   };
 
-    // Prepend the default outer object
-    modifiedResponse.unshift(defaultOuterObject);
+  //   // Prepend the default outer object
+  //   modifiedResponse.unshift(defaultOuterObject);
 
-    // Calculate cp for the additional object based on existing cp values
-    const maxCp = Math.max(...modifiedResponse.map((item) => item.cp || 0));
+  //   // Calculate cp for the additional object based on existing cp values
+  //   const maxCp = Math.max(...modifiedResponse.map((item) => item.cp || 0));
 
-    // Create the additional object to be added at the end
-    const additionalObject: ApiResponseItem = {
-      cc: "",
-      cp: maxCp + 1, // Set cp based on the maximum cp value
-      hd: " ",
-      v: true,
-      cla: "Centre",
-      scc: "rmk",
-      pinned: "right",
-      ch:[]
-    };
+  //   // Create the additional object to be added at the end
+  //   const additionalObject: ApiResponseItem = {
+  //     cc: "",
+  //     cp: maxCp + 1, // Set cp based on the maximum cp value
+  //     hd: " ",
+  //     v: true,
+  //     cla: "Centre",
+  //     scc: "rmk",
+  //     pinned: "right",
+  //     ch:[]
+  //   };
 
 
-    // const short_complete_OrderColumn: ApiResponseItem = {
-    //     cc: "oca",
-    //     cp: maxCp + 2,
-    //     hd: "Order Close Action",
-    //     v: true,
-    //     cla: "Centre",
-    //     scc: "oca",
-    //     ch: [],
-    // }
-    const short_complete_OrderColumn: ApiResponseItem = {
-      cc: "",
-      cp: maxCp + 2, // Set cp based on the maximum cp value
-      hd: " ",
-      v: true,
-      cla: "Centre",
-      scc: "",
-      pinned: "right",
-      ch: [
-        {
-          cc: "ct",
-          cp: maxCp + 2,
-          hd: "Order Close Action",
-          v: true,
-          cla: "Centre",
-          scc: "ct",
-          pinned: "right",
-        },
-      ],
-    };
+  //   // const short_complete_OrderColumn: ApiResponseItem = {
+  //   //     cc: "oca",
+  //   //     cp: maxCp + 2,
+  //   //     hd: "Order Close Action",
+  //   //     v: true,
+  //   //     cla: "Centre",
+  //   //     scc: "oca",
+  //   //     ch: [],
+  //   // }
+  //   const short_complete_OrderColumn: ApiResponseItem = {
+  //     cc: "",
+  //     cp: maxCp + 2, // Set cp based on the maximum cp value
+  //     hd: " ",
+  //     v: true,
+  //     cla: "Centre",
+  //     scc: "",
+  //     pinned: "right",
+  //     ch: [
+  //       {
+  //         cc: "ct",
+  //         cp: maxCp + 2,
+  //         hd: "Order Close Action",
+  //         v: true,
+  //         cla: "Centre",
+  //         scc: "ct",
+  //         pinned: "right",
+  //       },
+  //     ],
+  //   };
 
-    // Add the additional object to the end of the modified response
-    modifiedResponse.push(additionalObject);
+  //   // Add the additional object to the end of the modified response
+  //   modifiedResponse.push(additionalObject);
 
-    if (orderClosingEnable) modifiedResponse.push(short_complete_OrderColumn);
+  //   if (orderClosingEnable) modifiedResponse.push(short_complete_OrderColumn);
 
-    return modifiedResponse;
-  };
+  //   return modifiedResponse;
+  // };
 
   interface ActionOption {
     value: string;
@@ -1606,6 +1610,7 @@ const onPivotModeChanged = (event: any) => {
     getInitialGridData(1, userPageSize, true, 0);
   };
   
+  console.log('col defs', coldefs)
 
   return (
     <BMDepWrapper>

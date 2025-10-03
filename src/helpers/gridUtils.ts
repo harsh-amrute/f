@@ -1,6 +1,7 @@
 import { ColDef } from "ag-grid-enterprise";
 import _ from "lodash";
 import { ColorsMTO } from "../VectorFlow/Pages/MTO/Common/Colors"; 
+import { useUserData } from "../context/UserDataContext";
 
 interface ApiResponseItem {
   cc: string;
@@ -24,6 +25,9 @@ export interface GridOptions {
 
 export const excelColorArr = ["Black", "Red", "White", "Green", "Yellow", "Blue"];
 
+const cpMap: { [key: string]: number } = {};
+
+
 export const createDynamicColumnDefs = (
   apiResponse: ApiResponseItem[],
   options: GridOptions
@@ -39,6 +43,21 @@ export const createDynamicColumnDefs = (
     pinned: "left",
   });
 
+
+
+
+
+  const ccValues = apiResponse
+  // .filter(item => item.cc)  // only items with cc
+  .map(item => item.ch);      // get the cc value
+
+  const hasDept = ccValues.some((cc:any) => cc.includes("Dept"));
+console.log('cc values:', ccValues);
+console.log('hsDeot', hasDept)
+
+
+
+if (hasDept) {
   modifiedResponse.unshift({
     cc: "ic",
     v: true,
@@ -46,10 +65,52 @@ export const createDynamicColumnDefs = (
     cla: "Centre",
     scc: "ic",
   });
+}
 
-  if (options.orderClosingEnable) {
-    const maxCp = Math.max(...modifiedResponse.map((item) => item.cp || 0));
-    modifiedResponse.push({
+
+ 
+
+  // modifiedResponse.unshift({
+  //   cc: "ic",
+  //   v: true,
+  //   hd: "",
+  //   cla: "Centre",
+  //   scc: "ic",
+  // });
+
+  ///////////////////////////
+
+      apiResponse.forEach((item) => {
+      const modifiedItem = { ...item };
+
+      console.log('modiifed item', modifiedItem)
+      if (!(item.cc in cpMap)) {
+        cpMap[item.cc] = 3; // Start from 3 since 1 and 2 are taken by default objects
+      }
+      modifiedItem.cp = cpMap[item.cc]++;
+      modifiedItem.hd = item.hd || item.cc; // Set hd to the name of cc
+      modifiedItem.cla = "Centre"; // Fixed value
+      modifiedItem.scc = item.scc; // Set scc to the name of ccc
+
+
+      if (item.cc) {
+        if (item.cc.includes("Dept") && modifiedItem.ch) {
+          modifiedItem.ch = item.ch?.map((child) => {
+            return { ...child, scc: `ddtl.${item.cc}.${child.scc}` };
+          });
+        }
+
+      }
+
+        modifiedResponse.push(modifiedItem);
+    });
+
+
+    if (options.orderClosingEnable) {
+      const maxCp = Math.max(...modifiedResponse.map((item) => item.cp || 0));
+  
+    
+      modifiedResponse.push({
         cc: "",
         cp: maxCp + 2, 
         hd: " ",
@@ -68,10 +129,12 @@ export const createDynamicColumnDefs = (
             pinned: "right",
           },
         ],
-    });
-  }
+      });
+    }
+    
   
   const mapChildren = (parent: string, children: ApiResponseItem[]): ColDef[] => {
+    console.log('api response item', children )
     return children.map((child) => ({
       field: child.scc.trim(),
       headerName: child.hd,
@@ -93,7 +156,7 @@ export const createDynamicColumnDefs = (
           return false;
         }
         return !_.isEmpty(params.data) && child.cc === "Remark";
-      },
+      },    
       floatingFilter: child.cc !== "ec" && child.cc !== "ic",
       minWidth:
         child.cc === "ec" || child.cc === "ic" || child.scc === "bpp"
@@ -187,32 +250,43 @@ export const createDynamicColumnDefs = (
     }));
   };
 
-  const finalColDefs: ColDef[] = modifiedResponse.map((section) => ({
-    headerName: section.hd,
-    colId: section.cc,
-    pinned: section.pinned,
-    headerComponent: 
-      section.scc === "chckbx" && !options.orderClosingEnable 
-        ? 'customHeaderCheckbox' 
-        : undefined,
-    checkboxSelection:
-      section.scc === "chckbx"
-        ? (params: any) => params.node && !params.node.group
-        : undefined,
-    suppressMenu: section.scc === "chckbx" || section.cc === "ic",
-    suppressHeaderFilterButton: section.scc === "chckbx" || section.cc === "ic",
-    sortable: section.scc !== "chckbx" && section.cc !== "ic",
-    maxWidth:
-      section.scc === "chckbx" || section.cc === "ic" ? 60 : undefined,
-    floatingFilter: section.scc !== "chckbx" && section.cc !== "ic",
-    children: section.ch ? mapChildren(section.cc, section.ch) : undefined,
-    cellRenderer:
-      (section.cc === "ec" || section.scc === "chckbx") && options.bomActive
-        ? "agGroupCellRenderer"
-        : section.cc === "ic"
-        ? "AgeingCellRenderer"
-        : undefined,
-  }));
+  console.log('modifieddd', modifiedResponse)
+  const dedupedResponse = modifiedResponse.filter(
+    (item, index, self) =>
+      index === self.findIndex((t) => t.cc === item.cc)
+  );
+  
+
+const finalColDefs: ColDef[] = dedupedResponse.map((section) => ({
+  headerName: section.hd || section.cc,
+  colId: section.cc,
+  pinned: section.pinned,
+  headerComponent:
+    section.scc === "chckbx" && !options.orderClosingEnable
+      ? "customHeaderCheckbox"
+      : undefined,
+  checkboxSelection:
+    section.scc === "chckbx"
+      ? (params: any) => params.node && !params.node.group
+      : undefined,
+  suppressMenu: section.scc === "chckbx" || section.cc === "ic",
+  suppressHeaderFilterButton: section.scc === "chckbx" || section.cc === "ic",
+  sortable: section.scc !== "chckbx" && section.cc !== "ic",
+  maxWidth:
+    section.scc === "chckbx" || section.cc === "ic" ? 60 : undefined,
+  floatingFilter: section.scc !== "chckbx" && section.cc !== "ic",
+  children: section.ch ? mapChildren(section.cc, section.ch) : undefined,
+  cellRenderer:
+    (section.cc === "ec" || section.scc === "chckbx") && options.bomActive
+      ? "agGroupCellRenderer"
+      : section.cc === "ic"
+      ? "AgeingCellRenderer"
+      : undefined,
+}));
+
+
+  console.log('okkkkkkkkk', finalColDefs)
+
 
   return finalColDefs;
 };

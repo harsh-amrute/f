@@ -339,228 +339,228 @@ const DptWiseBMReport = () => {
             }
         };
 
-    const addDefaultAttributes = (apiResponse: ApiResponseItem[]): ApiResponseItem[] => {
-        const modifiedResponse: ApiResponseItem[] = [];
-        const cpMap: { [key: string]: number } = {};
+    // const addDefaultAttributes = (apiResponse: ApiResponseItem[]): ApiResponseItem[] => {
+    //     const modifiedResponse: ApiResponseItem[] = [];
+    //     const cpMap: { [key: string]: number } = {};
 
-        const feature_permission = user?.feature_permission || [];
-        const canAddComments = feature_permission?.includes("Add_Comments");
+    //     const feature_permission = user?.feature_permission || [];
+    //     const canAddComments = feature_permission?.includes("Add_Comments");
         
-        const defaultSecondObject: any = {
-            cc: 'ic',
-            cp: 1,
-            hd: '',
-            v: true,
-            cla: 'centre',
-            scc: 'ic'
-        };
+    //     const defaultSecondObject: any = {
+    //         cc: 'ic',
+    //         cp: 1,
+    //         hd: '',
+    //         v: true,
+    //         cla: 'centre',
+    //         scc: 'ic'
+    //     };
         
-        apiResponse.forEach((item) => {
-            const modifiedItem = { ...item };
+    //     apiResponse.forEach((item) => {
+    //         const modifiedItem = { ...item };
 
             
-            // Initialize cp for this cc if not already done
-            if (!(item.cc in cpMap)) {
-                cpMap[item.cc] = 3; // Start from 3 since 1 and 2 are taken by default objects
-            }
+    //         // Initialize cp for this cc if not already done
+    //         if (!(item.cc in cpMap)) {
+    //             cpMap[item.cc] = 3; // Start from 3 since 1 and 2 are taken by default objects
+    //         }
             
-            // Add new properties to the outer object
-            modifiedItem.cp = cpMap[item.cc]++;
-            modifiedItem.hd = item.hd || item.cc; // Set hd to the name of cc
-            modifiedItem.cla = item.cla; // Fixed value
-            modifiedItem.scc = item.scc; // Set scc to the name of cc
+    //         // Add new properties to the outer object
+    //         modifiedItem.cp = cpMap[item.cc]++;
+    //         modifiedItem.hd = item.hd || item.cc; // Set hd to the name of cc
+    //         modifiedItem.cla = item.cla; // Fixed value
+    //         modifiedItem.scc = item.scc; // Set scc to the name of cc
 
-            if(item.cc){
-                if(item.cc.includes("Dept") && modifiedItem.ch){
-                    modifiedItem.ch = item.ch?.map((child)=>{
-                        return {...child, scc: `ddtl.${item.cc}.${child.scc}`}
-                    })
-                }
+    //         if(item.cc){
+    //             if(item.cc.includes("Dept") && modifiedItem.ch){
+    //                 modifiedItem.ch = item.ch?.map((child)=>{
+    //                     return {...child, scc: `ddtl.${item.cc}.${child.scc}`}
+    //                 })
+    //             }
 
-                if (item.cc.includes('Default Attribute') && modifiedItem.ch) {
-                    modifiedItem.ch = item.ch?.filter((child)=>{
+    //             if (item.cc.includes('Default Attribute') && modifiedItem.ch) {
+    //                 modifiedItem.ch = item.ch?.filter((child)=>{
 
-                        if (child.cc === 'Remark' && !canAddComments) {
-                            return false;
-                        }
-                        else {
-                            return true;
-                        }
-                    })
-                }
-            }
+    //                     if (child.cc === 'Remark' && !canAddComments) {
+    //                         return false;
+    //                     }
+    //                     else {
+    //                         return true;
+    //                     }
+    //                 })
+    //             }
+    //         }
 
-            // Push the modified item to the response array
-            modifiedResponse.push(modifiedItem);
-        });
+    //         // Push the modified item to the response array
+    //         modifiedResponse.push(modifiedItem);
+    //     });
 
-        // Add a default object outside each main object
-        const defaultOuterObject: ApiResponseItem = {
-            cc: "chckbx",
-            v: true,
-            cp: 0,
-            hd: " ",
-            cla: "Centre",
-            scc: "chckbx",
-            pinned:'left',
-        };
+    //     // Add a default object outside each main object
+    //     const defaultOuterObject: ApiResponseItem = {
+    //         cc: "chckbx",
+    //         v: true,
+    //         cp: 0,
+    //         hd: " ",
+    //         cla: "Centre",
+    //         scc: "chckbx",
+    //         pinned:'left',
+    //     };
 
-        // Prepend the default outer object
-        modifiedResponse.unshift(defaultSecondObject);
-        modifiedResponse.unshift(defaultOuterObject);
+    //     // Prepend the default outer object
+    //     modifiedResponse.unshift(defaultSecondObject);
+    //     modifiedResponse.unshift(defaultOuterObject);
 
-        // Calculate cp for the additional object based on existing cp values
-        const maxCp = Math.max(...modifiedResponse.map(item => item.cp || 0));
+    //     // Calculate cp for the additional object based on existing cp values
+    //     const maxCp = Math.max(...modifiedResponse.map(item => item.cp || 0));
 
 
-        // Create the additional object to be added at the end
-        if (canAddComments) {
-        const additionalObject: ApiResponseItem = {
-            cc: "",
-            cp: maxCp + 1, // Set cp based on the maximum cp value
-            hd: " ",
-            v: true,
-            cla: "Centre",
-            scc: "rmk",
-            pinned: 'right',
-        };
+    //     // Create the additional object to be added at the end
+    //     if (canAddComments) {
+    //     const additionalObject: ApiResponseItem = {
+    //         cc: "",
+    //         cp: maxCp + 1, // Set cp based on the maximum cp value
+    //         hd: " ",
+    //         v: true,
+    //         cla: "Centre",
+    //         scc: "rmk",
+    //         pinned: 'right',
+    //     };
 
-        // Add the additional object to the end of the modified response
-        modifiedResponse.push(additionalObject);
-    }
+    //     // Add the additional object to the end of the modified response
+    //     modifiedResponse.push(additionalObject);
+    // }
 
-        return modifiedResponse;
-    };
+    //     return modifiedResponse;
+    // };
 
-    const mapApiResponseToColDefs = (
-        apiResponse: ApiResponseItem[], 
-    ): any => {
-        const mapChildren = (
-            parent: any,
-             children: ApiResponse[]
-            ): ColDefChild[] => {
-            return children.map((child) => ({
-                field: child.scc.trim(),
-                suppressHeaderFilterButton: true,
-                headerName: child.hd,
-                colId: `${parent}-${child.cc}`,
-                initialHide: !child.v,
-                cellRenderer:
-                child.cc === "ec" && bomActive
-                  ? "agGroupCellRenderer"
-                  : child.cc === "ic"
-                  ? "AgeingCellRenderer"
-                  : child.cc === "BPP"
-                  ? "colorCellRenderer"
-                  : child.cc === "Remark History"
-                  ? "RemarkHistoryRenderer"
-                  : undefined,
-                minWidth: child.cc === 'ec' || child.cc === 'ic' ? 80 : 150,
-                // columnGroupShow: index > 2 ? "closed" : undefined,
-                filter:
-                (child.dt === "number" || child.dt === "decimal")
-                  ? "agNumberColumnFilter"
-                        : child.dt === "date"      
-                    ? "agDateColumnFilter"
-                    : "agMultiColumnFilter",
-                pinned: child.cc === 'Remark' || child.cc === 'Remark History' || child.cc === 'lr' ? 'right' : undefined,
-                editable: (params: any) => !_.isEmpty(params.data) && child.cc === 'Remark' ? true : false ,
-                floatingFilter: child.cc === 'ec' ? false : child.cc === 'ic' ? false : true,
-                valueFormatter: (params: any) => {
-                    if (params.value) {
-                        const format = (process.env.REACT_APP_NUMBER_FORMAT || '').toUpperCase();
-                        const locale = format === 'USA' ? 'en-US' : format === 'IND' ? 'hi-IN' : undefined;
+    // const mapApiResponseToColDefs = (
+    //     apiResponse: ApiResponseItem[], 
+    // ): any => {
+    //     const mapChildren = (
+    //         parent: any,
+    //          children: ApiResponse[]
+    //         ): ColDefChild[] => {
+    //         return children.map((child) => ({
+    //             field: child.scc.trim(),
+    //             suppressHeaderFilterButton: true,
+    //             headerName: child.hd,
+    //             colId: `${parent}-${child.cc}`,
+    //             initialHide: !child.v,
+    //             cellRenderer:
+    //             child.cc === "ec" && bomActive
+    //               ? "agGroupCellRenderer"
+    //               : child.cc === "ic"
+    //               ? "AgeingCellRenderer"
+    //               : child.cc === "BPP"
+    //               ? "colorCellRenderer"
+    //               : child.cc === "Remark History"
+    //               ? "RemarkHistoryRenderer"
+    //               : undefined,
+    //             minWidth: child.cc === 'ec' || child.cc === 'ic' ? 80 : 150,
+    //             // columnGroupShow: index > 2 ? "closed" : undefined,
+    //             filter:
+    //             (child.dt === "number" || child.dt === "decimal")
+    //               ? "agNumberColumnFilter"
+    //                     : child.dt === "date"      
+    //                 ? "agDateColumnFilter"
+    //                 : "agMultiColumnFilter",
+    //             pinned: child.cc === 'Remark' || child.cc === 'Remark History' || child.cc === 'lr' ? 'right' : undefined,
+    //             editable: (params: any) => !_.isEmpty(params.data) && child.cc === 'Remark' ? true : false ,
+    //             floatingFilter: child.cc === 'ec' ? false : child.cc === 'ic' ? false : true,
+    //             valueFormatter: (params: any) => {
+    //                 if (params.value) {
+    //                     const format = (process.env.REACT_APP_NUMBER_FORMAT || '').toUpperCase();
+    //                     const locale = format === 'USA' ? 'en-US' : format === 'IND' ? 'hi-IN' : undefined;
                   
-                        if (child.dt === 'number') {
-                            return locale ? params.value.toLocaleString(locale) : params.value;
-                        }
+    //                     if (child.dt === 'number') {
+    //                         return locale ? params.value.toLocaleString(locale) : params.value;
+    //                     }
                   
-                        if (child.dt === 'decimal') {
-                            const fixedValue = parseFloat(params.value.toFixed(2)); 
-                            return locale ? fixedValue.toLocaleString(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) :fixedValue;
-                        }
+    //                     if (child.dt === 'decimal') {
+    //                         const fixedValue = parseFloat(params.value.toFixed(2)); 
+    //                         return locale ? fixedValue.toLocaleString(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) :fixedValue;
+    //                     }
                   
-                        return params.value;
-                    }
-                }, 
-                filterParams: {
-                    buttons: ['reset'], 
-                    comparator: (filterLocalDateAtMidnight: Date, cellValue: any) => {
-                      if (!cellValue) return -1;
+    //                     return params.value;
+    //                 }
+    //             }, 
+    //             filterParams: {
+    //                 buttons: ['reset'], 
+    //                 comparator: (filterLocalDateAtMidnight: Date, cellValue: any) => {
+    //                   if (!cellValue) return -1;
                     
-                      const cellDate = new Date(cellValue);
-                      if (isNaN(cellDate.getTime())) return -1;
+    //                   const cellDate = new Date(cellValue);
+    //                   if (isNaN(cellDate.getTime())) return -1;
                     
-                      const cellDateOnly = new Date(
-                        cellDate.getFullYear(),
-                        cellDate.getMonth(),
-                        cellDate.getDate()
-                      );
+    //                   const cellDateOnly = new Date(
+    //                     cellDate.getFullYear(),
+    //                     cellDate.getMonth(),
+    //                     cellDate.getDate()
+    //                   );
                     
-                      if (cellDateOnly < filterLocalDateAtMidnight) return -1;
-                      if (cellDateOnly > filterLocalDateAtMidnight) return 1;
-                      return 0;
-                    }
+    //                   if (cellDateOnly < filterLocalDateAtMidnight) return -1;
+    //                   if (cellDateOnly > filterLocalDateAtMidnight) return 1;
+    //                   return 0;
+    //                 }
                     
-                  },
-                cellRendererParams: child?.hd.includes("Remark") ? {
-                    onClick: child?.cc === 'Remark History' ? (data: string) => onOpenRemarkHistory(data) : undefined
-                  } : undefined,
-                cellClassRules:
-                child.cc === "BPP" && excelColorArr.reduce(
-                  (acc, color) => ({
-                    ...acc,
-                    [color]: (params: any) => !_.isEmpty(params.data) && params.data?.cl === color
-                  }),
-                  {}
-                ),
-                cellStyle: (params: any) => 
-                    !_.isEmpty(params.data) && child.cc === 'Remark' ? {
-                        backgroundColor: 'white',
-                        border: '1px solid #b9bdba',
-                        color: 'black',
-                        padding: '1px'
-                    } : child.cc === 'da' ? {
-                        'color': ColorsMTO.Pink.code
-                    } : undefined
+    //               },
+    //             cellRendererParams: child?.hd.includes("Remark") ? {
+    //                 onClick: child?.cc === 'Remark History' ? (data: string) => onOpenRemarkHistory(data) : undefined
+    //               } : undefined,
+    //             cellClassRules:
+    //             child.cc === "BPP" && excelColorArr.reduce(
+    //               (acc, color) => ({
+    //                 ...acc,
+    //                 [color]: (params: any) => !_.isEmpty(params.data) && params.data?.cl === color
+    //               }),
+    //               {}
+    //             ),
+    //             cellStyle: (params: any) => 
+    //                 !_.isEmpty(params.data) && child.cc === 'Remark' ? {
+    //                     backgroundColor: 'white',
+    //                     border: '1px solid #b9bdba',
+    //                     color: 'black',
+    //                     padding: '1px'
+    //                 } : child.cc === 'da' ? {
+    //                     'color': ColorsMTO.Pink.code
+    //                 } : undefined
                 
-            }));
-        };
+    //         }));
+    //     };
 
-        const res = apiResponse.map(section => ({
-            headerCheckboxSelection: (params:any) => {
-                // Only show if no grouping is applied
-                return section.scc === "chckbx" && params.api.getRowGroupColumns().length === 0;
-              },
-              checkboxSelection: (params:any) => {
-                // Only show on leaf rows, not group rows
-                return section.scc === "chckbx" && params.node && !params.node.group;
-              },
-            // headerCheckboxSelection: section.scc === "chckbx" ? true : undefined,
-            // checkboxSelection: section.scc === "chckbx" ? true : undefined,
-            floatingFilterComponentParams: section.scc === "chckbx" || section.cc == "ic"  ? { suppressFilterButton: false } : undefined,
-            suppressHeaderFilterButton: section.scc === "chckbx" || section.cc == "ic" ? true : false,
-            suppressMenu: section.scc === "chckbx" || section.cc == "ic" ? true : false,
-            maxWidth: section.scc === "chckbx" || section.cc == "ic" ? 60 : undefined,
-            sortable: section.scc === "chckbx" || section.scc === "ic" ? false : true,
-            floatingFilter: section.scc === "chckbx" || section.cc == "ic" ? false : undefined,
-            headerName: section.hd,
-            pinned: section.pinned || null,
-            // pinned:section.scc === "chckbx" ? 'left' : undefined,
-            suppressStickyLabel: section.scc === "chckbx" ? undefined : true,
-            colId: section.cc,
-            openByDefault: section.scc === "chckbx" ? undefined : section.scc === 'rmk' ? false : true,
-            children: section.scc === "chckbx" || section.cc === 'ic' ? undefined : mapChildren(section.cc, section.ch || []),
-            cellRenderer: section.cc === 'ec' || section.scc === "chckbx" && bomActive ? "agGroupCellRenderer" : section.cc === 'ic' ? "AgeingCellRenderer" : undefined,
-            valueFormatter: (params: any) => {
-                if (params.value && typeof params.value === 'number') {
-                    return params.value.toFixed(2).toLocaleString();
-                }
-                return params.value;
-            },
-        }));
-            return res;
-    }
+    //     const res = apiResponse.map(section => ({
+    //         headerCheckboxSelection: (params:any) => {
+    //             // Only show if no grouping is applied
+    //             return section.scc === "chckbx" && params.api.getRowGroupColumns().length === 0;
+    //           },
+    //           checkboxSelection: (params:any) => {
+    //             // Only show on leaf rows, not group rows
+    //             return section.scc === "chckbx" && params.node && !params.node.group;
+    //           },
+    //         // headerCheckboxSelection: section.scc === "chckbx" ? true : undefined,
+    //         // checkboxSelection: section.scc === "chckbx" ? true : undefined,
+    //         floatingFilterComponentParams: section.scc === "chckbx" || section.cc == "ic"  ? { suppressFilterButton: false } : undefined,
+    //         suppressHeaderFilterButton: section.scc === "chckbx" || section.cc == "ic" ? true : false,
+    //         suppressMenu: section.scc === "chckbx" || section.cc == "ic" ? true : false,
+    //         maxWidth: section.scc === "chckbx" || section.cc == "ic" ? 60 : undefined,
+    //         sortable: section.scc === "chckbx" || section.scc === "ic" ? false : true,
+    //         floatingFilter: section.scc === "chckbx" || section.cc == "ic" ? false : undefined,
+    //         headerName: section.hd,
+    //         pinned: section.pinned || null,
+    //         // pinned:section.scc === "chckbx" ? 'left' : undefined,
+    //         suppressStickyLabel: section.scc === "chckbx" ? undefined : true,
+    //         colId: section.cc,
+    //         openByDefault: section.scc === "chckbx" ? undefined : section.scc === 'rmk' ? false : true,
+    //         children: section.scc === "chckbx" || section.cc === 'ic' ? undefined : mapChildren(section.cc, section.ch || []),
+    //         cellRenderer: section.cc === 'ec' || section.scc === "chckbx" && bomActive ? "agGroupCellRenderer" : section.cc === 'ic' ? "AgeingCellRenderer" : undefined,
+    //         valueFormatter: (params: any) => {
+    //             if (params.value && typeof params.value === 'number') {
+    //                 return params.value.toFixed(2).toLocaleString();
+    //             }
+    //             return params.value;
+    //         },
+    //     }));
+    //         return res;
+    // }
 
     const getFilterData = async () => {
         try {
