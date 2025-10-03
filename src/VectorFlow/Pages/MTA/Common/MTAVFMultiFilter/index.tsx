@@ -28,6 +28,8 @@ import { RootState } from "../../../../../redux/store/store";
 import { BPRFilterState } from "../../../../../VectorFlow/types/BPR";
 import { ColorFilters } from "../VFFilterContent/FilterColor";
 import { CoverageFilters } from "../VFFilterContent/FilterCoverage";
+import { HistroricalFilter } from "../VFFilterContent/HistroricalFilter";
+import { HorizonFilter } from "../VFFilterContent/HorizonFilter";
 
 interface FilterModalProps {
   isOpen: boolean;
@@ -64,12 +66,20 @@ const filterConfigMap: Record<
     component: AttributesFilters,
   },
   FILTER_COLOR: {
-    label: "Color",
+    label: "Color Filter",
     component: ColorFilters,
   },
   FILTER_COVERAGE:{
-    label: "Coverage",
+    label: "Coverage Filter",
     component: CoverageFilters,
+  },
+  HISTRORICAL_FILTER:{
+    label: "Histrorical Filter",
+    component: HistroricalFilter, 
+  },
+  HORIZON_FILTER:{
+    label: "Horizon Filter",
+    component: HorizonFilter
   }
 };
 

@@ -158,7 +158,7 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
               
               <div style={{ width: 165, marginTop: -44, marginLeft: 4.5}}>
                 <Select
-                  placeholder="SKU Code"
+                  placeholder="Location Code"
                   styles={{
                   ...styles,
                   control: (base: any, state: any) => ({
@@ -179,8 +179,8 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
               }}
                   components={{ IndicatorSeparator: () => null }}
                   options={[
-                    { value: "SKU Code", label: "SKU Code" },
-                    { value: "SKU Description", label: "SKU Description" },
+                    { value: "Location Code", label: "Location Code" },
+                    { value: "Location Description", label: "Location Description" },
                   ]}
                 />
               </div>

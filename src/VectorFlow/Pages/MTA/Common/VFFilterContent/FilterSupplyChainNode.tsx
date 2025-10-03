@@ -14,7 +14,6 @@ import { BPRFilter, BPRFilterState } from "../../../../../VectorFlow/types/BPR";
 
 interface FilterSectionProps {
   filters: any;
-  supplyChainForLocationCheckBoxList?: Array<any>;
   multiFilter: BPRFilterState;
   onMultiFilterChange: (newMultiFilter: BPRFilterState) => void;
 }
@@ -243,10 +242,6 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
                   ...base,
                   maxHeight: 400,
                   overflowY: "auto",
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr 1fr",
-                  gap: "8px",
-                  padding: "8px",
                   scrollbarWidth: "none",
                 }),
               }}
