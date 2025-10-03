@@ -1,0 +1,85 @@
+// Future order load chart test cases
+
+1. Filter & Date Selection
+
+- Date pickers disabled until both CCR and Order Option selected
+- Past dates blocked via minDate validation
+- FOL Horizon range (today to horizon date) disabled for "Beyond FOL Horizon" option
+- "All Not Scheduled" option allows all future dates
+- "Beyond FOL Horizon" selected by default
+- Year transitions handled correctly in weekly/monthly views
+
+2. Chart View Features
+
+- Download icon generates PNG with custom header for all 3 views (Daily/Weekly/Monthly)
+- Hover tooltips display values for Load, Holiday, Past, and Limit series
+- X-axis date format changes dynamically: YYYY-MM-DD (daily), "31st Aug - 6th Sep" (weekly), "Sep 25" (monthly)
+- Y-axis label switches between "Load in Days" and "Pending CCR Quantity" based on tab selection
+- Gray overlay indicates horizon date range when "All Not Scheduled" selected
+- CWL limit line updates per CCR selection with toggle-able visibility
+- Horizontal scroll enabled when data points exceed 15
+
+3. Global Filters
+
+- Filters persist across chart/grid view switching
+- Filter data synchronized between both views
+- Clear all grid filters button enabled only when filters active
+
+4. Grid View - Dynamic Columns
+
+- Tags column appears only for "All Not Scheduled" option
+- Column headers adapt to 4 combinations: (Load Wise/Pending CCR) × (ANS/BFH)
+- Multiple tags displayed via custom tooltip
+- "Past Scheduling" tag shown for first row in daily view
+- Column reordering and resizing supported
+
+5. Excel Export
+
+- Export works for all 3 levels (Daily/Weekly/Monthly)
+- Applied filters included in export 
+- Column configuration respected in exported file
+
+6. Save & Reset Layout
+
+- User configuration saved separately for 4 grid states (based on tab + action combination)
+- Page size preference persisted
+- Reset restores master config from UI config data
+- Layout loads automatically on component mount
+
+7. Pagination
+
+- Custom page size input with validation
+- Total row count displayed accurately
+- Current page resets to 1 on filter changes
+
+8. Auto-Refresh Triggers
+
+- Data reloads when switching granularity (Daily/Weekly/Monthly)
+- Tab change (Load Wise/Pending CCR) triggers API call
+- View mode toggle (Chart/Grid) refreshes data
+- Filter application/removal updates results
+
+9. API Error Handling
+
+- Chart data fetch failure shows notification + "No Data" image
+- Grid data fetch failure displays error toast
+- Excel export errors logged (needs user notification improvement)
+- Overlay loader shown during: data fetch, config save/load, submit operations
+- If CCR master data has no data, handled the error using try and catch block
+
+
+11. Data Transformation
+
+Weekly view handles year transitions for date ranges
+Monthly view normalizes dates with time components for accurate comparison
+Past order load injected at index 0 for all views
+Transformed data memoized to prevent unnecessary recalculations
+
+12. Extras
+
+- Legend interactions hide/show series and update crosslines
+- Chart scrolls horizontally for datasets >15 points
+- Theme preference applied to all styled components
+- Column auto-sizing on grid ready event
+- Monthly view handles 2-digit year conversion (25 → 2025)
+

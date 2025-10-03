@@ -193,17 +193,25 @@ const FutureOrderLoadChart = () => {
   },[data])
 
 
-
   const getCCROptions = async () => {
-    const CCRMasterData = await getCCRMasterData({})
-    const CCRMaster = CCRMasterData?.data?.data;
-    if (CCRMaster) {
-      const allCCR = CCRMaster.map((item: any) => ({
-        label: item.ccd, 
-        value: item.cid,
-        cwl: item.cwl,
-      }));
-      setCcrOptions(allCCR);
+    try {
+      const CCRMasterData = await getCCRMasterData({});
+      const CCRMaster = CCRMasterData?.data?.data;
+      
+      if (CCRMaster) {
+        const allCCR = CCRMaster.map((item: any) => ({
+          label: item.ccd, 
+          value: item.cid,
+          cwl: item.cwl,
+        }));
+        setCcrOptions(allCCR);
+      } else {
+        setCcrOptions([]);
+        notifyError("No CCR data available");
+      }
+    } catch (error) {
+      setCcrOptions([]);
+      notifyError("Failed to load CCR options. Please try again.");
     }
   };
   
