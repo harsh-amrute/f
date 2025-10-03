@@ -18,7 +18,7 @@ export interface GridOptions {
   bomActive?: boolean;
   orderClosingEnable?: boolean;
   canAddComments?: boolean;
-  pinRemarkColumns?: boolean; // New option to control pinning
+  pinRemarkColumns?: boolean;
   onOpenRemarkHistory: (data: any) => void;
 }
 
@@ -28,49 +28,99 @@ export const createDynamicColumnDefs = (
   apiResponse: ApiResponseItem[],
   options: GridOptions
 ): ColDef[] => {
-  const modifiedResponse = _.cloneDeep(apiResponse);
+  const modifiedResponse: ApiResponseItem[] = [];
+  const cpMap: { [key: string]: number } = {};
 
-  modifiedResponse.unshift({
+
+
+  apiResponse.forEach((item) => {
+    const modifiedItem = { ...item };
+
+    if (!(item.cc in cpMap)) {
+      cpMap[item.cc] = 3; // Start from 3 since 1 and 2 are taken by default objects
+    }
+
+    modifiedItem.cp = cpMap[item.cc]++;
+    modifiedItem.hd = item.hd || item.cc;
+    modifiedItem.cla = "Centre";
+    modifiedItem.scc = item.scc;
+
+    if (item.cc) {
+      if (item.cc.includes("Dept") && modifiedItem.ch) {
+        modifiedItem.ch = item.ch?.map((child) => {
+          return { ...child, scc: `ddtl.${item.cc}.${child.scc}` };
+        });
+      }
+
+      if (item.cc.includes("Default Attribute") && modifiedItem.ch && !options.canAddComments) {
+        modifiedItem.ch = item.ch?.filter((child) => child.cc !== "Remark");
+      }
+    }
+
+    modifiedResponse.push(modifiedItem);
+  });
+
+  const defaultOuterObject: ApiResponseItem = {
     cc: "chckbx",
     v: true,
-    hd: " ", 
+    cp: 0,
+    hd: " ",
     cla: "Centre",
     scc: "chckbx",
     pinned: "left",
-  });
+  };
+  modifiedResponse.unshift(defaultOuterObject);
 
-  modifiedResponse.unshift({
-    cc: "ic",
-    v: true,
-    hd: "",
-    cla: "Centre",
-    scc: "ic",
-  });
+    const defaultSecondObject: ApiResponseItem = {
+      cc: "ic",
+      cp: 1,
+      hd: "",
+      v: true,
+      cla: "Centre",
+      scc: "ic",
+    };
+    modifiedResponse.unshift(defaultSecondObject);
+
+  const maxCp = Math.max(...modifiedResponse.map((item) => item.cp || 0));
+
+  if (options.canAddComments) {
+    const additionalObject: ApiResponseItem = {
+      cc: "",
+      cp: maxCp + 1,
+      hd: " ",
+      v: true,
+      cla: "Centre",
+      scc: "rmk",
+      pinned: options.pinRemarkColumns ? "right" : undefined,
+      ch: [],
+    };
+    modifiedResponse.push(additionalObject);
+  }
 
   if (options.orderClosingEnable) {
-    const maxCp = Math.max(...modifiedResponse.map((item) => item.cp || 0));
-    modifiedResponse.push({
-        cc: "",
-        cp: maxCp + 2, 
-        hd: " ",
-        v: true,
-        cla: "Centre",
-        scc: "",
-        pinned: "right",
-        ch: [
-          {
-            cc: "ct",
-            cp: maxCp + 2,
-            hd: "Order Close Action",
-            v: true,
-            cla: "Centre",
-            scc: "ct",
-            pinned: "right",
-          },
-        ],
-    });
+    const short_complete_OrderColumn: ApiResponseItem = {
+      cc: "",
+      cp: maxCp + 2,
+      hd: " ",
+      v: true,
+      cla: "Centre",
+      scc: "",
+      pinned: "right",
+      ch: [
+        {
+          cc: "ct",
+          cp: maxCp + 2,
+          hd: "Order Close Action",
+          v: true,
+          cla: "Centre",
+          scc: "ct",
+          pinned: "right",
+        },
+      ],
+    };
+    modifiedResponse.push(short_complete_OrderColumn);
   }
-  
+
   const mapChildren = (parent: string, children: ApiResponseItem[]): ColDef[] => {
     return children.map((child) => ({
       field: child.scc.trim(),
@@ -84,16 +134,16 @@ export const createDynamicColumnDefs = (
           : child.dt === "date"
           ? "agDateColumnFilter"
           : "agMultiColumnFilter",
-      pinned: 
-        options.pinRemarkColumns && ['Remark', 'RemarkHistory', 'Remark History'].includes(child.cc) 
-          ? 'right' 
-          : child.pinned,
+          pinned: 
+          options.pinRemarkColumns && ['Remark', 'RemarkHistory', 'Remark History', 'LatestRemark'].includes(child.cc) 
+            ? 'right' 
+            : child.pinned,
       editable: (params: any): boolean => {
         if (!options.canAddComments) {
           return false;
         }
         return !_.isEmpty(params.data) && child.cc === "Remark";
-      },
+      },    
       floatingFilter: child.cc !== "ec" && child.cc !== "ic",
       minWidth:
         child.cc === "ec" || child.cc === "ic" || child.scc === "bpp"
@@ -188,12 +238,12 @@ export const createDynamicColumnDefs = (
   };
 
   const finalColDefs: ColDef[] = modifiedResponse.map((section) => ({
-    headerName: section.hd,
+    headerName: section.hd !== undefined && section.hd !== null ? section.hd : section.cc,
     colId: section.cc,
     pinned: section.pinned,
-    headerComponent: 
-      section.scc === "chckbx" && !options.orderClosingEnable 
-        ? 'customHeaderCheckbox' 
+    headerComponent:
+      section.scc === "chckbx" && !options.orderClosingEnable
+        ? "customHeaderCheckbox"
         : undefined,
     checkboxSelection:
       section.scc === "chckbx"
