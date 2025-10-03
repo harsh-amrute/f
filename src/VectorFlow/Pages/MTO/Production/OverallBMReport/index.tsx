@@ -323,7 +323,6 @@ const setColumnDef = async () => {
     };
 
     const colDefsData = createDynamicColumnDefs(response?.data?.data || [], gridOptions);
-    console.log('coldefsData', colDefsData)
 
     setColdef(colDefsData);
   } catch (e) {
@@ -332,7 +331,6 @@ const setColumnDef = async () => {
   }
 };
 
-console.log(groupedColDefsRef)
   
   // const addDefaultAttributes = (
   //   apiResponse: ApiResponseItem[]
@@ -1610,7 +1608,6 @@ const onPivotModeChanged = (event: any) => {
     getInitialGridData(1, userPageSize, true, 0);
   };
   
-  console.log('col defs', coldefs)
 
   return (
     <BMDepWrapper>
