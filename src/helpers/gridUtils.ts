@@ -134,10 +134,10 @@ export const createDynamicColumnDefs = (
           : child.dt === "date"
           ? "agDateColumnFilter"
           : "agMultiColumnFilter",
-      pinned: 
-        options.pinRemarkColumns && ['Remark', 'RemarkHistory', 'Remark History'].includes(child.cc) 
-          ? 'right' 
-          : child.pinned,
+          pinned: 
+          options.pinRemarkColumns && ['Remark', 'RemarkHistory', 'Remark History', 'LatestRemark'].includes(child.cc) 
+            ? 'right' 
+            : child.pinned,
       editable: (params: any): boolean => {
         if (!options.canAddComments) {
           return false;
