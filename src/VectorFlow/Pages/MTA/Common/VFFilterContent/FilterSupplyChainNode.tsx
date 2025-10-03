@@ -11,6 +11,7 @@ import useGetLocation from "../../../../../hooks/useGetLocation";
 import { useUserData } from "../../../../../context";
 import { useGetAllLocations } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 import { BPRFilter, BPRFilterState } from "../../../../../VectorFlow/types/BPR";
+import { useVFMultiFilter } from "./useVFFilterContent"; 
 
 interface FilterSectionProps {
   filters: any;
@@ -43,6 +44,11 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
   const { locations } = useGetLocation();
   const colorStyles = useColorThemeStyles();
 
+  const { handleSelectChange, getSelectedValues, setSelectedValues } = useVFMultiFilter({
+    multiFilter,
+    onMultiFilterChange,
+  });
+
   const [selectedOptions, setSelectedOptions] = useState<{
     ForLocation: string[];
     ForChildren: string[];
@@ -68,50 +74,6 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
     id: location.id,
     value: location.id || location.label,
   }));
-
-  const handleSelectChange = (newValue: any, header: string) => {
-    const filterId =
-      header === "ForLocation"
-        ? "SCF1"
-        : header === "ForChildren"
-        ? "SCF2"
-        : header === "ForChildrenLocationCode"
-        ? "SCF3"
-        : "";
-
-    const parentId = "supplyChainFilter";
-
-    const selectedValues = newValue
-      ? newValue.map((item: any) => item.value)
-      : [];
-
-    setSelectedOptions((prev) => ({
-      ...prev,
-      [header]: selectedValues,
-    }));
-
-    const existingFilters = multiFilter[parentId].filters.filter(
-      (f: BPRFilter) => f.name !== filterId
-    );
-
-    const newFilters = selectedValues.map((value: string) => ({
-      attributeName: header,
-      value: value,
-      operator: "=",
-      label: header,
-      name: filterId,
-    }));
-
-    const updatedMultiFilter = {
-      ...multiFilter,
-      [parentId]: {
-        ...multiFilter[parentId],
-        filters: [...existingFilters, ...newFilters],
-      },
-    };
-
-    onMultiFilterChange(updatedMultiFilter);
-  };
 
   useEffect(() => {
     if (multiFilter?.supplyChainFilter) {
@@ -169,7 +131,12 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
                 value: option,
               }))}
               onChange={(newValue) =>
-                handleSelectChange(newValue, "ForLocation")
+                handleSelectChange({
+                  newValue,
+                  header: "ForLocation",
+                  filterId: "SCF1",
+                  parentId: "supplyChainFilter"
+                })
               }
             />
           </DropDownWrapper>
@@ -203,7 +170,12 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
                 value: option,
               }))}
               onChange={(newValue) =>
-                handleSelectChange(newValue, "ForChildren")
+                handleSelectChange({
+                  newValue,
+                  header: "ForChildren",
+                  filterId: "SCF2",
+                  parentId: "supplyChainFilter"
+                })
               }
             />
           </DropDownWrapper>
@@ -245,13 +217,18 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
                   scrollbarWidth: "none",
                 }),
               }}
-              placeholder="Search By name"
+              placeholder="Search By Locations"
               value={selectedOptions.ForChildrenLocationCode.map((option) => ({
                 label: option,
                 value: option,
               }))}
               onChange={(newValue) =>
-                handleSelectChange(newValue, "ForChildrenLocationCode")
+                handleSelectChange({
+                  newValue,
+                  header: "ForChildrenLocationCode",
+                  filterId: "SCF3",
+                  parentId: "supplyChainFilter"
+                })
               }
             />
           </DropDownWrapper>
