@@ -20,12 +20,13 @@ interface SelectChangeParams {
 
 export const useFilterRows = (initialCount = 1, maxRows = 5) => {
   const [filterRows, setFilterRows] = useState<FilterRow[]>(
-    Array(initialCount).fill(null).map(() => ({ id: Date.now() + Math.random() }))
+    Array(initialCount).fill(null).map((_, idx) => ({ id: idx }))
   );
 
   const addFilterRow = () => {
     if (filterRows.length < maxRows) {
-      setFilterRows([...filterRows, { id: Date.now() + Math.random() }]);
+      const newId = filterRows.length > 0 ? Math.max(...filterRows.map(r => r.id)) + 1 : 0;
+      setFilterRows([...filterRows, { id: newId }]);
     }
   };
 
@@ -35,33 +36,39 @@ export const useFilterRows = (initialCount = 1, maxRows = 5) => {
     }
   };
 
+  const resetFilterRows = (count: number) => {
+    setFilterRows(Array(count).fill(null).map((_, idx) => ({ id: idx })));
+  };
+
   return {
     filterRows,
+    setFilterRows,
     addFilterRow,
     removeFilterRow,
+    resetFilterRows,
     isMaxRows: filterRows.length >= maxRows,
     isMinRows: filterRows.length <= 1
   };
 };
 
 export const stringOpertors = [
-    { label: "Equal to", value: "eq"},
-    { label: "Not Equal to", value: "neq"},
-    { label: "Does not contain", value: "ncontains"},
-    { label: "Starts With", value: "starts"},
-    { label: "Does not start with", value: "nstarts"},
-    { label: "Ends with", value: "ends"},
-    { label: "Does not end with", value: "nends"},
-    { label: "Has no value", value: "null"},
+  { label: "Equal to", value: "equalto" },
+  { label: "Not Equal to", value: "notequalto" },
+  { label: "Does not contain", value: "doesnotcontain" },
+  { label: "Starts With", value: "startswith" },
+  { label: "Does not start with", value: "doesnotstartwith" },
+  { label: "Ends with", value: "endswith" },
+  { label: "Does not end with", value: "doesnotendwith" },
+  { label: "Has no value", value: "hasnovalue" },
 ]
 
 export const numericOperators = [
-  { label: "Equal to", value: "eq"},
-  { label: "Greater than", value: "greater"},
-  { label: "Less than", value: "less"},
-  { label: "Greater than equal to", value: "greaterEq"},
-  { label: "Less than equal to", value: "lessEq"},
-  { label: "Not equal", value: "notEq"},
+  { label: "Equal to", value: "equalto" },
+  { label: "Greater than", value: "greaterthan" },
+  { label: "Less than", value: "smallerthan" },
+  { label: "Greater than equal to", value: "greaterthanequalto" },
+  { label: "Less than equal to", value: "smallerthanequalto" },
+  { label: "Not equal", value: "notequalto" },
 ]
 
 export const colorOptions = [
@@ -87,7 +94,7 @@ export const useVFMultiFilter = ({
     parentId,
     attributeName
   }: SelectChangeParams) => {
-    
+
     const selectedValues = newValue
       ? newValue.map((item: any) => item.value)
       : [];
@@ -98,7 +105,7 @@ export const useVFMultiFilter = ({
     }));
 
     const parentFilter = multiFilter[parentId];
-    
+
     const existingFilters = parentFilter.filters.filter(
       (f: BPRFilter) => f.name !== filterId
     );
