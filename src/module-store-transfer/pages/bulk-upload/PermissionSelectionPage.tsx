@@ -70,6 +70,7 @@ const PermissionSelectionPage = ({
           setCompulsoryPermissionsApps([...MTAPerm,...MTOPerm]);
         }
         else{
+          console.log("MTAPerm", MTAPerm);
           setCompulsoryPermissionsApps([...MTAPerm]);
         }
       }
@@ -92,11 +93,17 @@ const PermissionSelectionPage = ({
   }
 
   useEffect(()=>{
-    if(activeApplications.includes('Orders')){
-      addMTOToCompulsoryPermissions();
-    }else{
-      const MTAPerm = _.uniq(listRoles?.filter((ele:any)=>ele.application_name==='Distribution').map((role:any)=>role.application_id)) || [];
-      setCompulsoryPermissionsApps([...MTAPerm]);
+    if(compulsorPermissions.length===0 && listRoles.length>0){
+      console.log("this is calling baar baar", compulsorPermissions.length===0);
+
+      if(activeApplications.includes('Orders')){
+        console.log("here");
+        addMTOToCompulsoryPermissions();
+      }else{
+        console.log("or here");
+        const MTAPerm = _.uniq(listRoles?.filter((ele:any)=>ele.application_name==='Distribution').map((role:any)=>role.application_id)) || [];
+        setCompulsoryPermissionsApps([...MTAPerm]);
+      }
     }
   },[activeApplications])
 
@@ -367,7 +374,7 @@ const PermissionSelectionPage = ({
               const appId = roleToAppMap[roleId];
               
               // If the role belongs to a compulsory permissions app
-              if (compulsoryPermissionsApps.includes(appId)) {
+              if (compulsorPermissions.includes(appId)) {
                   // Check if user has permissions for this application
                   if (!userPermissionAppIdsLoc.has(appId) || !userPermissionAppIdsPerm.has(appId)) {
                       errors.push({
@@ -473,9 +480,7 @@ const PermissionSelectionPage = ({
       try{
         const finalData = optimizePermissionsAndRoles(transformUserData(userDataAll));
         console.log("finalData", finalData);
-        const compulsoryPermissionsApps = _.uniq(listRoles?.filter((ele:any)=>ele.application_name==='Distribution').map((role:any)=>role.application_id)) || [];
-        const {isValid, errors, modifiedData} = validateUserPermissions({roles: listRoles, finalData, compulsoryPermissionsApps});
-        console.log("compulsorPermissions", compulsoryPermissionsApps)
+        const {isValid, errors, modifiedData} = validateUserPermissions({roles: listRoles, finalData, compulsorPermissions});
         console.log("errors", errors);
         if(!isValid){
           let errorMsg = "Errors found:\n";
