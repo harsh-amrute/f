@@ -307,23 +307,31 @@ const ActionToolBar = ({
         );
       case "OrderFulfillment":
         return (
-          <VFMultiFilter
-          isFilterOpen={isFilterOpen}
-            onApplyFilter={handleApplyFilter}
-            onGoBack={() => toggleFilter(false)}
-            multiFilter={multiFilter}
-            setMultiFilter={setMultiFilter}
-            productFilterActive={true}
-            supplyChainNodeFilterActive={true}
-            locationFilterActive={true}
-            coverageFilterActive={true}
-            supplyChainForLocationCheckBoxList={
-              locations
-            }
-            supplyChainForChildrenOfCheckBoxList={
-              locations
-            }
-          />
+          // <VFMultiFilter
+          // isFilterOpen={isFilterOpen}
+          //   onApplyFilter={handleApplyFilter}
+          //   onGoBack={() => toggleFilter(false)}
+          //   multiFilter={multiFilter}
+          //   setMultiFilter={setMultiFilter}
+          //   productFilterActive={true}
+          //   supplyChainNodeFilterActive={true}
+          //   locationFilterActive={true}
+          //   coverageFilterActive={true}
+          //   supplyChainForLocationCheckBoxList={
+          //     locations
+          //   }
+          //   supplyChainForChildrenOfCheckBoxList={
+          //     locations
+          //   }
+          // />
+              <MTAVFMultiFilter
+              isOpen={isFilterOpen}
+              onApply={handleApplyFilter}
+              multiFilter={multiFilter}
+              onClose={() => toggleFilter(false)}
+              onReset={handleResetFilters}
+              
+            />
         );
       case "BPR":
         if (pathname === "/mta/supply-chain-intelligence-hub/bpr") {
