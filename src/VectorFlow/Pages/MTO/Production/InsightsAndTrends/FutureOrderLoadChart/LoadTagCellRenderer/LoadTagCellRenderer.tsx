@@ -6,7 +6,7 @@ const getTagStyles = (tag: string) => {
     return { arrow: "#cccccc", bg: "#fff", text: "#000", border: "none" };
   }
 
-  let lower = tag.toLowerCase();
+  const lower = tag.toLowerCase();
   if (lower === "past scheduling") {
     return { arrow: "#E53F3F", bg: "#E53F3F", text: "#2F2B2B", border: "none" };
   }

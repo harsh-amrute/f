@@ -220,12 +220,12 @@ const FutureOrderLoadChart = () => {
   }, [])
 
   useEffect(() => {
-    if (uiConfig && currTab && selectedAction ) { 
+    if (uiConfig && currTab && selectedAction && isGridView ) { 
       setColumnDef();
       setMasterUIConfig(createMasterConfig());
       getUserColumnConfig()
     }
-  }, [currTab,selectedAction,uiConfig])
+  }, [currTab,selectedAction,uiConfig, isGridView])
   
   useEffect(() => {
     if (isReset) {
@@ -444,14 +444,7 @@ const getFilterData = async () => {
       if (coldefs) {
         const isLoadWise = currTab === 'Load Wise';
         const isANS = selectedAction?.value === 'ANS';
-        const currentGridIndex =  isLoadWise
-        ? isANS 
-          ? 0
-          : 1
-        : isANS
-          ? 2
-        :3;
-        const fullConfig = {cs: coldefs[currentGridIndex], pageSize: page_size || userPageSize };
+        const fullConfig = {cs: coldefs, pageSize: page_size || userPageSize };
         const payload = {
           un: user.user.name,
           rn_id: UIGridCode.ProdStplAndFullKit,
@@ -472,8 +465,9 @@ const getFilterData = async () => {
         await updateUserUIReportConfigData([payload]);
       }
       else {
-        if (currentGridRef?.current?.api) {
 
+        
+        if (currentGridRef?.current?.api) {
           const config = currentGridRef.current.api.getColumnState();
           const updatedColState = [...columnState];
           const isLoadWise = currTab === 'Load Wise';

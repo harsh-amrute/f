@@ -59,9 +59,6 @@ const GridView = ({ setCurrentGridRef,context, currentGridRef, columnState, colD
           if (currentGridRef?.current && columnState?.length ) {
             const isLoadWise = currTab === 'Load Wise';
             const isANS = selectedAction?.value === 'ANS';
-
-            console.log("LoadWise", isLoadWise);
-            console.log("Ans",selectedAction?.value)
             const currentGridIndex =  isLoadWise
             ? isANS 
               ? 0
@@ -69,10 +66,6 @@ const GridView = ({ setCurrentGridRef,context, currentGridRef, columnState, colD
             : isANS
               ? 2
                 : 3;
-            
-            console.log("index apply", currentGridIndex)
-            
-            console.log("columnState apply krr rhaa", columnState[currentGridIndex]);
                 const result = currentGridRef.current.api.applyColumnState({
                     state: columnState[currentGridIndex],
                     applyOrder: true
