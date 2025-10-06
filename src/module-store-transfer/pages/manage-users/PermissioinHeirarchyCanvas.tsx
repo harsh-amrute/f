@@ -1,13 +1,9 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { ReactFlow, Handle, Position } from "@xyflow/react";
-
 import "@xyflow/react/dist/style.css";
 import Checkbox from "../../../components/VectorFLOW/commons/MTO/Checkbox";
-
 import { useUserData } from "../../../context";
-
 import { ToggleContainer, ToggleButton, ChartWrapper } from "./PermissionHeirarchyStyles";
-import styled from "styled-components";
 
 const NodeDataContext = createContext<any>(undefined);
 
@@ -288,8 +284,6 @@ const CustomNode = ({
 const nodeTypes = {
   customNode: CustomNode,
 };
-
-
 
 export default function PermissionHeirarchyCanvas({
   dataAllPermissions,
