@@ -31,6 +31,8 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
   const {
     filterRows,
     addFilterRow,
+    handleAddRow,
+    handleRemoveRow,
     removeFilterRow,
     isMaxRows,
     isMinRows,
@@ -153,42 +155,6 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
       };
 
       onMultiFilterChange(updatedMultiFilter);
-    }
-  };
-
-  const handleAddRow = () => {
-    if (!isMaxRows) {
-      addFilterRow();
-    }
-  };
-
-  const handleRemoveRow = (rowId: number) => {
-    if (!isMinRows) {
-      const parentId = "locationFilter";
-      const filterToRemove = rowSelections[rowId];
-
-      if (filterToRemove?.column) {
-        const filterName =
-          filterToRemove.column.name ||
-          `${filterToRemove.column.value}_${rowId}`;
-        const updatedMultiFilter = {
-          ...multiFilter,
-          [parentId]: {
-            ...multiFilter[parentId],
-            filters:
-              multiFilter[parentId]?.filters?.filter(
-                (f: BPRFilter) => f.name !== filterName
-              ) || [],
-          },
-        };
-        onMultiFilterChange(updatedMultiFilter);
-      }
-
-      const updated = { ...rowSelections };
-      delete updated[rowId];
-      setRowSelections(updated);
-
-      removeFilterRow(rowId);
     }
   };
 

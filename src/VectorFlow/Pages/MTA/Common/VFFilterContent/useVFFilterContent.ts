@@ -20,25 +20,44 @@ interface SelectChangeParams {
 
 export const useFilterRows = (initialCount = 1, maxRows = 5) => {
   const [filterRows, setFilterRows] = useState<FilterRow[]>(
-    Array(initialCount).fill(null).map((_, idx) => ({ id: idx }))
+    Array(initialCount)
+      .fill(null)
+      .map((_, idx) => ({ id: idx }))
   );
 
-  const addFilterRow = () => {
-    if (filterRows.length < maxRows) {
-      const newId = filterRows.length > 0 ? Math.max(...filterRows.map(r => r.id)) + 1 : 0;
-      setFilterRows([...filterRows, { id: newId }]);
-    }
-  };
+  const addFilterRow = useCallback(() => {
+    setFilterRows((prev) => {
+      if (prev.length >= maxRows) return prev;
+      const newId =
+        prev.length > 0 ? Math.max(...prev.map((r) => r.id)) + 1 : 0;
+      return [...prev, { id: newId }];
+    });
+  }, [maxRows]);
 
-  const removeFilterRow = (id: number) => {
-    if (filterRows.length > 1) {
-      setFilterRows(filterRows.filter(row => row.id !== id));
-    }
-  };
+  const removeFilterRow = useCallback((id: number) => {
+    setFilterRows((prev) =>
+      prev.length > 1 ? prev.filter((row) => row.id !== id) : prev
+    );
+  }, []);
 
-  const resetFilterRows = (count: number) => {
-    setFilterRows(Array(count).fill(null).map((_, idx) => ({ id: idx })));
-  };
+  const resetFilterRows = useCallback((count: number) => {
+    setFilterRows(
+      Array(count)
+        .fill(null)
+        .map((_, idx) => ({ id: idx }))
+    );
+  }, []);
+
+  const handleAddRow = useCallback(() => {
+    if (filterRows.length < maxRows) addFilterRow();
+  }, [filterRows.length, maxRows, addFilterRow]);
+
+  const handleRemoveRow = useCallback(
+    (rowId: number) => {
+      if (filterRows.length > 1) removeFilterRow(rowId);
+    },
+    [filterRows.length, removeFilterRow]
+  );
 
   return {
     filterRows,
@@ -46,8 +65,10 @@ export const useFilterRows = (initialCount = 1, maxRows = 5) => {
     addFilterRow,
     removeFilterRow,
     resetFilterRows,
+    handleAddRow,
+    handleRemoveRow,
     isMaxRows: filterRows.length >= maxRows,
-    isMinRows: filterRows.length <= 1
+    isMinRows: filterRows.length <= 1,
   };
 };
 
