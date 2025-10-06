@@ -11,7 +11,7 @@ import { useUserData } from "../../../../../../context";
 import GraphView from './GraphView/GraphView';
 import GridView from './GridView/GridView';
 import { useGetCCRMasterData } from '../../../../../../VectorFlow/Services/MTA/MDM';
-import { notifyError } from '../../../../../../helpers/notify';
+import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
 import { UIGridCode } from '../../../Common/Enum';
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import useColDef from '../../../../../../hooks/useColDef';
@@ -299,7 +299,16 @@ const FutureOrderLoadChart = () => {
         setGridData(transformedData);
         setTotalRow(response?.data?.data?.count || transformedData.length);
       } else {
+        // notifySuccess('Graph updated successfully')
+        console.log(response)
         setGraphData(response?.data?.data || [])
+
+        if (response.status != 200) {
+          notifyError('No Data found for the selected filters')
+        }
+        else {
+          notifySuccess('Graph Updated Successfully')
+        }
       }
     } catch (error) {
       console.error(error);
