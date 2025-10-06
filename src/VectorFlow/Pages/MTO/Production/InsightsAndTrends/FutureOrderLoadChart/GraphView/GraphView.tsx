@@ -237,8 +237,6 @@ const GraphView = ({ currView, setCurrView,selectedCCR, horizonData, graphData, 
         name:'holiday',
         tooltip: {
           renderer: ({ datum }: any) => {
-            console.log("dataums", datum)
-
             return `<div style="background: white; color: #000; padding: 8px;">
               <div style="color:black", font-weight:500;>${datum.type}</div> 
               <div> ${datum.load}</div>

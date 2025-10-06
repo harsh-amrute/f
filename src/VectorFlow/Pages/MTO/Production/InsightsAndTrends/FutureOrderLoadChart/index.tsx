@@ -451,8 +451,8 @@ const getFilterData = async () => {
 
     try {
       if (coldefs) {
-        const isLoadWise = currTab === 'Load Wise';
-        const isANS = selectedAction?.value === 'ANS';
+        // const isLoadWise = currTab === 'Load Wise';
+        // const isANS = selectedAction?.value === 'ANS';
         const fullConfig = {cs: coldefs, pageSize: page_size || userPageSize };
         const payload = {
           un: user.user.name,
