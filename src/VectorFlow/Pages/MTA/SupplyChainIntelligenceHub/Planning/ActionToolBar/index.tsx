@@ -522,26 +522,34 @@ const ActionToolBar = ({
       case "BTR":
         if (pathname === "/mta/insights-and-trends/buffer-trend-report" && onChangeHorizon) {
           return (
-            <VFMultiFilter
-            isFilterOpen={isFilterOpen}
-              onApplyFilter={handleApplyFilter}
-              onGoBack={() => toggleFilter(false)}
+            // <VFMultiFilter
+            // isFilterOpen={isFilterOpen}
+            //   onApplyFilter={handleApplyFilter}
+            //   onGoBack={() => toggleFilter(false)}
+            //   multiFilter={multiFilter}
+            //   currentTab={currentTab}
+            //   setMultiFilter={setMultiFilter}
+            //   productFilterActive={true}
+            //   supplyChainNodeFilterActive={true}
+            //   colorFilterActive={true}
+            //   locationFilterActive={true}
+            //   availabilityFilterActive={true}
+            //   onChangeHorizon={onChangeHorizon}
+            //   horizon={horizon}
+            //   supplyChainForLocationCheckBoxList={
+            //     locations
+            //   }
+            //   supplyChainForChildrenOfCheckBoxList={
+            //     locations
+            //   }
+            // />
+             <MTAVFMultiFilter
+              isOpen={isFilterOpen}
+              onApply={handleApplyFilter}
               multiFilter={multiFilter}
-              currentTab={currentTab}
-              setMultiFilter={setMultiFilter}
-              productFilterActive={true}
-              supplyChainNodeFilterActive={true}
-              colorFilterActive={true}
-              locationFilterActive={true}
-              availabilityFilterActive={true}
-              onChangeHorizon={onChangeHorizon}
-              horizon={horizon}
-              supplyChainForLocationCheckBoxList={
-                locations
-              }
-              supplyChainForChildrenOfCheckBoxList={
-                locations
-              }
+              onClose={() => toggleFilter(false)}
+              onReset={handleResetFilters}
+              
             />
           );
         }

@@ -118,6 +118,15 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
               }}
               styles={{
                 ...colorStyles,
+                input: (base) => ({
+                  ...base,
+                  color: '#333',
+                }),
+                placeholder: (base) => ({
+                  ...base,
+                  color: '#999',
+                  display: 'block',
+                }),
                 menuList: (base) => ({
                   ...base,
                   maxHeight: 500,
@@ -157,6 +166,15 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
               }}
               styles={{
                 ...colorStyles,
+                input: (base) => ({
+                  ...base,
+                  color: '#333',
+                }),
+                placeholder: (base) => ({
+                  ...base,
+                  color: '#999',
+                  display: 'block',
+                }),
                 menuList: (base) => ({
                   ...base,
                   maxHeight: 500,
@@ -189,7 +207,6 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
             <Select
               options={locationCheckboxOptions}
               isMulti
-              isSearchable={true}
               closeMenuOnSelect={false}
               hideSelectedOptions={false}
               components={{
@@ -210,12 +227,21 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
               }}
               styles={{
                 ...colorStyles,
+                input: (base) => ({
+                  ...base,
+                  color: '#333',
+                }),
+                placeholder: (base) => ({
+                  ...base,
+                  color: '#999',
+                  display: 'block',
+                }),
                 menuList: (base) => ({
                   ...base,
                   maxHeight: 400,
                   overflowY: "auto",
                   scrollbarWidth: "none",
-                }),
+                }),      
               }}
               placeholder="Search By Locations"
               value={selectedOptions.ForChildrenLocationCode.map((option) => ({

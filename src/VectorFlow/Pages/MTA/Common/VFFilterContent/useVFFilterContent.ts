@@ -81,6 +81,16 @@ export const colorOptions = [
   { value: "grey", label: "Grey", color: "grey" },
 ];
 
+export const colorFilterOptions = [
+  { value: 'black', label: 'Black' },
+  { value: 'black/red', label: 'Black/Red' },
+  { value: 'red', label: 'Red' },
+  { value: 'blue', label: 'Blue' },
+  { value: 'yellow', label: 'Yellow' },
+  { value: 'green', label: 'Green' },
+  { value: 'white', label: 'White' },
+]
+
 export const useVFMultiFilter = ({
   multiFilter,
   onMultiFilterChange,
