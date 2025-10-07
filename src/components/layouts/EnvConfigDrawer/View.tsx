@@ -1,4 +1,4 @@
-import {useState,useEffect,useCallback} from 'react'
+import {useState,useEffect,useCallback, useRef} from 'react'
 
 import VFTable from "../../VectorFLOW/commons/VFTable"
 
@@ -8,26 +8,40 @@ import { useUserData } from "../../../context"
 import { SecondaryButton, Skeleton } from "../../commons/styled"
 import { notifyError } from '../../../helpers/notify'
 import { useGetAllEnvironmentConfiguration } from '../../../VectorFlow/Services/MTA/MDM'
+import { GridRef } from '../../../VectorFlow/types/MDM'
+import { GridFilterWrapper, TextBtn } from '../../../VectorFlow/Pages/MTO/Common/VFPagination/styles'
+import { useDispatch } from 'react-redux'
+import { UPDATE_ENV_CONFIG } from '../../../redux/actions/MTA'
 
-
-const ViewURLs = (props:{onEdit:(data:any)=>void})=>{
+ type EnvConfig = {
+    Id: number;
+    ConfigKey: string;
+    ConfigValue: string;
+    Description: string;
+    Category: string; 
+    };
+ const initialConfig = {
+        EnvProductPermissionArray: [],
+        EnvLocationPermissionArray: []
+    };
+    
+const ViewEnvConfig = (props:{onEdit:(data:any)=>void})=>{
 
     const {
         onEdit
     } = props
 
     const {user} = useUserData()
-
+    const ref = useRef<GridRef>();
+    const [isDisabled, setIsDisabled]= useState<boolean>(true)
     const themeUi = user.user.theme_ui
-
+    const dispatch = useDispatch();
     const [rowData,setRowData] = useState<Array<any>>([])
     const {mutateAsync : getAllEnvConfiguration} = useGetAllEnvironmentConfiguration();
     const getAllEnvConfig = useCallback(async()=>{
         try{
             const response = await getAllEnvConfiguration();
-            const data = response?.data?.data;
-            console.log("DATA",data);
-            
+            const data : EnvConfig[]  = response?.data?.data;
             setRowData(data.sort((row1:any,row2:any)=>row1.id - row2.id))
         }catch(error:any){
             console.error(error)
@@ -52,6 +66,20 @@ const ViewURLs = (props:{onEdit:(data:any)=>void})=>{
     useEffect(()=>{
         getAllEnvConfig()
     },[])
+   useEffect(() => {
+        const configMap = rowData.reduce((map: any, item: EnvConfig) => {
+            map[item.ConfigKey] = item.ConfigValue;
+            if (item.Category === 'ProductPermission') {
+                map.EnvProductPermissionArray.push(item.ConfigValue);
+            } else if (item.Category === 'LocationPermission') {
+                map.EnvLocationPermissionArray.push(item.ConfigValue);
+            }
+            return map;
+        }, JSON.parse(JSON.stringify(initialConfig)));
+
+        dispatch(UPDATE_ENV_CONFIG(configMap));
+    }, [rowData, dispatch]);
+
 
     if(isLoading){
         return (
@@ -61,18 +89,48 @@ const ViewURLs = (props:{onEdit:(data:any)=>void})=>{
         )
     }
 
+    const clearGridFilter = () =>{   
+        ref?.current?.api.setFilterModel(null);
+          setIsDisabled(true);
+    }
+
+    const CustomStatusPanel = () => {
+        return (
+            <GridFilterWrapper style={{marginTop:'25px'}}>
+                <TextBtn onClick={clearGridFilter} disabled={isDisabled} themeUi={themeUi}>
+                    Clear All Grid Filters
+                </TextBtn>  
+            </GridFilterWrapper>           
+        );
+    };
+
     return(
         <TableWrapper>
             <VFTable 
+                ref={ref}
                 defaultColDef={{
                     flex:1,
                     cellStyle:{
                         'text-align':'center'
-                    }
+                    },
+                    floatingFilter: true,
+                    filter: "agMultiColumnFilter"
                 }}
                 rowHeight={50}
                 height="600px"
                 rowData={rowData}
+                statusBar={{
+                    statusPanels: !isLoading?[
+                      { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
+                      { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                      { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
+                      { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
+                      { statusPanel: 'agAggregationComponent', align: 'left' },
+                      { statusPanel: CustomStatusPanel, align: "right" },
+
+                    ]:
+                    [],
+                  }}
                 columnDefs={[
                     {
                         colId:"ConfigKey",
@@ -90,6 +148,7 @@ const ViewURLs = (props:{onEdit:(data:any)=>void})=>{
                         colId:'edit',
                         field:'edit',
                         headerName:'',
+                        floatingFilter:false,
                         maxWidth:80,
                         cellStyle:{
                             display:'flex',
@@ -107,9 +166,17 @@ const ViewURLs = (props:{onEdit:(data:any)=>void})=>{
                         )
                     },                  
                 ]}
+                onFilterChanged={() => {
+                    const filterModel = ref?.current?.api?.getFilterModel();
+                    if (filterModel && Object.keys(filterModel).length > 0) {
+                      setIsDisabled(false);
+                    } else {
+                      setIsDisabled(true);
+                    }
+                  }}
             />
             </TableWrapper>
     )
 }
 
-export default ViewURLs
+export default ViewEnvConfig

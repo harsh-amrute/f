@@ -98,7 +98,7 @@ const BufferTrends = () => {
   };
 
   useEffect(() => {
-    BufferTrendsDataLoad();
+    if(currentGraphData?.length) BufferTrendsDataLoad();
   }, [currentTab]);
 
   return (
@@ -149,7 +149,8 @@ const BufferTrends = () => {
           />
         </div>
       </div>
-      {isLoading ? <OverlayLoader /> : renderView()}
+
+      {isLoading ? <OverlayLoader /> : currentGraphData?.length && renderView()}
     </>
   );
 };

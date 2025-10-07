@@ -25,6 +25,7 @@ import CustomCellEditor from './MajorDropDownRenderer';
 import PlannedReleaseRenderer from './PlannedReleaseRenderer';
 import { Wrapper } from './styles';
 import VFButtonOutline from '../../../../../components/VectorFLOW/commons/VFButtonOutline';
+import { filter } from 'lodash';
 
 const APIFilterConfig = {
     filSecVisConfig: {
@@ -159,7 +160,10 @@ const ReasonForDelayOrder = () => {
             cellRenderer: RemarkHistoryRenderer,
             cellRendererParams: {
                 onClick: (oid: string) => handleModal(oid)
-            }
+            },
+            enablePivot: false,
+            enableRowGroup: false,
+            filter: false,
         },
         MajorReason: {
             pinned: "right",
@@ -169,11 +173,13 @@ const ReasonForDelayOrder = () => {
             cellStyle: {
                 'background': 'none',
                 'border': "none",
-            },    
+            },
             cellRenderer: (props: any) => {
-                return <CustomCellEditor {...props} selectedValue={props.data.maj} selectedMinorReason={props.data.min}
-                />
-            }
+                return <CustomCellEditor {...props} selectedValue={props.data.maj} selectedMinorReason={props.data.min} />
+            },
+            enablePivot: true,
+            enableRowGroup: true,
+            filter:false
         },
         MinorReason: {
             pinned: "right",
@@ -185,10 +191,12 @@ const ReasonForDelayOrder = () => {
                 'border': "none",
             },
             cellRenderer: (props: any) => {
-                return <CustomCellEditor {...props} selectedValue={props.data.maj} selectedMinorReason={props.data.min}
-                />
+                return <CustomCellEditor {...props} selectedValue={props.data.maj} selectedMinorReason={props.data.min} />
             },
-
+            enablePivot: true,
+            enableRowGroup: true,
+            filter:false
+        
         },
         ElapsedDays: {
             cellStyle: {
@@ -197,12 +205,15 @@ const ReasonForDelayOrder = () => {
         },
         PlannedReleaseDate: {
             cellRenderer: PlannedReleaseRenderer,
+
         },
         QuotedDueDate: {
             cellRenderer: PlannedReleaseRenderer,
+
         },
         BPP: {
             cellRenderer: BPPRenderer,
+
         }
     }
 

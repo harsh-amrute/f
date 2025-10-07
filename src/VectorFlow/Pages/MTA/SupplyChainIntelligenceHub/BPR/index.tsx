@@ -174,7 +174,8 @@ const BPR = ()=>{
             />
               </Wrapper>
               
-
+                {BPRRowData?.length && 
+                <>
                 <VFPagination
                     selectedRows={0}
                     totalRows={recordCount}
@@ -185,6 +186,8 @@ const BPR = ()=>{
                     isDisabled={isDisabled}
                 />
                 <VFSaveRemark onSubmitRemarks={onSubmitRemarks} />
+                </>
+                }
               {/* {onSubmitRemarks && (
                  <CustomizedOutlineWrapper style={{ margin: '1rem 0', padding: 0 }}>
                     <VFButtonOutline 

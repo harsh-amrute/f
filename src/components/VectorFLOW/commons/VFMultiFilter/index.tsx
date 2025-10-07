@@ -288,16 +288,12 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
         {value:'l1',label:LOCATION_PERMISSION_L1},
         {value:'l2',label:LOCATION_PERMISSION_L2},
         {value:'l3',label:LOCATION_PERMISSION_L3},
-        {value:'l4',label:'L4'},
-        {value:'l5',label:'L5'}, 
     ]
 
     const filterProductOptions = [
         {value:'p1',label:PRODUCT_PERMISSION_L1},
         {value:'p2',label:PRODUCT_PERMISSION_L2},
         {value:'p3',label:PRODUCT_PERMISSION_L3},
-        {value:'p4',label:'P4'},
-        {value:'p5',label:'P5'},  
     ]
 
     const colorFilterOptions = [
@@ -828,6 +824,11 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         }
     }, []);
 
+    const hasAppliedFilters = () => {
+        if (!filterState) return false;
+        return Object.values(filterState).some(filterGroup => filterGroup.filters && filterGroup.filters.length > 0);
+    };
+
     return(
         <>
         <VFModalCard zoom={'0.73'} openModal={isFilterOpen} closeModal={onGoBack} headerIcon={'/assets/img/VectorFLOW/BPR/select-filter.svg'} headerText={loading?<Skeleton style={{height:20,width:80}}/>:'Select Filter'}  closeIcon={'/assets/img/VectorFLOW/NMS/close-dark.svg'} paddingLeftAndRight={0} backgroundColor={'#f4f4f4'} data-testid="vfmultifilter-img">
@@ -1260,9 +1261,12 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
             
             <ButtonFilterWrapper>
                 <ButtonContainer>
+                   {
+                   hasAppliedFilters() &&
                     <VFButtonOutline themeUi={user.user.theme_ui} onClick={resetFilters}>
                        Reset Filters
                     </VFButtonOutline>
+                    }
                     <VFButton
                         themeUi={user.user.theme_ui}
                         onClick={() => {
@@ -1277,7 +1281,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                             }
                         }}
                         >
-                        Apply Filter
+                        {hasAppliedFilters() ? 'Apply Filter' : 'Show All'}
                     </VFButton>
                 </ButtonContainer>
             </ButtonFilterWrapper>

@@ -69,6 +69,8 @@ import { InputCheckBox } from "./styles";
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import BomExcelModal from "../../Common/BomExcelModal";
 import useColDef from "../../../../../hooks/useColDef";
+import { createDynamicColumnDefs } from "../../../../../helpers/gridUtils";
+import CustomHeaderCheckbox from "../../../../../VectorFlow/Pages/MTO/Common/CustomHeaderCheckbox";
 
 
 interface ApiResponse {
@@ -146,8 +148,8 @@ const OverallBmReport = () => {
   const { mutateAsync: getBOMExplosionData /*isLoading :BombDataLoading*/ } =
     useGetBOMExplosionData();
   const { mutateAsync: getDBRsettingsData} = useGetDBRsettingsData();
-  const { mutateAsync: getHighAgeingData } = useGetHighAgeingData();
-  const { mutateAsync: getDeptWiseWipData } = useGetDeptWiseWipData();
+  const { mutateAsync: getHighAgeingData, isLoading: isHighAgeingData } = useGetHighAgeingData();
+  const { mutateAsync: getDeptWiseWipData, isLoading: isDeptWiseWipData} = useGetDeptWiseWipData();
   const { mutateAsync: getPoogIRemarks } = useGetPoogiRemarks();
   const { mutateAsync: getUIConfigData } = useGetUIConfigData();
   // const { screenHeight } = useViewPort();
@@ -182,7 +184,6 @@ const OverallBmReport = () => {
   const [deptName, setDeptName] = useState<any>([]);
   const [isOrderElapsedGrid, setIsOrderElapsedGrid] = useState<boolean>(false);
   const [filterData, setFilterData] = useState({});
-  const [systemType, setSystemType] = useState<any>();
   const [isGridLoading, setIsGridLoading] = useState(false);
   const [showExcelModal, setShowExcelModal] = useState(false);
   
@@ -281,18 +282,25 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
   };
 
   const getSystemType = async () => {
-    const DBRSettingsData: any = await getDBRsettingsData();
-    const DBRSettings = DBRSettingsData.data?.data;
-    const BomFlag = DBRSettings?.find((data: any) => data.flag === "BOMActive" && data.value==1);
-    if(BomFlag){
-        setBomActive(true)
+    try {
+      const DBRSettingsData: any = await getDBRsettingsData();
+      const DBRSettings = DBRSettingsData.data?.data;
+      if (DBRSettings && DBRSettings.length) {
+        const BomFlag = DBRSettings?.find((data: any) => data.flag === "BOMActive" && data.value == 1);
+        if (BomFlag) {
+          setBomActive(true)
+        }
+        else {
+          setBomActive(false)
+        }
+        setorderClosingEnable(canShowOrderClosing);
+        getFilterData();
+      } else {
+        getFilterData();
+      }
+    } catch (e) {
+      console.error(e);
     }
-    else {
-      setBomActive(false)
-    }
-    
-    setorderClosingEnable(canShowOrderClosing);
-    setSystemType(Number(systemType?.value || 0));
   };
 
    useEffect(()=>{
@@ -301,138 +309,142 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
     }
     },[bomActive])
 
-  const setColumnDef = async () => {
-    try {
-      const reportName = "BMReport";
-      const response = await getUIConfigData(reportName);
-      getGroupedColDef(response)
-      
+const setColumnDef = async () => {
+  try {
+    const reportName = "BMReport";
+    const response = await getUIConfigData(reportName);
+    getGroupedColDef(response);
 
-      const modifiedResponse: ApiResponseItem[] = addDefaultAttributes(
-        response?.data?.data
-      );
-
-     
-      const coldef = mapApiResponseToColDefs(modifiedResponse);
-      setColdef(coldef);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-  
-  const addDefaultAttributes = (
-    apiResponse: ApiResponseItem[]
-  ): ApiResponseItem[] => {
-    const modifiedResponse: ApiResponseItem[] = [];
-    const cpMap: { [key: string]: number } = {};
-
-    // Create the specified default objects for the item's ch array
-
-    const defaultSecondObject: any = {
-      cc: "ic",
-      cp: 2,
-      hd: "",
-      v: true,
-      cla: "centre",
-      scc: "ic",
+    const gridOptions = {
+      bomActive: bomActive,
+      orderClosingEnable: canShowOrderClosing,
+      canAddComments: false,
+      onOpenRemarkHistory: onOpenRemarkHistory,
     };
 
-    apiResponse.forEach((item) => {
-      const modifiedItem = { ...item };
-      // Initialize cp for this cc if not already done
-      if (!(item.cc in cpMap)) {
-        cpMap[item.cc] = 3; // Start from 3 since 1 and 2 are taken by default objects
-      }
-      // Add new properties to the outer object
-      modifiedItem.cp = cpMap[item.cc]++;
-      modifiedItem.hd = item.hd || item.cc; // Set hd to the name of cc
-      modifiedItem.cla = "Centre"; // Fixed value
-      modifiedItem.scc = item.scc; // Set scc to the name of ccc
+    const colDefsData = createDynamicColumnDefs(response?.data?.data || [], gridOptions);
+
+    setColdef(colDefsData);
+  } catch (e) {
+    console.log(e);
+    notifyError("Failed to build grid columns.");
+  }
+};
+
+  
+  // const addDefaultAttributes = (
+  //   apiResponse: ApiResponseItem[]
+  // ): ApiResponseItem[] => {
+  //   const modifiedResponse: ApiResponseItem[] = [];
+  //   const cpMap: { [key: string]: number } = {};
+
+  //   // Create the specified default objects for the item's ch array
+
+  //   const defaultSecondObject: any = {
+  //     cc: "ic",
+  //     cp: 2,
+  //     hd: "",
+  //     v: true,
+  //     cla: "centre",
+  //     scc: "ic",
+  //   };
+
+  //   apiResponse.forEach((item) => {
+  //     const modifiedItem = { ...item };
+  //     // Initialize cp for this cc if not already done
+  //     if (!(item.cc in cpMap)) {
+  //       cpMap[item.cc] = 3; // Start from 3 since 1 and 2 are taken by default objects
+  //     }
+  //     // Add new properties to the outer object
+  //     modifiedItem.cp = cpMap[item.cc]++;
+  //     modifiedItem.hd = item.hd || item.cc; // Set hd to the name of cc
+  //     modifiedItem.cla = "Centre"; // Fixed value
+  //     modifiedItem.scc = item.scc; // Set scc to the name of ccc
 
  
   
 
-      if (item.cc) {
-        if (item.cc.includes("Dept") && modifiedItem.ch) {
-          modifiedItem.ch = item.ch?.map((child) => {
-            return { ...child, scc: `ddtl.${item.cc}.${child.scc}` };
-          });
-        }
+  //     if (item.cc) {
+  //       if (item.cc.includes("Dept") && modifiedItem.ch) {
+  //         modifiedItem.ch = item.ch?.map((child) => {
+  //           return { ...child, scc: `ddtl.${item.cc}.${child.scc}` };
+  //         });
+  //       }
 
-      }
+  //     }
 
-      // If it's the first object, add default items to the ch array
+  //     // If it's the first object, add default items to the ch array
 
-      // Push the modified item to the response array
-      modifiedResponse.push(modifiedItem);
-    });
-    // Add a default object outside each main object
-    const defaultOuterObject: ApiResponseItem = {
-      cc: "chckbx",
-      v: true,
-      cp: 0,
-      hd: "",
-      cla: "Centre",
-      scc: "chckbx",
-      pinned: "left",
-    };
+  //     // Push the modified item to the response array
+  //     modifiedResponse.push(modifiedItem);
+  //   });
+  //   // Add a default object outside each main object
+  //   const defaultOuterObject: ApiResponseItem = {
+  //     cc: "chckbx",
+  //     v: true,
+  //     cp: 0,
+  //     hd: "",
+  //     cla: "Centre",
+  //     scc: "chckbx",
+  //     pinned: "left",
+  //   };
 
-    // Prepend the default outer object
-    modifiedResponse.unshift(defaultOuterObject);
+  //   // Prepend the default outer object
+  //   modifiedResponse.unshift(defaultOuterObject);
 
-    // Calculate cp for the additional object based on existing cp values
-    const maxCp = Math.max(...modifiedResponse.map((item) => item.cp || 0));
+  //   // Calculate cp for the additional object based on existing cp values
+  //   const maxCp = Math.max(...modifiedResponse.map((item) => item.cp || 0));
 
-    // Create the additional object to be added at the end
-    const additionalObject: ApiResponseItem = {
-      cc: "",
-      cp: maxCp + 1, // Set cp based on the maximum cp value
-      hd: " ",
-      v: true,
-      cla: "Centre",
-      scc: "rmk",
-      pinned: "right",
-      ch:[]
-    };
+  //   // Create the additional object to be added at the end
+  //   const additionalObject: ApiResponseItem = {
+  //     cc: "",
+  //     cp: maxCp + 1, // Set cp based on the maximum cp value
+  //     hd: " ",
+  //     v: true,
+  //     cla: "Centre",
+  //     scc: "rmk",
+  //     pinned: "right",
+  //     ch:[]
+  //   };
 
 
-    // const short_complete_OrderColumn: ApiResponseItem = {
-    //     cc: "oca",
-    //     cp: maxCp + 2,
-    //     hd: "Order Close Action",
-    //     v: true,
-    //     cla: "Centre",
-    //     scc: "oca",
-    //     ch: [],
-    // }
-    const short_complete_OrderColumn: ApiResponseItem = {
-      cc: "",
-      cp: maxCp + 2, // Set cp based on the maximum cp value
-      hd: " ",
-      v: true,
-      cla: "Centre",
-      scc: "",
-      pinned: "right",
-      ch: [
-        {
-          cc: "ct",
-          cp: maxCp + 2,
-          hd: "Order Close Action",
-          v: true,
-          cla: "Centre",
-          scc: "ct",
-          pinned: "right",
-        },
-      ],
-    };
+  //   // const short_complete_OrderColumn: ApiResponseItem = {
+  //   //     cc: "oca",
+  //   //     cp: maxCp + 2,
+  //   //     hd: "Order Close Action",
+  //   //     v: true,
+  //   //     cla: "Centre",
+  //   //     scc: "oca",
+  //   //     ch: [],
+  //   // }
+  //   const short_complete_OrderColumn: ApiResponseItem = {
+  //     cc: "",
+  //     cp: maxCp + 2, // Set cp based on the maximum cp value
+  //     hd: " ",
+  //     v: true,
+  //     cla: "Centre",
+  //     scc: "",
+  //     pinned: "right",
+  //     ch: [
+  //       {
+  //         cc: "ct",
+  //         cp: maxCp + 2,
+  //         hd: "Order Close Action",
+  //         v: true,
+  //         cla: "Centre",
+  //         scc: "ct",
+  //         pinned: "right",
+  //       },
+  //     ],
+  //   };
 
-    // Add the additional object to the end of the modified response
-    modifiedResponse.push(additionalObject);
+  //   // Add the additional object to the end of the modified response
+  //   modifiedResponse.push(additionalObject);
 
-    if (orderClosingEnable) modifiedResponse.push(short_complete_OrderColumn);
+  //   if (orderClosingEnable) modifiedResponse.push(short_complete_OrderColumn);
 
-    return modifiedResponse;
-  };
+  //   return modifiedResponse;
+  // };
 
   interface ActionOption {
     value: string;
@@ -451,28 +463,22 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
   const [totalOrderCount, setTotalOrderCount] = useState<any>(0);
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
 
-  const debouncedRef = useRef<any>(null);
-  const onCheckBoxToggle = (e: any) => {
-    const isChecked = e.target.checked;
-    
-    if (debouncedRef.current) {
-      debouncedRef.current.cancel();
+  // AFTER (The fix)
+const onCheckBoxToggle = (e: any) => {
+  setIsGridLoading(true);
+  const isChecked = e.target.checked;
+  setIsCheckboxChecked(isChecked);
+
+  if (refGraph2.current?.api) {
+    if (isChecked) {
+      // This method respects the current filter and only selects visible rows
+      refGraph2.current.api.selectAllFiltered();
+    } else {
+      // This deselects all rows (filtered or not), which is usually the desired behavior on uncheck
+      refGraph2.current.api.deselectAll();
     }
-    debouncedRef.current = _.debounce(() => {
-     setIsCheckboxChecked(isChecked);
-      if (refGraph2.current?.api) {
-        refGraph2.current.api.deselectAll();
-  
-        if (isChecked) {
-          refGraph2.current.api.forEachNodeAfterFilterAndSort((node: any) => {
-            node.setSelected(true);
-          });
-        }
-      }
-      getSelectedRow();
-    }, 300); 
-    debouncedRef.current();
-  };
+  }
+};
   
 
   const toggleCheckBox = () => {
@@ -482,18 +488,34 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
     setIsCheckboxChecked(totalRows > 0 && selectedNodes?.length === totalRows);
   };
 
-  const handleActionChange = (option: any) => {
-    setSelectedAction(option);
-    // const mySelectedNodes = refGraph2.current.api.getSelectedRows();
-    const newData: any = [];
-    gridData?.forEach((ele: any) => {
-      const newEle = _.cloneDeep(ele);
-      newEle.oca = option.value;
-      newData.push(newEle);
-    });
+const handleActionChange = (option: any) => {
+  setSelectedAction(option);
 
-    setGridData([...newData]);
-  };
+  if (!option || !refGraph2.current?.api) {
+    return;
+  }
+
+  const selectedNodes = refGraph2.current.api.getSelectedRows();
+  const selectedKeys = new Set(selectedNodes.map((row: OrderItem) => row.ok));
+
+  setGridData((currentGridData:any) =>
+    currentGridData.map((row:any) => {
+      if (selectedKeys.has(row.ok)) {
+        return { ...row, oca: option.value };
+      }
+      return row;
+    })
+  );
+
+  setMasterSelectedRowData((currentMasterData:any) =>
+    currentMasterData.map((masterRow:any) => {
+      if (selectedKeys.has(masterRow.ok)) {
+        return { ...masterRow, oca: option.value };
+      }
+      return masterRow;
+    })
+  );
+};
 
   const updateActionAPI = async (action: string, order_ids: any) => {
     try {
@@ -580,6 +602,7 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
           setGridData(newGridData);
           setMasterSelectedRowData([]); // after short/complete close reset selected rows
 
+          setSelectedAction(null);
           notifySuccess("Order closed successfully!");
         } else {
           notifySuccess("something went wrong!");
@@ -656,6 +679,8 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
             justifyContent: "center",
             alignItems: "center",
             boxShadow: "rgba(133, 132, 132, 0.247) -5px 4px 10px",
+            opacity: isPivot ? 0.5 : 1,
+            pointerEvents: isPivot ? 'none' : 'auto',
             gap: "10px",
           }}
         >
@@ -670,7 +695,7 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
             options={actionOptions}
             themeUi={themeUi}
             icon={DropdownArrowIcon}
-            disabled={!(refGraph2.current?.api?.getSelectedRows()?.length > 0)}
+            disabled={!isCheckboxChecked}
             placeholder="Select Action"
             value={selectedAction}
             onChange={handleActionChange}
@@ -684,13 +709,13 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
           themeUi={themeUi}
           disabled={false}
           style={{
-            cursor: isRightArrowEnabled ? "pointer" : "not-allowed",
+            cursor: isRightArrowEnabled && !isPivot ? "pointer" : "not-allowed",
             height: "50px",
             width: "60px",
-            borderRadius: "3px",
-            opacity: isRightArrowEnabled ? 1 : 0.5, // Visual cue for disabled
-            pointerEvents: isRightArrowEnabled ? "auto" : "none", // Prevent click when disabled
-          }}
+            borderRadius: "3px",  
+            opacity: isRightArrowEnabled && !isPivot ? 1 : 0.5, 
+            pointerEvents: isRightArrowEnabled && !isPivot ? "auto" : "none",
+            }}
         >
           <img
             src="/assets/img/rightArrowHorizontal.svg"
@@ -714,12 +739,18 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
     </>
   );
 
-  const onSelectChange = (props: any, option: any, index: number) => {
-  
-    const updatedData = { ...props.data, oca: option.value };
-    props.node.setData(updatedData); 
-    props.api.refreshCells({ rowNodes: [props.node], columns: ['oca'], force: true });
 
+const onSelectChange = (props: any, option: any, index: number) => {
+  const updatedData = { ...props.data, oca: option.value };
+  props.node.setData(updatedData); 
+  props.api.refreshCells({ rowNodes: [props.node], columns: ['oca'], force: true });
+
+
+  setMasterSelectedRowData((currentMasterData:any) => 
+    currentMasterData.map((row:any) => 
+      row.ok === props.data.ok ? { ...row, oca: option.value } : row
+    )
+  );
 };
 
   const DropDownCellRenderer = (props: any) => {
@@ -1022,16 +1053,13 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
     getSystemType();
   }, []);
 
-  useEffect(()=>{
-    getFilterData();
-  },[systemType])
-
   const customCellRenderers = useMemo(
     () => ({
       colorCellRenderer: BPPRenderer,
       AgeingCellRenderer: AgeingCellRenderer,
       RemarkHistoryRenderer: RemarkHistoryRenderer,
       DropDownCellRenderer: DropDownCellRenderer,
+      customHeaderCheckbox: CustomHeaderCheckbox,
     }),
     []
   );
@@ -1066,7 +1094,9 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
 
   const getInitialGridData = async (currentPage: number, pageSize?: any, isExcelExport = false, isBomExplosion=0) => {
     //excellll
+
     if (isExcelExport) {
+      notifyLoader("Preparing data for export...");
       const headersdata = refGraph2?.current?.api?.getColumnState();
       const formatedFilters = formatFilterJSON(appliedFilters);
       const body = getBodyForExcelExport({headersdata,filterData: formatedFilters,groupedColDefsRef})
@@ -1074,6 +1104,7 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
               const response = await getOverallBMReportData({body,isExcelExport : 1,page:currentPage,report_name : FilterPageName.Prod_OverAll_BMReport, page_size: pageSize || userPageSize,isBomExplosion})
               if(response.status == 200){//1,userpage,true,0
                 DownloadExcel(response,FilterPageName.Prod_OverAll_BMReport)
+                notifySuccess("Excel exported successfully!");
               }else{
                 notifyError("Error exporting Excel!");
               }
@@ -1126,7 +1157,8 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
   const handlePageChange = useCallback((currPage: number) => {
     setCurrentPage(currPage);
     setIsCheckboxChecked(false);
-  }, []);
+    getInitialGridData(currPage);
+  }, [getInitialGridData]);
 
   const savePageSize = (pageSize: any) => {
     if (pageSize) {
@@ -1182,49 +1214,40 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
 
   const getSelectedRow = () => {
     const selectedData = refGraph2.current?.api.getSelectedRows();
-    if (selectedData.length == 0) {
-      rowsSelected.current = false;
-    } else {
-      rowsSelected.current = true;
+    rowsSelected.current = selectedData.length > 0;
+    
+    // Use efficient data structures
+    const selectedKeys = new Set(selectedData.map((item: any) => item.ok));
+    let updated = false;
+  
+    // Create a map for quick access to mergedData items
+    const mergedDataMap = new Map(masterSelectedRowData.map((item: any) => [item.ok, item]));
+  
+    selectedData.forEach((newItem: any) => {
+      if (!mergedDataMap.has(newItem.ok)) {
+        mergedDataMap.set(newItem.ok, newItem);
+        updated = true;
+      }
+    });
+  
+    // Filter out unselected items
+    gridData?.forEach((item: any) => {
+      if (item && item.ok && !selectedKeys.has(item.ok) && mergedDataMap.has(item.ok)) {
+        mergedDataMap.delete(item.ok);
+        updated = true;
+      }
+    });
+  
+    // Only update state if there's a change
+    if (updated) {
+      setMasterSelectedRowData(Array.from(mergedDataMap.values()));
     }
-    /* To persist the state*/
-    if (selectedData && selectedData.length >= 0) {
-      let mergedData: any = [...masterSelectedRowData]; // Start with the existing selected data
-      selectedData.forEach((newItem: any) => {
-        const index = mergedData.findIndex(
-          (item: any) => item.ok === newItem.ok
-        );
-        if (index !== -1) {
-          // If the item exists, replace it
-          // mergedData[index] = newItem;
-        } else {
-          // Otherwise, add the new item
-          mergedData.push(newItem);
-        }
-      });
-
-      gridData?.forEach((item: any) => {
-        if (item && item.ok) {
-          let isThere = 0;
-          selectedData.forEach((selectedD: any) => {
-            if (selectedD.ok === item.ok) {
-              isThere = 1;
-            }
-          });
-          if (isThere == 0) {
-            mergedData = mergedData.filter((e: any) => e.ok !== item.ok);
-          }
-        }
-      });
-      // if (!_.isEqual(mergedData, masterSelectedRowData)) {
-      setMasterSelectedRowData(mergedData);
-      // }
-      /*persist data finised*/
-    }
-    toggleCheckBox();
-    refGraph2.current.api.refreshCells();
+  
+    toggleCheckBox();  // Ensure checkboxes are correctly toggled
+    refGraph2.current.api.refreshCells();  // Refresh cells in the grid
+    setIsGridLoading(false);
   };
-
+  
   useEffect(() => {
     if (masterSelectedRowData.length > 0) {
       const selectedOrderKeys: orderkeyObj[] = [];
@@ -1259,7 +1282,7 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
           const element = masterSelectedRowData[index];
           if (element.ok === node.data.ok) {
             node.data.Remark = element.Remark;
-            // node.data.oca = element.oca;
+            node.data.oca = element.oca;
           }
         }
         nodesToSelect.push(node);
@@ -1270,10 +1293,12 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
     toggleCheckBox();
   };
 
-  const onPivotModeChanged = (event: any) => {
-    const isPivotOn = event.api.isPivotMode();
-    setIsPivot(isPivotOn);
-  };
+const onPivotModeChanged = (event: any) => {
+  const isPivotOn = event.api.isPivotMode();
+  setIsPivot(isPivotOn);
+  
+  event.api.getColumnApi()?.setColumnVisible('chckbx', !isPivotOn);
+};
 
       const detailCellRendererParamsConfig = useMemo(() => {
           const itemNameColumnDef = columnBomDefs.find((a: any) => a.colId === "ItemName");
@@ -1330,8 +1355,7 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
           return config;
         }, [columnBomDefs, bomHeader]);
 
-  const agGridProps: AgGridReactProps = useMemo(() => {
-    return {
+  const agGridProps: AgGridReactProps = {
       tooltipShowDelay: 0,
       tooltipTrigger: "focus",
       gridOptions: {
@@ -1382,13 +1406,6 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
       onRowDataUpdated: onFirstDataRendered,
       onColumnPivotModeChanged: onPivotModeChanged,
     };
-  }, [masterSelectedRowData, gridData]);
-
-  useEffect(() => {
-    if (Object.keys(appliedFilters).length) {
-      getInitialGridData(currentPage);
-    }
-  }, [currentPage]);
 
   useEffect(() => {
     if (Object.keys(appliedFilters).length && userConfigFetched) {
@@ -1643,7 +1660,9 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
         isExcelLoading ||
         isGetStateLoading ||
         isShortOrderCompleteOrder ||
-        isUpdateUserConfig) && <OverlayLoader />}
+        isUpdateUserConfig ||
+        isDeptWiseWipData || 
+        isHighAgeingData) && <OverlayLoader />}
 
       <HorizontalViewWrapper style={{ marginTop: "0", paddingLeft:"25px" }}>
         <BTRTableWrapper

@@ -41,7 +41,7 @@ export const chartParams1 = {
     ],
     defaultColForChart:{}, // dynamic from backend
     graphInfo: [
-        "This graph highlights the top 10 receiving locations with maximum SKUs in Pipeline black/red which have rationed quantity available at parent location.",
+        "This graph highlights the top 10 receiving locations with maximum SKUs in Pipeline Black/Red which have rationed quantity available at parent location.",
         "To improve availability, expedite dispatches to these locations.",
    ],
     customizedStyles:{

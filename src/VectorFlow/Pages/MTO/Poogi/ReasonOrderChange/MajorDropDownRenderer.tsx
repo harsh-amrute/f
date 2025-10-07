@@ -6,6 +6,8 @@ import { useUserData } from "../../../../../context/index";
 const CustomCellEditor = (props: any) => {
   const { user } = useUserData();
   const themeUi = user.user.theme_ui;
+
+  if (!props.data) return <></>;
   
   const getOuterObjectByKey = (data: any, searchKey: string) => {
     return data[searchKey];

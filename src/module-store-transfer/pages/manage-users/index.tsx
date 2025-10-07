@@ -26,7 +26,6 @@ import { useTranslation } from "react-i18next";
 // import { dataListRoles } from "./listRoles";
 import { generateRolesObject } from '../../../helpers/utils';
 import _ from 'lodash'
-import SearchInputManageUser from "../../../components/commons/SearchInputManageUser";
 import VFModalCard from "../../../components/VectorFLOW/commons/VFModalCard";
 import PermissionHeirarchyCanvas from "./ModalBulkUpload";
 import { useNavigate } from "react-router";
@@ -71,8 +70,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   const { mutateAsync : usegetHeaderData } = useGetHeadersData();
   const [headers , setHeaders] = useState<any>();
 
-  const [searchUserBasedOn, setSearchUserBasedOn] = useState("");
-  const { mutateAsync: getUserPermissions } = useGetUserPermissions();
+  const { mutateAsync: getUserPermissions,isLoading:edit } = useGetUserPermissions();
   
   
   useGetAllRoles((data:any)=>{
@@ -140,7 +138,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     isCheckBoxRef.current.isPrdCheck = {},
     isCheckBoxRef.current.isLcCheck = {}
   };
-
+  
   const onCloseModal = () => {
     setIsOpenUser(false);
   };
@@ -420,15 +418,32 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
 
   return (
     <>
+    {edit && (
+  <div
+    style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      background: "rgba(255, 255, 255, 0.6)", 
+      backdropFilter: "blur(3px)",            
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      zIndex: 2000,                           
+    }}
+  >
+    <Spinner />
+  </div>
+)}
       <SCProfileOverView>
         <SCSubTitleBox>
           <SCSubTitlePad>
             <SCSubTitleSpan>
               {t("profile.tabContent.manageUsers.title")}
             </SCSubTitleSpan>
-            <SCSubTitlePadItem>
-                <SearchInputManageUser searchUserBasedOn={searchUserBasedOn} setSearchUserBasedOn={setSearchUserBasedOn} />
-              
+            <SCSubTitlePadItem>              
               <SCItemBtn>
                 <ButtonFloat
                   text={t("profile.tabContent.manageUsers.button.addNewUser")}
@@ -461,21 +476,20 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
             refetch={refetch}
             is_admin={is_admin}
             permission={permission}
-            searchUserBasedOn={searchUserBasedOn}
           />
         )}
       </SCProfileOverView>
 
       {/* {isURLsDrawerOpen && (
         <UserURLsDrawer
-          onClose={()=>toggleURLsDrawer(false)}
+        onClose={()=>toggleURLsDrawer(false)}
         />
         )}
-
-      {isRolesDrawerOpen && (
-        <UserRolesDrawer
+        
+        {isRolesDrawerOpen && (
+          <UserRolesDrawer
           onClose={()=>toggleRolesDrawer(false)}
-        />
+          />
         )} */}
 
 
@@ -492,7 +506,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
         currentItem={currentItem}
         isEditUser={isEditUser}
         setIsEditUser={setIsEditUser}
-      />
+        />
 
       <ModalAdvanedPermissions
         contentModal={contentModal}
@@ -516,7 +530,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
         setStepperDetails={setStepperDetails}
         headers = {headers}
         isCheckBoxRef={isCheckBoxRef}
-      />
+        />
 
 
         <VFModalCard

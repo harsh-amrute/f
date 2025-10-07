@@ -63,9 +63,9 @@ export const chartParams1 = {
 
 
 export const chartParams2 = {
-    title:'Top 10 Products: Max No Of Locations With Gap > 67% of Requirement',
+    title:'Top 10 Products: Max Locations With Gap > 67% of Requirement',
     chartType:'stackedColumn',
-    downloadName:'Top-10 Prd (Max No of Loc With Gap > 67% of Req)',
+    downloadName:'Top-10 Prd (Max Locs With Gap > 67% of Req)',
     LabelPosition:'bottom',
     Labels:{
         Xaxis:'Product Name',

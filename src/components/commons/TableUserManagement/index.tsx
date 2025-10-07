@@ -1,15 +1,18 @@
 import * as Tab from "./style";
-import { ButtonOutlineStoreStatus, Modal } from "../../index";
+import {  Modal } from "../../index";
 import {
   UsePutDeleteUser,
-  useChangeStatus,
   useResetPwd,
 } from "../../../services/profile";
 import { notifyError, notifySuccess } from "../../../helpers/notify";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
+import {  useMemo, useRef, useState } from "react";
+import VFTable from "../../../VectorFlow/Pages/MTO/Common/VFTable";
 import LoadingSpinner from "../LoadingSpinner";
-import { Tooltip } from 'react-tooltip';
+import { GridFilterWrapper, TextBtn } from "../../../VectorFlow/Pages/MTO/Common/VFPagination/styles";
+import { useUserData } from "../../../context";
+import ToggleCell from "./ToggleCell"; 
+import Tooltip from "../../../VectorFlow/Pages/MTO/Common/Tooltip";
 
 interface TableUser {
   handleClickEdit: any;
@@ -17,7 +20,6 @@ interface TableUser {
   refetch: any;
   is_admin: boolean;
   permission: any;
-  searchUserBasedOn: string
 }
 
 const TableUserManagement = ({
@@ -26,43 +28,26 @@ const TableUserManagement = ({
   refetch,
   is_admin,
   permission,
-  searchUserBasedOn
 }: TableUser) => {
   const { t } = useTranslation();
   const [isOpenDelete, setIsOpenDelete] = useState(false);
   const [idUser, setIdUser] = useState<string>("");
-  
-  const { mutateAsync: usePutDeleteUser } = UsePutDeleteUser();
-  const { mutateAsync: mutateChangeStatus } = useChangeStatus();
-  const { mutateAsync: mutateResetPwd, isLoading } = useResetPwd();
+  const [isDisabled, setIsDisabled] = useState<boolean>(true);
+  const gridRef = useRef<any>(null);
+  const { user } = useUserData();
+  const theme_ui = user.user.theme_ui;
 
-  const changeStatus = (id: number, status: boolean) => {
-    const data = {
-      user_id: id,
-      is_active: status,
-    };
+  const { mutateAsync: usePutDeleteUser, isLoading: isDeleting } = UsePutDeleteUser();
+  const { mutateAsync: mutateResetPwd, isLoading: isResettingPwd } = useResetPwd();
 
-    mutateChangeStatus(data, {
-      onSuccess: (res: any) => {
-        if(res?.status === 400) {
-          notifyError(res?.response?.msg)
-        } else {
-          notifySuccess(res?.data?.msg);
-        }
-      },
-      onError: (error: any) => {
-        console.log("error", error);
-        notifyError(error.msg);
-      },
-    });
-  };
+  const isLoading = isDeleting || isResettingPwd;
 
   const handleDeleteUser = () => {
     setTimeout(() => {
       usePutDeleteUser(idUser, {
         onSuccess: (data: any) => {
-          if(data?.status === 400) {
-            notifyError(data?.response?.msg)
+          if (data?.status === 400) {
+            notifyError(data?.response?.msg);
           } else {
             notifySuccess(data?.data?.msg);
           }
@@ -75,15 +60,15 @@ const TableUserManagement = ({
         },
       });
     }, 200);
-  };  
+  };
 
   const handleResetPwd = (id: string) => {
     mutateResetPwd(id, {
       onSuccess: (res: any) => {
-        if(res?.status === 400) {
-          notifyError(res?.response?.msg)
+        if (res?.status === 400) {
+          notifyError(res?.response?.msg);
         } else {
-          notifySuccess(res?.data?.msg);
+          notifySuccess("Password reset email has been sent successfully");
         }
       },
       onError: (error: any) => {
@@ -100,7 +85,7 @@ const TableUserManagement = ({
 
   const renderAction = (item: any, is_admin: any) => {
     const permissionUser = item.role_id.map((item: any) => item.name);
-    
+
     if (is_admin) {
       if (item.is_admin) {
         return <NoAction rolesMap={permissionUser} />;
@@ -112,7 +97,10 @@ const TableUserManagement = ({
         if (item.is_admin) {
           return <NoAction rolesMap={permissionUser} />;
         } else {
-          if (permissionUser?.includes("IST Admin") || permissionUser?.includes("Admin")) {
+          if (
+            permissionUser?.includes("IST Admin") ||
+            permissionUser?.includes("Admin")
+          ) {
             return <NoAction rolesMap={permissionUser} />;
           } else {
             return <>{action({ item, permissionUser })}</>;
@@ -124,144 +112,215 @@ const TableUserManagement = ({
     }
   };
 
-  const buttonToggle = (item: any) => {
+  const clearGridFilter = () => {
+    gridRef?.current?.api.setFilterModel(null);
+    setIsDisabled(true);
+  };
+
+  const CustomStatusPanel = () => {
     return (
-      <Tab.SCTableTdCenter>
-        <ButtonOutlineStoreStatus
-          labelOn={t("profile.tabContent.manageUsers.button.active")}
-          labelOff={t("profile.tabContent.manageUsers.button.inactive")}
-          toggled={item?.is_active}
-          onClick={(param:any) => {
-            changeStatus(item.id,param);
-          }}
-        />
-      </Tab.SCTableTdCenter>
+      <GridFilterWrapper style={{ marginTop: '15px' }}>
+        <TextBtn onClick={clearGridFilter} disabled={isDisabled} themeUi={theme_ui}>
+          Clear All Grid Filters
+        </TextBtn>
+      </GridFilterWrapper>
     );
   };
 
   const ListAction = ({ item }: any) => {
-    
     return (
       <>
-      <Tab.SCTableTd>
-        <Tab.SCIconWrapper>
-          <Tab.SCIcon
-            data-tooltip-id="edit"
-            src="/assets/img/profile/icon_edit.svg"
-            onClick={() => handleClickEdit(item)}
-          />
-          <Tooltip
-            id="edit"
-            content={"Edit User"}
-            place="top"
-            className="user-manage-tooltip"
-          />
-        </Tab.SCIconWrapper>
-        <Tab.SCIconWrapper>
-          <Tab.SCIcon
-            data-tooltip-id="delete"
-            src="/assets/img/profile/icon_delete.svg"
-            onClick={() => {
-              handleOpenDelete(item.id);
-            }}
-          />
-          <Tooltip id="delete" content={"Delete User"}  className="user-manage-tooltip"/>
-        </Tab.SCIconWrapper>
-        <Tab.SCIconWrapper>
-          <Tab.SCIcon
-            data-tooltip-id="reset"
-            src="/assets/img/profile/icon_lock.svg"
-            onClick={() => {
-              handleResetPwd(item.id);
-            }}
-          />
-          <Tooltip id="reset" content={"Reset Password"} className="user-manage-tooltip"/>
-        </Tab.SCIconWrapper>
-      </Tab.SCTableTd>
+        <Tab.SCTableTd>
+          <Tab.SCIconWrapper>
+            <Tooltip
+              id="edit"
+              content={<p style={{ fontSize: '1rem', padding: '4px' }}>Edit User</p>}
+              place="top"
+              className="user-manage-tooltip"
+            >
+              <Tab.SCIcon
+                data-tooltip-id="edit"
+                src="/assets/img/profile/icon_edit.svg"
+                onClick={() => handleClickEdit(item)}
+              />
+            </Tooltip>
+          </Tab.SCIconWrapper>
+
+          <Tab.SCIconWrapper>
+            <Tooltip
+              id="delete"
+              content={<p style={{ fontSize: '1rem', padding: '4px' }}>Delete User</p>}
+              place="top"
+              className="user-manage-tooltip"
+            >
+              <Tab.SCIcon
+                data-tooltip-id="delete"
+                src="/assets/img/profile/icon_delete.svg"
+                onClick={() => {
+                  handleOpenDelete(item.id);
+                }}
+              />
+            </Tooltip>
+          </Tab.SCIconWrapper>
+
+          <Tab.SCIconWrapper>
+            <Tooltip
+              id="reset"
+              content={<p style={{ fontSize: '1rem', padding: '4px' }}>Reset Password</p>}
+              place="top"
+              className="user-manage-tooltip"
+            >
+              <Tab.SCIcon
+                data-tooltip-id="reset"
+                src="/assets/img/profile/icon_lock.svg"
+                onClick={() => {
+                  handleResetPwd(item.id);
+                }}
+              />
+            </Tooltip>
+          </Tab.SCIconWrapper>
+        </Tab.SCTableTd>
       </>
     );
   };
 
   const action = ({ item, permissionUser }: any) => {
-    
     return (
       <>
-        <Tab.SCTableTd>
-          {permissionUser.toString().replace(/,/g, " | ")}
-        </Tab.SCTableTd>
         <ListAction item={item} />
-        {buttonToggle(item)}
       </>
     );
   };
 
   const NoAction = ({ rolesMap }: any) => {
-    return (
-      <>
-        <Tab.SCTableTd>
-          {rolesMap.toString().replace(/,/g, " | ")}
-        </Tab.SCTableTd>
-        <Tab.SCTableTd style={{ padding: "20px" }}></Tab.SCTableTd>
-        <Tab.SCTableTdCenter></Tab.SCTableTdCenter>
-      </>
-    );
+    return <></>;
   };
+
+  const columnDefs = useMemo(
+    () => [
+      {
+        headerName: "User ID",
+        field: "name",
+        flex: 1,
+      },
+      {
+        headerName: "Email ID",
+        field: "email",
+        flex: 1,
+      },
+      {
+        headerName: "Roles",
+        flex: 1.5,
+        valueGetter: (params: any) =>
+          params.data.role_id?.map((r: any) => r.name).join(" | ") || "",
+        filter: "agTextColumnFilter",
+        cellRenderer: (params: any) => {
+          const value = params.value || "";
+          const tooltipId = `roles-tooltip-${params.node.id}`;
+
+          return (
+            <>
+              <span
+                data-tooltip-id={tooltipId}
+                style={{
+                  display: "inline-block",
+                  maxWidth: "50%",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {value}
+              </span>
+              <Tooltip
+                id={tooltipId}
+                content={value}
+                place="top"
+                delayShow={0}
+                positionStrategy="fixed"
+                className="user-manage-tooltip"
+              />
+            </>
+          );
+        },
+      },
+      {
+        headerName: "Actions",
+        field: "actions",
+        flex: 1,
+        filter: false,
+        suppressTooltips: true,
+        tooltipValueGetter: () => '',
+        cellRenderer: (params: any) => {
+          return renderAction(params.data, is_admin);
+        },
+      },
+      {
+        headerName: "Active",
+        field: "active",
+        flex: 1,
+        filter: false,
+        suppressTooltips: true,
+        cellRenderer: (params: any) => {
+          return <ToggleCell data={params.data} permission={permission} is_admin={is_admin} />;
+        },
+      },
+    ],
+    [is_admin, permission]
+  );
+
+ 
 
   return (
     <>
-      <Tab.SCTableBox
-        style={{ marginBottom: 30 }}
-        className="list-roles-per--content"
-      >
-        <Tab.SCTableTab width="100%">
-          <Tab.SCTableTbody>
-            <Tab.SCTableTr>
-              <Tab.SCTableTh>
-                {t("profile.tabContent.manageUsers.table.userID")}
-              </Tab.SCTableTh>
-              <Tab.SCTableTh>
-                {t("profile.tabContent.manageUsers.table.emailID")}
-              </Tab.SCTableTh>
-              <Tab.SCTableTh>
-                {t("profile.tabContent.manageUsers.table.roles")}
-              </Tab.SCTableTh>
-              <Tab.SCTableTh>
-                {t("profile.tabContent.manageUsers.table.actions")}
-              </Tab.SCTableTh>
-              <Tab.SCTableTh style={{ textAlign: "center" }}>
-                {t("profile.tabContent.manageUsers.table.active")}
-              </Tab.SCTableTh>
-            </Tab.SCTableTr>
-          </Tab.SCTableTbody>
-
-          {dataAllUsers &&
-            dataAllUsers?.filter((userData:any)=> userData.name.toLowerCase().includes(searchUserBasedOn.toLocaleLowerCase())).map((item: any) => (
-              <Tab.SCTableTbody key={item?.id}>
-                <Tab.SCTableTrValue>
-                  <Tab.SCTableTd>{item?.name}</Tab.SCTableTd>
-                  <Tab.SCTableTd>{item?.email}</Tab.SCTableTd>
-                  {renderAction(item, is_admin)}
-                </Tab.SCTableTrValue>
-              </Tab.SCTableTbody>
-            ))}
-        </Tab.SCTableTab>
-      </Tab.SCTableBox>
-
-      <Modal
-        fileJson=""
-        modalTitle={t("profile.tabContent.manageUsers.modal.titleDelete")}
-        modalContent={t("profile.tabContent.manageUsers.modal.contentDelete")}
-        openModal={isOpenDelete}
-        closeModal={() => {
-          setIsOpenDelete(false);
-        }}
-        onClickModal={() => {
-          handleDeleteUser();
-        }}
-        text={t("profile.tabContent.manageUsers.button.delete")}
-      />
-      
       {isLoading && <LoadingSpinner />}
+      <VFTable
+        ref={gridRef}
+        rowData={dataAllUsers}
+        columnDefs={columnDefs}
+        domLayout="normal"
+        rowHeight={55}
+        pagination={false}
+        height="450px"
+        sideBar={false}
+        getRowStyle={(params: any) => {
+          if (params.node.rowIndex % 2 === 0) {
+            return { background: "#F4F4F4" };
+          }
+          return { background: "#ffffff" };
+        }}
+        statusBar={{
+          statusPanels: [
+            { statusPanel: CustomStatusPanel, align: "left" },
+            { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'right' },
+            { statusPanel: 'agTotalRowCountComponent', align: 'right' },
+            { statusPanel: 'agFilteredRowCountComponent', align: 'right' },
+            { statusPanel: 'agSelectedRowCountComponent', align: 'right' },
+            { statusPanel: 'agAggregationComponent', align: 'right' },
+          ],
+        }}
+        onGridReady={(params: any) => {
+          params.api.addEventListener('filterChanged', () => {
+            const filterModel = params.api.getFilterModel();
+            if (Object.keys(filterModel).length > 0) {
+              setIsDisabled(false);
+            } else {
+              setIsDisabled(true);
+            }
+          });
+        }}
+      />
+      {isOpenDelete && (
+        <Modal
+          fileJson=""
+          modalTitle="Do you want to delete this user?"
+          modalContent="This user will not be able to log back into the system after being deleted"
+          openModal={isOpenDelete}
+          closeModal={() => setIsOpenDelete(false)}
+          onClickModal={handleDeleteUser}
+          text="Delete"
+        />
+      )}
     </>
   );
 };

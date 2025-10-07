@@ -135,7 +135,9 @@ const RRR = () => {
                   }
                 }}
               />  
-              <VFPagination 
+            {
+            RRRRowData?.length &&  
+            <VFPagination 
                 selectedRows={0} 
                 totalRows={RRRDataCount} 
                 currentPage={currentPage} 
@@ -144,6 +146,7 @@ const RRR = () => {
                 resetGridRef={ref} 
                 isDisabled={isDisabled}
               />  
+              }
         </div>
         <div style={{display:'none'}}>                
           <VFTable

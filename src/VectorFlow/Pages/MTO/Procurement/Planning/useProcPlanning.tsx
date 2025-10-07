@@ -552,7 +552,7 @@ const useProcPlanning = ( appliedFilters: any) => {
                 setIsOverlayLoading(false);
                 if (response.status === 200) {
                     notifySuccess("Simulation updated successfully!")
-                    navigate("/planning/simulative-fullkit", { state: { ShortageDatas, date: selectedDate } });
+                    navigate("/mto/planning/simulative-fullkit", { state: { ShortageDatas, date: selectedDate } });
 
                 }
                 else {

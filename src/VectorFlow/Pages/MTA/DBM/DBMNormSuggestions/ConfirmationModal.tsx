@@ -5,8 +5,7 @@ import {ConfirmationDataTextContainer, ConfirmationDataButtonWrapper} from './st
 import { useUserData } from "../../../../../context";
  
 interface ConfirmationDataModalProps{
-    SKUCode?:any;
-    WHCode?:any;
+    mode: "norm" | "sleep";
     onFailure:()=>void;
     onSuccess:()=>void;
     onCloseModal:()=>void;
@@ -17,8 +16,7 @@ const ConfirmationDataModal=(props:ConfirmationDataModalProps)=>{
         onFailure,
         onSuccess,
         onCloseModal,
-        SKUCode,
-        WHCode
+        mode,
     } = props
  
     const {user} = useUserData()
@@ -26,8 +24,8 @@ const ConfirmationDataModal=(props:ConfirmationDataModalProps)=>{
     return (
         <VFModalCard headerText="Confirmation!" openModal={true} closeModal={onCloseModal} headerIcon={""} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
             <ConfirmationDataTextContainer>
-            {SKUCode && WHCode 
-                    ? `Entry with SKU Code: ${SKUCode} and Location Code: ${WHCode} will be in sleep, Are you sure?`
+            {mode === "sleep"
+                    ? "Selected SKU Code and Location Code will be sleep. Are you sure?"
                     : "Selected norms will be accepted. Are you sure?"}
             </ConfirmationDataTextContainer>
             <ConfirmationDataButtonWrapper>

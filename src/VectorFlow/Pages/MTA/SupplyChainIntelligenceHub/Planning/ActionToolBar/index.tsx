@@ -20,7 +20,7 @@ import {
   LastRunDateHeader,
 } from "./styles";
 import { useUserData } from "../../../../../../context/UserDataContext";
-import { DBMApplyNormChange } from "../../../DBM/DBMNormSuggestions/applyNormButton";
+// import { DBMApplyNormChange } from "../../../DBM/DBMNormSuggestions/applyNormButton";
 import { PlanningCounts } from "../../../../../../VectorFlow/types/MTA";
 import VFButtonOutline from "../../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import { GridStateContext } from "../../../../../../context/GridStateContext";
@@ -43,6 +43,7 @@ interface ActionToolBarProps {
   disableChartAndGridViewToggle?: boolean;
   showAllTick?: any;
   handleGoButton?: any;
+  handleGoButtonForSleep?: any;
   onChangeHorizon?: (value: number) => void;
   onApplyFilter?: (params: any) => void;
   planningCount?: PlanningCounts;
@@ -73,6 +74,7 @@ const ActionToolBar = ({
   planningCount,
   showAllTick,
   handleGoButton,
+  handleGoButtonForSleep,
   genericRecordCount,
   onExportToExcelCallBack,
   onApplyFilter,
@@ -105,10 +107,8 @@ const ActionToolBar = ({
   const themeUi = user?.user?.theme_ui;
   const [isFilterOpen, toggleFilter] = useState<boolean>(false);
   const [isFilterButtonVisible,setIsFilterButtonVisible] = useState<boolean>(false);
-  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
-    const closeModal = () => {
-    setIsConfirmationModalOpen(false);
-  };
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState<null | "norm" | "sleep">(null);
+  const closeModal = () => setIsConfirmationModalOpen(null);
   const handleFailure = () => {
     closeModal();
   };
@@ -187,6 +187,16 @@ const ActionToolBar = ({
       pathname !== "/mta/supply-chain-intelligence-hub/total-requirement-report"
     ) {
       setIsFilterButtonVisible(true);
+    }
+    if(pathname === "/mta/insights-and-trends/buffer-trend-report" 
+      ||  pathname === "/mta/insights-and-trends/buffer-trends"  
+      || pathname === "/mta/supply-chain-intelligence-hub/bpr"
+    || pathname === "/mta/supply-chain-intelligence-hub/rrr"
+    || pathname ===  "/mta/supply-chain-intelligence-hub/rrr-color-bandwise"
+    || pathname === "/mta/supply-chain-intelligence-hub/bor"
+    || pathname === "/mta/supply-chain-intelligence-hub/bor-color-bandwise"
+  ){
+      toggleFilter(true);
     }
   }, [pathname]);
 
@@ -919,36 +929,36 @@ const ActionToolBar = ({
                 </SCGoBackText>
               </SCGoBackContainer>
             ) : null}
-            {currCategory === "DBMNorm" ? (
-              <DBMApplyNormChange onCheck={showAllTick} />
-            ) : null}
-           {currCategory === "DBMNorm" ? (
-  <Tooltip
-    content={
-      <div style={{ padding: "0.5rem 1rem", fontSize: "12px" }}>{"Apply Selected Norm Changes"}</div>
-    }
-    tooltipZoom={1}
-  >
-    <img
-      style={{ cursor: "pointer" }}
-      src={
-        themeUi === "REGALBLAZE"
-          ? "/assets/img/Group 627-regal.svg"
-          : "/assets/img/Group 627.svg"
-      }
-      height={50.02}
-      width={76.83}
-      onClick={()=>{setIsConfirmationModalOpen(true)}}
-    />
-  </Tooltip>
-) : null}
- {isConfirmationModalOpen && (
-        <ConfirmationDataModal
-          onSuccess={handleGoButton}
-          onFailure={handleFailure}
-          onCloseModal={closeModal}
-        />
-      )}
+
+            {currCategory === "DBMNorm" && (
+              <VFButton onClick={() => setIsConfirmationModalOpen("norm")} themeUi={themeUi}>
+                Norm Changes
+              </VFButton>
+            )}
+
+            {currCategory === "DBMNorm" && (
+              <VFButton onClick={() => setIsConfirmationModalOpen("sleep")} themeUi={themeUi}>
+                Sleep
+              </VFButton>
+            )}
+
+            {isConfirmationModalOpen === "norm" && (
+            <ConfirmationDataModal
+              mode={isConfirmationModalOpen}
+              onSuccess={handleGoButton}
+              onFailure={handleFailure}
+              onCloseModal={closeModal}
+            />
+          )}
+
+          {isConfirmationModalOpen === "sleep" && (
+            <ConfirmationDataModal
+              mode={isConfirmationModalOpen}
+              onSuccess={handleGoButtonForSleep}
+              onFailure={handleFailure}
+              onCloseModal={closeModal}
+            />
+          )}
 
             {/* (currCategory === 'GuidedInsight' && view!=='grid') :null ?
             <VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete}></VFSelectedFilters> */}

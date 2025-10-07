@@ -139,7 +139,7 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
       const { filters } = emptyFilterState[key];
       for (let i = 0; i < (filters?.length); i++) {
         const { attributeName, options } = filters[i];
-        filters[i].value = attributeName === 'ms' ? [...options] : [];
+        filters[i].value = [];
       }
     }
 
