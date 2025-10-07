@@ -69,7 +69,6 @@ const GraphView = ({Viewtabs, currView, setCurrView,selectedCCR, horizonData, gr
           const day = weekEndMatch[1]; //6
           const month = weekEndMatch[2]; //sep
           
-          const horizonYear = new Date(horizonDateRange.endDate).getFullYear(); //2026
           const startYear = new Date(horizonDateRange.startDate).getFullYear(); //2025
           
           // Parse start date of the week
@@ -142,47 +141,6 @@ const GraphView = ({Viewtabs, currView, setCurrView,selectedCCR, horizonData, gr
     return graphData.data.map((item: any) => {
       const isInHorizonRange = isDateInHorizonRange(item.date);
 
-      // if (currView === "daily") {
-      //   return {
-      //     date: item.date,
-      //     load: item.load, 
-      //     holiday:item.is_holiday, 
-      //     past: item.past, 
-      //     limit: cwlValue, 
-      //     type: item.is_holiday ? "holiday" : "load",
-      //     horizonDate: selectedCCRHorizonDate,
-      //     isInHorizonRange,
-      //   };
-      // }
-
-      // if (currView === "weekly") {
-      //   return {
-      //     date:item.date, 
-      //     load: item.load,
-      //     holiday: item.is_holiday,
-      //     past: item.past,
-      //     limit: cwlValue,
-      //     // type: "weekly",
-      //     type: item.is_holiday ? "holiday" : "load",
-      //     horizonDate: selectedCCRHorizonDate,
-      //     isInHorizonRange,
-      //   };
-      // }
-
-      // if (currView === "monthly") {
-      //   return {
-      //     date: item.date,
-      //     load: item.load,
-      //     holiday: item.is_holiday,
-      //     past: item.past,
-      //     limit: cwlValue,
-      //     // type: "monthly",
-      //     type: item.is_holiday ? "holiday" : "load",
-      //     horizonDate: selectedCCRHorizonDate,
-      //     isInHorizonRange,
-      //   };
-      // }
-      // return {};
     
       return {
         date: item.date,

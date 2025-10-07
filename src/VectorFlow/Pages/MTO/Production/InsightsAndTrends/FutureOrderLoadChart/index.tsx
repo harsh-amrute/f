@@ -72,9 +72,9 @@ const FutureOrderLoadChart = () => {
     { label: "Monthly", value: "Monthly", id: "monthly" },
   ];
 
-  const [currTab, setCurrTab] = useState("Pending CCR Quantity");
+  const [currTab, setCurrTab] = useState(tabs[0].value);
   const [isGridView, setIsGridView] = useState(false);
-  const [selectedAction, setSelectedAction] = useState<any>({ value: "BFH", label: "Not Scheduled beyond FOL Horizon" });
+  const [selectedAction, setSelectedAction] = useState<any>(OrderOptions[0]);
   const [selectedCCR, setSelectedCCR] = useState<any>(null);
   const [ccrOptions, setCcrOptions] = useState<any>();
   const { colDefMap, getColDef } = useColDef();
@@ -128,7 +128,6 @@ const FutureOrderLoadChart = () => {
 
 
   const formattedFilters = formatFilterJSON(appliedFilters);
-  console.log('formateedFilters', formattedFilters)
 
   const payload = { loadwise: currTab === "Load Wise" ? 2 : 1,
     view: currView,
@@ -185,10 +184,6 @@ const FutureOrderLoadChart = () => {
       console.error(e);
     }
   }
-  
-  useEffect(() => {
-    getUIReportData();
-  },[])
 
   useEffect(() => {
     setCcrHorizonData(data?.data?.data);
@@ -216,10 +211,7 @@ const FutureOrderLoadChart = () => {
       notifyError("Failed to load CCR options. Please try again.");
     }
   };
-  
-  useEffect(() => {
-    getCCROptions() 
-  }, [])
+
 
   useEffect(() => {
     if (uiConfig && currTab && selectedAction && isGridView ) { 
@@ -346,6 +338,9 @@ const getFilterData = async () => {
   useEffect(() => {
     // getExcelExportData({ graphflag: 1 });
     getFilterData();
+    getCCROptions() 
+    getUIReportData();
+
   }, [])
 
 
