@@ -138,6 +138,7 @@ export const ColorFilters: React.FC<FilterSectionProps> = ({
                   <Select
                     placeholder={"Select Type"}
                     styles={styles}
+                    isSearchable={false}
                     components={{ IndicatorSeparator: () => null }}
                     options={colorTypeFilterOptions}
                     value={
@@ -156,6 +157,7 @@ export const ColorFilters: React.FC<FilterSectionProps> = ({
                     options={colorFilterOptions}
                     placeholder={"Select Color"}
                     styles={styles}
+                    isSearchable={false}
                     components={{ IndicatorSeparator: () => null }}
                     value={
                       colorFilterOptions.find(
@@ -177,6 +179,7 @@ export const ColorFilters: React.FC<FilterSectionProps> = ({
                     options={numericOperators}
                     placeholder={"Select OP"}
                     styles={styles}
+                    isSearchable={false}
                     components={{ IndicatorSeparator: () => null }}
                     value={
                       numericOperators.find(

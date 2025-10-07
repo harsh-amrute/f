@@ -22,14 +22,14 @@ import {
   ProductFilters,
   AvailabilityFilters,
   AttributesFilters,
+  ColorFilters,
+  CoverageFilters,
+  HistroricalFilter,
+  HorizonFilter,
 } from "../VFFilterContent/index";
 
 import { RootState } from "../../../../../redux/store/store";
 import { BPRFilterState } from "../../../../../VectorFlow/types/BPR";
-import { ColorFilters } from "../VFFilterContent/FilterColor";
-import { CoverageFilters } from "../VFFilterContent/FilterCoverage";
-import { HistroricalFilter } from "../VFFilterContent/HistroricalFilter";
-import { HorizonFilter } from "../VFFilterContent/HorizonFilter";
 
 interface FilterModalProps {
   isOpen: boolean;
@@ -180,6 +180,8 @@ const FilterModal: React.FC<FilterModalProps> = ({
       coverageFilter: { id: "5", label: "Coverage", filters: [] },
       colorFilter: { id: "6", label: "Color", filters: [] },
       generalFilter: { id: "7", label: "General", filters: [] },
+      customAttributeFilter: { id: "8", label: "Attribute", filters: [] },
+
     }
   );
 
@@ -202,6 +204,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
       coverageFilter: { id: "5", label: "Coverage", filters: [] },
       colorFilter: { id: "6", label: "Color", filters: [] },
       generalFilter: { id: "7", label: "General", filters: [] },
+      customAttributeFilter: { id: "8", label: "Attribute", filters: [] },
     };
 
     setMultiFilter(resetMultiFilter);
