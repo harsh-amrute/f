@@ -1,10 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FilterGroup,
   FilterColumn,
-  FilterTitle,
-  InputField,
-  SelectField,
   TextWrapper,
   DropDownWrapper,
   DropDownRow,
@@ -17,19 +14,21 @@ import {
   useColorThemeStyles,
   useColorOptionStyles,
 } from "../../../../../hooks/useVFFilterContent";
-import { numericOperators, colorOptions } from "./useVFFilterContent";
+import {
+  numericOperators,
+  colorOptions,
+  useVFMultiFilter,
+  categoryOptions,
+  availabilityFilterOptions,
+} from "./useVFFilterContent";
 import { useUserData } from "../../../../../context";
-import { BTRCategoryNumberToTextMapper } from "../../../../../helpers/BPRConstants";
-import { RootState } from "../../../../../redux/store/store";
+import { BPRFilter, BPRFilterState } from "../../../../../VectorFlow/types/BPR";
 import "./styles.css";
-import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
-import { useSelector } from "react-redux";
 
 interface AvailabilityFilterProps {
   filters: any;
-  onFilterChange: (field: string, value: any) => void;
-  onApplyFilter: (filters: any) => void;
-  initialFilters?: any;
+  multiFilter: BPRFilterState;
+  onMultiFilterChange: (newMultiFilter: BPRFilterState) => void;
 }
 interface TagsFilterProps {
   name: string;
@@ -57,7 +56,6 @@ const CustomCategoryOption = (props: any) => {
 
 const CustomOption = (props: any) => {
   const optionStyles = useColorOptionStyles();
-
   return (
     <components.Option {...props}>
       <div style={optionStyles.optionContainer}>
@@ -153,223 +151,223 @@ const TagsFilter: React.FC<TagsFilterProps> = ({ name, checked, onChange }) => {
 
 // Availability Filter Component
 export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
-  filters,
-  onFilterChange,
-  onApplyFilter,
-  initialFilters,
+  multiFilter,
+  onMultiFilterChange,
 }) => {
   const styles = useThemeStyles();
   const colorStyles = useColorThemeStyles();
   const { user } = useUserData();
+  const availabilityTags = ["PIPO", "Seasonality"];
+  const { handleSelectChange, getSelectedValues, setSelectedValues } =
+    useVFMultiFilter({
+      multiFilter,
+      onMultiFilterChange,
+    });
+  const [rowSelections, setRowSelections] = useState<{
+    [columnId: string]: { operation?: any; value?: string };
+  }>({});
+  const onFilterChange = (
+    columnId: string,
+    field: "operation" | "value",
+    selected: any
+  ) => {
+    const updated = {
+      ...rowSelections,
+      [columnId]: { ...rowSelections[columnId], [field]: selected },
+    };
+    setRowSelections(updated);
+
+    const parentId = "availabilityFilter";
+    const columnInfo = availabilityFilterOptions.find(
+      (col) => col.value === columnId
+    );
+    const current = updated[columnId];
+
+    if (
+      columnInfo &&
+      current?.operation &&
+      current?.value !== undefined &&
+      current?.value !== ""
+    ) {
+      const newFilter: BPRFilter = {
+        attributeName: columnId,
+        value: current.value,
+        operator: current.operation.value,
+        label: columnInfo.label,
+        name: columnInfo.name,
+      };
+
+      const existingFilters = multiFilter[parentId]?.filters || [];
+      const filteredFilters = existingFilters.filter(
+        (f: BPRFilter) => f.name !== columnInfo.name
+      );
+
+      const updatedMultiFilter = {
+        ...multiFilter,
+        [parentId]: {
+          ...multiFilter[parentId],
+          filters: [...filteredFilters, newFilter],
+        },
+      };
+
+      onMultiFilterChange(updatedMultiFilter);
+    }
+  };
+  const [selectedOptions, setSelectedOptions] = useState<{
+    onHandInventoryColor: string[];
+    pipelineInventoryColor: string[];
+    category: string[];
+  }>({
+    onHandInventoryColor: [],
+    pipelineInventoryColor: [],
+    category: [],
+  });
+
+  useEffect(() => {
+    if (multiFilter?.availabilityFilter?.filters) {
+      const restoredRowSelections: {
+        [columnId: string]: { operation?: any; value?: string };
+      } = {};
+
+      const forOnHandInventoryColor =
+        multiFilter.availabilityFilter.filters.filter(
+          (f: BPRFilter) => f.name === "AF5"
+        );
+      const forPipelineInventoryColor =
+        multiFilter.availabilityFilter.filters.filter(
+          (f: BPRFilter) => f.name === "AF6"
+        );
+      const forTags = multiFilter.availabilityFilter.filters.filter(
+        (f: BPRFilter) => f.name === "AF7"
+      );
+      const forCategory = multiFilter.availabilityFilter.filters.filter(
+        (f: BPRFilter) => f.name === "AF8"
+      );
+
+      availabilityFilterOptions.forEach((column) => {
+        const savedFilter = multiFilter.availabilityFilter.filters.find(
+          (f: BPRFilter) => f.name === column.name
+        );
+
+        if (savedFilter) {
+          const operation = numericOperators.find(
+            (op) => op.value === savedFilter.operator
+          );
+
+          restoredRowSelections[column.value] = {
+            operation: operation || null,
+            value: savedFilter.value,
+          };
+        }
+      });
+      setRowSelections(restoredRowSelections);
+
+      setSelectedOptions({
+        onHandInventoryColor: forOnHandInventoryColor.map((f) => f.value),
+        pipelineInventoryColor: forPipelineInventoryColor.map((f) => f.value),
+        category: forCategory.map((f) => f.value),
+      });
+
+      const activeTags = forTags.map((f) => f.value);
+      setTagStates({
+        PIPO: activeTags.includes("PIPO"),
+        Seasonality: activeTags.includes("Seasonality"),
+      });
+    }
+  }, [multiFilter?.availabilityFilter?.filters]);
 
   const [tagStates, setTagStates] = useState<{ [key: string]: boolean }>({
     PIPO: false,
     Seasonality: false,
   });
+
   const handleTagChange = (name: string, checked: boolean) => {
     setTagStates((prev) => ({
       ...prev,
       [name]: checked,
     }));
-    onFilterChange("tags", JSON.stringify({ ...tagStates, [name]: checked }));
+
+    const newValue = [
+      ...Object.entries({
+        ...tagStates,
+        [name]: checked,
+      })
+        .filter(([_, val]) => val) 
+        .map(([key]) => ({ label: key, value: key })),
+    ];
+
+    handleSelectChange({
+      newValue,
+      header: "Tags",
+      filterId: "AF7",
+      parentId: "availabilityFilter",
+      attributeName: "PIPO,Seasonality",
+    });
   };
+
+  const isRowComplete = (row:any) => {
+    return row.type && row.attributeName && row.operator && row.value;
+  };
+
   return (
     <>
       <FilterGroup>
         <FilterColumn style={{ minWidth: "400px", maxWidth: "none" }}>
           <TextWrapper>Select Operation</TextWrapper>
-          <DropDownRow>
-            <DropDownWrapper>
-              <Select
-                placeholder={"VirtualNorm"}
-                styles={styles}
-                components={{
-                  IndicatorSeparator: () => null,
-                  DropdownIndicator: () => null,
-                  Menu: () => null,
-                }}
-                isDisabled={true}
-                value={{ label: "Virtual Norm", value: "Virtual Norm" }}
-                options={[]}
-              />
-            </DropDownWrapper>
-            <DropDownWrapper>
-              <Select
-                options={numericOperators}
-                placeholder={"Select an Operation"}
-                styles={styles}
-                components={{ IndicatorSeparator: () => null }}
-              />
-            </DropDownWrapper>
-            <DropDownWrapper>
-              <Select
-                placeholder="Enter a value"
-                styles={styles}
-                components={{
-                  IndicatorSeparator: () => null,
-                  DropdownIndicator: () => null,
-                  Menu: () => null,
-                }}
-                isSearchable={true}
-                inputValue={filters.someValue || ""}
-                onInputChange={(inputValue) =>
-                  onFilterChange("someValue", inputValue)
-                }
-                menuIsOpen={false}
-                options={[]}
-              />
-            </DropDownWrapper>
-            <IconWrapper theme_ui={user.user.theme_ui}>
-              <img src={"/assets/img/MTAVFMultiFilter/Error.svg"} />
-            </IconWrapper >
-            <IconWrapper theme_ui={user.user.theme_ui}>
-              <img src={"/assets/img/MTAVFMultiFilter/refresh.svg"} />
-            </IconWrapper>
-          </DropDownRow>
-          <DropDownRow>
-            <DropDownWrapper>
-              <Select
-                placeholder={"Norm"}
-                styles={styles}
-                components={{
-                  IndicatorSeparator: () => null,
-                  DropdownIndicator: () => null,
-                  Menu: () => null,
-                }}
-                isDisabled={true}
-                value={{ label: "Norm", value: "Norm" }}
-                options={[]}
-              />
-            </DropDownWrapper>
-            <DropDownWrapper>
-              <Select
-                placeholder={"Select an Operation"}
-                styles={styles}
-                components={{ IndicatorSeparator: () => null }}
-                options={numericOperators}
-              />
-            </DropDownWrapper>
-            <DropDownWrapper>
-              <Select
-                placeholder="Enter a value"
-                styles={styles}
-                components={{
-                  IndicatorSeparator: () => null,
-                  DropdownIndicator: () => null,
-                  Menu: () => null,
-                }}
-                isSearchable={true}
-                inputValue={filters.someValue || ""}
-                onInputChange={(inputValue) =>
-                  onFilterChange("someValue", inputValue)
-                }
-                menuIsOpen={false}
-                options={[]}
-              />
-            </DropDownWrapper>
-            <IconWrapper theme_ui={user.user.theme_ui}>
-              <img src={"/assets/img/MTAVFMultiFilter/Error.svg"} />
-            </IconWrapper>
-            <IconWrapper theme_ui={user.user.theme_ui}>
-              <img src={"/assets/img/MTAVFMultiFilter/refresh.svg"} />
-            </IconWrapper>
-          </DropDownRow>
-          <DropDownRow>
-            <DropDownWrapper>
-              <Select
-                placeholder={"Stock"}
-                styles={styles}
-                components={{
-                  IndicatorSeparator: () => null,
-                  DropdownIndicator: () => null,
-                  Menu: () => null,
-                }}
-                isDisabled={true}
-                value={{ label: "Stock", value: "Stock" }}
-                options={[]}
-              />
-            </DropDownWrapper>
-            <DropDownWrapper>
-              <Select
-                placeholder={"Select an Operation"}
-                styles={styles}
-                components={{ IndicatorSeparator: () => null }}
-                options={numericOperators}
-              />
-            </DropDownWrapper>
-            <DropDownWrapper>
-              <Select
-                placeholder="Enter a value"
-                styles={styles}
-                components={{
-                  IndicatorSeparator: () => null,
-                  DropdownIndicator: () => null,
-                  Menu: () => null,
-                }}
-                isSearchable={true}
-                inputValue={filters.someValue || ""}
-                onInputChange={(inputValue) =>
-                  onFilterChange("someValue", inputValue)
-                }
-                menuIsOpen={false}
-                options={[]}
-              />
-            </DropDownWrapper>
-            <IconWrapper theme_ui={user.user.theme_ui}>
-              <img src={"/assets/img/MTAVFMultiFilter/Error.svg"} />
-            </IconWrapper>
-            <IconWrapper theme_ui={user.user.theme_ui}>
-              <img src={"/assets/img/MTAVFMultiFilter/refresh.svg"} />
-            </IconWrapper>
-          </DropDownRow>
-          <DropDownRow>
-            <DropDownWrapper>
-              <Select
-                placeholder={"GIT"}
-                styles={styles}
-                components={{
-                  IndicatorSeparator: () => null,
-                  DropdownIndicator: () => null,
-                  Menu: () => null,
-                }}
-                isDisabled={true}
-                value={{ label: "GIT", value: "GIT" }}
-                options={[]}
-              />
-            </DropDownWrapper>
-            <DropDownWrapper>
-              <Select
-                placeholder={"Select an Operation"}
-                styles={styles}
-                components={{ IndicatorSeparator: () => null }}
-                options={numericOperators}
-              />
-            </DropDownWrapper>
-            <DropDownWrapper>
-              <Select
-                placeholder="Enter a value"
-                styles={styles}
-                components={{
-                  IndicatorSeparator: () => null,
-                  DropdownIndicator: () => null,
-                  Menu: () => null,
-                }}
-                isSearchable={true}
-                inputValue={filters.someValue || ""}
-                onInputChange={(inputValue) =>
-                  onFilterChange("someValue", inputValue)
-                }
-                menuIsOpen={false}
-                options={[]}
-              />
-            </DropDownWrapper>
-            <IconWrapper theme_ui={user.user.theme_ui}>
-              <img src={"/assets/img/MTAVFMultiFilter/Error.svg"} />
-            </IconWrapper>
-            <IconWrapper theme_ui={user.user.theme_ui}>
-              <img src={"/assets/img/MTAVFMultiFilter/refresh.svg"} />
-            </IconWrapper>
-          </DropDownRow>
+          {availabilityFilterOptions.map((column) => (
+            
+            <DropDownRow key={column.value}>
+              <DropDownWrapper>
+                <Select
+                  placeholder={column.label}
+                  styles={styles}
+                  components={{
+                    IndicatorSeparator: () => null,
+                    DropdownIndicator: () => null,
+                    Menu: () => null,
+                  }}
+                  isDisabled={true}
+                  value={{ label: column.label, value: column.value }}
+                />
+              </DropDownWrapper>
+              <DropDownWrapper>
+                <Select
+                  options={numericOperators}
+                  placeholder="Select an Operation"
+                  styles={styles}
+                  isSearchable={false}
+                  components={{ IndicatorSeparator: () => null }}
+                  value={rowSelections[column.value]?.operation || null}
+                  onChange={(selected) =>
+                    onFilterChange(column.value, "operation", selected)
+                  }
+                />
+              </DropDownWrapper>
+              <DropDownWrapper>
+                <input
+                  placeholder="Enter value"
+                  className={`filter-input ${
+                    user.user.theme_ui === "REGALBLAZE"
+                      ? "filter-input--regal"
+                      : "filter-input--default"
+                  }`}
+                  value={rowSelections[column.value]?.value || ""}
+                  onChange={(e) =>
+                    onFilterChange(column.value, "value", e.target.value)
+                  }
+                />
+              </DropDownWrapper>
+              <IconWrapper theme_ui={user.user.theme_ui}>
+                <img src="/assets/img/MTAVFMultiFilter/Error.svg" alt="error" />
+              </IconWrapper>
+              <IconWrapper theme_ui={user.user.theme_ui}>
+                <img
+                  src="/assets/img/MTAVFMultiFilter/refresh.svg"
+                  alt="refresh"
+                />
+              </IconWrapper>
+            </DropDownRow>
+          ))}
         </FilterColumn>
       </FilterGroup>
 
@@ -390,6 +388,17 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
               }}
               styles={colorStyles}
               placeholder="Select Color"
+              value={colorOptions.filter((opt) =>
+                selectedOptions.onHandInventoryColor.includes(opt.value)
+              )}
+              onChange={(newValue) =>
+                handleSelectChange({
+                  newValue,
+                  header: "OHIC",
+                  filterId: "AF5",
+                  parentId: "availabilityFilter",
+                })
+              }
             />
           </DropDownWrapper>
         </FilterColumn>
@@ -410,6 +419,17 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
               }}
               styles={colorStyles}
               placeholder="Select Color"
+              value={colorOptions.filter((opt) =>
+                selectedOptions.pipelineInventoryColor.includes(opt.value)
+              )}
+              onChange={(newValue) =>
+                handleSelectChange({
+                  newValue,
+                  header: "PIC",
+                  filterId: "AF6",
+                  parentId: "availabilityFilter",
+                })
+              }
             />
           </DropDownWrapper>
         </FilterColumn>
@@ -419,16 +439,14 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
         <FilterColumn>
           <TextWrapper>Tags</TextWrapper>
           <DropDownRow style={{ gap: "20px" }}>
-            <TagsFilter
-              name="PIPO"
-              checked={tagStates.PIPO}
-              onChange={handleTagChange}
-            />
-            <TagsFilter
-              name="Seasonality"
-              checked={tagStates.Seasonality}
-              onChange={handleTagChange}
-            />
+            {availabilityTags.map((tag) => (
+              <TagsFilter
+                key={tag}
+                name={tag}
+                checked={tagStates[tag]}
+                onChange={handleTagChange}
+              />
+            ))}
           </DropDownRow>
         </FilterColumn>
       </FilterGroup>
@@ -436,16 +454,9 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
       <FilterGroup style={{ marginTop: "1px" }}>
         <FilterColumn>
           <TextWrapper>Category</TextWrapper>
-          <DropDownWrapper style={{ gap: "20px"}}>
+          <DropDownWrapper style={{ gap: "20px" }}>
             <Select
-              options={Object.keys(BTRCategoryNumberToTextMapper).map(
-                (key: string) => {
-                  return {
-                    label: BTRCategoryNumberToTextMapper[key],
-                    value: key,
-                  };
-                }
-              )}
+              options={categoryOptions}
               isMulti
               closeMenuOnSelect={false}
               hideSelectedOptions={false}
@@ -463,6 +474,17 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
                 }),
               }}
               placeholder="Select Category"
+              value={categoryOptions.filter((opt) =>
+                selectedOptions.category.includes(opt.value)
+              )}
+              onChange={(newValue) =>
+                handleSelectChange({
+                  newValue,
+                  header: "Category",
+                  filterId: "AF8",
+                  parentId: "availabilityFilter",
+                })
+              }
             />
           </DropDownWrapper>
         </FilterColumn>

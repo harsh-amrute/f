@@ -93,14 +93,24 @@ export const numericOperators = [
 ]
 
 export const colorOptions = [
-  { value: "red", label: "Red", color: "red" },
-  { value: "yellow", label: "Yellow", color: "gold" },
-  { value: "green", label: "Green", color: "green" },
-  { value: "black", label: "Black", color: "black" },
-  { value: "white", label: "White", color: "lightgrey" },
-  { value: "blue", label: "Blue", color: "blue" },
-  { value: "grey", label: "Grey", color: "grey" },
+  { value: "Red", label: "Red", color: "red" },
+  { value: "Yellow", label: "Yellow", color: "gold" },
+  { value: "Green", label: "Green", color: "green" },
+  { value: "Black", label: "Black", color: "black" },
+  { value: "White", label: "White", color: "lightgrey" },
+  { value: "Blue", label: "Blue", color: "blue" },
+  { value: "Grey", label: "Grey", color: "grey" },
 ];
+
+export const categoryOptions = [
+  { value: 'SI', label: 'SI' },
+  { value: 'CTB', label: 'CTB' },
+  { value: 'BR', label: 'BR' },
+  { value: 'SD', label: 'SD' },
+  { value: 'SE', label: 'SE' },
+  { value: 'UN', label: 'UN' },
+  { value: 'DN', label: 'DN' },
+]
 
 export const colorFilterOptions = [
   { value: 'black', label: 'Black' },
@@ -110,6 +120,13 @@ export const colorFilterOptions = [
   { value: 'yellow', label: 'Yellow' },
   { value: 'green', label: 'Green' },
   { value: 'white', label: 'White' },
+]
+
+export const availabilityFilterOptions = [
+  { label: 'Virtual Norm', value: 'Virtual Norm', name: 'AF4' },
+  { label: 'Norm', value: 'Norm', name: 'AF1' },
+  { label: 'Stock', value: 'Stock', name: 'AF2' },
+  { label: 'GIT', value: 'GIT', name: 'AF3' },
 ]
 
 export const useVFMultiFilter = ({
