@@ -72,15 +72,15 @@ const useRRR =()=>{
 
     const {date:lastRunDate} = useGetLastRunData()
   
-    useEffect(()=>{       
-        const fetchData = async () => {
-            await getDataCount();
-            await getRRRRowData(currentPage);
-            await getRRRUiConfig();
-            setGeneralFilterOptions(convertUiConfigToOptions(initialColumnState))
-        };
-        fetchData();
-    }, []);
+    // useEffect(()=>{       
+    //     const fetchData = async () => {
+    //         await getDataCount();
+    //         await getRRRRowData(currentPage);
+    //         await getRRRUiConfig();
+    //         setGeneralFilterOptions(convertUiConfigToOptions(initialColumnState))
+    //     };
+    //     fetchData();
+    // }, []);
 
     useEffect(() => {
         const getTableState = async () => {
@@ -220,6 +220,7 @@ const useRRR =()=>{
           });
 
           // setRecordCount(rowData.data.recordCount)
+          await getRRRUiConfig();
           setCurrFilter(filter);
           setCurrentPage(1);
           if(rowData.data.data && Array.isArray(rowData.data.data))setRRRRowData(rowData?.data?.data);
