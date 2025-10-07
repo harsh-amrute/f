@@ -96,7 +96,7 @@ const GridView = ({ setCurrentGridRef,context, currentGridRef,Viewtabs, columnSt
     return (
         <>
             
-            <TabsSection style={{paddingTop:'6px'}}>
+            <TabsSection style={{paddingTop:'6px', marginTop:'10px'}}>
                 <ApplyZoomOut>
                     <MyFutureOrderTabsFix>
                     <VFFloatingTab
@@ -108,7 +108,7 @@ const GridView = ({ setCurrentGridRef,context, currentGridRef,Viewtabs, columnSt
               </ApplyZoomOut>
             </TabsSection>
             
-            <VFTableWrapper style={{height: '72vh', marginTop: '30px', paddingLeft: '25px'}}>
+            <VFTableWrapper style={{height: '72vh', marginTop: '20px', paddingLeft: '25px'}}>
                 <VFTable 
                 columnDefs={colDef}
                     rowData={rowData}
