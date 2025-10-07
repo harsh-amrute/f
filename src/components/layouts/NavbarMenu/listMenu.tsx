@@ -616,6 +616,12 @@ export const listMenuParent: any = [
             role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
           },
           {
+            name: "Future Order Load",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: '/mto/production-planning-scheduling/insight-and-trends/future-order-load-chart',
+            role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
+          },
+          {
             name: "FOL Summary",
             img: "/assets/img/nav/arrow_down.svg",
             url: "/mto/production-planning-scheduling/insights-and-trends/fol-summary",

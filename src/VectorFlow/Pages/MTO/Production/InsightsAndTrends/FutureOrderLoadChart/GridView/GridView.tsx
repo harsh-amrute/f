@@ -1,40 +1,24 @@
-// import VFTable from "../../../../Common/VFTable";
-
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import VFTable from "../../../../../../../VectorFlow/Pages/MTO/Common/VFTable";
-
 import { useEffect, useRef, useState } from "react";
 import { TabsSection,MyFutureOrderTabsFix } from "../styles";
 import VFFloatingTab from '../../../../../../../components/VectorFLOW/commons/VFFloatingTab';
 import { ApplyZoomOut } from '../../../OrderRescheduling/styles';
-import { VFWrapper } from "../../../DepartmentWiseBMReport/styles";
-
 import CustomPageSizeInput from "../../../../../../../VectorFlow/Pages/MTO/Common/VFPagination/CustomPageSizeInput";
 import { GridFilterWrapper, TextBtn } from "../../../../../../../VectorFlow/Pages/MTO/Common/VFPagination/styles";
-
 import { useUserData } from "../../../../../../../context/index";
 import { VFTableWrapper } from "./style";
 import LoadTagTooltip from "../LoadTagToolTip";
 
 
-
-
-
-const GridView = ({ setCurrentGridRef,context, currentGridRef, columnState, colDef, userPageSize, handlePageChange, totalRows,ccr, currentPage, savePageSize, agGridProps, rowData, setCurrView, currView, ccrOptions, currTab, selectedAction, isGridView }: any) => {
+const GridView = ({ setCurrentGridRef,context, currentGridRef,Viewtabs, columnState, colDef, userPageSize , savePageSize, rowData, setCurrView, currView, currTab, selectedAction, isGridView }: any) => {
     const gridRef = useRef<any>(null);
     const [isDisabled, setIsDisabled] = useState<boolean>(true)
-     const { user } = useUserData();
-        const theme_ui = user.user.theme_ui
-    
-    const tabs = [
-        { label: "Daily", value: "Daily", id: "daily" },
-        { label: "Weekly", value: "Weekly", id: "weekly" },
-        { label: "Monthly", value: "Monthly", id: "monthly" },
-      ];
+    const { user } = useUserData();
+    const theme_ui = user.user.theme_ui
 
     const defaultColDef = {
-          // suppressMenu: true,
           autoHeaderHeight: true,
           filter: "agTextColumnFilter",
           floatingFilter: true,
@@ -117,8 +101,8 @@ const GridView = ({ setCurrentGridRef,context, currentGridRef, columnState, colD
                     <MyFutureOrderTabsFix>
                     <VFFloatingTab
                         handleClick={(e) => setCurrView(e.id)}
-                        tabs={tabs}
-                         defaultTab={tabs.findIndex(tab => tab.id === currView) || 0}
+                        tabs={Viewtabs}
+                         defaultTab={Viewtabs.findIndex((tab:any) => tab.id === currView) || 0}
                         />
                     </MyFutureOrderTabsFix>
               </ApplyZoomOut>
@@ -126,7 +110,6 @@ const GridView = ({ setCurrentGridRef,context, currentGridRef, columnState, colD
             
             <VFTableWrapper style={{height: '72vh', marginTop: '30px', paddingLeft: '25px'}}>
                 <VFTable 
-                {...agGridProps}
                 columnDefs={colDef}
                     rowData={rowData}
                     defaultColDef={defaultColDef}
@@ -143,20 +126,17 @@ const GridView = ({ setCurrentGridRef,context, currentGridRef, columnState, colD
                           { statusPanel: CustomStatusPanel, align: "left" },
                         ],
                       }}
-                   
                     tooltipMouseTrack={true}
                     pagination={true}
                     paginationPageSize={userPageSize}
                     paginationPageSizeSelector={false}
-                // paginationPageSize={pagination.mtoPageSize}
-                ref={gridRef}
-                    // pagination={false}
+                    ref={gridRef}
                     context={context}
-                maintainColumnOrder
-                onGridReady={(params: any) => {
-                  params.api.autoSizeAllColumns();
-                    setCurrentGridRef(gridRef);
-                    }}
+                    maintainColumnOrder
+                    onGridReady={(params: any) => {
+                      params.api.autoSizeAllColumns();
+                        setCurrentGridRef(gridRef);
+                        }}
                     onFilterChanged={()=>{Object.keys((currentGridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
                 />
             </VFTableWrapper>

@@ -171,6 +171,10 @@ const lazyLoad = (children: React.ReactNode) => {
     '/mto/procurement/insights-and-trends/rmpm-expediting-rm-suppliers',
     '/mto/production-planning-scheduling/enquiry-response',
     '/mto/production-planning-scheduling/insight-and-trends/bm-trends',
+
+    '/mto/production-planning-scheduling/insight-and-trends/future-order-load-chart',
+
+
     '/mto/production-planning-scheduling/deptwise-bm-report',
     '/mto/production-planning-scheduling/insight-and-trends/stpl-full-kits',
     '/mto/production-planning-scheduling/full-kit-assignment',
@@ -837,6 +841,20 @@ export const initRoutes = (): RouteObject[] => {
         ...getStoreTransferModuleRoutes()
       ]
     },
+
+    {
+      path: '/mto/production-planning-scheduling/insight-and-trends/future-order-load-chart',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<FutureOrderLoadChart />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+
+
     {
       path: '/mto/production-planning-scheduling/insight-and-trends/stpl-full-kits',
       element: <AppLayout />,

@@ -7,13 +7,7 @@ import VFFloatingTab from "../../../../../../../components/VectorFLOW/commons/VF
 import { MyFutureOrderTabsFix } from "../styles";
 import CustomLegend from "../../../../../../../VectorFlow/Pages/MTO/Common/CustomLegend/index 1";
 
-const tabs = [
-  { label: "Daily", value: "daily", id: "daily" },
-  { label: "Weekly", value: "weekly", id: "weekly" },
-  { label: "Monthly", value: "monthly", id: "monthly" },
-];
-
-const GraphView = ({ currView, setCurrView,selectedCCR, horizonData, graphData, cwl, selectedAction, currTab }: any) => {
+const GraphView = ({Viewtabs, currView, setCurrView,selectedCCR, horizonData, graphData, cwl, selectedAction, currTab }: any) => {
   
   const [cwlValue, setCwlValue] = useState(0);
   const [selectedCCRHorizonDate, setSelectedCCRHorizonDate] = useState<any>('');
@@ -148,47 +142,60 @@ const GraphView = ({ currView, setCurrView,selectedCCR, horizonData, graphData, 
     return graphData.data.map((item: any) => {
       const isInHorizonRange = isDateInHorizonRange(item.date);
 
-      if (currView === "daily") {
-        return {
-          date: item.date,
-          load: item.load, 
-          holiday:item.is_holiday, 
-          past: item.past, 
-          limit: cwlValue, 
-          type: item.is_holiday ? "holiday" : "load",
-          horizonDate: selectedCCRHorizonDate,
-          isInHorizonRange,
-        };
-      }
+      // if (currView === "daily") {
+      //   return {
+      //     date: item.date,
+      //     load: item.load, 
+      //     holiday:item.is_holiday, 
+      //     past: item.past, 
+      //     limit: cwlValue, 
+      //     type: item.is_holiday ? "holiday" : "load",
+      //     horizonDate: selectedCCRHorizonDate,
+      //     isInHorizonRange,
+      //   };
+      // }
 
-      if (currView === "weekly") {
-        return {
-          date:item.date, 
-          load: item.load,
-          holiday: item.is_holiday,
-          past: item.past,
-          limit: cwlValue,
-          // type: "weekly",
-          type: item.is_holiday ? "holiday" : "load",
-          horizonDate: selectedCCRHorizonDate,
-          isInHorizonRange,
-        };
-      }
+      // if (currView === "weekly") {
+      //   return {
+      //     date:item.date, 
+      //     load: item.load,
+      //     holiday: item.is_holiday,
+      //     past: item.past,
+      //     limit: cwlValue,
+      //     // type: "weekly",
+      //     type: item.is_holiday ? "holiday" : "load",
+      //     horizonDate: selectedCCRHorizonDate,
+      //     isInHorizonRange,
+      //   };
+      // }
 
-      if (currView === "monthly") {
-        return {
-          date: item.date,
-          load: item.load,
-          holiday: item.is_holiday,
-          past: item.past,
-          limit: cwlValue,
-          // type: "monthly",
-          type: item.is_holiday ? "holiday" : "load",
-          horizonDate: selectedCCRHorizonDate,
-          isInHorizonRange,
-        };
-      }
-      return {};
+      // if (currView === "monthly") {
+      //   return {
+      //     date: item.date,
+      //     load: item.load,
+      //     holiday: item.is_holiday,
+      //     past: item.past,
+      //     limit: cwlValue,
+      //     // type: "monthly",
+      //     type: item.is_holiday ? "holiday" : "load",
+      //     horizonDate: selectedCCRHorizonDate,
+      //     isInHorizonRange,
+      //   };
+      // }
+      // return {};
+    
+      return {
+        date: item.date,
+        load: item.load,
+        holiday: item.is_holiday,
+        past: item.past,
+        limit: cwlValue,
+        // type: "monthly",
+        type: item.is_holiday ? "holiday" : "load",
+        horizonDate: selectedCCRHorizonDate,
+        isInHorizonRange,
+      };
+    
     });
   }, [graphData, currView, cwlValue, selectedCCRHorizonDate, horizonDateRange]);
   
@@ -333,14 +340,6 @@ const GraphView = ({ currView, setCurrView,selectedCCR, horizonData, graphData, 
   useEffect(() => {
     if (selectedAction === 'ANS' && horizonDateRange ) {
     
-      const grayAreaData = transformedData.map((item:any) => {
-        const isInRange = item.isInHorizonRange;
-        
-        return {
-          date: item.date,
-          grayArea: isInRange ? 8000 : null,
-        };
-      });
 
       // Update chart options to include gray area series
       setChartOptions((prevOptions:any) => ({
@@ -483,8 +482,8 @@ const GraphView = ({ currView, setCurrView,selectedCCR, horizonData, graphData, 
           <MyFutureOrderTabsFix>
             <VFFloatingTab
               handleClick={(e) => setCurrView(e.id)}
-              tabs={tabs}
-              defaultTab={tabs.findIndex(tab => tab.id === currView) || 0}
+              tabs={Viewtabs}
+              defaultTab={Viewtabs.findIndex((tab:any) => tab.id === currView) || 0}
             />
           </MyFutureOrderTabsFix>
         </ApplyZoomOut>

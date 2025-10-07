@@ -129,7 +129,13 @@ const VFDatePicker = ({
                   onChange={handleCalendarChange}
                   value={date ? new Date(date) : new Date()}
                   minDate={minDate}
-                  tileDisabled={({ date }) => disabledFOLHorizonDate?.(date) ?? false}
+                  // tileDisabled={({ date }) => disabledFOLHorizonDate?.(date) ?? false}
+                  tileDisabled={({ date }) => {
+                    if (disabledFOLHorizonDate) {
+                      return disabledFOLHorizonDate(date);
+                    }
+                    return false;
+                  }}
                 />
               </div>,
               document.body

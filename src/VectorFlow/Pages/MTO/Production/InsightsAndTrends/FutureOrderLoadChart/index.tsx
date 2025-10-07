@@ -10,7 +10,7 @@ import VFButton from '../../../../../../components/VectorFLOW/commons/VFButton';
 import { useUserData } from "../../../../../../context";
 import GraphView from './GraphView/GraphView';
 import GridView from './GridView/GridView';
-import { useGetCCRMasterData } from '../../../../../../VectorFlow/Services/MTA/MDM';
+import { useGetCCRMasterData } from '../../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation'
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
 import { UIGridCode } from '../../../Common/Enum';
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
@@ -46,7 +46,32 @@ const FutureOrderLoadChart = () => {
     onApplyFilter, 
     toggleFilter,
     appliedFilters
-} = useFilter(filterData, APIFilterConfig.filSecVisConfig.Future_Order_Load_Chart);
+  } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Future_Order_Load_Chart);
+  
+  const tabs = [
+    {
+      label: "Pending CCR Quantity",
+      value: "Pending CCR Quantity",
+      id: "Pending CCR Quantity",
+    },
+    {
+      label: "Load Wise",
+      value: "Load Wise",
+      id: "Load Wise",
+    },
+  ];
+
+  const OrderOptions = [
+    { value: "BFH", label: "Not Scheduled beyond FOL Horizon" },
+    { value: "ANS", label: "All Not Scheduled" },
+  ]
+
+  const Viewtabs = [
+    { label: "Daily", value: "Daily", id: "daily" },
+    { label: "Weekly", value: "Weekly", id: "weekly" },
+    { label: "Monthly", value: "Monthly", id: "monthly" },
+  ];
+
   const [currTab, setCurrTab] = useState("Pending CCR Quantity");
   const [isGridView, setIsGridView] = useState(false);
   const [selectedAction, setSelectedAction] = useState<any>({ value: "BFH", label: "Not Scheduled beyond FOL Horizon" });
@@ -62,7 +87,6 @@ const FutureOrderLoadChart = () => {
   const [totalRow, setTotalRow] = useState<number>(0)
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [currView, setCurrView] = useState("daily");
-  const [currGridView, setCurrGridView] = useState('daily')
   const [graphData, setGraphData] = useState<any>(null);
   const [fromDate, setFromDate] = useState<any>(null);
   const [toDate, setToDate] = useState<any>(null);
@@ -70,18 +94,15 @@ const FutureOrderLoadChart = () => {
   const [currentGridRef, setCurrentGridRef] = useState<any>(null);
   const [isReset, setIsReset] = useState<any>(undefined);
   const [ccrHorizonData, setCcrHorizonData] = useState<any[]>([]);
-  const [filterPayload, setFilterPayload]=useState<any>()
   const [columnState, setColumnState] = useState<any>([]);
-  const { mutateAsync: getCCRMasterData } = useGetCCRMasterData();
-  const { mutateAsync: getUIConfigData } = useGetUIConfigData()
-  const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
+  const { mutateAsync: getCCRMasterData , isLoading:isCCRMasterLoading} = useGetCCRMasterData();
+  const { mutateAsync: getUIConfigData, isLoading:isUiConfigLoading } = useGetUIConfigData()
+  const { mutateAsync: getPageWiseFilterData, isLoading:isPageWiseLoading } = useGetFilterData()
   const [isSubmitLoading, setIsSubmitLoading] = useState(false);
   const {data}=useGetFutureOrderFOLHorizonDate() //folhorizon
   const {mutateAsync: geFutureOrderLoadChart, isLoading}=useGetFutureOrderLoadChartData()
   const isDateDisabled = !(selectedCCR && selectedAction);
   const [uiConfig, setUiConfig] = useState([]);
-  
-
   const [selectedCCRHorizon, setSelectedCCRHorizon] = useState('')
 
   const { user } = useUserData();
@@ -101,32 +122,13 @@ const FutureOrderLoadChart = () => {
     Tag: {
       tooltipValueGetter: (params: any) => params.value,
       cellRenderer: LoadTagCellRenderer,
-     
       minWidth:100,
     },
-  
   }
-
-  const tabs = [
-    {
-      label: "Pending CCR Quantity",
-      value: "Pending CCR Quantity",
-      id: "Pending CCR Quantity",
-    },
-    {
-      label: "Load Wise",
-      value: "Load Wise",
-      id: "Load Wise",
-    },
-  ];
-
-  const OrderOptions = [
-    { value: "BFH", label: "Not Scheduled beyond FOL Horizon" },
-    { value: "ANS", label: "All Not Scheduled" },
-  ]
 
 
   const formattedFilters = formatFilterJSON(appliedFilters);
+  console.log('formateedFilters', formattedFilters)
 
   const payload = { loadwise: currTab === "Load Wise" ? 2 : 1,
     view: currView,
@@ -195,14 +197,14 @@ const FutureOrderLoadChart = () => {
 
   const getCCROptions = async () => {
     try {
-      const CCRMasterData = await getCCRMasterData({});
+      const CCRMasterData = await getCCRMasterData();
       const CCRMaster = CCRMasterData?.data?.data;
       
       if (CCRMaster) {
         const allCCR = CCRMaster.map((item: any) => ({
-          label: item.ccd, 
-          value: item.cid,
-          cwl: item.cwl,
+         label: item.ccr_name, 
+          value: item.ccr_id,
+          cwl: item.cumulative_wip_limit,
         }));
         setCcrOptions(allCCR);
       } else {
@@ -249,9 +251,15 @@ const FutureOrderLoadChart = () => {
       return;
     }
     
+    const fromDateObj = new Date(fromDate);
+    const toDateObj = new Date(toDate);
+    
+    if (toDateObj < fromDateObj) {
+      notifyError("To date should always be greater than or equal to From date");
+      return;
+    }
     
     setIsSubmitLoading(true);
-    setFilterPayload(payload);
   
     try {
       const response = await geFutureOrderLoadChart(payload);
@@ -259,35 +267,19 @@ const FutureOrderLoadChart = () => {
       if (isGridView) {
         let transformedData = response?.data?.data?.data || [];
         const pastOrderLoad = response?.data?.data?.pastorder_load
-        
-        if (currView === 'weekly') {
-          transformedData = transformedData.map((item: any, index: number) => {
-          
-            const a = item?.tag?.map((e: any) => e);
-
-            return {
-              ccr: item.ccr,
-              load: index === 0 ? pastOrderLoad : item.load,
-              tag:a,
-            date:item.date
-            };
-          });
-        }
-
-        else if (currView === 'monthly') {
-        
+                
+        if (currView === 'weekly' || currView === 'monthly') {
           transformedData = transformedData.map((item: any, index: number) => {
             const a = item?.tag?.map((e: any) => e);
             return {
-    
               ccr: item.ccr,
               load: index === 0 ? pastOrderLoad : item.load,
               tag: a,
-              date: item.date,
-            }
+              date: item.date
+            };
           });
-          
-        } else {
+        }
+        else {
           // Daily view
           transformedData = transformedData.map((item: any, index: number) => ({
             ccr: item.ccr,
@@ -298,9 +290,8 @@ const FutureOrderLoadChart = () => {
         }
         setGridData(transformedData);
         setTotalRow(response?.data?.data?.count || transformedData.length);
-      } else {
-        // notifySuccess('Graph updated successfully')
-        console.log(response)
+      }
+      else {
         setGraphData(response?.data?.data || [])
 
         if (response.status != 200) {
@@ -353,16 +344,14 @@ const getFilterData = async () => {
   }
 
   useEffect(() => {
-    getGraphData({ graphflag: 1 });
+    // getExcelExportData({ graphflag: 1 });
     getFilterData();
   }, [])
 
 
   const { mutateAsync: getFutureOrderLoadChartExcelData } = useGetFutureOrderLoadChartExcelData();
 
-  const getGraphData = async (params: any) => {
-
-  
+  const getExcelExportData = async (params: any) => {
   const { isExcelExport, graphflag } = params;
   const currentPayload = {
     loadwise: currTab === "Load Wise" ? 2 : 1,
@@ -393,35 +382,12 @@ const getFilterData = async () => {
       console.log(e);
     }
   }
-  else {
-    const payload = {
-      loadwise: currTab === "Load Wise" ? 2 : 1,
-      view: currView,
-      graphflag,
-      filters: {
-        ccr: selectedCCR?.value,
-        orderOption: selectedAction?.value,
-        from: formatDateToYMD(fromDate),
-        to: formatDateToYMD(toDate),
-        horizon_date:selectedCCRHorizon
-      },
-      // page_size: pageSize || userPageSize
-    };
 
-    try {
-      const response = await geFutureOrderLoadChart(payload);
-      // setGraphData(response.data.data); // Add this if you need to set graph data
-    }
-    catch (e) {
-      console.log(e);
-      notifyError('Failed to fetch Graph data!');
-    }
-  }
   };
   
   
   const GetExcelData = async () => {
-    getGraphData({graphflag : 0 , isExcelExport : true , appliedFilters})
+    getExcelExportData({graphflag : 0 , isExcelExport : true , appliedFilters})
   }
 
   const handleResetClick = () => {
@@ -447,13 +413,11 @@ const getFilterData = async () => {
       }
     }
 
-  const handleSaveClick = async (coldefs?: any, page_size?: any) => {
+  const handleSaveClick = async (coldefs?: any,page_size?: any) => {
 
     try {
       if (coldefs) {
-        // const isLoadWise = currTab === 'Load Wise';
-        // const isANS = selectedAction?.value === 'ANS';
-        const fullConfig = {cs: coldefs, pageSize: page_size || userPageSize };
+        const fullConfig = {cs: coldefs,pageSize: page_size || userPageSize };
         const payload = {
           un: user.user.name,
           rn_id: UIGridCode.ProdStplAndFullKit,
@@ -463,19 +427,8 @@ const getFilterData = async () => {
         setColumnState([...coldefs]);
 
       }
-      else if(page_size){
-        const config = columnState;
-        const fullConfig = { cs: config,  pageSize: page_size};        
-        const payload = {
-          un: user.user.name,
-          rn_id: UIGridCode.ProdStplAndFullKit,
-          cs: JSON.stringify(fullConfig),
-        };
-        await updateUserUIReportConfigData([payload]);
-      }
       else {
 
-        
         if (currentGridRef?.current?.api) {
           const config = currentGridRef.current.api.getColumnState();
           const updatedColState = [...columnState];
@@ -497,7 +450,6 @@ const getFilterData = async () => {
             cs: JSON.stringify(fullConfig)
           }
           await updateUserUIReportConfigData([payload]);
-          // await getUserColumnConfig();
         }
       }
     } catch (error) {
@@ -511,16 +463,7 @@ const getFilterData = async () => {
     const columnDefs = getColumnDefinations(uiConfig, colDefCustomizations, []);
       
       const isLoadWise = currTab === 'Load Wise';
-      const isANS = selectedAction?.value === 'ANS';
       
-      const allowedHeaders = isLoadWise
-        ? isANS 
-          ? ['Date', 'CCR', 'Load in Days', 'Tags']
-          : ['Date', 'CCR', 'Load in Days']
-        : isANS
-          ? ['Date', 'Pending CCR Quantity', 'Tags', 'CCR']
-        : ['Date', 'Pending CCR Quantity', 'CCR'];
-    
     const header1 = ['Date', 'CCR', 'Load in Days', 'Tags']
     const header2 = ['Date', 'CCR', 'Load in Days']
     const header3 = ['Date', 'Pending CCR Quantity', 'Tags', 'CCR']
@@ -539,7 +482,6 @@ const getFilterData = async () => {
       header4.includes(col.headerName || col.header)
     )
 
-
     return [colDef1, colDef2, colDef3, colDef4];
   }
   
@@ -551,7 +493,6 @@ const getFilterData = async () => {
     const GridPayload = {
       ...payload,
       ...formatedFilters,
-      page_size: pageSize || userPageSize 
     };
 
     const response = await geFutureOrderLoadChart(GridPayload);
@@ -565,6 +506,12 @@ const getFilterData = async () => {
   }
   };
   
+  useEffect(() => {
+    if (Object.entries(appliedFilters).length && !isGridView && selectedCCR && selectedAction && fromDate && toDate) {
+      onSubmit(); 
+    }
+   }, [appliedFilters, isGridView, selectedCCR, selectedAction])
+
   
   useEffect(() => {
       if (Object.entries(appliedFilters).length && userConfigFetched) {
@@ -577,19 +524,17 @@ const getFilterData = async () => {
       setCurrentPage(currPage);
       getGridData({ graphflag: 0, page: currPage });
     }
-  
-    const savePageSize = (pageSize: any) => {
-      if (pageSize) {
-        setUserPageSize(pageSize);
-        setCurrentPage(1)
-        handleSaveClick(undefined, pageSize);
-        getGridData({ graphflag: 0, page: 1 }, pageSize);
-        } else {
-          notifyError("Invalide page size");
-      }
-      
-  }
 
+  const savePageSize = (pageSize: any) => {
+    if (pageSize) {
+      setUserPageSize(pageSize);
+      setCurrentPage(1)
+      handleSaveClick(undefined, pageSize);
+      getGridData({ graphflag: 0, page: 1 }, pageSize);
+    } else {
+      notifyError("Invalide page size");
+    }
+  }
   
   /* Logic for disabling date from aaj ka din to FOL Horizon Date */
   useEffect(() => {
@@ -610,51 +555,20 @@ const getFilterData = async () => {
   };
   const today = new Date();
 
-
-  const disabledFOLHorizonDateFrom = (current: Date) => {
+  const disabledFOLHorizonDate = (current: Date) => {
     if (selectedAction?.value !== "BFH") return false;
 
-    const horizonDateStr = getSelectedCCRDate();
+    const horizonDateStr = getSelectedCCRDate(); //fol ka date (2025-09-10)
     if (!horizonDateStr) return false;
 
     const horizonDate = new Date(horizonDateStr);
-    
-    // Set time to start of day for accurate comparison
-    const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    const currentStart = new Date(current.getFullYear(), current.getMonth(), current.getDate());
-    const horizonStart = new Date(horizonDate.getFullYear(), horizonDate.getMonth(), horizonDate.getDate());
 
-    // Disable dates from today (inclusive) to horizon date (inclusive)
-    return currentStart >= todayStart && currentStart <= horizonStart;
+    return current >= today && current <= horizonDate;
   };
-
-  const disabledFOLHorizonDateTo = (current: Date) => {
-    if (selectedAction?.value !== "BFH") return false;
-
-    const horizonDateStr = getSelectedCCRDate();
-    if (!horizonDateStr) return false;
-
-    const horizonDate = new Date(horizonDateStr);
-    
-    // Set time to start of day for accurate comparison
-    const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    const currentStart = new Date(current.getFullYear(), current.getMonth(), current.getDate());
-    const horizonStart = new Date(horizonDate.getFullYear(), horizonDate.getMonth(), horizonDate.getDate());
-
-    // If fromDate is selected, disable dates before fromDate
-    if (fromDate) {
-      const fromDateObj = new Date(fromDate);
-      const fromDateStart = new Date(fromDateObj.getFullYear(), fromDateObj.getMonth(), fromDateObj.getDate());
-      // Disable dates from today to horizon date OR dates before fromDate
-      return (currentStart >= todayStart && currentStart <= horizonStart) || currentStart < fromDateStart;
-    }
-
-    // Otherwise, just disable dates from today to horizon date
-    return currentStart >= todayStart && currentStart <= horizonStart;
-  };
+ 
   return (
     <>
-    {(isLoading|| isUpdateUserConfig || isGetUserConfig || isSubmitLoading) && <OverlayLoader />}
+    {(isLoading|| isUpdateUserConfig || isGetUserConfig || isSubmitLoading || isCCRMasterLoading || isPageWiseLoading || isUiConfigLoading) && <OverlayLoader />}
       <TabsToolbarRow >
         {!isGridView ? 
           (
@@ -675,6 +589,7 @@ const getFilterData = async () => {
           </>
         }
 
+      <ToolbarAbsolute style={{marginTop: isGridView?'50px':'5px', width:'85%'}}>
           <MTOActionToolBar
             comp={"orderReschedule"}
             isChartGridToggle
@@ -696,6 +611,7 @@ const getFilterData = async () => {
             onFilterRemove={onFilterRemove}
             isMfgSelected={isMfgSelected}
           />
+      </ToolbarAbsolute>
       </TabsToolbarRow>
 
       {!isGridView ?
@@ -728,8 +644,8 @@ const getFilterData = async () => {
                   onDateChange={setFromDate}
                     minDate={new Date()} 
                     disabled={isDateDisabled}
-                    // disabledFOLHorizonDate={disabledFOLHorizonDate} 
-                    disabledFOLHorizonDate={disabledFOLHorizonDateFrom}
+                    disabledFOLHorizonDate={disabledFOLHorizonDate} 
+                    // disabledFOLHorizonDate={disabledFOLHorizonDateFrom}
                   dateInputStyle={{
                     fontSize: "10px",
                     fontWeight: 300,
@@ -760,8 +676,8 @@ const getFilterData = async () => {
                 date={toDate}
                 onDateChange={setToDate}
                 disabled={isDateDisabled}
-                    // disabledFOLHorizonDate={disabledFOLHorizonDate} 
-                    disabledFOLHorizonDate={disabledFOLHorizonDateTo}
+                    disabledFOLHorizonDate={disabledFOLHorizonDate} 
+                    // disabledFOLHorizonDate={disabledFOLHorizonDateTo}
 
                 minDate={new Date()} 
                 dateInputStyle={{
@@ -809,7 +725,6 @@ const getFilterData = async () => {
         currentGridRef={currentGridRef}
         columnState={columnState}
         colDef={colDef}
-        // key={"grid1"}
         handlePageChange={handlePageChange}
         savePageSize={savePageSize}
         currentPage={currentPage}
@@ -819,10 +734,11 @@ const getFilterData = async () => {
         userPageSize={userPageSize}
         currView={currView}
         setCurrView={setCurrView}
-          key={currTab}
-          currTab={currTab}
-          selectedAction={selectedAction}
-          isGridView={isGridView}
+        key={currTab}
+        currTab={currTab}
+        selectedAction={selectedAction}
+        isGridView={isGridView}
+        Viewtabs={Viewtabs}
         />
        
     ) : (
@@ -831,6 +747,7 @@ const getFilterData = async () => {
           <GraphView
             currView={currView}
             setCurrView={setCurrView}
+            Viewtabs={Viewtabs}
             currTab={currTab}
             graphData={graphData} 
             onChartViewChange={handleChartViewChange}
@@ -852,5 +769,6 @@ const getFilterData = async () => {
 };
 
 export default FutureOrderLoadChart;
+
 
 
