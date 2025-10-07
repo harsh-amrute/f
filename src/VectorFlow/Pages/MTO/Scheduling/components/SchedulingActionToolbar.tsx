@@ -17,6 +17,7 @@ import {
 import { useSearchParams } from "react-router-dom";
 import _ from "lodash";
 import { format } from "date-fns";
+import { start } from "repl";
 
 const ToolbarWrapper = styled.div`
   width: calc(100% + 24px);
@@ -314,9 +315,11 @@ const SchedulingActionToolbar = ({
   setAppliedFilters,
   gridRef,
   startDate,
-  endDate
+  endDate,
 }: any) => {
   const themeUi = useUserData().user.user.themeUi;
+
+  console.log("StartDate", startDate, endDate);
 
   const [open, setOpen] = useState(false);
   const [dropdownPosition, setDropdownPosition] = useState<CSSProperties>({});
@@ -337,13 +340,17 @@ const SchedulingActionToolbar = ({
   };
 
   const isAnyFilterApplied = (appliedFilters: any) => {
-    const {timePreference,...lengthCheckFilters} = appliedFilters
-    return Object.values(lengthCheckFilters).some((filter) => {
-      if (Array.isArray(filter)) {
-        return filter.length > 0;
-      }
-      return filter !== null && filter !== undefined && filter !== "";
-    }) || timePreference?.startDate!==null || timePreference?.endDate!==null;
+    const { timePreference, ...lengthCheckFilters } = appliedFilters;
+    return (
+      Object.values(lengthCheckFilters).some((filter) => {
+        if (Array.isArray(filter)) {
+          return filter.length > 0;
+        }
+        return filter !== null && filter !== undefined && filter !== "";
+      }) ||
+      timePreference?.startDate !== null ||
+      timePreference?.endDate !== null
+    );
   };
 
   useEffect(() => {
@@ -381,13 +388,19 @@ const SchedulingActionToolbar = ({
 
   const allFilterTypes = Object.keys(appliedFilters);
 
+  const convertDate = (dateString: any) => {
+    const val = format(new Date(dateString * 1000), "dd MMM");
+    console.log("val for converstion", val);
+    return val;
+  };
+
   return (
     <ToolbarWrapper>
       <ToolbarLeftSection>
         <GoBackButton
           onClick={() => {
             onGoBack();
-            setSearchParams(undefined)
+            setSearchParams(undefined);
           }}
         >
           <img
@@ -397,32 +410,32 @@ const SchedulingActionToolbar = ({
             width={16}
             height={16}
           />
-          <p style={{fontSize: '1.2rem'}}>Go Back</p>
+          <p style={{ fontSize: "1.2rem" }}>Go Back</p>
         </GoBackButton>
         <DateBulge>
-        <img
+          <img
             style={{ marginBottom: "3.2px" }}
             src="\assets\img\scheduling\calendar-date.svg"
             alt="Go Back"
             width={14}
             height={14}
           />
-          {
-
-            !!(startDate || appliedFilters?.timePreference?.startDate) && 
-            !!(endDate || appliedFilters?.timePreference?.endDate) ? 
-            (
-              <p style={{ fontSize: "1.1rem", marginLeft: "6px" }}>
-            {format(new Date(appliedFilters?.timePreference?.startDate), "dd MMM")} -{" "}
-            {format(new Date(appliedFilters?.timePreference?.endDate), "dd MMM yyyy")}
-          </p>) 
-          : (
-          <p style={{ fontSize: "1.2rem", marginLeft: "6px" }}>
-            {format(new Date(startDate), "dd MMM")} -{" "}
-            {format(new Date(endDate), "dd MMM yyyy")}
-          </p>)}
-
-            </DateBulge>
+          {startDate && endDate && (
+            <p style={{ fontSize: "1.1rem", marginLeft: "6px" }}>
+              {format(
+                new Date(
+                  appliedFilters?.timePreference?.startDate || startDate
+                ),
+                "dd MMM"
+              )}{" "}
+              -{" "}
+              {format(
+                new Date(appliedFilters?.timePreference?.endDate || endDate),
+                "dd MMM yyyy"
+              )}
+            </p>
+          )}
+        </DateBulge>
       </ToolbarLeftSection>
 
       <ToolbarRightSection>
@@ -514,21 +527,19 @@ const SchedulingActionToolbar = ({
             }}
             themeUi={themeUi}
             onClick={() => {
-              console.log("gridRef", gridRef)
+              console.log("gridRef", gridRef);
               gridRef.current?.api.exportDataAsExcel({
-                fileName: 
-
-                "Scheduling" +
-                (currentView === "ResourceView"
-                  ? "_ResourceView_Summary"
-                  : currentView === "JobView"
-                  ? "_JobView"
-                  : currentView === "GridViewR"
-                  ? "_ResourceList"
-                  : "_JobList")
-                }
-                )
-              }}
+                fileName:
+                  "Scheduling" +
+                  (currentView === "ResourceView"
+                    ? "_ResourceView_Summary"
+                    : currentView === "JobView"
+                    ? "_JobView"
+                    : currentView === "GridViewR"
+                    ? "_ResourceList"
+                    : "_JobList"),
+              });
+            }}
           >
             Export Excel
           </VFButtonOutline>
@@ -551,7 +562,7 @@ const SchedulingActionToolbar = ({
           <ToggleButton
             onClick={() => {
               setCurrentView("ResourceView");
-              setSearchParams({ page: "ResourceView"});
+              setSearchParams({ page: "ResourceView" });
             }}
           >
             {resourceViewIcon(currentView === "ResourceView")}
@@ -565,7 +576,7 @@ const SchedulingActionToolbar = ({
           <ToggleButton
             onClick={() => {
               setCurrentView("JobView");
-              setSearchParams({ page: "JobView"})
+              setSearchParams({ page: "JobView" });
             }}
           >
             {JobViewIcon(currentView === "JobView")}
@@ -602,7 +613,7 @@ const SchedulingActionToolbar = ({
               <ToggleButton
                 onClick={() => {
                   setCurrentView("GridViewR");
-                  setSearchParams({ page: "GridViewR"})
+                  setSearchParams({ page: "GridViewR" });
                   setOpen(!open);
                 }}
               >
@@ -615,7 +626,7 @@ const SchedulingActionToolbar = ({
               <ToggleButton
                 onClick={() => {
                   setCurrentView("GridViewJ");
-                  setSearchParams({ page: "GridViewJ"})
+                  setSearchParams({ page: "GridViewJ" });
                   setOpen(!open);
                 }}
               >
@@ -628,7 +639,6 @@ const SchedulingActionToolbar = ({
           </DropdownWrapper>
         </Portal>
       )}
-     
     </ToolbarWrapper>
   );
 };

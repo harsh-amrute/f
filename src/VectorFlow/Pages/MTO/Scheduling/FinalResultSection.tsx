@@ -8,14 +8,15 @@ import GridViewResource from "./Sections/GridViewResource";
 import GridViewJob from "./Sections/GridViewJob";
 import VFOverlayModal from "../../../../components/VectorFLOW/commons/VFOverlayModal";
 import FilterModal from "./components/FilterModal";
-import _ from "lodash";
+import _, { set } from "lodash";
+import { format, startOfDay, startOfWeek } from "date-fns";
 
 const FinalResultSectionWrapper = styled.div`
   height: fit-content;
   postion: relative;
 `;
 
-const FinalResultSection = ({ setStep, finalResult, startDate, endDate }: any) => {
+const FinalResultSection = ({ setStep, finalResult }: any) => {
   const [excelGridRef, setExcelGridRef] = useState<any>(null);
   const [currentView, setCurrentView] = useState("ResourceView");
 
@@ -52,6 +53,37 @@ const FinalResultSection = ({ setStep, finalResult, startDate, endDate }: any) =
     actionPreferences: [],
     timePreference: { startDate: null, endDate: null },
   });
+
+  const [startDate, setStartDate] = useState<number | null>(null);
+  const [endDate, setEndDate] = useState<number | null>(null);
+
+  useEffect(() => {
+    const allKeys = Object.keys(finalResult?.Resource_Data || {});
+  
+    let minStartDate: number | null = null;
+    let maxEndDate: number | null = null;
+  
+    allKeys.forEach((key) => {
+      const resource = finalResult.Resource_Data[key];
+      resource.task_list.forEach((task: any) => {
+        if (task.start_time) {
+          if (minStartDate === null || task.start_time < minStartDate) {
+            minStartDate = task.start_time;
+          }
+        }
+        if (task.end_time) {
+          if (maxEndDate === null || task.end_time > maxEndDate) {
+            maxEndDate = task.end_time;
+          }
+        }
+      });
+    });
+  
+    // Convert epoch time to ISO date string (assuming epoch time is already in milliseconds)
+    console.log("minStartDate", minStartDate)
+    setStartDate(minStartDate ? minStartDate*1000: null);
+    setEndDate(maxEndDate?  maxEndDate*1000: null);
+  }, [finalResult]);
 
   useEffect(() => {
     // Here you can add logic to filter 'data' based on 'appliedFilters'
