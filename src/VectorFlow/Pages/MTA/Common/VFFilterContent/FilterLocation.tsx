@@ -190,6 +190,7 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
                   options={stringOpertors}
                   placeholder="Select Operation"
                   styles={styles}
+                  isSearchable={false}
                   components={{ IndicatorSeparator: () => null }}
                   value={rowSelections[row.id]?.operation || null}
                   onChange={(selected) =>

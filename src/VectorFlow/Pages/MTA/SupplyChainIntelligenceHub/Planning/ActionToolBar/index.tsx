@@ -207,146 +207,68 @@ const ActionToolBar = ({
     switch (currCategory) {
       case "GITFromParent":
         return (
-          <VFMultiFilter
-            isFilterOpen={isFilterOpen}
-            onApplyFilter={handleApplyFilter}
-            onGoBack={() => toggleFilter(false)}
-            multiFilter={multiFilter}
-            setMultiFilter={setMultiFilter}
-            productFilterActive={true}
-            supplyChainNodeFilterActive={true}
-            locationFilterActive={true}
-            availabilityFilterActive={true}
-            supplyChainForLocationCheckBoxList={
-              locations
-            }
-            supplyChainForChildrenOfCheckBoxList={
-              locations
-            }
+          <MTAVFMultiFilter
+              isOpen={isFilterOpen}
+              onApply={handleApplyFilter}
+              multiFilter={multiFilter}
+              onClose={() => toggleFilter(false)}
+              onReset={handleResetFilters}      
           />
         );
       case "GITToChild":
         return (
-          <VFMultiFilter
-           isFilterOpen={isFilterOpen}
-            onApplyFilter={handleApplyFilter}
-            onGoBack={() => toggleFilter(false)}
+          <MTAVFMultiFilter
+            isOpen={isFilterOpen}
+            onApply={handleApplyFilter}
             multiFilter={multiFilter}
-            setMultiFilter={setMultiFilter}
-            productFilterActive={true}
-            supplyChainNodeFilterActive={true}
-            locationFilterActive={true}
-            availabilityFilterActive={true}
-            supplyChainForLocationCheckBoxList={
-              locations
-            }
-            supplyChainForChildrenOfCheckBoxList={
-              locations
-            }
+            onClose={() => toggleFilter(false)}
+            onReset={handleResetFilters}      
           />
         );
       case "ExpediteFromParent":
         return (
-          <VFMultiFilter
-          isFilterOpen={isFilterOpen}
-            onApplyFilter={handleApplyFilter}
-            onGoBack={() => toggleFilter(false)}
+          <MTAVFMultiFilter
+            isOpen={isFilterOpen}
+            onApply={handleApplyFilter}
             multiFilter={multiFilter}
-            setMultiFilter={setMultiFilter}
-            productFilterActive={true}
-            supplyChainNodeFilterActive={true}
-            locationFilterActive={true}
-            availabilityFilterActive={true}
-            supplyChainForLocationCheckBoxList={
-              locations
-            }
-            supplyChainForChildrenOfCheckBoxList={
-              locations
-            }
+            onClose={() => toggleFilter(false)}
+            onReset={handleResetFilters}      
           />
         );
       case "ExpediteToChild":
         return (
-          <VFMultiFilter
-          isFilterOpen={isFilterOpen}
-            onApplyFilter={handleApplyFilter}
-            onGoBack={() => toggleFilter(false)}
+          <MTAVFMultiFilter
+            isOpen={isFilterOpen}
+            onApply={handleApplyFilter}
             multiFilter={multiFilter}
-            setMultiFilter={setMultiFilter}
-            productFilterActive={true}
-            supplyChainNodeFilterActive={true}
-            locationFilterActive={true}
-            availabilityFilterActive={true}
-            supplyChainForLocationCheckBoxList={
-              locations
-            }
-            supplyChainForChildrenOfCheckBoxList={
-              locations
-            }
+            onClose={() => toggleFilter(false)}
+            onReset={handleResetFilters}      
           />
         );
       case "ExcessInventory":
         return (
-          <VFMultiFilter
-          isFilterOpen={isFilterOpen}
-            onApplyFilter={handleApplyFilter}
-            onGoBack={() => toggleFilter(false)}
-            multiFilter={multiFilter}
-            setMultiFilter={setMultiFilter}
-            productFilterActive={true}
-            supplyChainNodeFilterActive={true}
-            locationFilterActive={true}
-            availabilityFilterActive={true}
-            supplyChainForLocationCheckBoxList={
-              locations
-            }
-            supplyChainForChildrenOfCheckBoxList={
-              locations
-            }
-          />
+            <MTAVFMultiFilter
+              isOpen={isFilterOpen}
+              onApply={handleApplyFilter}
+              multiFilter={multiFilter}
+              onClose={() => toggleFilter(false)}
+              onReset={handleResetFilters}      
+            />
         );
       case "OrderFulfillment":
         return (
-          <VFMultiFilter
-          isFilterOpen={isFilterOpen}
-            onApplyFilter={handleApplyFilter}
-            onGoBack={() => toggleFilter(false)}
-            multiFilter={multiFilter}
-            setMultiFilter={setMultiFilter}
-            productFilterActive={true}
-            supplyChainNodeFilterActive={true}
-            locationFilterActive={true}
-            coverageFilterActive={true}
-            supplyChainForLocationCheckBoxList={
-              locations
-            }
-            supplyChainForChildrenOfCheckBoxList={
-              locations
-            }
-          />
+            <MTAVFMultiFilter
+              isOpen={isFilterOpen}
+              onApply={handleApplyFilter}
+              multiFilter={multiFilter}
+              onClose={() => toggleFilter(false)}
+              onReset={handleResetFilters}      
+            />
         );
       case "BPR":
         if (pathname === "/mta/supply-chain-intelligence-hub/bpr") {
           return (
-            // <VFMultiFilter
-            // isFilterOpen={isFilterOpen}
-            //   onApplyFilter={handleApplyFilter}
-            //   onGoBack={() => toggleFilter(false)}
-            //   multiFilter={multiFilter}
-            //   setMultiFilter={setMultiFilter}
-            //   productFilterActive={true}
-            //   supplyChainNodeFilterActive={true}
-            //   locationFilterActive={true}
-            //   availabilityFilterActive={true}
-            //   generalFilterActive={false}
-            //   generalFilterOptions={generalFilterOptions}
-            //   supplyChainForLocationCheckBoxList={
-            //     locations
-            //   }
-            //   supplyChainForChildrenOfCheckBoxList={
-            //     locations
-            //   }
-            //   currCategory={currCategory}
+
             <MTAVFMultiFilter
               isOpen={isFilterOpen}
               onApply={handleApplyFilter}
@@ -361,26 +283,12 @@ const ActionToolBar = ({
       case "RRR":
         if (pathname === "/mta/supply-chain-intelligence-hub/rrr") {
           return (
-            <VFMultiFilter
-            isFilterOpen={isFilterOpen}
-              onApplyFilter={handleApplyFilter}
-              onGoBack={() => toggleFilter(false)}
+             <MTAVFMultiFilter
+              isOpen={isFilterOpen}
+              onApply={handleApplyFilter}
               multiFilter={multiFilter}
-              setMultiFilter={setMultiFilter}
-              productFilterActive={true}
-              supplyChainNodeFilterActive={true}
-              locationFilterActive={true}
-              availabilityFilterActive={true}
-              generalFilterActive={false}
-              generalFilterOptions={generalFilterOptions}
-              supplyChainForLocationCheckBoxList={
-                locations
-              }
-              supplyChainForChildrenOfCheckBoxList={
-                locations
-              }
-              currCategory={currCategory}
-
+              onClose={() => toggleFilter(false)}
+              onReset={handleResetFilters}      
             />
           );
         }
@@ -388,26 +296,12 @@ const ActionToolBar = ({
       case "RRRColorBandwise":
         if (pathname === "/mta/supply-chain-intelligence-hub/rrr-color-bandwise") {
           return (
-            <VFMultiFilter
-            isFilterOpen={isFilterOpen}
-              onApplyFilter={handleApplyFilter}
-              onGoBack={() => toggleFilter(false)}
+              <MTAVFMultiFilter
+              isOpen={isFilterOpen}
+              onApply={handleApplyFilter}
               multiFilter={multiFilter}
-              setMultiFilter={setMultiFilter}
-              productFilterActive={true}
-              supplyChainNodeFilterActive={true}
-              locationFilterActive={true}
-              availabilityFilterActive={true}
-              generalFilterActive={false}
-              generalFilterOptions={generalFilterOptions}
-              supplyChainForLocationCheckBoxList={
-                locations
-              }
-              supplyChainForChildrenOfCheckBoxList={
-                locations
-              }
-              currCategory={currCategory}
-
+              onClose={() => toggleFilter(false)}
+              onReset={handleResetFilters}      
             />
           );
         }
@@ -440,26 +334,12 @@ const ActionToolBar = ({
       case "BOR":
         if (pathname === "/mta/supply-chain-intelligence-hub/bor") {
           return (
-            <VFMultiFilter
-            isFilterOpen={isFilterOpen}
-              onApplyFilter={handleApplyFilter}
-              onGoBack={() => toggleFilter(false)}
+              <MTAVFMultiFilter
+              isOpen={isFilterOpen}
+              onApply={handleApplyFilter}
               multiFilter={multiFilter}
-              setMultiFilter={setMultiFilter}
-              productFilterActive={true}
-              supplyChainNodeFilterActive={true}
-              locationFilterActive={true}
-              generalFilterOptions={generalFilterOptions}
-              generalFilterActive={false}
-              availabilityFilterActive={true}
-              supplyChainForLocationCheckBoxList={
-                locations
-              }
-              supplyChainForChildrenOfCheckBoxList={
-                locations
-              }
-              currCategory={currCategory}
-
+              onClose={() => toggleFilter(false)}
+              onReset={handleResetFilters}      
             />
           );
         }
@@ -467,26 +347,12 @@ const ActionToolBar = ({
       case "BORColorBandwise":
         if (pathname === "/mta/supply-chain-intelligence-hub/bor-color-bandwise") {
           return (
-            <VFMultiFilter
-            isFilterOpen={isFilterOpen}
-              onApplyFilter={handleApplyFilter}
-              onGoBack={() => toggleFilter(false)}
+             <MTAVFMultiFilter
+              isOpen={isFilterOpen}
+              onApply={handleApplyFilter}
               multiFilter={multiFilter}
-              setMultiFilter={setMultiFilter}
-              productFilterActive={true}
-              supplyChainNodeFilterActive={true}
-              locationFilterActive={true}
-              availabilityFilterActive={true}
-              generalFilterActive={false}
-              generalFilterOptions={generalFilterOptions}
-              supplyChainForLocationCheckBoxList={
-                locations
-              }
-              supplyChainForChildrenOfCheckBoxList={
-                locations
-              }
-              currCategory={currCategory}
-
+              onClose={() => toggleFilter(false)}
+              onReset={handleResetFilters}      
             />
           );
         }
@@ -495,26 +361,12 @@ const ActionToolBar = ({
       case "OrderAllocationReport":
         if (pathname === "/mta/supply-chain-intelligence-hub/order-allocation-report") {
           return (
-            <VFMultiFilter
-            isFilterOpen={isFilterOpen}
-              onApplyFilter={handleApplyFilter}
-              onGoBack={() => toggleFilter(false)}
+          <MTAVFMultiFilter
+              isOpen={isFilterOpen}
+              onApply={handleApplyFilter}
               multiFilter={multiFilter}
-              setMultiFilter={setMultiFilter}
-              productFilterActive={true}
-              supplyChainNodeFilterActive={true}
-              locationFilterActive={true}
-              availabilityFilterActive={true}
-              generalFilterActive={false}
-              generalFilterOptions={generalFilterOptions}
-              supplyChainForLocationCheckBoxList={
-                locations
-              }
-              supplyChainForChildrenOfCheckBoxList={
-                locations
-              }
-              currCategory={currCategory}
-
+              onClose={() => toggleFilter(false)}
+              onReset={handleResetFilters}      
             />
           );
         }
@@ -522,27 +374,6 @@ const ActionToolBar = ({
       case "BTR":
         if (pathname === "/mta/insights-and-trends/buffer-trend-report" && onChangeHorizon) {
           return (
-            // <VFMultiFilter
-            // isFilterOpen={isFilterOpen}
-            //   onApplyFilter={handleApplyFilter}
-            //   onGoBack={() => toggleFilter(false)}
-            //   multiFilter={multiFilter}
-            //   currentTab={currentTab}
-            //   setMultiFilter={setMultiFilter}
-            //   productFilterActive={true}
-            //   supplyChainNodeFilterActive={true}
-            //   colorFilterActive={true}
-            //   locationFilterActive={true}
-            //   availabilityFilterActive={true}
-            //   onChangeHorizon={onChangeHorizon}
-            //   horizon={horizon}
-            //   supplyChainForLocationCheckBoxList={
-            //     locations
-            //   }
-            //   supplyChainForChildrenOfCheckBoxList={
-            //     locations
-            //   }
-            // />
              <MTAVFMultiFilter
               isOpen={isFilterOpen}
               onApply={handleApplyFilter}
@@ -557,19 +388,12 @@ const ActionToolBar = ({
       case "BufferTrend":
         if (pathname === "/mta/insights-and-trends/buffer-trends") {
           return (
-            <VFMultiFilter
-            isFilterOpen={isFilterOpen}
-              onApplyFilter={handleApplyFilter}
-              onGoBack={() => toggleFilter(false)}
+              <MTAVFMultiFilter
+              isOpen={isFilterOpen}
+              onApply={handleApplyFilter}
               multiFilter={multiFilter}
-              setMultiFilter={setMultiFilter}
-              productFilterActive={true}
-              supplyChainNodeFilterActive={true}
-              locationFilterActive={true}
-              supplyChainForLocationCheckBoxList={
-                locations
-              }
-              supplyChainForChildrenOfCheckBoxList={locations}
+              onClose={() => toggleFilter(false)}
+              onReset={handleResetFilters}      
             />
           );
         }
@@ -577,24 +401,12 @@ const ActionToolBar = ({
       case "ResearchInsight":
         if (pathname === "/mta/insights-and-trends/research-insights") {
           return (
-            <VFMultiFilter
-            isFilterOpen={isFilterOpen}
-              onApplyFilter={handleApplyFilter}
-              onGoBack={() => toggleFilter(false)}
+             <MTAVFMultiFilter
+              isOpen={isFilterOpen}
+              onApply={handleApplyFilter}
               multiFilter={multiFilter}
-              setMultiFilter={setMultiFilter}
-              productFilterActive={true}
-              supplyChainNodeFilterActive={true}
-              locationFilterActive={true}
-              generalFilterActive={false}
-              generalFilterOptions={generalFilterOptions}
-              availabilityFilterActive={true}
-              supplyChainForLocationCheckBoxList={
-                locations
-              }
-              supplyChainForChildrenOfCheckBoxList={
-                locations
-              }
+              onClose={() => toggleFilter(false)}
+              onReset={handleResetFilters}      
             />
           );
         }
@@ -602,19 +414,12 @@ const ActionToolBar = ({
       case "GuidedInsight":
         if (pathname === "/mta/insights-and-trends/guided-insights") {
           return (
-            <VFMultiFilter
-            isFilterOpen={isFilterOpen}
-              onApplyFilter={handleApplyFilter}
-              onGoBack={() => toggleFilter(false)}
+            <MTAVFMultiFilter
+              isOpen={isFilterOpen}
+              onApply={handleApplyFilter}
               multiFilter={multiFilter}
-              setMultiFilter={setMultiFilter}
-              productFilterActive={true}
-              supplyChainNodeFilterActive={true}
-              locationFilterActive={true}
-              supplyChainForLocationCheckBoxList={
-                locations
-              }
-              supplyChainForChildrenOfCheckBoxList={locations}
+              onClose={() => toggleFilter(false)}
+              onReset={handleResetFilters}      
             />
           );
         }
@@ -622,21 +427,12 @@ const ActionToolBar = ({
       case "DBMNorm":
         if (pathname === "/mta/dbm/dbm-norm-suggestions") {
           return (
-            <VFMultiFilter
-            isFilterOpen={isFilterOpen}
-              onApplyFilter={handleApplyFilter}
-              onGoBack={() => toggleFilter(false)}
+        <MTAVFMultiFilter
+              isOpen={isFilterOpen}
+              onApply={handleApplyFilter}
               multiFilter={multiFilter}
-              setMultiFilter={setMultiFilter}
-              productFilterActive={true}
-              supplyChainNodeFilterActive={true}
-              locationFilterActive={true}
-              generalFilterActive={false}
-              generalFilterOptions={generalFilterOptions}
-              supplyChainForLocationCheckBoxList={
-                locations
-              }
-              supplyChainForChildrenOfCheckBoxList={locations}
+              onClose={() => toggleFilter(false)}
+              onReset={handleResetFilters}      
             />
           );
         }
@@ -646,21 +442,12 @@ const ActionToolBar = ({
           pathname === "/mta/supply-chain-intelligence-hub/open-expediting-requests"
         ) {
           return (
-            <VFMultiFilter
-            isFilterOpen={isFilterOpen}
-              onApplyFilter={handleApplyFilter}
-              onGoBack={() => toggleFilter(false)}
+           <MTAVFMultiFilter
+              isOpen={isFilterOpen}
+              onApply={handleApplyFilter}
               multiFilter={multiFilter}
-              setMultiFilter={setMultiFilter}
-              productFilterActive={true}
-              supplyChainNodeFilterActive={true}
-              locationFilterActive={true}
-              generalFilterActive={false}
-              generalFilterOptions={generalFilterOptions}
-              supplyChainForLocationCheckBoxList={
-                locations
-              }
-              supplyChainForChildrenOfCheckBoxList={locations}
+              onClose={() => toggleFilter(false)}
+              onReset={handleResetFilters}      
             />
           );
         }
@@ -668,39 +455,25 @@ const ActionToolBar = ({
       case "InTransitWhereabouts":
         if (pathname === "/mta/logistics/intransit-whereabouts") {
           return (
-            <VFMultiFilter
-            isFilterOpen={isFilterOpen}
-              onApplyFilter={handleApplyFilter}
-              onGoBack={() => toggleFilter(false)}
+           <MTAVFMultiFilter
+              isOpen={isFilterOpen}
+              onApply={handleApplyFilter}
               multiFilter={multiFilter}
-              setMultiFilter={setMultiFilter}
-              productFilterActive={true}
-              supplyChainNodeFilterActive={true}
-              locationFilterActive={true}
-              supplyChainForLocationCheckBoxList={
-                locations
-              }
-              supplyChainForChildrenOfCheckBoxList={locations}
+              onClose={() => toggleFilter(false)}
+              onReset={handleResetFilters}      
             />
           );
         }
         break;
       case "chronicunavailability":
         return (
-          <VFMultiFilter
-          isFilterOpen={isFilterOpen}
-            onApplyFilter={handleApplyFilter}
-            onGoBack={() => toggleFilter(false)}
-            multiFilter={multiFilter}
-            setMultiFilter={setMultiFilter}
-            productFilterActive={true}
-            supplyChainNodeFilterActive={true}
-            locationFilterActive={true}
-            supplyChainForLocationCheckBoxList={
-              locations
-            }
-            supplyChainForChildrenOfCheckBoxList={locations}
-          />
+            <MTAVFMultiFilter
+              isOpen={isFilterOpen}
+              onApply={handleApplyFilter}
+              multiFilter={multiFilter}
+              onClose={() => toggleFilter(false)}
+              onReset={handleResetFilters}      
+            />
         );
       default:
         <></>;

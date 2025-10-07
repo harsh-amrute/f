@@ -95,6 +95,7 @@ export interface BPRFilterState{
     coverageFilter:BPRFilterGroup
     colorFilter:BPRFilterGroup
     generalFilter:BPRFilterGroup
+    customAttributeFilter:BPRFilterGroup
 }
 
 

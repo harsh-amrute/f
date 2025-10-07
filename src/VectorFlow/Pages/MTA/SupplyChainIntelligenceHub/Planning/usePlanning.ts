@@ -922,6 +922,11 @@ const usePlanning = ()=>{
                 id:'7',
                 label:'General',
                 filters:[]
+            },
+            customAttributeFilter:{
+                id:'8',
+                label:'Attribute',
+                filters:[]
             }
         })
         setIsSelectCategoryOpen(true);

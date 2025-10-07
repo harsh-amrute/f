@@ -70,6 +70,11 @@ const useBPRFilter = () => {
             label: 'General',
             filters: []
 
+        },
+        customAttributeFilter:{
+            id:'8',
+            label:'Attribute',
+            filters:[]
         }
     };
 
