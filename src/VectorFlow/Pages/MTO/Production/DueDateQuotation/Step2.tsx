@@ -12,7 +12,7 @@ import VFButtonOutline from '../../../../../components/VectorFLOW/commons/VFButt
 import { useGetRouteDetails, useUpdateBuffRouteCCREstDate } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
 import _ from 'lodash';
-import { add, format, max } from 'date-fns';
+import { add, addDays, format, max } from 'date-fns';
 import Tooltip from '../../Common/Tooltip';
 import { notifyError, notifyErrorWithoutAutoClose, notifySuccess } from '../../../../../helpers/notify';
 import * as globalStyles from "../../../../../styles/global";
@@ -242,7 +242,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
     }, [maxFolinDays])
 
     const barColors = {
-        "ccrFolInDays": "black",
+        "ccrFolWithHoliday": "black",
         "orderLoad": "#3874FF",
         "fol_gap": "#FF8A00"
     }
@@ -259,8 +259,8 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
         </div>
         <div style="color: white; background-color: #6C696A; padding: 10px;">
           <div style="display: flex; align-items: center;">
-            <div style="margin-right: 10px; height: 3px; width: 15px; background-color: ${barColors["ccrFolInDays"]}"></div>
-            FOL: ${tooltipValues(datum["ccrFolInDays"])}
+            <div style="margin-right: 10px; height: 3px; width: 15px; background-color: ${barColors["ccrFolWithHoliday"]}"></div>
+            FOL with holidays: ${tooltipValues(datum["ccrFolWithHoliday"])} (FOL- ${tooltipValues(datum["FOL"])}, Holidays- ${tooltipValues(datum["holidays"])} )
           </div>
           <div style="display: flex; align-items: center;">
             <div style="margin-right: 10px; height: 3px; width: 15px; background-color: ${barColors["orderLoad"]}"></div>
@@ -284,10 +284,10 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                 type: "bar",
                 direction: "horizontal",
                 xKey: "ccr_name",
-                yKey: "ccrFolInDays",
+                yKey: "ccrFolWithHoliday",
                 yName: "FOL",
                 stacked: true,
-                fill: barColors["ccrFolInDays"],
+                fill: barColors["ccrFolWithHoliday"],
                 tooltip: {
                     position: { placement: "right" },  // anchor to bar
                     renderer: TooltipRenderer
@@ -804,8 +804,6 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                     const ccrWorkingHoursPerDay = ccr.working_hours_per_day || "1";
                     // ccrWorkingHoursPerDay = parseInt(ccrWorkingHoursPerDay);
 
-
-
                     const ccrItemTypeMapping = masters?.CCRItemTypeMappingMaster.find((ccr: any) => ccr.ccrId === ccrId && ccr.it == order.itid)
                     // console.log(JSON.parse(JSON.stringify(orderLoadOfCcrs)))
 
@@ -821,16 +819,22 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                         return new Date(data.wd) >= today && data.ccrId == ccrId && data.PlId == order.plid
                         // return new Date(data.wd) >= today && data.ccrId == ccrId
                     })?.lno;
-
-                    const folIndex = latestWorkingDayLno + ccrFolInDays - 1;
-
+                    const folIndex = Math.ceil(latestWorkingDayLno + ccrFolInDays - 1);
+                    const maxFOLIndex = Math.max(latestWorkingDayLno, folIndex);
                     const folDD: any = masters.WorkingCalender.find((data: any) => {
-                        return data.lno == folIndex && data.ccrId == ccrId && data.PlId == order.plid
-                        // return data.lno == folIndex && data.ccrId == ccrId
+                        return data.lno == maxFOLIndex && data.ccrId == ccrId && data.PlId == order.plid
                     })?.wd;
 
-                    const diffDays: any = dateDiffInDays(today, new Date(folDD));
+                    const formatedFOLDate = new Date(folDD);
+                    formatedFOLDate.setHours(0, 0, 0, 0);
 
+                    let diffDays: any = dateDiffInDays(today, formatedFOLDate);
+                    
+                    // Add 1 only if the dates are different for graph to conider todays date in graph
+                    if (diffDays !== 0) {
+                        diffDays += 1;
+                    }
+                    
                     const FOLGap = masters.FOL[ccrId]?.fol_gap;
 
                     maxFol = Math.max(diffDays, maxFol, FOLGap);
@@ -839,8 +843,10 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                         ccrId,
                         ccr_name: ccr.ccr_name,
                         orderLoad: orderLoadInDays,
-                        ccrFolInDays: diffDays,
-                        fol_gap: FOLGap
+                        ccrFolWithHoliday: diffDays,
+                        fol_gap: FOLGap,
+                        FOL: ccrFolInDays,
+                        holidays: diffDays - Math.ceil(ccrFolInDays)
                     }
                 })
             });
@@ -869,9 +875,10 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
     function labelFormatter(params: any) {
         try {            
             const today = new Date();
-            const value = parseInt(params.value);
 
-            // console.log(today)
+            today.setDate(today.getDate() - 1); // should consider todays also in graph so -1 added
+            
+            const value = parseInt(params.value);
 
             if (value == 0) {
                 return format(today, "dd MMM yy");  // Returns today's date
@@ -887,9 +894,6 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
             notifyError("Something Went Wrong!");
         }
     }
-
-
-
 
     function dateDiffInDays(date1: any, date2: any) {
         //if fol date is not valid then return date diff as 0
