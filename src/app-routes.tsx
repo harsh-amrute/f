@@ -1208,7 +1208,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/manufacturing-intelligence-hub/delivery-performance/ot-and-if-analysis',
+      path: '/mto/manufacturing-intelligence-hub/delivery-performance/ot-and-if-analysis',
       element: <AppLayout />,
       children: [
         {
