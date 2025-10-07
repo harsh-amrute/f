@@ -87,9 +87,15 @@ const MyChart: React.FC<MyChartProps> = ({
         rightHeaderRef.current.scrollLeft = rightBodyRef.current.scrollLeft;
       }
     };
+    const handleRightBodyHorizontalScrollHeader = () => {
+      if (rightBodyRef.current && rightHeaderRef.current) {
+        rightBodyRef.current.scrollLeft = rightHeaderRef.current.scrollLeft;
+      }
+    };
 
     const leftBody = leftBodyRef.current;
     const rightBody = rightBodyRef.current;
+    const rightBodyHeader = rightHeaderRef.current;
 
     if (leftBody) {
       leftBody.addEventListener('scroll', handleLeftScroll);
@@ -98,6 +104,10 @@ const MyChart: React.FC<MyChartProps> = ({
       rightBody.addEventListener('scroll', handleRightScroll);
       rightBody.addEventListener('scroll', handleRightBodyHorizontalScroll);
     }
+    if(rightBodyHeader){
+      rightBodyHeader.addEventListener('scroll', handleRightBodyHorizontalScrollHeader);
+    }
+    
 
     return () => {
       if (leftBody) {
@@ -107,7 +117,11 @@ const MyChart: React.FC<MyChartProps> = ({
         rightBody.removeEventListener('scroll', handleRightScroll);
         rightBody.removeEventListener('scroll', handleRightBodyHorizontalScroll);
       }
+      if(rightBodyHeader){
+        rightBodyHeader.removeEventListener('scroll', handleRightBodyHorizontalScrollHeader);
+      }
     };
+    
   }, []);
 
   // Date calculations

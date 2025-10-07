@@ -139,6 +139,7 @@ export const CalendarHeaderRow = styled.tr`
   background: black;
   color: white;
   text-align: center;
+  user-events: none;
 `;
 
 export const CalendarCell = styled.th<{ span?: number }>`
