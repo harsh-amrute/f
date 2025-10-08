@@ -412,7 +412,12 @@ const SchedulingActionToolbar = ({
           />
           <p style={{ fontSize: "1.2rem" }}>Go Back</p>
         </GoBackButton>
-        <DateBulge>
+        <DateBulge
+          style={{
+            border: (appliedFilters?.timePreference?.startDate || appliedFilters?.timePreference?.endDate) ? "1px solid #bc3d81" : "1px solid #cecece",
+            background: (appliedFilters?.timePreference?.startDate || appliedFilters?.timePreference?.endDate) ? "rgba(240, 159, 202, 0.1)" : "#f5f5f5",
+          }}
+        >
           <img
             style={{ marginBottom: "3.2px" }}
             src="\assets\img\scheduling\calendar-date.svg"
