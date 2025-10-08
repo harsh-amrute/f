@@ -37,8 +37,8 @@ const GridView = ({ setCurrentGridRef,context, currentGridRef,Viewtabs, columnSt
               'white-space': 'nowrap',
               'resizable': 'true',
   
-          },
-      }
+      },
+    }
         useEffect(() => {
           if (currentGridRef?.current && columnState?.length ) {
             const isLoadWise = currTab === 'Load Wise';
@@ -50,6 +50,7 @@ const GridView = ({ setCurrentGridRef,context, currentGridRef,Viewtabs, columnSt
             : isANS
               ? 2
                 : 3;
+            
                 const result = currentGridRef.current.api.applyColumnState({
                     state: columnState[currentGridIndex],
                     applyOrder: true
@@ -84,6 +85,8 @@ const GridView = ({ setCurrentGridRef,context, currentGridRef,Viewtabs, columnSt
       />
     </div>
   );
+
+
     
     
   const getRowStyle = (params: any) => {
@@ -92,6 +95,9 @@ const GridView = ({ setCurrentGridRef,context, currentGridRef,Viewtabs, columnSt
     }
     return { background: "#F4F4F4" };
   };
+
+
+  
 
     return (
         <>
@@ -110,7 +116,7 @@ const GridView = ({ setCurrentGridRef,context, currentGridRef,Viewtabs, columnSt
             
             <VFTableWrapper style={{height: '72vh', marginTop: '20px', paddingLeft: '25px'}}>
                 <VFTable 
-                columnDefs={colDef}
+                    columnDefs={colDef}
                     rowData={rowData}
                     defaultColDef={defaultColDef}
                     getRowStyle={getRowStyle}

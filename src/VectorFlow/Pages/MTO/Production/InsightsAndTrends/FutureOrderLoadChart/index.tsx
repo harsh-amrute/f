@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import VFFloatingTab from '../../../../../../components/VectorFLOW/commons/VFFloatingTab';
 import { ApplyZoomOut } from '../../OrderRescheduling/styles';
 import MTOActionToolBar from '../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar';
-import { DateColumn, DateFieldContainer, DatePickersRow, FilterColumn, FilterLabel, FilterWrapper, MyFutureOrderTabsFix, TabsSection, TabsToolbarRow, ToolbarAbsolute } from './styles';
+import { DateColumn, DateFieldContainer, DatePickersRow, FilterColumn, FilterLabel, FilterWrapper, TabsSection, TabsToolbarRow, ToolbarAbsolute } from './styles';
 import { SelectGroup } from '../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/styles';
 import VFSelect from "../../../../../../components/VectorFLOW/commons/MTO/VFSelect";
 import VFDatePicker from '../../../Common/VFDatePicker';
@@ -22,6 +22,7 @@ import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Comm
 import OverlayLoader from '../../../Common/Loader';
 import LoadTagCellRenderer from './LoadTagCellRenderer/LoadTagCellRenderer';
 import { useGetFutureOrderFOLHorizonDate, useGetFutureOrderLoadChartData, useGetFutureOrderLoadChartExcelData } from '../../../../../../VectorFlow/Services/MTO/Production/FutureOrderLoadChart';
+import _ from 'lodash';
 
 const FutureOrderLoadChart = () => {
   const [filterData, setFilterData] = useState({});
@@ -118,11 +119,14 @@ const FutureOrderLoadChart = () => {
     toDateRef.current = toDate;
   }, [toDate]);
   
-  const colDefCustomizations = {
+  const colDefCustomizations:any = {
     Tag: {
       tooltipValueGetter: (params: any) => params.value,
       cellRenderer: LoadTagCellRenderer,
-      minWidth:100,
+      minWidth: 100,
+      valueGetter: (params: any) => {
+              return params?.data?.tag
+      }
     },
   }
 
@@ -393,7 +397,7 @@ const getFilterData = async () => {
       try {
         const data = await getUserUIReportConfigData({
           un: user.user.name,
-          rn_id: UIGridCode.ProdStplAndFullKit
+          rn_id: UIGridCode.prodFutureLoadChart
         });
         setUserConfigFetched(true)
         const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
@@ -407,44 +411,54 @@ const getFilterData = async () => {
         console.error(error);
       }
     }
-
-  const handleSaveClick = async (coldefs?: any,page_size?: any) => {
-
+  
+  const handleSaveClick = async (coldefs?: any, page_size?: any) => {
     try {
       if (coldefs) {
-        const fullConfig = {cs: coldefs,pageSize: page_size || userPageSize };
+        const isLoadWise = currTab === 'Load Wise';
+          const isANS = selectedAction?.value === 'ANS';
+          const currentGridIndex = isLoadWise
+            ? isANS ? 0 : 1
+          : isANS ? 2 : 3;
+        const resetColState = _.cloneDeep(columnState);
+        resetColState[currentGridIndex] = coldefs[currentGridIndex];
+        const fullConfig = { cs: resetColState, pageSize: page_size || userPageSize };
         const payload = {
           un: user.user.name,
-          rn_id: UIGridCode.ProdStplAndFullKit,
+          rn_id: UIGridCode.prodFutureLoadChart, 
           cs: JSON.stringify(fullConfig),
         };
         await updateUserUIReportConfigData([payload]);
-        setColumnState([...coldefs]);
-
+        setColumnState(resetColState); 
+      }
+      else if (page_size) {
+        const fullConfig = { cs: columnState, pageSize: page_size };
+        const payload = {
+          un: user.user.name,
+          rn_id: UIGridCode.prodFutureLoadChart,
+          cs: JSON.stringify(fullConfig),
+        };  
+        await updateUserUIReportConfigData([payload]);
       }
       else {
-
         if (currentGridRef?.current?.api) {
           const config = currentGridRef.current.api.getColumnState();
-          const updatedColState = [...columnState];
+          const updatedColState =[...columnState]; 
           const isLoadWise = currTab === 'Load Wise';
           const isANS = selectedAction?.value === 'ANS';
-          const currentGridIndex =  isLoadWise
-          ? isANS 
-            ? 0
-            : 1
-          : isANS
-            ? 2
-              : 3;
+          const currentGridIndex = isLoadWise
+            ? isANS ? 0 : 1
+            : isANS ? 2 : 3;
           updatedColState[currentGridIndex] = config;
-
-          const fullConfig = {  cs: updatedColState,  pageSize: userPageSize };
+  
+          const fullConfig = { cs: updatedColState, pageSize: userPageSize };
           const payload = {
             un: user.user.name,
-            rn_id: UIGridCode.ProdStplAndFullKit,
+            rn_id: UIGridCode.prodFutureLoadChart,
             cs: JSON.stringify(fullConfig)
           }
           await updateUserUIReportConfigData([payload]);
+          setColumnState(updatedColState); 
         }
       }
     } catch (error) {
@@ -456,9 +470,7 @@ const getFilterData = async () => {
     
 
     const columnDefs = getColumnDefinations(uiConfig, colDefCustomizations, []);
-      
-      const isLoadWise = currTab === 'Load Wise';
-      
+            
     const header1 = ['Date', 'CCR', 'Load in Days', 'Tags']
     const header2 = ['Date', 'CCR', 'Load in Days']
     const header3 = ['Date', 'Pending CCR Quantity', 'Tags', 'CCR']
