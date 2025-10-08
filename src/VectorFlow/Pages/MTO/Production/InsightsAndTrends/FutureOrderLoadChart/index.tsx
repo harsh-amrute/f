@@ -263,7 +263,7 @@ const FutureOrderLoadChart = () => {
       if (isGridView) {
         let transformedData = response?.data?.data?.data || [];
         const pastOrderLoad = response?.data?.data?.pastorder_load
-                
+       
         if (currView === 'weekly' || currView === 'monthly') {
           transformedData = transformedData.map((item: any, index: number) => {
             const a = item?.tag?.map((e: any) => e);
@@ -277,12 +277,15 @@ const FutureOrderLoadChart = () => {
         }
         else {
           // Daily view
-          transformedData = transformedData.map((item: any, index: number) => ({
-            ccr: item.ccr,
-            load: index===0 ? pastOrderLoad: item.load,
-            tag: index === 0 ? 'Past Scheduling' : item.tag , 
-            date: item.date || new Date().toLocaleDateString("en-US")
-          }));
+          transformedData = transformedData.map((item: any, index: number) => {          
+            return {
+
+              ccr: item.ccr_name,
+              load: index===0 ? pastOrderLoad: item.load,
+              tag: index === 0 ? 'Past Scheduling' : item.tag , 
+              date: item.date || new Date().toLocaleDateString("en-US")
+            }
+          });
         }
         setGridData(transformedData);
         setTotalRow(response?.data?.data?.count || transformedData.length);
@@ -506,7 +509,6 @@ const getFilterData = async () => {
     const results = response?.data?.data?.data || [];
    
     
-    setGridData(results)
   } catch (e) {
     console.log(e);
     notifyError("Failed to fetch Grid data!");
@@ -523,7 +525,8 @@ const getFilterData = async () => {
   useEffect(() => {
       if (Object.entries(appliedFilters).length && userConfigFetched) {
         setCurrentPage(1);
-        getGridData({ graphflag: 0, page: 1 });
+        // getGridData({ graphflag: 0, page: 1 });
+        onSubmit()
       }
      }, [appliedFilters, userConfigFetched])//currTab
   

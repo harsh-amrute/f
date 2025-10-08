@@ -68,7 +68,7 @@ const GridView = ({ setCurrentGridRef,context, currentGridRef,Viewtabs, columnSt
       
         const CustomStatusPanel = () => {
               return (
-                  <GridFilterWrapper>
+                  <GridFilterWrapper style={{marginTop:'15px'}}>
                       <TextBtn  onClick={clearGridFilter}  disabled={isDisabled} themeUi={theme_ui}>
                           Clear All Grid Filters
                       </TextBtn>  
@@ -129,7 +129,15 @@ const GridView = ({ setCurrentGridRef,context, currentGridRef,Viewtabs, columnSt
                     tooltipShowDelay={0}
                     statusBar={{
                         statusPanels: [{ statusPanel: customPage, align:'right' },
-                          { statusPanel: CustomStatusPanel, align: "left" },
+                        { statusPanel: CustomStatusPanel, align: "left" },
+                        { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                        {
+                          statusPanel: "agAggregationComponent",
+                          align: "left", 
+                          statusPanelParams: {
+                              aggFuncs: ["avg", "sum", "max", "min", "count"],
+                          },
+                      },
                         ],
                       }}
                     tooltipMouseTrack={true}
