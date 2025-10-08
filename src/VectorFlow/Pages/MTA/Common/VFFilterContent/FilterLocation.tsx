@@ -303,7 +303,7 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
 
               <div style={{ width: 165, marginTop: -44, marginLeft: 4.5 }}>
                 <Select
-                  placeholder="SKU Code"
+                  placeholder="Location Code"
                   styles={{
                     ...styles,
                     control: (base: any, state: any) => ({
