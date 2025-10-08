@@ -1,53 +1,7 @@
 import React, { Suspense, lazy, useEffect, useState } from "react";
-import styled, { keyframes } from "styled-components";
+import { ChartWrapper, ResourceSectionWrapper, SkeletonBlock } from "./ResourceViewStyles";
 
 const MyChart = lazy(() => import("./MyChart")); // still code-split
-
-const SectionWrapper = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  padding: 16px 0 16px 16px;
-  position: relative;
-`;
-
-const ChartWrapper = styled.div`
-  position: relative; /* so child can be positioned */
-  flex: 1;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 16px;
-  overflow: hidden;
-  background: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-`;
-
-
-
-const shimmer = keyframes`
-  0% {
-    background-position: -200px 0;
-  }
-  100% {
-    background-position: calc(200px + 100%) 0;
-  }
-`;
-
-const SkeletonBlock = styled.div<{ width?: string; height?: string }>`
-  background: #eee;
-  background-image: linear-gradient(
-    90deg,
-    #eee 0px,
-  #f5f5f5 40px,
-    #eee 80px
-  );
-  background-size: 200px 100%;
-  animation: ${shimmer} 1.5s infinite linear;
-  border-radius: 4px;
-  margin: 6px 0;
-  width: ${(p) => p.width || "100%"};
-  height: ${(p) => p.height || "20px"};
-`;
 
 const GanttSkeleton = () => {
   return (
@@ -118,7 +72,7 @@ const ResourceViewChart = ({ResourceData}:any) => {
 
 
   return (
-    <SectionWrapper>
+    <ResourceSectionWrapper>
       <ChartWrapper>
         {
         ready ? (
@@ -129,7 +83,7 @@ const ResourceViewChart = ({ResourceData}:any) => {
         <GanttSkeleton />
         )}
       </ChartWrapper>
-    </SectionWrapper>
+    </ResourceSectionWrapper>
   );
 };
 

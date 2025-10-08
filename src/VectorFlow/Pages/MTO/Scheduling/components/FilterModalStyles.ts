@@ -140,6 +140,28 @@ export const Checkbox = styled.input<{theme:string}>`
     }
 `
 
+
+
+export const DateRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+`;
+
+export const DateWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 8px;
+  flex: 1;
+`;
+
+export const DateLabel = styled.label`
+  font-size: 0.9rem;
+  font-weight: 500;
+`;
+
 Checkbox.defaultProps = {
     type: "checkbox"
 }

@@ -1,34 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import VFTable from '../../Common/VFTable'
-import styled from 'styled-components';
+import { GridWrapper } from '../SchedulingStyles';
 
-const GridWrapper = styled.div`
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  padding-left: 20px;
-  padding-top: 15px;
-  flex-direction: column;
-  gap: 16px;
-  height: 78vh;
-
-  & > .ag-theme-alpine {
-    flex: 1;
-    }
-
-   & .ag-theme-alpine .ag-header-row:nth-child(2){
-    background-color: black;
-    color: white;
-  }
-  & .ag-theme-alpine .ag-header-row:nth-child(1):hover{
-    background-color: black;
-    color: white;
-  }
-  & .ag-theme-alpine .ag-header-row:nth-child(3), & .ag-theme-alpine .ag-header-row-column-filter{
-    background-color: #f7f7f7 !important;
-    color: black !important;
-  }
-`;
 
 
 const GridViewResource = ({ResourceData, setExcelGridRef}: any) => {

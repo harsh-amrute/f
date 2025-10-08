@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import styled from "styled-components";
-import Scheduling from ".";
 import SchedulingActionToolbar from "./components/SchedulingActionToolbar";
 import ResourceView from "./Sections/ResourceView";
 import JobView from "./Sections/JobView";
@@ -8,13 +6,10 @@ import GridViewResource from "./Sections/GridViewResource";
 import GridViewJob from "./Sections/GridViewJob";
 import VFOverlayModal from "../../../../components/VectorFLOW/commons/VFOverlayModal";
 import FilterModal from "./components/FilterModal";
-import _, { set } from "lodash";
-import { format, startOfDay, startOfWeek } from "date-fns";
+import _ from "lodash";
+import { FinalResultSectionWrapper } from "./SchedulingStyles";
 
-const FinalResultSectionWrapper = styled.div`
-  height: fit-content;
-  postion: relative;
-`;
+
 
 const FinalResultSection = ({ setStep, finalResult }: any) => {
   const [excelGridRef, setExcelGridRef] = useState<any>(null);

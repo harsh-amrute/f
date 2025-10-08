@@ -1,29 +1,8 @@
 import React from "react";
-import styled from "styled-components";
 import { useUserData } from "../../../../../context";
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
-import { Checkbox, CloseButton, FilterBottomLeft, FilterBottomRight, FilterBottomSection, FilterContent, FilterHeaderTitle, FilterHeaderWrapper, FilterList, FilterSearchBar, FilterTab, FilterTabHeader, FilterTabLayout, FilterWrapper } from "./FilterModalStyles";
-
-const DateRow = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 12px;
-`;
-
-const DateWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 0 8px;
-  flex: 1;
-`;
-
-const DateLabel = styled.label`
-  font-size: 0.9rem;
-  font-weight: 500;
-`;
+import { Checkbox, CloseButton, DateLabel, DateRow, DateWrapper, FilterBottomLeft, FilterBottomRight, FilterBottomSection, FilterContent, FilterHeaderTitle, FilterHeaderWrapper, FilterList, FilterSearchBar, FilterTab, FilterTabHeader, FilterTabLayout, FilterWrapper } from "./FilterModalStyles";
 
 const FilterModal = ({ setIsFilterModalOpen, ResourceData, setAppliedFilters, appliedFilters }: any) => {
   const allJobs: any = [];
