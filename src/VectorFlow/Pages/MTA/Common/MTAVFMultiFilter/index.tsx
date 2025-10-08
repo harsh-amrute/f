@@ -69,18 +69,18 @@ const filterConfigMap: Record<
     label: "Color Filter",
     component: ColorFilters,
   },
-  FILTER_COVERAGE:{
+  FILTER_COVERAGE: {
     label: "Coverage Filter",
     component: CoverageFilters,
   },
-  HISTRORICAL_FILTER:{
+  HISTRORICAL_FILTER: {
     label: "Histrorical Filter",
-    component: HistroricalFilter, 
+    component: HistroricalFilter,
   },
-  HORIZON_FILTER:{
+  HORIZON_FILTER: {
     label: "Horizon Filter",
-    component: HorizonFilter
-  }
+    component: HorizonFilter,
+  },
 };
 
 const getConfigValues = (raw?: string) =>
@@ -181,7 +181,6 @@ const FilterModal: React.FC<FilterModalProps> = ({
       colorFilter: { id: "6", label: "Color", filters: [] },
       generalFilter: { id: "7", label: "General", filters: [] },
       customAttributeFilter: { id: "8", label: "Attribute", filters: [] },
-
     }
   );
 
@@ -218,9 +217,12 @@ const FilterModal: React.FC<FilterModalProps> = ({
     setMultiFilter(newMultiFilter);
   };
 
-  const currentActiveFilters = Object.values(filters).filter(
-    (v) => v !== ""
-  ).length;
+  const currentActiveFilters =
+    Object.values(filters).filter((v) => v !== "").length +
+    Object.values(multiFilter).reduce(
+      (count, f) => count + (f.filters?.length || 0),
+      0
+    );
 
   const handleInputChange = (field: string, value: string) =>
     setFilters((prev) => ({ ...prev, [field]: value }));
@@ -311,19 +313,21 @@ const FilterModal: React.FC<FilterModalProps> = ({
         </FilterLayout>
         <FooterSection>
           <FooterButtons>
-            <VFButtonOutline
-              themeUi={user.user.theme_ui}
-              onClick={handleReset}
-              style={{ fontSize: 15, fontWeight: 450, height: 45 }}
-            >
-              Reset Filters
-            </VFButtonOutline>
+            {currentActiveFilters > 0 && (
+              <VFButtonOutline
+                themeUi={user.user.theme_ui}
+                onClick={handleReset}
+                style={{ fontSize: 15, fontWeight: 450, height: 45 }}
+              >
+                Reset Filters
+              </VFButtonOutline>
+            )}
             <VFButton
               themeUi={user.user.theme_ui}
               onClick={handleApply}
               style={{ fontSize: 15, fontWeight: 450, height: 45 }}
             >
-              Apply Filter
+              {currentActiveFilters > 0 ? "Apply Filter" : "Show All"}
             </VFButton>
           </FooterButtons>
         </FooterSection>

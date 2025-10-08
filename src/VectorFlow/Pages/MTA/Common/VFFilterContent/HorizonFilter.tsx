@@ -1,101 +1,258 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   FilterGroup,
   FilterColumn,
   TextWrapper,
   DropDownWrapper,
 } from "./style";
-import Select from "react-select";
-import { useColorThemeStyles } from "../../../../../hooks/useVFFilterContent";
-import useGetLocation from "../../../../../hooks/useGetLocation";
-import { BPRFilterState } from "../../../../../VectorFlow/types/BPR";
+import {
+  DatePickerWrapper,
+  TextInputWrapper,
+  ButtonWrapper,
+  ImageWrapper,
+  StyledCalendar,
+} from "../../SupplyChainIntelligenceHub/ElephantOrders/styles";
+import { useUserData } from "../../../../../context";
+import moment from "moment";
+import ReactDOM from "react-dom";
 
 interface FilterSectionProps {
-  filters: any;
-  multiFilter: BPRFilterState;
-  onMultiFilterChange: (newMultiFilter: BPRFilterState) => void;
+  filters?: any;
+  multiFilter?: any;
+  onMultiFilterChange?: (newMultiFilter: any) => void;
 }
 
 export const HorizonFilter: React.FC<FilterSectionProps> = () => {
-  const { locations } = useGetLocation();
-  const colorStyles = useColorThemeStyles();
+  const { user } = useUserData();
+  const themeUi = user?.user?.theme_ui;
+
+  const [fromDate, setFromDate] = useState<string>("");
+  const [toDate, setToDate] = useState<string>("");
+
+  const [showFromCal, setShowFromCal] = useState(false);
+  const [showToCal, setShowToCal] = useState(false);
+  const [fromCalPos, setFromCalPos] = useState({ top: 0, left: 0 });
+  const [toCalPos, setToCalPos] = useState({ top: 0, left: 0 });
+
+  const fromInputRef = useRef<HTMLInputElement>(null);
+  const toInputRef = useRef<HTMLInputElement>(null);
+  const fromCalRef = useRef<HTMLDivElement>(null);
+  const toCalRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleOutside = (e: MouseEvent) => {
+      const target = e.target as Node;
+      if (
+        fromCalRef.current &&
+        !fromCalRef.current.contains(target) &&
+        fromInputRef.current &&
+        !fromInputRef.current.contains(target)
+      ) {
+        setShowFromCal(false);
+      }
+
+      if (
+        toCalRef.current &&
+        !toCalRef.current.contains(target) &&
+        toInputRef.current &&
+        !toInputRef.current.contains(target)
+      ) {
+        setShowToCal(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutside);
+    return () => document.removeEventListener("mousedown", handleOutside);
+  }, []);
+
+  const toggleFromCalendar = () => {
+    const rect = fromInputRef.current?.getBoundingClientRect();
+    if (rect) {
+      setFromCalPos({
+        top: rect.bottom + window.scrollY + 20,
+        left: rect.left + window.scrollX,
+      });
+    }
+    setShowFromCal((prev) => !prev);
+  };
+
+  const toggleToCalendar = () => {
+    const rect = toInputRef.current?.getBoundingClientRect();
+    if (rect) {
+      setToCalPos({
+        top: rect.bottom + window.scrollY + 20,
+        left: rect.left + window.scrollX,
+      });
+    }
+    setShowToCal((prev) => !prev);
+  };
+
+  const handleFromChange = (date: Date) => {
+    const formatted = moment(date).format("YYYY-MM-DD");
+    setFromDate(formatted);
+    setShowFromCal(false);
+  };
+
+  const handleToChange = (date: Date) => {
+    const formatted = moment(date).format("YYYY-MM-DD");
+    setToDate(formatted);
+    setShowToCal(false);
+  };
+
+  const clearFromDate = () => setFromDate("");
+  const clearToDate = () => setToDate("");
+
+  const boxStyle: React.CSSProperties = {
+    display: "flex",
+    alignItems: "center",
+    borderRadius: "10px",
+    border: themeUi === "REGALBLAZE" ? "1px solid #F7B500" : "1px solid #ccc",
+    padding: "6px 8px",
+    backgroundColor: "#fff",
+    gap: "6px",
+    boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+  };
 
   return (
     <>
       <FilterGroup>
         <FilterColumn>
           <TextWrapper>From Date</TextWrapper>
-          <DropDownWrapper style={{ gap: "20px" }}>
-            <Select
-              isMulti
-              closeMenuOnSelect={false}
-              hideSelectedOptions={false}
-              components={{
-                IndicatorSeparator: () => null,
-                ClearIndicator: () => null,
-                DropdownIndicator: () => (
-                  <img
-                    src={"/assets/img/MTAVFMultiFilter/calendar.svg"}
-                    style={{
-                      marginRight: "8px",
-                      width: "20px",
-                      height: "20px",
-                    }}
-                    alt="search"
+          <DropDownWrapper>
+            <div style={boxStyle}>
+              <TextInputWrapper
+                ref={fromInputRef}
+                value={fromDate}
+                readOnly
+                placeholder="YYYY-MM-DD"
+                onClick={toggleFromCalendar}
+                style={{
+                  flex: 1,
+                  border: "none",
+                  outline: "none",
+                  background: "transparent",
+                  cursor: "pointer",
+                }}
+              />
+              <ButtonWrapper type="button" onClick={toggleFromCalendar}>
+                <ImageWrapper
+                  src={
+                    themeUi === "REGALBLAZE"
+                      ? "/assets/img/mto/OrderRescheduling/edit-calendar-yellow.svg"
+                      : "/assets/img/mto/OrderRescheduling/edit-calendar.svg"
+                  }
+                  alt="calendar"
+                />
+              </ButtonWrapper>
+              <ButtonWrapper type="button" onClick={clearFromDate}>
+                <ImageWrapper
+                  src={
+                    themeUi === "REGALBLAZE"
+                      ? "/assets/img/Clear_Due_Date_Yellow.svg"
+                      : "/assets/img/Clear_Due_Date.svg"
+                  }
+                  alt="clear"
+                />
+              </ButtonWrapper>
+            </div>
+
+            {showFromCal &&
+              ReactDOM.createPortal(
+                <div
+                  ref={fromCalRef}
+                  style={{
+                    position: "absolute",
+                    top: fromCalPos.top,
+                    left: fromCalPos.left,
+                    zIndex: 9999,
+                    backgroundColor: "white",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+                    borderRadius: "12px",
+                    overflow: "hidden",
+                  }}
+                >
+                  <StyledCalendar
+                    themeUi={themeUi}
+                    onChange={(val) =>
+                      val instanceof Date && handleFromChange(val)
+                    }
+                    value={fromDate ? new Date(fromDate) : new Date()}
                   />
-                ),
-              }}
-              styles={{
-                ...colorStyles,
-                menuList: (base) => ({
-                  ...base,
-                  maxHeight: 500,
-                  overflowY: "auto",
-                  scrollbarWidth: "none",
-                }),
-              }}
-              placeholder="dd/mm/yyyy"
-            />
+                </div>,
+                document.body
+              )}
           </DropDownWrapper>
         </FilterColumn>
 
         <FilterColumn>
           <TextWrapper>To Date</TextWrapper>
-          <DropDownWrapper style={{ gap: "20px" }}>
-            <Select
-              isMulti
-              closeMenuOnSelect={false}
-              hideSelectedOptions={false}
-              components={{
-                IndicatorSeparator: () => null,
-                ClearIndicator: () => null,
-                DropdownIndicator: () => (
-                  <img
-                    src={"/assets/img/MTAVFMultiFilter/calendar.svg"}
-                    style={{
-                      marginRight: "8px",
-                      width: "20px",
-                      height: "20px",
-                    }}
-                    alt="search"
+          <DropDownWrapper>
+            <div style={boxStyle}>
+              <TextInputWrapper
+                ref={toInputRef}
+                value={toDate}
+                readOnly
+                placeholder="YYYY-MM-DD"
+                onClick={toggleToCalendar}
+                style={{
+                  flex: 1,
+                  border: "none",
+                  outline: "none",
+                  background: "transparent",
+                  cursor: "pointer",
+                }}
+              />
+              <ButtonWrapper type="button" onClick={toggleToCalendar}>
+                <ImageWrapper
+                  src={
+                    themeUi === "REGALBLAZE"
+                      ? "/assets/img/mto/OrderRescheduling/edit-calendar-yellow.svg"
+                      : "/assets/img/mto/OrderRescheduling/edit-calendar.svg"
+                  }
+                  alt="calendar"
+                />
+              </ButtonWrapper>
+              <ButtonWrapper type="button" onClick={clearToDate}>
+                <ImageWrapper
+                  src={
+                    themeUi === "REGALBLAZE"
+                      ? "/assets/img/Clear_Due_Date_Yellow.svg"
+                      : "/assets/img/Clear_Due_Date.svg"
+                  }
+                  alt="clear"
+                />
+              </ButtonWrapper>
+            </div>
+
+            {showToCal &&
+              ReactDOM.createPortal(
+                <div
+                  ref={toCalRef}
+                  style={{
+                    position: "absolute",
+                    top: toCalPos.top,
+                    left: toCalPos.left,
+                    zIndex: 9999,
+                    backgroundColor: "white",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+                    borderRadius: "12px",
+                    overflow: "hidden",
+                  }}
+                >
+                  <StyledCalendar
+                    themeUi={themeUi}
+                    onChange={(val) =>
+                      val instanceof Date && handleToChange(val)
+                    }
+                    value={toDate ? new Date(toDate) : new Date()}
+                    minDate={fromDate ? new Date(fromDate) : undefined}
                   />
-                ),
-              }}
-              styles={{
-                ...colorStyles,
-                menuList: (base) => ({
-                  ...base,
-                  maxHeight: 500,
-                  overflowY: "auto",
-                  scrollbarWidth: "none",
-                }),
-              }}
-              placeholder="dd/mm/yyyy"
-            />
+                </div>,
+                document.body
+              )}
           </DropDownWrapper>
         </FilterColumn>
       </FilterGroup>
     </>
   );
 };
-
