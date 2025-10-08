@@ -1,7 +1,7 @@
 import React from "react";
-import { useUserData } from "../../../../../context";
-import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
-import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
+import { useUserData } from "../../../../../../context";
+import VFButtonOutline from "../../../../../../components/VectorFLOW/commons/VFButtonOutline";
+import VFButton from "../../../../../../components/VectorFLOW/commons/VFButton";
 import { Checkbox, CloseButton, DateLabel, DateRow, DateWrapper, FilterBottomLeft, FilterBottomRight, FilterBottomSection, FilterContent, FilterHeaderTitle, FilterHeaderWrapper, FilterList, FilterSearchBar, FilterTab, FilterTabHeader, FilterTabLayout, FilterWrapper } from "./FilterModalStyles";
 
 const FilterModal = ({ setIsFilterModalOpen, ResourceData, setAppliedFilters, appliedFilters }: any) => {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import VFTable from '../../Common/VFTable'
+import VFTable from '../../../Common/VFTable'
 import { GridWrapper } from '../SchedulingStyles';
 
 

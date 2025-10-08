@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import VFTable from "../../Common/VFTable";
+import VFTable from "../../../Common/VFTable";
 import { AgGridReactProps } from "ag-grid-react";
 import "../gridStyles.css";
 import { FilterSection, GridWrapper, SectionWrapper, Tab, ToggleButton, ToggleWrapper, WorkStationDropDown } from "./ResourceViewStyles";

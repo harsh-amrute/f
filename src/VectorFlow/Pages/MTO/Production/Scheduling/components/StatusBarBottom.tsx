@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import VFButton from '../../../../../components/VectorFLOW/commons/VFButton'
-import { useUserData } from '../../../../../context'
-import VFButtonOutline from '../../../../../components/VectorFLOW/commons/VFButtonOutline'
-import VFOverlayModal from '../../../../../components/VectorFLOW/commons/VFOverlayModal'
+import VFButton from '../../../../../../components/VectorFLOW/commons/VFButton'
+import { useUserData } from '../../../../../../context'
+import VFButtonOutline from '../../../../../../components/VectorFLOW/commons/VFButtonOutline'
+import VFOverlayModal from '../../../../../../components/VectorFLOW/commons/VFOverlayModal'
 import { LeftSection, StatusBarWrapper } from '../SchedulingStyles'
 import { CloseButton, FooterWrapper, ModalHeader, ModalWrapper } from './RunStatusModalStyles'
 

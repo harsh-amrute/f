@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
-import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
-import { useUserData } from "../../../../../context";
-import * as ManualStyle from "../../../../../module-store-transfer/pages/manual-upload/styles";
+import VFButton from "../../../../../../components/VectorFLOW/commons/VFButton";
+import { useUserData } from "../../../../../../context";
+import * as ManualStyle from "../../../../../../module-store-transfer/pages/manual-upload/styles";
 import { ButtonContentWrapper, ButtonsWrapper, Container, LeftSection } from "./FileUploadTileStyles";
 
 type ReportActionCardProps = {

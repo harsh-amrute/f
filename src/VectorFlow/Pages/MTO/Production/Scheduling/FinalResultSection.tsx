@@ -4,7 +4,7 @@ import ResourceView from "./Sections/ResourceView";
 import JobView from "./Sections/JobView";
 import GridViewResource from "./Sections/GridViewResource";
 import GridViewJob from "./Sections/GridViewJob";
-import VFOverlayModal from "../../../../components/VectorFLOW/commons/VFOverlayModal";
+import VFOverlayModal from "../../../../../components/VectorFLOW/commons/VFOverlayModal";
 import FilterModal from "./components/FilterModal";
 import _ from "lodash";
 import { FinalResultSectionWrapper } from "./SchedulingStyles";

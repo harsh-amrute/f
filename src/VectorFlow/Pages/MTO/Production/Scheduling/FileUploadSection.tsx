@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from "react";
-import FileUploadTile from "../Scheduling/components/FileUploadTile";
+import FileUploadTile from "./components/FileUploadTile";
 import styled from "styled-components";
-import { useUserData } from "../../../../context";
-import VFButton from "../../../../components/VectorFLOW/commons/VFButton";
+import { useUserData } from "../../../../../context";
+import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import {
   useGetFileConfiguration,
   useGetFileDownloadForSchedular,
   usePostFileUploadForSchedular,
-} from "../../../../VectorFlow/Services/MTO/Scheduling";
+} from "../../../../Services/MTO/Scheduling";
 import { format } from "date-fns";
 import {
   notifyError,
   notifyLoader,
   notifySuccess,
-} from "../../../../helpers/notify";
+} from "../../../../../helpers/notify";
 import { CheckUpdatesWrapper, FileUploadSkeletonTile, GridContainer, LastUpdateStatus, SideTab, Wrapper } from "./FileUploadSectionStyles";
 
 
