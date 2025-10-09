@@ -19,50 +19,6 @@ interface Token {
 }
 
 export namespace MainService {
-  // export const acquireToken = async () => {
-  //   let token: Token
-  //   try {
-  //     token = JSON.parse(
-  //       localStorage.getItem(LOCAL_STORAGE_KEY.TOKEN_PAYLOAD) || '{}'
-  //     )
-  //     // if (token.expiryAt && token.accessToken && token.refreshToken) {
-  //     //   // minus 20 seconds for network latency
-  //     //   if (new Date(token.expiryAt - 20 * 1000) > new Date()) {
-  //     //     return token;
-  //     //   }
-  //     //   console.log('token expired, requesting a new token', 'expired at', new Date(token.expiryAt));
-  //     //   return refreshToken(token.refreshToken);
-  //     // } else {
-  //     //   return undefined;
-  //     // }
-  //     return isEmpty(token) ? undefined : token
-  //   } catch {
-  //     // in case token modified by human
-  //     return undefined
-  //   }
-  // }
-
-  // // get a new access_token by refresh_token
-  // export const refreshToken = async () => {
-  //   try {
-  //     const { refresh }: Token = JSON.parse(
-  //       localStorage.getItem(LOCAL_STORAGE_KEY.TOKEN_PAYLOAD) || '{}'
-  //     )
-  //     const response = await axios.post<Token>(getrefreshTokenUrl(), {
-  //       refresh
-  //     })
-  //     const token: any = response?.data
-  //     localStorage.setItem(
-  //       LOCAL_STORAGE_KEY.TOKEN_PAYLOAD,
-  //       JSON.stringify(token?.data?.token)
-  //     )
-  //     return token?.data?.token
-  //   } catch (error) {
-  //     console.log(error)
-  //     //  refresh token not valid or expired
-  //     throw error
-  //   }
-  // }
 
   export const logout = async (queryClient: QueryClient) => {
     try {
@@ -93,21 +49,7 @@ export namespace MainService {
 
       .post(`/${API_USER}/login/`, payload, { withCredentials: true })
       .then(async (resp) => {
-        // localStorage.setItem(
-        //   LOCAL_STORAGE_KEY.TOKEN_PAYLOAD,
-        //   JSON.stringify(resp?.data?.data?.token)
-        // );
-
-        // localStorage.setItem(
-        //   LOCAL_STORAGE_KEY.URL_PERMISSION,
-        //   JSON.stringify(resp?.data?.data?.url_permission)
-        // );
-
-        // localStorage.setItem(
-        //   LOCAL_STORAGE_KEY.LANDING_PAGE,
-        //   resp?.data?.data?.landing_page
-        // );
-
+      
         localStorage.setItem(
           LOCAL_STORAGE_KEY.User_ID,
          await encryptStorageData(resp?.data?.data?.user?.id)

@@ -15,16 +15,13 @@ export const setupAxios = () => {
 ;  axios.defaults.baseURL = process.env.REACT_APP_API_HOST;
   axios.defaults.withCredentials = true
 
-
   axios.interceptors.request.use(async function (config) {
-    // This interceptor's only job now is to add the decrypted user info to headers.
     const encryptedUserId = localStorage.getItem('User-ID');
     const encryptedUserName = localStorage.getItem('User-Name');
 
     const decryptedUserId = await decryptStorageData(encryptedUserId);
     const decryptedUserName = await decryptStorageData(encryptedUserName);
     
-    // No need for 'acquireToken' or other checks. The cookie is handled by the browser.
     config.headers['User-ID'] = decryptedUserId;
     config.headers['User-Name'] = decryptedUserName;
     
@@ -32,7 +29,6 @@ export const setupAxios = () => {
   });
 
     axios.interceptors.response.use(undefined, function (error) {
-    // This helper function should extract the error details from the response
     const errorResp = getAxiosError(error);
 
     if (errorResp.status === 403) {
@@ -40,8 +36,6 @@ export const setupAxios = () => {
       return Promise.reject(errorResp);
     }
 
-    // 2. REPLACED all complex token refresh logic with this simple check.
-    // If we get a 401 error, the session cookie is invalid, so redirect to login.
     if (errorResp.status === 401) {
       loginRedirect();
       return Promise.reject(errorResp);
