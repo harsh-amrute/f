@@ -8,12 +8,7 @@ export const useAuth = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-
-        if (!token) {
-            setLoading(false);
-            return;
-        }
+        
 
         MainService.getProfile()
             .then((res) => {
@@ -22,7 +17,6 @@ export const useAuth = () => {
             .catch((err) => {
                 console.error("Your session has expired",err)
                 notifyError("Your session has expired. Please log in again.");
-                localStorage.removeItem('token');
                 localStorage.removeItem('isAdmin');
             })
             .finally(() => {

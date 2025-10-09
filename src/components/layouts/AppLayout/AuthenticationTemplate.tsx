@@ -54,32 +54,34 @@ const AuthenticatedTemplate = (
   const [loading, setLoading] = useState(true)
   const [userData, setUserData] = useState<any>({})
   const [isSideBarOpen,toggleSidebar] = useState<boolean>(false)
-  const token = localStorage.getItem('token');
 
   const { children, loadingComponent: Loading } = props
   useEffect(() => {
-    if(token){
-      MainService.getProfile()
-      .then((res) => {
-        setUserData(res.data.data)
-        setLoading(false)
-        props.setMenuItem(getSelectedMenuItem(res.data.data.roles.permission))
-      })
-      .catch((err) => {
-        notifyError(err)
-        loginRedirect(navigate)
-        setLoading(false)
-      })
-    }else{
-      navigate('/login')
-    }
-  }, [])
+    const verifyUserSession = async () => {
+      try {
+        const response = await MainService.getProfile();
+        setUserData(response.data.data);
+        props.setMenuItem(getSelectedMenuItem(response.data.data.roles.permission));
+      } catch (err) {
+        notifyError("Session expired or invalid. Please log in.");
+        loginRedirect(navigate);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    verifyUserSession();
+  }, []); 
 
   const changeColorTheme = (color: string) => {
-    const newUserData: any = {...userData}
-    newUserData.user.theme_ui = color
-    
-    setUserData(newUserData);
+
+    if(userData){
+
+      const newUserData: any = {...userData}
+      newUserData.user.theme_ui = color
+      
+      setUserData(newUserData);
+    }
   }
 
   if (loading) {

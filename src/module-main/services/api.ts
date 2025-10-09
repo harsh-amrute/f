@@ -6,6 +6,7 @@ import { LOCAL_STORAGE_KEY } from '../../helpers/constants'
 import { type QueryClient } from '@tanstack/react-query'
 import { isEmpty } from 'lodash'
 import { persistor } from '../../redux/store/store'
+import { encryptStorageData } from '../../VectorFlow/Pages/MTO/Common/encryption'
 
 const API_USER = 'api/user'
 
@@ -18,67 +19,62 @@ interface Token {
 }
 
 export namespace MainService {
-  export const acquireToken = async () => {
-    let token: Token
-    try {
-      token = JSON.parse(
-        localStorage.getItem(LOCAL_STORAGE_KEY.TOKEN_PAYLOAD) || '{}'
-      )
-      // if (token.expiryAt && token.accessToken && token.refreshToken) {
-      //   // minus 20 seconds for network latency
-      //   if (new Date(token.expiryAt - 20 * 1000) > new Date()) {
-      //     return token;
-      //   }
-      //   console.log('token expired, requesting a new token', 'expired at', new Date(token.expiryAt));
-      //   return refreshToken(token.refreshToken);
-      // } else {
-      //   return undefined;
-      // }
-      return isEmpty(token) ? undefined : token
-    } catch {
-      // in case token modified by human
-      return undefined
-    }
-  }
+  // export const acquireToken = async () => {
+  //   let token: Token
+  //   try {
+  //     token = JSON.parse(
+  //       localStorage.getItem(LOCAL_STORAGE_KEY.TOKEN_PAYLOAD) || '{}'
+  //     )
+  //     // if (token.expiryAt && token.accessToken && token.refreshToken) {
+  //     //   // minus 20 seconds for network latency
+  //     //   if (new Date(token.expiryAt - 20 * 1000) > new Date()) {
+  //     //     return token;
+  //     //   }
+  //     //   console.log('token expired, requesting a new token', 'expired at', new Date(token.expiryAt));
+  //     //   return refreshToken(token.refreshToken);
+  //     // } else {
+  //     //   return undefined;
+  //     // }
+  //     return isEmpty(token) ? undefined : token
+  //   } catch {
+  //     // in case token modified by human
+  //     return undefined
+  //   }
+  // }
 
-  // get a new access_token by refresh_token
-  export const refreshToken = async () => {
-    try {
-      const { refresh }: Token = JSON.parse(
-        localStorage.getItem(LOCAL_STORAGE_KEY.TOKEN_PAYLOAD) || '{}'
-      )
-      const response = await axios.post<Token>(getrefreshTokenUrl(), {
-        refresh
-      })
-      const token: any = response?.data
-      localStorage.setItem(
-        LOCAL_STORAGE_KEY.TOKEN_PAYLOAD,
-        JSON.stringify(token?.data?.token)
-      )
-      return token?.data?.token
-    } catch (error) {
-      console.log(error)
-      //  refresh token not valid or expired
-      throw error
-    }
-  }
+  // // get a new access_token by refresh_token
+  // export const refreshToken = async () => {
+  //   try {
+  //     const { refresh }: Token = JSON.parse(
+  //       localStorage.getItem(LOCAL_STORAGE_KEY.TOKEN_PAYLOAD) || '{}'
+  //     )
+  //     const response = await axios.post<Token>(getrefreshTokenUrl(), {
+  //       refresh
+  //     })
+  //     const token: any = response?.data
+  //     localStorage.setItem(
+  //       LOCAL_STORAGE_KEY.TOKEN_PAYLOAD,
+  //       JSON.stringify(token?.data?.token)
+  //     )
+  //     return token?.data?.token
+  //   } catch (error) {
+  //     console.log(error)
+  //     //  refresh token not valid or expired
+  //     throw error
+  //   }
+  // }
 
   export const logout = async (queryClient: QueryClient) => {
-    const { refresh }: Token = JSON.parse(
-      localStorage.getItem(LOCAL_STORAGE_KEY.TOKEN_PAYLOAD) || '{}'
-    )
-
     try {
-      // logout from server
-      await axios.post(getLogoutUrl(), { refresh })
+      // Logout from server – backend should clear cookies (refresh & access)
+      await axios.post(getLogoutUrl(), {}, { withCredentials: true });
     } finally {
-      queryClient.clear()
-      localStorage.removeItem(LOCAL_STORAGE_KEY.TOKEN_PAYLOAD)
-      localStorage.removeItem(LOCAL_STORAGE_KEY.URL_PERMISSION)
-      localStorage.removeItem('isCheckLogin')
+      // Clear client cache & persisted state
+      queryClient.clear();
       await persistor.purge();
+       localStorage.clear()
     }
-  }
+  };
 
   export const getrefreshTokenUrl = () => {
     return `/${API_USER}/token/refresh/`
@@ -94,31 +90,38 @@ export namespace MainService {
 
   export const login = async (payload: LoginRequest) => {
     return await axios
-      .post(`/${API_USER}/login/`, payload,{withCredentials: true})
+
+      .post(`/${API_USER}/login/`, payload, { withCredentials: true })
       .then(async (resp) => {
-        localStorage.setItem(
-          LOCAL_STORAGE_KEY.TOKEN_PAYLOAD,
-          JSON.stringify(resp?.data?.data?.token)
-        )
-        localStorage.setItem(
-          LOCAL_STORAGE_KEY.URL_PERMISSION,
-          JSON.stringify(resp?.data?.data?.url_permission)
-        )
-        localStorage.setItem(
-          LOCAL_STORAGE_KEY.LANDING_PAGE,
-          resp?.data?.data?.landing_page
-        )
+        // localStorage.setItem(
+        //   LOCAL_STORAGE_KEY.TOKEN_PAYLOAD,
+        //   JSON.stringify(resp?.data?.data?.token)
+        // );
+
+        // localStorage.setItem(
+        //   LOCAL_STORAGE_KEY.URL_PERMISSION,
+        //   JSON.stringify(resp?.data?.data?.url_permission)
+        // );
+
+        // localStorage.setItem(
+        //   LOCAL_STORAGE_KEY.LANDING_PAGE,
+        //   resp?.data?.data?.landing_page
+        // );
+
         localStorage.setItem(
           LOCAL_STORAGE_KEY.User_ID,
-          resp?.data?.data?.user?.id
-        )
+         await encryptStorageData(resp?.data?.data?.user?.id)
+        );
+
         localStorage.setItem(
           LOCAL_STORAGE_KEY.User_Name,
-          resp?.data?.data?.user?.name
-        )
-        return await Promise.resolve(resp)
-      })
-  }
+          await encryptStorageData(resp?.data?.data?.user?.name)
+        );
+        return await Promise.resolve(resp);
+      });
+  };
+
+
 
   export const forgotPassword = async (payload: { email: string }) => {
     return await axios.post(`/${API_USER}/send-email-reset-pwd/`, payload)
@@ -131,7 +134,7 @@ export namespace MainService {
   }
 
   export const getProfile = async () => {
-          return await axios.get(`/${API_USER}/profile/`,{withCredentials: true})
+    return await axios.get(`/${API_USER}/profile/`, { withCredentials: true })
   }
   export const getProductFilter = async (url: string) => {
     return await axios.get(url)

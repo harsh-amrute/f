@@ -11,6 +11,7 @@ import _ from 'lodash'
 import { useGetAllMTOReports } from "../../../VectorFlow/Services/MTO/Common/DownloadReports";
 import { getNestedChildren } from "../../../helpers/utils";
 import { Tooltip } from 'react-tooltip';
+import { decryptStorageData, encryptStorageData } from "../../../VectorFlow/Pages/MTO/Common/encryption";
 
 const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any) => {
   const { mutateAsync: getAllReports } = useGetAllReports();
@@ -24,6 +25,7 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
   const [isLoading, setIsLoading] = useState(false);
   const [tempUrls, setTempUrls] = useState([]); //temp url is used to show downloading
   const [reportUrls, setReportUrls] = useState<string[]>([]);
+  
   const getReportFields = async () => {
     try {
       const [reportsResponse, mtoReportsResponse] = await Promise.allSettled([
@@ -90,8 +92,6 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
       console.error("Unexpected error in getReportFields:", err);
     }
   };
-
-
 
   // const getReportFields = async () => {
   //   let transformedData: any = undefined;
@@ -168,30 +168,68 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
   //   }
   //   setListMenu(extractedNewMenu);
   // }
-
+  
   useEffect(() => {
+    // Define an async function to load and decrypt data
+    const loadDataFromStorage = async () => {
+      try {
+        // --- DECRYPTING ListItem ---
+        const encryptedItem = localStorage.getItem("ListItem");
+        if (encryptedItem) {
+          // 1. Decrypt the string
+          const decryptedItemString = await decryptStorageData(encryptedItem);
+          if (decryptedItemString) {
+            // 2. Parse the decrypted string back into an object
+            setMenuItem(JSON.parse(decryptedItemString));
+          }
+        }
+  
+        // --- DECRYPTING ListMenu ---
+        const encryptedMenu = localStorage.getItem("ListMenu");
+        if (encryptedMenu) {
+          // 1. Decrypt the string
+          const decryptedMenuString = await decryptStorageData(encryptedMenu);
+          if (decryptedMenuString) {
+            // 2. Parse the decrypted string back into an array
+            setListMenu(JSON.parse(decryptedMenuString));
+          }
+        }
+      } catch (error) {
+        console.error("Failed to load or parse encrypted data from storage:", error);
+      }
+    };
+  
     getReportFields();
-    if (localStorage.getItem("ListItem")) {
-      setMenuItem(JSON.parse(localStorage.getItem("ListItem") || ""))
-    }
-    if (localStorage.getItem("ListMenu")) {
-      setListMenu(JSON.parse(localStorage.getItem("ListMenu") || "[]"))
-    }
-  }, [listMenuParent])
+    loadDataFromStorage(); // Call the async function
+  
+  }, [listMenuParent]);
 
-  const handleClickMenu = (item: any, index: number) => {
-    if (item.name === 'navbar.listMenuParent.miscellaneousReports.title') return;
-    setMenuItem(item);
-    const newMenu = [...listMenu];
-    newMenu.forEach((itemMenu: any) => {
-      itemMenu.status = false;
-    });
-    newMenu[index].status = true;
-    localStorage.setItem("ListItem", JSON.stringify(item));
-    localStorage.setItem("ListMenu", JSON.stringify(newMenu));
-    setListMenu(newMenu);
-    handleItemLeave();
-  };
+  // Add the 'async' keyword to the function definition
+const handleClickMenu = async (item: any, index: number) => {
+  if (item.name === 'navbar.listMenuParent.miscellaneousReports.title') return;
+  setMenuItem(item);
+  const newMenu = [...listMenu];
+  newMenu.forEach((itemMenu: any) => {
+    itemMenu.status = false;
+  });
+  newMenu[index].status = true;
+
+  // --- ENCRYPTION LOGIC ---
+  // 1. Stringify the object/array first
+  const itemString = JSON.stringify(item);
+  const menuString = JSON.stringify(newMenu);
+
+  // 2. Encrypt the resulting string
+  const encryptedItem = await encryptStorageData(itemString);
+  const encryptedMenu = await encryptStorageData(menuString);
+
+  // 3. Save the encrypted string to localStorage
+  localStorage.setItem("ListItem", encryptedItem);
+  localStorage.setItem("ListMenu", encryptedMenu);
+
+  setListMenu(newMenu);
+  handleItemLeave();
+};
 
   const handleLogout = async () => {
     await MainService.logout(queryClient);

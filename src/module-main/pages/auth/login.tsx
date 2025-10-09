@@ -18,18 +18,9 @@ import { UPDATE_ENV_CONFIG } from "../../../redux/actions/MTA";
 function LoginContainer() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const token = localStorage.getItem('token');
 
   useEffect(() => {
-    if(token) {
-      // const url: any = JSON.parse(localStorage?.getItem('landing_page') || "");
-      const url: any = "/landing-page";
-      // console.log(urlPermission);
-      // const url = urlPermission.includes("/") ? "/" : urlPermission.includes('/master-data-management/control-panel') ? '/master-data-management/control-panel' : urlPermission[0]
-      navigate(url, { replace: true });
-    } else {
-      localStorage.clear();
-    }
+   
     loadCaptchaEnginge(6);
 
     const interval = setInterval(() => {
@@ -93,14 +84,12 @@ function LoginContainer() {
           } else {
             notifyError("Something went wrong");
           }
-          localStorage.removeItem("token");
-          localStorage.removeItem("url_permission");
           // Reload captcha
           loadCaptchaEnginge(6);
         } else {
           const url = "/landing-page";
           navigate(url, { replace: true });
-          getAllEnvironmentConfiguration();
+          // getAllEnvironmentConfiguration();
           notifySuccess(t("loginPage.notify.success"));
         }
       },

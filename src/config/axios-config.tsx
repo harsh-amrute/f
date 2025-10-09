@@ -2,117 +2,54 @@ import axios, { AxiosError } from 'axios'
 import qs from 'qs'
 import { cleanObject, loginRedirect } from '../helpers/utils'
 import { MainService } from '../module-main/services/api'
+import { decryptStorageData } from '../VectorFlow/Pages/MTO/Common/encryption';
+
 
 export const setupAxios = () => {
-  let isRefreshingToken = false
   const requestQueue: any = []
 
   const processQueue = (token: any) => {
     requestQueue.forEach((cb: any) => cb.resolve(token))
     requestQueue.length = 0
   }
-
-  axios.defaults.baseURL = process.env.REACT_APP_API_HOST;
+;  axios.defaults.baseURL = process.env.REACT_APP_API_HOST;
   axios.defaults.withCredentials = true
-  axios.interceptors.request.use(async function (config: any) {
-    if (config.url && (!config.headers || !config.headers['Authorization'])) {
-      const token = await MainService.acquireToken();
-      if (!token) {
-        if (config.url.indexOf(MainService.getLogoutUrl()) > -1) {
-          loginRedirect();
-        }
-      } else {
-        config.headers = {
-          ...config.headers,
-          // Authorization: `Bearer ${token?.access}`,
-          'User-ID': localStorage.getItem('User-ID'),
-          'User-Name': localStorage.getItem('User-Name'),
 
-               }
-      }
-    }
-    return config
-  })
 
-  axios.interceptors.response.use(undefined, async function (error) {
-    const originalRequest = error.config
-    let errorResp
+  axios.interceptors.request.use(async function (config) {
+    // This interceptor's only job now is to add the decrypted user info to headers.
+    const encryptedUserId = localStorage.getItem('User-ID');
+    const encryptedUserName = localStorage.getItem('User-Name');
 
-    if (error.isAxiosError) {
-      errorResp = getAxiosError(error)
-    } else {
-      errorResp = getOtherError(error)
-    }
+    const decryptedUserId = await decryptStorageData(encryptedUserId);
+    const decryptedUserName = await decryptStorageData(encryptedUserName);
+    
+    // No need for 'acquireToken' or other checks. The cookie is handled by the browser.
+    config.headers['User-ID'] = decryptedUserId;
+    config.headers['User-Name'] = decryptedUserName;
+    
+    return config;
+  });
+
+    axios.interceptors.response.use(undefined, function (error) {
+    // This helper function should extract the error details from the response
+    const errorResp = getAxiosError(error);
 
     if (errorResp.status === 403) {
-      window.location.href = '/permission-forbidden?URLPermission=true'
-      return errorResp
+      window.location.href = '/permission-forbidden?URLPermission=true';
+      return Promise.reject(errorResp);
     }
 
-    if (errorResp.status === 401 && !originalRequest._retry) {
-      if(errorResp.code === "ERR_BAD_REQUEST" && errorResp.response.detail === "Authentication credentials were not provided." ) {
-        loginRedirect()
-        return errorResp;
-      }
-      
-      if (
-        errorResp.response.code === 'token_not_valid' &&
-        originalRequest.url.indexOf(MainService.getrefreshTokenUrl()) > -1
-      ) {        
-        loginRedirect()
-        return
-      }
-      if (isRefreshingToken) {
-        return await new Promise((resolve, reject) => {
-          requestQueue.push({ resolve, reject })
-        })
-          .then(async (token: any) => {
-            originalRequest.headers = {
-              ...originalRequest.headers,
-              // Authorization: `Bearer ${token?.access}`
-            }
-            return await axios(originalRequest)
-          })
-          .catch(async (err) => {
-            return err
-          })
-      }
-
-      originalRequest._retry = true
-      isRefreshingToken = true
-
-      try {
-        const token = await MainService.refreshToken()
-        if (!token) {
-          if (originalRequest.url.indexOf(MainService.getLogoutUrl()) > -1) {
-            loginRedirect()
-          }
-        } else {
-          originalRequest.headers = {
-            ...originalRequest.headers,
-            Authorization: `Bearer ${token?.access}`
-          }
-        }
-
-        const result = await axios(originalRequest)
-        processQueue(token)
-        return result
-      } catch (error) {
-        processQueue(null)
-        return error
-      } finally {
-        isRefreshingToken = false
-      }
-
+    // 2. REPLACED all complex token refresh logic with this simple check.
+    // If we get a 401 error, the session cookie is invalid, so redirect to login.
+    if (errorResp.status === 401) {
+      loginRedirect();
+      return Promise.reject(errorResp);
     }
 
-    if (errorResp.status === 400) {
-      // alert(JSON.stringify(error.response.data))
-      return errorResp
-    }
-    
-    return await Promise.reject(errorResp);
-  })
+    return Promise.reject(errorResp);
+  });
+
 
   axios.defaults.paramsSerializer = {
     serialize: (params) => qs.stringify(cleanObject(params))
