@@ -14,6 +14,8 @@ import {
 import { useUserData } from "../../../context";
 import { notifyError, notifySuccess } from "../../../helpers/notify";
 import { useEditEnvironmentConfiguration } from "../../../VectorFlow/Services/MTA/MDM/index";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store/store";
 
 interface FormDataType {
   ConfigKey: string;
@@ -22,7 +24,7 @@ interface FormDataType {
   Category:string
 }
 
-const EditRole = (props: { data: any; cb: () => void }) => {
+const EditEnvConfig = (props: { data: any; cb: () => void }) => {
   const { data, cb } = props;
 
   const { user } = useUserData();
@@ -35,7 +37,10 @@ const EditRole = (props: { data: any; cb: () => void }) => {
 
   const {mutateAsync : editEnvConfiguration} = useEditEnvironmentConfiguration();
 
-
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const EnvProductPermissionArray = EnvConfig['EnvProductPermissionArray']; 
+    const EnvLocationPermissionArray = EnvConfig['EnvLocationPermissionArray']; 
+    const PermissionArray = [...EnvProductPermissionArray , ...EnvLocationPermissionArray ]
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -44,6 +49,20 @@ const EditRole = (props: { data: any; cb: () => void }) => {
     setFormData({ ...formData, [name]: value });
   };
 
+const handleChangeValue = (
+  e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+) => {
+  const { name, value } = e.target;
+  if(data?.Datatype === "Number"){
+  const naturalNumberRegex = /^[1-9]\d*$/;
+  if (value === "" || naturalNumberRegex.test(value)) {
+    setFormData({ ...formData, [name]: value });
+  }
+  }
+  else{
+     setFormData({ ...formData, [name]: value });
+  }
+};
 
 const isChanged = useMemo((): boolean => {
   return JSON.stringify(formData) !== JSON.stringify(data);
@@ -61,7 +80,7 @@ const getChangedFields = (original: any,current: any,keysToIgnore: string[] = []
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const changedData = getChangedFields(data ,formData , ['Id', 'ConfigKey']) as any;
+    const changedData = getChangedFields(data ,formData , ['Id', 'ConfigKey' , 'ConfigValue']) as any;
     changedData.LastModifiedByUserEmail = user?.user?.email;
     try {
       const response = await editEnvConfiguration(changedData);
@@ -80,6 +99,13 @@ const getChangedFields = (original: any,current: any,keysToIgnore: string[] = []
     return Object.keys(formData).every((k) => {
       const key = k as keyof FormDataType;
       const value = formData[key];
+      if (data?.Category === "ProductPermission" || data?.Category === "LocationPermission") {
+          const isDuplicate = PermissionArray.includes(value) && value !== data.ConfigValue;
+          if (isDuplicate) {
+            notifyError("Each permission key value must be unique")
+              return false; 
+          }
+      }
       if (formData?.["ConfigKey"] === "CLIENT_NAME" || formData?.["ConfigKey"] === "CLIENT_LOGO") {
         if (key === "ConfigValue" && value === "") {
           return true;
@@ -121,7 +147,7 @@ const getChangedFields = (original: any,current: any,keysToIgnore: string[] = []
             placeholder="Any Config Value"
             themeUi={themeUi}
             value={formData.ConfigValue}
-            onChange={handleChange}
+            onChange={handleChangeValue}
             maxLength={50}
           />
         </InputWrapper>
@@ -161,4 +187,4 @@ const getChangedFields = (original: any,current: any,keysToIgnore: string[] = []
   );
 };
 
-export default EditRole;
+export default EditEnvConfig;

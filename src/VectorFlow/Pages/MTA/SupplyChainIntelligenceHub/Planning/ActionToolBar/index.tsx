@@ -188,6 +188,16 @@ const ActionToolBar = ({
     ) {
       setIsFilterButtonVisible(true);
     }
+    if(pathname === "/mta/insights-and-trends/buffer-trend-report" 
+      ||  pathname === "/mta/insights-and-trends/buffer-trends"  
+      || pathname === "/mta/supply-chain-intelligence-hub/bpr"
+    || pathname === "/mta/supply-chain-intelligence-hub/rrr"
+    || pathname ===  "/mta/supply-chain-intelligence-hub/rrr-color-bandwise"
+    || pathname === "/mta/supply-chain-intelligence-hub/bor"
+    || pathname === "/mta/supply-chain-intelligence-hub/bor-color-bandwise"
+  ){
+      toggleFilter(true);
+    }
   }, [pathname]);
 
   const renderFilter = () => {
