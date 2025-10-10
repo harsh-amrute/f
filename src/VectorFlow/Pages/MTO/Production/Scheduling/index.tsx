@@ -5,7 +5,7 @@ import FileUploadSection from './FileUploadSection';
 import StatusBarBottom from './components/StatusBarBottom';
 import RunStatusModal from './components/RunStatusModal';
 import FinalResultSection from './FinalResultSection';
-import { notifyError, notifySuccess } from '../../../../../helpers/notify';
+import { notifyError, notifySuccess, notifyWarning } from '../../../../../helpers/notify';
 import OverlayLoader from '../../Common/Loader';
 import { useSearchParams } from 'react-router-dom';
 import { useUserData } from '../../../../../context';
@@ -117,9 +117,11 @@ const Scheduling = () => {
     useEffect(() => {
         if(runId){
     
-            const socket = new WebSocket(`ws://10.8.1.11:10050/ws/scheduler/${runId}/`);
-            
-            socket.onopen = () => {
+            try{
+
+                const socket = new WebSocket(`ws://10.8.1.11:10050/ws/scheduler/${runId}/`);
+                
+                socket.onopen = () => {
                 console.log("WebSocket connection opened");
                 setRunStatus((prev: any) => ({ ...prev, status: "RUNNING" }));
                 // StartRun()
@@ -141,6 +143,11 @@ const Scheduling = () => {
             return () => {
                 socket.close();
             };
+        }
+        catch(e){
+            console.error("WebSocket connection error:", e);
+            notifyWarning("Could not connect to websocket. Run status might not update in real-time.");
+        }
         }
       
     }, [runId]);
