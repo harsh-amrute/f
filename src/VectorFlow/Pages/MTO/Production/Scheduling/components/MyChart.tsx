@@ -186,8 +186,6 @@ const MyChart: React.FC<MyChartProps> = ({
   height = 380,
   rowHeight = 30,
   overscanCount = 5,
-  enableAggregation = false,
-  aggregationThreshold = 5,
 }) => {
   const initialColWidths: any = ColDef.map((ele:any) => ele.width);
   const [colWidths, setColWidths] = useState<any>(initialColWidths);
