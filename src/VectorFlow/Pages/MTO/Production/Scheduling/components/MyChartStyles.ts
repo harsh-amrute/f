@@ -62,7 +62,7 @@ export const CalendarHeaderWrapper = styled.div`
   overflow-x: auto;
   overflow-y: hidden;
   border-bottom: 1px solid #ccc;
-  
+
   /* Sync horizontal scroll with body */
   &::-webkit-scrollbar {
     height: 0;
@@ -141,8 +141,28 @@ export const CalendarHeaderRow = styled.tr`
   text-align: center;
   user-events: none;
 `;
+export const CalendarHeaderRowTop = styled.tr`
+  height: 25px;
+  background: black;
+  color: white;
+  text-align: center;
+  user-events: none;
+`;
 
 export const CalendarCell = styled.th<{ span?: number }>`
+  border: 1px solid #ccc;
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: white;
+  background: black;
+  min-width: 100px;
+  width: 100px;
+  height: 25px;
+  line-height: 25px;
+  white-space: nowrap;
+`;
+export const CalendarCellTop = styled.th<{ span?: number }>`
   border: 1px solid #ccc;
   text-align: center;
   font-size: 0.9rem;
@@ -187,7 +207,7 @@ export const TaskBar = styled.div<{left: number, width: number, backgroundColor?
 
   &:hover {
     opacity: 0.8;
-    transform: scale(1.01);
+    transform: scaleY(1.18);
     z-index: 10;
   }
 `;
