@@ -6,6 +6,7 @@ import { VFTableWrapper } from '../../../../../../components/VectorFLOW/commons/
 const DayWiseCoverageDetailsCellRenderer = (params: any) => {
 
     const options: GridOptions<any> = {
+        sideBar: false,
         columnDefs: [
             {
                 headerName: "Missing RM Qty", field: "mrq",

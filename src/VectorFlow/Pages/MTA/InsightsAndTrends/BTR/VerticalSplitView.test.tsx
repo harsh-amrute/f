@@ -61,7 +61,8 @@ const mockSplitViewProps: SplitViewProps = {
   ecoTable: mockEcoTableProps,
   isLocked:true,
   toggleLockMode:jest.fn(),
-  themeUi:'REGALBLAZE'
+  themeUi:'REGALBLAZE',
+  initialColumnState:[]
 };
 
 describe('VerticalSplitView', () => {

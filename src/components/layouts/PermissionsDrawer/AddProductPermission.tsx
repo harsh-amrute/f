@@ -62,6 +62,11 @@ const AddProductPermission = (props: { cb: () => void }) => {
   });
 
   const errorProductcolumn = getErrorProductColumns(EnvConfig)
+  const headerNameMap: Record<string, string> = {};
+  productColumns.forEach(col => {
+        headerNameMap[col.colId] = col.headerName;
+    });
+  const headersList = productColumns?.filter(col => col.colId !== 'id').map(col => col.headerName);
 
   useEffect(() => {
 
@@ -79,10 +84,16 @@ const AddProductPermission = (props: { cb: () => void }) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-    const data = {permissionType : "Product" , data :[ {...formData } ]} as any;
+    const data = {permissionType : "Product" , Headers: headersList, data :[ {...formData } ]} as any;
 
      const response = await addProductPermissions(data);
-      notifySuccess(response?.data?.data);
+    const responseData = response?.data?.data;
+      
+      if (responseData?.errorCount === 1) { 
+        notifyError(responseData?.errors[0]?.rowData?.error);
+      } else {
+        notifySuccess(`${responseData?.inserted} record inserted successfully`);
+      }
       cb();
     } catch (error) {
       console.error(error);

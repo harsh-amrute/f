@@ -267,10 +267,10 @@ export const useBOR =()=>{
   const [initialColumnState, setInitialColumnState] = useState<any>(undefined);
   const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
 
-  useEffect(() => {
-    fetchData();
-    getBORUiConfig();
-  }, []);
+  // useEffect(() => {
+  //   fetchData();
+  //   getBORUiConfig();
+  // }, []);
 
   const fetchData = async () => {
     await getRecordsCount();
@@ -441,6 +441,7 @@ export const useBOR =()=>{
     }
 
     const onApplyFilter = async(filter:any)=>{
+      await getBORUiConfig();
       await getRecordsCount(filter)
       await loadGridData(1,filter)
       setCurrFilter(filter)
