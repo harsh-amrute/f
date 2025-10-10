@@ -129,6 +129,11 @@ export const availabilityFilterOptions = [
   { label: 'GIT', value: 'GIT', name: 'AF3' },
 ]
 
+export const horizonFilterOptions = [
+  { label: 'Start Date', value: 'StartDate'},
+  { label: 'EndDate', value: 'EndDate'},
+]
+
 export const useVFMultiFilter = ({
   multiFilter,
   onMultiFilterChange,

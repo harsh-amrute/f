@@ -75,6 +75,11 @@ const useBPRFilter = () => {
             id:'8',
             label:'Attribute',
             filters:[]
+        },
+        horizonFilter: {
+            id:'9',
+            label: 'Horizon',
+            filters: []
         }
     };
 
