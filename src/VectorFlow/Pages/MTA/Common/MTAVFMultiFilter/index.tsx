@@ -277,6 +277,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
     );
   };
 
+  const themeColor = user.user.theme_ui === "REGALBLAZE" ? "#14213D" : "#000000";
   return (
     <VFModalCard
       zoom="0.73"
@@ -287,7 +288,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
       closeIcon="/assets/img/VectorFLOW/NMS/close-white.svg"
       paddingLeftAndRight={0}
       backgroundColor="#f4f4f4"
-      headerBgColor="#000000"
+      headerBgColor={themeColor}
       data-testid="vfmultifilter-img"
       absolute
     >

@@ -117,7 +117,7 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
         value: current.value,
         operator: current.operation.value,
         label: current.column.label,
-        name: `${current.column.value}_${rowId}`,
+        name: `CAF${rowId+1}`,
       };
 
       const existingFilters = multiFilter[parentId]?.filters || [];
