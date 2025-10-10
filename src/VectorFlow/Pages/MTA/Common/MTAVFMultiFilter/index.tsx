@@ -204,6 +204,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
       colorFilter: { id: "6", label: "Color", filters: [] },
       generalFilter: { id: "7", label: "General", filters: [] },
       customAttributeFilter: { id: "8", label: "Attribute", filters: [] },
+      horizonFilter: {id:"9", label: "Horizon", filters: []},
     };
 
     setMultiFilter(resetMultiFilter);

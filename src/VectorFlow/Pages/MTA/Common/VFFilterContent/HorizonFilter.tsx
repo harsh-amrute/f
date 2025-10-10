@@ -15,19 +15,35 @@ import {
 import { useUserData } from "../../../../../context";
 import moment from "moment";
 import ReactDOM from "react-dom";
-
+import Select from "react-select";
+import { useVFMultiFilter } from "./useVFFilterContent";
+import { BPRFilterState } from "../../../../../VectorFlow/types/BPR";
 interface FilterSectionProps {
   filters?: any;
-  multiFilter?: any;
-  onMultiFilterChange?: (newMultiFilter: any) => void;
+  multiFilter: BPRFilterState;
+  onMultiFilterChange: (newMultiFilter: BPRFilterState) => void;
+  initialFromDate?: string;
+  initialToDate?: string;
+  selectedFilterType?: string;
 }
 
-export const HorizonFilter: React.FC<FilterSectionProps> = () => {
+export const HorizonFilter: React.FC<FilterSectionProps> = ({
+  multiFilter,
+  onMultiFilterChange,
+  initialFromDate = "",
+  initialToDate = "",
+  selectedFilterType = "StartDate",
+}) => {
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
+  const { handleSelectChange } = useVFMultiFilter({
+    multiFilter,
+    onMultiFilterChange,
+  });
 
-  const [fromDate, setFromDate] = useState<string>("");
-  const [toDate, setToDate] = useState<string>("");
+  const [fromDate, setFromDate] = useState<string>(initialFromDate);
+  const [toDate, setToDate] = useState<string>(initialToDate);
+  const [filterType, setFilterType] = useState<string>(selectedFilterType);
 
   const [showFromCal, setShowFromCal] = useState(false);
   const [showToCal, setShowToCal] = useState(false);
@@ -38,6 +54,25 @@ export const HorizonFilter: React.FC<FilterSectionProps> = () => {
   const toInputRef = useRef<HTMLInputElement>(null);
   const fromCalRef = useRef<HTMLDivElement>(null);
   const toCalRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (multiFilter?.horizonFilter?.filters) {
+      const startDateFilter = multiFilter.horizonFilter.filters.find(
+        (f: any) => f.attributeName === "startDate"
+      );
+      const endDateFilter = multiFilter.horizonFilter.filters.find(
+        (f: any) => f.attributeName === "endDate"
+      );
+      
+      if (startDateFilter) {
+        setFromDate(startDateFilter.value);
+      }
+      
+      if (endDateFilter) {
+        setToDate(endDateFilter.value);
+      }
+    }
+  }, [multiFilter?.horizonFilter?.filters]);
 
   useEffect(() => {
     const handleOutside = (e: MouseEvent) => {
@@ -91,16 +126,75 @@ export const HorizonFilter: React.FC<FilterSectionProps> = () => {
     const formatted = moment(date).format("YYYY-MM-DD");
     setFromDate(formatted);
     setShowFromCal(false);
+    
+    const newValue = [{ label: formatted, value: formatted }];
+    
+    handleSelectChange({
+      newValue,
+      header: "Start Date",
+      filterId: "HF1",
+      parentId: "horizonFilter",
+      attributeName: "startDate",
+    });
+    
+    console.log("From date changed:", formatted);
   };
 
   const handleToChange = (date: Date) => {
     const formatted = moment(date).format("YYYY-MM-DD");
     setToDate(formatted);
     setShowToCal(false);
+    
+    const newValue = [{ label: formatted, value: formatted }];
+    
+    handleSelectChange({
+      newValue,
+      header: "End Date",
+      filterId: "HF2",
+      parentId: "horizonFilter",
+      attributeName: "endDate",
+    });
+    
+    console.log("To date changed:", formatted);
   };
 
-  const clearFromDate = () => setFromDate("");
-  const clearToDate = () => setToDate("");
+  const clearFromDate = () => {
+    setFromDate("");
+    
+    handleSelectChange({
+      newValue: [],
+      header: "HorizonFilter",
+      filterId: "HF1",
+      parentId: "horizonFilter",
+      attributeName: "startDate",
+    });
+  };
+  
+  const clearToDate = () => {
+    setToDate("");
+    
+    handleSelectChange({
+      newValue: [],
+      header: "HorizonFilter",
+      filterId: "HF2",
+      parentId: "horizonFilter",
+      attributeName: "endDate",
+    });
+  };
+
+  const handleFilterTypeChange = (selected: any) => {
+    if (selected) {
+      setFilterType(selected.value);
+      
+      handleSelectChange({
+        newValue: [{ label: selected.label, value: selected.value }],
+        header: "HorizonFilter",
+        filterId: "HF0",
+        parentId: "horizonFilter",
+        attributeName: "filterType",
+      });
+    }
+  };
 
   const boxStyle: React.CSSProperties = {
     display: "flex",
@@ -113,9 +207,38 @@ export const HorizonFilter: React.FC<FilterSectionProps> = () => {
     boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
   };
 
+  const selectStyle = {
+    control: (provided: any) => ({
+      ...provided,
+      borderRadius: "10px",
+      border: themeUi === "REGALBLAZE" ? "1px solid #F7B500" : "1px solid #ccc",
+      boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+      padding: "0px",
+      minHeight: "36px",
+    }),
+    option: (provided: any, state: any) => ({
+      ...provided,
+      backgroundColor: state.isSelected
+        ? themeUi === "REGALBLAZE"
+          ? "#FCA311"
+          : "#BC3D80"
+        : state.isFocused
+        ? themeUi === "REGALBLAZE"
+          ? "#FCA31115"
+          : "#BC3D8015"
+        : null,
+      color: state.isSelected ? "white" : "#333",
+    }),
+    menu: (provided: any) => ({
+      ...provided,
+      borderRadius: "10px",
+      boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+    }),
+  };
+
   return (
     <>
-      <FilterGroup>
+      <FilterGroup>  
         <FilterColumn>
           <TextWrapper>From Date</TextWrapper>
           <DropDownWrapper>
@@ -241,9 +364,7 @@ export const HorizonFilter: React.FC<FilterSectionProps> = () => {
                 >
                   <StyledCalendar
                     themeUi={themeUi}
-                    onChange={(val) =>
-                      val instanceof Date && handleToChange(val)
-                    }
+                    onChange={(val) => val instanceof Date && handleToChange(val)}
                     value={toDate ? new Date(toDate) : new Date()}
                     minDate={fromDate ? new Date(fromDate) : undefined}
                   />
