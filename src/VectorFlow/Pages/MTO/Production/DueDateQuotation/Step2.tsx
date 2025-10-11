@@ -507,6 +507,9 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                         const lineCCRPendingQty = lineCCR[order.ok]?.[ccrId]?.pcqty || 0;
                         const orderPendingCCRQty = order.pcqty || 0
 
+                        console.log(lineCCRPendingQty, "lineCCRPendingQty");
+                        console.log(orderPendingCCRQty, "orderPendingCCRQty");
+
 
                         if (lineCCRPendingQty !== null && lineCCRPendingQty < 0 && lineCCRPendingQty === undefined) {
                             if (!orderPendingCCRQty) {
@@ -516,6 +519,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
 
                         const orderLoad = Math.ceil(((ccrItem?.tt || 0) * (lineCCRPendingQty && lineCCRPendingQty >= 0 ? lineCCRPendingQty : orderPendingCCRQty)));
                     
+                        console.log(orderLoad,"orderLoad")
                         //for calculating the initial value for prevPending
                         if (!ccr_prev_pending[ccrId]) {
                             const ccr_fol_data = masters.FOL[ccrId];
@@ -550,6 +554,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
 
                         // console.log(ccrId, "orderLoad", order_ccr_data[ccrId].orderLoad, "folSpan" ,order_ccr_data[ccrId].folSpan, "order pending qty",row.pcqty, "ccr tt", ccrItem.tt, "ccrWorkingHoursPerDay" ,ccrWorkingHoursPerDay)                     
                     });
+                    console.log(errors, "errors");
                     if (errors.length > 0) {
                         throw new Error(errors.join("\n\n"))
                     }

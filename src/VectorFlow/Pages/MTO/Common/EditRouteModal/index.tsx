@@ -10,7 +10,7 @@ import { notifyError, notifySuccess } from '../../../../../helpers/notify'
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton'
 import VFButtonOutline from '../../../../../components/VectorFLOW/commons/VFButtonOutline'
 // import Radio from '../../../../../components/VectorFLOW/commons/MTO/Radio'  //phase 2
-import _, { isEqual } from 'lodash'
+import _ from 'lodash'
 import VFTable from '../../Common/VFTable';
 import { GridOptions } from 'ag-grid-enterprise'
 import { useGetCCRGroupMaster, useGetCCRItemTypeMappingMaster, useGetFOLData, useGetLineCCRDetails, useGetRouteDetails } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation'
@@ -167,16 +167,22 @@ const EditRouteModal = ({orderDetails, chartoptions, setChartOptions, onDataUpda
     }
 
     function convertToRequiredFormat(routes: Route[], lineCcr: LineCcr): any {
-
-        const myCCRDetails: any = [];
-
+        const myCCRDetails: any = [];        
+        const orderPendingCCRQty = orderDetails.pcqty || 0;
+        
         routes.forEach((e: any, i) => {
+            const CCRId = e[1].value;
+            const lineCCRPendingQty = lineCcr[orderDetails?.orderKey]?.[CCRId]?.pcqty || 0;
+            const CCRPendingQty = lineCCRPendingQty || orderPendingCCRQty;
+            const ccrItem = masters?.CCRItemTypeMappingMaster.find((ccr: any) => ccr.ccrId === CCRId && ccr.it == orderDetails.itemTypeId);
+            const orderLoad = Math.ceil(((ccrItem.tt || 0) * (CCRPendingQty && CCRPendingQty >= 0 ? CCRPendingQty : orderPendingCCRQty)));
+
             const perCCRDetail = {
-                "ccrid": e[1].value,
+                "ccrid": CCRId,
                 "ccrgrp": e[0].value,
-                "pcQty": lineCcr[e[1].value]?.pcqty ? lineCcr[e[1].value]?.pcqty : 0,
+                "pcQty": CCRPendingQty,
                 "pos": (i + 1).toString(),
-                "ol": lineCcr[e[1].value]?.load ? lineCcr[e[1].value]?.load : 0,
+                "ol": orderLoad || 0,
             }
 
             myCCRDetails.push(perCCRDetail);

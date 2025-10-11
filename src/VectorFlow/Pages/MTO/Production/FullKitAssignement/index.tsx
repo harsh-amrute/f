@@ -124,7 +124,7 @@ const FullKitAssignment = () => {
                   notifyError("No Route assigned to this order!");
                   return;
                 }
-                setOrderDetails({ itemTypeId: params.data?.itid, plantId: params.data?.plid, routeNum: params.data?.r, orderKey: params.data?.ok });
+                setOrderDetails({ itemTypeId: params.data?.itid, plantId: params.data?.plid, routeNum: params.data?.r, orderKey: params.data?.ok, pcqty: params.data.pcqty });
                 setShowModal(true);
               }}
             />)}
