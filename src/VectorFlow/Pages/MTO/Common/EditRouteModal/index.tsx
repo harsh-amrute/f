@@ -392,60 +392,7 @@ const EditRouteModal = ({orderDetails, chartoptions, setChartOptions, onDataUpda
     const fetchFolGap = async () => {
         try {
             const data = convertToRequiredFormat(route, lineCCR);
-            const response = await fetchFolGapData({ body: data });
-
-            // const response = {
-            //     status: 200,
-            //     data: {
-            //         data: {
-            //             "ccr_fol_gap": [
-            //                 {
-            //                     "ccr_name": "A104_L&T",
-            //                     "ccr_id": 20,
-            //                     "gap": 0.0
-            //                 },
-            //                 {
-            //                     "ccr_name": "A104123646",
-            //                     "ccr_id": 98,
-            //                     "gap": 0.0
-            //                 },
-            //                 {
-            //                     "ccr_name": "A104_L&T1",
-            //                     "ccr_id": 20,
-            //                     "gap": 0.0
-            //                 },
-            //                 {
-            //                     "ccr_name": "A1041236461",
-            //                     "ccr_id": 98,
-            //                     "gap": 0.0
-            //                 },
-            //                 {
-            //                     "ccr_name": "A104_L&T2",
-            //                     "ccr_id": 20,
-            //                     "gap": 0.0
-            //                 },
-            //                 {
-            //                     "ccr_name": "A1041236463",
-            //                     "ccr_id": 98,
-            //                     "gap": 0.0
-            //                 }
-            //             ],
-            //             "ccr_order_load": [
-            //                 {
-            //                     "ccr_name": "1400_BIAS",
-            //                     "cce_id": 6,
-            //                     "order_load": 0.0
-            //                 },
-            //                 {
-            //                     "ccr_name": "1400123945",
-            //                     "cce_id": 241,
-            //                     "order_load": 0.0
-            //                 }
-            //             ]
-            //         }
-            //     }
-            // }
-        
+            const response = await fetchFolGapData({ body: data });        
         
             if (response.status === 200) {
 
