@@ -89,7 +89,7 @@ function LoginContainer() {
         } else {
           const url = "/landing-page";
           navigate(url, { replace: true });
-          // getAllEnvironmentConfiguration();
+          getAllEnvironmentConfiguration();
           notifySuccess(t("loginPage.notify.success"));
         }
       },
