@@ -340,6 +340,7 @@ const SchedulingActionToolbar = ({
   };
 
   const isAnyFilterApplied = (appliedFilters: any) => {
+    if (!appliedFilters) return false;
     const { timePreference, ...lengthCheckFilters } = appliedFilters;
     return (
       Object.values(lengthCheckFilters).some((filter) => {
@@ -348,10 +349,11 @@ const SchedulingActionToolbar = ({
         }
         return filter !== null && filter !== undefined && filter !== "";
       }) ||
-      timePreference?.startDate !== null ||
-      timePreference?.endDate !== null
+      !!timePreference?.startDate ||
+      !!timePreference?.endDate
     );
   };
+
 
   useEffect(() => {
     if (open) {
@@ -388,11 +390,15 @@ const SchedulingActionToolbar = ({
 
   const allFilterTypes = Object.keys(appliedFilters);
 
-  const convertDate = (dateString: any) => {
-    const val = format(new Date(dateString * 1000), "dd MMM");
-    console.log("val for converstion", val);
-    return val;
-  };
+  const handleRemoveTimeFilter = () => {
+      setAppliedFilters({
+       ...appliedFilters,
+       timePreference: {
+        startDate: null,
+        endDate: null,
+       },
+      });
+     };
 
   return (
     <ToolbarWrapper>
@@ -444,84 +450,157 @@ const SchedulingActionToolbar = ({
       </ToolbarLeftSection>
 
       <ToolbarRightSection>
-        {appliedFilters &&
-          Object.keys(appliedFilters).some(
-            (key) => appliedFilters[key]?.length > 0
-          ) && (
-            <VFSelectedFiltersWrapper
-              style={{
-                width: "fit-content",
-                overflowY: "hidden",
-                maxWidth: "380px",
-                padding: "2px",
-                height: "36px",
-                border: "0.8px solid #cecece",
-              }}
+      {isAnyFilterApplied(appliedFilters) && (
+          <VFSelectedFiltersWrapper
+            style={{
+              width: "fit-content",
+              overflowY: "hidden",
+              maxWidth: "380px",
+              padding: "2px",
+              height: "36px",
+              border: "0.8px solid #cecece",
+            }}
+          >
+                 {" "}
+            <VFSelectedFiltersPlaceHolder
+              style={{ fontSize: "1.2rem", height: "20px" }}
             >
-              <VFSelectedFiltersPlaceHolder
-                style={{ fontSize: "1.2rem", height: "20px" }}
-              >
-                Selected Filters
-              </VFSelectedFiltersPlaceHolder>
-              <VFFilterScrollBar
-                style={{ overflowY: "hidden", borderRadius: "10px" }}
-              >
-                {allFilterTypes?.map((filterType: any) => {
-                  if (appliedFilters[filterType]?.length > 0) {
-                    return (
-                      <VFSelectedFiltersChip
-                        key={filterType}
-                        style={{ padding: "2px 5px", height: "23px" }}
-                      >
-                        <VFSelectedFiltersFilterLabel
-                          style={{ fontSize: "1.2rem", padding: "3px" }}
-                        >
-                          {filterType + " "}:
-                        </VFSelectedFiltersFilterLabel>
-                        {appliedFilters[filterType].map(
-                          (value: string, index: number) => (
-                            <div key={value}>
-                              <VFSelectedFiltersFilterContent>
-                                <VFSelectedFiltersFilterValue
-                                  style={{ fontSize: "1.1rem" }}
-                                >
-                                  <p style={{ margin: "0px 5px 0px 5px" }}>
-                                    {" "}
-                                    {value}
-                                  </p>
-                                </VFSelectedFiltersFilterValue>
-                                {
-                                  <VFSelectedFiltersFilterCloseIcon
-                                    style={{
-                                      height: "1.2rem",
-                                      width: "1.2rem",
-                                    }}
-                                    onClick={() =>
-                                      handleRemoveFilter(filterType, value)
-                                    }
-                                    src="/assets/img/VectorFLOW/BPR/close-circle.svg"
-                                    alt="close-icon"
-                                    data-testid={"closeIcon-filter"}
-                                  />
-                                }
-                                {appliedFilters[filterType].length > 1 &&
-                                  index !==
-                                    appliedFilters[filterType].length - 1 && (
-                                    <SCFilterVerticalDivider
-                                      style={{ height: "12px" }}
-                                    />
-                                  )}
-                              </VFSelectedFiltersFilterContent>
-                            </div>
-                          )
+                     Selected Filters      {" "}
+            </VFSelectedFiltersPlaceHolder>
+                 {" "}
+            <VFFilterScrollBar
+              style={{ overflowY: "hidden", borderRadius: "10px" }}
+            >
+                    {" "}
+              {/* // CHANGE 3: Update mapping logic to handle both array and object filter types */}
+                    {" "}
+              {allFilterTypes?.map((filterType: any) => {
+                // Case for timePreference object
+                if (
+                  filterType === "timePreference" &&
+                  (appliedFilters.timePreference?.startDate ||
+                    appliedFilters.timePreference?.endDate)
+                ) {
+                  return (<VFSelectedFiltersChip
+                  key={filterType}
+                  style={{ padding: "2px 5px", height: "23px" }}
+                >
+                  <VFSelectedFiltersFilterLabel
+                    style={{ fontSize: "1.2rem", padding: "3px" }}
+                  >
+                    Date Range:
+                  </VFSelectedFiltersFilterLabel>
+                  <VFSelectedFiltersFilterContent>
+                    <VFSelectedFiltersFilterValue style={{ fontSize: "1.1rem" }}>
+                      <p style={{ margin: "0px 5px", display: "flex", gap: "4px" }}>
+                        {/* Render the start date if it exists in filters or as a prop */}
+                        {(appliedFilters.timePreference?.startDate || startDate) && (
+                          <span>
+                            {format(
+                              new Date(appliedFilters.timePreference.startDate || startDate),
+                              "dd MMM"
+                            )}
+                          </span>
                         )}
-                      </VFSelectedFiltersChip>
-                    );
-                  }
-                })}
-              </VFFilterScrollBar>
-            </VFSelectedFiltersWrapper>
-          )}
+                        {/* Render hyphen only if both start and end dates exist */}
+                        {(appliedFilters.timePreference?.startDate || startDate) &&
+                          (appliedFilters.timePreference?.endDate || endDate) && <span>-</span>}
+                        {/* Render the end date if it exists in filters or as a prop */}
+                        {(appliedFilters.timePreference?.endDate || endDate) && (
+                          <span>
+                            {format(
+                              new Date(appliedFilters.timePreference.endDate || endDate),
+                              "dd MMM yyyy"
+                            )}
+                          </span>
+                        )}
+                      </p>
+                    </VFSelectedFiltersFilterValue>
+                    <VFSelectedFiltersFilterCloseIcon
+                      style={{
+                        height: "1.2rem",
+                        width: "1.2rem",
+                      }}
+                      onClick={handleRemoveTimeFilter}
+                      src="/assets/img/VectorFLOW/BPR/close-circle.svg"
+                      alt="close-icon"
+                      data-testid={"closeIcon-time-filter"}
+                    />
+                  </VFSelectedFiltersFilterContent>
+                </VFSelectedFiltersChip>);
+                } // Case for array-based filters
+
+                if (
+                  Array.isArray(appliedFilters[filterType]) &&
+                  appliedFilters[filterType]?.length > 0
+                ) {
+                  return (
+                    <VFSelectedFiltersChip
+                      key={filterType}
+                      style={{ padding: "2px 5px", height: "23px" }}
+                    >
+                                {" "}
+                      <VFSelectedFiltersFilterLabel
+                        style={{ fontSize: "1.2rem", padding: "3px" }}
+                      >
+                                    {_.startCase(filterType) + " "}:
+                                  {" "}
+                      </VFSelectedFiltersFilterLabel>
+                                {" "}
+                      {appliedFilters[filterType].map(
+                        (value: string, index: number) => (
+                          <div key={value}>
+                                         {" "}
+                            <VFSelectedFiltersFilterContent>
+                                            {" "}
+                              <VFSelectedFiltersFilterValue
+                                style={{ fontSize: "1.1rem" }}
+                              >
+                                               {" "}
+                                <p style={{ margin: "0px 5px" }}>
+                                                   {value}  
+                                              {" "}
+                                </p>
+                                              {" "}
+                              </VFSelectedFiltersFilterValue>
+                                            {" "}
+                              <VFSelectedFiltersFilterCloseIcon
+                                style={{
+                                  height: "1.2rem",
+                                  width: "1.2rem",
+                                }}
+                                onClick={() =>
+                                  handleRemoveFilter(filterType, value)
+                                }
+                                src="/assets/img/VectorFLOW/BPR/close-circle.svg"
+                                alt="close-icon"
+                                data-testid={"closeIcon-filter"}
+                              />
+                                            {" "}
+                              {appliedFilters[filterType].length > 1 &&
+                                index !==
+                                  appliedFilters[filterType].length - 1 && (
+                                  <SCFilterVerticalDivider
+                                    style={{ height: "12px" }}
+                                  />
+                                )}
+                                           {" "}
+                            </VFSelectedFiltersFilterContent>
+                                        {" "}
+                          </div>
+                        )
+                      )}
+                               {" "}
+                    </VFSelectedFiltersChip>
+                  );
+                }
+                return null; // Return null if filter type has no values to display
+              })}
+                   {" "}
+            </VFFilterScrollBar>
+                {" "}
+          </VFSelectedFiltersWrapper>
+        )}
         {currentView !== "JobView" && (
           <VFButtonOutline
             style={{

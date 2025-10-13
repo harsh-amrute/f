@@ -35,13 +35,15 @@ const GridViewResource = ({ResourceData, setExcelGridRef}: any) => {
         headerName: "Stage",
         field: "stage",
         width: 120,
-        pinned: 'left'
+        pinned: 'left',
+        filter: 'agSetColumnFilter'
       },
       {
         headerName: "Machine Name", 
         field: "machineName",
         width: 200,
-        pinned: 'left'
+        pinned: 'left',
+        filter: 'agSetColumnFilter'
       },
       {
         headerName: "Min",
@@ -49,12 +51,14 @@ const GridViewResource = ({ResourceData, setExcelGridRef}: any) => {
           {
             headerName: "Start",
             field: "minStart",
-            width: 150
+            width: 150,
+            filter: 'agTextColumnFilter'
           },
           {
             headerName: "End", 
             field: "minEnd",
-            width: 150
+            width: 150,
+            filter: 'agTextColumnFilter'
           }
         ]
       },
@@ -64,19 +68,22 @@ const GridViewResource = ({ResourceData, setExcelGridRef}: any) => {
           {
             headerName: "Start",
             field: "maxStart", 
-            width: 150
+            width: 150,
+            filter: 'agTextColumnFilter'
           },
           {
             headerName: "End",
             field: "maxEnd",
-            width: 150
+            width: 150,
+            filter: 'agTextColumnFilter'
           }
         ]
       },
       {
         headerName: "Elapsed Time",
         field: "elapsedTime",
-        width: 120
+        width: 120,
+        filter: 'agNumberColumnFilter'
       }
     ];
 
@@ -89,12 +96,14 @@ const GridViewResource = ({ResourceData, setExcelGridRef}: any) => {
             {
               headerName: "Count",
               field: taskType + "_count",
-              width: 120
+              width: 120,
+              filter: 'agNumberColumnFilter'
             },
             {
               headerName: "Hrs", 
               field: taskType + "_hrs",
-              width: 120
+              width: 120,
+              filter: 'agNumberColumnFilter'
             }
           ]
         },

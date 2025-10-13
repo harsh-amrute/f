@@ -81,6 +81,14 @@ const MultiInstanceTooltip = (props: any) => {
   );
 };
 
+// Custom filter value getter for array fields
+const arrayFilterValueGetter = (params: any) => {
+  const value = params.data[params.colDef.field];
+  if (!value || !Array.isArray(value) || value.length === 0) return '';
+  // Return all values joined for filtering
+  return value.join(' | ');
+};
+
 const GridViewJob = ({ResourceData, setExcelGridRef}: any) => {
   const [columnDefs, setColumnDefs] = useState<any>([]);
   const [rowData, setRowData] = useState<any>([]);
@@ -109,7 +117,12 @@ const GridViewJob = ({ResourceData, setExcelGridRef}: any) => {
         headerName: "Job List",
         field: "jobId",
         width: 120,
-        pinned: 'left'
+        pinned: 'left',
+        filter: 'agMultiColumnFilter',
+        filterParams: {
+          buttons: ['reset', 'apply'],
+          closeOnApply: true,
+        }
       }
     ];
 
@@ -117,7 +130,7 @@ const GridViewJob = ({ResourceData, setExcelGridRef}: any) => {
     Array.from(stageWorkStationMap.entries()).forEach(([stage, workStations]) => {
       const stageChildren: any[] = [];
       
-      // Machine Name column with custom renderer
+      // Machine Name column with custom renderer and filter
       stageChildren.push({
         headerName: "Machine Name",
         field: `machine_name_${stage}`,
@@ -125,27 +138,33 @@ const GridViewJob = ({ResourceData, setExcelGridRef}: any) => {
         cellRenderer: MultiInstanceCellRenderer,
         tooltipField: `machine_name_${stage}`,
         tooltipComponent: MultiInstanceTooltip,
-        tooltipComponentParams: { color: '#ececec' }
+        tooltipComponentParams: { color: '#ececec' },
+        filter: 'agTextColumnFilter',
+        filterValueGetter: arrayFilterValueGetter
       });
       
-      // Start Time column with custom renderer
+      // Start Time column with custom renderer and filter
       stageChildren.push({
         headerName: "Start Time", 
         field: `start_${stage}`,
         width: 200,
         cellRenderer: MultiInstanceCellRenderer,
         tooltipField: `start_${stage}`,
-        tooltipComponent: MultiInstanceTooltip
+        tooltipComponent: MultiInstanceTooltip,
+        filter: 'agTextColumnFilter',
+        filterValueGetter: arrayFilterValueGetter
       });
       
-      // End Time column with custom renderer
+      // End Time column with custom renderer and filter
       stageChildren.push({
         headerName: "End Time",
         field: `end_${stage}`, 
         width: 200,
         cellRenderer: MultiInstanceCellRenderer,
         tooltipField: `end_${stage}`,
-        tooltipComponent: MultiInstanceTooltip
+        tooltipComponent: MultiInstanceTooltip,
+        filter: 'agTextColumnFilter',
+        filterValueGetter: arrayFilterValueGetter
       });
 
       // Add the parent column with children
