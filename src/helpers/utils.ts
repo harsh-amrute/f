@@ -2,7 +2,6 @@
 import { ColumnHeaderConfig } from '../VectorFlow/types/ColumnHeaderConfig';
 import { type NavigateFunction } from 'react-router'
 import { LOCAL_STORAGE_KEY, ROUTES } from './constants'
-import { MainService } from '../module-main/services/api'
 import { notifyError} from './notify'
 import { type Master, type Option, type Field, type Filter, MDMMasterState, DraftActionType,type NormHistory, type DailyData } from '../VectorFlow/types/MDM';
 import readXlsxFile,{readSheetNames} from 'read-excel-file';
@@ -26,8 +25,6 @@ import { AgChartOptions } from "ag-charts-community";
 // clear cached token and redirect to sso login
 import CryptoJS from 'crypto-js';
 import MTOActionRenderer from '../VectorFlow/Pages/MTO/MDM/SavedDrafts/MTOActionRenderer';
-import { useSelector } from 'react-redux';
-import { RootState } from '../redux/store/store';
 import { decryptStorageData } from '../VectorFlow/Pages/MTO/Common/encryption';
 
 const keyboardCharacters = [
@@ -41,7 +38,6 @@ const keyboardCharacters = [
 ];
 
 export const loginRedirect = (navigate?: NavigateFunction) => {
-  localStorage.removeItem(LOCAL_STORAGE_KEY.TOKEN_PAYLOAD)
 
   saveOriginalUrlBeforeLogin()
 

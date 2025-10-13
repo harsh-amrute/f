@@ -72,8 +72,17 @@ const useDownloadHandler = () => {
   
     try {
 
+      const encryptedUserId = localStorage.getItem('User-ID');
+      const encryptedUserName = localStorage.getItem('User-Name');
+      const decryptedUserId = await decryptStorageData(encryptedUserId);
+      const decryptedUserName = await decryptStorageData(encryptedUserName);
+      
+      const headers: Record<string, string> = {};
+      if (decryptedUserId) headers['User-ID'] = decryptedUserId;
+      if (decryptedUserName) headers['User-Name'] = decryptedUserName;
       
         const response = await fetch(`${process.env.REACT_APP_API_HOST}api/mta/DownloadReports/${encodeURIComponent(reportName)}`, {
+          headers,
           credentials: 'include',
         })
         if (!response.ok) {

@@ -100,10 +100,7 @@ const lazyLoad = (userData:any,children: React.ReactNode) => {
   let lang = params.get('hl') || 'en'
   const langs = ['en', 'ja', 'es']
   if (lang && !langs.includes(lang)) lang = 'en'
-  // const { i18n } = useTranslation()
-  // useEffect(() => {
-  //   i18n.changeLanguage(lang)
-  // }, [])
+
   const authenPage = [
     '/login',
     '/forgot-password',
@@ -255,7 +252,6 @@ const lazyLoad = (userData:any,children: React.ReactNode) => {
 
 export const initRoutes = ({userData}:any): RouteObject[] => {
 
-  // console.log("userData in app-routes",userData);
   const routes: RouteObject[] = []
 
   routes.push({ path: '/login', element: lazyLoad(userData,<Login />) })

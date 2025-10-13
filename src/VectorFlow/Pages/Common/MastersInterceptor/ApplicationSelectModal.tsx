@@ -68,7 +68,6 @@ const ActionSelectModal = ({ redirectUrl }: any) => {
   });
 
 
-    // const urlPermissionStr: any = localStorage.getItem('url_permission')
     const urlPermissionStr = user?.url_permission??[];
     const urlPermissionArr = JSON?.parse(urlPermissionStr) || [];
 

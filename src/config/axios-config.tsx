@@ -1,18 +1,12 @@
 import axios, { AxiosError } from 'axios'
 import qs from 'qs'
 import { cleanObject, loginRedirect } from '../helpers/utils'
-import { MainService } from '../module-main/services/api'
 import { decryptStorageData } from '../VectorFlow/Pages/MTO/Common/encryption';
 
 
 export const setupAxios = () => {
-  const requestQueue: any = []
-
-  const processQueue = (token: any) => {
-    requestQueue.forEach((cb: any) => cb.resolve(token))
-    requestQueue.length = 0
-  }
-;  axios.defaults.baseURL = process.env.REACT_APP_API_HOST;
+  
+  axios.defaults.baseURL = process.env.REACT_APP_API_HOST;
   axios.defaults.withCredentials = true
 
   axios.interceptors.request.use(async function (config) {
@@ -50,18 +44,6 @@ export const setupAxios = () => {
   }
 }
 
-const getOtherError = (error: any) => {
-  const path = window.location.pathname
-  if (typeof error === 'string') {
-    return { message: error, path }
-  } else if (!error.message) {
-    console.error(error)
-    return { message: ERROR_GENERAL, path }
-  } else {
-    console.error(error)
-    return error
-  }
-}
 
 const getAxiosError = (error: any) => {
   let message

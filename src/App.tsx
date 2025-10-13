@@ -11,10 +11,8 @@ function App () {
   const location = useLocation();
   const navigate = useNavigate();
    useEffect(() => {
-     console.log("this is calling");
     if(location.pathname !== '/login'){
      
-        console.log("this is userData",userData);
         MainService.getProfile()
         .then((res) => {
           setUserData(res.data.data)

@@ -75,9 +75,17 @@ export namespace MainService {
     )
   }
 
-  export const getProfile = async () => {
-    return await axios.get(`/${API_USER}/profile/`, { withCredentials: true })
+
+export const getProfile = async () => {
+  try {
+    const response = await axios.get(`/${API_USER}/profile/`, { withCredentials: true });
+    return response.data;
+  } catch (error) {
+    console.error('Failed to fetch profile:', error);
+    localStorage.clear(); 
   }
+};
+
   export const getProductFilter = async (url: string) => {
     return await axios.get(url)
   }
