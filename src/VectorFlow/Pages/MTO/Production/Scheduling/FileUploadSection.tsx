@@ -103,9 +103,15 @@ const FileUploadSection = ({setIsRunEnabled}:any) => {
     }
   };
 
-  const DownloadExcel = async (filename: string) => {
+  const DownloadExcel = async (filename: string, expected_extension: string) => {
     try {
       notifyLoader("Downloading file...");
+  
+      // Ensure the filename has the correct extension
+      const fileWithExtension = filename.endsWith(".csv") || filename.endsWith(".xlsx")
+        ? filename
+        : `${filename}${expected_extension}`;
+  
       const response = await getFileDownload(filename);
       const blob = new Blob([response.data], {
         type: response.headers["content-type"],
@@ -113,7 +119,7 @@ const FileUploadSection = ({setIsRunEnabled}:any) => {
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", filename); // Use extracted filename
+      link.setAttribute("download", fileWithExtension); // Use the filename with the correct extension
       document.body.appendChild(link);
       link.click();
       URL.revokeObjectURL(url);

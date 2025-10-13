@@ -1,7 +1,85 @@
 import React, { useState, useEffect, useRef } from 'react'
 import VFTable from '../../../Common/VFTable'
 import { GridWrapper } from '../SchedulingStyles';
+import { format } from 'date-fns';
 
+// Custom cell renderer for multiple instances
+const MultiInstanceCellRenderer = (props: any) => {
+  const { value } = props;
+  
+  if (!value || !Array.isArray(value) || value.length === 0) {
+    return <span>-</span>;
+  }
+  
+  if (value.length === 1) {
+    return <span>{value[0]}</span>;
+  }
+  
+  // Multiple instances - show expandable view
+  return (
+    <div style={{ position: 'relative' }}>
+      <div 
+        style={{ 
+          cursor: 'pointer', 
+          color: 'rgb(130, 15, 76)',
+          fontWeight: 500,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '4px'
+        }}
+      >
+        <span>{value[0]}</span>
+        <span style={{ 
+          background: 'rgb(130, 15, 76)', 
+          color: 'white', 
+          borderRadius: '10px',
+          padding: '2px 6px',
+          fontSize: '0.75rem',
+          fontWeight: 'bold'
+        }}>
+          +{value.length - 1}
+        </span>
+      </div>
+    </div>
+  );
+};
+
+// Tooltip renderer to show all instances
+const MultiInstanceTooltip = (props: any) => {
+  const { value } = props;
+  
+  if (!value || !Array.isArray(value)) return null;
+  
+  return (
+    <div style={{ 
+      padding: '8px',
+      maxHeight: '300px',
+      overflowY: 'auto',
+      background: 'white',
+      border: '1px solid #ccc',
+      borderRadius: '4px',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
+    }}>
+      <div style={{ fontWeight: 'bold', marginBottom: '8px', color: '#333' }}>
+        All Instances ({value.length})
+      </div>
+      {value.map((item: string, idx: number) => (
+        <div 
+          key={idx}
+          style={{ 
+            padding: '4px 8px',
+            marginBottom: '4px',
+            background: idx % 2 === 0 ? '#f5f5f5' : 'white',
+            borderRadius: '3px',
+            fontSize: '0.9rem'
+          }}
+        >
+          <strong>Instance {idx + 1}:</strong> {item}
+        </div>
+      ))}
+    </div>
+  );
+};
 
 const GridViewJob = ({ResourceData, setExcelGridRef}: any) => {
   const [columnDefs, setColumnDefs] = useState<any>([]);
@@ -12,7 +90,7 @@ const GridViewJob = ({ResourceData, setExcelGridRef}: any) => {
   useEffect(() => {
     if (!ResourceData?.Resource_Data) return;
 
-    // Extract unique stages and their associated work stations
+    // Extract unique stages
     const stageWorkStationMap = new Map<string, Set<string>>();
     
     Object.values(ResourceData.Resource_Data).forEach((resource: any) => {
@@ -39,28 +117,36 @@ const GridViewJob = ({ResourceData, setExcelGridRef}: any) => {
     Array.from(stageWorkStationMap.entries()).forEach(([stage, workStations]) => {
       const stageChildren: any[] = [];
       
-      // Array.from(workStations).forEach((workStation) => {
-        // Machine Name column
-        stageChildren.push({
-          headerName: "Machine Name",
-          field: `machine_name_${stage}`,
-          width: 200
-        });
-        
-        // Start Time column
-        stageChildren.push({
-          headerName: "Start Time", 
-          field: `start_${stage}`,
-          width: 200
-        });
-        
-        // End Time column
-        stageChildren.push({
-          headerName: "End Time",
-          field: `end_${stage}`, 
-          width: 200
-        });
-      // });
+      // Machine Name column with custom renderer
+      stageChildren.push({
+        headerName: "Machine Name",
+        field: `machine_name_${stage}`,
+        width: 200,
+        cellRenderer: MultiInstanceCellRenderer,
+        tooltipField: `machine_name_${stage}`,
+        tooltipComponent: MultiInstanceTooltip,
+        tooltipComponentParams: { color: '#ececec' }
+      });
+      
+      // Start Time column with custom renderer
+      stageChildren.push({
+        headerName: "Start Time", 
+        field: `start_${stage}`,
+        width: 200,
+        cellRenderer: MultiInstanceCellRenderer,
+        tooltipField: `start_${stage}`,
+        tooltipComponent: MultiInstanceTooltip
+      });
+      
+      // End Time column with custom renderer
+      stageChildren.push({
+        headerName: "End Time",
+        field: `end_${stage}`, 
+        width: 200,
+        cellRenderer: MultiInstanceCellRenderer,
+        tooltipField: `end_${stage}`,
+        tooltipComponent: MultiInstanceTooltip
+      });
 
       // Add the parent column with children
       dynamicColumns.push({
@@ -75,10 +161,9 @@ const GridViewJob = ({ResourceData, setExcelGridRef}: any) => {
   useEffect(() => {
     if (!ResourceData?.Resource_Data) return;
 
-    // Generate row data based on jobs
+    // Generate row data - store arrays for multiple instances
     const jobMap = new Map<string, any>();
     
-    // Collect all job information
     Object.entries(ResourceData.Resource_Data).forEach(([resourceId, resource]: [string, any]) => {
       const stage = resource.stage;
       const workStation = resource.work_station;
@@ -88,27 +173,37 @@ const GridViewJob = ({ResourceData, setExcelGridRef}: any) => {
           const jobId = task.Job_id;
           
           if (!jobMap.has(jobId)) {
-            jobMap.set(jobId, { jobId });
+            jobMap.set(jobId, { 
+              jobId,
+              // Initialize arrays for each stage
+              [`machine_name_${stage}`]: [],
+              [`start_${stage}`]: [],
+              [`end_${stage}`]: []
+            });
           }
           
           const jobData = jobMap.get(jobId);
           
-          // Convert Unix timestamp to readable format
+          // Initialize arrays if they don't exist for this stage
+          if (!jobData[`machine_name_${stage}`]) {
+            jobData[`machine_name_${stage}`] = [];
+          }
+          if (!jobData[`start_${stage}`]) {
+            jobData[`start_${stage}`] = [];
+          }
+          if (!jobData[`end_${stage}`]) {
+            jobData[`end_${stage}`] = [];
+          }
+          
+          // Format time
           const formatTime = (timestamp: number) => {
-            return new Date(timestamp * 1000).toLocaleString('en-GB', {
-              day: '2-digit',
-              month: '2-digit', 
-              year: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit',
-              hour12: true
-            }).replace(/\//g, "-");
+            return format(new Date(timestamp * 1000), 'PPpp');
           };
           
-          // Set machine name, start time, and end time for this stage/workstation
-          jobData[`machine_name_${stage}`] = workStation;
-          jobData[`start_${stage}`] = formatTime(task.start_time);
-          jobData[`end_${stage}`] = formatTime(task.end_time);
+          // Push to arrays (allowing multiple instances)
+          jobData[`machine_name_${stage}`].push(workStation);
+          jobData[`start_${stage}`].push(formatTime(task.start_time));
+          jobData[`end_${stage}`].push(formatTime(task.end_time));
         }
       });
     });
@@ -130,7 +225,8 @@ const GridViewJob = ({ResourceData, setExcelGridRef}: any) => {
           resizable: true,
           floatingFilter: true,
         }}
-        
+        tooltipShowDelay={0}
+        tooltipHideDelay={2000}
         rowClass='my-row-class'
         getRowClass={params => {
           if (params && params.node && params.node.rowIndex && params?.node?.rowIndex % 2 === 0) {

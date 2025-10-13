@@ -6,7 +6,7 @@ import { ButtonContentWrapper, ButtonsWrapper, Container, LeftSection } from "./
 
 type ReportActionCardProps = {
   title: string;
-  onDownload: (file_name: string) => void;
+  onDownload: (file_name: string, expected_extension: string) => void;
   onUpload: (props: any) => void;
   lastUpdateStatus: any;
   fileUploadType: 'UI'|'FTP'|'DB'|any;
@@ -82,7 +82,7 @@ const FileUploadTile: React.FC<ReportActionCardProps> = ({
         
         <VFButton
           themeUi={themeUi}
-          onClick={()=>onDownload(title)}
+          onClick={()=>onDownload(title, expected_extension)}
           style={{ fontSize: "0.9rem", height: "32px", width: '100px' }}
           disabled={!lastUpdateStatus}
         >

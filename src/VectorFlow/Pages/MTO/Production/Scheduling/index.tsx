@@ -133,7 +133,7 @@ const Scheduling = () => {
             
             socket.onerror = (error) => {
                 console.error("WebSocket error:", error);
-                notifyError("Failed to connect to WebSocket. Couldn't fetch run progress!!");
+                // notifyError("Failed to connect to WebSocket. Couldn't fetch run progress!!");
             };
             
             socket.onclose = () => {
@@ -146,7 +146,7 @@ const Scheduling = () => {
         }
         catch(e){
             console.error("WebSocket connection error:", e);
-            notifyWarning("Could not connect to websocket. Run status might not update in real-time.");
+            // notifyWarning("Could not connect to websocket. Run status might not update in real-time.");
         }
         }
       
