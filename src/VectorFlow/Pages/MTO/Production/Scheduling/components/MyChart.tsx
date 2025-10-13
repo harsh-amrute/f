@@ -6,12 +6,14 @@ import {
   addDays,
   startOfWeek,
   startOfDay,
+  parse,
 } from "date-fns";
 import Tooltip from "../../../Common/Tooltip";
 import { 
   CalendarBodyWrapper, 
   CalendarCell, 
   CalendarHeaderRow, 
+  CalendarHeaderRowTop, 
   CalendarHeaderWrapper, 
   CalendarSection, 
   CalendarTable, 
@@ -38,22 +40,26 @@ import {
   ZoomSection 
 } from "./MyChartStyles";
 
+interface SlotConfig {
+  [key: string]: string; // e.g., "1": "07:00 AM"
+}
+
 interface MyChartProps {
   RowData: any[];
   ColDef: any[];
   TaskData: any[];
   colors: { [key: string]: string };
   primary_key: string;
+  Slot?: SlotConfig[]; // Dynamic shift configuration
   CustomTaskBar?: ({props}:any) => React.ReactNode;
   CustomTooltip?: any;
   height?: number;
   rowHeight?: number;
   overscanCount?: number;
-  enableAggregation?: boolean; // NEW: Aggregate overlapping tasks
-  aggregationThreshold?: number; // NEW: Pixel threshold for aggregation
+  Attributes?: { [key: string]: any };
 }
 
-// Memoized TaskBar component to prevent re-renders
+// Memoized TaskBar component
 const MemoizedTaskBar = React.memo(({ 
   left, 
   width, 
@@ -90,8 +96,11 @@ const VirtualRow = React.memo(({
   CustomTooltip,
   ToolTipContent,
   visibleColRange,
+  shiftsPerDay,
+  shiftFactor,
+  Attributes
 }: any) => {
-  const slotDuration = zoom === "week" ? 24 * 60 * 60 * 1000 : 8 * 60 * 60 * 1000;
+  const slotDuration = zoom === "week" ? 24 * 60 * 60 * 1000 : (24 * 60 * 60 * 1000) / shiftsPerDay;
   const chartStart = useMemo(() => {
     const date = new Date(startDate);
     date.setHours(0, 0, 0, 0);
@@ -121,7 +130,7 @@ const VirtualRow = React.memo(({
             const startSlots = taskStartOffset / slotDuration;
             const durationSlots = taskDuration / slotDuration;
 
-            const left = startSlots * cellWidth;
+            const left = (zoom==='day' && shiftFactor>0)?startSlots * cellWidth + shiftFactor :  startSlots * cellWidth;
             const width = durationSlots * cellWidth;
             
             // Culling: Skip tasks outside visible area
@@ -141,7 +150,7 @@ const VirtualRow = React.memo(({
             return (
               <Tooltip
                 content={CustomTooltip ? 
-                  CustomTooltip(task, taskStartOffset, taskEndOffset, startDate) : 
+                  CustomTooltip(task, taskStartOffset, taskEndOffset, startDate, Attributes) : 
                   ToolTipContent(task, taskStartOffset, taskEndOffset)
                 }
                 key={`${row[primary_key]}-${taskIdx}`}
@@ -164,7 +173,6 @@ const VirtualRow = React.memo(({
     </ContentRow>
   );
 }, (prevProps, nextProps) => {
-  // Custom comparison for deep equality on critical props
   return (
     prevProps.rowIndex === nextProps.rowIndex &&
     prevProps.row === nextProps.row &&
@@ -181,11 +189,13 @@ const MyChart: React.FC<MyChartProps> = ({
   TaskData,
   colors,
   primary_key,
+  Slot, // Dynamic shift configuration
   CustomTaskBar,
   CustomTooltip,
   height = 380,
   rowHeight = 30,
   overscanCount = 5,
+  Attributes
 }) => {
   const initialColWidths: any = ColDef.map((ele:any) => ele.width);
   const [colWidths, setColWidths] = useState<any>(initialColWidths);
@@ -199,6 +209,92 @@ const MyChart: React.FC<MyChartProps> = ({
   const rightHeaderRef = useRef<HTMLDivElement>(null);
   const isScrollingSyncRef = useRef(false);
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const calculateShiftInPixels = (startTime: string, numberOfSlots: number) => {
+    const [hours, minutes] = startTime.split(":").map(Number);
+    const totalMinutesFromMidnight = hours * 60 + minutes;
+    
+    const totalPixelsPerDay = numberOfSlots * 100;
+
+    const pixelsPerMinute = totalPixelsPerDay / (24 * 60);
+
+    const offsetFromMidnight = totalMinutesFromMidnight * pixelsPerMinute;
+
+    const shiftInPixels = totalPixelsPerDay - offsetFromMidnight;
+    const actualShift = Math.abs(((numberOfSlots-1)*100)-shiftInPixels)+ (numberOfSlots-1)*100;
+    return actualShift;
+  };
+
+  const shiftFactor = Slot ? Slot[0]['1']!== '00:00 AM' ? calculateShiftInPixels(Slot[0]['1'].split(' ')[0], Slot.length) : 0 : 0;
+
+  console.log("Shift Factor:", shiftFactor);
+
+  // Parse and validate shift configuration
+  const shiftConfig = useMemo(() => {
+    if (!Slot || zoom !== "day") return null;
+    
+    const shifts = Slot.map(slotObj => {
+      const key = Object.keys(slotObj)[0];
+      const timeStr = slotObj[key];
+      
+      // Parse time string (e.g., "07:00 AM" or "15:00")
+      let parsed;
+      try {
+        // Try parsing with AM/PM first
+        parsed = parse(timeStr, "hh:mm a", new Date());
+        if (isNaN(parsed.getTime())) {
+          // Try 24-hour format
+          parsed = parse(timeStr, "HH:mm", new Date());
+        }
+      } catch {
+        parsed = parse(timeStr, "HH:mm", new Date());
+      }
+      
+      const hours = parsed.getHours();
+      const minutes = parsed.getMinutes();
+      
+      return {
+        id: key,
+        label: timeStr,
+        startHour: hours,
+        startMinute: minutes,
+        startOffsetMs: (hours * 60 + minutes) * 60 * 1000, // milliseconds from 00:00
+      };
+    });
+    
+    // Sort shifts by start time
+    shifts.sort((a, b) => a.startOffsetMs - b.startOffsetMs);
+    
+    // Calculate duration for each shift
+    // Total duration = 24 hours, distributed across all shifts
+    const oneDayMs = 24 * 60 * 60 * 1000;
+    
+    return shifts.map((shift, idx) => {
+      const nextShift = shifts[(idx + 1) % shifts.length];
+      let durationMs;
+      
+      if (idx === shifts.length - 1) {
+        // Last shift: wraps to first shift of next day
+        durationMs = oneDayMs - shift.startOffsetMs + nextShift.startOffsetMs;
+      } else {
+        // Duration until next shift
+        durationMs = nextShift.startOffsetMs - shift.startOffsetMs;
+      }
+      
+      return {
+        ...shift,
+        durationMs,
+        durationHours: durationMs / (60 * 60 * 1000),
+      };
+    });
+  }, [Slot, zoom]);
+
+  // Number of shifts per day (dynamic based on Slot prop)
+  const shiftsPerDay = useMemo(() => {
+    if (zoom === "week") return 7; // 7 days in week view
+    if (shiftConfig) return shiftConfig.length;
+    return 3; // Default 3 shifts if no Slot prop
+  }, [zoom, shiftConfig]);
 
   const handleResize = (index: number, e: React.MouseEvent) => {
     e.preventDefault();
@@ -231,6 +327,14 @@ const MyChart: React.FC<MyChartProps> = ({
     return startOfDay(new Date(maxEnd));
   }, [TaskData]);
 
+  const formatTo12Hour = (time24: string) => {
+    const [hours, minutes] = time24.split(":").map(Number);
+    const period = hours >= 12 ? "PM" : "AM";
+    const hours12 = hours % 12 || 12; // Convert 0 to 12 for midnight
+    return `${hours12}:${minutes.toString().padStart(2, "0")} ${period}`;
+  };
+
+  // Generate calendar headers with dynamic shifts
   const getCalendarHeaderDateObject = () => {
     if (zoom === "week") {
       const weeks = eachWeekOfInterval(
@@ -247,17 +351,30 @@ const MyChart: React.FC<MyChartProps> = ({
         };
       });
     } else {
+      // Day view with dynamic shifts
       const days = eachDayOfInterval({ start: startDate, end: endDate });
-      return days.map((day) => ({
-        label: format(day, "EEEE, d MMMM yyyy"),
-        subHeaders: ["Shift 1", "Shift 2", "Shift 3"],
-      }));
+      
+      if (shiftConfig) {
+        // Use dynamic shift configuration
+        return days.map((day) => ({
+          label: format(day, "EEEE, d MMMM yyyy"),
+          subHeaders: shiftConfig.map(shift => `Shift ${shift.id} *Starts at ${formatTo12Hour(shift.label.split(' ')[0])}`),
+          date: day,
+        }));
+      } else {
+        // Default: 3 shifts
+        return days.map((day) => ({
+          label: format(day, "EEEE, d MMMM yyyy"),
+          subHeaders: ["Shift 1", "Shift 2", "Shift 3"],
+          date: day,
+        }));
+      }
     }
   };
 
   const calendarHeaders = useMemo(
     () => getCalendarHeaderDateObject(),
-    [zoom, startDate, endDate]
+    [zoom, startDate, endDate, shiftConfig]
   );
 
   const totalSubHeaders = useMemo(() => 
@@ -294,7 +411,6 @@ const MyChart: React.FC<MyChartProps> = ({
     };
   }, [cellWidth, totalSubHeaders, overscanCount]);
 
-  // Debounced scroll handler for better performance
   const handleVirtualScroll = useCallback(() => {
     if (scrollTimeoutRef.current) {
       clearTimeout(scrollTimeoutRef.current);
@@ -322,7 +438,7 @@ const MyChart: React.FC<MyChartProps> = ({
           return prev;
         });
       }
-    }, 16); // ~60fps
+    }, 16);
   }, [calculateVisibleRows, calculateVisibleColumns]);
 
   useEffect(() => {
@@ -390,10 +506,13 @@ const MyChart: React.FC<MyChartProps> = ({
     };
   }, [handleVirtualScroll]);
 
-  // Optimized task indexing with spatial indexing
+  // Optimized task indexing with dynamic slot duration
   const tasksByRow = useMemo(() => {
     const map = new Map<any, any[]>();
-    const slotDuration = zoom === "week" ? 24 * 60 * 60 * 1000 : 8 * 60 * 60 * 1000;
+    // Slot duration is now 24 hours divided by number of shifts
+    const slotDuration = zoom === "week" 
+      ? 24 * 60 * 60 * 1000 
+      : (24 * 60 * 60 * 1000) / shiftsPerDay;
     
     TaskData.forEach(task => {
       const key = task[primary_key];
@@ -401,7 +520,6 @@ const MyChart: React.FC<MyChartProps> = ({
         map.set(key, []);
       }
       
-      // Pre-calculate position for spatial queries
       const taskStart = new Date(task.start * 1000);
       const taskEnd = new Date(task.end * 1000);
       const chartStart = new Date(startDate);
@@ -421,13 +539,12 @@ const MyChart: React.FC<MyChartProps> = ({
       });
     });
     
-    // Sort tasks by start time for efficient rendering
     map.forEach((tasks) => {
       tasks.sort((a, b) => a._startSlot - b._startSlot);
     });
     
     return map;
-  }, [TaskData, primary_key, zoom, startDate, cellWidth]);
+  }, [TaskData, primary_key, zoom, startDate, cellWidth, shiftsPerDay]);
 
   const visibleRows = useMemo(() => {
     return RowData.slice(visibleRowRange.start, visibleRowRange.end);
@@ -448,6 +565,19 @@ const MyChart: React.FC<MyChartProps> = ({
             {task.jobId ? task.jobId : task.task_type}
           </div>
         </TooltipRow>
+        {
+          task.jobId && Attributes && Attributes[task.jobId] &&
+          Object.keys(Attributes[task.jobId]).map((attrKey, idx)=>(
+            <TooltipRow key={idx}>
+               <div style={{ color: "#cecece" }}>
+                {attrKey}:
+              </div>
+              <div style={{ color: "#cecece" }}>
+              {Attributes[task.jobId][attrKey]}
+              </div>
+            </TooltipRow>
+          ))
+        }
         <div style={{ width: "100%", borderTop: "1px dashed #666666" }}></div>
         <TooltipRow>
           <div>
@@ -479,9 +609,9 @@ const MyChart: React.FC<MyChartProps> = ({
           <ColumnHeaderWrapper>
             <ColumnTable>
               <thead>
-                <ColumnHeaderRow>
+                <ColumnHeaderRow style={{height: '54px'}}>
                   {ColDef.map((col, index) => (
-                    <HeaderCell key={index} width={colWidths[index]}>
+                    <HeaderCell style={{borderBottom: '1px solid #cecece', height: '57px'}} key={index} width={colWidths[index]}>
                       {col.title}
                       <ResizeHandle onMouseDown={(e) => handleResize(index, e)} />
                     </HeaderCell>
@@ -516,19 +646,57 @@ const MyChart: React.FC<MyChartProps> = ({
 
         <CalendarSection>
           <CalendarHeaderWrapper ref={rightHeaderRef}>
+                <CalendarHeaderRowTop>
+                  {
+                    shiftFactor>0 && zoom==='day' &&
+
+                    <CalendarCell style={{minWidth: shiftFactor+'px', width:shiftFactor+'px'}} >
+
+                  </CalendarCell>
+                  }
+                  {calendarHeaders.map((header: any, idx: any) => {
+                    if(zoom==='day'){
+                    return (
+
+                      
+                      <CalendarCell style={{minWidth:Slot? 100*Slot.length+'px': 300+'px', width: Slot? 100*Slot.length+'px': 300+'px'}} key={idx} >
+                      {header.label}
+                      </CalendarCell>
+                      
+                    )
+                  }
+                    else{
+                      return (
+                        <CalendarCell style={{minWidth: '700px', width:  '700px'}} key={idx} >
+                        {header.label}
+                        </CalendarCell>
+                      )
+                    }
+
+                  }
+                  )}
+                </CalendarHeaderRowTop>
             <CalendarTable>
               <thead>
                 <CalendarHeaderRow>
-                  {calendarHeaders.map((header: any, idx: any) => (
-                    <CalendarCell key={idx} colSpan={header.subHeaders.length}>
-                      {header.label}
-                    </CalendarCell>
-                  ))}
-                </CalendarHeaderRow>
-                <CalendarHeaderRow>
                   {calendarHeaders.flatMap((header: any, idx: any) =>
                     header.subHeaders.map((sub: any, subIdx: any) => (
-                      <CalendarCell key={`${idx}-${subIdx}`}>{sub}</CalendarCell>
+                      <CalendarCell key={`${idx}-${subIdx}`}>
+                        {
+                          (zoom === "day") ?
+                      <Tooltip
+                      content={<div style={{padding: '8px',color: '#cecece', fontSize: '0.9rem', border: '0.5px solid #cecece', borderRadius: '4px'}}>
+                        {sub.split('*')[1]}
+                      </div>
+                      }
+                      key={`${idx}-${subIdx}`}
+                      >
+                        {sub.split('*')[0]}
+                      </Tooltip>
+                      :
+                      sub
+                    }
+                        </CalendarCell>
                     ))
                   )}
                 </CalendarHeaderRow>
@@ -565,6 +733,9 @@ const MyChart: React.FC<MyChartProps> = ({
                       CustomTooltip={CustomTooltip}
                       ToolTipContent={ToolTipContent}
                       visibleColRange={visibleColRange}
+                      shiftsPerDay={shiftsPerDay}
+                      shiftFactor={shiftFactor}
+                      Attributes={Attributes}
                     />
                   );
                 })}

@@ -89,6 +89,10 @@ export const ColumnHeaderRow = styled.tr`
   height: 50px;
   background: black;
 `;
+export const ColumnHeaderRowTop = styled.div`
+  height: 50px;
+  background: black;
+`;
 
 export const ContentRow = styled.tr`
   height: 30px;

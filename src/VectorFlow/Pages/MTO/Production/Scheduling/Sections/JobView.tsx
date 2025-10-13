@@ -112,7 +112,8 @@ const JobView = ({ResourceData}: any) => {
       task: any,
       taskStartOffset: any,
       taskEndOffset: any,
-      startDate: any
+      startDate: any,
+      Attributes: any
     ) => {
       return (
         <TooltipWrapper>
@@ -124,6 +125,19 @@ const JobView = ({ResourceData}: any) => {
               {task.jobId ? task.jobId : task.task_type}
             </div>
           </TooltipRow>
+          {
+                    task.jobId && Attributes && Attributes[task.jobId] &&
+                    Object.keys(Attributes[task.jobId]).map((attrKey, idx)=>(
+                      <TooltipRow key={idx}>
+                         <div style={{ color: "#cecece" }}>
+                          {attrKey}:
+                        </div>
+                        <div style={{ color: "#cecece" }}>
+                        {Attributes[task.jobId][attrKey]}
+                        </div>
+                      </TooltipRow>
+                    ))
+                  }
           <div style={{ width: "100%", borderTop: "1px dashed #666666" }}></div>
           <TooltipRow>
             <div>
@@ -159,6 +173,8 @@ const JobView = ({ResourceData}: any) => {
               colors={colors}
               CustomTaskBar={CustomTaskBar}
               CustomTooltip={CustomTooltip}
+              Slot={ResourceData?.Slot}
+              Attributes={ResourceData?.Attribute_Master|| {}}
             />
           </Suspense>
         ) : (

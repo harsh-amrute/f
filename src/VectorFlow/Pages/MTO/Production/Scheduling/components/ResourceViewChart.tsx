@@ -78,18 +78,8 @@ const ResourceViewChart = ({ResourceData}:any) => {
         ready ? (
           <Suspense fallback={<GanttSkeleton />}>
             <MyChart RowData={RowData} ColDef={ColDef} TaskData={TaskData} primary_key={"work_station"} colors={colors} 
-            //  Slot={
-            //    [
-            //      {
-            //          "1": "07:00 AM"
-            //      },
-            //      {
-            //          "2": "15:00 PM"
-            //      },
-            //      {
-            //          "3": "23:00 PM"
-            //      }
-            //  ] }
+             Slot={ResourceData?.Slot }
+            Attributes={ResourceData?.Attribute_Master || {}}
             />
           </Suspense>
         ) : (
