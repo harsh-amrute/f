@@ -488,7 +488,7 @@ const handleActionChange = (option: any) => {
         }
       } else if (Array.isArray(masterSelectedRowData)) {
         const okValues = masterSelectedRowData
-          .map((item) => item?.ok)
+          .map((item) => (item.ct === null || item.ct === undefined || item.ct === "") ? item?.ok : undefined)
           .filter((value) => value !== undefined);
 
         const response = await updateActionAPI(selectedAction.value, okValues);
