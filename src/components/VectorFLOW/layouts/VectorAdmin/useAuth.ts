@@ -18,6 +18,7 @@ export const useAuth = () => {
                 console.error("Your session has expired",err)
                 notifyError("Your session has expired. Please log in again.");
                 localStorage.removeItem('isAdmin');
+                localStorage.clear()
             })
             .finally(() => {
 

@@ -20,6 +20,7 @@ function App () {
         .catch((err) => {
           console.log(err)
            loginRedirect(navigate)
+           localStorage.clear()
         })
       }
     },[location.pathname])

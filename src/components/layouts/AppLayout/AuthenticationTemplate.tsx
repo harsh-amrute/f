@@ -65,6 +65,7 @@ const AuthenticatedTemplate = (
       } catch (err) {
         notifyError("Session expired or invalid. Please log in.");
         loginRedirect(navigate);
+        localStorage.clear();
       } finally {
         setLoading(false);
       }
