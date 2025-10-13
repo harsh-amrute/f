@@ -881,7 +881,7 @@ const handleActionChange = (option: any) => {
 
   const handlePageChange = useCallback((currPage: number) => {
     setCurrentPage(currPage);
-    // setIsCheckboxChecked(false);
+    setIsCheckboxChecked(false);
     getInitialGridData(currPage);
   }, [getInitialGridData]);
 
