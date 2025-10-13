@@ -20,6 +20,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/store/store";
 import { BPRFilter, BPRFilterState } from "../../../../../VectorFlow/types/BPR";
 import { useGetAllLocations } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
+import { MultiValue, ActionMeta } from "react-select";
 
 interface FilterSectionProps {
   multiFilter: BPRFilterState;
@@ -85,15 +86,9 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
 
   const locationCheckboxOptions = React.useMemo(() => {
     if (!locationData?.data?.data) return [];
-
     return locationData.data.data.map((location: any) => {
-      let label = "";
-      if (filterType === "Location Code") {
-        label = `${location.wc}`;
-      } else {
-        label = `${location.wd}`;
-      }
-
+      const label =
+        filterType === "Location Code" ? `${location.wc}` : `${location.wd}`;
       return {
         label: label,
         id: location.wc,
@@ -105,7 +100,6 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
 
   const CustomOption = (props: any) => {
     const optionStyles = useColorOptionStyles();
-
     return (
       <components.Option {...props}>
         <div style={optionStyles.optionContainer}>
@@ -121,55 +115,43 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
     );
   };
 
+  const [selectedLocations, setSelectedLocations] = useState<any[]>([]);
+
   useEffect(() => {
     const parentId = "locationFilter";
     const savedFilters = multiFilter[parentId]?.filters || [];
 
-    if (savedFilters.length === 0) {
-      setRowSelections({});
-      setIsInitialized(true);
-      return;
+    if (savedFilters.length > 0) {
+      const restored: {
+        [rowId: number]: { column?: any; operation?: any; value?: any };
+      } = {};
+      savedFilters
+        .filter((f) => !f.name.startsWith("LF6"))
+        .forEach((f: BPRFilter, idx: number) => {
+          const column = filterLocationOptions.find(
+            (opt) => opt.value === f.attributeName
+          );
+          const operation = stringOpertors.find(
+            (op) => op.value === f.operator
+          );
+          restored[idx] = {
+            column: column || null,
+            operation: operation || null,
+            value: f.value,
+          };
+        });
+      setRowSelections(restored);
     }
 
-    const newRows = savedFilters.map((_, idx) => ({ id: idx }));
+    const savedLocationFilters = savedFilters.filter((f) => f.name === "LF6");
+    const restoredLocations = savedLocationFilters.map((f) => ({
+      value: f.value,
+      label: f.label === "LocationCode" ? f.value : f.label,
+    }));
+    setSelectedLocations(restoredLocations);
 
-    if (setFilterRows) {
-      setFilterRows(newRows);
-    } else {
-      const currentRowCount = filterRows.length;
-      const targetRowCount = savedFilters.length;
-
-      if (currentRowCount < targetRowCount) {
-        for (let i = currentRowCount; i < targetRowCount; i++) {
-          addFilterRow();
-        }
-      } else if (currentRowCount > targetRowCount) {
-        for (let i = currentRowCount - 1; i >= targetRowCount; i--) {
-          removeFilterRow(filterRows[i].id);
-        }
-      }
-    }
-
-    const restored: {
-      [rowId: number]: { column?: any; operation?: any; value?: any };
-    } = {};
-
-    savedFilters.forEach((f: BPRFilter, idx: number) => {
-      const column = filterLocationOptions.find(
-        (opt) => opt.value === f.attributeName
-      );
-      const operation = stringOpertors.find((op) => op.value === f.operator);
-
-      restored[idx] = {
-        column: column || null,
-        operation: operation || null,
-        value: f.value,
-      };
-    });
-
-    setRowSelections(restored);
     setIsInitialized(true);
-  }, [multiFilter?.locationFilter?.filters]);
+  }, [multiFilter]);
 
   const onFilterChange = (
     rowId: number,
@@ -200,13 +182,9 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
       };
 
       const existingFilters = multiFilter[parentId]?.filters || [];
-      const filteredFilters = existingFilters.filter((f: BPRFilter) => {
-        const filterRowId = filterRows.findIndex((row) => {
-          const sel = rowSelections[row.id];
-          return sel?.column?.name === f.name;
-        });
-        return filterRowId !== rowId;
-      });
+      const filteredFilters = existingFilters.filter(
+        (f: BPRFilter) => f.name !== newFilter.name
+      );
 
       const updatedMultiFilter = {
         ...multiFilter,
@@ -220,6 +198,39 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
     }
   };
 
+  const handleLocationSelectChange = (
+    newValue: MultiValue<any>,
+    actionMeta: ActionMeta<any>
+  ) => {
+    const selected = Array.isArray(newValue) ? [...newValue] : [];
+    setSelectedLocations(selected);
+
+    const parentId = "locationFilter";
+    const existingFilters = multiFilter[parentId]?.filters || [];
+
+    const filteredFilters = existingFilters.filter(
+      (f: BPRFilter) => f.name !== "LF6"
+    );
+
+    const newFilters = selected.map((loc) => ({
+      attributeName: "Location",
+      value: loc.value,
+      operator: "=",
+      label: "LocationCode",
+      name: "LF6",
+    }));
+
+    const updatedMultiFilter: BPRFilterState = {
+      ...multiFilter,
+      [parentId]: {
+        ...multiFilter[parentId],
+        filters: [...filteredFilters, ...newFilters],
+      },
+    };
+
+    onMultiFilterChange(updatedMultiFilter);
+  };
+
   const handleApply = () => {
     console.log("Applied Filters: ", multiFilter);
   };
@@ -228,9 +239,7 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
     setFilterType(selected.value);
   };
 
-  if (!isInitialized) {
-    return null;
-  }
+  if (!isInitialized) return null;
 
   return (
     <>
@@ -336,9 +345,11 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
                   DropdownIndicator: () => null,
                 }}
                 isMulti
-                isSearchable={true}
+                isSearchable
                 closeMenuOnSelect={false}
                 hideSelectedOptions={false}
+                value={selectedLocations}
+                onChange={handleLocationSelectChange}
               />
 
               <div style={{ width: 165, marginTop: -44, marginLeft: 4.5 }}>

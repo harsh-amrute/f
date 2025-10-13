@@ -75,11 +75,13 @@ export const useFilterRows = (initialCount = 1, maxRows = 5) => {
 export const stringOpertors = [
   { label: "Equal to", value: "equalto" },
   { label: "Not Equal to", value: "notequalto" },
+  { label: "Contains", value: "contains" },
   { label: "Does not contain", value: "doesnotcontain" },
   { label: "Starts With", value: "startswith" },
   { label: "Does not start with", value: "doesnotstartwith" },
   { label: "Ends with", value: "endswith" },
   { label: "Does not end with", value: "doesnotendwith" },
+  { label: "Has value", value: "hasvalue" },
   { label: "Has no value", value: "hasnovalue" },
 ]
 
