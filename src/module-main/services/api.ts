@@ -79,7 +79,7 @@ export namespace MainService {
 export const getProfile = async () => {
   try {
     const response = await axios.get(`/${API_USER}/profile/`, { withCredentials: true });
-    return response.data;
+    return response;
   } catch (error) {
     console.error('Failed to fetch profile:', error);
     localStorage.clear(); 
