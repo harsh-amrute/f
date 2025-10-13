@@ -9,7 +9,6 @@ interface ModalProps {
   message?: any;
   actionText: any; 
   orderCount: number; 
-  actionBreakdown?: any;
   shortCloseTracker?: any;
   completeCloseTracker?:any
 

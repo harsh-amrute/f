@@ -220,8 +220,8 @@ const OverallBmReport = () => {
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui; 
   const feature_permission = user?.feature_permission || [];
-  // const canShowOrderClosing = feature_permission.includes("Order_Closing");
-  const canShowOrderClosing = true
+  const canShowOrderClosing = feature_permission.includes("Order_Closing");
+
   const dispatch = useDispatch();
   const [userPageSize, setUserPageSize] = useState<any>();
 
@@ -363,36 +363,40 @@ const onCheckBoxToggle = (e: any) => {
 
   };
  
-
-  const handleActionChange = (option: any) => {
+const handleActionChange = (option: any) => {
   setSelectedAction(option);
 
-  if (!option || !refGraph2.current?.api) {
+  if (!option) {
     return;
   }
 
-  const selectedNodes = refGraph2.current.api.getSelectedRows();
-  const selectedKeys = new Set(selectedNodes.map((row: OrderItem) => row.ok));
-
-  setGridData((currentGridData:any) =>
-    currentGridData.map((row:any) => {
-      if (selectedKeys.has(row.ok)) {
-        return { ...row, oca: option.value }; 
-      }
-      return row;
-    })
+  // Updating across all pages
+  setMasterSelectedRowData((updated: any) =>
+    updated.map((masterRow: any) => ({
+      ...masterRow,
+      oca: option.value
+    }))
   );
 
-  setMasterSelectedRowData((currentMasterData:any) =>
-    currentMasterData.map((masterRow:any) => {
-      if (selectedKeys.has(masterRow.ok)) {
-        return { ...masterRow, oca: option.value };
-      }
-      return masterRow;
-    })
-  );
+  // updating currently visible rows
+  if (refGraph2.current?.api) {
+    const currentlyVisibleSelectedRows = refGraph2.current.api.getSelectedRows();
+    const visibleSelectedKeys = new Set(currentlyVisibleSelectedRows.map((row: any) => row.ok));
+
+    setGridData((currentGridData: any) =>
+      currentGridData.map((row: any) => {
+        if (visibleSelectedKeys.has(row.ok)) {
+          return { ...row, oca: option.value };
+        }
+        return row;
+      })
+    ); 
+  }
 };
 
+
+
+  
   const updateActionAPI = async (action: string, order_ids: any) => {
     try {
       if (action === "undo") {
@@ -644,12 +648,6 @@ const onCheckBoxToggle = (e: any) => {
 
   const DropDownCellRenderer = (props: any) => {
 
-    if(!props.node.selected){
-      props.node.data.oca = null;
-      props.api.refreshCells({ rowNodes: [props.node], columns: ['oca'], force: true });
-
-    }
-
     return (
       <>
         
@@ -883,7 +881,7 @@ const onCheckBoxToggle = (e: any) => {
 
   const handlePageChange = useCallback((currPage: number) => {
     setCurrentPage(currPage);
-    setIsCheckboxChecked(false);
+    // setIsCheckboxChecked(false);
     getInitialGridData(currPage);
   }, [getInitialGridData]);
 
@@ -1023,6 +1021,7 @@ const onCheckBoxToggle = (e: any) => {
     toggleCheckBox();
   };
 
+ 
 const onPivotModeChanged = (event: any) => {
   const isPivotOn = event.api.isPivotMode();
   setIsPivot(isPivotOn);
