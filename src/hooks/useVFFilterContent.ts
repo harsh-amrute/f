@@ -71,29 +71,55 @@ export const useThemeStyles = () => {
   return styles;
 }
 
-export const useColorThemeStyles = () => {
+interface ColorThemeStylesProps {
+  minHeight?: string;
+  minWidth?: string;
+  valueContainerPaddingLeft?: string;
+  inputColor?: string;
+  placeholderColor?: string;
+  menuListMaxHeight?: string | number;
+  menuWidth?: string;
+  gridColumns?: 1 | 2;
+  gridGap?: string;
+  optionPadding?: string;
+}
+
+export const useColorThemeStyles = (props?: ColorThemeStylesProps) => {
   const { user } = useUserData();
   const theme_ui = user.user.theme_ui;
+
+  const {
+    minHeight = "40px",
+    minWidth = "250px",
+    valueContainerPaddingLeft,
+    inputColor,
+    placeholderColor,
+    menuListMaxHeight,
+    menuWidth,
+    gridColumns = 1,
+    gridGap = "8px",
+    optionPadding = "0 12px"
+  } = props || {};
 
   const styles = {
     control: (baseStyles: any, { isFocused }: any) => ({
       ...baseStyles,
-      borderColor: isFocused 
-        ? (theme_ui === "REGALBLAZE" ? "#FCA311" : "#BC3D80") 
+      borderColor: isFocused
+        ? (theme_ui === "REGALBLAZE" ? "#FCA311" : "#BC3D80")
         : "#c7c0c0ff",
       borderWidth: isFocused ? "2px" : "1px",
       borderRadius: "10px",
       fontSize: "14px",
-      minHeight: "40px",
+      minHeight: minHeight,
       boxSizing: "border-box",
       boxShadow: "none",
-      width: "100%", 
-      minWidth: "250px", 
+      width: "100%",
+      minWidth: minWidth,
       maxWidth: "360px",
-      overflow: "hidden", 
+      overflow: "hidden",
       "&:hover": {
-        borderColor: isFocused 
-          ? (theme_ui === "REGALBLAZE" ? "#FCA311" : "#BC3D80") 
+        borderColor: isFocused
+          ? (theme_ui === "REGALBLAZE" ? "#FCA311" : "#BC3D80")
           : "#c7c0c0ff",
       },
     }),
@@ -102,51 +128,67 @@ export const useColorThemeStyles = () => {
       zIndex: 9999,
       position: "absolute",
       width: "100%",
-      minWidth: "250px",
+      minWidth: menuWidth || minWidth,
       maxWidth: "360px",
     }),
     menuList: (baseStyles: any) => ({
       ...baseStyles,
-      maxHeight: "none",
-      overflowY: "visible",
+      maxHeight: menuListMaxHeight || "none",
+      overflowY: menuListMaxHeight ? "auto" : "visible",
       scrollbarWidth: "none",
       msOverflowStyle: "none",
+      ...(gridColumns === 2 && {
+        display: "grid",
+        gridTemplateColumns: "repeat(2, 1fr)",
+        gap: gridGap,
+        padding: gridGap,
+      }),
       "&::-webkit-scrollbar": {
         display: "none",
       },
     }),
-    option: (baseStyles: any, { isSelected }: any) => ({
+    option: (baseStyles: any, { isSelected, isFocused }: any) => ({
       ...baseStyles,
       backgroundColor: isSelected
         ? (theme_ui === "REGALBLAZE" ? "#FCA311" : "#BC3D80")
         : "white",
       fontSize: "14px",
       cursor: "pointer",
-      minHeight: "40px",
+      minHeight: minHeight,
       display: "flex",
       alignItems: "center",
+      ...(gridColumns === 2 && {
+        gridColumn: "span 1",
+        margin: 0,
+        borderRadius: "6px",
+        padding: optionPadding,
+        border: isFocused ? `1px solid ${theme_ui === "REGALBLAZE" ? "#FCA311" : "#BC3D80"}` : "1px solid #f0f0f0",
+      }),
       "&:hover": {
         color: "black",
         backgroundColor: theme_ui === "REGALBLAZE"
           ? "rgb(252, 163, 17,0.3)"
           : "#bc3d814d",
+        ...(gridColumns === 2 && {
+          borderColor: theme_ui === "REGALBLAZE" ? "#FCA311" : "#BC3D80"
+        }),
       },
     }),
     placeholder: (baseStyles: any) => ({
       ...baseStyles,
       fontSize: "14px",
-      color: "#757575",
+      color: placeholderColor || "#757575",
     }),
     multiValue: (baseStyles: any) => ({
       ...baseStyles,
       borderRadius: "6px",
       padding: "2px",
-      backgroundColor: theme_ui === "REGALBLAZE" 
-        ? "rgb(252, 163, 17,0.1)" 
+      backgroundColor: theme_ui === "REGALBLAZE"
+        ? "rgb(252, 163, 17,0.1)"
         : "rgba(188, 61, 128, 0.1)",
       flexShrink: 0,
       minWidth: "fit-content",
-      maxWidth: "120px", // Reduce tag width
+      maxWidth: "120px",
     }),
     multiValueLabel: (baseStyles: any) => ({
       ...baseStyles,
@@ -155,7 +197,7 @@ export const useColorThemeStyles = () => {
       whiteSpace: "nowrap",
       overflow: "hidden",
       textOverflow: "ellipsis",
-      maxWidth: "100px", 
+      maxWidth: "100px",
     }),
     multiValueRemove: (baseStyles: any) => ({
       ...baseStyles,
@@ -170,10 +212,10 @@ export const useColorThemeStyles = () => {
       ...baseStyles,
       display: 'flex',
       alignItems: 'center',
-      flexWrap: 'nowrap', 
+      flexWrap: 'nowrap',
       overflowX: 'auto',
       overflowY: 'hidden',
-      width: "calc(100% - 40px)", 
+      width: "calc(100% - 40px)",
       maxWidth: "calc(100% - 40px)",
       minWidth: "0",
       flex: "1 1 auto",
@@ -183,7 +225,7 @@ export const useColorThemeStyles = () => {
         display: "none",
       },
       gap: "4px",
-      padding: "2px 8px",
+      padding: valueContainerPaddingLeft ? `2px 8px 2px ${valueContainerPaddingLeft}` : "2px 8px",
     }),
     input: (baseStyles: any) => ({
       ...baseStyles,
@@ -191,21 +233,22 @@ export const useColorThemeStyles = () => {
       fontFamily: "Roboto, sans-serif",
       margin: 0,
       padding: 0,
-      width: "0px", 
-      minWidth: "0px", 
-      maxWidth: "0px", 
+      width: "0px",
+      minWidth: "0px",
+      maxWidth: "0px",
       border: "none",
       outline: "none",
       background: "transparent",
       opacity: 0,
+      color: inputColor || "inherit",
     }),
     indicatorsContainer: (baseStyles: any) => ({
       ...baseStyles,
-      flexShrink: 0, 
+      flexShrink: 0,
     }),
   };
 
-  return styles; 
+  return styles;
 };
 
 export const useColorOptionStyles = () => {

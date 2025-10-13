@@ -7,14 +7,19 @@ import {
   DropDownRow,
   IconWrapper,
 } from "./style";
-import Select from "react-select";
-import { useThemeStyles } from "../../../../../hooks/useVFFilterContent";
+import Select, { components } from "react-select";
+import {
+  useColorOptionStyles,
+  useColorThemeStyles,
+  useThemeStyles,
+} from "../../../../../hooks/useVFFilterContent";
 import { useFilterRows, stringOpertors } from "./useVFFilterContent";
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import { useUserData } from "../../../../../context";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/store/store";
 import { BPRFilter, BPRFilterState } from "../../../../../VectorFlow/types/BPR";
+import { useGetAllLocations } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 
 interface FilterSectionProps {
   multiFilter: BPRFilterState;
@@ -39,6 +44,19 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
     setFilterRows,
   } = useFilterRows();
 
+  const colorStyles = useColorThemeStyles({
+    minWidth: "620px",
+    minHeight: "48px",
+    valueContainerPaddingLeft: "175px",
+    inputColor: "#333",
+    placeholderColor: "#999",
+    menuListMaxHeight: 400,
+    gridColumns: 2,
+    menuWidth: "800px",
+    gridGap: "12px",
+    optionPadding: "8px 16px",
+  });
+
   const EnvConfig = useSelector((state: RootState) => state.mta.EnvConfig);
 
   const LOCATION_PERMISSION_L1 = EnvConfig["LOCATION_PERMISSION_L1"];
@@ -58,6 +76,50 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
   }>({});
 
   const [isInitialized, setIsInitialized] = useState(false);
+  const [filterType, setFilterType] = useState<
+    "Location Code" | "Location Description"
+  >("Location Code");
+
+  const { data: locationData, isLoading: isLocationDataLoading } =
+    useGetAllLocations();
+
+  const locationCheckboxOptions = React.useMemo(() => {
+    if (!locationData?.data?.data) return [];
+
+    return locationData.data.data.map((location: any) => {
+      let label = "";
+      if (filterType === "Location Code") {
+        label = `${location.wc}`;
+      } else {
+        label = `${location.wd}`;
+      }
+
+      return {
+        label: label,
+        id: location.wc,
+        value: location.wc,
+        originalData: location,
+      };
+    });
+  }, [locationData, filterType]);
+
+  const CustomOption = (props: any) => {
+    const optionStyles = useColorOptionStyles();
+
+    return (
+      <components.Option {...props}>
+        <div style={optionStyles.optionContainer}>
+          <input
+            type="checkbox"
+            checked={props.isSelected}
+            style={optionStyles.checkbox}
+            readOnly
+          />
+          <span style={optionStyles.colorName}>{props.data.label}</span>
+        </div>
+      </components.Option>
+    );
+  };
 
   useEffect(() => {
     const parentId = "locationFilter";
@@ -162,6 +224,10 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
     console.log("Applied Filters: ", multiFilter);
   };
 
+  const handleFilterTypeChange = (selected: any) => {
+    setFilterType(selected.value);
+  };
+
   if (!isInitialized) {
     return null;
   }
@@ -252,53 +318,27 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
             <DropDownWrapper style={{ flex: 1 }}>
               <Select
                 placeholder="Enter value"
+                options={locationCheckboxOptions}
                 styles={{
-                  ...styles,
-                  control: (base: any, state: any) => ({
+                  ...colorStyles,
+                  menu: (base) => ({
                     ...base,
-                    minHeight: "48px",
-                    border: state.isFocused
-                      ? user.user.theme_ui === "REGALBLAZE"
-                        ? "2px solid #FCA311"
-                        : "2px solid #BC3D80"
-                      : "1px solid #c7c0c0ff",
-                    borderRadius: "10px",
-                    boxShadow: "none",
-                    outline: "none",
-                    "&:hover": {
-                      border: state.isFocused
-                        ? user.user.theme_ui === "REGALBLAZE"
-                          ? "2px solid #FCA311"
-                          : "2px solid #BC3D80"
-                        : "1px solid #c7c0c0ff",
-                    },
+                    minWidth: "620px",
                   }),
-                  valueContainer: (base: any) => ({
+                  input: (base) => ({
                     ...base,
-                    paddingLeft: "175px",
-                  }),
-                  placeholder: (base: any) => ({
-                    ...base,
-                    fontSize: "14px",
-                    marginLeft: "1px",
+                    color: "#333",
                   }),
                 }}
                 components={{
+                  Option: CustomOption,
                   IndicatorSeparator: () => null,
                   DropdownIndicator: () => null,
-                  // Menu: () => null,
                 }}
-                // isSearchable={true}
-                isClearable
-                // inputValue={filters.someValue || ""}
-                // onInputChange={(inputValue) =>
-                //   onFilterChange("someValue", inputValue)
-                // }
-                // menuIsOpen={false}
-                options={[
-                  { value: "apple", label: "Apple" },
-                  { value: "b", label: "B" },
-                ]}
+                isMulti
+                isSearchable={true}
+                closeMenuOnSelect={false}
+                hideSelectedOptions={false}
               />
 
               <div style={{ width: 165, marginTop: -44, marginLeft: 4.5 }}>
@@ -329,8 +369,16 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
                   components={{ IndicatorSeparator: () => null }}
                   options={[
                     { value: "Location Code", label: "Location Code" },
-                    { value: "Location Description", label: "Location Description" },
+                    {
+                      value: "Location Description",
+                      label: "Location Description",
+                    },
                   ]}
+                  value={{
+                    value: filterType,
+                    label: filterType,
+                  }}
+                  onChange={handleFilterTypeChange}
                 />
               </div>
             </DropDownWrapper>

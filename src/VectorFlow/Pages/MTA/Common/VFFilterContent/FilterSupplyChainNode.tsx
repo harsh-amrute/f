@@ -11,7 +11,7 @@ import useGetLocation from "../../../../../hooks/useGetLocation";
 import { useUserData } from "../../../../../context";
 import { useGetAllLocations } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 import { BPRFilter, BPRFilterState } from "../../../../../VectorFlow/types/BPR";
-import { useVFMultiFilter } from "./useVFFilterContent"; 
+import { useVFMultiFilter } from "./useVFFilterContent";
 
 interface FilterSectionProps {
   filters: any;
@@ -44,10 +44,11 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
   const { locations } = useGetLocation();
   const colorStyles = useColorThemeStyles();
 
-  const { handleSelectChange, getSelectedValues, setSelectedValues } = useVFMultiFilter({
-    multiFilter,
-    onMultiFilterChange,
-  });
+  const { handleSelectChange, getSelectedValues, setSelectedValues } =
+    useVFMultiFilter({
+      multiFilter,
+      onMultiFilterChange,
+    });
 
   const [selectedOptions, setSelectedOptions] = useState<{
     ForLocation: string[];
@@ -120,12 +121,12 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
                 ...colorStyles,
                 input: (base) => ({
                   ...base,
-                  color: '#333',
+                  color: "#333",
                 }),
                 placeholder: (base) => ({
                   ...base,
-                  color: '#999',
-                  display: 'block',
+                  color: "#999",
+                  display: "block",
                 }),
                 menuList: (base) => ({
                   ...base,
@@ -144,7 +145,7 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
                   newValue,
                   header: "ForLocation",
                   filterId: "SCF1",
-                  parentId: "supplyChainFilter"
+                  parentId: "supplyChainFilter",
                 })
               }
             />
@@ -168,12 +169,12 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
                 ...colorStyles,
                 input: (base) => ({
                   ...base,
-                  color: '#333',
+                  color: "#333",
                 }),
                 placeholder: (base) => ({
                   ...base,
-                  color: '#999',
-                  display: 'block',
+                  color: "#999",
+                  display: "block",
                 }),
                 menuList: (base) => ({
                   ...base,
@@ -192,7 +193,7 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
                   newValue,
                   header: "ForChildren",
                   filterId: "SCF2",
-                  parentId: "supplyChainFilter"
+                  parentId: "supplyChainFilter",
                 })
               }
             />
@@ -226,22 +227,25 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
                 ),
               }}
               styles={{
-                ...colorStyles,
+                ...useColorThemeStyles({
+                  minWidth: "750px",
+                  inputColor: "#333",
+                  placeholderColor: "#999",
+                  menuListMaxHeight: 450,
+                  gridColumns: 2,
+                  menuWidth: "750px",
+                  gridGap: "12px",
+                  optionPadding: "8px 16px",
+                }),
                 input: (base) => ({
                   ...base,
-                  color: '#333',
+                  color: "#333",
                 }),
                 placeholder: (base) => ({
                   ...base,
-                  color: '#999',
-                  display: 'block',
+                  color: "#999",
+                  display: "block",
                 }),
-                menuList: (base) => ({
-                  ...base,
-                  maxHeight: 400,
-                  overflowY: "auto",
-                  scrollbarWidth: "none",
-                }),      
               }}
               placeholder="Search By Locations"
               value={selectedOptions.ForChildrenLocationCode.map((option) => ({
@@ -253,7 +257,7 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
                   newValue,
                   header: "ForChildrenLocationCode",
                   filterId: "SCF3",
-                  parentId: "supplyChainFilter"
+                  parentId: "supplyChainFilter",
                 })
               }
             />
