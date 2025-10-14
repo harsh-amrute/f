@@ -6,7 +6,6 @@ import {
   DropDownWrapper,
 } from "./style";
 import {
-  DatePickerWrapper,
   TextInputWrapper,
   ButtonWrapper,
   ImageWrapper,
@@ -15,9 +14,10 @@ import {
 import { useUserData } from "../../../../../context";
 import moment from "moment";
 import ReactDOM from "react-dom";
-import Select from "react-select";
-import { useVFMultiFilter } from "./useVFFilterContent";
+import { getStartDate, useVFMultiFilter } from "./useVFFilterContent";
 import { BPRFilterState } from "../../../../../VectorFlow/types/BPR";
+import { useSelector } from "react-redux";
+import { RootState } from "./../../../../../redux/store/store";
 interface FilterSectionProps {
   filters?: any;
   multiFilter: BPRFilterState;
@@ -41,9 +41,12 @@ export const HorizonFilter: React.FC<FilterSectionProps> = ({
     onMultiFilterChange,
   });
 
+  const lastRunDate = useSelector((state: RootState) => state.mta.lastRunDate);
+  const endDate = lastRunDate.split('T')[0];
+  const startDate:string = getStartDate(endDate);
+
   const [fromDate, setFromDate] = useState<string>(initialFromDate);
   const [toDate, setToDate] = useState<string>(initialToDate);
-  const [filterType, setFilterType] = useState<string>(selectedFilterType);
 
   const [showFromCal, setShowFromCal] = useState(false);
   const [showToCal, setShowToCal] = useState(false);
@@ -111,6 +114,16 @@ export const HorizonFilter: React.FC<FilterSectionProps> = ({
     setShowFromCal((prev) => !prev);
   };
 
+  const tileDisabled = ({ date }: { date: Date }) => {
+
+  const start = new Date(startDate)
+  const end = new Date(endDate);
+
+  const tile = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const startOnly = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+  const endOnly = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+  return tile < startOnly || tile > endOnly;
+};
   const toggleToCalendar = () => {
     const rect = toInputRef.current?.getBoundingClientRect();
     if (rect) {
@@ -136,8 +149,6 @@ export const HorizonFilter: React.FC<FilterSectionProps> = ({
       parentId: "horizonFilter",
       attributeName: "startDate",
     });
-    
-    console.log("From date changed:", formatted);
   };
 
   const handleToChange = (date: Date) => {
@@ -182,20 +193,6 @@ export const HorizonFilter: React.FC<FilterSectionProps> = ({
     });
   };
 
-  const handleFilterTypeChange = (selected: any) => {
-    if (selected) {
-      setFilterType(selected.value);
-      
-      handleSelectChange({
-        newValue: [{ label: selected.label, value: selected.value }],
-        header: "HorizonFilter",
-        filterId: "HF0",
-        parentId: "horizonFilter",
-        attributeName: "filterType",
-      });
-    }
-  };
-
   const boxStyle: React.CSSProperties = {
     display: "flex",
     alignItems: "center",
@@ -205,35 +202,6 @@ export const HorizonFilter: React.FC<FilterSectionProps> = ({
     backgroundColor: "#fff",
     gap: "6px",
     boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-  };
-
-  const selectStyle = {
-    control: (provided: any) => ({
-      ...provided,
-      borderRadius: "10px",
-      border: themeUi === "REGALBLAZE" ? "1px solid #F7B500" : "1px solid #ccc",
-      boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-      padding: "0px",
-      minHeight: "36px",
-    }),
-    option: (provided: any, state: any) => ({
-      ...provided,
-      backgroundColor: state.isSelected
-        ? themeUi === "REGALBLAZE"
-          ? "#FCA311"
-          : "#BC3D80"
-        : state.isFocused
-        ? themeUi === "REGALBLAZE"
-          ? "#FCA31115"
-          : "#BC3D8015"
-        : null,
-      color: state.isSelected ? "white" : "#333",
-    }),
-    menu: (provided: any) => ({
-      ...provided,
-      borderRadius: "10px",
-      boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-    }),
   };
 
   return (
@@ -299,7 +267,9 @@ export const HorizonFilter: React.FC<FilterSectionProps> = ({
                     onChange={(val) =>
                       val instanceof Date && handleFromChange(val)
                     }
+
                     value={fromDate ? new Date(fromDate) : new Date()}
+                    tileDisabled={tileDisabled}
                   />
                 </div>,
                 document.body
@@ -367,6 +337,7 @@ export const HorizonFilter: React.FC<FilterSectionProps> = ({
                     onChange={(val) => val instanceof Date && handleToChange(val)}
                     value={toDate ? new Date(toDate) : new Date()}
                     minDate={fromDate ? new Date(fromDate) : undefined}
+                    tileDisabled={tileDisabled}
                   />
                 </div>,
                 document.body
