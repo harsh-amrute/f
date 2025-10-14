@@ -39,6 +39,7 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
     isMaxRows,
     isMinRows,
     setFilterRows,
+    resetFilterRows,
   } = useFilterRows();
   const { user } = useUserData();
   const EnvConfig = useSelector((state: RootState) => state.mta.EnvConfig);
@@ -64,17 +65,18 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    if (isInitialized) return;
-
     const parentId = 'productFilter';
     const savedFilters = multiFilter[parentId]?.filters || [];
 
     if (savedFilters.length === 0) {
       setRowSelections({});
+      resetFilterRows(1); 
       setRowFilterIndexMap({});
       setIsInitialized(true);
       return;
     }
+
+    if (isInitialized) return;
 
     const newRows = savedFilters.map((_, idx) => ({ id: idx }));
     setFilterRows(newRows);
