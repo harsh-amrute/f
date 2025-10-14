@@ -42,20 +42,17 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
   const [rowSelections, setRowSelections] = useState<
     Record<number, { column?: any; operation?: any; value?: any }>
   >({});
-  const [rowFilterIndexMap, setRowFilterIndexMap] = useState<Record<number, number>>({});
+  const [rowFilterIndexMap, setRowFilterIndexMap] = useState<
+    Record<number, number>
+  >({});
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // ✅ Load attributes from backend UIConfig
   useEffect(() => {
     const loadAttributes = async () => {
       try {
         const res = await getUiConfig(UIColumnConfigName.BPR);
 
-        // check where data actually lives
-        const data =
-          res?.data?.data?.data || // nested
-          res?.data?.data ||
-          [];
+        const data = res?.data?.data?.data || res?.data?.data || [];
 
         console.log("UIConfig raw response:", data);
 
@@ -65,7 +62,6 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
           )
         );
 
-        // fallback — if filtering removes all
         const finalCols = filtered.length > 0 ? filtered : data;
 
         const formatted = finalCols.map((col: any, idx: number) => ({
@@ -86,9 +82,8 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
     loadAttributes();
   }, [getUiConfig]);
 
-  // ✅ Initialize state from multiFilter after attributes loaded
   useEffect(() => {
-    if (attributeOptions.length === 0) return; // wait until loaded
+    if (attributeOptions.length === 0) return;
 
     const parentId = "customAttributeFilter";
     const savedFilters = multiFilter[parentId]?.filters || [];
@@ -106,11 +101,16 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
     const newRows = savedFilters.map((_, idx) => ({ id: idx }));
     setFilterRows(newRows);
 
-    const restored: Record<number, { column?: any; operation?: any; value?: any }> = {};
+    const restored: Record<
+      number,
+      { column?: any; operation?: any; value?: any }
+    > = {};
     const indexMap: Record<number, number> = {};
 
     savedFilters.forEach((f: BPRFilter, idx: number) => {
-      const column = attributeOptions.find((opt) => opt.value === f.attributeName);
+      const column = attributeOptions.find(
+        (opt) => opt.value === f.attributeName
+      );
       const operation = stringOpertors.find((op) => op.value === f.operator);
 
       restored[idx] = {
@@ -126,7 +126,6 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
     setIsInitialized(true);
   }, [attributeOptions, multiFilter?.customAttributeFilter?.filters]);
 
-  // ✅ Handle dropdown / input changes
   const onFilterChange = (
     rowId: number,
     field: "column" | "operation" | "value",
@@ -155,7 +154,8 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
         name: current.column.name,
       };
 
-      const existingFilters = (multiFilter[parentId]?.filters || []) as BPRFilter[];
+      const existingFilters = (multiFilter[parentId]?.filters ||
+        []) as BPRFilter[];
       const nextFilters = existingFilters.slice();
       const idx = rowFilterIndexMap[rowId];
       const newIndexMap = { ...rowFilterIndexMap };
@@ -176,12 +176,12 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
     }
   };
 
-  // ✅ Remove row + filter mapping
   const handleRemoveRowWithFilter = (rowId: number) => {
     if (isMinRows) return;
 
     const parentId = "customAttributeFilter";
-    const existingFilters = (multiFilter[parentId]?.filters || []) as BPRFilter[];
+    const existingFilters = (multiFilter[parentId]?.filters ||
+      []) as BPRFilter[];
     const idx = rowFilterIndexMap[rowId];
     const nextFilters = existingFilters.slice();
     const newIndexMap = { ...rowFilterIndexMap };
@@ -218,7 +218,6 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
     );
   }
 
-  // ✅ Render
   return (
     <FilterGroup>
       <FilterColumn style={{ minWidth: "400px", maxWidth: "none" }}>
@@ -232,7 +231,9 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
                 styles={styles}
                 components={{ IndicatorSeparator: () => null }}
                 value={rowSelections[row.id]?.column || null}
-                onChange={(selected) => onFilterChange(row.id, "column", selected)}
+                onChange={(selected) =>
+                  onFilterChange(row.id, "column", selected)
+                }
               />
             </DropDownWrapper>
 
@@ -244,7 +245,9 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
                 isSearchable={false}
                 components={{ IndicatorSeparator: () => null }}
                 value={rowSelections[row.id]?.operation || null}
-                onChange={(selected) => onFilterChange(row.id, "operation", selected)}
+                onChange={(selected) =>
+                  onFilterChange(row.id, "operation", selected)
+                }
               />
             </DropDownWrapper>
 
@@ -257,13 +260,18 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
                     : "filter-input--default"
                 }`}
                 value={rowSelections[row.id]?.value || ""}
-                onChange={(e) => onFilterChange(row.id, "value", e.target.value)}
+                onChange={(e) =>
+                  onFilterChange(row.id, "value", e.target.value)
+                }
               />
             </DropDownWrapper>
 
             <div style={{ display: "flex", alignItems: "center" }}>
               <IconWrapper theme_ui={user.user.theme_ui}>
-                <img src={"/assets/img/MTAVFMultiFilter/Error.svg"} alt="error" />
+                <img
+                  src={"/assets/img/MTAVFMultiFilter/Error.svg"}
+                  alt="error"
+                />
               </IconWrapper>
               <IconWrapper
                 theme_ui={user.user.theme_ui}
