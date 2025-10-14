@@ -23,7 +23,7 @@ export namespace MainService {
   export const logout = async (queryClient: QueryClient) => {
     try {
       // Logout from server – backend should clear cookies (refresh & access)
-      await axios.post(getLogoutUrl(), {}, { withCredentials: true });
+      await axios.post(getLogoutUrl(), {});
     } finally {
       // Clear client cache & persisted state
       queryClient.clear();
@@ -47,7 +47,7 @@ export namespace MainService {
   export const login = async (payload: LoginRequest) => {
     return await axios
 
-      .post(`/${API_USER}/login/`, payload, { withCredentials: true })
+      .post(`/${API_USER}/login/`, payload)
       .then(async (resp) => {
       
         localStorage.setItem(
@@ -76,7 +76,7 @@ export namespace MainService {
   }
 
   export const getProfile = async () => {
-    return await axios.get(`/${API_USER}/profile/`, { withCredentials: true })
+    return await axios.get(`/${API_USER}/profile/`)
   }
   export const getProductFilter = async (url: string) => {
     return await axios.get(url)
