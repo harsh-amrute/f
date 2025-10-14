@@ -9,6 +9,9 @@ interface ModalProps {
   message?: any;
   actionText: any; 
   orderCount: number; 
+  shortCloseTracker?: any;
+  completeCloseTracker?:any
+
 }
 
 const ConfirmationModal: React.FC<ModalProps> = ({
@@ -19,8 +22,12 @@ const ConfirmationModal: React.FC<ModalProps> = ({
   message,
   actionText,
   orderCount,
+  shortCloseTracker,
+  completeCloseTracker,
 }) => {
   if (!isOpen) return null;
+
+
 
   return (
     <VFModalCard
@@ -35,7 +42,6 @@ const ConfirmationModal: React.FC<ModalProps> = ({
       data-testid="vfmultifilter-img"
     >
       <div style={{ padding: "10px 20px", maxWidth: "500px", margin: "0 auto" }}>
-        {/* Content Section */}
         <div
           style={{
             margin: "20px 0",
@@ -48,16 +54,26 @@ const ConfirmationModal: React.FC<ModalProps> = ({
           }}
         >
           <p style={{ marginBottom: "10px" }}>{message}</p>
-          {typeof orderCount === "number" ? (
+         
+         {
+          shortCloseTracker && completeCloseTracker ? (
             <p>
-              Are you sure you want to <strong>{actionText}</strong> {orderCount} Orders?
+              Are you sure you want to <strong>Short Close</strong> {shortCloseTracker} {shortCloseTracker === 1 ? "Order" : "Orders"} and{" "}
+              <strong>Complete Close</strong> {completeCloseTracker} {completeCloseTracker === 1 ? "Order" : "Orders"}?
             </p>
           ) : (
-            <p>
-              Are you sure you want to <strong>{actionText}</strong> order with order id{" "}
-              {orderCount}?
-            </p>
-          )}
+            typeof orderCount === "number" ? (
+              <p>
+                Are you sure you want to <strong>{actionText}</strong> {orderCount} {orderCount === 1 ? "Order" : "Orders"}?
+              </p>
+            ) : (
+              <p>
+                Are you sure you want to <strong>{actionText}</strong> order with order id{" "}
+                {orderCount}?
+              </p>
+              )
+            )
+          }
         </div>
 
         {/* Button Section */}
