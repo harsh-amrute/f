@@ -38,6 +38,8 @@ interface FilterModalProps {
   onReset: () => void;
   activeFilterCount?: number;
   multiFilter: BPRFilterState;
+  currentTab?: string;
+  currCategory?: any;
 }
 
 interface SectionType {
@@ -103,6 +105,8 @@ const FilterModal: React.FC<FilterModalProps> = ({
   onApply,
   onReset,
   multiFilter: initialMultiFilter,
+  currentTab = "both",
+  currCategory,
 }) => {
   const { user } = useUserData();
   const EnvConfig = useSelector((state: RootState) => state.mta.EnvConfig);
@@ -268,13 +272,26 @@ const FilterModal: React.FC<FilterModalProps> = ({
     const section = availableSections.find((s) => s.label === activeSection);
     if (!section) return null;
     const FilterComponent = section.component;
+    
+    if (section.label === "Availability") {
+      return (
+        <FilterComponent
+          multiFilter={multiFilter}
+          onMultiFilterChange={handleMultiFilterChange}
+          filters={filters}
+          onFilterChange={handleInputChange}
+          currentTab={currentTab}
+          currCategory={currCategory}
+        />
+      );
+    }
+    
     return (
       <FilterComponent
         multiFilter={multiFilter}
         onMultiFilterChange={handleMultiFilterChange}
         filters={filters}
         onFilterChange={handleInputChange}
-        availableValues={section.values}
       />
     );
   };

@@ -285,7 +285,7 @@ const ActionToolBar = ({
               multiFilter={multiFilter}
               onClose={() => toggleFilter(false)}
               onReset={handleResetFilters}
-              
+              currCategory={currCategory}
             />
           );
         }
@@ -299,6 +299,7 @@ const ActionToolBar = ({
               multiFilter={multiFilter}
               onClose={() => toggleFilter(false)}
               onReset={handleResetFilters}      
+              currCategory={currCategory}
             />
           );
         }
@@ -349,7 +350,9 @@ const ActionToolBar = ({
               onApply={handleApplyFilter}
               multiFilter={multiFilter}
               onClose={() => toggleFilter(false)}
-              onReset={handleResetFilters}      
+              onReset={handleResetFilters}   
+              currCategory={currCategory}
+   
             />
           );
         }
@@ -390,7 +393,7 @@ const ActionToolBar = ({
               multiFilter={multiFilter}
               onClose={() => toggleFilter(false)}
               onReset={handleResetFilters}
-              
+              currentTab={currentTab}
             />
           );
         }

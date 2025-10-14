@@ -29,6 +29,8 @@ interface AvailabilityFilterProps {
   filters: any;
   multiFilter: BPRFilterState;
   onMultiFilterChange: (newMultiFilter: BPRFilterState) => void;
+  currentTab?: string;
+  currCategory?: string;
 }
 interface TagsFilterProps {
   name: string;
@@ -149,10 +151,11 @@ const TagsFilter: React.FC<TagsFilterProps> = ({ name, checked, onChange }) => {
   );
 };
 
-// Availability Filter Component
 export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
   multiFilter,
   onMultiFilterChange,
+  currentTab = "both",
+  currCategory,
 }) => {
   const styles = useThemeStyles();
   const colorStyles = useColorThemeStyles();
@@ -309,13 +312,18 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
     return row.type && row.attributeName && row.operator && row.value;
   };
 
+  const isBTRReport = window.location.pathname === '/mta/insights-and-trends/buffer-trend-report';
+
+  const shouldShowColorFilters = currCategory === 'BPR' || currCategory === 'BOR' || currCategory === 'RRR';
+
+  const shouldShowTags = currCategory === 'BPR';
+
   return (
     <>
       <FilterGroup>
         <FilterColumn style={{ minWidth: "400px", maxWidth: "none" }}>
           <TextWrapper>Select Operation</TextWrapper>
           {availabilityFilterOptions.map((column) => (
-            
             <DropDownRow key={column.value}>
               <DropDownWrapper>
                 <Select
@@ -371,124 +379,151 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
         </FilterColumn>
       </FilterGroup>
 
-      <FilterGroup style={{ marginTop: "1px" }}>
-        <FilterColumn>
-          <TextWrapper>On Hand Inventory Color</TextWrapper>
-          <DropDownWrapper>
-            <Select
-              options={colorOptions}
-              isMulti
-              closeMenuOnSelect={false}
-              hideSelectedOptions={false}
-              components={{
-                Option: CustomOption,
-                MultiValue: CustomMultiValue,
-                IndicatorSeparator: () => null,
-                ClearIndicator: () => null,
-              }}
-              styles={colorStyles}
-              placeholder="Select Color"
-              value={colorOptions.filter((opt) =>
-                selectedOptions.onHandInventoryColor.includes(opt.value)
+      {(shouldShowColorFilters || isBTRReport) && (
+        <FilterGroup style={{ marginTop: "1px" }}>
+          <FilterColumn>
+            <div style={{ 
+              display: "flex", 
+              gap: "20px", 
+              alignItems: "flex-start",
+              flexWrap: "wrap" 
+            }}>
+              {(currentTab === 'on-hand' || currentTab === 'both' || currCategory === 'BPR' || currCategory === 'RRR' || currCategory === 'BOR' || (isBTRReport && (currentTab === 'on-hand' || currentTab === 'both'))) && (
+                <div style={{ 
+                  flex: (currentTab === 'both') ? 1 : 'auto', 
+                  minWidth: "280px",
+                  maxWidth: (currentTab === 'both') ? "calc(50% - 10px)" : "100%"
+                }}>
+                  <TextWrapper>On Hand Inventory Color</TextWrapper>
+                  <DropDownWrapper>
+                    <Select
+                      options={colorOptions}
+                      isMulti
+                      closeMenuOnSelect={false}
+                      hideSelectedOptions={false}
+                      components={{
+                        Option: CustomOption,
+                        MultiValue: CustomMultiValue,
+                        IndicatorSeparator: () => null,
+                        ClearIndicator: () => null,
+                      }}
+                      styles={colorStyles}
+                      placeholder="Select Color"
+                      value={colorOptions.filter((opt) =>
+                        selectedOptions.onHandInventoryColor.includes(opt.value)
+                      )}
+                      onChange={(newValue) =>
+                        handleSelectChange({
+                          newValue,
+                          header: "OHIC",
+                          filterId: "AF5",
+                          parentId: "availabilityFilter",
+                        })
+                      }
+                    />
+                  </DropDownWrapper>
+                </div>
               )}
-              onChange={(newValue) =>
-                handleSelectChange({
-                  newValue,
-                  header: "OHIC",
-                  filterId: "AF5",
-                  parentId: "availabilityFilter",
-                })
-              }
-            />
-          </DropDownWrapper>
-        </FilterColumn>
 
-        <FilterColumn>
-          <TextWrapper>Pipeline Inventory Color</TextWrapper>
-          <DropDownWrapper>
-            <Select
-              options={colorOptions}
-              isMulti
-              closeMenuOnSelect={false}
-              hideSelectedOptions={false}
-              components={{
-                Option: CustomOption,
-                MultiValue: CustomMultiValue,
-                IndicatorSeparator: () => null,
-                ClearIndicator: () => null,
-              }}
-              styles={colorStyles}
-              placeholder="Select Color"
-              value={colorOptions.filter((opt) =>
-                selectedOptions.pipelineInventoryColor.includes(opt.value)
+              {(currentTab === 'pipeline' || currentTab === 'both' || currCategory === 'BOR' || currCategory === 'BPR' || currCategory === 'RRR' || (isBTRReport && (currentTab === 'pipeline' || currentTab === 'both'))) && (
+                <div style={{ 
+                  flex: (currentTab === 'both') ? 1 : 'auto', 
+                  minWidth: "280px",
+                  maxWidth: (currentTab === 'both') ? "calc(50% - 10px)" : "100%"
+                }}>
+                  <TextWrapper>Pipeline Inventory Color</TextWrapper>
+                  <DropDownWrapper>
+                    <Select
+                      options={colorOptions}
+                      isMulti
+                      closeMenuOnSelect={false}
+                      hideSelectedOptions={false}
+                      components={{
+                        Option: CustomOption,
+                        MultiValue: CustomMultiValue,
+                        IndicatorSeparator: () => null,
+                        ClearIndicator: () => null,
+                      }}
+                      styles={colorStyles}
+                      placeholder="Select Color"
+                      value={colorOptions.filter((opt) =>
+                        selectedOptions.pipelineInventoryColor.includes(opt.value)
+                      )}
+                      onChange={(newValue) =>
+                        handleSelectChange({
+                          newValue,
+                          header: "PIC",
+                          filterId: "AF6",
+                          parentId: "availabilityFilter",
+                        })
+                      }
+                    />
+                  </DropDownWrapper>
+                </div>
               )}
-              onChange={(newValue) =>
-                handleSelectChange({
-                  newValue,
-                  header: "PIC",
-                  filterId: "AF6",
-                  parentId: "availabilityFilter",
-                })
-              }
-            />
-          </DropDownWrapper>
-        </FilterColumn>
-      </FilterGroup>
+            </div>
+          </FilterColumn>
+        </FilterGroup>
+      )}
 
-      <FilterGroup style={{ marginTop: "1px" }}>
-        <FilterColumn>
-          <TextWrapper>Tags</TextWrapper>
-          <DropDownRow style={{ gap: "20px" }}>
-            {availabilityTags.map((tag) => (
-              <TagsFilter
-                key={tag}
-                name={tag}
-                checked={tagStates[tag]}
-                onChange={handleTagChange}
+      {(shouldShowTags || (isBTRReport && (currentTab === 'both' || currentTab === 'pipeline' || currentTab === 'on-hand'))) && (
+        <FilterGroup style={{ marginTop: "1px" }}>
+          <FilterColumn>
+            <TextWrapper>Tags</TextWrapper>
+            <DropDownRow style={{ gap: "20px" }}>
+              {availabilityTags.map((tag) => (
+                <TagsFilter
+                  key={tag}
+                  name={tag}
+                  checked={tagStates[tag]}
+                  onChange={handleTagChange}
+                />
+              ))}
+            </DropDownRow>
+          </FilterColumn>
+        </FilterGroup>
+      )}
+
+      {isBTRReport && (
+        <FilterGroup style={{ marginTop: "1px" }}>
+          <FilterColumn>
+            <TextWrapper>Category</TextWrapper>
+            <DropDownWrapper style={{ gap: "20px" }}>
+              <Select
+                options={categoryOptions}
+                isMulti
+                closeMenuOnSelect={false}
+                hideSelectedOptions={false}
+                components={{
+                  Option: CustomCategoryOption,
+                  IndicatorSeparator: () => null,
+                  ClearIndicator: () => null,
+                }}
+                styles={{
+                  ...colorStyles,
+                  menuList: (base) => ({
+                    ...base,
+                    maxHeight: 150,
+                    overflowY: "auto",
+                  }),
+                }}
+                placeholder="Select Category"
+                value={categoryOptions.filter((opt) =>
+                  selectedOptions.category.includes(opt.value)
+                )}
+                onChange={(newValue) =>
+                  handleSelectChange({
+                    newValue,
+                    header: "Category",
+                    filterId: "AF8",
+                    parentId: "availabilityFilter",
+                  })
+                }
               />
-            ))}
-          </DropDownRow>
-        </FilterColumn>
-      </FilterGroup>
-
-      <FilterGroup style={{ marginTop: "1px" }}>
-        <FilterColumn>
-          <TextWrapper>Category</TextWrapper>
-          <DropDownWrapper style={{ gap: "20px" }}>
-            <Select
-              options={categoryOptions}
-              isMulti
-              closeMenuOnSelect={false}
-              hideSelectedOptions={false}
-              components={{
-                Option: CustomCategoryOption,
-                IndicatorSeparator: () => null,
-                ClearIndicator: () => null,
-              }}
-              styles={{
-                ...colorStyles,
-                menuList: (base) => ({
-                  ...base,
-                  maxHeight: 150,
-                  overflowY: "auto",
-                }),
-              }}
-              placeholder="Select Category"
-              value={categoryOptions.filter((opt) =>
-                selectedOptions.category.includes(opt.value)
-              )}
-              onChange={(newValue) =>
-                handleSelectChange({
-                  newValue,
-                  header: "Category",
-                  filterId: "AF8",
-                  parentId: "availabilityFilter",
-                })
-              }
-            />
-          </DropDownWrapper>
-        </FilterColumn>
-      </FilterGroup>
+            </DropDownWrapper>
+          </FilterColumn>
+        </FilterGroup>
+      )}
     </>
   );
 };
