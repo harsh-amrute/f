@@ -134,6 +134,12 @@ export const horizonFilterOptions = [
   { label: 'EndDate', value: 'EndDate'},
 ]
 
+export const getStartDate = (endDate: string): string => {
+  const date = new Date(endDate);
+  date.setDate(date.getDate() - 89);
+  return date.toISOString().split('T')[0];
+};
+
 export const useVFMultiFilter = ({
   multiFilter,
   onMultiFilterChange,

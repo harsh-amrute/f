@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   FilterGroup,
   FilterColumn,
@@ -42,7 +42,7 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
   } = useFilterRows();
   const { user } = useUserData();
   const EnvConfig = useSelector((state: RootState) => state.mta.EnvConfig);
-  console.log('EnvConfig...........', EnvConfig);
+
   const PRODUCT_PERMISSION_L1 = EnvConfig['PRODUCT_PERMISSION_L1'];
   const PRODUCT_PERMISSION_L2 = EnvConfig['PRODUCT_PERMISSION_L2'];
   const PRODUCT_PERMISSION_L3 = EnvConfig['PRODUCT_PERMISSION_L3'];
@@ -59,45 +59,31 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
     [rowId: number]: { column?: any; operation?: any; value?: any };
   }>({});
 
+  const [rowFilterIndexMap, setRowFilterIndexMap] = useState<Record<number, number>>({});
+
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    const parentId = "productFilter";
+    if (isInitialized) return;
+
+    const parentId = 'productFilter';
     const savedFilters = multiFilter[parentId]?.filters || [];
 
     if (savedFilters.length === 0) {
       setRowSelections({});
+      setRowFilterIndexMap({});
       setIsInitialized(true);
       return;
     }
 
     const newRows = savedFilters.map((_, idx) => ({ id: idx }));
+    setFilterRows(newRows);
 
-    if (setFilterRows) {
-      setFilterRows(newRows);
-    } else {
-      const currentRowCount = filterRows.length;
-      const targetRowCount = savedFilters.length;
-
-      if (currentRowCount < targetRowCount) {
-        for (let i = currentRowCount; i < targetRowCount; i++) {
-          addFilterRow();
-        }
-      } else if (currentRowCount > targetRowCount) {
-        for (let i = currentRowCount - 1; i >= targetRowCount; i--) {
-          removeFilterRow(filterRows[i].id);
-        }
-      }
-    }
-
-    const restored: {
-      [rowId: number]: { column?: any; operation?: any; value?: any };
-    } = {};
+    const restored: { [rowId: number]: { column?: any; operation?: any; value?: any } } = {};
+    const indexMap: Record<number, number> = {};
 
     savedFilters.forEach((f: BPRFilter, idx: number) => {
-      const column = filterProductOptions.find(
-        (opt) => opt.value === f.attributeName
-      );
+      const column = filterProductOptions.find((opt) => opt.value === f.attributeName);
       const operation = stringOpertors.find((op) => op.value === f.operator);
 
       restored[idx] = {
@@ -105,59 +91,104 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
         operation: operation || null,
         value: f.value,
       };
+      indexMap[idx] = idx; 
     });
 
     setRowSelections(restored);
+    setRowFilterIndexMap(indexMap);
     setIsInitialized(true);
-  }, [multiFilter?.productFilter?.filters]);
+  }, [isInitialized, multiFilter?.productFilter?.filters, setFilterRows]);
 
   const onFilterChange = (
     rowId: number,
-    field: "column" | "operation" | "value",
+    field: 'column' | 'operation' | 'value',
     selected: any
   ) => {
-    const updated = {
+    const updatedSelections = {
       ...rowSelections,
       [rowId]: { ...rowSelections[rowId], [field]: selected },
     };
-    setRowSelections(updated);
+    setRowSelections(updatedSelections);
 
-    const parentId = "productFilter";
-    const current = updated[rowId];
+    const parentId = 'productFilter';
+    const current = updatedSelections[rowId];
 
     if (
       current?.column &&
       current?.operation &&
       current?.value !== undefined &&
-      current?.value !== ""
+      current?.value !== ''
     ) {
+
       const newFilter: BPRFilter = {
         attributeName: current.column.value,
         value: current.value,
         operator: current.operation.value,
         label: current.column.label,
-        name: current.column.name || `${current.column.value}_${rowId}`,
+        name: current.column.name, 
       };
 
-      const existingFilters = multiFilter[parentId]?.filters || [];
-      const filteredFilters = existingFilters.filter((f: BPRFilter) => {
-        const filterRowId = filterRows.findIndex((row) => {
-          const sel = rowSelections[row.id];
-          return sel?.column?.name === f.name;
-        });
-        return filterRowId !== rowId;
-      });
+      const existingFilters = (multiFilter[parentId]?.filters || []) as BPRFilter[];
+      const nextFilters = existingFilters.slice();
+      const idx = rowFilterIndexMap[rowId];
 
-      const updatedMultiFilter = {
+      const newIndexMap = { ...rowFilterIndexMap };
+
+      if (typeof idx === 'number' && idx >= 0 && idx < nextFilters.length) {
+        nextFilters[idx] = newFilter;
+      } else {
+        nextFilters.push(newFilter); 
+        newIndexMap[rowId] = nextFilters.length - 1;
+      }
+
+      onMultiFilterChange({
         ...multiFilter,
         [parentId]: {
           ...multiFilter[parentId],
-          filters: [...filteredFilters, newFilter],
+          filters: nextFilters,
         },
-      };
+      });
 
-      onMultiFilterChange(updatedMultiFilter);
+      setRowFilterIndexMap(newIndexMap);
     }
+  };
+
+  const handleRemoveRowWithFilter = (rowId: number) => {
+    if (isMinRows) return;
+
+    const parentId = 'productFilter';
+    const existingFilters = (multiFilter[parentId]?.filters || []) as BPRFilter[];
+    const idx = rowFilterIndexMap[rowId];
+
+    const nextFilters = existingFilters.slice();
+    const newIndexMap = { ...rowFilterIndexMap };
+
+    if (typeof idx === 'number' && idx >= 0 && idx < nextFilters.length) {
+      nextFilters.splice(idx, 1); 
+
+      Object.keys(newIndexMap).forEach((k) => {
+        const rid = Number(k);
+        if (rid === rowId) return;
+        if (newIndexMap[rid] > idx) newIndexMap[rid] = newIndexMap[rid] - 1;
+      });
+    }
+
+    handleRemoveRow(rowId);
+    setRowSelections((prev) => {
+      const copy = { ...prev };
+      delete copy[rowId];
+      return copy;
+    });
+    delete newIndexMap[rowId];
+    setRowFilterIndexMap(newIndexMap);
+
+    onMultiFilterChange({
+      ...multiFilter,
+      [parentId]: {
+        ...multiFilter[parentId],
+        filters: nextFilters,
+      },
+    });
   };
 
   if (!isInitialized) {
@@ -169,7 +200,7 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
       <FilterGroup>
         <FilterColumn style={{ minWidth: '400px', maxWidth: 'none' }}>
           <TextWrapper>Select Operation</TextWrapper>
-          {filterRows.map(row => (
+          {filterRows.map((row) => (
             <DropDownRow style={{ alignItems: 'center' }} key={row.id}>
               <DropDownWrapper>
                 <Select
@@ -178,9 +209,7 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
                   styles={styles}
                   components={{ IndicatorSeparator: () => null }}
                   value={rowSelections[row.id]?.column || null}
-                  onChange={selected =>
-                    onFilterChange(row.id, 'column', selected)
-                  }
+                  onChange={(selected) => onFilterChange(row.id, 'column', selected)}
                 />
               </DropDownWrapper>
               <DropDownWrapper>
@@ -191,9 +220,7 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
                   isSearchable={false}
                   components={{ IndicatorSeparator: () => null }}
                   value={rowSelections[row.id]?.operation || null}
-                  onChange={selected =>
-                    onFilterChange(row.id, 'operation', selected)
-                  }
+                  onChange={(selected) => onFilterChange(row.id, 'operation', selected)}
                 />
               </DropDownWrapper>
               <DropDownWrapper>
@@ -204,10 +231,8 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
                       ? 'filter-input--regal'
                       : 'filter-input--default'
                   }`}
-                  value={rowSelections[row.id]?.value || ""}
-                  onChange={(e) =>
-                    onFilterChange(row.id, "value", e.target.value)
-                  }
+                  value={rowSelections[row.id]?.value || ''}
+                  onChange={(e) => onFilterChange(row.id, 'value', e.target.value)}
                 />
               </DropDownWrapper>
               <div
@@ -218,21 +243,27 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
                 }}
               >
                 <IconWrapper theme_ui={user.user.theme_ui}>
-                  <img src="/assets/img/MTAVFMultiFilter/Error.svg" />
+                  <img src="/assets/img/MTAVFMultiFilter/Error.svg" alt="error" />
                 </IconWrapper>
                 <IconWrapper
                   theme_ui={user.user.theme_ui}
                   disabled={isMaxRows}
                   onClick={handleAddRow}
                 >
-                  <img src="/assets/img/MTAVFMultiFilter/plus-sign-circle.svg" />
+                  <img
+                    src="/assets/img/MTAVFMultiFilter/plus-sign-circle.svg"
+                    alt="add"
+                  />
                 </IconWrapper>
                 <IconWrapper
                   theme_ui={user.user.theme_ui}
                   disabled={isMinRows}
-                  onClick={() => handleRemoveRow(row.id)}
+                  onClick={() => handleRemoveRowWithFilter(row.id)}
                 >
-                  <img src="/assets/img/MTAVFMultiFilter/minus-sign-circle.svg" />
+                  <img
+                    src="/assets/img/MTAVFMultiFilter/minus-sign-circle.svg"
+                    alt="remove"
+                  />
                 </IconWrapper>
               </div>
             </DropDownRow>
