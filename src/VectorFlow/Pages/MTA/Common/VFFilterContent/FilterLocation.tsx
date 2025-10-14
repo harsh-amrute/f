@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import {
   FilterGroup,
   FilterColumn,
@@ -19,12 +19,18 @@ import { useUserData } from "../../../../../context";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/store/store";
 import { BPRFilter, BPRFilterState } from "../../../../../VectorFlow/types/BPR";
-import { useGetAllLocations } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
+import { useGetAllLocations, useSearchWHDescription } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 import { MultiValue, ActionMeta } from "react-select";
 
 interface FilterSectionProps {
   multiFilter: BPRFilterState;
   onMultiFilterChange: (newMultiFilter: BPRFilterState) => void;
+}
+interface LocationOption {
+  label: string;
+  value: string;
+  id: string;
+  originalData: any;
 }
 
 export const LocationFilters: React.FC<FilterSectionProps> = ({
@@ -43,6 +49,7 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
     isMaxRows,
     isMinRows,
     setFilterRows,
+    resetFilterRows,
   } = useFilterRows();
 
   const colorStyles = useColorThemeStyles({
@@ -76,27 +83,92 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
     [rowId: number]: { column?: any; operation?: any; value?: any };
   }>({});
 
+  const [rowFilterIndexMap, setRowFilterIndexMap] = useState<Record<number, number>>({});
   const [isInitialized, setIsInitialized] = useState(false);
   const [filterType, setFilterType] = useState<
     "Location Code" | "Location Description"
   >("Location Code");
 
-  const { data: locationData, isLoading: isLocationDataLoading } =
-    useGetAllLocations();
+  const [selectedLocations, setSelectedLocations] = useState<LocationOption[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [manualSearchQuery, setManualSearchQuery] = useState("");
+  const [hasSearched, setHasSearched] = useState(false);
 
-  const locationCheckboxOptions = React.useMemo(() => {
-    if (!locationData?.data?.data) return [];
+  const { data: locationData, isLoading: isLocationDataLoading } = useGetAllLocations();
+
+  const { 
+    data: searchData, 
+    isLoading: isSearchLoading, 
+    refetch: triggerSearch,
+    isFetching: isSearchFetching 
+  } = useSearchWHDescription(manualSearchQuery);
+
+  const targetSize = 2000;
+  const locationDataSize = locationData?.data?.data?.length || 0;
+  const shouldUseLocalData = locationDataSize <= targetSize;
+  const shouldShowSearchButton = !shouldUseLocalData;
+
+  // Custom filter function for local data
+  const customFilterOption = (option: any, inputValue: string) => {
+    if (!inputValue) return false; // Don't show options when no input
+    
+    const searchTerm = inputValue.toLowerCase();
+    const optionLabel = option.label.toLowerCase();
+    const optionValue = option.value.toLowerCase();
+    
+    return optionLabel.includes(searchTerm) || optionValue.includes(searchTerm);
+  };
+
+  const localLocationOptions = useMemo((): LocationOption[] => {
+    if (!locationData?.data?.data || !shouldUseLocalData) return [];
+    
     return locationData.data.data.map((location: any) => {
-      const label =
-        filterType === "Location Code" ? `${location.wc}` : `${location.wd}`;
+      const label = filterType === "Location Code" ? location.wc : location.wd;
       return {
         label: label,
-        id: location.wc,
         value: location.wc,
+        id: location.wc,
         originalData: location,
       };
     });
-  }, [locationData, filterType]);
+  }, [locationData, filterType, shouldUseLocalData]);
+
+  const searchLocationOptions = useMemo((): LocationOption[] => {
+    if (!searchData || shouldUseLocalData) return [];
+    
+    try {
+      let results = [];
+      
+      if (Array.isArray(searchData)) {
+        results = searchData;
+      } else if (searchData && typeof searchData === 'object') {
+        if (searchData.data && Array.isArray(searchData.data)) {
+          results = searchData.data;
+        } else {
+          results = Object.values(searchData);
+        }
+      } else {
+        results = [];
+      }
+      
+      return results.map((location: any) => {
+        const label = filterType === "Location Code" ? location.wc : location.wd;
+        return {
+          label: label,
+          value: location.wc,
+          id: location.wc,
+          originalData: location,
+        };
+      });
+    } catch (error) {
+      console.error('Error processing search results:', error);
+      return [];
+    }
+  }, [searchData, filterType, shouldUseLocalData]);
+
+  const locationOptions = shouldUseLocalData ? localLocationOptions : searchLocationOptions;
+
+  const isLoading = shouldUseLocalData ? isLocationDataLoading : (isSearchLoading || isSearchFetching);
 
   const CustomOption = (props: any) => {
     const optionStyles = useColorOptionStyles();
@@ -115,57 +187,71 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
     );
   };
 
-  const [selectedLocations, setSelectedLocations] = useState<any[]>([]);
-
   useEffect(() => {
     const parentId = "locationFilter";
     const savedFilters = multiFilter[parentId]?.filters || [];
-
-    if (savedFilters.length > 0) {
-      const restored: {
-        [rowId: number]: { column?: any; operation?: any; value?: any };
-      } = {};
-      savedFilters
-        .filter((f) => !f.name.startsWith("LF6"))
-        .forEach((f: BPRFilter, idx: number) => {
-          const column = filterLocationOptions.find(
-            (opt) => opt.value === f.attributeName
-          );
-          const operation = stringOpertors.find(
-            (op) => op.value === f.operator
-          );
-          restored[idx] = {
-            column: column || null,
-            operation: operation || null,
-            value: f.value,
-          };
-        });
-      setRowSelections(restored);
-    }
 
     const savedLocationFilters = savedFilters.filter((f) => f.name === "LF6");
     const restoredLocations = savedLocationFilters.map((f) => ({
       value: f.value,
       label: f.label === "LocationCode" ? f.value : f.label,
+      id: f.value,
+      originalData: { wc: f.value, wd: f.label }
     }));
     setSelectedLocations(restoredLocations);
 
+    const operationFilters = savedFilters.filter((f) => !f.name.startsWith("LF6"));
+
+    if (operationFilters.length === 0) {
+      setRowSelections({});
+      resetFilterRows(1);
+      setRowFilterIndexMap({});
+      setIsInitialized(true);
+      return;
+    }
+
+    if (isInitialized) return;
+
+    const newRows = operationFilters.map((_, idx) => ({ id: idx }));
+    setFilterRows(newRows);
+
+    const restored: { [rowId: number]: { column?: any; operation?: any; value?: any } } = {};
+    const indexMap: Record<number, number> = {};
+
+    operationFilters.forEach((f: BPRFilter, idx: number) => {
+      const column = filterLocationOptions.find(
+        (opt) => opt.value === f.attributeName
+      );
+      const operation = stringOpertors.find(
+        (op) => op.value === f.operator
+      );
+
+      restored[idx] = {
+        column: column || null,
+        operation: operation || null,
+        value: f.value,
+      };
+      indexMap[idx] = idx;
+    });
+
+    setRowSelections(restored);
+    setRowFilterIndexMap(indexMap);
     setIsInitialized(true);
-  }, [multiFilter]);
+  }, [isInitialized, multiFilter?.locationFilter?.filters, setFilterRows]);
 
   const onFilterChange = (
     rowId: number,
     field: "column" | "operation" | "value",
     selected: any
   ) => {
-    const updated = {
+    const updatedSelections = {
       ...rowSelections,
       [rowId]: { ...rowSelections[rowId], [field]: selected },
     };
-    setRowSelections(updated);
+    setRowSelections(updatedSelections);
 
     const parentId = "locationFilter";
-    const current = updated[rowId];
+    const current = updatedSelections[rowId];
 
     if (
       current?.column &&
@@ -178,24 +264,76 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
         value: current.value,
         operator: current.operation.value,
         label: current.column.label,
-        name: current.column.name || `${current.column.value}_${rowId}`,
+        name: current.column.name,
       };
 
-      const existingFilters = multiFilter[parentId]?.filters || [];
-      const filteredFilters = existingFilters.filter(
-        (f: BPRFilter) => f.name !== newFilter.name
-      );
+      const existingFilters = (multiFilter[parentId]?.filters || []) as BPRFilter[];
+      const operationFilters = existingFilters.filter((f) => !f.name.startsWith("LF6"));
+      const locationFilters = existingFilters.filter((f) => f.name === "LF6");
+      
+      const nextFilters = operationFilters.slice();
+      const idx = rowFilterIndexMap[rowId];
 
-      const updatedMultiFilter = {
+      const newIndexMap = { ...rowFilterIndexMap };
+
+      if (typeof idx === 'number' && idx >= 0 && idx < nextFilters.length) {
+        nextFilters[idx] = newFilter;
+      } else {
+        nextFilters.push(newFilter);
+        newIndexMap[rowId] = nextFilters.length - 1;
+      }
+
+      onMultiFilterChange({
         ...multiFilter,
         [parentId]: {
           ...multiFilter[parentId],
-          filters: [...filteredFilters, newFilter],
+          filters: [...nextFilters, ...locationFilters],
         },
-      };
+      });
 
-      onMultiFilterChange(updatedMultiFilter);
+      setRowFilterIndexMap(newIndexMap);
     }
+  };
+
+  const handleRemoveRowWithFilter = (rowId: number) => {
+    if (isMinRows) return;
+
+    const parentId = "locationFilter";
+    const existingFilters = (multiFilter[parentId]?.filters || []) as BPRFilter[];
+    const operationFilters = existingFilters.filter((f) => !f.name.startsWith("LF6"));
+    const locationFilters = existingFilters.filter((f) => f.name === "LF6");
+    
+    const idx = rowFilterIndexMap[rowId];
+
+    const nextFilters = operationFilters.slice();
+    const newIndexMap = { ...rowFilterIndexMap };
+
+    if (typeof idx === 'number' && idx >= 0 && idx < nextFilters.length) {
+      nextFilters.splice(idx, 1);
+
+      Object.keys(newIndexMap).forEach((k) => {
+        const rid = Number(k);
+        if (rid === rowId) return;
+        if (newIndexMap[rid] > idx) newIndexMap[rid] = newIndexMap[rid] - 1;
+      });
+    }
+
+    handleRemoveRow(rowId);
+    setRowSelections((prev) => {
+      const copy = { ...prev };
+      delete copy[rowId];
+      return copy;
+    });
+    delete newIndexMap[rowId];
+    setRowFilterIndexMap(newIndexMap);
+
+    onMultiFilterChange({
+      ...multiFilter,
+      [parentId]: {
+        ...multiFilter[parentId],
+        filters: [...nextFilters, ...locationFilters],
+      },
+    });
   };
 
   const handleLocationSelectChange = (
@@ -204,13 +342,14 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
   ) => {
     const selected = Array.isArray(newValue) ? [...newValue] : [];
     setSelectedLocations(selected);
+    
+    setSearchQuery("");
+    setHasSearched(false);
+    setManualSearchQuery("");
 
     const parentId = "locationFilter";
-    const existingFilters = multiFilter[parentId]?.filters || [];
-
-    const filteredFilters = existingFilters.filter(
-      (f: BPRFilter) => f.name !== "LF6"
-    );
+    const existingFilters = (multiFilter[parentId]?.filters || []) as BPRFilter[];
+    const operationFilters = existingFilters.filter((f) => !f.name.startsWith("LF6"));
 
     const newFilters = selected.map((loc) => ({
       attributeName: "Location",
@@ -224,20 +363,84 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
       ...multiFilter,
       [parentId]: {
         ...multiFilter[parentId],
-        filters: [...filteredFilters, ...newFilters],
+        filters: [...operationFilters, ...newFilters],
       },
     };
 
     onMultiFilterChange(updatedMultiFilter);
   };
 
-  const handleApply = () => {
-    console.log("Applied Filters: ", multiFilter);
+  const handleSearchApply = async () => {
+    console.log("Search button clicked with query:", searchQuery);
+    
+    if (searchQuery && searchQuery.length >= 2) {
+      setHasSearched(true);
+      setManualSearchQuery(searchQuery);
+      
+      try {
+        console.log("Triggering search with query:", searchQuery);
+        await triggerSearch();
+      } catch (error) {
+        console.error('Search failed:', error);
+      }
+    } else {
+      console.log("Search query too short:", searchQuery);
+    }
+  };
+
+  const handleKeyPress = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter' && !shouldUseLocalData) {
+      handleSearchApply();
+    }
   };
 
   const handleFilterTypeChange = (selected: any) => {
     setFilterType(selected.value);
+    setSelectedLocations([]);
+    setSearchQuery("");
+    setManualSearchQuery("");
+    setHasSearched(false);
+    
+    const parentId = "locationFilter";
+    const existingFilters = (multiFilter[parentId]?.filters || []) as BPRFilter[];
+    const operationFilters = existingFilters.filter((f) => !f.name.startsWith("LF6"));
+    
+    const updatedMultiFilter: BPRFilterState = {
+      ...multiFilter,
+      [parentId]: {
+        ...multiFilter[parentId],
+        filters: operationFilters,
+      },
+    };
+    
+    onMultiFilterChange(updatedMultiFilter);
   };
+
+  const handleInputChange = (inputValue: string, { action }: any) => {
+    if (action === "input-change") {
+      setSearchQuery(inputValue);
+      if (hasSearched && inputValue.length < 2) {
+        setManualSearchQuery("");
+        setHasSearched(false);
+      }
+    }
+  };
+
+  const getFilteredOptions = () => {
+    if (!shouldUseLocalData) {
+      return locationOptions;
+    }
+
+    if (!searchQuery) {
+      return [];
+    }
+
+    return locationOptions.filter(option => 
+      customFilterOption(option, searchQuery)
+    );
+  };
+
+  const filteredOptions = getFilteredOptions();
 
   if (!isInitialized) return null;
 
@@ -307,7 +510,7 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
                 <IconWrapper
                   theme_ui={user.user.theme_ui}
                   disabled={isMinRows}
-                  onClick={() => handleRemoveRow(row.id)}
+                  onClick={() => handleRemoveRowWithFilter(row.id)}
                 >
                   <img
                     src={"/assets/img/MTAVFMultiFilter/minus-sign-circle.svg"}
@@ -326,8 +529,12 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
           <DropDownRow>
             <DropDownWrapper style={{ flex: 1 }}>
               <Select
-                placeholder="Enter value"
-                options={locationCheckboxOptions}
+                placeholder={
+                  shouldUseLocalData 
+                    ? "Type location code to search..." 
+                    : "Type to search locations and click Search button"
+                }
+                options={shouldUseLocalData ? filteredOptions : locationOptions}
                 styles={{
                   ...colorStyles,
                   menu: (base) => ({
@@ -350,6 +557,18 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
                 hideSelectedOptions={false}
                 value={selectedLocations}
                 onChange={handleLocationSelectChange}
+                onInputChange={handleInputChange}
+                inputValue={searchQuery}
+                onKeyDown={handleKeyPress}
+                isLoading={isLoading}
+                filterOption={shouldUseLocalData ? customFilterOption : undefined}
+                noOptionsMessage={({ inputValue }) => 
+                  shouldUseLocalData 
+                    ? inputValue 
+                      ? "No locations found"
+                      : "Start typing to search locations"
+                    : "No locations found. Try searching with the Search button."
+                }
               />
 
               <div style={{ width: 165, marginTop: -44, marginLeft: 4.5 }}>
@@ -394,31 +613,36 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
               </div>
             </DropDownWrapper>
 
-            <VFButton
-              themeUi={user.user.theme_ui}
-              onClick={handleApply}
-              width={120}
-              style={{
-                fontSize: 15,
-                fontWeight: 350,
-                height: 44,
-                marginBottom: 4,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <div
-                style={{ display: "flex", alignItems: "center", gap: "6px" }}
+            {shouldShowSearchButton && (
+              <VFButton
+                themeUi={user.user.theme_ui}
+                onClick={handleSearchApply}
+                width={120}
+                style={{
+                  fontSize: 15,
+                  fontWeight: 350,
+                  height: 44,
+                  marginBottom: 4,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+                disabled={!searchQuery || searchQuery.length < 2 || isLoading}
               >
-                <img
-                  src={"/assets/img/MTAVFMultiFilter/Search-white.svg"}
-                  alt="search"
-                  style={{ width: 16, height: 16 }}
-                />
-                <span>Search</span>
-              </div>
-            </VFButton>
+                <div
+                  style={{ display: "flex", alignItems: "center", gap: "6px" }}
+                >
+                  <img
+                    src={"/assets/img/MTAVFMultiFilter/Search-white.svg"}
+                    alt="search"
+                    style={{ width: 16, height: 16 }}
+                  />
+                  <span>
+                    {isLoading ? "Searching..." : "Search"}
+                  </span>
+                </div>
+              </VFButton>
+            )}
           </DropDownRow>
         </FilterColumn>
       </FilterGroup>

@@ -28,83 +28,118 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
   const styles = useThemeStyles();
   const { mutateAsync: getUiConfig } = useGetUIConfigData();
 
-  const { filterRows, addFilterRow, removeFilterRow, isMaxRows, isMinRows, setFilterRows } =
-    useFilterRows();
+  const {
+    filterRows,
+    handleAddRow,
+    handleRemoveRow,
+    isMaxRows,
+    isMinRows,
+    setFilterRows,
+    resetFilterRows,
+  } = useFilterRows();
 
   const [attributeOptions, setAttributeOptions] = useState<any[]>([]);
-  const [rowSelections, setRowSelections] = useState<{
-    [rowId: number]: { column?: any; operation?: any; value?: any };
-  }>({});
-
+  const [rowSelections, setRowSelections] = useState<
+    Record<number, { column?: any; operation?: any; value?: any }>
+  >({});
+  const [rowFilterIndexMap, setRowFilterIndexMap] = useState<Record<number, number>>({});
   const [isInitialized, setIsInitialized] = useState(false);
 
+  // ✅ Load attributes from backend UIConfig
   useEffect(() => {
-    const getBPRUiConfig = async () => {
-      const response = await getUiConfig(UIColumnConfigName.BPR);
-      const allCols = response?.data?.data || [];
+    const loadAttributes = async () => {
+      try {
+        const res = await getUiConfig(UIColumnConfigName.BPR);
 
-      const filtered = allCols.filter((col: any) =>
-        ["skulocattr", "skuattr", "locattr"].some((kw) =>
-          col.Col_Code?.toLowerCase()?.includes(kw)
-        )
-      );
+        // check where data actually lives
+        const data =
+          res?.data?.data?.data || // nested
+          res?.data?.data ||
+          [];
 
-      const formatted = filtered.map((col: any) => ({
-        value: col.Col_Code,
-        label: col.Header,
-        name: col.Col_Code,
-      }));
+        console.log("UIConfig raw response:", data);
 
-      setAttributeOptions(formatted);
+        const filtered = data.filter((col: any) =>
+          ["skulocattr", "skuattr", "locattr"].some((kw) =>
+            col.Col_Code?.toLowerCase()?.includes(kw)
+          )
+        );
+
+        // fallback — if filtering removes all
+        const finalCols = filtered.length > 0 ? filtered : data;
+
+        const formatted = finalCols.map((col: any, idx: number) => ({
+          value: col.Col_Code,
+          label: col.Header || col.Col_Code,
+          name: `CAF${idx + 1}`,
+        }));
+
+        console.log("Final attributeOptions:", formatted);
+
+        setAttributeOptions(formatted);
+      } catch (err) {
+        console.error("Error loading UIConfig attributes:", err);
+        setAttributeOptions([]);
+      }
     };
 
-    getBPRUiConfig();
-  }, []);
+    loadAttributes();
+  }, [getUiConfig]);
 
+  // ✅ Initialize state from multiFilter after attributes loaded
   useEffect(() => {
+    if (attributeOptions.length === 0) return; // wait until loaded
+
     const parentId = "customAttributeFilter";
     const savedFilters = multiFilter[parentId]?.filters || [];
 
     if (savedFilters.length === 0) {
       setRowSelections({});
+      resetFilterRows(1);
+      setRowFilterIndexMap({});
       setIsInitialized(true);
       return;
     }
 
+    if (isInitialized) return;
+
     const newRows = savedFilters.map((_, idx) => ({ id: idx }));
     setFilterRows(newRows);
 
-    const restored: {
-      [rowId: number]: { column?: any; operation?: any; value?: any };
-    } = {};
+    const restored: Record<number, { column?: any; operation?: any; value?: any }> = {};
+    const indexMap: Record<number, number> = {};
 
     savedFilters.forEach((f: BPRFilter, idx: number) => {
       const column = attributeOptions.find((opt) => opt.value === f.attributeName);
       const operation = stringOpertors.find((op) => op.value === f.operator);
+
       restored[idx] = {
         column: column || null,
         operation: operation || null,
         value: f.value,
       };
+      indexMap[idx] = idx;
     });
 
     setRowSelections(restored);
+    setRowFilterIndexMap(indexMap);
     setIsInitialized(true);
-  }, [multiFilter?.customAttributeFilter?.filters, attributeOptions]);
+  }, [attributeOptions, multiFilter?.customAttributeFilter?.filters]);
 
+  // ✅ Handle dropdown / input changes
   const onFilterChange = (
     rowId: number,
     field: "column" | "operation" | "value",
     selected: any
   ) => {
-    const updated = {
+    const updatedSelections = {
       ...rowSelections,
       [rowId]: { ...rowSelections[rowId], [field]: selected },
     };
-    setRowSelections(updated);
+    setRowSelections(updatedSelections);
 
     const parentId = "customAttributeFilter";
-    const current = updated[rowId];
+    const current = updatedSelections[rowId];
 
     if (
       current?.column &&
@@ -117,26 +152,73 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
         value: current.value,
         operator: current.operation.value,
         label: current.column.label,
-        name: `CAF${rowId+1}`,
+        name: current.column.name,
       };
 
-      const existingFilters = multiFilter[parentId]?.filters || [];
-      const filteredFilters = existingFilters.filter((f: BPRFilter) => f.name !== newFilter.name);
+      const existingFilters = (multiFilter[parentId]?.filters || []) as BPRFilter[];
+      const nextFilters = existingFilters.slice();
+      const idx = rowFilterIndexMap[rowId];
+      const newIndexMap = { ...rowFilterIndexMap };
 
-        const updatedMultiFilter = {
+      if (typeof idx === "number" && idx >= 0 && idx < nextFilters.length) {
+        nextFilters[idx] = newFilter;
+      } else {
+        nextFilters.push(newFilter);
+        newIndexMap[rowId] = nextFilters.length - 1;
+      }
+
+      onMultiFilterChange({
         ...multiFilter,
-        [parentId]: {
-          ...multiFilter[parentId],
-          filters: [...filteredFilters, newFilter],
-        },
-      };
+        [parentId]: { ...multiFilter[parentId], filters: nextFilters },
+      });
 
-      onMultiFilterChange(updatedMultiFilter);
+      setRowFilterIndexMap(newIndexMap);
     }
   };
 
-  if (!isInitialized) return null;
+  // ✅ Remove row + filter mapping
+  const handleRemoveRowWithFilter = (rowId: number) => {
+    if (isMinRows) return;
 
+    const parentId = "customAttributeFilter";
+    const existingFilters = (multiFilter[parentId]?.filters || []) as BPRFilter[];
+    const idx = rowFilterIndexMap[rowId];
+    const nextFilters = existingFilters.slice();
+    const newIndexMap = { ...rowFilterIndexMap };
+
+    if (typeof idx === "number" && idx >= 0 && idx < nextFilters.length) {
+      nextFilters.splice(idx, 1);
+      Object.keys(newIndexMap).forEach((k) => {
+        const rid = Number(k);
+        if (rid === rowId) return;
+        if (newIndexMap[rid] > idx) newIndexMap[rid] = newIndexMap[rid] - 1;
+      });
+    }
+
+    handleRemoveRow(rowId);
+    setRowSelections((prev) => {
+      const copy = { ...prev };
+      delete copy[rowId];
+      return copy;
+    });
+    delete newIndexMap[rowId];
+    setRowFilterIndexMap(newIndexMap);
+
+    onMultiFilterChange({
+      ...multiFilter,
+      [parentId]: { ...multiFilter[parentId], filters: nextFilters },
+    });
+  };
+
+  if (!isInitialized || attributeOptions.length === 0) {
+    return (
+      <TextWrapper style={{ padding: "10px", color: "#666" }}>
+        Loading attribute options...
+      </TextWrapper>
+    );
+  }
+
+  // ✅ Render
   return (
     <FilterGroup>
       <FilterColumn style={{ minWidth: "400px", maxWidth: "none" }}>
@@ -186,7 +268,7 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
               <IconWrapper
                 theme_ui={user.user.theme_ui}
                 disabled={isMaxRows}
-                onClick={addFilterRow}
+                onClick={handleAddRow}
               >
                 <img
                   src={"/assets/img/MTAVFMultiFilter/plus-sign-circle.svg"}
@@ -196,7 +278,7 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
               <IconWrapper
                 theme_ui={user.user.theme_ui}
                 disabled={isMinRows}
-                onClick={() => removeFilterRow(row.id)}
+                onClick={() => handleRemoveRowWithFilter(row.id)}
               >
                 <img
                   src={"/assets/img/MTAVFMultiFilter/minus-sign-circle.svg"}
