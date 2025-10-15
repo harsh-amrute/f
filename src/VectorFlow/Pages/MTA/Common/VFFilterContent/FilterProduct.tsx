@@ -237,7 +237,6 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
     if (
       current?.column &&
       current?.operation &&
-      current?.value !== undefined &&
       (current?.operation?.value === "hasvalue" ||
         current?.operation?.value === "hasnovalue" ||
         (current?.value !== undefined && current?.value !== ""))
@@ -273,7 +272,7 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
         nextFilters.push(newFilter);
         newIndexMap[rowId] = nextFilters.length - 1;
       }
-      console.log("Applying filter:", newFilter, nextFilters);
+
       onMultiFilterChange({
         ...multiFilter,
         [parentId]: {

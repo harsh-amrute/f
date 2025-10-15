@@ -2,7 +2,6 @@ import VFButton from "../../../../../../components/VectorFLOW/commons/VFButton";
 import VFFloatingTab from "../../../../../../components/VectorFLOW/commons/VFFloatingTab";
 import VFSelectedFilters from "../../../../../../components/VectorFLOW/commons/VFSelectedFilters";
 import { useState, useMemo, useContext, useEffect } from "react";
-import VFMultiFilter from "../../../../../../components/VectorFLOW/commons/VFMultiFilter";
 import { useLocation, Link } from "react-router-dom";
 import useSaveAllState from "../../../../../../hooks/useSaveAllState";
 import Tooltip from '../../../../../../../src/VectorFlow/Pages/MTO/Common/Tooltip';

@@ -9,7 +9,7 @@ import useGetLocation from "../../../../hooks/useGetLocation";
 import useGetlastRunData from "../../../../hooks/useGetLastRunData";
 import { Skeleton } from "../../../../components/commons/styled";
 import { LastRunDateHeader } from "../../../../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/Planning/ActionToolBar/styles";
-
+import MTAVFMultiFilter from "../../../../VectorFlow/Pages/MTA/Common/MTAVFMultiFilter";
 
 
 interface CountProp {
@@ -63,7 +63,10 @@ const SelectCategory = (props: CountProp) => {
     const themeUi = user.user.theme_ui
 
     const currentTheme = globalStyles.chooseThemeColor[themeUi]
-
+    const handleResetFilters = () => {
+        console.log('Filters reset');
+        // Handle reset logic if needed beyond the modal
+    };
     const handleApplyFilter = (state: any) => {
         onApplyFilter(state)
         toggleFilter(false)
@@ -94,8 +97,13 @@ const SelectCategory = (props: CountProp) => {
                     <VFButton onClick={() => toggleFilter(true)} themeUi={themeUi} disabled={false} width={110}>{getTotalFilterCount(multiFilter) > 0 ? "Edit Filter" : "Add Filter"}</VFButton>
                     {
                         isFilterOpen && (
-                            <VFMultiFilter isFilterOpen={isFilterOpen} onApplyFilter={handleApplyFilter} onGoBack={() => toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} locationFilterActive={true} productFilterActive={true} supplyChainNodeFilterActive={true} supplyChainForLocationCheckBoxList={locations} supplyChainForChildrenOfCheckBoxList={locations}></VFMultiFilter>
-
+                             <MTAVFMultiFilter
+                                isOpen={isFilterOpen}
+                                onApply={handleApplyFilter}
+                                multiFilter={multiFilter}
+                                onClose={() => toggleFilter(false)}
+                                onReset={handleResetFilters}      
+                            />
                         )
                     }
                 </ButtonFilterWrapper>

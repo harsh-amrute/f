@@ -159,3 +159,35 @@ export const SelectField = styled.select`
     box-shadow: 0 0 0 2px rgba(185, 59, 126, 0.1);
   }
 `;
+
+export const NoFiltersContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  height: 100%;
+  width: 100%;
+  margin-top: -70px;
+`;
+
+export const NoFiltersIcon = styled.div`
+  margin-bottom: 24px;
+  
+  svg {
+    transition: transform 0.3s ease;
+    
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+`;
+
+export const NoFiltersSubText = styled.div<{ theme_ui: string }>`
+  font-size: 14px;
+  color: #000000;
+  line-height: 1.4;
+  max-width: 300px;
+  font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+`;
