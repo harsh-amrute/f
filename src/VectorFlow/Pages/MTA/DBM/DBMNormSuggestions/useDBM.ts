@@ -377,6 +377,7 @@ const useDBM =()=>{
     }
 
     const handleApplyFilter = async(filter:any)=>{
+        setCurrentPage(1)
         setCurrentFilter(filter)
         await getDataCount(filter)
         await getDBMRowData(filter,1)
