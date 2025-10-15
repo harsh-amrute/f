@@ -256,12 +256,18 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
     if (
       current?.column &&
       current?.operation &&
-      current?.value !== undefined &&
-      current?.value !== ""
+      (current?.operation?.value === "hasvalue" ||
+        current?.operation?.value === "hasnovalue" ||
+        (current?.value !== undefined && current?.value !== ""))
     ) {
       const newFilter: BPRFilter = {
         attributeName: current.column.value,
-        value: current.value,
+        value:
+          current?.operation?.value === "hasvalue"
+            ? "hasvalue"
+            : current?.operation?.value === "hasnovalue"
+            ? "hasnovalue"
+            : current.value,
         operator: current.operation.value,
         label: current.column.label,
         name: current.column.name,
@@ -483,10 +489,19 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
                     user.user.theme_ui === "REGALBLAZE"
                       ? "filter-input--regal"
                       : "filter-input--default"
+                  }${
+                    rowSelections[row.id]?.operation?.value === "hasvalue" ||
+                    rowSelections[row.id]?.operation?.value === "hasnovalue"
+                      ? " filter-input--disabled"
+                      : ""
                   }`}
                   value={rowSelections[row.id]?.value || ""}
                   onChange={(e) =>
                     onFilterChange(row.id, "value", e.target.value)
+                  }
+                  disabled={
+                    rowSelections[row.id]?.operation?.value === "hasvalue" ||
+                    rowSelections[row.id]?.operation?.value === "hasnovalue"
                   }
                 />
               </DropDownWrapper>
