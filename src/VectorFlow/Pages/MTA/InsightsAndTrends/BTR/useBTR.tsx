@@ -403,6 +403,7 @@ const useBTR = () => {
 
     const onApplyFilter = async (filter: BPRFilterState) => {
         setCurrFilter(filter)
+        setCurrentPage(1)
         const tempFilter = getPreparedFilter(filter)
         const RowsPerPageCurrTab = currentTab?.value === "on-hand"?userPageSizeTech:currentTab?.value === "pipeline"?userPageSizeEco:rowsPerPage
         const payload = {
