@@ -15,88 +15,61 @@ const ToggleButton: React.FC = (props: any) => {
   const [isActive, setIsActive] = useState(props.data.iv===undefined?true: props.data.iv);
 
   const bufferModifyData = useSelector((state: any)=> state.mto.bufferModifyData);
-  const ccrModifyData = useSelector((state: any)=> state.mto.ccrModifyData);
+  const ccrModifyData = useSelector((state: any) => state.mto.ccrModifyData);
+  const isDisabled = props.data.ia ?? false;
 
+  // Check which activeMaster we're dealing with
+  const updateDataForMaster = (modifyData: any, dispatchAction: any, filterKey: string, secondaryKey: string) => {
+    const newData = _.cloneDeep(activeMaster.rowData);
+    const propsData = props.data;
+
+    // Toggle the 'iv' field based on criteria
+    newData.forEach((row: any) => {
+      if (
+        (row[filterKey] !== undefined && row[filterKey] !== null && row[filterKey] === propsData[filterKey]) ||
+        (row[secondaryKey] === propsData[secondaryKey])
+      ) {
+        row.iv = !isActive;
+        if (!propsData?.ia) {
+          row.iu = true;
+        }
+      }
+    });
+
+    // Prepare modifyData for dispatch based on primary key presence
+    const exists = modifyData
+      ? modifyData.some((item: any) => item[secondaryKey] === propsData[secondaryKey])
+      : false;
+
+    if (propsData[filterKey] || exists) {
+      const newModifyData = _.cloneDeep(modifyData || []).filter((row: any) => row[filterKey] !== propsData[filterKey] && row[secondaryKey] !== propsData[secondaryKey]);
+      newModifyData.push({ ...propsData, iv: !isActive , iu: true });
+      dispatch(dispatchAction(newModifyData));
+    }
+
+    return newData;
+  };
+
+   // Generic function to update row data
+   const updateRowDataAndToggleState = (newData: any) => {
+    dispatch(UPDATE_ROW_DATA(newData));
+    setIsActive(!isActive);
+  };
 
   const toggleHandler = () => {
-    
-    if(activeMaster.id===501){
+    if (isDisabled) return; // Skip if the toggle function is disabled    
 
-      const newData = _.cloneDeep(activeMaster.rowData);
-      newData.forEach((row: any) => {
-        
-            if(row.bid!==undefined && row.bid!==null && row.bid === props.data.bid){
-              row.iv = !isActive;
-            }
-            else if(row.bcd=== props.data.bcd){
-              row.iv = !isActive;
-            }
-          })
-          
-          if(props.data.bid && !isActive){
-            const newBufferModifyData = bufferModifyData? _.cloneDeep(bufferModifyData).filter((row:any) => row.bid !== props.data.bid): [];
-            newBufferModifyData.push({...props.data, iv: !isActive});
-            dispatch(SET_BUFFER_MODIFY_DATA(newBufferModifyData));
-            
-          }
-          else if(props.data.bid && isActive){
-            const newBufferModifyData = bufferModifyData?_.cloneDeep(bufferModifyData).filter((row:any) => row.bid !== props.data.bid): [];
-            newBufferModifyData.push({...props.data, iv: !isActive});
-            dispatch(SET_BUFFER_MODIFY_DATA(newBufferModifyData));
-            
-          }
-          else if(!props.data.bid){
-            const exists = bufferModifyData? bufferModifyData.some((buffer:any) => buffer.bcd === props.data.bcd): false;
-            if(exists){
-              const newBufferModifyData = _.cloneDeep(bufferModifyData).filter((row:any) => row.bcd !== props.data.bcd);
-              newBufferModifyData.push({...props.data, iv: !isActive});
-              dispatch(SET_BUFFER_MODIFY_DATA(newBufferModifyData));
-            }
-          }
-          
-          dispatch(UPDATE_ROW_DATA(newData));
-          setIsActive(!isActive);
-        }
-        else if(activeMaster.id===502){
-          const newData = _.cloneDeep(activeMaster.rowData);
-      newData.forEach((row: any) => {
-        
-            if(row.cid!==undefined && row.cid!==null && row.cid === props.data.cid){
-              row.iv = !isActive;
-            }
-            else if(row.ccd=== props.data.ccd){
-              row.iv = !isActive;
-            }
-          })
-          
-          if(props.data.cid && !isActive){
-            const newCCRModifyData = ccrModifyData? _.cloneDeep(ccrModifyData).filter((row:any) => row.cid !== props.data.cid): [];
-            newCCRModifyData.push({...props.data, iv: !isActive});
-            dispatch(SET_CCR_MODIFY_DATA(newCCRModifyData));
-            
-          }
-          else if(props.data.cid && isActive){
-            const newCCRModifyData = ccrModifyData?_.cloneDeep(ccrModifyData).filter((row:any) => row.cid !== props.data.cid): [];
-            newCCRModifyData.push({...props.data, iv: !isActive});
-            dispatch(SET_CCR_MODIFY_DATA(newCCRModifyData));
-            
-          }
-          else if(!props.data.cid){
-            const exists = ccrModifyData? ccrModifyData.some((ccr:any) => ccr.ccd === props.data.ccd): false;
-            if(exists){
-              const newCCRModifyData = _.cloneDeep(ccrModifyData).filter((row:any) => row.ccd !== props.data.ccd);
-              newCCRModifyData.push({...props.data, iv: !isActive});
-              dispatch(SET_CCR_MODIFY_DATA(newCCRModifyData));
-            }
-          }
-          
-          dispatch(UPDATE_ROW_DATA(newData));
-          setIsActive(!isActive);
-        }
+    if (activeMaster.id === 501) {
+      const newData = updateDataForMaster(bufferModifyData, SET_BUFFER_MODIFY_DATA, 'bid', 'bcd');
+      updateRowDataAndToggleState(newData);
+    } else if (activeMaster.id === 502) {
+      const newData = updateDataForMaster(ccrModifyData, SET_CCR_MODIFY_DATA, 'cid', 'ccd');
+      updateRowDataAndToggleState(newData);
+    }
   };
 
   return (
-    <ToggleContainer style={{zoom: 0.6}} isActive={isActive} onClick={toggleHandler}>
+    <ToggleContainer style={{zoom: 0.6}} isActive={isActive} isDisabled={isDisabled} onClick={toggleHandler}>
       <ToggleCircle isActive={isActive} />
       <ToggleText isActive={isActive}>{isActive ? "Active" : "Inactive"}</ToggleText>
     </ToggleContainer>

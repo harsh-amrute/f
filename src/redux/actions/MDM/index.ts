@@ -21,6 +21,7 @@ const actions =  {
     REMOVE_ALL_FILTERS:createAction("REMOVE_ALL_FILTERS"),
     RESET_FILTERS:createAction("RESET_FILTER"),
     UPDATE_FILTER:createAction<{value:string,property:string,filterId:string}>("UPDATE_FILTER"),
+    UPDATE_FILTER_VALUE:createAction<{value:string,property:string,filterId:string}>("UPDATE_FILTER_VALUE"),
     MODIFY_ROW_DATA:createAction<{oldRow:any[],newRow:any[]}>("MODIFY_ROW_DATA"),
     UPDATE_ROW_DATA:createAction<any[]>("UPDATE_ROW_DATA"),
     REMOVE_ROW_DATA:createAction<any[]>("REMOVE_ROW_DATA"),
@@ -63,5 +64,6 @@ export const {
     SET_RECORD_COUNT,
     UPDATE_DATA_AVAILABILITY_STATUS,
     UPDATE_MASTER_CHECKED_STATUS,
-    UPDATE_IS_SAVING_DRAFT
+    UPDATE_IS_SAVING_DRAFT,
+    UPDATE_FILTER_VALUE
 } = actions;

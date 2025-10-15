@@ -30,8 +30,6 @@ import { ColorsMTO } from '../../Common/Colors';
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
 import BPPRenderer from '../../Common/BPRRenderer/BPPRenderer';
 import { useGetDBRsettingsData } from '../../../../Services/MTO/Common/DBRSettings';
-import VFModalCard from '../../../../../components/VectorFLOW/commons/VFModalCard';
-import VFButtonOutline from '../../../../../components/VectorFLOW/commons/VFButtonOutline';
 import { useNavigate } from 'react-router';
 import VFWarningModal from '../../../../../components/VectorFLOW/commons/MTO/VFWarningModal';
 

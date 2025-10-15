@@ -10,6 +10,8 @@ export const BUFFER_VALIDATION_SCHEMA = Joi.object({
     "number.max": "Buffer size cannot exceed for over a year.",
     "number.integer": "Buffer size must be an integer!",
     "any.required": "Enter the Buffer Size!",
+    "number.unsafe": "Buffer size must be a safe number",
+
   }),
 
   slt: Joi.number().integer().min(0).max(364).required().messages({
@@ -18,6 +20,8 @@ export const BUFFER_VALIDATION_SCHEMA = Joi.object({
     "number.max": "SLT must be at most {#limit}.",
     "number.integer": "SLT must be an integer!",
     "any.required": "SLT cannot be empty!",
+    "number.unsafe": "SLT must be a safe number",
+
   }),
 
   mlt: Joi.number().integer().min(0).max(364).required().messages({
@@ -26,6 +30,7 @@ export const BUFFER_VALIDATION_SCHEMA = Joi.object({
     "number.max": "MLT must be at most {#limit}.",
     "number.integer": "MLT must be an integer!",
     "any.required": "MLT cannot be empty!",
+    "number.unsafe": "MLT must be a safe number",
   }),
 
   bt: Joi.required().messages({
@@ -74,7 +79,7 @@ export const BUFFER_VALIDATION_SCHEMA = Joi.object({
 
   ia: Joi.optional(),
 
-  isEditing: Joi.optional(),
+  iu: Joi.optional(),
 
   id : Joi.any().optional(),
 
@@ -100,6 +105,7 @@ export const CCR_VALIDATION_SCHEMA = Joi.object({
   cpd: Joi.number().min(1).required().messages({
     "number.base":"CCR Capacity Per Day must be a number!",
     "number.min": "CCR Capacity Per Day should be greater than 0!",
+    "number.unsafe": "CCR Capacity Per Day must be a safe number",
     "any.required": "CCR Capacity Per Day cannot be empty!",
   }),
 
@@ -107,6 +113,7 @@ export const CCR_VALIDATION_SCHEMA = Joi.object({
     "number.base":"Cummulative WIP Limit (cwl) must be a number!",
     "any.required": "Cummulative WIP Limit (cwl) cannot be empty!",
     "number.min": "Cummulative WIP Limit (cwl) should be greater than 0!",
+    "number.unsafe": "Cummulative WIP Limit (cwl) must be a safe number",
   }),
 
   dp: Joi.required().messages({
@@ -124,19 +131,22 @@ export const CCR_VALIDATION_SCHEMA = Joi.object({
     "number.min": "Residual Buffer (rb) should be a value between 0 and 1!",
     "number.max": "Residual Buffer (rb) should be a value between 0 and 1!",
     "any.required": "Residual Buffer (rb) is required!",
+    "number.unsafe": "Residual Buffer (rb) must be a safe number",
   }),
 
   sh: Joi.number().integer().required().messages({ 
       "number.base": "Scheduling Horizon must be a number!",
       "number.integer": "Scheduling Horizon must be an integer!",
-      "any.required": "Scheduling Horizon cannot be empty!"
+      "any.required": "Scheduling Horizon cannot be empty!",
+      "number.unsafe": "Scheduling Horizon must be a safe number",
     }),
 
   fh: Joi.number().min(Joi.ref('sh')).integer().required().messages({ 
     "number.base": "FOL Horizon must be a number!",
     "number.integer": "FOL Horizon must be an integer!",
     "any.required": "FOL Horizon cannot be empty!",
-    "number.min": "Fol Horizon should be at least equal to the Scheduling Horizon."
+    "number.min": "Fol Horizon should be at least equal to the Scheduling Horizon.",
+    "number.unsafe": "Fol Horizon must be a safe number",
   }),
     
   whpd: Joi.number()
@@ -146,6 +156,7 @@ export const CCR_VALIDATION_SCHEMA = Joi.object({
       "number.base":"Working hours Per Day must be a number!",
       "any.required": "Working hours Per Day cannot be empty!",
       "number.min": "Working hours Per Day should be greater than 0!",
+      "number.unsafe": "Working hours Per Day must be a safe number",
     }),
   ccd: Joi.string().pattern(patternCode).max(100).required().messages({
     "string.base": "CCR Code cannot be empty!",
@@ -172,6 +183,7 @@ export const CCR_VALIDATION_SCHEMA = Joi.object({
     "any.required": "Is Active is required! It should be either true or false.",
   }),
   
+  editable: Joi.any().optional(),
   rid: Joi.any().optional(),
   cgcd: Joi.any().optional(),
   cgm: Joi.any().optional(),
@@ -183,7 +195,7 @@ export const CCR_VALIDATION_SCHEMA = Joi.object({
   cgnm: Joi.any().optional(),
   ia: Joi.optional(),
 
-  isEditing: Joi.optional(),
+  iu: Joi.optional(),
 
   id : Joi.any().optional(),
 
