@@ -12,6 +12,7 @@ import { useUserData } from "../../../../../context";
 import { useGetAllLocations } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 import { BPRFilter, BPRFilterState } from "../../../../../VectorFlow/types/BPR";
 import { useVFMultiFilter } from "./useVFFilterContent";
+import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
 
 interface FilterSectionProps {
   filters: any;
@@ -100,6 +101,10 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
       }));
     }
   }, [multiFilter]);
+
+  if (isLocationDataLoading) {
+    return <VFLoader />;
+  }
 
   return (
     <>

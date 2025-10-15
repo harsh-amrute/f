@@ -24,6 +24,7 @@ import {
   useSearchWHDescription,
 } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 import { MultiValue, ActionMeta } from "react-select";
+import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
 
 interface FilterSectionProps {
   multiFilter: BPRFilterState;
@@ -473,6 +474,10 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
   const filteredOptions = getFilteredOptions();
 
   if (!isInitialized) return null;
+
+  if (isLocationDataLoading) {
+    return <VFLoader />;
+  }
 
   return (
     <>

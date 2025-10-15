@@ -20,6 +20,7 @@ import { BPRFilter, BPRFilterState } from "../../../../../VectorFlow/types/BPR";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/store/store";
 import { useGetAllSKUs, useSearchSKUDescription } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
+import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
 
 interface ProductFilterProps {
   multiFilter: BPRFilterState;
@@ -477,7 +478,9 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
   if (!isInitialized) {
     return null;
   }
-
+  if (isSkuDataLoading) {
+    return <VFLoader />;
+  }
   return (
     <>
       <FilterGroup>
