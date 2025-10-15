@@ -45,7 +45,6 @@ const RRRColorBandwise = () => {
   
   const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
   const RRR_ROWS_PER_PAGE = EnvConfig['RRR_ROWS_PER_PAGE'];   
-  console.log("vvvv",rowData);
   
   return (
   <GridStateContext.Provider
