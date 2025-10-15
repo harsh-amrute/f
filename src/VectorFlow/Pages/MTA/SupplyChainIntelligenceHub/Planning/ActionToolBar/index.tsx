@@ -31,6 +31,7 @@ import useGetLocation from "../../../../../../hooks/useGetLocation";
 import { Skeleton } from "../../../../../../components/commons/styled";
 import ConfirmationDataModal from "../../../DBM/DBMNormSuggestions/ConfirmationModal";
 import MTAVFMultiFilter from "../../../Common/MTAVFMultiFilter";
+import { UIColumnConfigName } from "../../../../../../helpers/Enum";
 
 interface ActionToolBarProps {
   view: string;
@@ -61,6 +62,7 @@ interface ActionToolBarProps {
   lastRunDate?:string 
   isPlanning?:boolean,
   generalFilterOptions?:any
+  
 }
 
 const ActionToolBar = ({
@@ -286,6 +288,7 @@ const ActionToolBar = ({
               onClose={() => toggleFilter(false)}
               onReset={handleResetFilters}
               currCategory={currCategory}
+              reportName={UIColumnConfigName.BPR}
             />
           );
         }
@@ -300,6 +303,7 @@ const ActionToolBar = ({
               onClose={() => toggleFilter(false)}
               onReset={handleResetFilters}      
               currCategory={currCategory}
+              reportName={UIColumnConfigName.RRR}
             />
           );
         }
@@ -312,7 +316,8 @@ const ActionToolBar = ({
               onApply={handleApplyFilter}
               multiFilter={multiFilter}
               onClose={() => toggleFilter(false)}
-              onReset={handleResetFilters}      
+              onReset={handleResetFilters}   
+              reportName={UIColumnConfigName.RRR_OA}
             />
           );
         }
@@ -352,7 +357,7 @@ const ActionToolBar = ({
               onClose={() => toggleFilter(false)}
               onReset={handleResetFilters}   
               currCategory={currCategory}
-   
+              reportName={UIColumnConfigName.BOR}
             />
           );
         }
@@ -365,7 +370,8 @@ const ActionToolBar = ({
               onApply={handleApplyFilter}
               multiFilter={multiFilter}
               onClose={() => toggleFilter(false)}
-              onReset={handleResetFilters}      
+              onReset={handleResetFilters}   
+              reportName={UIColumnConfigName.BOR_OA}
             />
           );
         }
@@ -379,7 +385,8 @@ const ActionToolBar = ({
               onApply={handleApplyFilter}
               multiFilter={multiFilter}
               onClose={() => toggleFilter(false)}
-              onReset={handleResetFilters}      
+              onReset={handleResetFilters}   
+              reportName={UIColumnConfigName.OAR}
             />
           );
         }
@@ -394,6 +401,7 @@ const ActionToolBar = ({
               onClose={() => toggleFilter(false)}
               onReset={handleResetFilters}
               currentTab={currentTab}
+              reportName={UIColumnConfigName.BuffertrendReport}
             />
           );
         }
@@ -406,7 +414,8 @@ const ActionToolBar = ({
               onApply={handleApplyFilter}
               multiFilter={multiFilter}
               onClose={() => toggleFilter(false)}
-              onReset={handleResetFilters}      
+              onReset={handleResetFilters}
+                    
             />
           );
         }
@@ -445,7 +454,8 @@ const ActionToolBar = ({
               onApply={handleApplyFilter}
               multiFilter={multiFilter}
               onClose={() => toggleFilter(false)}
-              onReset={handleResetFilters}      
+              onReset={handleResetFilters}  
+              reportName={UIColumnConfigName.DBM}
             />
           );
         }
@@ -460,7 +470,8 @@ const ActionToolBar = ({
               onApply={handleApplyFilter}
               multiFilter={multiFilter}
               onClose={() => toggleFilter(false)}
-              onReset={handleResetFilters}      
+              onReset={handleResetFilters}     
+              reportName={UIColumnConfigName.OER}
             />
           );
         }

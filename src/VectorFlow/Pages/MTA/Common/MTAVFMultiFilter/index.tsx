@@ -40,6 +40,7 @@ interface FilterModalProps {
   multiFilter: BPRFilterState;
   currentTab?: string;
   currCategory?: any;
+  reportName?: any;
 }
 
 interface SectionType {
@@ -107,6 +108,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
   multiFilter: initialMultiFilter,
   currentTab = "both",
   currCategory,
+  reportName,
 }) => {
   const { user } = useUserData();
   const EnvConfig = useSelector((state: RootState) => state.mta.EnvConfig);
@@ -185,7 +187,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
       colorFilter: { id: "6", label: "Color", filters: [] },
       generalFilter: { id: "7", label: "General", filters: [] },
       customAttributeFilter: { id: "8", label: "Attribute", filters: [] },
-      horizonFilter: {id:"9", label: "Horizon", filters: []},
+      horizonFilter: { id: "9", label: "Horizon", filters: [] },
     }
   );
 
@@ -209,7 +211,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
       colorFilter: { id: "6", label: "Color", filters: [] },
       generalFilter: { id: "7", label: "General", filters: [] },
       customAttributeFilter: { id: "8", label: "Attribute", filters: [] },
-      horizonFilter: {id:"9", label: "Horizon", filters: []},
+      horizonFilter: { id: "9", label: "Horizon", filters: [] },
     };
 
     setMultiFilter(resetMultiFilter);
@@ -272,7 +274,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
     const section = availableSections.find((s) => s.label === activeSection);
     if (!section) return null;
     const FilterComponent = section.component;
-    
+
     if (section.label === "Availability") {
       return (
         <FilterComponent
@@ -285,7 +287,18 @@ const FilterModal: React.FC<FilterModalProps> = ({
         />
       );
     }
-    
+    if (section.label === "Attributes - SKU Loc") {
+      return (
+        <FilterComponent
+          multiFilter={multiFilter}
+          onMultiFilterChange={handleMultiFilterChange}
+          filters={filters}
+          onFilterChange={handleInputChange}
+          reportName={reportName}
+        />
+      );
+    }
+
     return (
       <FilterComponent
         multiFilter={multiFilter}
@@ -296,7 +309,8 @@ const FilterModal: React.FC<FilterModalProps> = ({
     );
   };
 
-  const themeColor = user.user.theme_ui === "REGALBLAZE" ? "#14213D" : "#000000";
+  const themeColor =
+    user.user.theme_ui === "REGALBLAZE" ? "#14213D" : "#000000";
   return (
     <VFModalCard
       zoom="0.73"

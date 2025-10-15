@@ -14,15 +14,19 @@ import { useUserData } from "../../../../../context";
 import { useGetUIConfigData } from "../../../../Services/MTA/Common/UIConfig";
 import { UIColumnConfigName } from "../../../../../helpers/Enum";
 import { BPRFilter, BPRFilterState } from "../../../../../VectorFlow/types/BPR";
+import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
+import NoAttributesFilters from "./NoAttributesData";
 
 interface FilterSectionProps {
   multiFilter: BPRFilterState;
   onMultiFilterChange: (newMultiFilter: BPRFilterState) => void;
+  reportName: UIColumnConfigName;
 }
 
 export const AttributesFilters: React.FC<FilterSectionProps> = ({
   multiFilter,
   onMultiFilterChange,
+  reportName,
 }) => {
   const { user } = useUserData();
   const styles = useThemeStyles();
@@ -46,23 +50,26 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
     Record<number, number>
   >({});
   const [isInitialized, setIsInitialized] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const commonFilterKeywords = ["skulocattr", "skuattr", "locattr"];
 
   useEffect(() => {
     const loadAttributes = async () => {
+      setIsLoading(true);
       try {
-        const res = await getUiConfig(UIColumnConfigName.BPR);
+        const res = await getUiConfig(reportName);
 
         const data = res?.data?.data?.data || res?.data?.data || [];
 
-        console.log("UIConfig raw response:", data);
+        console.log(`UIConfig raw response for ${reportName}:`, data);
 
         const filtered = data.filter((col: any) =>
-          ["skulocattr", "skuattr", "locattr"].some((kw) =>
+          commonFilterKeywords.some((kw) =>
             col.Col_Code?.toLowerCase()?.includes(kw)
           )
         );
 
-        const finalCols = filtered.length > 0 ? filtered : data;
+        const finalCols = filtered.length > 0 ? filtered : [];
 
         const formatted = finalCols.map((col: any, idx: number) => ({
           value: col.Col_Code,
@@ -70,20 +77,34 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
           name: `CAF${idx + 1}`,
         }));
 
-        console.log("Final attributeOptions:", formatted);
+        console.log(`Final attributeOptions for ${reportName}:`, formatted);
 
         setAttributeOptions(formatted);
       } catch (err) {
-        console.error("Error loading UIConfig attributes:", err);
+        console.error(
+          `Error loading UIConfig attributes for ${reportName}:`,
+          err
+        );
         setAttributeOptions([]);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     loadAttributes();
-  }, [getUiConfig]);
+  }, [getUiConfig, reportName]);
 
   useEffect(() => {
-    if (attributeOptions.length === 0) return;
+    setIsInitialized(false);
+    setIsLoading(true);
+    setRowSelections({});
+    resetFilterRows(1);
+    setRowFilterIndexMap({});
+    setAttributeOptions([]);
+  }, [reportName, resetFilterRows]);
+
+  useEffect(() => {
+    if (attributeOptions.length === 0 || isInitialized) return;
 
     const parentId = "customAttributeFilter";
     const savedFilters = multiFilter[parentId]?.filters || [];
@@ -95,8 +116,6 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
       setIsInitialized(true);
       return;
     }
-
-    if (isInitialized) return;
 
     const newRows = savedFilters.map((_, idx) => ({ id: idx }));
     setFilterRows(newRows);
@@ -124,7 +143,13 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
     setRowSelections(restored);
     setRowFilterIndexMap(indexMap);
     setIsInitialized(true);
-  }, [attributeOptions, multiFilter?.customAttributeFilter?.filters]);
+  }, [
+    attributeOptions,
+    multiFilter?.customAttributeFilter?.filters,
+    isInitialized,
+    resetFilterRows,
+    setFilterRows,
+  ]);
 
   const onFilterChange = (
     rowId: number,
@@ -210,12 +235,18 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
     });
   };
 
-  if (!isInitialized || attributeOptions.length === 0) {
+  if (isLoading) {
+    return <VFLoader />;
+  }
+
+  if (!isLoading && attributeOptions.length === 0) {
     return (
-      <TextWrapper style={{ padding: "10px", color: "#666" }}>
-        Loading attribute options...
-      </TextWrapper>
+    <NoAttributesFilters reportName={reportName}/>
     );
+  }
+
+  if (!isInitialized && attributeOptions.length > 0) {
+    return <VFLoader />;
   }
 
   return (
