@@ -150,3 +150,31 @@ export const useSearchWHDescription = (searchText: string) => {
     }
   );
 };
+
+
+export const useSearchSKUDescription = (searchText: string) => {
+  return useQuery(
+    ['useSearchSKUDescription', searchText],
+    async () => {
+      if (!searchText || searchText.length < 2) {
+        return { data: [] };
+      }
+      
+      try {
+        const response = await axios.post(
+          process.env.REACT_APP_API_HOST + `api/mta/GetSKUDescriptionSearch`, 
+          { searchText }
+        );
+        return response.data;
+      } catch (error) {
+        console.error('Search API error:', error);
+        throw error;
+      }
+    },
+    { 
+      enabled: !!searchText && searchText.length >= 2,
+      staleTime: 5 * 60 * 1000,
+      retry: 1
+    }
+  );
+};

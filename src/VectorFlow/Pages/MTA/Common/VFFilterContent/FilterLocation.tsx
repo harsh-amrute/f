@@ -19,7 +19,10 @@ import { useUserData } from "../../../../../context";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/store/store";
 import { BPRFilter, BPRFilterState } from "../../../../../VectorFlow/types/BPR";
-import { useGetAllLocations, useSearchWHDescription } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
+import {
+  useGetAllLocations,
+  useSearchWHDescription,
+} from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 import { MultiValue, ActionMeta } from "react-select";
 
 interface FilterSectionProps {
@@ -42,10 +45,8 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
 
   const {
     filterRows,
-    addFilterRow,
     handleAddRow,
     handleRemoveRow,
-    removeFilterRow,
     isMaxRows,
     isMinRows,
     setFilterRows,
@@ -83,24 +84,29 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
     [rowId: number]: { column?: any; operation?: any; value?: any };
   }>({});
 
-  const [rowFilterIndexMap, setRowFilterIndexMap] = useState<Record<number, number>>({});
+  const [rowFilterIndexMap, setRowFilterIndexMap] = useState<
+    Record<number, number>
+  >({});
   const [isInitialized, setIsInitialized] = useState(false);
   const [filterType, setFilterType] = useState<
     "Location Code" | "Location Description"
   >("Location Code");
 
-  const [selectedLocations, setSelectedLocations] = useState<LocationOption[]>([]);
+  const [selectedLocations, setSelectedLocations] = useState<LocationOption[]>(
+    []
+  );
   const [searchQuery, setSearchQuery] = useState("");
   const [manualSearchQuery, setManualSearchQuery] = useState("");
   const [hasSearched, setHasSearched] = useState(false);
 
-  const { data: locationData, isLoading: isLocationDataLoading } = useGetAllLocations();
+  const { data: locationData, isLoading: isLocationDataLoading } =
+    useGetAllLocations();
 
-  const { 
-    data: searchData, 
-    isLoading: isSearchLoading, 
+  const {
+    data: searchData,
+    isLoading: isSearchLoading,
     refetch: triggerSearch,
-    isFetching: isSearchFetching 
+    isFetching: isSearchFetching,
   } = useSearchWHDescription(manualSearchQuery);
 
   const targetSize = 2000;
@@ -108,20 +114,19 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
   const shouldUseLocalData = locationDataSize <= targetSize;
   const shouldShowSearchButton = !shouldUseLocalData;
 
-  // Custom filter function for local data
   const customFilterOption = (option: any, inputValue: string) => {
-    if (!inputValue) return false; // Don't show options when no input
-    
+    if (!inputValue) return false;
+
     const searchTerm = inputValue.toLowerCase();
     const optionLabel = option.label.toLowerCase();
     const optionValue = option.value.toLowerCase();
-    
+
     return optionLabel.includes(searchTerm) || optionValue.includes(searchTerm);
   };
 
   const localLocationOptions = useMemo((): LocationOption[] => {
     if (!locationData?.data?.data || !shouldUseLocalData) return [];
-    
+
     return locationData.data.data.map((location: any) => {
       const label = filterType === "Location Code" ? location.wc : location.wd;
       return {
@@ -135,13 +140,13 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
 
   const searchLocationOptions = useMemo((): LocationOption[] => {
     if (!searchData || shouldUseLocalData) return [];
-    
+
     try {
       let results = [];
-      
+
       if (Array.isArray(searchData)) {
         results = searchData;
-      } else if (searchData && typeof searchData === 'object') {
+      } else if (searchData && typeof searchData === "object") {
         if (searchData.data && Array.isArray(searchData.data)) {
           results = searchData.data;
         } else {
@@ -150,9 +155,10 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
       } else {
         results = [];
       }
-      
+
       return results.map((location: any) => {
-        const label = filterType === "Location Code" ? location.wc : location.wd;
+        const label =
+          filterType === "Location Code" ? location.wc : location.wd;
         return {
           label: label,
           value: location.wc,
@@ -161,14 +167,18 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
         };
       });
     } catch (error) {
-      console.error('Error processing search results:', error);
+      console.error("Error processing search results:", error);
       return [];
     }
   }, [searchData, filterType, shouldUseLocalData]);
 
-  const locationOptions = shouldUseLocalData ? localLocationOptions : searchLocationOptions;
+  const locationOptions = shouldUseLocalData
+    ? localLocationOptions
+    : searchLocationOptions;
 
-  const isLoading = shouldUseLocalData ? isLocationDataLoading : (isSearchLoading || isSearchFetching);
+  const isLoading = shouldUseLocalData
+    ? isLocationDataLoading
+    : isSearchLoading || isSearchFetching;
 
   const CustomOption = (props: any) => {
     const optionStyles = useColorOptionStyles();
@@ -196,11 +206,13 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
       value: f.value,
       label: f.label === "LocationCode" ? f.value : f.label,
       id: f.value,
-      originalData: { wc: f.value, wd: f.label }
+      originalData: { wc: f.value, wd: f.label },
     }));
     setSelectedLocations(restoredLocations);
 
-    const operationFilters = savedFilters.filter((f) => !f.name.startsWith("LF6"));
+    const operationFilters = savedFilters.filter(
+      (f) => !f.name.startsWith("LF6")
+    );
 
     if (operationFilters.length === 0) {
       setRowSelections({});
@@ -215,16 +227,16 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
     const newRows = operationFilters.map((_, idx) => ({ id: idx }));
     setFilterRows(newRows);
 
-    const restored: { [rowId: number]: { column?: any; operation?: any; value?: any } } = {};
+    const restored: {
+      [rowId: number]: { column?: any; operation?: any; value?: any };
+    } = {};
     const indexMap: Record<number, number> = {};
 
     operationFilters.forEach((f: BPRFilter, idx: number) => {
       const column = filterLocationOptions.find(
         (opt) => opt.value === f.attributeName
       );
-      const operation = stringOpertors.find(
-        (op) => op.value === f.operator
-      );
+      const operation = stringOpertors.find((op) => op.value === f.operator);
 
       restored[idx] = {
         column: column || null,
@@ -273,16 +285,19 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
         name: current.column.name,
       };
 
-      const existingFilters = (multiFilter[parentId]?.filters || []) as BPRFilter[];
-      const operationFilters = existingFilters.filter((f) => !f.name.startsWith("LF6"));
+      const existingFilters = (multiFilter[parentId]?.filters ||
+        []) as BPRFilter[];
+      const operationFilters = existingFilters.filter(
+        (f) => !f.name.startsWith("LF6")
+      );
       const locationFilters = existingFilters.filter((f) => f.name === "LF6");
-      
+
       const nextFilters = operationFilters.slice();
       const idx = rowFilterIndexMap[rowId];
 
       const newIndexMap = { ...rowFilterIndexMap };
 
-      if (typeof idx === 'number' && idx >= 0 && idx < nextFilters.length) {
+      if (typeof idx === "number" && idx >= 0 && idx < nextFilters.length) {
         nextFilters[idx] = newFilter;
       } else {
         nextFilters.push(newFilter);
@@ -305,16 +320,19 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
     if (isMinRows) return;
 
     const parentId = "locationFilter";
-    const existingFilters = (multiFilter[parentId]?.filters || []) as BPRFilter[];
-    const operationFilters = existingFilters.filter((f) => !f.name.startsWith("LF6"));
+    const existingFilters = (multiFilter[parentId]?.filters ||
+      []) as BPRFilter[];
+    const operationFilters = existingFilters.filter(
+      (f) => !f.name.startsWith("LF6")
+    );
     const locationFilters = existingFilters.filter((f) => f.name === "LF6");
-    
+
     const idx = rowFilterIndexMap[rowId];
 
     const nextFilters = operationFilters.slice();
     const newIndexMap = { ...rowFilterIndexMap };
 
-    if (typeof idx === 'number' && idx >= 0 && idx < nextFilters.length) {
+    if (typeof idx === "number" && idx >= 0 && idx < nextFilters.length) {
       nextFilters.splice(idx, 1);
 
       Object.keys(newIndexMap).forEach((k) => {
@@ -348,14 +366,17 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
   ) => {
     const selected = Array.isArray(newValue) ? [...newValue] : [];
     setSelectedLocations(selected);
-    
+
     setSearchQuery("");
     setHasSearched(false);
     setManualSearchQuery("");
 
     const parentId = "locationFilter";
-    const existingFilters = (multiFilter[parentId]?.filters || []) as BPRFilter[];
-    const operationFilters = existingFilters.filter((f) => !f.name.startsWith("LF6"));
+    const existingFilters = (multiFilter[parentId]?.filters ||
+      []) as BPRFilter[];
+    const operationFilters = existingFilters.filter(
+      (f) => !f.name.startsWith("LF6")
+    );
 
     const newFilters = selected.map((loc) => ({
       attributeName: "Location",
@@ -378,16 +399,16 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
 
   const handleSearchApply = async () => {
     console.log("Search button clicked with query:", searchQuery);
-    
+
     if (searchQuery && searchQuery.length >= 2) {
       setHasSearched(true);
       setManualSearchQuery(searchQuery);
-      
+
       try {
         console.log("Triggering search with query:", searchQuery);
         await triggerSearch();
       } catch (error) {
-        console.error('Search failed:', error);
+        console.error("Search failed:", error);
       }
     } else {
       console.log("Search query too short:", searchQuery);
@@ -395,7 +416,7 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
   };
 
   const handleKeyPress = (event: React.KeyboardEvent) => {
-    if (event.key === 'Enter' && !shouldUseLocalData) {
+    if (event.key === "Enter" && !shouldUseLocalData) {
       handleSearchApply();
     }
   };
@@ -406,11 +427,14 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
     setSearchQuery("");
     setManualSearchQuery("");
     setHasSearched(false);
-    
+
     const parentId = "locationFilter";
-    const existingFilters = (multiFilter[parentId]?.filters || []) as BPRFilter[];
-    const operationFilters = existingFilters.filter((f) => !f.name.startsWith("LF6"));
-    
+    const existingFilters = (multiFilter[parentId]?.filters ||
+      []) as BPRFilter[];
+    const operationFilters = existingFilters.filter(
+      (f) => !f.name.startsWith("LF6")
+    );
+
     const updatedMultiFilter: BPRFilterState = {
       ...multiFilter,
       [parentId]: {
@@ -418,7 +442,7 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
         filters: operationFilters,
       },
     };
-    
+
     onMultiFilterChange(updatedMultiFilter);
   };
 
@@ -441,7 +465,7 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
       return [];
     }
 
-    return locationOptions.filter(option => 
+    return locationOptions.filter((option) =>
       customFilterOption(option, searchQuery)
     );
   };
@@ -545,8 +569,8 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
             <DropDownWrapper style={{ flex: 1 }}>
               <Select
                 placeholder={
-                  shouldUseLocalData 
-                    ? "Type location code to search..." 
+                  shouldUseLocalData
+                    ? "Type location code to search..."
                     : "Type to search locations and click Search button"
                 }
                 options={shouldUseLocalData ? filteredOptions : locationOptions}
@@ -576,10 +600,12 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
                 inputValue={searchQuery}
                 onKeyDown={handleKeyPress}
                 isLoading={isLoading}
-                filterOption={shouldUseLocalData ? customFilterOption : undefined}
-                noOptionsMessage={({ inputValue }) => 
-                  shouldUseLocalData 
-                    ? inputValue 
+                filterOption={
+                  shouldUseLocalData ? customFilterOption : undefined
+                }
+                noOptionsMessage={({ inputValue }) =>
+                  shouldUseLocalData
+                    ? inputValue
                       ? "No locations found"
                       : "Start typing to search locations"
                     : "No locations found. Try searching with the Search button."
@@ -652,9 +678,7 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
                     alt="search"
                     style={{ width: 16, height: 16 }}
                   />
-                  <span>
-                    {isLoading ? "Searching..." : "Search"}
-                  </span>
+                  <span>{isLoading ? "Searching..." : "Search"}</span>
                 </div>
               </VFButton>
             )}

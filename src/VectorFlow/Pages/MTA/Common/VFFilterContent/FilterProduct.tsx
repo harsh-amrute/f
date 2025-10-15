@@ -19,7 +19,7 @@ import { useUserData } from "../../../../../context";
 import { BPRFilter, BPRFilterState } from "../../../../../VectorFlow/types/BPR";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/store/store";
-import { useGetAllSKUs } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"; // Adjust import path as needed
+import { useGetAllSKUs, useSearchSKUDescription } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 
 interface ProductFilterProps {
   multiFilter: BPRFilterState;
@@ -33,10 +33,6 @@ interface SKUOption {
   originalData: any;
 }
 
-const handleApply = () => {
-  console.log("Search Button.................");
-};
-
 export const ProductFilters: React.FC<ProductFilterProps> = ({
   multiFilter,
   onMultiFilterChange,
@@ -44,10 +40,8 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
   const styles = useThemeStyles();
   const {
     filterRows,
-    addFilterRow,
     handleAddRow,
     handleRemoveRow,
-    removeFilterRow,
     isMaxRows,
     isMinRows,
     setFilterRows,
@@ -86,6 +80,13 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
   const [hasSearched, setHasSearched] = useState(false);
 
   const { data: skuData, isLoading: isSkuDataLoading } = useGetAllSKUs();
+  
+  const { 
+    data: searchData, 
+    isLoading: isSearchLoading, 
+    refetch: triggerSearch,
+    isFetching: isSearchFetching 
+  } = useSearchSKUDescription(manualSearchQuery);
 
   const colorStyles = useColorThemeStyles({
     minWidth: "620px",
@@ -119,8 +120,7 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
     if (!skuData?.data?.data || !shouldUseLocalData) return [];
 
     return skuData.data.data.map((sku: any) => {
-      const label =
-        filterType === "SKU Code" ? sku.sc : `${sku.sc} (${sku.sd})`;
+      const label = filterType === "SKU Code" ? sku.sc : sku.sd;
       return {
         label: label,
         value: sku.sc,
@@ -130,9 +130,42 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
     });
   }, [skuData, filterType, shouldUseLocalData]);
 
-  const skuOptions = localSKUOptions;
+  const searchSKUOptions = useMemo((): SKUOption[] => {
+    if (!searchData || shouldUseLocalData) return [];
+    
+    try {
+      let results = [];
+      
+      if (Array.isArray(searchData)) {
+        results = searchData;
+      } else if (searchData && typeof searchData === 'object') {
+        if (searchData.data && Array.isArray(searchData.data)) {
+          results = searchData.data;
+        } else {
+          results = Object.values(searchData);
+        }
+      } else {
+        results = [];
+      }
+      
+      return results.map((sku: any) => {
+        const label = filterType === "SKU Code" ? sku.sc : sku.sd;
+        return {
+          label: label,
+          value: sku.sc,
+          id: sku.sc,
+          originalData: sku,
+        };
+      });
+    } catch (error) {
+      console.error('Error processing search results:', error);
+      return [];
+    }
+  }, [searchData, filterType, shouldUseLocalData]);
 
-  const isLoading = isSkuDataLoading;
+  const skuOptions = shouldUseLocalData ? localSKUOptions : searchSKUOptions;
+
+  const isLoading = shouldUseLocalData ? isSkuDataLoading : (isSearchLoading || isSearchFetching);
 
   const CustomOption = (props: any) => {
     const optionStyles = useColorOptionStyles();
@@ -365,19 +398,27 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
 
     onMultiFilterChange(updatedMultiFilter);
   };
+
   const handleSearchApply = async () => {
     console.log("Search button clicked with query:", searchQuery);
-
+    
     if (searchQuery && searchQuery.length >= 2) {
       setHasSearched(true);
       setManualSearchQuery(searchQuery);
+      
+      try {
+        console.log("Triggering search with query:", searchQuery);
+        await triggerSearch();
+      } catch (error) {
+        console.error('Search failed:', error);
+      }
     } else {
       console.log("Search query too short:", searchQuery);
     }
   };
 
   const handleKeyPress = (event: React.KeyboardEvent) => {
-    if (event.key === "Enter" && !shouldUseLocalData) {
+    if (event.key === 'Enter' && !shouldUseLocalData) {
       handleSearchApply();
     }
   };
@@ -533,7 +574,7 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
 
       <FilterGroup style={{ paddingTop: "10px" }}>
         <FilterColumn>
-          <TextWrapper>Select Location</TextWrapper>
+          <TextWrapper>Select SKU</TextWrapper>
           <DropDownRow>
             <DropDownWrapper style={{ flex: 1 }}>
               <Select
