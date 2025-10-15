@@ -85,6 +85,8 @@ const useBTR = () => {
 
     const themeUi = user.user.theme_ui
 
+    const [currentPageTech, setCurrentPageTech] = useState<number>(1);
+    const [currentPageEco, setCurrentPageEco] = useState<number>(1);
     const [currentPage, setCurrentPage] = useState<number>(1);
 
     const [isLockMode, toggleLockMode] = useState<boolean>(false)
@@ -96,6 +98,9 @@ const useBTR = () => {
     const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
     const BTR_ROWS_PER_PAGE = EnvConfig['BTR_ROWS_PER_PAGE'];  
     const rowsPerPage = parseInt(BTR_ROWS_PER_PAGE || '50');
+
+    const [userPageSizeTech , setUserPageSizeTech]  = useState<number>(BTR_ROWS_PER_PAGE?parseInt(BTR_ROWS_PER_PAGE):50) 
+    const [userPageSizeEco , setUserPageSizeEco]  = useState<number>(BTR_ROWS_PER_PAGE?parseInt(BTR_ROWS_PER_PAGE):50) 
 
     const { mutateAsync: getBTRData, isLoading } = useGetBTRData()
 
@@ -129,28 +134,44 @@ const useBTR = () => {
     const [ecoMasterUIConfig, setEcoMasterUIConfig] = useState<any>([]);
     const [isDisabled, setIsDisabled]= useState<boolean>(true)
 
+    const savePageSizeTech = async( pageSize:number)=>{
+        setUserPageSizeTech(pageSize)
+        await getDataTech(currFilter , currentPageTech,pageSize)
+    }
+
+    const savePageSizeEco = async( pageSize:number)=>{
+        setUserPageSizeEco(pageSize)
+        await getDataEco(currFilter , currentPageEco,pageSize)
+    }
+
 
     const techPaginationProps: VFPaginationProps = {
         selectedRows: 0,
         totalRows: techTotalRows,
-        rowsPerPage: rowsPerPage,
-        currentPage: currentPage,
+        rowsPerPage: userPageSizeTech,
+        currentPage: currentPageTech,
         handleChangePage: (currPage: number) => {
             getDataTech(getPreparedFilter(currFilter), currPage)
-            setCurrentPage(currPage)
-        }
+            setCurrentPageTech(currPage)
+        },
+        customPageSizeEnabled:true,
+        userPageSize:userPageSizeTech,
+        savePageSize:savePageSizeTech
 
     }
 
     const ecoPaginationProps: VFPaginationProps = {
         selectedRows: 0,
         totalRows: ecoTotalRows,
-        rowsPerPage: rowsPerPage,
-        currentPage: currentPage,
+        rowsPerPage: userPageSizeEco,
+        currentPage: currentPageEco,
         handleChangePage: (currPage: number) => {
             getDataEco(getPreparedFilter(currFilter), currPage);
-            setCurrentPage(currPage)
-        }
+            setCurrentPageEco(currPage)
+        },
+        customPageSizeEnabled:true,
+        userPageSize:userPageSizeEco,
+        savePageSize:savePageSizeEco
 
     }
 
@@ -263,7 +284,7 @@ const useBTR = () => {
         
     }
 
-    const getDataTech = async (filter: any, pageNumber: number) => {
+    const getDataTech = async (filter: any, pageNumber: number  , pageSize?:number) => {
         const payload = {
             id: 0,
             name: 'tech',
@@ -271,7 +292,7 @@ const useBTR = () => {
             filters: filter,
             paginationParameter: {
                 pageNumber: pageNumber,
-                recordsPerPage: rowsPerPage
+                recordsPerPage: pageSize || userPageSizeTech
             },
             ISExport:"0"
         }
@@ -291,7 +312,7 @@ const useBTR = () => {
 
     }
 
-    const getDataEco = async (filter: any, pageNumber: number) => {
+    const getDataEco = async (filter: any, pageNumber: number , pageSize?:number) => {
         
         const payload = {
             id: 0,
@@ -300,7 +321,7 @@ const useBTR = () => {
             filters: filter,
             paginationParameter: {
                 pageNumber: pageNumber,
-                recordsPerPage: rowsPerPage
+                recordsPerPage: pageSize ||  userPageSizeEco
             },
             ISExport:"0"
         }
@@ -384,8 +405,11 @@ const useBTR = () => {
 
     const onApplyFilter = async (filter: BPRFilterState) => {
         setCurrFilter(filter)
+        setCurrentPageTech(1)
+        setCurrentPageEco(1)
+        setCurrentPage(1)
         const tempFilter = getPreparedFilter(filter)
-
+        const RowsPerPageCurrTab = currentTab?.value === "on-hand"?userPageSizeTech:currentTab?.value === "pipeline"?userPageSizeEco:rowsPerPage
         const payload = {
             id: 0,
             name: '',
@@ -393,7 +417,7 @@ const useBTR = () => {
             filters: tempFilter,
             paginationParameter: {
                 pageNumber: 1,
-                recordsPerPage: rowsPerPage
+                recordsPerPage: RowsPerPageCurrTab
             },
         }
         getBTRDataCount(payload)
@@ -407,7 +431,6 @@ const useBTR = () => {
     const onDeleteFilter = async (parentId: any, filterId: any, value: any) => {
         const updatedFilter = onDelete(parentId, filterId, value)
         onApplyFilter(updatedFilter)
-        setCurrentPage(1)
     }
 
     const toggleVerticalView = (isVertical: boolean) => setVerticalView(isVertical)
