@@ -913,7 +913,7 @@ const usePlanning = ()=>{
         // await fetchPlanningDataCount(filter)
         setCurrentFilter(filter)
         setCurrentPage(1)
-        fetchAndUpdateGridData(currentPage,false,filter)
+        fetchAndUpdateGridData(1,false,filter)
     }
 
     const onDeleteFilter = async(parentId:any, filterId:any, value:any)=>{
