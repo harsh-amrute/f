@@ -696,11 +696,13 @@ const DynamicReleaseManagement = () => {
         <div style="margin-right: 10px; height: 3px; width: 15px; background-color: ${barColors["Limit"]}"></div>
         Limit:  ${datum["Limit"]}
       </div>
-      <div style="display: flex; align-items: center;">
-        FOL Gap:  ${datum["FOL Gap"]}
-      </div>
+      
     </div>
     </div>`;
+    // dont remove below code require for fol gap phase 2
+    // <div style="display: flex; align-items: center;">
+    //     FOL Gap:  ${datum["FOL Gap"]}
+    //   </div>
   }
 
   const barColors = {

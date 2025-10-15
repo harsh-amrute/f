@@ -266,12 +266,14 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
             <div style="margin-right: 10px; height: 3px; width: 15px; background-color: ${barColors["orderLoad"]}"></div>
             SOL: ${tooltipValues(datum["orderLoad"])}
           </div>
-          <div style="display: flex; align-items: center;">
-            <div style="margin-right: 10px; height: 3px; width: 15px; background-color: ${barColors["fol_gap"]}"></div>
-            FOL Gap: ${tooltipValues(datum["fol_gap"])}
-          </div>
         </div>
         </div>`;
+    
+        // dont remove below code require for fol gap phase 2
+        {/*<div style="display: flex; align-items: center;">
+            <div style="margin-right: 10px; height: 3px; width: 15px; background-color: ${barColors["fol_gap"]}"></div>
+            FOL Gap: ${tooltipValues(datum["fol_gap"])}
+          </div>*/}
       }
 
     const chartOptions: any = {
@@ -293,19 +295,19 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                     renderer: TooltipRenderer
                 }
             },
-            {
-                type: "bar",
-                direction: "horizontal",
-                xKey: "ccr_name",
-                yKey: "fol_gap",
-                yName: "FOL Gap",
-                stacked: true,
-                fill: barColors["fol_gap"],
-                tooltip: {
-                    position: { placement: "right" },  // anchor to bar
-                    renderer: TooltipRenderer
-                }
-            },
+            // {
+            //     type: "bar",
+            //     direction: "horizontal",
+            //     xKey: "ccr_name",
+            //     yKey: "fol_gap",
+            //     yName: "FOL Gap",
+            //     stacked: true,
+            //     fill: barColors["fol_gap"],
+            //     tooltip: {
+            //         position: { placement: "right" },  // anchor to bar
+            //         renderer: TooltipRenderer
+            //     }
+            // },
             {
                 type: "bar",
                 direction: "horizontal",
@@ -809,6 +811,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                     const orderLoadInDays = ((orderLoadOfCCRs[ccrId]?.orderLoad || 0) * 1.0) + ((ccrItemTypeMapping?.tt || 1) * order.pcqty) / (ccrWorkingHoursPerDay * 60);
 
                     const ccrFolInDays = masters.FOL[ccrId]?.fol;
+                    console.log(ccrFolInDays, "ccrFolInDays");
 
                     const today: any = new Date();
                     today.setHours(0, 0, 0, 0);
@@ -818,23 +821,30 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                         return new Date(data.wd) >= today && data.ccrId == ccrId && data.PlId == order.plid
                         // return new Date(data.wd) >= today && data.ccrId == ccrId
                     })?.lno;
+                    console.log(latestWorkingDayLno, "latestWorkingDayLno");
+
                     const folIndex = Math.ceil(latestWorkingDayLno + ccrFolInDays - 1);
+                    console.log(folIndex, "folIndex");
                     const maxFOLIndex = Math.max(latestWorkingDayLno, folIndex);
+                    console.log(maxFOLIndex,"maxFOLIndex");
                     const folDD: any = masters.WorkingCalender.find((data: any) => {
                         return data.lno == maxFOLIndex && data.ccrId == ccrId && data.PlId == order.plid
                     })?.wd;
-
+                    console.log(folDD);
                     const formatedFOLDate = new Date(folDD);
                     formatedFOLDate.setHours(0, 0, 0, 0);
 
                     let diffDays: any = dateDiffInDays(today, formatedFOLDate);
+
+                    console.log(formatedFOLDate, "formatedFOLDate");
+                    console.log(diffDays, "diffDays")
                     
-                    // Add 1 only if the dates are different for graph to conider todays date in graph
+                    // Added - 1 only if the dates are different for graph to consider todays date in graph
                     if (diffDays !== 0) {
                         diffDays += 1;
                     }
                     
-                    const FOLGap = masters.FOL[ccrId]?.fol_gap;
+                    const FOLGap = masters.FOL[ccrId]?.fol_gap || 0;
 
                     maxFol = Math.max(diffDays, maxFol, FOLGap);
 
@@ -845,7 +855,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                         ccrFolWithHoliday: diffDays,
                         fol_gap: FOLGap,
                         FOL: ccrFolInDays,
-                        holidays: diffDays - Math.ceil(ccrFolInDays)
+                        holidays: diffDays - Math.ceil(ccrFolInDays),
                     }
                 })
             });

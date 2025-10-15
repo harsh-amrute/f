@@ -278,7 +278,7 @@ const fetchOrders = async (isExcelExport = false, page?:number, pageSize?:number
               "Released WIP": stpl_in_days,
               "Allocated Full Kits": allowed_full_kits,
               "Limit": cumulative_wip_limit ?? 0,
-              "FOL Gap": fol_gap
+              "FOL Gap": fol_gap ?? 0,
             });
           });
         });
@@ -640,11 +640,14 @@ const fetchOrders = async (isExcelExport = false, page?:number, pageSize?:number
         <div style="margin-right: 10px; height: 3px; width: 15px; background-color: ${barColors["Limit"]}"></div>
         Limit:  ${datum["Limit"]}
       </div>
-      <div style="display: flex; align-items: center;">
-        FOL Gap:  ${datum["FOL Gap"]}
-      </div>
+      
     </div>
-    </div>`;
+    </div>`;    
+
+    // dont remove below code require for fol gap phase 2
+    // <div style="display: flex; align-items: center;">
+      //   FOL Gap:  ${datum["FOL Gap"]}
+      // </div>
   }
 
   const [chartoptions, setChartOptions] = useState<any>({
@@ -863,7 +866,7 @@ const fetchOrders = async (isExcelExport = false, page?:number, pageSize?:number
           setChartOptions={setChartOptions}
           showModal={showModal}
           setShowModal={setShowModal}
-          theme={themeUi}
+          themeUi={themeUi}
           onDataUpdateCallback={onRouteDataUpdate}
         />
       }

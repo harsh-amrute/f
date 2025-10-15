@@ -422,7 +422,7 @@ const EditRouteModal = ({orderDetails, chartoptions, setChartOptions, onDataUpda
                 setCCROrderLoadDetails(CCROrderLoad)
                 setCCRFOLGapDetails(CCRFOLGap);
                 // setIsRouteChange(false);
-                setShowFOLGapDetails(true);
+                // setShowFOLGapDetails(true);
             }
         } catch (error) {
             console.error('Error fetching FOL gap:', error);
@@ -587,7 +587,7 @@ const EditRouteModal = ({orderDetails, chartoptions, setChartOptions, onDataUpda
 
                     <VFButton
                         onClick={() => {
-                            if (showFOLGapDetails) {
+                            if (!showFOLGapDetails) {  
                                 SaveRoute()
                             } else {
                                 fetchFolGap();
