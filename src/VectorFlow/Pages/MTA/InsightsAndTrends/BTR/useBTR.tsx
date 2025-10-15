@@ -85,6 +85,8 @@ const useBTR = () => {
 
     const themeUi = user.user.theme_ui
 
+    const [currentPageTech, setCurrentPageTech] = useState<number>(1);
+    const [currentPageEco, setCurrentPageEco] = useState<number>(1);
     const [currentPage, setCurrentPage] = useState<number>(1);
 
     const [isLockMode, toggleLockMode] = useState<boolean>(false)
@@ -134,12 +136,12 @@ const useBTR = () => {
 
     const savePageSizeTech = async( pageSize:number)=>{
         setUserPageSizeTech(pageSize)
-        await getDataTech(currFilter , currentPage,pageSize)
+        await getDataTech(currFilter , currentPageTech,pageSize)
     }
 
     const savePageSizeEco = async( pageSize:number)=>{
         setUserPageSizeEco(pageSize)
-        await getDataEco(currFilter , currentPage,pageSize)
+        await getDataEco(currFilter , currentPageEco,pageSize)
     }
 
 
@@ -147,10 +149,10 @@ const useBTR = () => {
         selectedRows: 0,
         totalRows: techTotalRows,
         rowsPerPage: userPageSizeTech,
-        currentPage: currentPage,
+        currentPage: currentPageTech,
         handleChangePage: (currPage: number) => {
             getDataTech(getPreparedFilter(currFilter), currPage)
-            setCurrentPage(currPage)
+            setCurrentPageTech(currPage)
         },
         customPageSizeEnabled:true,
         userPageSize:userPageSizeTech,
@@ -162,10 +164,10 @@ const useBTR = () => {
         selectedRows: 0,
         totalRows: ecoTotalRows,
         rowsPerPage: userPageSizeEco,
-        currentPage: currentPage,
+        currentPage: currentPageEco,
         handleChangePage: (currPage: number) => {
             getDataEco(getPreparedFilter(currFilter), currPage);
-            setCurrentPage(currPage)
+            setCurrentPageEco(currPage)
         },
         customPageSizeEnabled:true,
         userPageSize:userPageSizeEco,
@@ -403,6 +405,8 @@ const useBTR = () => {
 
     const onApplyFilter = async (filter: BPRFilterState) => {
         setCurrFilter(filter)
+        setCurrentPageTech(1)
+        setCurrentPageEco(1)
         setCurrentPage(1)
         const tempFilter = getPreparedFilter(filter)
         const RowsPerPageCurrTab = currentTab?.value === "on-hand"?userPageSizeTech:currentTab?.value === "pipeline"?userPageSizeEco:rowsPerPage
@@ -427,7 +431,6 @@ const useBTR = () => {
     const onDeleteFilter = async (parentId: any, filterId: any, value: any) => {
         const updatedFilter = onDelete(parentId, filterId, value)
         onApplyFilter(updatedFilter)
-        setCurrentPage(1)
     }
 
     const toggleVerticalView = (isVertical: boolean) => setVerticalView(isVertical)
