@@ -41,6 +41,7 @@ interface FilterModalProps {
   currentTab?: string;
   currCategory?: any;
   reportName?: any;
+  reportType?: string;
 }
 
 interface SectionType {
@@ -109,6 +110,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
   currentTab = "both",
   currCategory,
   reportName,
+  reportType,
 }) => {
   const { user } = useUserData();
   const EnvConfig = useSelector((state: RootState) => state.mta.EnvConfig);
@@ -146,8 +148,22 @@ const FilterModal: React.FC<FilterModalProps> = ({
       return sections;
     }
 
-    return sections.filter((s) => s.values.includes(upperReportCode));
-  }, [EnvConfig, reportCode]);
+    const currentReportType = reportType?.toUpperCase() || upperReportCode;
+    const coverageReports = ["ORDERFULFILLMENT"];
+    
+    if (coverageReports.includes(currentReportType)) {
+      return sections.filter((s) => {
+        if (s.key === "FILTER_COVERAGE") return true;
+        if (s.key === "FILTER_AVAILABILITY") return false;
+        return s.values.includes(upperReportCode);
+      });
+    }
+    return sections.filter((s) => {
+      if (s.key === "FILTER_COVERAGE") return false;
+      if (s.key === "FILTER_AVAILABILITY") return s.values.includes(upperReportCode);
+      return s.values.includes(upperReportCode);
+    });
+  }, [EnvConfig, reportCode, reportType]);
 
   const [activeSection, setActiveSection] = useState(
     availableSections.length > 0 ? availableSections[0].label : ""

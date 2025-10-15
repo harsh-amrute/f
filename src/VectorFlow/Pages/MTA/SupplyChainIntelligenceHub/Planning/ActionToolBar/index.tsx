@@ -263,7 +263,7 @@ const ActionToolBar = ({
               onApply={handleApplyFilter}
               multiFilter={multiFilter}
               onClose={() => toggleFilter(false)}
-              onReset={handleResetFilters}      
+              onReset={handleResetFilters} 
             />
         );
       case "OrderFulfillment":
@@ -274,6 +274,7 @@ const ActionToolBar = ({
               multiFilter={multiFilter}
               onClose={() => toggleFilter(false)}
               onReset={handleResetFilters}      
+              reportType="OrderFulfillment"     
             />
         );
       case "BPR":
