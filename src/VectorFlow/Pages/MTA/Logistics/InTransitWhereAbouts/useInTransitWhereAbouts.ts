@@ -25,6 +25,8 @@ import { GridRef } from "../../../../../VectorFlow/types/MDM";
 import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
 import { useGetUIConfigData } from "../../../../Services/MTA/Common/UIConfig";
 import { UIColumnConfigName, UserUIColumnConfigName } from "../../../../../helpers/Enum";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../../redux/store/store";
 
 const useInTransitWhereAbouts = ()=>{
     const ref = useRef<GridRef>()
@@ -100,7 +102,9 @@ const useInTransitWhereAbouts = ()=>{
     const [isSubmitCurrentLocationTipOpen,setIsSubmitCurrentLocationToolTipOpen] = useState<boolean>(false)
     const [isRemarkHistoryToolTipOpen,setIsRemarkHistoryToolTipOpen] = useState<boolean>(false)
     const {date:lastRunDate} = useGetLastRunData()
-
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const IN_TRANSIT_WHEREABOUTS = EnvConfig['IN_TRANSIT_WHEREABOUTS_ROWS_PER_PAGE']; 
+    const [userPageSize , setUserPageSize]  = useState<number>(IN_TRANSIT_WHEREABOUTS?parseInt(IN_TRANSIT_WHEREABOUTS):100) 
 
 
     const customCellRenderers = useMemo(() => ({
@@ -296,20 +300,25 @@ const useInTransitWhereAbouts = ()=>{
       }
     }
 
-    const getRowData = async(filter:any,pageNo:number)=>{
+    const getRowData = async(filter:any,pageNo:number  , pageSize?:number)=>{
       const payload = {
         "id": 0,
         "name": "",
         "fields": [],
         "paginationParameter": {
           pageNumber:pageNo,
-          recordsPerPage:100
+          recordsPerPage:pageSize || userPageSize || 100
         },
         filters:filter
       }
       const data = await getData(payload)
       setRowData(mapInTransitWhereAboutsRowData(data.data.data))
       // setRowData(mapInTransitWhereAboutsRowData(GetInTransitWhereAboutsMockResponse.data))
+    }
+
+    const savePageSize = async( pageSize:number)=>{
+        setUserPageSize(pageSize)
+        await getRowData(currentFilter , currentPage,pageSize)
     }
 
     const handlePageChange = async(pageNo:number)=>{
@@ -320,7 +329,7 @@ const useInTransitWhereAbouts = ()=>{
         "fields": [],
         "paginationParameter": {
           pageNumber:pageNo,
-          recordsPerPage:100
+          recordsPerPage:userPageSize || 100
         },
         filters:currentFilter
       }
@@ -698,7 +707,9 @@ const useInTransitWhereAbouts = ()=>{
         onSubmitEditedRows,
         themeUi,
         lastRunDate,
-        onResetCallback
+        onResetCallback,
+        savePageSize,
+        userPageSize
     }
 }
 

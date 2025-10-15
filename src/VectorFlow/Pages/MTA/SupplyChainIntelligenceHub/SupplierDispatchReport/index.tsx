@@ -36,7 +36,9 @@ const SupplierDispatchReport = () => {
     ref,
     agGridProps,
     generalFilterOptions,
-    onResetCallback
+    onResetCallback,     
+  savePageSize,
+  userPageSize
   } = useSupplierDispatchReport();
 
       const [isDisabled, setIsDisabled]= useState<boolean>(true)
@@ -100,16 +102,21 @@ const SupplierDispatchReport = () => {
                   maintainColumnOrder
         />
         <div>
+          {
+              RowData?.length &&
         <VFPagination 
                 selectedRows={0} 
                 totalRows={SDRCount} 
                 currentPage={currentPage} 
-                rowsPerPage={parseInt(SUPPLIER_DISPATCH_REPORT_PER_PAGE || '100')}
+                rowsPerPage={userPageSize}
                 handleChangePage={(e)=>GetSDRData(e)} 
-
                 resetGridRef={ref} 
                 isDisabled={isDisabled}
+                customPageSizeEnabled={true}
+              userPageSize={userPageSize}
+              savePageSize={savePageSize}
               />
+               }
             </div>
         </div>
       )}

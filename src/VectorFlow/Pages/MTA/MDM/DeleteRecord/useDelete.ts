@@ -386,7 +386,7 @@ const useDelete=()=>{
          else{
             const {isDisaster,errorCount:localErrorCount,errorData:localErrorData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
             if(isDisaster)return
-              if(localErrorCount>0 || errorCount>0){
+              if(localErrorCount>0 ){
                   let errorRowData: any[] = [];
                 if(localErrorCount>0){
                   errorRowData = createErrorRowData(localErrorData,activeMaster.id)

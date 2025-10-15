@@ -95,7 +95,8 @@ const useBPR =()=>{
     const [initialColumnState, setInitialColumnState] = useState<any>(undefined);
     const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
     const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
-    const BPR_ROWS_PER_PAGE = EnvConfig['BPR_ROWS_PER_PAGE'];    
+    const BPR_ROWS_PER_PAGE = EnvConfig['BPR_ROWS_PER_PAGE']; 
+    const [userPageSize , setUserPageSize]  = useState<number>(BPR_ROWS_PER_PAGE?parseInt(BPR_ROWS_PER_PAGE):50)   
     // useEffect(() => {   
     //     getInitialBPRRowData()
     //     getBPRUiConfig();
@@ -359,7 +360,7 @@ const useBPR =()=>{
         });
       };
 
-    const getBPRRowData = async(filter:any,pageNo:number)=>{
+    const getBPRRowData = async(filter:any,pageNo:number , pageSize?:number)=>{
         notifyLoader("Loading Grid Data")
         const rowData =await  getBPRData({
             id: 1,
@@ -368,7 +369,7 @@ const useBPR =()=>{
             filters:filter,
             paginationParameter:{
                 pageNumber:pageNo,
-                recordsPerPage:parseInt(BPR_ROWS_PER_PAGE || '50') 
+                recordsPerPage:pageSize || userPageSize || parseInt(BPR_ROWS_PER_PAGE || '50') 
             }
         })
         toast.dismiss()
@@ -612,14 +613,18 @@ const useBPR =()=>{
 
     const handleOnPageChange = async(pageNumber:number)=>{
         setCurrGridPage(pageNumber)
-        await getBPRRowData(currFilter,pageNumber)
+        await getBPRRowData(currFilter,pageNumber,userPageSize)
+    }
+    const savePageSize = async( pageSize:number)=>{
+        setUserPageSize(pageSize)
+        await getBPRRowData(currFilter,currGridPage,pageSize)
     }
 
     const onApplyFilter = (filter: any) => {
         setCurrFilter(filter)
         getBPRRecordCount(filter)
         setCurrGridPage(1)
-        getBPRRowData(filter,1)
+        getBPRRowData(filter,1 ,userPageSize)
         getBPRUiConfig()
     }
 
@@ -696,7 +701,9 @@ const useBPR =()=>{
         gridState,
         lastRunDate,
         generalFilterOptions,
-        onResetCallback
+        onResetCallback,
+        savePageSize,
+        userPageSize
 
     }
 }

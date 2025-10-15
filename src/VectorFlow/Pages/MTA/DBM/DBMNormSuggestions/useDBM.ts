@@ -67,6 +67,7 @@ const useDBM =()=>{
     const DBM_ROWS_PER_PAGE = EnvConfig['DBM_ROWS_PER_PAGE']; 
 
     const recordsPerPage = parseInt(DBM_ROWS_PER_PAGE || '50');
+    const [userPageSize , setUserPageSize]  = useState<number>(DBM_ROWS_PER_PAGE?parseInt(DBM_ROWS_PER_PAGE):50) 
     const columnsToBeExcluded = ['checkbox', 'dailydatagraph', '0', 'Sleep']
     const [initialColumnState, setInitialColumnState] = useState<any>(undefined);
     const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
@@ -360,13 +361,13 @@ const useDBM =()=>{
         setDBMDataCount(rowDataCount?.data?.recordCount)
     }
 
-    const getDBMRowData= async(filter:any,pageNo:any)=>{
+    const getDBMRowData= async(filter:any,pageNo:any, pageSize?:number)=>{
         notifyLoader("Loading Grid Data")
         const rowData =await getDBMData({
             filters:filter,
             paginationParameter:{
                 pageNumber:pageNo,
-                recordsPerPage:recordsPerPage
+                recordsPerPage:pageSize || userPageSize || recordsPerPage
             }
         })
         toast.dismiss()
@@ -441,7 +442,10 @@ const useDBM =()=>{
         }
     },[])
 
-    
+    const savePageSize = async( pageSize:number)=>{
+        setUserPageSize(pageSize)
+        await getDBMRowData(currentFilter , currentPage,pageSize)
+    }
 
     return {
         DBMColumns,
@@ -474,7 +478,9 @@ const useDBM =()=>{
         recordsPerPage,
         generalFilterOptions,
         onResetCallback,
-        lastRunDate
+        lastRunDate,
+        savePageSize,
+        userPageSize
     }
 }
 

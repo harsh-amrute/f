@@ -85,6 +85,7 @@ export const useBOR =()=>{
     const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
     const BOR_ROWS_PER_PAGE = EnvConfig['BOR_ROWS_PER_PAGE'];   
      const rowsPerPage = parseInt(BOR_ROWS_PER_PAGE || '100');
+    const [userPageSize , setUserPageSize]  = useState<number>(BOR_ROWS_PER_PAGE?parseInt(BOR_ROWS_PER_PAGE):50)  
      const handleChangePage = async (pageNo:any) => {
          setCurrentPage(pageNo);
          loadGridData(pageNo,currFilter);
@@ -419,14 +420,14 @@ export const useBOR =()=>{
         setRecordCount(resultCount?.data?.recordCount);
       }
     
-    const loadGridData = async (pageNo:any,filter?:any)=> {
+    const loadGridData = async (pageNo:any,filter?:any , pageSize?:any)=> {
 
       try {
         
           notifyLoader("loading Grid Data")
           const payload={
             filters:filter || {},
-            paginationParameter:{pageNumber:pageNo,recordsPerPage:rowsPerPage}
+            paginationParameter:{pageNumber:pageNo,recordsPerPage:pageSize || userPageSize ||rowsPerPage || 100}
         }
         const result = await getBorData(payload);
         setRowData(result.data.data || [])
@@ -622,6 +623,10 @@ export const useBOR =()=>{
     },
   }
   
+    const savePageSize = async( pageSize:number)=>{
+        setUserPageSize(pageSize)
+        await loadGridData(currentPage,currFilter, pageSize);
+    }
      return {   
         ref,    
         isLoading :isUIConfigLoading || isBORDataLoading || isBORCountLoading,      
@@ -664,7 +669,9 @@ export const useBOR =()=>{
         onCloseRemarkHistory,
         onCloseSubmitRemark,
         onResetCallback,
-       lastRunDate
+       lastRunDate,
+       savePageSize,
+        userPageSize
 
     }
 }

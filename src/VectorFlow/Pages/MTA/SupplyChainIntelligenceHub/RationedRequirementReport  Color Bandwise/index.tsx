@@ -36,13 +36,17 @@ const RRRColorBandwise = () => {
   isSavedDataLoading,
   ref,
   generalFilterOptions,
-  onResetCallback
+  onResetCallback,
+  savePageSize,
+  userPageSize
 } = useRRRColorBandwise();
 
   const [isDisabled, setIsDisabled]= useState<boolean>(true)
   
   const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
   const RRR_ROWS_PER_PAGE = EnvConfig['RRR_ROWS_PER_PAGE'];   
+  console.log("vvvv",rowData);
+  
   return (
   <GridStateContext.Provider
   value={{
@@ -134,10 +138,13 @@ const RRRColorBandwise = () => {
                 selectedRows={0} 
                 totalRows={recordsCount} 
                 currentPage={currentPage} 
-                rowsPerPage={parseInt(RRR_ROWS_PER_PAGE || '100')}
+                rowsPerPage={userPageSize || parseInt(RRR_ROWS_PER_PAGE || '100')}
                 handleChangePage={(e)=>console.log(e)} 
                 resetGridRef={ref} 
                 isDisabled={isDisabled}
+                customPageSizeEnabled={true}
+                userPageSize={userPageSize}
+                savePageSize={savePageSize}
               />  
               }
         </div>

@@ -51,7 +51,9 @@ const SupplierWiseAllocation = ()=>{
         lastRunDate,
         isRemarkHistoryToolTipOpen,
         remarkHistory,
-        onCloseRemarkHistory
+        onCloseRemarkHistory,
+         savePageSize,
+        userPageSize
     } = useSupplierWiseAllocation()
 
     const [isDisabled, setIsDisabled]= useState<boolean>(true)
@@ -144,15 +146,20 @@ const SupplierWiseAllocation = ()=>{
                     }
                   }}
                 />
+                {rowData?.length &&
                 <VFPagination
                   selectedRows={0}
                   totalRows={recordCount}
                   currentPage={currentPage}
-                  rowsPerPage={parseInt(SUPPLY_WISE_ALLOCATION_HUB_ROWS_PER_PAGE || '100')}
+                  rowsPerPage={userPageSize }
                   handleChangePage={handleChangePage}
                   resetGridRef={ref} 
-                  isDisabled={isDisabled}  />
-
+                  isDisabled={isDisabled}  
+                  customPageSizeEnabled={true}
+              userPageSize={userPageSize}
+              savePageSize={savePageSize}
+                  />
+                }
                 {/* <VFSaveRemark onSubmitRemarks={onSubmitRemarks} /> */}
 
               </div>

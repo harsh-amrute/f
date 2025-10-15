@@ -72,6 +72,7 @@ export const useBORColorBandwise =()=>{
      const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
      const BOR_COLORBANDWISE_ROWS_PER_PAGE = EnvConfig['BOR_COLORBANDWISE_ROWS_PER_PAGE'];   
      const rowsPerPage = parseInt(BOR_COLORBANDWISE_ROWS_PER_PAGE || '100');
+     const [userPageSize , setUserPageSize]  = useState<number>(BOR_COLORBANDWISE_ROWS_PER_PAGE?parseInt(BOR_COLORBANDWISE_ROWS_PER_PAGE):50)  
 
      const {date:lastRunDate} = useGetLastRunData()
 
@@ -265,12 +266,12 @@ export const useBORColorBandwise =()=>{
         setRecordCount(resultCount?.data?.data[0]?.count || 0); 
       }
     
-    const loadGridData = async (pageNo:any,filter?:any)=> {
+    const loadGridData = async (pageNo:any,filter?:any , pageSize?:any)=> {
         try{
           notifyLoader("loading Grid Data")
           const payload={
             filters:filter || {},
-            paginationParameter:{pageNumber:pageNo,recordsPerPage:rowsPerPage}
+            paginationParameter:{pageNumber:pageNo,recordsPerPage:pageSize || userPageSize || rowsPerPage || 100}
         }
         const result = await getData(payload);
         if(result.data.data && Array.isArray(result.data.data))setRowData(result?.data?.data);
@@ -504,7 +505,11 @@ export const useBORColorBandwise =()=>{
         }
       }, [BORCBColumns])
 
-  
+      const savePageSize = async( pageSize:number)=>{
+        setUserPageSize(pageSize)
+        await loadGridData(currentPage,currFilter, pageSize);
+    }
+
      return {   
         ref,    
         isLoading :isUIConfigLoading || isDataLoading || isCountLoading,      
@@ -542,6 +547,8 @@ export const useBORColorBandwise =()=>{
         isRemarkHistoryToolTipOpen,
         setIsRemarkHistoryToolTipOpen,
         remarkHistory,
-        onCloseRemarkHistory
+        onCloseRemarkHistory,
+         savePageSize,
+        userPageSize
     }
 }
