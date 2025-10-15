@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   FilterGroup,
   FilterColumn,
@@ -6,15 +6,15 @@ import {
   DropDownWrapper,
   DropDownRow,
   IconWrapper,
-} from './style';
-import Select from 'react-select';
-import { useThemeStyles } from '../../../../../hooks/useVFFilterContent';
-import { useFilterRows, stringOpertors } from './useVFFilterContent';
-import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
-import { useUserData } from '../../../../../context';
-import { BPRFilter, BPRFilterState } from '../../../../../VectorFlow/types/BPR';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../../../redux/store/store';
+} from "./style";
+import Select from "react-select";
+import { useThemeStyles } from "../../../../../hooks/useVFFilterContent";
+import { useFilterRows, stringOpertors } from "./useVFFilterContent";
+import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
+import { useUserData } from "../../../../../context";
+import { BPRFilter, BPRFilterState } from "../../../../../VectorFlow/types/BPR";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../../redux/store/store";
 
 interface ProductFilterProps {
   multiFilter: BPRFilterState;
@@ -22,7 +22,7 @@ interface ProductFilterProps {
 }
 
 const handleApply = () => {
-  console.log('Search Button.................');
+  console.log("Search Button.................");
 };
 
 export const ProductFilters: React.FC<ProductFilterProps> = ({
@@ -44,33 +44,35 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
   const { user } = useUserData();
   const EnvConfig = useSelector((state: RootState) => state.mta.EnvConfig);
 
-  const PRODUCT_PERMISSION_L1 = EnvConfig['PRODUCT_PERMISSION_L1'];
-  const PRODUCT_PERMISSION_L2 = EnvConfig['PRODUCT_PERMISSION_L2'];
-  const PRODUCT_PERMISSION_L3 = EnvConfig['PRODUCT_PERMISSION_L3'];
+  const PRODUCT_PERMISSION_L1 = EnvConfig["PRODUCT_PERMISSION_L1"];
+  const PRODUCT_PERMISSION_L2 = EnvConfig["PRODUCT_PERMISSION_L2"];
+  const PRODUCT_PERMISSION_L3 = EnvConfig["PRODUCT_PERMISSION_L3"];
 
   const filterProductOptions = [
-    { value: 'p1', label: PRODUCT_PERMISSION_L1, name: 'PF1' },
-    { value: 'p2', label: PRODUCT_PERMISSION_L2, name: 'PF2' },
-    { value: 'p3', label: PRODUCT_PERMISSION_L3, name: 'PF3' },
-    { value: 'p4', label: 'P4', name: 'PF4' },
-    { value: 'p5', label: 'P5', name: 'PF5' },
+    { value: "p1", label: PRODUCT_PERMISSION_L1, name: "PF1" },
+    { value: "p2", label: PRODUCT_PERMISSION_L2, name: "PF2" },
+    { value: "p3", label: PRODUCT_PERMISSION_L3, name: "PF3" },
+    { value: "p4", label: "P4", name: "PF4" },
+    { value: "p5", label: "P5", name: "PF5" },
   ];
 
   const [rowSelections, setRowSelections] = useState<{
     [rowId: number]: { column?: any; operation?: any; value?: any };
   }>({});
 
-  const [rowFilterIndexMap, setRowFilterIndexMap] = useState<Record<number, number>>({});
+  const [rowFilterIndexMap, setRowFilterIndexMap] = useState<
+    Record<number, number>
+  >({});
 
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    const parentId = 'productFilter';
+    const parentId = "productFilter";
     const savedFilters = multiFilter[parentId]?.filters || [];
 
     if (savedFilters.length === 0) {
       setRowSelections({});
-      resetFilterRows(1); 
+      resetFilterRows(1);
       setRowFilterIndexMap({});
       setIsInitialized(true);
       return;
@@ -81,11 +83,15 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
     const newRows = savedFilters.map((_, idx) => ({ id: idx }));
     setFilterRows(newRows);
 
-    const restored: { [rowId: number]: { column?: any; operation?: any; value?: any } } = {};
+    const restored: {
+      [rowId: number]: { column?: any; operation?: any; value?: any };
+    } = {};
     const indexMap: Record<number, number> = {};
 
     savedFilters.forEach((f: BPRFilter, idx: number) => {
-      const column = filterProductOptions.find((opt) => opt.value === f.attributeName);
+      const column = filterProductOptions.find(
+        (opt) => opt.value === f.attributeName
+      );
       const operation = stringOpertors.find((op) => op.value === f.operator);
 
       restored[idx] = {
@@ -93,7 +99,7 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
         operation: operation || null,
         value: f.value,
       };
-      indexMap[idx] = idx; 
+      indexMap[idx] = idx;
     });
 
     setRowSelections(restored);
@@ -103,7 +109,7 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
 
   const onFilterChange = (
     rowId: number,
-    field: 'column' | 'operation' | 'value',
+    field: "column" | "operation" | "value",
     selected: any
   ) => {
     const updatedSelections = {
@@ -112,37 +118,43 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
     };
     setRowSelections(updatedSelections);
 
-    const parentId = 'productFilter';
+    const parentId = "productFilter";
     const current = updatedSelections[rowId];
 
     if (
       current?.column &&
       current?.operation &&
-      current?.value !== undefined &&
-      current?.value !== ''
+      (current?.operation?.value === "hasvalue" ||
+        current?.operation?.value === "hasnovalue" ||
+        (current?.value !== undefined && current?.value !== ""))
     ) {
-
       const newFilter: BPRFilter = {
         attributeName: current.column.value,
-        value: current.value,
+        value:
+          current?.operation?.value === "hasvalue"
+            ? "hasvalue"
+            : current?.operation?.value === "hasnovalue"
+            ? "hasnovalue"
+            : current.value,
         operator: current.operation.value,
         label: current.column.label,
-        name: current.column.name, 
+        name: current.column.name,
       };
 
-      const existingFilters = (multiFilter[parentId]?.filters || []) as BPRFilter[];
+      const existingFilters = (multiFilter[parentId]?.filters ||
+        []) as BPRFilter[];
       const nextFilters = existingFilters.slice();
       const idx = rowFilterIndexMap[rowId];
 
       const newIndexMap = { ...rowFilterIndexMap };
 
-      if (typeof idx === 'number' && idx >= 0 && idx < nextFilters.length) {
+      if (typeof idx === "number" && idx >= 0 && idx < nextFilters.length) {
         nextFilters[idx] = newFilter;
       } else {
-        nextFilters.push(newFilter); 
+        nextFilters.push(newFilter);
         newIndexMap[rowId] = nextFilters.length - 1;
       }
-
+      console.log("Applying filter:", newFilter, nextFilters);
       onMultiFilterChange({
         ...multiFilter,
         [parentId]: {
@@ -158,15 +170,16 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
   const handleRemoveRowWithFilter = (rowId: number) => {
     if (isMinRows) return;
 
-    const parentId = 'productFilter';
-    const existingFilters = (multiFilter[parentId]?.filters || []) as BPRFilter[];
+    const parentId = "productFilter";
+    const existingFilters = (multiFilter[parentId]?.filters ||
+      []) as BPRFilter[];
     const idx = rowFilterIndexMap[rowId];
 
     const nextFilters = existingFilters.slice();
     const newIndexMap = { ...rowFilterIndexMap };
 
-    if (typeof idx === 'number' && idx >= 0 && idx < nextFilters.length) {
-      nextFilters.splice(idx, 1); 
+    if (typeof idx === "number" && idx >= 0 && idx < nextFilters.length) {
+      nextFilters.splice(idx, 1);
 
       Object.keys(newIndexMap).forEach((k) => {
         const rid = Number(k);
@@ -200,10 +213,10 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
   return (
     <>
       <FilterGroup>
-        <FilterColumn style={{ minWidth: '400px', maxWidth: 'none' }}>
+        <FilterColumn style={{ minWidth: "400px", maxWidth: "none" }}>
           <TextWrapper>Select Operation</TextWrapper>
           {filterRows.map((row) => (
-            <DropDownRow style={{ alignItems: 'center' }} key={row.id}>
+            <DropDownRow style={{ alignItems: "center" }} key={row.id}>
               <DropDownWrapper>
                 <Select
                   options={filterProductOptions}
@@ -211,7 +224,9 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
                   styles={styles}
                   components={{ IndicatorSeparator: () => null }}
                   value={rowSelections[row.id]?.column || null}
-                  onChange={(selected) => onFilterChange(row.id, 'column', selected)}
+                  onChange={(selected) =>
+                    onFilterChange(row.id, "column", selected)
+                  }
                 />
               </DropDownWrapper>
               <DropDownWrapper>
@@ -222,30 +237,46 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
                   isSearchable={false}
                   components={{ IndicatorSeparator: () => null }}
                   value={rowSelections[row.id]?.operation || null}
-                  onChange={(selected) => onFilterChange(row.id, 'operation', selected)}
+                  onChange={(selected) =>
+                    onFilterChange(row.id, "operation", selected)
+                  }
                 />
               </DropDownWrapper>
               <DropDownWrapper>
                 <input
                   placeholder="Enter value"
                   className={`filter-input ${
-                    user.user.theme_ui === 'REGALBLAZE'
-                      ? 'filter-input--regal'
-                      : 'filter-input--default'
+                    user.user.theme_ui === "REGALBLAZE"
+                      ? "filter-input--regal"
+                      : "filter-input--default"
+                  }${
+                    rowSelections[row.id]?.operation?.value === "hasvalue" ||
+                    rowSelections[row.id]?.operation?.value === "hasnovalue"
+                      ? " filter-input--disabled"
+                      : ""
                   }`}
-                  value={rowSelections[row.id]?.value || ''}
-                  onChange={(e) => onFilterChange(row.id, 'value', e.target.value)}
+                  value={rowSelections[row.id]?.value || ""}
+                  onChange={(e) =>
+                    onFilterChange(row.id, "value", e.target.value)
+                  }
+                  disabled={
+                    rowSelections[row.id]?.operation?.value === "hasvalue" ||
+                    rowSelections[row.id]?.operation?.value === "hasnovalue"
+                  }
                 />
               </DropDownWrapper>
               <div
                 style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  marginBottom: '2px',
+                  display: "flex",
+                  alignItems: "center",
+                  marginBottom: "2px",
                 }}
               >
                 <IconWrapper theme_ui={user.user.theme_ui}>
-                  <img src="/assets/img/MTAVFMultiFilter/Error.svg" alt="error" />
+                  <img
+                    src="/assets/img/MTAVFMultiFilter/Error.svg"
+                    alt="error"
+                  />
                 </IconWrapper>
                 <IconWrapper
                   theme_ui={user.user.theme_ui}
@@ -273,7 +304,7 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
         </FilterColumn>
       </FilterGroup>
 
-      <FilterGroup style={{ paddingTop: '10px' }}>
+      <FilterGroup style={{ paddingTop: "10px" }}>
         <FilterColumn>
           <TextWrapper>Select Location</TextWrapper>
           <DropDownRow>
@@ -284,31 +315,31 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
                   ...styles,
                   control: (base: any, state: any) => ({
                     ...base,
-                    minHeight: '48px',
+                    minHeight: "48px",
                     border: state.isFocused
-                      ? user.user.theme_ui === 'REGALBLAZE'
-                        ? '2px solid #FCA311'
-                        : '2px solid #BC3D80'
-                      : '1px solid #c7c0c0ff',
-                    borderRadius: '10px',
-                    boxShadow: 'none',
-                    outline: 'none',
-                    '&:hover': {
+                      ? user.user.theme_ui === "REGALBLAZE"
+                        ? "2px solid #FCA311"
+                        : "2px solid #BC3D80"
+                      : "1px solid #c7c0c0ff",
+                    borderRadius: "10px",
+                    boxShadow: "none",
+                    outline: "none",
+                    "&:hover": {
                       border: state.isFocused
-                        ? user.user.theme_ui === 'REGALBLAZE'
-                          ? '2px solid #FCA311'
-                          : '2px solid #BC3D80'
-                        : '1px solid #c7c0c0ff',
+                        ? user.user.theme_ui === "REGALBLAZE"
+                          ? "2px solid #FCA311"
+                          : "2px solid #BC3D80"
+                        : "1px solid #c7c0c0ff",
                     },
                   }),
                   valueContainer: (base: any) => ({
                     ...base,
-                    paddingLeft: '175px',
+                    paddingLeft: "175px",
                   }),
                   placeholder: (base: any) => ({
                     ...base,
-                    fontSize: '14px',
-                    marginLeft: '1px',
+                    fontSize: "14px",
+                    marginLeft: "1px",
                   }),
                 }}
                 components={{
@@ -317,8 +348,8 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
                 }}
                 isClearable
                 options={[
-                  { value: 'apple', label: 'Apple' },
-                  { value: 'b', label: 'B' },
+                  { value: "apple", label: "Apple" },
+                  { value: "b", label: "B" },
                 ]}
               />
 
@@ -329,28 +360,28 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
                     ...styles,
                     control: (base: any, state: any) => ({
                       ...base,
-                      minHeight: '39px',
+                      minHeight: "39px",
                       border: state.isFocused
-                        ? user.user.theme_ui === 'REGALBLAZE'
-                          ? '2px solid #FCA311'
-                          : '2px solid #BC3D80'
-                        : '1px solid #c7c0c0ff',
-                      borderRadius: '7px',
-                      boxShadow: 'none',
-                      outline: 'none',
-                      '&:hover': {
+                        ? user.user.theme_ui === "REGALBLAZE"
+                          ? "2px solid #FCA311"
+                          : "2px solid #BC3D80"
+                        : "1px solid #c7c0c0ff",
+                      borderRadius: "7px",
+                      boxShadow: "none",
+                      outline: "none",
+                      "&:hover": {
                         border: state.isFocused
-                          ? user.user.theme_ui === 'REGALBLAZE'
-                            ? '2px solid #FCA311'
-                            : '2px solid #BC3D80'
-                          : '1px solid #c7c0c0ff',
+                          ? user.user.theme_ui === "REGALBLAZE"
+                            ? "2px solid #FCA311"
+                            : "2px solid #BC3D80"
+                          : "1px solid #c7c0c0ff",
                       },
                     }),
                   }}
                   components={{ IndicatorSeparator: () => null }}
                   options={[
-                    { value: 'SKU Code', label: 'SKU Code' },
-                    { value: 'SKU Description', label: 'SKU Description' },
+                    { value: "SKU Code", label: "SKU Code" },
+                    { value: "SKU Description", label: "SKU Description" },
                   ]}
                 />
               </div>
@@ -365,12 +396,14 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
                 fontWeight: 350,
                 height: 44,
                 marginBottom: 4,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "6px" }}
+              >
                 <img
                   src="/assets/img/MTAVFMultiFilter/Search-white.svg"
                   alt="search"
