@@ -69,7 +69,7 @@ const ActionSelectModal = ({ redirectUrl }: any) => {
 
 
     const urlPermissionStr = user?.url_permission??[];
-    const urlPermissionArr = JSON?.parse(urlPermissionStr) || [];
+    const urlPermissionArr = urlPermissionStr || [];
 
   const updateAppData = (theme: any) => {
     const allOptions = [
