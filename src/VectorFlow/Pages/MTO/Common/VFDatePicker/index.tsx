@@ -22,6 +22,7 @@ interface CustomDatePickerProps {
     imgStyle?: React.CSSProperties;
   showCalendarIcon?: boolean;
   disabledFOLHorizonDate?: any;
+  maxDate?: any;
 
 }
 
@@ -36,7 +37,8 @@ const VFDatePicker = ({
   imgStyle,
   showCalendarIcon,
   disabledFOLHorizonDate,
-  minDate
+  minDate,
+  maxDate
 }: CustomDatePickerProps) => {
   const [showCalendar, setShowCalendar] = useState(false);
   const [calendarPosition, setCalendarPosition] = useState({ top: 0, left: 0 });
@@ -129,6 +131,7 @@ const VFDatePicker = ({
                   onChange={handleCalendarChange}
                   value={date ? new Date(date) : new Date()}
                   minDate={minDate}
+                  maxDate={maxDate}
                   // tileDisabled={({ date }) => disabledFOLHorizonDate?.(date) ?? false}
                   tileDisabled={({ date }) => {
                     if (disabledFOLHorizonDate) {

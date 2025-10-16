@@ -141,13 +141,26 @@ const GraphView = ({Viewtabs, currView, setCurrView,selectedCCR, horizonData, gr
     return graphData.data.map((item: any) => {
       const isInHorizonRange = isDateInHorizonRange(item.date);
 
+      let tag = item.tag
+      
+      
+      // console.log('pastOrder_load', graphData.pastorder_load)
+      // console.log('tag', tag)
+      if (tag == "Past Scheduling") {
+        console.log('Past Scheduling item:', {
+          date: item.date,
+          tag: tag,
+        load:graphData.pastorder_load,
+        });
+      }
+
     
       return {
         date: item.date,
         load: item.load,
         holiday: item.is_holiday,
-        past: item.past,
-        limit: cwlValue,
+        past: tag == "Past Scheduling" ? (item.past ? item.past : graphData.pastorder_load) : item.past,
+          limit: cwlValue,
         // type: "monthly",
         type: item.is_holiday ? "holiday" : "load",
         horizonDate: selectedCCRHorizonDate,
@@ -164,7 +177,7 @@ const GraphView = ({Viewtabs, currView, setCurrView,selectedCCR, horizonData, gr
         type: 'bar',
         xKey: 'date',
         yKey: 'load',
-        yName:'Load',
+        yName:'Future Order',
         stacked: true,
         visible: true,
         fill: '#F4BD8E',
@@ -223,6 +236,7 @@ const GraphView = ({Viewtabs, currView, setCurrView,selectedCCR, horizonData, gr
         type: 'bar',
         xKey: 'date',
         yKey: 'past',
+        yName:'Past',
         stacked: true,
         visible: true,
         stroke: '#FF5959',
@@ -246,6 +260,7 @@ const GraphView = ({Viewtabs, currView, setCurrView,selectedCCR, horizonData, gr
         type: 'line',
         xKey: 'date',
         yKey: 'limit',
+        yName:'Limit',
         stroke: '#820f4c',
         strokeWidth: 2,
         strokeDashArray: [5, 5],
@@ -253,6 +268,9 @@ const GraphView = ({Viewtabs, currView, setCurrView,selectedCCR, horizonData, gr
         legendItemName: 'Limit',
         marker: {
           enabled: false
+        },
+        label: {
+          enabled: false  
         },
         tooltip: {
           renderer: ({ datum }: any) =>
@@ -386,6 +404,15 @@ const GraphView = ({Viewtabs, currView, setCurrView,selectedCCR, horizonData, gr
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<any>(null);
 
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (scrollContainerRef.current) {
+      console.log(scrollContainerRef.current)
+      scrollContainerRef.current.scrollLeft = 0;
+    }
+  }, [currView]);
+
 
   const downloadChartWithHeader = () => {
     if (containerRef.current) {
@@ -448,8 +475,8 @@ const GraphView = ({Viewtabs, currView, setCurrView,selectedCCR, horizonData, gr
         <ChartWrapper>
           <div style={{ height: '100%', width: '100%' }} ref={containerRef}>
             <div className='chart-wrapper' style={{ flex: 1, height: "90%" }}>
-              <CustomLegend chartOptions={chartoptions} setChartOptions={setChartOptions} />
-              <div className='chart-scroll' style={{ overflowX: chartoptions?.data?.length > 15 ? "scroll" : "hidden", overflowY:'hidden' }}>
+              <CustomLegend chartOptions={chartoptions} setChartOptions={setChartOptions}/>
+              <div className='chart-scroll'  ref={scrollContainerRef} style={{ overflowX: chartoptions?.data?.length > 15 ? "scroll" : "hidden", overflowY:'hidden' }}>
                 <AgCharts ref={chartRef} style={{ height: "100%", width: chartoptions?.data?.length > 15 ? `${50*chartoptions?.data?.length + "px"}` : "100%" }} options={chartoptions} />
               </div>
             </div>

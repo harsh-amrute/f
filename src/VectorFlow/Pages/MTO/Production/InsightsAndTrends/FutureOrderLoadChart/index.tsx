@@ -291,7 +291,7 @@ const FutureOrderLoadChart = () => {
         setTotalRow(response?.data?.data?.count || transformedData.length);
       }
       else {
-        setGraphData(response?.data?.data || [])
+          setGraphData(response?.data?.data || [])
 
         if (response.status != 200) {
           notifyError('No Data found for the selected filters')
@@ -365,7 +365,9 @@ const getFilterData = async () => {
       to: formatDateToYMD(toDate),
       horizon_date: selectedCCRHorizon
     }
-  };
+    };
+    console.log('filters', currentPayload, selectedCCR)
+
   if(isExcelExport) {
     const headersdata = currentGridRef?.current?.api?.getColumnState();
     const formattedFilters = formatFilterJSON(appliedFilters);
@@ -575,6 +577,9 @@ const getFilterData = async () => {
 
     return current >= today && current <= horizonDate;
   };
+
+  const currentYear = new Date().getFullYear();
+  const maxAllowedDate = new Date(currentYear + 3, 11, 31);
  
   return (
     <>
@@ -653,6 +658,7 @@ const getFilterData = async () => {
                   date={fromDate}
                   onDateChange={setFromDate}
                     minDate={new Date()} 
+                    maxDate={maxAllowedDate}
                     disabled={isDateDisabled}
                     disabledFOLHorizonDate={disabledFOLHorizonDate} 
                     // disabledFOLHorizonDate={disabledFOLHorizonDateFrom}
@@ -689,7 +695,8 @@ const getFilterData = async () => {
                     disabledFOLHorizonDate={disabledFOLHorizonDate} 
                     // disabledFOLHorizonDate={disabledFOLHorizonDateTo}
 
-                minDate={new Date()} 
+                    minDate={new Date()} 
+                    maxDate={maxAllowedDate}
                 dateInputStyle={{
                   fontSize: "10px",
                   fontWeight: 300,
