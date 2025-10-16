@@ -779,7 +779,7 @@ const usePlanning = ()=>{
                     // };
                     const customData = {
                         "createAvailabilityAtParent": { "data": createAvailabilityAtParent, "uiConfig": uiConfig },
-                        "expediteDispatches": { "data": expediteDispatches, "uiConfig": uiConfig }
+                        "expediteDispatches": { "data": expediteDispatches,stockData: expediteDispatchestransit, "uiConfig": uiConfig },
                     };
                     setCurrentGridData(customData);
                     if(fromPagination){
