@@ -14,7 +14,6 @@ import {
     SCViewContainerWithBg,
 
   } from "../../SupplyChainIntelligenceHub/Planning/ActionToolBar/styles";
-import { AgChartOptions } from "ag-charts-community"
 
 interface ExpandedGraphProps {
     id: number
@@ -311,10 +310,6 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
                     />
                 </ExpandedChartCapsuleWrapper>
             </ExpandedChartFilterWrapper>
- 
-<AgCharts
-    options={chartOptions}
-/>
  
             <AgCharts
                 options={chartOptions}

@@ -811,8 +811,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                     const orderLoadInDays = ((orderLoadOfCCRs[ccrId]?.orderLoad || 0) * 1.0) + ((ccrItemTypeMapping?.tt || 1) * order.pcqty) / (ccrWorkingHoursPerDay * 60);
 
                     const ccrFolInDays = masters.FOL[ccrId]?.fol;
-                    console.log(ccrFolInDays, "ccrFolInDays");
-
+                    
                     const today: any = new Date();
                     today.setHours(0, 0, 0, 0);
 
@@ -821,24 +820,17 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                         return new Date(data.wd) >= today && data.ccrId == ccrId && data.PlId == order.plid
                         // return new Date(data.wd) >= today && data.ccrId == ccrId
                     })?.lno;
-                    console.log(latestWorkingDayLno, "latestWorkingDayLno");
-
+                    
                     const folIndex = Math.ceil(latestWorkingDayLno + ccrFolInDays - 1);
-                    console.log(folIndex, "folIndex");
                     const maxFOLIndex = Math.max(latestWorkingDayLno, folIndex);
-                    console.log(maxFOLIndex,"maxFOLIndex");
                     const folDD: any = masters.WorkingCalender.find((data: any) => {
                         return data.lno == maxFOLIndex && data.ccrId == ccrId && data.PlId == order.plid
                     })?.wd;
-                    console.log(folDD);
                     const formatedFOLDate = new Date(folDD);
                     formatedFOLDate.setHours(0, 0, 0, 0);
 
                     let diffDays: any = dateDiffInDays(today, formatedFOLDate);
 
-                    console.log(formatedFOLDate, "formatedFOLDate");
-                    console.log(diffDays, "diffDays")
-                    
                     // Added - 1 only if the dates are different for graph to consider todays date in graph
                     if (diffDays !== 0) {
                         diffDays += 1;
