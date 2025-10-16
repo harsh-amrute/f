@@ -85,6 +85,11 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
     [rowId: number]: { column?: any; operation?: any; value?: any };
   }>({});
 
+  const isRowComplete = (rowId: number) => {
+    const row = rowSelections[rowId];
+    return row && row.operation && row.value && row.value.trim() !== "";
+  };
+
   const [rowFilterIndexMap, setRowFilterIndexMap] = useState<
     Record<number, number>
   >({});
@@ -535,7 +540,12 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
                 />
               </DropDownWrapper>
               <div style={{ display: "flex", alignItems: "center" }}>
-                <IconWrapper theme_ui={user.user.theme_ui}>
+                <IconWrapper theme_ui={user.user.theme_ui}
+                  style={{
+                    opacity: isRowComplete(row.id) ? 0 : 1,
+                    cursor: isRowComplete(row.id) ? "default" : "pointer",
+                  }}
+                >
                   <img
                     src={"/assets/img/MTAVFMultiFilter/Error.svg"}
                     alt="error"

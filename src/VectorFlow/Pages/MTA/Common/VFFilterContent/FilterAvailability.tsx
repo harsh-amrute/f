@@ -169,6 +169,12 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
   const [rowSelections, setRowSelections] = useState<{
     [columnId: string]: { operation?: any; value?: string };
   }>({});
+  
+  const isRowComplete = (columnId: string) => {
+    const row = rowSelections[columnId];
+    return row && row.operation && row.value && row.value.trim() !== "";
+  };
+
   const onFilterChange = (
     columnId: string,
     field: "operation" | "value",
@@ -216,6 +222,37 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
       onMultiFilterChange(updatedMultiFilter);
     }
   };
+
+  const handleResetRow = (columnId: string) => {
+    const updated = {
+      ...rowSelections,
+      [columnId]: { operation: null, value: "" },
+    };
+    setRowSelections(updated);
+
+    const parentId = "availabilityFilter";
+    const columnInfo = availabilityFilterOptions.find(
+      (col) => col.value === columnId
+    );
+
+    if (columnInfo) {
+      const existingFilters = multiFilter[parentId]?.filters || [];
+      const filteredFilters = existingFilters.filter(
+        (f: BPRFilter) => f.name !== columnInfo.name
+      );
+
+      const updatedMultiFilter = {
+        ...multiFilter,
+        [parentId]: {
+          ...multiFilter[parentId],
+          filters: filteredFilters,
+        },
+      };
+
+      onMultiFilterChange(updatedMultiFilter);
+    }
+  };
+
   const [selectedOptions, setSelectedOptions] = useState<{
     onHandInventoryColor: string[];
     pipelineInventoryColor: string[];
@@ -308,10 +345,6 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
     });
   };
 
-  const isRowComplete = (row:any) => {
-    return row.type && row.attributeName && row.operator && row.value;
-  };
-
   const isBTRReport = window.location.pathname === '/mta/insights-and-trends/buffer-trend-report';
 
   const shouldShowColorFilters = currCategory === 'BPR' || currCategory === 'BOR' || currCategory === 'RRR';
@@ -365,13 +398,30 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
                   }
                 />
               </DropDownWrapper>
-              <IconWrapper theme_ui={user.user.theme_ui}>
-                <img src="/assets/img/MTAVFMultiFilter/Error.svg" alt="error" />
+              
+              <IconWrapper 
+                theme_ui={user.user.theme_ui}
+                style={{
+                  opacity: isRowComplete(column.value) ? 0 : 1,
+                  cursor: isRowComplete(column.value) ? "default" : "pointer",
+                }}
+              >
+                <img 
+                  src="/assets/img/MTAVFMultiFilter/Error.svg" 
+                  alt="error" 
+                  title={isRowComplete(column.value) ? "All fields are filled" : "Some fields are empty"}
+                />
               </IconWrapper>
-              <IconWrapper theme_ui={user.user.theme_ui}>
+
+              <IconWrapper 
+                theme_ui={user.user.theme_ui}
+                style={{ cursor: 'pointer' }}
+                onClick={() => handleResetRow(column.value)}
+              >
                 <img
                   src="/assets/img/MTAVFMultiFilter/refresh.svg"
                   alt="refresh"
+                  title="Reset this filter row"
                 />
               </IconWrapper>
             </DropDownRow>

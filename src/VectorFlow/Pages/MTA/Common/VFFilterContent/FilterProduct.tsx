@@ -67,6 +67,11 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
     [rowId: number]: { column?: any; operation?: any; value?: any };
   }>({});
 
+  const isRowComplete = (rowId: number) => {
+    const row = rowSelections[rowId];
+    return row && row.operation && row.value && row.value.trim() !== "";
+  };
+
   const [rowFilterIndexMap, setRowFilterIndexMap] = useState<
     Record<number, number>
   >({});
@@ -543,7 +548,12 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
                   marginBottom: "2px",
                 }}
               >
-                <IconWrapper theme_ui={user.user.theme_ui}>
+                <IconWrapper theme_ui={user.user.theme_ui}
+                  style={{
+                    opacity: isRowComplete(row.id) ? 0 : 1,
+                    cursor: isRowComplete(row.id) ? "default" : "pointer",
+                  }}
+                >
                   <img
                     src="/assets/img/MTAVFMultiFilter/Error.svg"
                     alt="error"
