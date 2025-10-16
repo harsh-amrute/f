@@ -227,7 +227,6 @@ const lazyLoad = (userData:any,children: React.ReactNode) => {
   
   ]
 
-  console.log("lazyLoad userData",userData);
   const urlPermissionArr:any =  userData?.url_permission??[];
 
   const newUrlPermiss = [...authenPage, ...urlPermissionArr]

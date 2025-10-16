@@ -7,6 +7,7 @@ import { type QueryClient } from '@tanstack/react-query'
 import { isEmpty } from 'lodash'
 import { persistor } from '../../redux/store/store'
 import { encryptStorageData } from '../../VectorFlow/Pages/MTO/Common/encryption'
+import { notifySuccess } from '../../helpers/notify'
 
 const API_USER = 'api/user'
 
@@ -21,14 +22,25 @@ interface Token {
 export namespace MainService {
 
   export const logout = async (queryClient: QueryClient) => {
+    let toastMessage: string | null = null;
+  
     try {
-      // Logout from server – backend should clear cookies (refresh & access)
       await axios.post(getLogoutUrl(), {});
+      toastMessage = 'User logged out successfully';
+  
+    } catch (error: any) {
+      console.log(error,"error");
+      if (  error.response?.status === 401) {
+        toastMessage = 'Session timed out';
+      } 
     } finally {
-      // Clear client cache & persisted state
       queryClient.clear();
-      await persistor.purge();
-       localStorage.clear()
+      await persistor.purge();  
+      localStorage.clear();
+    }
+  
+    if (toastMessage) {
+      notifySuccess(toastMessage);
     }
   };
 

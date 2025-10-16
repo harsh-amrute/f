@@ -231,9 +231,10 @@ const handleClickMenu = async (item: any, index: number) => {
   handleItemLeave();
 };
 
+  const navigateTo = useNavigate();
   const handleLogout = async () => {
     await MainService.logout(queryClient);
-    window.location.replace("/login");
+    navigateTo("/login");
   };
 
   const handleItemHover = (e: any, id: number) => {
