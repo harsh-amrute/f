@@ -92,7 +92,7 @@ const Step3 = forwardRef(({ columnData, gridOptions, confirmedRows, setConfirmed
         }
         const prodBuffer = order.prSz || 0;
         const procBuffer = order.pcSz || 0;
-        console.log("procBuffer: Step3",procBuffer);
+        // console.log("procBuffer: Step3",procBuffer);
         // const releaseDateLno = ddLno - prodBuffer - procBuffer - postOrderBuffer + 1;
         const releaseDateLno = ddLno - prodBuffer- postOrderBuffer + 1;
         const releaseDate = WorkingCalender.find((data: any) => {

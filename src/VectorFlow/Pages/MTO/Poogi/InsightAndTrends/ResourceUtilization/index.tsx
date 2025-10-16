@@ -7,7 +7,6 @@ import { DayPicker } from "react-day-picker";
 import CustomCalenderCaption from "./CustomCalenderCaption";
 import CustomCalenderDay from "./CustomCalenderDay";
 import { useUserData } from "../../../../../../context/index";
-import { Rectangle } from "../../../Production/FullKitAssignement/RectangleMarker";
 import VFCapsule from "../../../../../../components/VectorFLOW/commons/VFCapsule";
 import {
   CalenderHeading,
@@ -40,6 +39,7 @@ import VFSelect from "../../../../../../components/VectorFLOW/commons/MTO/VFSele
 import { useDispatch } from "react-redux";
 import { RESOURCE_UTIL_ANALYTICS } from "../../../../../../redux/actions/MTO";
 import VFButton from "../../../../../../components/VectorFLOW/commons/VFButton";
+import { Rectangle } from "../../../Common/Rectangle/RectangleMarker";
 
 const SearchIcon = () => {
   return (
