@@ -28,7 +28,7 @@ interface FormDataType {
   TagID:string;
 }
 
-const EditRole = (props: { data: any; cb: () => void }) => {
+const EditReportConfig = (props: { data: any; cb: () => void }) => {
   const { data, cb } = props;
 
   const { user } = useUserData();
@@ -275,4 +275,4 @@ const formatData = (data: any) => {
   );
 };
 
-export default EditRole;
+export default EditReportConfig;
