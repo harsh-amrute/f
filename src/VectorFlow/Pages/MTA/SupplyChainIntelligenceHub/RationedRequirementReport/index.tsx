@@ -136,6 +136,8 @@ const RRR = () => {
                     setIsDisabled(true);
                   }
                 }}
+                onColumnVisible={(params) => params.api.sizeColumnsToFit()}
+                onGridSizeChanged={(params) => params.api.sizeColumnsToFit()}
               />  
             {
             RRRRowData?.length &&  
