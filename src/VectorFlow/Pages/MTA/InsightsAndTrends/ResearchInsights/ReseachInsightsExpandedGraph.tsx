@@ -310,6 +310,7 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
                     />
                 </ExpandedChartCapsuleWrapper>
             </ExpandedChartFilterWrapper>
+ 
             <AgCharts
                 options={chartOptions}
             />
