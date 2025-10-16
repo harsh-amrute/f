@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router'
 import { UserDataContext } from '../../../context';
 import { listMenuParent } from "../NavbarMenu/listMenu";
 import { notifyError } from '../../../helpers/notify';
+import { useUser } from '../../../UserDataContext';
 
 interface AuthenticationTemplateProps {
   isAnonymous: boolean
@@ -52,10 +53,10 @@ const AuthenticatedTemplate = (
 ) => {
   const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
-  const [userData, setUserData] = useState<any>({})
-  const [isSideBarOpen,toggleSidebar] = useState<boolean>(false)
-
+  const [isSideBarOpen, toggleSidebar] = useState<boolean>(false)
+  const { userData, setUserData } = useUser();
   const { children, loadingComponent: Loading } = props
+
   useEffect(() => {
     const verifyUserSession = async () => {
       try {
@@ -64,15 +65,19 @@ const AuthenticatedTemplate = (
         props.setMenuItem(getSelectedMenuItem(response.data.data.roles.permission));
       } catch (err) {
         notifyError("Session expired or invalid. Please log in.");
-        loginRedirect(navigate);
         localStorage.clear();
+        loginRedirect(navigate);
       } finally {
         setLoading(false);
       }
     };
 
-    verifyUserSession();
-  }, []); 
+    if (!userData) {
+      verifyUserSession();
+    } else {
+      setLoading(false);
+    }
+  }, []);
 
   const changeColorTheme = (color: string) => {
 
@@ -85,7 +90,7 @@ const AuthenticatedTemplate = (
     }
   }
 
-  if (loading) {
+  if (!userData && loading) {
     return Loading
   }
 
