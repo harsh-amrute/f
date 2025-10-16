@@ -12,8 +12,7 @@ import SelectMaster from "../../../../../components/VectorFLOW/layouts/SelectMas
 import { useUserData } from "../../../../../context";
 import {
   operators,
-  seasonalityQuickFilterData,
-} from "../../../../../helpers/MDMConstants";
+} from "../../../../../helpers/MtoMDMConstants";
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify";
 import {
   areMasterFiltersValid,
@@ -21,7 +20,7 @@ import {
 } from "../../../../../helpers/utils";
 import { ColorsMTO } from "../../../../../VectorFlow/Pages/MTO/Common/Colors";
 import { } from "../../../../Services/MTA/MDM";
-import { SeasonalityQuickFilterType, type Filter } from "../../../../types/MDM";
+import { type Filter } from "../../../../types/MDM";
 import VFTable from "../../Common/VFTable";
 import { CustomStatusPanel } from "../CustomStatusPannel";
 import CalenderModalCard from "./CalenderModalCard";
@@ -38,10 +37,6 @@ import {
   SCFilterControls,
   SCFilterSeperator,
   SCLegend,
-  SeasonalityQuickFilter,
-  SeasonalityQuickFilterHeader,
-  SeasonalityQuickFilterText,
-  SeasonalityQuickFilterWrapper,
 } from "./styles";
 import SubmitConflictModal from "./SubmitConflictModal";
 import useViewModify from "./useViewModify";
@@ -49,6 +44,7 @@ import VFTaskBar from "./VFTaskbar";
 import WarningModal from "./WarningModal";
 import useSimpleBlocker from "./UseSimpleBlocker";
 import OverlayLoader from "../../Common/Loader";
+import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard";
 
 
 const MTOViewModify = () => {
@@ -89,30 +85,24 @@ const MTOViewModify = () => {
     ref,
     tempRef,
     tempAgGridProps,
-    tempGridData,
     deleteSelected,
     plantNames,
     ccrNames,
     onSubmit,
     // isUploadButtonDisabled,
     editOnline,
-    seasonalityActiveQuickFilter,
     onEditOnline,
     onSaveToDraft,
     rowsPerPage,
     calendarFormData,
     onReset,
     onEditOnlineSave,
-    onSeasonalityQuickFilter,
     conflictCount,
     errorCount,
     isConflictModalOpen,
     isShowAll,
     onIgnoreSubmitErrors,
     onReviewConflicts,
-    onSeasonalityStatusUpdate,
-    validResumeStatuses,
-    validStopStatuses,
     onPIPOStatusUpdate,
     enableEditOnlineReset,
     submittedDataCount,
@@ -136,13 +126,14 @@ const MTOViewModify = () => {
     setCalendarFormData,
     getCombinedPoogiDataForExcelExport,
     onExcelExport,
+    showModal,
+    setShowModal,
+    bufferDataConfirm,
+    isAPILoading
   } = useViewModify("modify");
 
-
-
-
-  useSimpleBlocker(activeMaster,onBackButton);
-
+  useSimpleBlocker(activeMaster, onBackButton);
+  
   const bufferModifyData = useSelector(
     (state: any) => state.mto.bufferModifyData
   );
@@ -203,10 +194,24 @@ const MTOViewModify = () => {
     setIsDisabledPoogi2(true);
   }
 
+  const isDataModified = () => {
+    const bufferData = bufferModifyData?.filter((ele: any) => !ele.isdel);
+    const ccrData = ccrModifyData?.filter((ele:any)=> !ele.isdel)
+
+    const bufferModifiedDataExists = (activeMaster.id === 501 && !(bufferData && bufferData?.length > 0));
+    const CCRModifiedDataExists = (activeMaster.id === 502 && !(ccrData && ccrData?.length > 0));
+    
+    return bufferModifiedDataExists || CCRModifiedDataExists;
+  }
 
   return (
     <>
       <SCContainer>
+        {(isAPILoading) && (
+          <div>
+            <OverlayLoader></OverlayLoader>
+          </div>
+        )}
         {isSelectMasterOpen && (
           <div style={{ zoom: 0.8 }}>
             <SelectMaster
@@ -225,37 +230,6 @@ const MTOViewModify = () => {
         )}
         {!isSelectMasterOpen && (
           <React.Fragment>
-            {activeMaster.id == 10 && (
-              <SeasonalityQuickFilterWrapper>
-                <SeasonalityQuickFilterHeader>
-                  Quick Filters -
-                </SeasonalityQuickFilterHeader>
-                {seasonalityQuickFilterData.map(
-                  (s: SeasonalityQuickFilterType) => {
-                    return (
-                      <SeasonalityQuickFilter
-                        stateColor={s.color}
-                        onClick={() => onSeasonalityQuickFilter(s.id)}
-                        isActive={
-                          seasonalityActiveQuickFilter.find(
-                            (state) =>
-                              JSON.stringify(state) === JSON.stringify(s.id)
-                          )
-                            ? true
-                            : false
-                        }
-                        data-testid="seasonality-quick-filter"
-                      >
-                        <SeasonalityQuickFilterText>
-                          {s.label}
-                        </SeasonalityQuickFilterText>
-                      </SeasonalityQuickFilter>
-                    );
-                  }
-                )}
-              </SeasonalityQuickFilterWrapper>
-            )}
-
             <VFTab
               activeMaster={activeMaster}
               themeUi={themeUi}
@@ -267,7 +241,7 @@ const MTOViewModify = () => {
             >
               {(activeMaster.progress === "default" ||
                 activeMaster.progress === "view") && (
-                <SCFilterContainer style={{ zoom: 0.8 }}>
+                <SCFilterContainer style={{ zoom: 0.8, display: "none" }}>
                   <SCFilterControls>
                     <SCLegend>Filter</SCLegend>
                     {activeMaster.filters.map((f: Filter) => {
@@ -325,7 +299,7 @@ const MTOViewModify = () => {
                       Apply Filter
                     </VFButton>
                   <>
-                    {isTableDataLoading && (
+                    {(isTableDataLoading) && (
                       <div>
                           <OverlayLoader></OverlayLoader>
                       </div>
@@ -754,26 +728,6 @@ const MTOViewModify = () => {
       {!isSelectMasterOpen && (
         <div style={{ zoom: 0.8 }}>
           <VFTaskBar
-            disableStopSeasonality={() => {
-              const flatState = _.flatMap(seasonalityActiveQuickFilter);
-              let error = false;
-              flatState.map((state: number) => {
-                if (!validStopStatuses.includes(state)) error = true;
-              });
-              if (error) return true;
-
-              return false;
-            }}
-            disableResumeSeasonality={() => {
-              const flatState = _.flatMap(seasonalityActiveQuickFilter);
-              let error = false;
-              flatState.map((state: number) => {
-                if (!validResumeStatuses.includes(state)) error = true;
-              });
-              if (error) return true;
-
-              return false;
-            }}
             showSubmittedExportError={errorCount > 0}
             // masterProgress={(!bufferModifyData)?"initial":(bufferModifyData?"editOnline":"editOnlineSubmitted")}
             masterProgress={editStatus}
@@ -804,8 +758,6 @@ const MTOViewModify = () => {
             onSubmit={onSubmit}
             onSubmitConflictData={() => onSubmit(true)}
             onDeleteSelected={deleteSelected}
-            onSeasonalityResume={() => onSeasonalityStatusUpdate("resume")}
-            onSeasonalityStop={() => onSeasonalityStatusUpdate("stop")}
             onPhaseInPhaseOutStop={() => onPIPOStatusUpdate()}
             onDeleteData={() => console.log("")}
             onDeleteOnlineReset={() => console.log("")}
@@ -814,12 +766,7 @@ const MTOViewModify = () => {
             masterId={activeMaster.id}
             mtoSaveData={true}
             onMTOSaveData={onMTOSaveBufferData}
-            isMTOSaveDataDisabled={
-              (activeMaster.id === 501 &&
-                !(bufferModifyData && bufferModifyData?.length > 0)) ||
-              (activeMaster.id === 502 &&
-                !(ccrModifyData && ccrModifyData?.length > 0))
-            }
+            isMTOSaveDataDisabled={isDataModified()}
             isMTODraftDisabled={
               (activeMaster.id === 501 &&
                 !(bufferModifyData && bufferModifyData?.length > 0)) ||
@@ -830,6 +777,26 @@ const MTOViewModify = () => {
           />
         </div>
       )}
+
+    <VFModalCard key={"key2"} openModal={showModal} closeModal={() => { setShowModal(false) }} headerText={'Warning'} headerIcon={'/assets/img/ist/warning.svg'} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"} paddingLeftAndRight={0} headerTextColor={'black'} backgroundColor={'f4f4f4'} data-testid="vfmultifilter-img" >
+        <div style={{ margin: "0 2rem" }}>
+          <div style={{ minHeight: '10vh', fontSize: '16px', padding: "20px", textAlign: "center" }}>
+            There is some incomplete data in your task <br /> Are you sure you want to save it without this data?
+          </div>
+          <div style={{ zoom: '0.7', display: 'flex', justifyContent: 'right', gap: '8px', borderTop: '2px dashed #A0A0A0', padding: '20px 20px 20px 0' }}>
+
+            <VFButton onClick={() => { setShowModal(false) }} themeUi={themeUi}>
+              Cancel
+            </VFButton>
+            <VFButtonOutline onClick={() => {
+              setShowModal(false)
+              bufferDataConfirm();
+            }} themeUi={themeUi}>
+              Yes
+            </VFButtonOutline>
+          </div>
+        </div>
+      </VFModalCard>
     </>
   );
 };
