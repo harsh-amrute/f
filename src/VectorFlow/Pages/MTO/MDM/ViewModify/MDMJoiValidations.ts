@@ -134,11 +134,12 @@ export const CCR_VALIDATION_SCHEMA = Joi.object({
     "number.unsafe": "Residual Buffer (rb) must be a safe number",
   }),
 
-  sh: Joi.number().integer().required().messages({ 
+  sh: Joi.number().min(1).integer().required().messages({ 
       "number.base": "Scheduling Horizon must be a number!",
       "number.integer": "Scheduling Horizon must be an integer!",
       "any.required": "Scheduling Horizon cannot be empty!",
       "number.unsafe": "Scheduling Horizon must be a safe number",
+      "number.min": "Scheduling Horizon should be greater than 1!",
     }),
 
   fh: Joi.number().min(Joi.ref('sh')).integer().required().messages({ 

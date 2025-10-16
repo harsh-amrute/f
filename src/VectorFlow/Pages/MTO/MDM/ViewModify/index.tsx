@@ -194,6 +194,15 @@ const MTOViewModify = () => {
     setIsDisabledPoogi2(true);
   }
 
+  const isDataModified = () => {
+    const bufferData = bufferModifyData?.filter((ele: any) => !ele.isdel);
+    const ccrData = ccrModifyData?.filter((ele:any)=> !ele.isdel)
+
+    const bufferModifiedDataExists = (activeMaster.id === 501 && !(bufferData && bufferData?.length > 0));
+    const CCRModifiedDataExists = (activeMaster.id === 502 && !(ccrData && ccrData?.length > 0));
+    
+    return bufferModifiedDataExists || CCRModifiedDataExists;
+  }
 
   return (
     <>
@@ -757,12 +766,7 @@ const MTOViewModify = () => {
             masterId={activeMaster.id}
             mtoSaveData={true}
             onMTOSaveData={onMTOSaveBufferData}
-            isMTOSaveDataDisabled={
-              (activeMaster.id === 501 &&
-                !(bufferModifyData && bufferModifyData?.length > 0)) ||
-              (activeMaster.id === 502 &&
-                !(ccrModifyData && ccrModifyData?.length > 0))
-            }
+            isMTOSaveDataDisabled={isDataModified()}
             isMTODraftDisabled={
               (activeMaster.id === 501 &&
                 !(bufferModifyData && bufferModifyData?.length > 0)) ||
