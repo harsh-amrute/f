@@ -13,6 +13,7 @@ import { ColDef } from "ag-grid-enterprise"
 import { useUserData } from "../../../../../context"
 
 import * as globalStyles from '../../../../../styles/global'
+import { convertDateFormat } from "../ViewModify/CommonUtils"
 
 
 const MTOTaskStatus = ()=>{
@@ -92,14 +93,13 @@ const MTOTaskStatus = ()=>{
         return result.split(",");
     };
 
-
     const MTOToMTAFormat = (taskData: any, allUsers: any) => {
 
         const newData:any = [];
         taskData.forEach((val:any)=>{
             const newVal:any = {}
             newVal.TaskID = val.tid;
-            newVal.PendingSince = val.co;
+            newVal.PendingSince = convertDateFormat(val.co);
             newVal.TaskName = val.tnm;
             newVal.TaskStatus = val.std;
             newVal.Requester = val.r_nm;
@@ -109,8 +109,6 @@ const MTOTaskStatus = ()=>{
 
             newData.push(newVal);
         })
-
-        console.log("enw data", newData);
 
         return newData;
     }
@@ -146,7 +144,7 @@ const MTOTaskStatus = ()=>{
            
         }
         catch(error){
-            console.log(error)
+            console.error(error)
         }
     }
 
