@@ -68,6 +68,7 @@ const SelectCategory = (props: CountProp) => {
         // Handle reset logic if needed beyond the modal
     };
     const handleApplyFilter = (state: any) => {
+        setMultiFilter(state)
         onApplyFilter(state)
         toggleFilter(false)
     }
