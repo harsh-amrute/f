@@ -157,9 +157,10 @@ const GraphView = ({Viewtabs, currView, setCurrView,selectedCCR, horizonData, gr
     
       return {
         date: item.date,
-        load: item.load,
+        load:tag!=="Past Scheduling" ? item.load :'' ,
         holiday: item.is_holiday,
-        past: tag == "Past Scheduling" ? (item.past ? item.past : graphData.pastorder_load) : item.past,
+        // past: tag == "Past Scheduling" ? (item.past ? item.past : graphData.pastorder_load) : item.past,
+        past: tag == "Past Scheduling" ? item.load :'',
           limit: cwlValue,
         // type: "monthly",
         type: item.is_holiday ? "holiday" : "load",
