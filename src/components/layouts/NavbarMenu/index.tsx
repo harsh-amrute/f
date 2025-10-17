@@ -233,7 +233,7 @@ const handleClickMenu = async (item: any, index: number) => {
 
   const navigateTo = useNavigate();
   const handleLogout = async () => {
-    await MainService.logout(queryClient);
+    await MainService.logout(false,queryClient);
     navigateTo("/login");
   };
 

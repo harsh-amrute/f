@@ -21,22 +21,41 @@ interface Token {
 
 export namespace MainService {
 
-  export const logout = async (queryClient: QueryClient) => {
+  // get a new access_token by refresh_token
+  export const refreshToken = async () => {
+    try {
+
+      const response = await axios.post(getrefreshTokenUrl());
+      return response;
+
+    } catch (error) {
+      console.error("Refresh token failed:", error);
+      //  refresh token not valid or expired
+      throw error
+    }
+  }
+
+  export const logout = async (isUnAuth=false, queryClient?: QueryClient,) => {
     let toastMessage: string | null = null;
   
     try {
       await axios.post(getLogoutUrl(), {});
-      toastMessage = 'User logged out successfully';
+      if (isUnAuth) {
+        toastMessage = 'Session expired or invalid. Please log in again.';
+      } else {
+        toastMessage = 'User logged out successfully';
+      }
   
     } catch (error: any) {
       console.log(error,"error");
-      if (  error.response?.status === 401) {
-        toastMessage = 'Session timed out';
+      if (error.response?.status === 401) {
+        toastMessage = 'Session expired or invalid. Please log in again.';
       } 
     } finally {
-      queryClient.clear();
+      queryClient?.clear();
       await persistor.purge();  
       localStorage.clear();
+      sessionStorage.clear();
     }
   
     if (toastMessage) {

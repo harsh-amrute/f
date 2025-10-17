@@ -1,5 +1,5 @@
-import React, { type PropsWithChildren, useEffect, useState } from 'react'
-import { loginRedirect } from '../../../helpers/utils'
+import React, { type PropsWithChildren, useEffect, useRef, useState } from 'react'
+import { getRedirecting, loginRedirect } from '../../../helpers/utils'
 import { MainService } from '../../../module-main/services/api'
 import { useNavigate } from 'react-router'
 import { UserDataContext } from '../../../context';
@@ -55,24 +55,25 @@ const AuthenticatedTemplate = (
   const [loading, setLoading] = useState(true)
   const [isSideBarOpen, toggleSidebar] = useState<boolean>(false)
   const { userData, setUserData } = useUser();
-  const { children, loadingComponent: Loading } = props
-
+  const { children, loadingComponent: Loading } = props;
+  
   useEffect(() => {
     const verifyUserSession = async () => {
       try {
+        if (getRedirecting()) return;
+
         const response = await MainService.getProfile();
         setUserData(response.data.data);
         props.setMenuItem(getSelectedMenuItem(response.data.data.roles.permission));
+        
       } catch (err) {
-        notifyError("Session expired or invalid. Please log in.");
-        localStorage.clear();
-        loginRedirect(navigate);
+          loginRedirect(navigate); 
       } finally {
         setLoading(false);
       }
     };
 
-    if (!userData) {
+    if (!userData && !getRedirecting()) {
       verifyUserSession();
     } else {
       setLoading(false);

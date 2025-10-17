@@ -37,14 +37,23 @@ const keyboardCharacters = [
   'U', 'V', 'W', 'X', 'Y', 'Z'
 ];
 
+let isRedirecting = false;
+
+export const setRedirecting = () => { isRedirecting = true; }
+export const getRedirecting = () => isRedirecting;
+
 export const loginRedirect = (navigate?: NavigateFunction) => {
 
-  saveOriginalUrlBeforeLogin()
+  if (getRedirecting()) return; // prevent multiple redirects
+  setRedirecting();
 
-  if (navigate != null) {
-    navigate(ROUTES.landing, { replace: true })
+  saveOriginalUrlBeforeLogin() 
+
+   // Safer redirect (no back navigation to protected route)
+   if (navigate) {
+    navigate(ROUTES.landing, { replace: true });
   } else {
-    window.location.href = ROUTES.landing
+    window.location.replace(ROUTES.landing);
   }
 }
 

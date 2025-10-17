@@ -24,7 +24,7 @@ export function AutoLogoutTimer() {
     if (location.pathname !== '/login') {
       toast.dismiss();
       setWarningVisible(false);
-      await MainService.logout(queryClient);
+      await MainService.logout(true, queryClient);
       navigate('/login');
     }
   }, [location.pathname, navigate, queryClient]); 
@@ -57,7 +57,6 @@ const handlePrompt = useCallback(() => {
     const events: (keyof WindowEventMap)[] = ['mousemove', 'mousedown', 'keypress', 'touchstart', 'scroll'];
     events.forEach((event) => window.addEventListener(event, handleActivity));
        
-    console.log('AutoLogoutTimer mounted and event listeners added.');
     return () => {
       events.forEach((event) => window.removeEventListener(event, handleActivity));
     };
