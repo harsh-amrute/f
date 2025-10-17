@@ -16,6 +16,7 @@ import { useGetCCRGroupMaster } from "../../../../../VectorFlow/Services/MTO/Pro
 import { MDMMasterState } from "../../../../../VectorFlow/types/MDM"
 import DaysOfWeekRenderer from "../ViewModify/DaysOfWeekRenderer"
 import MTOErrorWarningCell from "../ViewModify/MTOErrorWarningCell"
+import { convertDateFormat } from "../ViewModify/CommonUtils"
 
 
 
@@ -48,20 +49,6 @@ const useSavedDrafts = ()=>{
     const [ccrsData,setCcrsData] = useState<any>();
     
     const user = useUserData();
-
-
-    const convertDateFormat = (inputDate: string)=>{
-        const [date, ltime] = inputDate.split("T");
-        const time = ltime.split(".")[0];
-        const [year, month, day] = date.split("-");
-        const [hours, minutes, seconds] = time.split(":");
-        const isPM = parseInt(hours) >= 12;
-        const newHours = (parseInt(hours) % 12 || 12).toString().padStart(2, "0");
-        const period = isPM ? "PM" : "AM";
-        const newMonth = month.toString();
-        const formattedDate = `${year}/${newMonth}/${day} ${newHours}:${minutes}:${seconds} ${period}`;
-        return formattedDate;
-    }
     
     const getCombinedMTOData = async()=>{
         try{
@@ -88,7 +75,7 @@ const useSavedDrafts = ()=>{
             
         }
         catch(error){
-            console.log(error)
+            console.error(error)
         }
     }
     
@@ -291,7 +278,7 @@ const useSavedDrafts = ()=>{
                 if(item.bid || item.cid){
                   return item
                 }else{
-                 return {...item, isEditing:false,ia:true,isdel:false,id:uuidv4()}
+                 return {...item, editable:false,ia:true,isdel:false,id:uuidv4()}
                 }
               });
           }
@@ -399,7 +386,7 @@ const useSavedDrafts = ()=>{
           notifySuccess("Draft Loaded Successfully");
 
         } catch (error) {
-          console.log(error);
+          console.error(error);
         }
 
         return;
