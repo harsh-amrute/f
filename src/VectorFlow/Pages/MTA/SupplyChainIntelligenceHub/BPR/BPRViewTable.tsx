@@ -54,8 +54,8 @@ const BPRViewTable = (props:BPRViewTableProps)=>{
 
     const filteredRows = useMemo(():Array<any>=>{
         if(rowData){
-        if(Array.isArray(JSON.parse(rowData))){
-            return JSON.parse(rowData).filter((r:any)=>{
+        if(Array.isArray(rowData)){
+            return rowData.filter((r:any)=>{
                 return filters.every((f)=>{
                     
 
