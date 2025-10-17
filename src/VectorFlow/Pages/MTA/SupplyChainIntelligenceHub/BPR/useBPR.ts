@@ -273,7 +273,7 @@ const useBPR =()=>{
             paginationPageSize:parseInt(BPR_ROWS_PER_PAGE || '50'),
             onRowSelected:(params:any)=>{
                 if(params.data.intransit && params.data.intransit.length>0){
-                    setActiveRow(params.data.intransit)
+                    setActiveRow(JSON.parse(params.data.intransit))
                     toggleSubGrid(true)
                 }
             },
