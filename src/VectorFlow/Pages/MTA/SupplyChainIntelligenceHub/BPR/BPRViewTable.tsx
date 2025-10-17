@@ -22,7 +22,7 @@ export interface BPRViewTableColDef{
 
 interface BPRViewTableProps{
     colDefs:BPRViewTableColDef[]
-    rowData:any[]
+    rowData:any
     tablePrefixSrc:string
     tableHeader:string
     onRequestExpediting?:()=>void
@@ -53,8 +53,9 @@ const BPRViewTable = (props:BPRViewTableProps)=>{
     }
 
     const filteredRows = useMemo(():Array<any>=>{
-        if(Array.isArray(rowData)){
-            return rowData.filter((r)=>{
+        if(rowData){
+        if(Array.isArray(JSON.parse(rowData))){
+            return JSON.parse(rowData).filter((r:any)=>{
                 return filters.every((f)=>{
                     
 
@@ -72,6 +73,7 @@ const BPRViewTable = (props:BPRViewTableProps)=>{
                 })
             })
         }
+    }
         return []
     },[filters,rowData])
 
