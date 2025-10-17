@@ -166,7 +166,6 @@ export const HorizonFilter: React.FC<FilterSectionProps> = ({
       attributeName: "endDate",
     });
     
-    console.log("To date changed:", formatted);
   };
 
   const clearFromDate = () => {

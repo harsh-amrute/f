@@ -67,8 +67,6 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
 
         const data = res?.data?.data?.data || res?.data?.data || [];
 
-        console.log(`UIConfig raw response for ${reportName}:`, data);
-
         const filtered = data.filter((col: any) =>
           commonFilterKeywords.some((kw) =>
             col.Col_Code?.toLowerCase()?.includes(kw)
@@ -82,8 +80,6 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
           label: col.Header || col.Col_Code,
           name: `CAF${idx + 1}`,
         }));
-
-        console.log(`Final attributeOptions for ${reportName}:`, formatted);
 
         setAttributeOptions(formatted);
       } catch (err) {

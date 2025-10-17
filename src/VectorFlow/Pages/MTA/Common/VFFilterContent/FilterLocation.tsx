@@ -404,21 +404,16 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
   };
 
   const handleSearchApply = async () => {
-    console.log("Search button clicked with query:", searchQuery);
-
     if (searchQuery && searchQuery.length >= 2) {
       setHasSearched(true);
       setManualSearchQuery(searchQuery);
 
       try {
-        console.log("Triggering search with query:", searchQuery);
         await triggerSearch();
       } catch (error) {
         console.error("Search failed:", error);
       }
-    } else {
-      console.log("Search query too short:", searchQuery);
-    }
+    } 
   };
 
   const handleKeyPress = (event: React.KeyboardEvent) => {
