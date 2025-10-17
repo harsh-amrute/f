@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   FilterGroup,
   FilterColumn,
@@ -27,18 +27,21 @@ interface FilterRowState {
   value: string;
 }
 
+const INITIAL_ROWS: FilterRowState[] = [
+  { id: "CF1", type: "", attributeName: "", operator: "", value: "" },
+  { id: "CF2", type: "", attributeName: "", operator: "", value: "" },
+  { id: "CF3", type: "", attributeName: "", operator: "", value: "" },
+];
+
 export const ColorFilters: React.FC<FilterSectionProps> = ({
   multiFilter,
   onMultiFilterChange,
 }) => {
   const styles = useThemeStyles();
   const { user } = useUserData();
+  const isUpdatingFromInternal = useRef(false);
 
-  const [filterRows, setFilterRows] = useState<FilterRowState[]>([
-    { id: "CF1", type: "", attributeName: "", operator: "", value: "" },
-    { id: "CF2", type: "", attributeName: "", operator: "", value: "" },
-    { id: "CF3", type: "", attributeName: "", operator: "", value: "" },
-  ]);
+  const [filterRows, setFilterRows] = useState<FilterRowState[]>(INITIAL_ROWS);
 
   const colorTypeFilterOptions = [
     { value: "colorcount", label: "Color Count" },
@@ -46,56 +49,92 @@ export const ColorFilters: React.FC<FilterSectionProps> = ({
   ];
 
   const isRowComplete = (row: FilterRowState) => {
-    return row.type && row.attributeName && row.operator && row.value;
+    return row.type && row.attributeName && row.operator && row.value && row.value.trim() !== "";
   };
 
   useEffect(() => {
-    const updatedMultiFilter = { ...multiFilter };
-
-    if (!updatedMultiFilter.colorFilter) {
-      updatedMultiFilter.colorFilter = {
-        id: "6",
-        label: "Color",
-        filters: [],
-      };
+    if (isUpdatingFromInternal.current) {
+      isUpdatingFromInternal.current = false;
+      return;
     }
 
-    updatedMultiFilter.colorFilter.filters = [];
+    if (multiFilter?.colorFilter?.filters && multiFilter.colorFilter.filters.length > 0) {
+      // Restore filters from multiFilter
+      const restoredRows: FilterRowState[] = [...INITIAL_ROWS];
 
-    filterRows.forEach((row) => {
-      if (isRowComplete(row)) {
-        const filterObj: BPRFilter = {
-          type: row.type,
-          attributeName: row.attributeName,
-          value: row.value,
-          operator: row.operator,
-          label: row.type,
-          name: row.id,
-        };
+      multiFilter.colorFilter.filters.forEach((filter: BPRFilter) => {
+        if (filter.name && filter.name.startsWith("CF")) {
+          const rowIndex = parseInt(filter.name.replace("CF", "")) - 1;
+          if (rowIndex >= 0 && rowIndex < 3) {
+            restoredRows[rowIndex] = {
+              id: filter.name,
+              type: filter.type || "",
+              attributeName: filter.attributeName || "",
+              operator: filter.operator || "",
+              value: filter.value || "",
+            };
+          }
+        }
+      });
 
-        updatedMultiFilter.colorFilter.filters.push(filterObj);
-      }
-    });
-
-    onMultiFilterChange(updatedMultiFilter);
-  }, [filterRows]);
+      setFilterRows(restoredRows);
+    } else {
+      setFilterRows([...INITIAL_ROWS]);
+    }
+  }, [multiFilter?.colorFilter?.filters]);
 
   const handleFilterChange = (
     rowId: string,
     field: keyof FilterRowState,
     value: string
   ) => {
-    setFilterRows((prev) => {
-      return prev.map((row) => {
-        if (row.id === rowId) {
-          return {
-            ...row,
-            [field]: value,
-          };
-        }
-        return row;
-      });
+    const updatedRows = filterRows.map((row) => {
+      if (row.id === rowId) {
+        return {
+          ...row,
+          [field]: value,
+        };
+      }
+      return row;
     });
+
+    setFilterRows(updatedRows);
+
+    const updatedRow = updatedRows.find(r => r.id === rowId);
+    
+    if (updatedRow) {
+      const updatedMultiFilter = { ...multiFilter };
+
+      if (!updatedMultiFilter.colorFilter) {
+        updatedMultiFilter.colorFilter = {
+          id: "6",
+          label: "Color",
+          filters: [],
+        };
+      }
+
+      const existingFilters = updatedMultiFilter.colorFilter.filters || [];
+      const filteredFilters = existingFilters.filter(
+        (f: BPRFilter) => f.name !== rowId
+      );
+
+      if (isRowComplete(updatedRow)) {
+        const filterObj: BPRFilter = {
+          type: updatedRow.type,
+          attributeName: updatedRow.attributeName,
+          value: updatedRow.value,
+          operator: updatedRow.operator,
+          label: updatedRow.type,
+          name: updatedRow.id,
+        };
+
+        updatedMultiFilter.colorFilter.filters = [...filteredFilters, filterObj];
+      } else {
+        updatedMultiFilter.colorFilter.filters = filteredFilters;
+      }
+      isUpdatingFromInternal.current = true;
+      onMultiFilterChange(updatedMultiFilter);
+    }
   };
 
   const handleSelectChange = (
@@ -107,20 +146,33 @@ export const ColorFilters: React.FC<FilterSectionProps> = ({
   };
 
   const handleResetRow = (rowId: string) => {
-    setFilterRows((prev) => {
-      return prev.map((row) => {
-        if (row.id === rowId) {
-          return {
-            ...row,
-            type: "",
-            attributeName: "",
-            operator: "",
-            value: "",
-          };
-        }
-        return row;
-      });
+    const updatedRows = filterRows.map((row) => {
+      if (row.id === rowId) {
+        return {
+          ...row,
+          type: "",
+          attributeName: "",
+          operator: "",
+          value: "",
+        };
+      }
+      return row;
     });
+
+    setFilterRows(updatedRows);
+
+    const updatedMultiFilter = { ...multiFilter };
+    
+    if (updatedMultiFilter.colorFilter?.filters) {
+      const filteredFilters = updatedMultiFilter.colorFilter.filters.filter(
+        (f: BPRFilter) => f.name !== rowId
+      );
+      
+      updatedMultiFilter.colorFilter.filters = filteredFilters;
+      
+      isUpdatingFromInternal.current = true;
+      onMultiFilterChange(updatedMultiFilter);
+    }
   };
 
   return (
@@ -214,7 +266,11 @@ export const ColorFilters: React.FC<FilterSectionProps> = ({
                     cursor: isComplete ? "default" : "pointer",
                   }}
                 >
-                  <img src={"/assets/img/MTAVFMultiFilter/Error.svg"} />
+                  <img 
+                    src={"/assets/img/MTAVFMultiFilter/Error.svg"}
+                    alt="error"
+                    title={isComplete ? "All fields are filled" : "Some fields are empty"}
+                  />
                 </IconWrapper>
 
                 <IconWrapper
@@ -222,7 +278,11 @@ export const ColorFilters: React.FC<FilterSectionProps> = ({
                   onClick={() => handleResetRow(row.id)}
                   style={{ cursor: "pointer" }}
                 >
-                  <img src={"/assets/img/MTAVFMultiFilter/refresh.svg"} />
+                  <img 
+                    src={"/assets/img/MTAVFMultiFilter/refresh.svg"}
+                    alt="refresh"
+                    title="Reset this filter row"
+                  />
                 </IconWrapper>
               </DropDownRow>
             );
