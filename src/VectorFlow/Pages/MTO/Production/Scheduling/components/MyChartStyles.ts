@@ -32,7 +32,6 @@ export const ColumnBodyWrapper = styled.div`
   overflow-y: hidden;
   overflow-x: hidden;
   
-  /* Show scrollbar but make it invisible to match right side spacing */
   &::-webkit-scrollbar {
     width: 8px;
   }
@@ -63,7 +62,6 @@ export const CalendarHeaderWrapper = styled.div`
   overflow-y: hidden;
   border-bottom: 1px solid #ccc;
 
-  /* Sync horizontal scroll with body */
   &::-webkit-scrollbar {
     height: 0;
   }
@@ -89,6 +87,7 @@ export const ColumnHeaderRow = styled.tr`
   height: 50px;
   background: black;
 `;
+
 export const ColumnHeaderRowTop = styled.div`
   height: 50px;
   background: black;
@@ -145,6 +144,7 @@ export const CalendarHeaderRow = styled.tr`
   text-align: center;
   user-events: none;
 `;
+
 export const CalendarHeaderRowTop = styled.tr`
   height: 25px;
   background: black;
@@ -166,6 +166,7 @@ export const CalendarCell = styled.th<{ span?: number }>`
   line-height: 25px;
   white-space: nowrap;
 `;
+
 export const CalendarCellTop = styled.th<{ span?: number }>`
   border: 1px solid #ccc;
   text-align: center;

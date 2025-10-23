@@ -12,6 +12,7 @@ import Tooltip from "../../../Common/Tooltip";
 import { 
   CalendarBodyWrapper, 
   CalendarCell, 
+  CalendarCellTop, 
   CalendarHeaderRow, 
   CalendarHeaderRowTop, 
   CalendarHeaderWrapper, 
@@ -41,7 +42,7 @@ import {
 } from "./MyChartStyles";
 
 interface SlotConfig {
-  [key: string]: string; // e.g., "1": "07:00 AM"
+  [key: string]: string;
 }
 
 interface MyChartProps {
@@ -50,7 +51,7 @@ interface MyChartProps {
   TaskData: any[];
   colors: { [key: string]: string };
   primary_key: string;
-  Slot?: SlotConfig[]; // Dynamic shift configuration
+  Slot?: SlotConfig[];
   CustomTaskBar?: ({props}:any) => React.ReactNode;
   CustomTooltip?: any;
   height?: number;
@@ -59,7 +60,6 @@ interface MyChartProps {
   Attributes?: { [key: string]: any };
 }
 
-// Memoized TaskBar component
 const MemoizedTaskBar = React.memo(({ 
   left, 
   width, 
@@ -77,7 +77,6 @@ const MemoizedTaskBar = React.memo(({
   </TaskBar>
 ));
 
-// Memoized Row component
 const VirtualRow = React.memo(({ 
   row, 
   rowIndex,
@@ -85,7 +84,7 @@ const VirtualRow = React.memo(({
   colDef,
   colWidths,
   tasks,
-  calendarHeaders,
+  visibleColumnIndices,
   totalSubHeaders,
   cellWidth,
   zoom,
@@ -98,7 +97,9 @@ const VirtualRow = React.memo(({
   visibleColRange,
   shiftsPerDay,
   shiftFactor,
-  Attributes
+  Attributes,
+  leftPadding,
+  rightPadding
 }: any) => {
   const slotDuration = zoom === "week" ? 24 * 60 * 60 * 1000 : (24 * 60 * 60 * 1000) / shiftsPerDay;
   const chartStart = useMemo(() => {
@@ -109,14 +110,49 @@ const VirtualRow = React.memo(({
 
   return (
     <ContentRow style={{ height: `${rowHeight}px` }}>
-      {calendarHeaders.flatMap((header: any, headerIdx: number) =>
-        header.subHeaders.map((sub: any, subIdx: any) => (
-          <TaskContainer key={`${rowIndex}-${headerIdx}-${subIdx}`} />
-        ))
+      {/* Left padding spacer */}
+      {leftPadding > 0 && (
+        <td style={{ 
+          minWidth: `${leftPadding}px`, 
+          width: `${leftPadding}px`, 
+          padding: 0,
+          border: 0,
+          background: 'transparent'
+        }} />
       )}
       
-      <td style={{ position: 'absolute', left: 0, right: 0, height: `${rowHeight}px`, padding: 0, border: 0 }}>
-        <div style={{ position: 'relative', width: totalSubHeaders * cellWidth + 'px', height: `${rowHeight}px` }}>
+      {/* Visible calendar cells */}
+      {visibleColumnIndices.map((colIdx: number) => (
+        <TaskContainer key={`${rowIndex}-${colIdx}`} />
+      ))}
+      
+      {/* Right padding spacer */}
+      {rightPadding > 0 && (
+        <td style={{ 
+          minWidth: `${rightPadding}px`, 
+          width: `${rightPadding}px`, 
+          padding: 0,
+          border: 0,
+          background: 'transparent'
+        }} />
+      )}
+      
+      {/* Task bars positioned absolutely */}
+      <td style={{ 
+        position: 'absolute', 
+        left: 0, 
+        right: 0, 
+        height: `${rowHeight}px`, 
+        padding: 0, 
+        border: 0,
+        pointerEvents: 'none'
+      }}>
+        <div style={{ 
+          position: 'relative', 
+          width: totalSubHeaders * cellWidth + 'px', 
+          height: `${rowHeight}px`,
+          pointerEvents: 'auto'
+        }}>
           {tasks.map((task: any, taskIdx: number) => {
             const taskStart = new Date(task.start * 1000);
             taskStart.setSeconds(0, 0);
@@ -130,10 +166,9 @@ const VirtualRow = React.memo(({
             const startSlots = taskStartOffset / slotDuration;
             const durationSlots = taskDuration / slotDuration;
 
-            const left = (zoom==='day' && shiftFactor>0)?startSlots * cellWidth + shiftFactor :  startSlots * cellWidth;
+            const left = (zoom==='day' && shiftFactor>0) ? startSlots * cellWidth + shiftFactor : startSlots * cellWidth;
             const width = durationSlots * cellWidth;
             
-            // Culling: Skip tasks outside visible area
             const taskEndPos = left + width;
             const viewportStart = visibleColRange.start * cellWidth;
             const viewportEnd = visibleColRange.end * cellWidth;
@@ -142,7 +177,6 @@ const VirtualRow = React.memo(({
               return null;
             }
 
-            // Skip very small tasks (< 2px)
             if (width < 2) {
               return null;
             }
@@ -179,7 +213,10 @@ const VirtualRow = React.memo(({
     prevProps.tasks === nextProps.tasks &&
     prevProps.visibleColRange.start === nextProps.visibleColRange.start &&
     prevProps.visibleColRange.end === nextProps.visibleColRange.end &&
-    prevProps.zoom === nextProps.zoom
+    prevProps.zoom === nextProps.zoom &&
+    prevProps.leftPadding === nextProps.leftPadding &&
+    prevProps.rightPadding === nextProps.rightPadding &&
+    JSON.stringify(prevProps.visibleColumnIndices) === JSON.stringify(nextProps.visibleColumnIndices)
   );
 });
 
@@ -189,7 +226,7 @@ const MyChart: React.FC<MyChartProps> = ({
   TaskData,
   colors,
   primary_key,
-  Slot, // Dynamic shift configuration
+  Slot,
   CustomTaskBar,
   CustomTooltip,
   height = 380,
@@ -215,9 +252,7 @@ const MyChart: React.FC<MyChartProps> = ({
     const totalMinutesFromMidnight = hours * 60 + minutes;
     
     const totalPixelsPerDay = numberOfSlots * 100;
-
     const pixelsPerMinute = totalPixelsPerDay / (24 * 60);
-
     const offsetFromMidnight = totalMinutesFromMidnight * pixelsPerMinute;
 
     const shiftInPixels = totalPixelsPerDay - offsetFromMidnight;
@@ -227,9 +262,6 @@ const MyChart: React.FC<MyChartProps> = ({
 
   const shiftFactor = Slot ? Slot[0]['1']!== '00:00 AM' ? calculateShiftInPixels(Slot[0]['1'].split(' ')[0], Slot.length) : 0 : 0;
 
-  console.log("Shift Factor:", shiftFactor);
-
-  // Parse and validate shift configuration
   const shiftConfig = useMemo(() => {
     if (!Slot || zoom !== "day") return null;
     
@@ -237,13 +269,10 @@ const MyChart: React.FC<MyChartProps> = ({
       const key = Object.keys(slotObj)[0];
       const timeStr = slotObj[key];
       
-      // Parse time string (e.g., "07:00 AM" or "15:00")
       let parsed;
       try {
-        // Try parsing with AM/PM first
         parsed = parse(timeStr, "hh:mm a", new Date());
         if (isNaN(parsed.getTime())) {
-          // Try 24-hour format
           parsed = parse(timeStr, "HH:mm", new Date());
         }
       } catch {
@@ -258,15 +287,12 @@ const MyChart: React.FC<MyChartProps> = ({
         label: timeStr,
         startHour: hours,
         startMinute: minutes,
-        startOffsetMs: (hours * 60 + minutes) * 60 * 1000, // milliseconds from 00:00
+        startOffsetMs: (hours * 60 + minutes) * 60 * 1000,
       };
     });
     
-    // Sort shifts by start time
     shifts.sort((a, b) => a.startOffsetMs - b.startOffsetMs);
     
-    // Calculate duration for each shift
-    // Total duration = 24 hours, distributed across all shifts
     const oneDayMs = 24 * 60 * 60 * 1000;
     
     return shifts.map((shift, idx) => {
@@ -274,10 +300,8 @@ const MyChart: React.FC<MyChartProps> = ({
       let durationMs;
       
       if (idx === shifts.length - 1) {
-        // Last shift: wraps to first shift of next day
         durationMs = oneDayMs - shift.startOffsetMs + nextShift.startOffsetMs;
       } else {
-        // Duration until next shift
         durationMs = nextShift.startOffsetMs - shift.startOffsetMs;
       }
       
@@ -289,11 +313,10 @@ const MyChart: React.FC<MyChartProps> = ({
     });
   }, [Slot, zoom]);
 
-  // Number of shifts per day (dynamic based on Slot prop)
   const shiftsPerDay = useMemo(() => {
-    if (zoom === "week") return 7; // 7 days in week view
+    if (zoom === "week") return 7;
     if (shiftConfig) return shiftConfig.length;
-    return 3; // Default 3 shifts if no Slot prop
+    return 3;
   }, [zoom, shiftConfig]);
 
   const handleResize = (index: number, e: React.MouseEvent) => {
@@ -330,11 +353,10 @@ const MyChart: React.FC<MyChartProps> = ({
   const formatTo12Hour = (time24: string) => {
     const [hours, minutes] = time24.split(":").map(Number);
     const period = hours >= 12 ? "PM" : "AM";
-    const hours12 = hours % 12 || 12; // Convert 0 to 12 for midnight
+    const hours12 = hours % 12 || 12;
     return `${hours12}:${minutes.toString().padStart(2, "0")} ${period}`;
   };
 
-  // Generate calendar headers with dynamic shifts
   const getCalendarHeaderDateObject = () => {
     if (zoom === "week") {
       const weeks = eachWeekOfInterval(
@@ -351,18 +373,15 @@ const MyChart: React.FC<MyChartProps> = ({
         };
       });
     } else {
-      // Day view with dynamic shifts
       const days = eachDayOfInterval({ start: startDate, end: endDate });
       
       if (shiftConfig) {
-        // Use dynamic shift configuration
         return days.map((day) => ({
           label: format(day, "EEEE, d MMMM yyyy"),
           subHeaders: shiftConfig.map(shift => `Shift ${shift.id} *Starts at ${formatTo12Hour(shift.label.split(' ')[0])}`),
           date: day,
         }));
       } else {
-        // Default: 3 shifts
         return days.map((day) => ({
           label: format(day, "EEEE, d MMMM yyyy"),
           subHeaders: ["Shift 1", "Shift 2", "Shift 3"],
@@ -506,10 +525,8 @@ const MyChart: React.FC<MyChartProps> = ({
     };
   }, [handleVirtualScroll]);
 
-  // Optimized task indexing with dynamic slot duration
   const tasksByRow = useMemo(() => {
     const map = new Map<any, any[]>();
-    // Slot duration is now 24 hours divided by number of shifts
     const slotDuration = zoom === "week" 
       ? 24 * 60 * 60 * 1000 
       : (24 * 60 * 60 * 1000) / shiftsPerDay;
@@ -549,6 +566,54 @@ const MyChart: React.FC<MyChartProps> = ({
   const visibleRows = useMemo(() => {
     return RowData.slice(visibleRowRange.start, visibleRowRange.end);
   }, [RowData, visibleRowRange]);
+
+  // Generate visible column indices for virtualization
+  const visibleColumnIndices = useMemo(() => {
+    const indices = [];
+    for (let i = visibleColRange.start; i < visibleColRange.end; i++) {
+      indices.push(i);
+    }
+    return indices;
+  }, [visibleColRange]);
+
+  // Calculate padding for virtualized columns
+  const leftPadding = visibleColRange.start * cellWidth;
+  const rightPadding = (totalSubHeaders - visibleColRange.end) * cellWidth;
+
+  // Flatten calendar headers for virtualization
+  const flattenedHeaders = useMemo(() => {
+    const result: Array<{headerIdx: number, subIdx: number, header: any, sub: any}> = [];
+    calendarHeaders.forEach((header, headerIdx) => {
+      header.subHeaders.forEach((sub, subIdx) => {
+        result.push({ headerIdx, subIdx, header, sub });
+      });
+    });
+    return result;
+  }, [calendarHeaders]);
+
+  // Get visible headers for top row
+  const visibleTopHeaders = useMemo(() => {
+    const result: Array<{header: any, startIdx: number, span: number}> = [];
+    let currentIdx = 0;
+    
+    calendarHeaders.forEach((header) => {
+      const headerStart = currentIdx;
+      const headerEnd = currentIdx + header.subHeaders.length;
+      
+      // Check if header intersects with visible range
+      if (headerEnd > visibleColRange.start && headerStart < visibleColRange.end) {
+        const visibleStart = Math.max(headerStart, visibleColRange.start);
+        const visibleEnd = Math.min(headerEnd, visibleColRange.end);
+        const span = visibleEnd - visibleStart;
+        
+        result.push({ header, startIdx: visibleStart, span });
+      }
+      
+      currentIdx = headerEnd;
+    });
+    
+    return result;
+  }, [calendarHeaders, visibleColRange]);
 
   const ToolTipContent = useCallback((
     task: any,
@@ -597,7 +662,7 @@ const MyChart: React.FC<MyChartProps> = ({
         </TooltipRow>
       </TooltipWrapper>
     );
-  }, [primary_key, startDate]);
+  }, [primary_key, startDate, Attributes]);
 
   const totalHeight = RowData.length * rowHeight;
   const offsetTop = visibleRowRange.start * rowHeight;
@@ -609,9 +674,9 @@ const MyChart: React.FC<MyChartProps> = ({
           <ColumnHeaderWrapper>
             <ColumnTable>
               <thead>
-                <ColumnHeaderRow style={{height: '54px'}}>
+                <ColumnHeaderRow style={{height: '50px'}}>
                   {ColDef.map((col, index) => (
-                    <HeaderCell style={{borderBottom: '1px solid #cecece', height: '57px'}} key={index} width={colWidths[index]}>
+                    <HeaderCell style={{borderBottom: '1px solid #cecece', height: '50px'}} key={index} width={colWidths[index]}>
                       {col.title}
                       <ResizeHandle onMouseDown={(e) => handleResize(index, e)} />
                     </HeaderCell>
@@ -646,66 +711,110 @@ const MyChart: React.FC<MyChartProps> = ({
 
         <CalendarSection>
           <CalendarHeaderWrapper ref={rightHeaderRef}>
-                <CalendarHeaderRowTop>
-                  {
-                    shiftFactor>0 && zoom==='day' &&
-
-                    <CalendarCell style={{minWidth: shiftFactor+'px', width:shiftFactor+'px'}} >
-
-                  </CalendarCell>
-                  }
-                  {calendarHeaders.map((header: any, idx: any) => {
-                    if(zoom==='day'){
-                    return (
-
-                      
-                      <CalendarCell style={{minWidth:Slot? 100*Slot.length+'px': 300+'px', width: Slot? 100*Slot.length+'px': 300+'px'}} key={idx} >
-                      {header.label}
-                      </CalendarCell>
-                      
-                    )
-                  }
-                    else{
-                      return (
-                        <CalendarCell style={{minWidth: '700px', width:  '700px'}} key={idx} >
-                        {header.label}
-                        </CalendarCell>
-                      )
-                    }
-
-                  }
-                  )}
-                </CalendarHeaderRowTop>
-            <CalendarTable>
-              <thead>
-                <CalendarHeaderRow>
-                  {calendarHeaders.flatMap((header: any, idx: any) =>
-                    header.subHeaders.map((sub: any, subIdx: any) => (
-                      <CalendarCell key={`${idx}-${subIdx}`}>
-                        {
-                          (zoom === "day") ?
-                      <Tooltip
-                      content={<div style={{padding: '8px',color: '#cecece', fontSize: '0.9rem', border: '0.5px solid #cecece', borderRadius: '4px'}}>
-                        {sub.split('*')[1]}
-                      </div>
-                      }
-                      key={`${idx}-${subIdx}`}
-                      >
-                        {sub.split('*')[0]}
-                      </Tooltip>
-                      :
-                      sub
-                    }
-                        </CalendarCell>
-                    ))
-                  )}
-                </CalendarHeaderRow>
-              </thead>
-            </CalendarTable>
+            {/* Top header row with day/week labels */}
+            <div style={{ 
+              position: 'relative', 
+              width: `${totalSubHeaders * cellWidth + (zoom === 'day' && shiftFactor > 0 ? shiftFactor : 0)}px`,
+              height: '50px',
+              background: 'black'
+            }}>
+              {/* Shift factor padding */}
+              {shiftFactor > 0 && zoom === 'day' && (
+                <CalendarCellTop style={{
+                  position: 'absolute',
+                  left: 0,
+                  top: 0,
+                  minWidth: `${shiftFactor}px`,
+                  width: `${shiftFactor}px`,
+                  height: '25px'
+                }} />
+              )}
+              
+              {/* Visible top headers */}
+              {visibleTopHeaders.map((item, idx) => {
+                const leftPos = (zoom === 'day' && shiftFactor > 0 ? shiftFactor : 0) + 
+                               (item.startIdx * cellWidth);
+                const width = item.span * cellWidth;
+                
+                return (
+                  <CalendarCellTop 
+                    key={idx}
+                    style={{
+                      position: 'absolute',
+                      left: `${leftPos}px`,
+                      top: 0,
+                      minWidth: `${width}px`,
+                      width: `${width}px`,
+                      height: '25px'
+                    }}
+                  >
+                    {item.header.label}
+                  </CalendarCellTop>
+                );
+              })}
+              
+              {/* Sub-header row */}
+              <div style={{ position: 'absolute', top: '25px', left: 0, width: '100%', height: '25px' }}>
+                {shiftFactor > 0 && zoom === 'day' && (
+                  <CalendarCell style={{
+                    position: 'absolute',
+                    left: 0,
+                    top: 0,
+                    minWidth: `${shiftFactor}px`,
+                    width: `${shiftFactor}px`,
+                    height: '25px'
+                  }} />
+                )}
+                
+                {visibleColumnIndices.map((colIdx) => {
+                  const item = flattenedHeaders[colIdx];
+                  if (!item) return null;
+                  
+                  const leftPos = (zoom === 'day' && shiftFactor > 0 ? shiftFactor : 0) + 
+                                 (colIdx * cellWidth);
+                  
+                  return (
+                    <CalendarCell 
+                      key={colIdx}
+                      style={{
+                        position: 'absolute',
+                        left: `${leftPos}px`,
+                        top: 0,
+                        minWidth: `${cellWidth}px`,
+                        width: `${cellWidth}px`,
+                        height: '25px'
+                      }}
+                    >
+                      {zoom === "day" ? (
+                        <Tooltip
+                          content={
+                            <div style={{
+                              padding: '8px',
+                              color: '#cecece',
+                              fontSize: '0.9rem',
+                              border: '0.5px solid #cecece',
+                              borderRadius: '4px'
+                            }}>
+                              {item.sub.split('*')[1]}
+                            </div>
+                          }
+                        >
+                          {item.sub.split('*')[0]}
+                        </Tooltip>
+                      ) : (
+                        item.sub
+                      )}
+                    </CalendarCell>
+                  );
+                })}
+              </div>
+            </div>
           </CalendarHeaderWrapper>
           
           <CalendarBodyWrapper ref={rightBodyRef}>
-            <CalendarTable>
+            <CalendarTable style={{ 
+              width: `${totalSubHeaders * cellWidth + (zoom === 'day' && shiftFactor > 0 ? shiftFactor : 0)}px` 
+            }}>
               <tbody>
                 <tr style={{ height: `${offsetTop}px` }}></tr>
                 
@@ -722,7 +831,7 @@ const MyChart: React.FC<MyChartProps> = ({
                       colDef={ColDef}
                       colWidths={colWidths}
                       tasks={rowTasks}
-                      calendarHeaders={calendarHeaders}
+                      visibleColumnIndices={visibleColumnIndices}
                       totalSubHeaders={totalSubHeaders}
                       cellWidth={cellWidth}
                       zoom={zoom}
@@ -736,6 +845,8 @@ const MyChart: React.FC<MyChartProps> = ({
                       shiftsPerDay={shiftsPerDay}
                       shiftFactor={shiftFactor}
                       Attributes={Attributes}
+                      leftPadding={leftPadding}
+                      rightPadding={rightPadding}
                     />
                   );
                 })}
