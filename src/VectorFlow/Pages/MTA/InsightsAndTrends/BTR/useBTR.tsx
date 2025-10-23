@@ -87,7 +87,8 @@ const useBTR = () => {
 
     const [currentPageTech, setCurrentPageTech] = useState<number>(1);
     const [currentPageEco, setCurrentPageEco] = useState<number>(1);
-    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [currentPageTechForBoth, setCurrentPageTechForBoth] = useState<number>(1);
+    const [currentPageEcoForBoth, setCurrentPageEcoForBoth] = useState<number>(1);
 
     const [isLockMode, toggleLockMode] = useState<boolean>(false)
 
@@ -101,6 +102,8 @@ const useBTR = () => {
 
     const [userPageSizeTech , setUserPageSizeTech]  = useState<number>(BTR_ROWS_PER_PAGE?parseInt(BTR_ROWS_PER_PAGE):50) 
     const [userPageSizeEco , setUserPageSizeEco]  = useState<number>(BTR_ROWS_PER_PAGE?parseInt(BTR_ROWS_PER_PAGE):50) 
+    const [userPageSizeTechForBoth , setuserPageSizeTechForBoth]  = useState<number>(BTR_ROWS_PER_PAGE?parseInt(BTR_ROWS_PER_PAGE):50) 
+    const [userPageSizeEcoForBoth , setUserPageSizeEcoBoth]  = useState<number>(BTR_ROWS_PER_PAGE?parseInt(BTR_ROWS_PER_PAGE):50) 
 
     const { mutateAsync: getBTRData, isLoading } = useGetBTRData()
 
@@ -134,6 +137,7 @@ const useBTR = () => {
     const [ecoMasterUIConfig, setEcoMasterUIConfig] = useState<any>([]);
     const [isDisabled, setIsDisabled]= useState<boolean>(true)
 
+    const RowsPerPageCurrTab = currentTab?.value === "on-hand"?userPageSizeTech:currentTab?.value === "pipeline"?userPageSizeEco:rowsPerPage 
     const savePageSizeTech = async( pageSize:number)=>{
         setUserPageSizeTech(pageSize)
         await getDataTech(currFilter , currentPageTech,pageSize)
@@ -173,6 +177,30 @@ const useBTR = () => {
         userPageSize:userPageSizeEco,
         savePageSize:savePageSizeEco
 
+    }
+    const techPaginationPropsForBoth: VFPaginationProps = {
+        selectedRows: 0,
+        totalRows: techTotalRows,
+        rowsPerPage: userPageSizeTechForBoth,
+        currentPage: currentPageTechForBoth,
+        handleChangePage: (currPage: number) => {
+            getDataTech(getPreparedFilter(currFilter), currPage)
+            setCurrentPageTechForBoth(currPage)
+        },
+
+    }
+    const ecoPaginationPropsForBoth: VFPaginationProps = {
+        selectedRows: 0,
+        totalRows: ecoTotalRows,
+        rowsPerPage: userPageSizeEcoForBoth,
+        currentPage: currentPageEcoForBoth,
+        handleChangePage: (currPage: number) => {
+            getDataEco(getPreparedFilter(currFilter), currPage);
+            setCurrentPageEcoForBoth(currPage)
+        },
+        customPageSizeEnabled:true,
+        userPageSize:userPageSizeEco,
+        savePageSize:savePageSizeEco
     }
 
     const defaultColDef = {
@@ -348,7 +376,7 @@ const useBTR = () => {
             filters: filter,
             paginationParameter: {
                 pageNumber: pageNumber,
-                recordsPerPage: rowsPerPage
+                recordsPerPage: RowsPerPageCurrTab
             },
             ISExport:"0"
         }
@@ -407,9 +435,9 @@ const useBTR = () => {
         setCurrFilter(filter)
         setCurrentPageTech(1)
         setCurrentPageEco(1)
-        setCurrentPage(1)
+        setCurrentPageTechForBoth(1)
+        setCurrentPageEcoForBoth(1)
         const tempFilter = getPreparedFilter(filter)
-        const RowsPerPageCurrTab = currentTab?.value === "on-hand"?userPageSizeTech:currentTab?.value === "pipeline"?userPageSizeEco:rowsPerPage
         const payload = {
             id: 0,
             name: '',
@@ -708,12 +736,12 @@ const useBTR = () => {
                                 columnDefs: techColDefs,
                                 rowData: techRowData,
                                 header: "On-Hand Inventory View Trend Report",
-                                paginationProps: techPaginationProps,
+                                paginationProps: techPaginationPropsForBoth,
                                 ...gridProps
                             }}
                             ecoTable={{
                                 columnDefs: ecoColDefs,
-                                paginationProps: ecoPaginationProps,
+                                paginationProps: ecoPaginationPropsForBoth,
                                 rowData: ecoRowData,
                                 header: "Pipeline Inventory Trend Report",
                                 ...gridProps
@@ -731,14 +759,14 @@ const useBTR = () => {
                                 columnDefs: techColDefs,
                                 rowData: techRowData,
                                 header: "On-Hand Inventory View Trend Report",
-                                paginationProps: techPaginationProps,
+                                paginationProps: techPaginationPropsForBoth,
                                 ...gridProps
                             }}
                             ecoTable={{
                                 columnDefs: ecoColDefs,
                                 rowData: ecoRowData,
                                 header: "Pipeline Inventory Trend Report",
-                                paginationProps: ecoPaginationProps,
+                                paginationProps: ecoPaginationPropsForBoth,
                                 ...gridProps
                             }}
                             isLocked={isLockMode}
