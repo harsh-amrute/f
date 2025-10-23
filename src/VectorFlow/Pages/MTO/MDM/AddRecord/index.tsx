@@ -291,8 +291,6 @@ const MTOAddRecord = () => {
           <VFTaskBar
           showSubmittedExportError={errorCount>0}
             enableEditOnlineReset={false}
-            disableResumeSeasonality={()=>false}
-            disableStopSeasonality={()=>false}
             masterProgress={activeMaster.progress}
             onReset={onReset}
             onSaveToDraft={onSaveToDraft}
@@ -306,8 +304,6 @@ const MTOAddRecord = () => {
             onSubmit={onSubmit}
             onDeleteSelected={deleteSelected}
             onPhaseInPhaseOutStop={()=>console.log('')}
-            onSeasonalityResume={()=>console.log('')}
-            onSeasonalityStop={()=>console.log('')}
             onDeleteData={()=>console.log('')}
             onDeleteOnline={()=>console.log('')}
             onDeleteOnlineReset={()=>console.log('')}

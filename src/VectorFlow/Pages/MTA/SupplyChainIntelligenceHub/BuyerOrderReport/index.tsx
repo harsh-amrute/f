@@ -145,7 +145,9 @@ const BuyerOrderReport = ()=>{
                   }}
       
                   />
-                <VFPagination
+              {
+              rowData?.length &&  
+              <VFPagination
                   selectedRows={0}
                   totalRows={recordCount}
                   currentPage={currentPage}
@@ -154,6 +156,7 @@ const BuyerOrderReport = ()=>{
                   resetGridRef={ref} 
                   isDisabled={isDisabled} 
                   />
+                }
 
                 <VFSaveRemark onSubmitRemarks={onSubmitRemarks}/>
 

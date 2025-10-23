@@ -4,7 +4,7 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 import { createReducer } from '@reduxjs/toolkit';
 import {type Option, type MDMMasterState, type MDMStore, type Filter} from '../../../VectorFlow/types/MDM'; 
 import { generateRandomId } from '../../../helpers/utils';
-import {FILL_MASTERS, FILL_SELECTED_OPTIONS, REMOVE_MASTER, FILTER_MASTER, ADD_MASTER, FILL_OPTIONS, UPDATE_ACTIVE_MASTER, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_COLDEFS, STORE_ALL_MASTERS, ADD_FILTER, REMOVE_FILTER, UPDATE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, RESET_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, MODIFY_ROW_DATA,SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS, SET_RECORD_COUNT, UPDATE_DATA_AVAILABILITY_STATUS, RESET_FILTERS,UPDATE_MASTER_CHECKED_STATUS, UPDATE_IS_SAVING_DRAFT} from '../../actions/MDM';
+import {FILL_MASTERS, FILL_SELECTED_OPTIONS, REMOVE_MASTER, FILTER_MASTER, ADD_MASTER, FILL_OPTIONS, UPDATE_ACTIVE_MASTER, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_COLDEFS, STORE_ALL_MASTERS, ADD_FILTER, REMOVE_FILTER, UPDATE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, RESET_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, MODIFY_ROW_DATA,SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS, SET_RECORD_COUNT, UPDATE_DATA_AVAILABILITY_STATUS, RESET_FILTERS,UPDATE_MASTER_CHECKED_STATUS, UPDATE_IS_SAVING_DRAFT, UPDATE_FILTER_VALUE} from '../../actions/MDM';
 import { ColDef } from 'ag-grid-enterprise';
 
 
@@ -130,7 +130,19 @@ const setMasters = (state:any,action:PayloadAction<MDMMasterState[]>|PayloadActi
 
         case UPDATE_PROGRESS_STATE.type:
             state.activeMaster = {...state.activeMaster, progress:action.payload};
-            break;    
+            break;
+        case UPDATE_FILTER_VALUE.type:
+            state.activeMaster.filters = state.activeMaster.filters.map((filter: Filter) => {
+                if (filter.id === action.payload.filterId) {
+                    if (action.payload.property === "field") {
+                        return { ...filter, [action.payload.property]: action.payload.value, operator: "", text: "" }
+                    } else {
+                        return { ...filter, [action.payload.property]: action.payload.value }
+                    }
+                }
+                return filter;
+            });
+            break;
         default:
             return
     }
@@ -233,6 +245,7 @@ const mdmReducer = (initialState:MDMStore) => createReducer(initialState, (build
       .addCase(SET_RECORD_COUNT,setRecordCount)
       .addCase(UPDATE_DATA_AVAILABILITY_STATUS,setIsDataAvailableLocally)
       .addCase(UPDATE_MASTER_CHECKED_STATUS,setMasterCheckedStatus)
+      .addCase(UPDATE_FILTER_VALUE,setMasters)
   })
 
 export default mdmReducer;

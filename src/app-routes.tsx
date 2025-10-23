@@ -93,18 +93,16 @@ import FutureOrderLoadChart from './VectorFlow/Pages/MTO/Production/InsightsAndT
 import ManagePermissions from './components/VectorFLOW/layouts/VectorAdmin/ManagePermissions'
 import ManageUIReportConfig from './components/VectorFLOW/layouts/VectorAdmin/ManageUIReportConfig'
 import ManageUIMDMConfig from './components/VectorFLOW/layouts/VectorAdmin/ManageUIMDMConfig'
+import { useUser } from './UserDataContext'
 
 // to show loading state for desired page only instead of the entire screen
-const lazyLoad = (children: React.ReactNode) => {
+const lazyLoad = (children?: React.ReactNode, userData?:any) => {
   const search = window.location.search
   const params = new URLSearchParams(search)
   let lang = params.get('hl') || 'en'
   const langs = ['en', 'ja', 'es']
   if (lang && !langs.includes(lang)) lang = 'en'
-  const { i18n } = useTranslation()
-  useEffect(() => {
-    i18n.changeLanguage(lang)
-  }, [])
+
   const authenPage = [
     '/login',
     '/forgot-password',
@@ -236,8 +234,8 @@ const lazyLoad = (children: React.ReactNode) => {
     "/scheduling"
   
   ]
-  const urlPermissionStr: any = localStorage.getItem('url_permission')
-  const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
+
+  const urlPermissionArr:any =  userData?.url_permission??[];
 
   const newUrlPermiss = [...authenPage, ...urlPermissionArr]
 
@@ -260,16 +258,17 @@ const lazyLoad = (children: React.ReactNode) => {
 }
 
 export const initRoutes = (): RouteObject[] => {
+  const { userData } = useUser();
   const routes: RouteObject[] = []
 
-  routes.push({ path: '/login', element: lazyLoad(<Login />) })
+  routes.push({ path: '/login', element: lazyLoad(<Login />,userData) })
   routes.push({
     path: '/forgot-password',
-    element: lazyLoad(<ForgotPassword />)
+    element: lazyLoad(<ForgotPassword />,userData)
   })
   routes.push({
     path: '/change-password',
-    element: lazyLoad(<ChangePassword />)
+    element: lazyLoad(<ChangePassword />,userData)
   })
 
   return [
@@ -282,7 +281,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<LandingPage/>)
+          element: lazyLoad(<LandingPage/>,userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -293,7 +292,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<ManualUpload />)
+          element: lazyLoad(<ManualUpload />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -304,7 +303,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<IstForced />)
+          element: lazyLoad(<IstForced />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -315,7 +314,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<StoreStatus />)
+          element: lazyLoad(<StoreStatus />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -326,7 +325,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<Availability />)
+          element: lazyLoad(<Availability />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -337,7 +336,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<IstStatus />)
+          element: lazyLoad(<IstStatus />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -348,7 +347,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<Profile />)
+          element: lazyLoad(<Profile />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -359,7 +358,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<BulkUploadPage />)
+          element: lazyLoad(<BulkUploadPage />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -370,12 +369,12 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<ControlPanel />)
+          element: lazyLoad(<ControlPanel />, userData)
         },
         {
           index: true,
           path: 'view-modify',
-          element: lazyLoad(<ViewModify />)
+          element: lazyLoad(<ViewModify />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -386,7 +385,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<SavedDrafts />)
+          element: lazyLoad(<SavedDrafts />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -397,7 +396,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<TaskStatus />)
+          element: lazyLoad(<TaskStatus />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -408,7 +407,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<TaskPendingForReview />)
+          element: lazyLoad(<TaskPendingForReview />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -419,7 +418,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<AddRecord />)
+          element: lazyLoad(<AddRecord />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -430,7 +429,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<DeleteRecord />)
+          element: lazyLoad(<DeleteRecord />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -441,7 +440,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<DataModificationHistory />)
+          element: lazyLoad(<DataModificationHistory />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -454,12 +453,12 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<MTOControlPanel/>)
+          element: lazyLoad(<MTOControlPanel/>, userData)
         },
         {
           index: true,
           path: 'view-modify',
-          element: lazyLoad(<MTOViewModify />)
+          element: lazyLoad(<MTOViewModify />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -470,7 +469,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<MTOSavedDrafts />)
+          element: lazyLoad(<MTOSavedDrafts />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -481,7 +480,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<MTOTaskStatus />)
+          element: lazyLoad(<MTOTaskStatus />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -492,7 +491,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<MTOTaskPendingForReview />)
+          element: lazyLoad(<MTOTaskPendingForReview />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -503,7 +502,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<MTOAddRecord />)
+          element: lazyLoad(<MTOAddRecord />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -514,7 +513,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<MTODataModificationHistory />)
+          element: lazyLoad(<MTODataModificationHistory />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -530,12 +529,12 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<MastersInterceptor key="master-data-management/control-panel" url={"/master-data-management/control-panel"}/>)
+          element: lazyLoad(<MastersInterceptor key="master-data-management/control-panel" url={"/master-data-management/control-panel"}/>, userData)
         },
         {
           index: true,
           path: 'view-modify',
-          element: lazyLoad(<MTOViewModify />)
+          element: lazyLoad(<MTOViewModify />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -546,7 +545,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<MastersInterceptor key="master-data-management/saved-drafts" url={'/master-data-management/saved-drafts'} />)
+          element: lazyLoad(<MastersInterceptor key="master-data-management/saved-drafts" url={'/master-data-management/saved-drafts'} />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -557,7 +556,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<MastersInterceptor key="master-data-management/task-status" url={"/master-data-management/task-status"} />)
+          element: lazyLoad(<MastersInterceptor key="master-data-management/task-status" url={"/master-data-management/task-status"} />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -568,7 +567,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<MastersInterceptor key="master-data-management/task-pending" url={'/master-data-management/task-pending'} />)
+          element: lazyLoad(<MastersInterceptor key="master-data-management/task-pending" url={'/master-data-management/task-pending'} />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -579,7 +578,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<MTOAddRecord />)
+          element: lazyLoad(<MTOAddRecord />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -590,7 +589,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<MastersInterceptor key="master-data-management/data-modification-history" url={'/master-data-management/data-modification-history'} />)
+          element: lazyLoad(<MastersInterceptor key="master-data-management/data-modification-history" url={'/master-data-management/data-modification-history'} />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -605,7 +604,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<Planning />)
+          element: lazyLoad(<Planning />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -616,7 +615,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<Planning />)
+          element: lazyLoad(<Planning />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -627,7 +626,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<BPR />)
+          element: lazyLoad(<BPR />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -638,7 +637,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<OpenExpeditingRequests />)
+          element: lazyLoad(<OpenExpeditingRequests />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -649,7 +648,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<MCGrid />)
+          element: lazyLoad(<MCGrid />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -660,7 +659,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<InTransitWhereAbouts />)
+          element: lazyLoad(<InTransitWhereAbouts />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -671,7 +670,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<PageNotFound />)
+          element: lazyLoad(<PageNotFound />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -682,7 +681,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<PageForbidden />)
+          element: lazyLoad(<PageForbidden />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -693,7 +692,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<BuyerOrderReport />)
+          element: lazyLoad(<BuyerOrderReport />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -704,7 +703,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<ResearchInsights />)
+          element: lazyLoad(<ResearchInsights />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -715,7 +714,7 @@ export const initRoutes = (): RouteObject[] => {
       children:[
         {
         index:true,
-        element:lazyLoad(<RRRColorBandwise/>)
+        element:lazyLoad(<RRRColorBandwise/>, userData)
         } ,
         ...getStoreTransferModuleRoutes()
       ]
@@ -726,7 +725,7 @@ export const initRoutes = (): RouteObject[] => {
       children:[
         {
         index:true,
-        element:lazyLoad(<BuyerOrderReportColorBandwise/>)
+        element:lazyLoad(<BuyerOrderReportColorBandwise/>, userData)
         } ,
         ...getStoreTransferModuleRoutes()
       ]
@@ -737,7 +736,7 @@ export const initRoutes = (): RouteObject[] => {
       children:[
         {
         index:true,
-        element:lazyLoad(<SupplierWiseAllocation/>)
+        element:lazyLoad(<SupplierWiseAllocation/>, userData)
         } ,
         ...getStoreTransferModuleRoutes()
       ]
@@ -748,7 +747,7 @@ export const initRoutes = (): RouteObject[] => {
       children:[
         {
         index:true,
-        element:lazyLoad(<OrderAllocationReport/>)
+        element:lazyLoad(<OrderAllocationReport/>, userData)
         } ,
         ...getStoreTransferModuleRoutes()
       ]
@@ -759,7 +758,7 @@ export const initRoutes = (): RouteObject[] => {
       children:[
         {
         index:true,
-        element:lazyLoad(<TotalRequirementReport/>)
+        element:lazyLoad(<TotalRequirementReport/>, userData)
         } ,
         ...getStoreTransferModuleRoutes()
       ]
@@ -770,7 +769,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<GuidedInsights />)
+          element: lazyLoad(<GuidedInsights />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -781,7 +780,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<BufferTrendReport />)
+          element: lazyLoad(<BufferTrendReport />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -792,7 +791,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<RRR />)
+          element: lazyLoad(<RRR />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -803,7 +802,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<BufferTrends />)
+          element: lazyLoad(<BufferTrends />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -814,7 +813,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<DBM />)
+          element: lazyLoad(<DBM />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -825,7 +824,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<EnquiryResponse />)
+          element: lazyLoad(<EnquiryResponse />,userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -836,7 +835,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<BMTrends />)
+          element: lazyLoad(<BMTrends />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -861,7 +860,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<STPLAndFullKits />)
+          element: lazyLoad(<STPLAndFullKits />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -872,7 +871,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<OrderAtRisk />)
+          element: lazyLoad(<OrderAtRisk />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -883,7 +882,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<OrderBalance />)
+          element: lazyLoad(<OrderBalance />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -894,7 +893,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<DBM />)
+          element: lazyLoad(<DBM />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -905,7 +904,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<MaterialCov />)
+          element: lazyLoad(<MaterialCov />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -916,7 +915,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<ProcurementPlanning />)
+          element: lazyLoad(<ProcurementPlanning />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -927,7 +926,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<SimulateFullKit />)
+          element: lazyLoad(<SimulateFullKit />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -938,7 +937,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<DayWiseCoverage />)
+          element: lazyLoad(<DayWiseCoverage />, userData)
 
         },
         ...getStoreTransferModuleRoutes()
@@ -950,7 +949,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<RMPMOrderwiseCoverage />)
+          element: lazyLoad(<RMPMOrderwiseCoverage />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -961,7 +960,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<MaterialRequirement />)
+          element: lazyLoad(<MaterialRequirement />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -973,7 +972,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<FullKitAssignment />)
+          element: lazyLoad(<FullKitAssignment />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -984,7 +983,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<RMPMBufferTrends />)
+          element: lazyLoad(<RMPMBufferTrends />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -995,7 +994,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<DptWiseBMReport />)
+          element: lazyLoad(<DptWiseBMReport />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -1006,7 +1005,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<RMExpeditionSuppliers />)
+          element: lazyLoad(<RMExpeditionSuppliers />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -1017,7 +1016,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<SupplierDispatchReport />)
+          element: lazyLoad(<SupplierDispatchReport />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -1028,7 +1027,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<ElephantOrder />)
+          element: lazyLoad(<ElephantOrder />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -1040,7 +1039,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<OrderRescheduling />)
+          element: lazyLoad(<OrderRescheduling />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -1051,7 +1050,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<ResourceUtilization />)
+          element: lazyLoad(<ResourceUtilization />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -1062,7 +1061,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<OTIFAnalysis />)
+          element: lazyLoad(<OTIFAnalysis />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -1073,7 +1072,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<FOLSummary />)
+          element: lazyLoad(<FOLSummary />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -1084,7 +1083,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<DynamicReleaseManagement />)
+          element: lazyLoad(<DynamicReleaseManagement />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -1095,7 +1094,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<ReasonForDelayOrder />)
+          element: lazyLoad(<ReasonForDelayOrder />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -1106,7 +1105,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<DueDateQuotation />)
+          element: lazyLoad(<DueDateQuotation />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -1117,7 +1116,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<ElapsedTime />)
+          element: lazyLoad(<ElapsedTime />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -1128,7 +1127,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<OTAndIFAnalysis />)
+          element: lazyLoad(<OTAndIFAnalysis />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -1139,7 +1138,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<TopFailureReasons />)
+          element: lazyLoad(<TopFailureReasons />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -1150,7 +1149,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<TrendsOfFailureReason />)
+          element: lazyLoad(<TrendsOfFailureReason />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -1161,7 +1160,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<LeadTime />)
+          element: lazyLoad(<LeadTime />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -1172,7 +1171,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<OverallBmReport />)
+          element: lazyLoad(<OverallBmReport />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -1183,7 +1182,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<BMTrends />)
+          element: lazyLoad(<BMTrends />, userData)
         }
       ]
     },
@@ -1193,7 +1192,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<OTIFAnalysis />)
+          element: lazyLoad(<OTIFAnalysis />, userData)
         }
       ]
     },
@@ -1213,7 +1212,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<OTAndIFAnalysis />)
+          element: lazyLoad(<OTAndIFAnalysis />, userData)
         }
       ]
     },
@@ -1223,7 +1222,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<LeadTime />)
+          element: lazyLoad(<LeadTime />, userData)
         }
       ]
     },
@@ -1233,7 +1232,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<ElapsedTime />)
+          element: lazyLoad(<ElapsedTime />, userData)
         }
       ]
     },
@@ -1243,7 +1242,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<OrderAtRisk />)
+          element: lazyLoad(<OrderAtRisk />, userData)
         }
       ]
     },
@@ -1253,7 +1252,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<OrderBalance />)
+          element: lazyLoad(<OrderBalance />, userData)
         }
       ]
     },
@@ -1263,7 +1262,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<FOLSummary />)
+          element: lazyLoad(<FOLSummary />, userData)
         }
       ]
     },
@@ -1273,7 +1272,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<STPLAndFullKits />)
+          element: lazyLoad(<STPLAndFullKits />, userData)
         }
       ]
     },
@@ -1283,7 +1282,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<DayWiseCoverage />)
+          element: lazyLoad(<DayWiseCoverage />, userData)
         }
       ]
     },
@@ -1293,7 +1292,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<RMPMOrderwiseCoverage />)
+          element: lazyLoad(<RMPMOrderwiseCoverage />, userData)
         }
       ]
     },
@@ -1303,7 +1302,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<RMExpeditionSuppliers />)
+          element: lazyLoad(<RMExpeditionSuppliers />, userData)
         }
       ]
     },
@@ -1313,7 +1312,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<RMPMBufferTrends />)
+          element: lazyLoad(<RMPMBufferTrends />, userData)
         }
       ]
     },
@@ -1323,7 +1322,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<TopFailureReasons />)
+          element: lazyLoad(<TopFailureReasons />, userData)
         }
       ]
     },
@@ -1333,7 +1332,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<TrendsOfFailureReason />)
+          element: lazyLoad(<TrendsOfFailureReason />, userData)
         }
       ]
     },
@@ -1343,7 +1342,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<ResourceUtilization />)
+          element: lazyLoad(<ResourceUtilization />, userData)
         }
       ]
     },
@@ -1353,7 +1352,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<Scheduling/>)
+          element: lazyLoad(<Scheduling/>, userData)
         }
       ]
     },
@@ -1363,7 +1362,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<LandingPage />)
+          element: lazyLoad(<LandingPage />, userData)
 
         }
       ]},

@@ -427,7 +427,7 @@ export const useSupplierWiseAllocation =()=>{
 
       const tempAgGridProps:AgGridReactProps = {
           onRowDataUpdated:(event)=>{
-            if(tempDownloadData) event?.api?.exportDataAsExcel({fileName:'BuyerOrderReport-ColorBandWise',columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
+            if(tempDownloadData) event?.api?.exportDataAsExcel({fileName:'SupplierWiseAllocationReport',columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
            }
         }
 

@@ -66,9 +66,10 @@ const ActionSelectModal = ({ redirectUrl }: any) => {
   const ref = useRef<{ appData: Array<{ text: string; icon: string; link: string }> }>({
     appData: []
   });
-  
-    const urlPermissionStr: any = localStorage.getItem('url_permission')
-    const urlPermissionArr = JSON?.parse(urlPermissionStr) || [];
+
+
+    const urlPermissionStr = user?.url_permission??[];
+    const urlPermissionArr = urlPermissionStr || [];
 
   const updateAppData = (theme: any) => {
     const allOptions = [

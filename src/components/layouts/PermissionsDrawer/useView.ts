@@ -78,7 +78,7 @@ const useView = (columnDefs?: any[]): UseViewProps => {
                 return;
             }
             else{
-            notifySuccess(`Submitted ${response?.data?.data?.inserted} inserted successfully`);
+            notifySuccess(`Inserted ${response?.data?.data?.inserted} row(s) successfully`);
             toggleUploadModal(false)
             setFile(undefined);
             }

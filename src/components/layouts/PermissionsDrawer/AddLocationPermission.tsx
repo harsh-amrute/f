@@ -59,7 +59,11 @@ const AddLocationPermission = (props: { cb: () => void }) => {
   const {mutateAsync : addLocationPermission} = useAddLocationPermissions();
   
   const errorLocationcolumn = getErrorLocationColumns(EnvConfig)
-
+  const headerNameMap: Record<string, string> = {};
+  locationColumns.forEach(col => {
+        headerNameMap[col.colId] = col.headerName;
+    });
+  const headersList = locationColumns?.filter(col => col.colId !== 'id').map(col => col.headerName);
   useEffect(() => {
     setIsLoading(false);
   }, []);
@@ -76,9 +80,15 @@ const AddLocationPermission = (props: { cb: () => void }) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const data = {permissionType : "Location" , data :[ {...formData } ]} as any;
+      const data = {permissionType : "Location" ,Headers: headersList, data :[ {...formData } ]} as any;
       const response = await addLocationPermission(data);
-      notifySuccess(response?.data?.data);
+      const responseData = response?.data?.data;
+      
+      if (responseData?.errorCount === 1) { 
+        notifyError(responseData?.errors[0]?.rowData?.error);
+      } else {
+        notifySuccess(`${responseData?.inserted} record inserted successfully`);
+      }
       cb();
     
     } catch (error) {

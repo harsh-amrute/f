@@ -119,4 +119,12 @@ export namespace DynamicReleaseManagementService {
             responseType : "blob"
         })
     }
+
+    export const FetchFOLGap = async (params: any) => {
+        return await axios.post(process.env.REACT_APP_VF_API_HOST_MTO + `/GetFOLBasedDueDate/`, params.body, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+    }
 }

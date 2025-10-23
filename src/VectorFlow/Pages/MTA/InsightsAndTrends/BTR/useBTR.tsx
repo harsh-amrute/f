@@ -62,18 +62,20 @@ const useBTR = () => {
     const tabs: Array<VFFloatingTabItemProps> = [
         {
             id: "1",
-            value: 'both',
-            label: "Both On-Hand & Pipeline View"
+              value: 'on-hand',
+            label: "On-Hand Inv. View"
+          
         },
         {
             id: "2",
-            value: 'on-hand',
-            label: "On-Hand Inv. View"
+             value: 'pipeline',
+            label: "Pipeline Inv. View"
+           
         },
         {
             id: "3",
-            value: 'pipeline',
-            label: "Pipeline Inv. View"
+             value: 'both',
+            label: "Both On-Hand & Pipeline View"
         }
     ]
 
@@ -134,7 +136,7 @@ const useBTR = () => {
         rowsPerPage: rowsPerPage,
         currentPage: currentPage,
         handleChangePage: (currPage: number) => {
-            getData(getPreparedFilter(currFilter), currPage);
+            getDataTech(getPreparedFilter(currFilter), currPage)
             setCurrentPage(currPage)
         }
 
@@ -146,7 +148,7 @@ const useBTR = () => {
         rowsPerPage: rowsPerPage,
         currentPage: currentPage,
         handleChangePage: (currPage: number) => {
-            getData(getPreparedFilter(currFilter), currPage);
+            getDataEco(getPreparedFilter(currFilter), currPage);
             setCurrentPage(currPage)
         }
 
@@ -215,17 +217,21 @@ const useBTR = () => {
     }
 
     const getUserColumnConfig = async () => {
-        if (currentTab.id === "2") {
+
+        if (currentTab.id === "1") {
             const stateData = await getState({ "reportname": UserUIColumnConfigName.BTROnHand });
+
+            
             if (stateData.data.data.length !== 0) {
                 const parsedContent = JSON.parse(stateData.data.data)
                 setTechGridState(parsedContent)
+                
             } else {
                 console.log("State Data not available for BTROnHand");
             }
         }
 
-        if (currentTab.id === "3") {
+        if (currentTab.id === "2") {
             const stateData = await getState({ "reportname": UserUIColumnConfigName.BTRPipeline });
             if (stateData.data.data.length !== 0) {
                 const parsedContent = JSON.parse(stateData.data.data)
@@ -239,14 +245,14 @@ const useBTR = () => {
     }
 
     const onResetCallback = async () => {
-        if (currentTab.id === "2") {
+        if (currentTab.id === "1") {
 
             setTechGridState({
                 charts: [],
                 columns: techMasterUIConfig,
                 pivot: false,
             })
-        } else if (currentTab.id === "3") {
+        } else if (currentTab.id === "2") {
 
             setEcoGridState({
                 charts: [],
@@ -255,6 +261,62 @@ const useBTR = () => {
             })
         }
         
+    }
+
+    const getDataTech = async (filter: any, pageNumber: number) => {
+        const payload = {
+            id: 0,
+            name: 'tech',
+            fields: [],
+            filters: filter,
+            paginationParameter: {
+                pageNumber: pageNumber,
+                recordsPerPage: rowsPerPage
+            },
+            ISExport:"0"
+        }
+        const loaderId = notifyLoader("Loading data")
+        try {
+            const data = await getBTRData(payload)
+            console.log("data Tech::",data) // to see the large btr data in console
+            setTechRowData(mapBTRRowData(data.data.data.tech, horizon))
+            setDateLabels(data.data.data.labels[0])
+        } catch (err: any) {
+            notifyError(err)
+            setTechRowData([])
+            setEcoRowData([])
+        } finally {
+            toast.dismiss(loaderId)
+        }
+
+    }
+
+    const getDataEco = async (filter: any, pageNumber: number) => {
+        
+        const payload = {
+            id: 0,
+            name: 'eco',
+            fields: [],
+            filters: filter,
+            paginationParameter: {
+                pageNumber: pageNumber,
+                recordsPerPage: rowsPerPage
+            },
+            ISExport:"0"
+        }
+        const loaderId = notifyLoader("Loading data")
+        try {
+            const data = await getBTRData(payload)
+            console.log("data Eco::",data) // to see the large btr data in console
+            setEcoRowData(mapBTRRowData(data.data.data.eco, horizon))
+            setDateLabels(data.data.data.labels[0])
+        } catch (err: any) {
+            notifyError(err)
+            setTechRowData([])
+            setEcoRowData([])
+        } finally {
+            toast.dismiss(loaderId)
+        }
     }
 
     const getData = async (filter: any, pageNumber: number) => {
@@ -272,7 +334,7 @@ const useBTR = () => {
         const loaderId = notifyLoader("Loading data")
         try {
             const data = await getBTRData(payload)
-            console.log("data::",data) // to see the large btr data in console
+            console.log("data for Both Eco and Tech::",data) // to see the large btr data in console
             setEcoRowData(mapBTRRowData(data.data.data.eco, horizon))
             setTechRowData(mapBTRRowData(data.data.data.tech, horizon))
             setDateLabels(data.data.data.labels[0])
@@ -286,21 +348,21 @@ const useBTR = () => {
 
     }
 
-    useEffect(() => {
-        const payload = {
-            id: 0,
-            name: 'both',
-            fields: [],
-            filters: currFilter,
-            paginationParameter: {
-                pageNumber: 1,
-                recordsPerPage: rowsPerPage
-            },
-        }
-        getBTRDataCount(payload)
-        getData(currFilter, 1)
-        getBPRUiConfig();
-    }, [])
+    // useEffect(() => {
+    //     const payload = {
+    //         id: 0,
+    //         name: 'tech',
+    //         fields: [],
+    //         filters: currFilter,
+    //         paginationParameter: {
+    //             pageNumber: 1,
+    //             recordsPerPage: rowsPerPage
+    //         },
+    //     }
+    //     getBTRDataCount(payload)
+    //     getDataTech(currFilter, 1)
+    //     getBPRUiConfig();
+    // }, [])
 
     const getPreparedFilter = (filter: BPRFilterState): BPRFilterState => {
         const doesCategoryExist = (filter.availabilityFilter.filters.length > 0 && filter.availabilityFilter.filters.some((f) => f.name === "AF8"))
@@ -335,7 +397,9 @@ const useBTR = () => {
             },
         }
         getBTRDataCount(payload)
-        getData(tempFilter, 1)
+        if(currentTab?.value === "on-hand") getDataTech(tempFilter, 1)
+        else if(currentTab?.value === "pipeline") getDataEco(tempFilter, 1)
+        else getData(tempFilter, 1)
         getBPRUiConfig()
     }
 
@@ -486,15 +550,20 @@ const useBTR = () => {
     }, [ecoRowData, dateLabels, verticalView, currentTab]);
 
     useEffect(() => {
-        if (currentTab.id === "2" || currentTab.id === "3") {
-            getUserColumnConfig();   
-        }
-    },[currentTab, initialColumnState])
+    if (initialColumnState) {
+        getUserColumnConfig();  
+        if(currentTab.id === "1" && techColDefs?.length)     getDataTech(currFilter , 1);
+        if(currentTab.id === "2"  )     getDataEco(currFilter , 1);
+        if(currentTab.id === "3" )     getData(currFilter , 1)
+        } 
+    },[currentTab, initialColumnState, currFilter]);
 
     useEffect(() => {
-        if (currentTab.id === "2" && techColDefs.length && techInternalRef?.api) {
+    if (initialColumnState) {
+        if (currentTab.id === "1" && techColDefs.length && techInternalRef?.api) {
             setTechMasterUIConfig(techInternalRef?.api.getColumnState());
         }
+    }
     }, [techInternalRef, techColDefs, currentTab]);
 
     useEffect(() => {
@@ -506,6 +575,7 @@ const useBTR = () => {
     useEffect(() => {
         if (techInternalRef && techGridState && techGridState.columns) {
             const result = techInternalRef?.api.applyColumnState({ state: techGridState.columns, applyOrder: true });
+            
             techInternalRef.api.sizeColumnsToFit();  
             if (!result) {
                 console.error("Failed to apply column state", result);
@@ -526,50 +596,6 @@ const useBTR = () => {
     const renderView = () => {
         switch (currentTab.id) {
             case "1":
-                if (verticalView) return (
-                    <VerticalSplitView
-                        themeUi={themeUi}
-                        techTable={{
-                            columnDefs: techColDefs,
-                            rowData: techRowData,
-                            header: "On-Hand Inventory View Trend Report",
-                            paginationProps: techPaginationProps,
-                            ...gridProps
-                        }}
-                        ecoTable={{
-                            columnDefs: ecoColDefs,
-                            paginationProps: ecoPaginationProps,
-                            rowData: ecoRowData,
-                            header: "Pipeline Inventory Trend Report",
-                            ...gridProps
-                        }}
-                        isLocked={isLockMode}
-                        toggleLockMode={toggleLockMode}
-                    />
-                )
-
-                return (
-                    <HorizontalSplitView
-                        themeUi={themeUi}
-                        techTable={{
-                            columnDefs: techColDefs,
-                            rowData: techRowData,
-                            header: "On-Hand Inventory View Trend Report",
-                            paginationProps: techPaginationProps,
-                            ...gridProps
-                        }}
-                        ecoTable={{
-                            columnDefs: ecoColDefs,
-                            rowData: ecoRowData,
-                            header: "Pipeline Inventory Trend Report",
-                            paginationProps: ecoPaginationProps,
-                            ...gridProps
-                        }}
-                        isLocked={isLockMode}
-                        toggleLockMode={toggleLockMode}
-                    />
-                )
-            case "2":
                 return (
                     <>
                         <BTRTableHeader>
@@ -598,15 +624,17 @@ const useBTR = () => {
                                   setIsDisabled(true);
                                 }
                             }}                        />
-                        
+                        {
+                        initialColumnState &&
                             <VFPagination 
                             {...techPaginationProps} 
                             resetGridRef={techRef} 
                             isDisabled={isDisabled}/>
+                        }
                         </div>
                     </>
                 )
-            case "3":
+            case "2":
                 return (
                     <>
                         <BTRTableHeader>
@@ -638,13 +666,63 @@ const useBTR = () => {
                             }}  
 
                         />
+                        {
+                        initialColumnState &&
                         <VFPagination
                             {...ecoPaginationProps} 
                             resetGridRef={ecoRef} 
                             isDisabled={isDisabled}/>
-                        </div>
+                             }
+                        </div>   
                     </>
                 )
+
+            case "3":
+                    if (verticalView) return (
+                        <VerticalSplitView
+                            themeUi={themeUi}
+                            techTable={{
+                                columnDefs: techColDefs,
+                                rowData: techRowData,
+                                header: "On-Hand Inventory View Trend Report",
+                                paginationProps: techPaginationProps,
+                                ...gridProps
+                            }}
+                            ecoTable={{
+                                columnDefs: ecoColDefs,
+                                paginationProps: ecoPaginationProps,
+                                rowData: ecoRowData,
+                                header: "Pipeline Inventory Trend Report",
+                                ...gridProps
+                            }}
+                            isLocked={isLockMode}
+                            toggleLockMode={toggleLockMode}
+                            initialColumnState={initialColumnState}
+                        />
+                    )
+    
+                    return (
+                        <HorizontalSplitView
+                            themeUi={themeUi}
+                            techTable={{
+                                columnDefs: techColDefs,
+                                rowData: techRowData,
+                                header: "On-Hand Inventory View Trend Report",
+                                paginationProps: techPaginationProps,
+                                ...gridProps
+                            }}
+                            ecoTable={{
+                                columnDefs: ecoColDefs,
+                                rowData: ecoRowData,
+                                header: "Pipeline Inventory Trend Report",
+                                paginationProps: ecoPaginationProps,
+                                ...gridProps
+                            }}
+                            isLocked={isLockMode}
+                            toggleLockMode={toggleLockMode}
+                            initialColumnState={initialColumnState}
+                        />
+                    )
             default:
                 return <CustomVFTable columnDefs={[]} rowData={[]} {...gridProps} />
         }
