@@ -46,7 +46,7 @@ const GraphView = ({Viewtabs, currView, setCurrView,selectedCCR, horizonData, gr
     
       setCwlValue(matchedCWL);
     }
-  }, [graphData, cwl]);
+  }, [selectedCCR, cwl]); //graphData
 
   // Helper function to check if a date falls within the horizon range
   const isDateInHorizonRange = (dateToCheck: string) => {
@@ -186,8 +186,9 @@ const GraphView = ({Viewtabs, currView, setCurrView,selectedCCR, horizonData, gr
         legendItemName: 'Load',
         tooltip: {
           renderer: ({ datum }: any) => {
+
             return `<div style="background: white; color: #000; padding: 8px;">
-              <div style="color:black", font-weight:500;>${datum.type}</div> 
+              <div style="color:black", font-weight:500;>${datum.type}</div>  
               <div> ${datum.load}</div>
             </div>`;
           }
@@ -466,7 +467,7 @@ const GraphView = ({Viewtabs, currView, setCurrView,selectedCCR, horizonData, gr
         <SCHorizontalDivider />
         <ApplyZoomOut style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', zoom: 0.6, paddingBottom: '10px' }}>
           <MyFutureOrderTabsFix>
-            <VFFloatingTab
+            <VFFloatingTab  style={{minWidth:'0px' }}
               handleClick={(e) => setCurrView(e.id)}
               tabs={Viewtabs}
               defaultTab={Viewtabs.findIndex((tab:any) => tab.id === currView) || 0}

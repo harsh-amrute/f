@@ -105,7 +105,7 @@ const GridView = ({ setCurrentGridRef,context, currentGridRef,Viewtabs, columnSt
             <TabsSection style={{paddingTop:'6px', marginTop:'10px'}}>
                 <ApplyZoomOut>
                     <MyFutureOrderTabsFix>
-                    <VFFloatingTab
+                    <VFFloatingTab style={{minWidth:'0px'}}
                         handleClick={(e) => setCurrView(e.id)}
                         tabs={Viewtabs}
                          defaultTab={Viewtabs.findIndex((tab:any) => tab.id === currView) || 0}
