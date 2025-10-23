@@ -2,7 +2,6 @@
 import { ColumnHeaderConfig } from '../VectorFlow/types/ColumnHeaderConfig';
 import { type NavigateFunction } from 'react-router'
 import { LOCAL_STORAGE_KEY, ROUTES } from './constants'
-import { MainService } from '../module-main/services/api'
 import { notifyError} from './notify'
 import { type Master, type Option, type Field, type Filter, MDMMasterState, DraftActionType,type NormHistory, type DailyData } from '../VectorFlow/types/MDM';
 import readXlsxFile,{readSheetNames} from 'read-excel-file';
@@ -26,8 +25,7 @@ import { AgChartOptions } from "ag-charts-community";
 // clear cached token and redirect to sso login
 import CryptoJS from 'crypto-js';
 import MTOActionRenderer from '../VectorFlow/Pages/MTO/MDM/SavedDrafts/MTOActionRenderer';
-import { useSelector } from 'react-redux';
-import { RootState } from '../redux/store/store';
+import { decryptStorageData } from '../VectorFlow/Pages/MTO/Common/encryption';
 
 const keyboardCharacters = [
   // '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -39,15 +37,23 @@ const keyboardCharacters = [
   'U', 'V', 'W', 'X', 'Y', 'Z'
 ];
 
+let isRedirecting = false;
+
+export const setRedirecting = () => { isRedirecting = true; }
+export const getRedirecting = () => isRedirecting;
+
 export const loginRedirect = (navigate?: NavigateFunction) => {
-  localStorage.removeItem(LOCAL_STORAGE_KEY.TOKEN_PAYLOAD)
 
-  saveOriginalUrlBeforeLogin()
+  if (getRedirecting()) return; // prevent multiple redirects
+  setRedirecting();
 
-  if (navigate != null) {
-    navigate(ROUTES.landing, { replace: true })
+  saveOriginalUrlBeforeLogin() 
+
+   // Safer redirect (no back navigation to protected route)
+   if (navigate) {
+    navigate(ROUTES.landing, { replace: true });
   } else {
-    window.location.href = ROUTES.landing
+    window.location.replace(ROUTES.landing);
   }
 }
 
@@ -99,9 +105,6 @@ export const getOriginalUrl = () => {
   return { url: originalUrl, type: originalUrlType }
 }
 
-export const hasUdfToken = () => {
-  return !!localStorage.getItem(LOCAL_STORAGE_KEY.TOKEN_PAYLOAD)
-}
 
 /**
  * Utilities to compare between two variables with same supported types: string | number | boolean
@@ -478,11 +481,8 @@ export const mapRRRFieldsToColDefs = (fields: RRRField[]): ColDef[] => {
 
 export const handleDownload = async (nameApi: string, nameFile: string) => {
   try {
-    const token = await MainService.refreshToken();
     const response = await fetch(`${process.env.REACT_APP_API_HOST}${nameApi}`, {
-      headers: {
-        Authorization: `Bearer ${token?.access}`
-      }
+      credentials: 'include',
     })
     // Convert response to blob object
     const blob = await response.blob()
@@ -513,20 +513,21 @@ export const handleDownload = async (nameApi: string, nameFile: string) => {
 
 export const handleDownloadMTOVF = async (reportName: string, downloadName: string) => {
   try{
-    const token = await MainService.refreshToken();
-    const userid = localStorage.getItem('User-ID');
-    const username = localStorage.getItem('User-Name');
+        const encryptedUserId = localStorage.getItem('User-ID');
+        const encryptedUserName = localStorage.getItem('User-Name');
+        const decryptedUserId = await decryptStorageData(encryptedUserId);
+        const decryptedUserName = await decryptStorageData(encryptedUserName);
     
     const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token?.access}`,
+      'Content-Type': 'application/json'
     };
     
-    if (userid) headers['User-ID'] = userid;
-    if (username) headers['User-Name'] = username;
+    if (decryptedUserId) headers['User-ID'] = decryptedUserId;
+    if (decryptedUserName) headers['User-Name'] = decryptedUserName;
     
     const response = await fetch(`${process.env.REACT_APP_VF_API_HOST_MTO}/DownloadReportData/?report_name=${reportName}`, {
       headers,
+      credentials: 'include',
     });
     if (!response.ok) {
       notifyError("Error while downloading")
@@ -559,11 +560,8 @@ export const handleDownloadMTOVF = async (reportName: string, downloadName: stri
 export const handleDownloadVF = async (reportName: string, downloadName:string) => {
 
   try {
-    const token = await MainService.refreshToken();
     const response = await fetch(`${process.env.REACT_APP_API_HOST}api/mta/DownloadReports/${encodeURIComponent(reportName)}`, {
-      headers: {
-        Authorization: `Bearer ${token?.access}`
-      }
+      credentials: 'include',
     })
     if (!response.ok) {
       notifyError("Error while downloading")
@@ -3906,13 +3904,12 @@ export const handleDownloadVFReports = async (payload:{name:string,filters:any})
 
   try {
     const {name} = payload
-    const token = await MainService.refreshToken();
     const response = await fetch(`${process.env.REACT_APP_API_HOST}/download-excel`, {
       headers: {
-        Authorization: `Bearer ${token?.access}`,
         'Content-Type': 'application/json'
       },
       method:"post",
+      credentials:"include",
       body:JSON.stringify(payload)
     })  
     if(!response.ok){
@@ -4796,13 +4793,12 @@ export const DownloadExcelMTA = (response: any, filename = "ReportFile") => {
 
 export const CsvExportMTA = async ( payload: any, filename = "ReportFile") => {
   try {
-    const token = await MainService.refreshToken();
     const response = await fetch(process.env.REACT_APP_API_HOST + `api/mta/GetExportDataAsync`, {
       headers: {
-        Authorization: `Bearer ${token?.access}`,
         "Content-Type": "application/json",
       },
       method:"post",
+      credentials:"include",
       body:JSON.stringify(payload)
     })  
  
