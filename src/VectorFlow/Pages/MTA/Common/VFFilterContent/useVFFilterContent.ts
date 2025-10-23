@@ -125,7 +125,7 @@ export const colorFilterOptions = [
 ]
 
 export const availabilityFilterOptions = [
-  { label: 'Virtual Norm', value: 'Virtual Norm', name: 'AF4' },
+  { label: 'Virtual Norm', value: 'VirtualNorm', name: 'AF4' },
   { label: 'Norm', value: 'Norm', name: 'AF1' },
   { label: 'Stock', value: 'Stock', name: 'AF2' },
   { label: 'GIT', value: 'GIT', name: 'AF3' },

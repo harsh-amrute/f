@@ -59,7 +59,6 @@ export const ColorFilters: React.FC<FilterSectionProps> = ({
     }
 
     if (multiFilter?.colorFilter?.filters && multiFilter.colorFilter.filters.length > 0) {
-      // Restore filters from multiFilter
       const restoredRows: FilterRowState[] = [...INITIAL_ROWS];
 
       multiFilter.colorFilter.filters.forEach((filter: BPRFilter) => {
