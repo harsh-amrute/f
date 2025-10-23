@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   FilterGroup,
   FilterColumn,
@@ -46,18 +46,18 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
   const [rowSelections, setRowSelections] = useState<
     Record<number, { column?: any; operation?: any; value?: any }>
   >({});
-
-  const isRowComplete = (rowId: number) => {
-    const row = rowSelections[rowId];
-    return row && row.operation && row.value && row.value.trim() !== "";
-  };
-
   const [rowFilterIndexMap, setRowFilterIndexMap] = useState<
     Record<number, number>
   >({});
   const [isInitialized, setIsInitialized] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const commonFilterKeywords = ["skulocattr", "skuattr", "locattr"];
+  const isUpdatingFromInternal = useRef(false);
+
+  const isRowComplete = (rowId: number) => {
+    const row = rowSelections[rowId];
+    return row && row.operation && row.value && row.value.trim() !== "";
+  };
 
   useEffect(() => {
     const loadAttributes = async () => {
@@ -97,13 +97,20 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
   }, [getUiConfig, reportName]);
 
   useEffect(() => {
-    setIsInitialized(false);
-    setIsLoading(true);
-    setRowSelections({});
-    resetFilterRows(1);
-    setRowFilterIndexMap({});
-    setAttributeOptions([]);
-  }, [reportName, resetFilterRows]);
+    if (isUpdatingFromInternal.current) {
+      isUpdatingFromInternal.current = false;
+      return;
+    }
+
+    const hasFilters =
+      multiFilter?.customAttributeFilter?.filters?.length > 0 || false;
+    if (!hasFilters) {
+      setRowSelections({});
+      resetFilterRows(1);
+      setRowFilterIndexMap({});
+      setIsInitialized(false);
+    }
+  }, [multiFilter?.customAttributeFilter?.filters, resetFilterRows]);
 
   useEffect(() => {
     if (attributeOptions.length === 0 || isInitialized) return;
@@ -200,6 +207,7 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
         newIndexMap[rowId] = nextFilters.length - 1;
       }
 
+      isUpdatingFromInternal.current = true;
       onMultiFilterChange({
         ...multiFilter,
         [parentId]: { ...multiFilter[parentId], filters: nextFilters },
@@ -237,6 +245,7 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
     delete newIndexMap[rowId];
     setRowFilterIndexMap(newIndexMap);
 
+    isUpdatingFromInternal.current = true;
     onMultiFilterChange({
       ...multiFilter,
       [parentId]: { ...multiFilter[parentId], filters: nextFilters },
@@ -289,31 +298,32 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
             </DropDownWrapper>
 
             <DropDownWrapper>
-             <input
-                  placeholder="Enter value"
-                  className={`filter-input ${
-                    user.user.theme_ui === "REGALBLAZE"
-                      ? "filter-input--regal"
-                      : "filter-input--default"
-                  }${
-                    rowSelections[row.id]?.operation?.value === "hasvalue" ||
-                    rowSelections[row.id]?.operation?.value === "hasnovalue"
-                      ? " filter-input--disabled"
-                      : ""
-                  }`}
-                  value={rowSelections[row.id]?.value || ""}
-                  onChange={(e) =>
-                    onFilterChange(row.id, "value", e.target.value)
-                  }
-                  disabled={
-                    rowSelections[row.id]?.operation?.value === "hasvalue" ||
-                    rowSelections[row.id]?.operation?.value === "hasnovalue"
-                  }
-                />
+              <input
+                placeholder="Enter value"
+                className={`filter-input ${
+                  user.user.theme_ui === "REGALBLAZE"
+                    ? "filter-input--regal"
+                    : "filter-input--default"
+                }${
+                  rowSelections[row.id]?.operation?.value === "hasvalue" ||
+                  rowSelections[row.id]?.operation?.value === "hasnovalue"
+                    ? " filter-input--disabled"
+                    : ""
+                }`}
+                value={rowSelections[row.id]?.value || ""}
+                onChange={(e) =>
+                  onFilterChange(row.id, "value", e.target.value)
+                }
+                disabled={
+                  rowSelections[row.id]?.operation?.value === "hasvalue" ||
+                  rowSelections[row.id]?.operation?.value === "hasnovalue"
+                }
+              />
             </DropDownWrapper>
 
             <div style={{ display: "flex", alignItems: "center" }}>
-              <IconWrapper theme_ui={user.user.theme_ui}
+              <IconWrapper
+                theme_ui={user.user.theme_ui}
                 style={{
                   opacity: isRowComplete(row.id) ? 0 : 1,
                   cursor: isRowComplete(row.id) ? "default" : "pointer",
