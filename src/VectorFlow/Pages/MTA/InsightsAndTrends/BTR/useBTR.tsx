@@ -184,7 +184,7 @@ const useBTR = () => {
         rowsPerPage: userPageSizeTechForBoth,
         currentPage: currentPageTechForBoth,
         handleChangePage: (currPage: number) => {
-            getDataTech(getPreparedFilter(currFilter), currPage)
+            getDataTech(getPreparedFilter(currFilter), currPage , userPageSizeTechForBoth)
             setCurrentPageTechForBoth(currPage)
         },
 
@@ -195,7 +195,7 @@ const useBTR = () => {
         rowsPerPage: userPageSizeEcoForBoth,
         currentPage: currentPageEcoForBoth,
         handleChangePage: (currPage: number) => {
-            getDataEco(getPreparedFilter(currFilter), currPage);
+            getDataEco(getPreparedFilter(currFilter), currPage,userPageSizeEcoForBoth);
             setCurrentPageEcoForBoth(currPage)
         },
         customPageSizeEnabled:true,
