@@ -132,7 +132,6 @@ const VFDatePicker = ({
                   value={date ? new Date(date) : new Date()}
                   minDate={minDate}
                   maxDate={maxDate}
-                  // tileDisabled={({ date }) => disabledFOLHorizonDate?.(date) ?? false}
                   tileDisabled={({ date }) => {
                     if (disabledFOLHorizonDate) {
                       return disabledFOLHorizonDate(date);

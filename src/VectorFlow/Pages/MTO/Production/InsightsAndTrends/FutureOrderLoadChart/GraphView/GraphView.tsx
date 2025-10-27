@@ -5,7 +5,7 @@ import { AgCharts } from "ag-charts-react";
 import { ApplyZoomOut } from "../../../OrderRescheduling/styles";
 import VFFloatingTab from "../../../../../../../components/VectorFLOW/commons/VFFloatingTab";
 import { MyFutureOrderTabsFix } from "../styles";
-import CustomLegend from "../../../../../../../VectorFlow/Pages/MTO/Common/CustomLegend/index 1";
+import CustomLegend from "../../../../../../../VectorFlow/Pages/MTO/Common/CustomLegend/index";
 
 const GraphView = ({Viewtabs, currView, setCurrView, selectedCCR, horizonData, graphData, cwl, selectedAction, currTab }: any) => {
   
