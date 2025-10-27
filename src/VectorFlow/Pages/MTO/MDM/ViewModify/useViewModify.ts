@@ -509,7 +509,7 @@ const useViewModify = (pageType: string) => {
   
       // 🔹 Common rule for editable fields
       const editable = (params: any) => {
-        if (["iv", "actions", "pactions"].includes(col.field)) {
+        if (["iv", "actions", "pactions","err"].includes(col.field)) {
           return false;
         } else if (pageType === "add") {
           return true;
@@ -2803,8 +2803,11 @@ const useViewModify = (pageType: string) => {
     const hasUnsavedData = activeMaster?.rowData?.length;
   
     if (hasUnsavedData) {
+      // const confirmed = confirm(
+      //   "Are you sure you want to go back? All progress will be lost! Please Save to Draft."
+      // );
       const confirmed = confirm(
-        "Are you sure you want to go back? All progress will be lost! Please Save to Draft."
+        "Are you sure you want to go back? All progress will be lost!"
       );
       if (!confirmed) return;
     }
