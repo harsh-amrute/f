@@ -22,7 +22,8 @@ export interface SplitViewProps {
     ecoTable: SpliViewTableProps
     isLocked: boolean
     toggleLockMode: (value: boolean) => void
-    themeUi: string
+    themeUi: string,
+      initialColumnState:any
 }
 
 const VerticalSplitView = (props: SplitViewProps) => {
@@ -31,7 +32,8 @@ const VerticalSplitView = (props: SplitViewProps) => {
         ecoTable,
         isLocked,
         toggleLockMode,
-        themeUi
+        themeUi,
+        initialColumnState
     } = props
 
     const ref1 = useRef<AgGridReact>(null)
@@ -185,11 +187,14 @@ const VerticalSplitView = (props: SplitViewProps) => {
                                 
                             />
                             </div>
+                    {
+                    initialColumnState &&
                             <div style={{ zoom: 0.7, margin: '0px -15px'}}>
                                 <VFPagination style={{ width:'95%', marginTop:'-30px'}}
                                     {...techTable.paginationProps} isClearGridFilter={false}
                                 />
                             </div>
+                    }
                         </div>
                         <div style={{ marginTop: -10, height: '95%', width: '100%' ,minWidth:'50%'}}>
                          <div style={{ height:'100%', display:'flex', flexDirection:'column'}}>
@@ -217,11 +222,14 @@ const VerticalSplitView = (props: SplitViewProps) => {
                                 alignedGrids={isLocked?[ref3]:[]}
                             />
                             </div>
+                {
+                    initialColumnState &&
                             <div style={{ zoom: 0.7, margin: '0px -15px'  }}>
                                 <VFPagination style={{marginTop:'-30px'}} 
                                     {...techTable.paginationProps} isClearGridFilter={false}
                                 />
                             </div>
+                }
                         </div>
                     </VerticalViewLeftTableWrapper>
                     {/* <VFTableWrapper>
@@ -263,11 +271,14 @@ const VerticalSplitView = (props: SplitViewProps) => {
                                 alignedGrids={isLocked?[ref2]:[]}
                             />
                             </div>
+                    {
+                    initialColumnState &&
                         <div style={{ zoom: 0.7, margin: '0px -15px'}}>
                             <VFPagination style={{marginTop:'-30px',paddingRight:'10px'}}
                                 {...ecoTable.paginationProps} isClearGridFilter={false}
                             />
                         </div>
+                    }
                     </div>
                     {/* <VFTableWrapper>
                         <AgGridReact

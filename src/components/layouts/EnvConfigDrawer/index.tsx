@@ -3,8 +3,8 @@ import { Content,DrawerHeader} from "../UserURLsDrawer/styles"
 import { useUserData } from "../../../context"
 import { useState } from "react"
 import NavigationTab from "../NavigationTab"
-import ViewURLs from "./View"
-import EditRole from "./Edit"
+import ViewEnvConfig from "./View"
+import EditEnvConfig from "./Edit"
 
 interface EnvConfigDrawerProps{
     onClose:()=>void
@@ -58,14 +58,14 @@ const EnvConfigDrawer = (props:EnvConfigDrawerProps)=>{
        
             {currTab === 0 && (
                 <Content>
-                    <ViewURLs
+                    <ViewEnvConfig
                         onEdit={onEditRole}
                     />
                 </Content>
             )}          
             {currTab === 3 && (
                 <Content>
-                    <EditRole data={currRole} cb={resetTab}/>
+                    <EditEnvConfig data={currRole} cb={resetTab}/>
                 </Content>
             )}
             

@@ -81,7 +81,7 @@ export const SCTabButton = styled.div<{
   margin-left: ${(props) => (props.marLeft ? '-1.5em' : '0')};
   padding-left: ${(props) => (props.marLeft ? '1.5em' : '0')};
 
-  cursor: pointer;
+  cursor:default ;
 
   @media (min-width: ${GridSystem.size.laptop}) and (max-width: ${GridSystem
       .size.laptopL}) {

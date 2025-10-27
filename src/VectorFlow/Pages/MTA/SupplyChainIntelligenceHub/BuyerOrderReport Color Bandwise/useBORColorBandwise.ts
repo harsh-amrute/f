@@ -240,16 +240,16 @@ export const useBORColorBandwise =()=>{
     }
   }, [internalRef, gridState]);
 
-      useEffect(()=>{       
-        const fetchData = async () => {
-            await getRecordsCount();
-            await getBORColorBandWiseUiConfig()
-            await loadGridData(currentPage);
+    //   useEffect(()=>{       
+    //     const fetchData = async () => {
+    //         await getRecordsCount();
+    //         await getBORColorBandWiseUiConfig()
+    //         await loadGridData(currentPage);
 
-        };
-        fetchData();
+    //     };
+    //     fetchData();
 
-    }, []);
+    // }, []);
 
 
       const getRecordsCount=async(filter?:any)=>{
@@ -350,6 +350,7 @@ export const useBORColorBandwise =()=>{
   }
 
     const onApplyFilter = async(filter:any)=>{
+      await getBORColorBandWiseUiConfig()
       await getRecordsCount(filter)
       await loadGridData(1,filter)
       setCurrFilter(filter)

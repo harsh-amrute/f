@@ -13,7 +13,7 @@ const CustomPageSizeInput = ({ savePageSize, userPageSize }: props) => {
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
 
-  const [customPageSize, setCustomPageSize] = useState<any>();
+  const [customPageSize, setCustomPageSize] = useState<number | undefined>();
   const minPageSize = 1;
   const maxPageSize = 5000;
 
@@ -31,7 +31,7 @@ const CustomPageSizeInput = ({ savePageSize, userPageSize }: props) => {
   };
 
   const validatePageSize = () => {
-    if (isNaN(customPageSize)) {
+    if (customPageSize === undefined ||  isNaN(customPageSize)) {
       notifyError("Invalid page size");
     } else {
       if (customPageSize < minPageSize) {
@@ -52,7 +52,7 @@ const CustomPageSizeInput = ({ savePageSize, userPageSize }: props) => {
           className="no-arrows"
           type="number"
           themeUi={themeUi}
-          value={customPageSize}
+          value={customPageSize ?? ""}
           onChange={handleChange}
         />
         <VFButton

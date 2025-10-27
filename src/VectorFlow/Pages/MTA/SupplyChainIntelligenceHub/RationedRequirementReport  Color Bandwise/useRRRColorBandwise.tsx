@@ -100,14 +100,14 @@ const useRRRColorBandwise = () => {
   const [initialColumnState, setInitialColumnState] = useState<any>(undefined);
   const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      await handleGetRecordsCount();
-      await getRRRColorBandWiseUiConfig();
-      await loadGridData(currentPage);
-    };
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     await handleGetRecordsCount();
+  //     await getRRRColorBandWiseUiConfig();
+  //     await loadGridData(currentPage);
+  //   };
+  //   fetchData();
+  // }, []);
 
   const getRRRColorBandWiseUiConfig = async () => {
     try {
@@ -246,6 +246,7 @@ const useRRRColorBandwise = () => {
   }
 
   const onApplyFilter = async (filter: any) => {
+    await getRRRColorBandWiseUiConfig();
     await handleGetRecordsCount(filter);
     await loadGridData(1, filter);
     setCurrFilter(filter);

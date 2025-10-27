@@ -7,7 +7,7 @@ import React, { useEffect } from 'react'
 import { notifyError, notifySuccess } from '../../../../../helpers/notify'
 
 
-const EditRouteModal = ({ setDataUpdated, setResetReleaseCheckbox, rowRelase, order_key, message, themeUi, showModal, selectedOrders, setShowModal }: any) => {
+const EditRouteModal = ({ onDataUpdateCallback, setResetReleaseCheckbox, rowRelase, order_key, message, themeUi, showModal, selectedOrders, setShowModal }: any) => {
     
     const { mutateAsync: updateDynamicReleaseData, isLoading, isSuccess, isError } = useUpdateDynamicReleaseData();
 
@@ -35,7 +35,7 @@ const EditRouteModal = ({ setDataUpdated, setResetReleaseCheckbox, rowRelase, or
         try {
             const response = await updateDynamicReleaseData(body)
             if (response.status === 200) {
-                setDataUpdated(true);
+                onDataUpdateCallback();
                 setResetReleaseCheckbox(true);
                 setShowModal(false);
             }
