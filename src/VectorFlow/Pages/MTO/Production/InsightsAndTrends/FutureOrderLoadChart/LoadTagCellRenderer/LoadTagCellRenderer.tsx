@@ -14,7 +14,7 @@ const getTagStyles = (tag: string) => {
     return { arrow: "#A8A8A8", bg: "#A8A8A8", text: "#2F2B2B", border: "none" };
   }
   if (lower === "beyond scheduling") {
-    return { arrow: "#f5f5f0", bg: "#f5f5f0", text: "#2F2B2B", border: "none" };
+    return { arrow: "#E8E8E8", bg: "#E8E8E8", text: "#2F2B2B", border: "none" };
   }
   return { arrow: "#c1c1c1", bg: "#fff", text: "#111", border: "none" };
 };

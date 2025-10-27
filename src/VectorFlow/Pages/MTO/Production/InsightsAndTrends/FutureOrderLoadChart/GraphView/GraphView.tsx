@@ -7,7 +7,7 @@ import VFFloatingTab from "../../../../../../../components/VectorFLOW/commons/VF
 import { MyFutureOrderTabsFix } from "../styles";
 import CustomLegend from "../../../../../../../VectorFlow/Pages/MTO/Common/CustomLegend/index 1";
 
-const GraphView = ({Viewtabs, currView, setCurrView,selectedCCR, horizonData, graphData, cwl, selectedAction, currTab }: any) => {
+const GraphView = ({Viewtabs, currView, setCurrView, selectedCCR, horizonData, graphData, cwl, selectedAction, currTab }: any) => {
   
   const [cwlValue, setCwlValue] = useState(0);
   const [selectedCCRHorizonDate, setSelectedCCRHorizonDate] = useState<any>('');
@@ -42,11 +42,10 @@ const GraphView = ({Viewtabs, currView, setCurrView,selectedCCR, horizonData, gr
       const a = graphData?.data?.map((item: any) => item.ccr);
       const b = cwl.map((item: any) => item.value);
       const matchedCCR = a.find((ccr: any) => b.includes(ccr));
-      const matchedCWL = matchedCCR ? cwl.find((item: any) => item.value === matchedCCR)?.cwl : 0;
-    
-      setCwlValue(matchedCWL);
+      const matchedCWL = matchedCCR ? cwl.find((item: any) => item.value === matchedCCR)?.cumulative_wip_limit: 0;
+          setCwlValue(matchedCWL);
     }
-  }, [selectedCCR, cwl]); //graphData
+  }, [selectedCCR, cwl]);
 
   // Helper function to check if a date falls within the horizon range
   const isDateInHorizonRange = (dateToCheck: string) => {
@@ -57,13 +56,13 @@ const GraphView = ({Viewtabs, currView, setCurrView,selectedCCR, horizonData, gr
     const endDate = new Date(horizonDateRange.endDate);
 
     if (currView === 'weekly') {
-      // ["31st Aug", "6th Sep"]
+    // ["31st Aug", "6th Sep"]
       const dateParts = dateToCheck.split(' - ');
       if (dateParts.length === 2) {
-        const weekEndStr = dateParts[1].trim(); //2 part of date (6)
-        
-        // Extract day and month 
-        const weekEndMatch = weekEndStr.match(/(\d+)(?:st|nd|rd|th)?\s+([A-Za-z]+)/); //6-09-2025
+        const weekEndStr = dateParts[1].trim();
+
+    // Extract day and month 
+      const weekEndMatch = weekEndStr.match(/(\d+)(?:st|nd|rd|th)?\s+([A-Za-z]+)/);
 
         if (weekEndMatch) {
           const day = weekEndMatch[1]; //6
@@ -71,8 +70,8 @@ const GraphView = ({Viewtabs, currView, setCurrView,selectedCCR, horizonData, gr
           
           const startYear = new Date(horizonDateRange.startDate).getFullYear(); //2025
           
-          // Parse start date of the week
-          const weekStartStr = dateParts[0].trim(); //1st part 31 aug
+    // Parse start date of the week
+          const weekStartStr = dateParts[0].trim();
           const weekStartMatch = weekStartStr.match(/(\d+)(?:st|nd|rd|th)?\s+([A-Za-z]+)/);
           if (weekStartMatch) {
             const startDay = weekStartMatch[1]; //31
@@ -80,8 +79,7 @@ const GraphView = ({Viewtabs, currView, setCurrView,selectedCCR, horizonData, gr
             
             let weekStartDate = new Date(`${startMonth} ${startDay} ${startYear}`);
             let weekEndDate = new Date(`${month} ${day} ${startYear}`);
-            
-            // Dec 2025 - Jan 2026
+            //Dec 2025 - Jan 2026
             if (weekEndDate < weekStartDate) {
               weekEndDate = new Date(`${month} ${day} ${startYear + 1}`);
             }
@@ -100,9 +98,8 @@ const GraphView = ({Viewtabs, currView, setCurrView,selectedCCR, horizonData, gr
       return false;
     }
 
-  
     if (currView === 'monthly') {
-      //  "Sep 25'
+      // "Sep 25"
       const monthMatch = dateToCheck.match(/([A-Za-z]+)\s+(\d{2,4})/);
       if (monthMatch) {
         const month = monthMatch[1]; //sep
@@ -111,8 +108,6 @@ const GraphView = ({Viewtabs, currView, setCurrView,selectedCCR, horizonData, gr
         if (year < 100) {
           year = 2000 + year; // 25 to 2025 convert
         }
-        
-      
         const monthStartDate = new Date(`${month} 1, ${year}`);
         const monthEndDate = new Date(year, monthStartDate.getMonth() + 1, 0);
         
@@ -131,46 +126,65 @@ const GraphView = ({Viewtabs, currView, setCurrView,selectedCCR, horizonData, gr
       return false;
     }
     
- //daily view
     return checkDate >= startDate && checkDate <= endDate;
   };
 
   const transformedData = useMemo(() => {
     if (!graphData?.data) return [];
-
-    return graphData.data.map((item: any) => {
+      return graphData.data.map((item: any, index: number) => {
       const isInHorizonRange = isDateInHorizonRange(item.date);
-
-      let tag = item.tag
-      
-      
-      // console.log('pastOrder_load', graphData.pastorder_load)
-      // console.log('tag', tag)
-      if (tag == "Past Scheduling") {
-        console.log('Past Scheduling item:', {
+      const tag = item.tag;
+  
+      if (currView === "daily") {
+        return {
           date: item.date,
-          tag: tag,
-        load:graphData.pastorder_load,
-        });
-      }
-
-    
-      return {
-        date: item.date,
-        load:tag!=="Past Scheduling" ? item.load :'' ,
-        holiday: item.is_holiday,
-        // past: tag == "Past Scheduling" ? (item.past ? item.past : graphData.pastorder_load) : item.past,
-        past: tag == "Past Scheduling" ? item.load :'',
+          load: tag !== "Past Scheduling" ? item.load : "",
+          holiday: item.is_holiday,
+          past: tag === "Past Scheduling" ? item.load : "",
           limit: cwlValue,
-        // type: "monthly",
-        type: item.is_holiday ? "holiday" : "load",
-        horizonDate: selectedCCRHorizonDate,
-        isInHorizonRange,
-      };
-    
+          type: item.is_holiday ? "holiday" : "load",
+          horizonDate: selectedCCRHorizonDate,
+          isInHorizonRange,
+        };
+      }
+  
+      if (currView === "weekly" || currView === "monthly") {
+        return {
+          date: item.date,
+          load: item.load, 
+          holiday: item.is_holiday,
+          past: index === 0 ? graphData.pastorder_load : "", 
+          limit: cwlValue,
+          type: item.is_holiday ? "holiday" : "load",
+          horizonDate: selectedCCRHorizonDate,
+          isInHorizonRange,
+        };
+      }
     });
   }, [graphData, currView, cwlValue, selectedCCRHorizonDate, horizonDateRange]);
   
+  // Helper function to get tooltip renderer with current currTab value
+  const getLoadTooltipRenderer = () => ({
+    renderer: ({ datum }: any) => {
+      const label = currTab === "Load Wise" ? "Load" : "Pending CCR Quantity";
+      return `
+        <div style="
+          background: white;
+          color: #000;
+          padding: 12px 16px;
+          min-width: 120px;
+          text-align: center;
+          border-radius: 6px;
+          box-shadow: 0 0 6px rgba(0,0,0,0.15);
+        ">
+          <div style="color:#555; font-weight:600; font-size:12px; margin-bottom:4px;">
+            ${label}
+          </div>
+          <div style="font-size:12px;">${datum.load}</div>
+        </div>
+      `;
+    }
+  });
 
   const [chartoptions, setChartOptions] = useState<any>({
     series: [
@@ -184,19 +198,10 @@ const GraphView = ({Viewtabs, currView, setCurrView,selectedCCR, horizonData, gr
         fill: '#F4BD8E',
         stroke: '#F4BD8E',
         legendItemName: 'Load',
-        tooltip: {
-          renderer: ({ datum }: any) => {
-
-            return `<div style="background: white; color: #000; padding: 8px;">
-              <div style="color:black", font-weight:500;>${datum.type}</div>  
-              <div> ${datum.load}</div>
-            </div>`;
-          }
-        },
-        // Only show this series for non-holiday items
+        tooltip: getLoadTooltipRenderer(),
         itemStyler: ({ datum }: any) => {
           if (datum.type === 'holiday') {
-            return { fillOpacity: 0, strokeOpacity: 0 }; // Hide for holidays
+            return { fillOpacity: 0, strokeOpacity: 0 };
           }
           return {
             fill: '#F4BD8E',
@@ -204,7 +209,7 @@ const GraphView = ({Viewtabs, currView, setCurrView,selectedCCR, horizonData, gr
           };
         },
       },
-       {
+      {
         type: 'bar',
         xKey: 'date',
         yKey: 'load',
@@ -213,17 +218,9 @@ const GraphView = ({Viewtabs, currView, setCurrView,selectedCCR, horizonData, gr
         visible: true,
         fill: '#999999',
         stroke: '#999999',
-         legendItemName: 'Holiday',
+        legendItemName: 'Holiday',
         name:'holiday',
-        tooltip: {
-          renderer: ({ datum }: any) => {
-            return `<div style="background: white; color: #000; padding: 8px;">
-              <div style="color:black", font-weight:500;>${datum.type}</div> 
-              <div> ${datum.load}</div>
-            </div>`;
-          }
-        },
-        // Only show this series for holiday items
+        tooltip: getLoadTooltipRenderer(),
         itemStyler: ({ datum }: any) => {
           if (datum.type === 'holiday') {
             return {
@@ -231,7 +228,7 @@ const GraphView = ({Viewtabs, currView, setCurrView,selectedCCR, horizonData, gr
               stroke: '#999999',
             };
           }
-          return { fillOpacity: 0, strokeOpacity: 0 }; // Hide for non-holidays
+          return { fillOpacity: 0, strokeOpacity: 0 };
         },
       },
       {
@@ -249,11 +246,22 @@ const GraphView = ({Viewtabs, currView, setCurrView,selectedCCR, horizonData, gr
           enabled: false  
         },
         tooltip: {
-          renderer: ({ datum }: any) =>
-            `<div style="background: white; color: #000; padding: 8px;">
-              <div style="color:#FF5959">Past</div>
-              <div> ${datum.past}</div>
-            </div>`
+          renderer: ({ datum }: any) => `
+            <div style="
+              background: white;
+              color: #000;
+              padding: 12px 16px;
+              min-width: 100px;
+              text-align: center;
+              border-radius: 6px;
+              box-shadow: 0 0 6px rgba(0,0,0,0.15);
+            ">
+              <div style="color:#FF5959; font-weight:600; font-size:12px; margin-bottom:4px;">
+                Past
+              </div>
+              <div style="font-size:12px;">${datum.past}</div>
+            </div>
+          `
         },
         itemStyler: ({ datum }: any) =>
           datum.past ? {} : { fillOpacity: 0, strokeOpacity: 0 }
@@ -275,11 +283,22 @@ const GraphView = ({Viewtabs, currView, setCurrView,selectedCCR, horizonData, gr
           enabled: false  
         },
         tooltip: {
-          renderer: ({ datum }: any) =>
-            `<div style="background: white; color: #000; padding: 8px;">
-              <div style="color:#820f4c">Limit</div>
-              <div> ${datum.limit}</div>
-            </div>`
+          renderer: ({ datum }: any) => `
+            <div style="
+              background: white;
+              color: #000;
+              padding: 12px 16px;
+              min-width: 120px;
+              text-align: center;
+              border-radius: 6px;
+              box-shadow: 0 0 6px rgba(0,0,0,0.15);
+            ">
+              <div style="color:#820f4c; font-weight:600; font-size:12px; margin-bottom:4px;">
+                Limit
+              </div>
+              <div style="font-size:12px;">${datum.limit}</div>
+            </div>
+          `
         }
       }
     ],
@@ -294,8 +313,9 @@ const GraphView = ({Viewtabs, currView, setCurrView,selectedCCR, horizonData, gr
         type: 'number',
         position: 'left',
         title: {
-          text: currTab=="Load Wise"?'Load in Days':'Pending CCR Quantity',
-          fontSize: 12, fontWeight: 300
+          text: 'Load in Days',
+          fontSize: 12, 
+          fontWeight: 300
         },
         label: { fontSize: 10, fontWeight: 300, color: '#111' }
       }
@@ -306,61 +326,25 @@ const GraphView = ({Viewtabs, currView, setCurrView,selectedCCR, horizonData, gr
     }
   });
 
-  // Update chart data when transformedData changes
+  // CONSOLIDATED: Update tooltips, axes, and crossLines when currTab or cwlValue changes
   useEffect(() => {
-    setChartOptions((prevOptions:any) => ({
-      ...prevOptions,
-      data: transformedData
-    }));
-  }, [transformedData, currTab]);
-
-  // Add gray background using an area series approach - only if selectedAction is 'ANS'
-  useEffect(() => {
-    if (selectedAction === 'ANS' && horizonDateRange ) {
-    
-
-      // Update chart options to include gray area series
-      setChartOptions((prevOptions:any) => ({
-        ...prevOptions,
-        series: [
-          {
-            type: 'area',
-            xKey: 'date',
-            yKey: 'grayArea',
-            yName:'Horizon',
-            fill: 'rgba(200, 200, 200, 0.3)',
-            stroke: 'none',
-            visible: true,
-            showInLegend: false,
-            tooltip: { enabled: false },
-            connectMissingData: false, 
-          },
-          ...prevOptions.series.filter((series: any) => series.yKey !== 'grayArea') // Remove any existing gray area series
-        ],
-        data: transformedData.map((item:any) => ({
-          ...item,
-          grayArea: item.isInHorizonRange ? 8000 : null
-        }))
-      }));
-    } else {
-      // Remove gray area series if selectedAction is not 'ANS'
-      setChartOptions((prevOptions:any) => ({
-        ...prevOptions,
-        series: prevOptions.series.filter((series: any) => series.yKey !== 'grayArea'),
-        data: transformedData
-      }));
-    }
-  }, [horizonDateRange, transformedData, currView]); //selectedAction 
-
-  useEffect(() => {
-    setChartOptions((prevOptions:any) => {
+    setChartOptions((prevOptions: any) => {
       const limitSeries = prevOptions.series.find((s: any) => s.legendItemName === 'Limit');
       const isLimitVisible = limitSeries ? limitSeries.visible : true;
       
       return {
         ...prevOptions,
+        series: prevOptions.series.map((series: any) => {
+          if (series.yKey === 'load') {
+            return {
+              ...series,
+              tooltip: getLoadTooltipRenderer()
+            };
+          }
+          return series;
+        }),
         axes: [
-          prevOptions.axes[0], 
+          prevOptions.axes[0],
           {
             ...prevOptions.axes[1],
             title: {
@@ -384,37 +368,59 @@ const GraphView = ({Viewtabs, currView, setCurrView,selectedCCR, horizonData, gr
         ]
       };
     });
-  }, [cwlValue, currTab, chartoptions.series, currView]);
+  }, [currTab, cwlValue]);
 
+  // Update chart data when transformedData changes
   useEffect(() => {
-    setChartOptions((prevOptions:any) => ({
+    setChartOptions((prevOptions: any) => ({
       ...prevOptions,
-      axes: [
-        prevOptions.axes[0], // Keep category axis
-        {
-          ...prevOptions.axes[1],
-          title: {
-            text: currTab === "Load Wise" ? 'Load in Days' : 'Pending CCR Quantity',
-            fontSize: 12,
-            fontWeight: 300
-          }
-        }
-      ]
+      data: transformedData
     }));
-  }, [currTab]);
-  
+  }, [transformedData]);
+
+  // Add gray background using an area series approach - only if selectedAction is 'ANS'
+  useEffect(() => {
+    if (selectedAction === 'ANS' && horizonDateRange) {
+      setChartOptions((prevOptions: any) => ({
+        ...prevOptions,
+        series: [
+          {
+            type: 'area',
+            xKey: 'date',
+            yKey: 'grayArea',
+            yName:'Horizon',
+            fill: 'rgba(200, 200, 200, 0.3)',
+            stroke: 'none',
+            visible: true,
+            showInLegend: false,
+            tooltip: { enabled: false },
+            connectMissingData: false, 
+          },
+          ...prevOptions.series.filter((series: any) => series.yKey !== 'grayArea')
+        ],
+        data: transformedData.map((item: any) => ({
+          ...item,
+          grayArea: item.isInHorizonRange ? 8000 : null
+        }))
+      }));
+    } else {
+      setChartOptions((prevOptions: any) => ({
+        ...prevOptions,
+        series: prevOptions.series.filter((series: any) => series.yKey !== 'grayArea'),
+        data: transformedData
+      }));
+    }
+  }, [horizonDateRange, transformedData, currView]);
+
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<any>(null);
-
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (scrollContainerRef.current) {
-      console.log(scrollContainerRef.current)
       scrollContainerRef.current.scrollLeft = 0;
     }
   }, [currView]);
-
 
   const downloadChartWithHeader = () => {
     if (containerRef.current) {

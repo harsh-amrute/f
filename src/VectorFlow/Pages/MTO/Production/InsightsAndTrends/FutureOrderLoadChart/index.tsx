@@ -130,7 +130,6 @@ const FutureOrderLoadChart = () => {
     },
   }
 
-
   const formattedFilters = formatFilterJSON(appliedFilters);
 
   const payload = { loadwise: currTab === "Load Wise" ? 2 : 1,
@@ -366,7 +365,6 @@ const getFilterData = async () => {
       horizon_date: selectedCCRHorizon
     }
     };
-    console.log('filters', currentPayload, selectedCCR)
 
   if(isExcelExport) {
     const headersdata = currentGridRef?.current?.api?.getColumnState();
