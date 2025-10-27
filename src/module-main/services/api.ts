@@ -28,10 +28,8 @@ const loadScript = (src: string): Promise<void> => {
     script.src = src;
     script.async = true;
 
-    console.log(script);
 
     script.onload = () => {
-      console.log(`Script loaded successfully: ${src}`);
       resolve();
     };
 
@@ -123,9 +121,7 @@ export namespace MainService {
           try {
             // const user = { ...resp?.data?.data?.user, roles: resp?.data?.data?.roles };  
             const user = {...resp.data?.data?.user,roles: resp.data?.data?.roles};
-            console.log("im hereeeeeeeee",user)
             
-            console.log("user scrippttttt", process.env.REACT_APP_VTM_SCRIPT_URL);
             await loadScript(process.env.REACT_APP_VTM_SCRIPT_URL || '');
             if (user && typeof window.initVTM === "function") {
               window.initVTM(user);
