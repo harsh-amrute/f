@@ -50,7 +50,7 @@ export namespace MainService {
   export const refreshToken = async () => {
     try {
 
-      const response = await axios.post(getrefreshTokenUrl());
+      const response = await axios.post(getrefreshTokenUrl(),null, { _skipAuthRefresh: true } as any);
       return response;
 
     } catch (error) {
@@ -64,7 +64,7 @@ export namespace MainService {
     let toastMessage: string | null = null;
   
     try {
-      await axios.post(getLogoutUrl(), {});
+      await axios.post(getLogoutUrl(), {}, { _skipAuthRefresh: true } as any);
       if (isUnAuth) {
         toastMessage = 'Session expired or invalid. Please log in again.';
       } else {
@@ -118,12 +118,15 @@ export namespace MainService {
           LOCAL_STORAGE_KEY.User_Name,
           await encryptStorageData(resp?.data?.data?.user?.name)
         );
-
-        if (process.env.REACT_VTM_ENABLED ) {
+        
+        if (process.env.REACT_APP_VTM_ENABLED ) {
           try {
-            const user = { ...resp?.data?.data?.user, roles: resp?.data?.data?.roles };  
+            // const user = { ...resp?.data?.data?.user, roles: resp?.data?.data?.roles };  
+            const user = {...resp.data?.data?.user,roles: resp.data?.data?.roles};
+            console.log("im hereeeeeeeee",user)
             
-            await loadScript(process.env.REACT_VTM_SCRIPT_URL || '');
+            console.log("user scrippttttt", process.env.REACT_APP_VTM_SCRIPT_URL);
+            await loadScript(process.env.REACT_APP_VTM_SCRIPT_URL || '');
             if (user && typeof window.initVTM === "function") {
               window.initVTM(user);
             } else {
