@@ -25,7 +25,7 @@ const ViewURLs = (props:{onDelete:(data:any)=>void,onEdit:(data:any)=>void})=>{
 
     const getAllRoles = useCallback(async()=>{
         try{
-            const {data} = await axios.get(`${process.env.REACT_APP_API_HOST}/api/user/all-role/`)
+            const {data} = await axios.get(`${process.env.REACT_APP_API_HOST}api/user/all-role/`)
             setRowData(data.sort((row1:any,row2:any)=>row1.id - row2.id))
         }catch(error:any){
             console.error(error)

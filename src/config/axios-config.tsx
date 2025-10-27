@@ -36,9 +36,9 @@ export const setupAxios = () => {
     async (error) => {
       const originalRequest = error.config;
 
-      if (originalRequest._skipAuthRefresh) {
-        return Promise.reject(error);
-      }
+      // if (originalRequest._skipAuthRefresh) {
+      //   return Promise.reject(error);
+      // }
 
       let errorResp
 
@@ -59,7 +59,7 @@ export const setupAxios = () => {
         
         if (errorResp.code === "ERR_BAD_REQUEST" && errorResp.response.detail === "Authentication credentials were not provided.") {
           loginRedirect();
-          return Promise.reject(errorResp);
+          return errorResp;
         }
         
         if (
@@ -67,7 +67,7 @@ export const setupAxios = () => {
           originalRequest.url.indexOf(MainService.getrefreshTokenUrl()) > -1
         ) {
           loginRedirect()
-          return Promise.reject(errorResp);
+          return;
         }
 
         // If already trying refresh — queue request
@@ -76,7 +76,7 @@ export const setupAxios = () => {
             requestQueue.push({ resolve, reject });
           })
           .then(() => axios(originalRequest)) // ✅ return retry
-          .catch((err) => Promise.reject(err));
+          .catch((err) => err);
         }
 
         originalRequest._retry = true;
@@ -99,7 +99,7 @@ export const setupAxios = () => {
           // Redirect to login
           loginRedirect();
 
-          return Promise.reject(err);
+          return err;
         } finally {
           isRefreshingToken = false;
         }
@@ -107,7 +107,7 @@ export const setupAxios = () => {
 
       if (errorResp.status === 400) {
         // alert(JSON.stringify(error.response.data))
-        return Promise.reject(errorResp);
+        return errorResp;
       }
   
       return Promise.reject(error);
