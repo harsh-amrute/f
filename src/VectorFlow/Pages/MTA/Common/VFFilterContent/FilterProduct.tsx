@@ -63,8 +63,6 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
     { value: "p1", label: PRODUCT_PERMISSION_L1, name: "PF1" },
     { value: "p2", label: PRODUCT_PERMISSION_L2, name: "PF2" },
     { value: "p3", label: PRODUCT_PERMISSION_L3, name: "PF3" },
-    { value: "p4", label: "P4", name: "PF4" },
-    { value: "p5", label: "P5", name: "PF5" },
   ];
 
   const [rowSelections, setRowSelections] = useState<{

@@ -77,8 +77,6 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
     { value: "l1", label: LOCATION_PERMISSION_L1, name: "LF1" },
     { value: "l2", label: LOCATION_PERMISSION_L2, name: "LF2" },
     { value: "l3", label: LOCATION_PERMISSION_L3, name: "LF3" },
-    { value: "l4", label: "L4", name: "LF4" },
-    { value: "l5", label: "L5", name: "LF5" },
   ];
 
   const [rowSelections, setRowSelections] = useState<{

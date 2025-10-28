@@ -5,7 +5,15 @@ import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCar
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import { useUserData } from "../../../../../context";
-
+import { SupplyChainNodeFilters } from "../VFFilterContent/FilterSupplyChainNode";
+import { HorizonFilter } from "../VFFilterContent/HorizonFilter";
+import { ColorFilters } from "../VFFilterContent/FilterColor";
+import { LocationFilters } from "../VFFilterContent/FilterLocation";
+import { ProductFilters } from "../VFFilterContent/FilterProduct";
+import { AvailabilityFilters } from "../VFFilterContent/FilterAvailability";
+import { AttributesFilters } from "../VFFilterContent/FilterAttributes";
+import { HistroricalFilter } from "../VFFilterContent/HistroricalFilter";
+import { CoverageFilters } from "../VFFilterContent/FilterCoverage";
 import {
   ModalContent,
   FilterLayout,
@@ -15,19 +23,6 @@ import {
   FooterSection,
   FooterButtons,
 } from "./style";
-
-import {
-  SupplyChainNodeFilters,
-  LocationFilters,
-  ProductFilters,
-  AvailabilityFilters,
-  AttributesFilters,
-  ColorFilters,
-  CoverageFilters,
-  HistroricalFilter,
-  HorizonFilter,
-} from "../VFFilterContent/index";
-
 import { RootState } from "../../../../../redux/store/store";
 import { BPRFilterState } from "../../../../../VectorFlow/types/BPR";
 
