@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import {
   FilterGroup,
   FilterColumn,
@@ -148,7 +148,7 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
     if (!searchData || shouldUseLocalData) return [];
 
     try {
-      let results = [];
+      let results: any[] = [];
 
       if (Array.isArray(searchData)) {
         results = searchData;
@@ -203,7 +203,14 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
     );
   };
 
+  const isUpdatingFromInternal = useRef(false);
+
   useEffect(() => {
+    if (isUpdatingFromInternal.current) {
+      isUpdatingFromInternal.current = false;
+      return;
+    }
+
     const parentId = "locationFilter";
     const savedFilters = multiFilter[parentId]?.filters || [];
 
@@ -255,7 +262,7 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
     setRowSelections(restored);
     setRowFilterIndexMap(indexMap);
     setIsInitialized(true);
-  }, [isInitialized, multiFilter?.locationFilter?.filters, setFilterRows]);
+  }, [multiFilter?.locationFilter?.filters, setFilterRows, resetFilterRows]);
 
   const onFilterChange = (
     rowId: number,
@@ -310,6 +317,7 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
         newIndexMap[rowId] = nextFilters.length - 1;
       }
 
+      isUpdatingFromInternal.current = true;
       onMultiFilterChange({
         ...multiFilter,
         [parentId]: {
@@ -328,41 +336,57 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
     const parentId = "locationFilter";
     const existingFilters = (multiFilter[parentId]?.filters ||
       []) as BPRFilter[];
-    const operationFilters = existingFilters.filter(
-      (f) => !f.name.startsWith("LF6")
-    );
     const locationFilters = existingFilters.filter((f) => f.name === "LF6");
-
-    const idx = rowFilterIndexMap[rowId];
-
-    const nextFilters = operationFilters.slice();
-    const newIndexMap = { ...rowFilterIndexMap };
-
-    if (typeof idx === "number" && idx >= 0 && idx < nextFilters.length) {
-      nextFilters.splice(idx, 1);
-
-      Object.keys(newIndexMap).forEach((k) => {
-        const rid = Number(k);
-        if (rid === rowId) return;
-        if (newIndexMap[rid] > idx) newIndexMap[rid] = newIndexMap[rid] - 1;
-      });
-    }
 
     handleRemoveRow(rowId);
     setRowSelections((prev) => {
-      const copy = { ...prev };
-      delete copy[rowId];
-      return copy;
-    });
-    delete newIndexMap[rowId];
-    setRowFilterIndexMap(newIndexMap);
+      const updated = { ...prev };
+      delete updated[rowId];
 
-    onMultiFilterChange({
-      ...multiFilter,
-      [parentId]: {
-        ...multiFilter[parentId],
-        filters: [...nextFilters, ...locationFilters],
-      },
+      const remainingRowIds = Object.keys(updated)
+        .map(Number)
+        .sort((a, b) => a - b);
+
+      const newFilters: BPRFilter[] = [];
+      const newIndexMap: Record<number, number> = {};
+
+      remainingRowIds.forEach((rid, newIdx) => {
+        const current = updated[rid];
+        if (
+          current?.column &&
+          current?.operation &&
+          (current.operation.value === "hasvalue" ||
+            current.operation.value === "hasnovalue" ||
+            (current.value !== undefined && current.value !== ""))
+        ) {
+          newFilters.push({
+            attributeName: current.column.value,
+            operator: current.operation.value,
+            value:
+              current.operation.value === "hasvalue"
+                ? "hasvalue"
+                : current.operation.value === "hasnovalue"
+                ? "hasnovalue"
+                : current.value,
+            label: current.column.label,
+            name: current.column.name,
+          });
+          newIndexMap[rid] = newIdx;
+        }
+      });
+
+      setRowFilterIndexMap(newIndexMap);
+
+      isUpdatingFromInternal.current = true;
+      onMultiFilterChange({
+        ...multiFilter,
+        [parentId]: {
+          ...multiFilter[parentId],
+          filters: [...newFilters, ...locationFilters],
+        },
+      });
+
+      return updated;
     });
   };
 
@@ -392,6 +416,7 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
       name: "LF6",
     }));
 
+    isUpdatingFromInternal.current = true;
     const updatedMultiFilter: BPRFilterState = {
       ...multiFilter,
       [parentId]: {
@@ -413,7 +438,7 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
       } catch (error) {
         console.error("Search failed:", error);
       }
-    } 
+    }
   };
 
   const handleKeyPress = (event: React.KeyboardEvent) => {
@@ -436,6 +461,7 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
       (f) => !f.name.startsWith("LF6")
     );
 
+    isUpdatingFromInternal.current = true;
     const updatedMultiFilter: BPRFilterState = {
       ...multiFilter,
       [parentId]: {
@@ -535,7 +561,8 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
                 />
               </DropDownWrapper>
               <div style={{ display: "flex", alignItems: "center" }}>
-                <IconWrapper theme_ui={user.user.theme_ui}
+                <IconWrapper
+                  theme_ui={user.user.theme_ui}
                   style={{
                     opacity: isRowComplete(row.id) ? 0 : 1,
                     cursor: isRowComplete(row.id) ? "default" : "pointer",

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import {
   FilterGroup,
   FilterColumn,
@@ -7,7 +7,8 @@ import {
   DropDownRow,
   IconWrapper,
 } from "./style";
-import Select, { components, MultiValue, ActionMeta } from "react-select";
+import Select, { components } from "react-select";
+import type { MultiValue, ActionMeta } from "react-select";
 import {
   useThemeStyles,
   useColorOptionStyles,
@@ -19,7 +20,10 @@ import { useUserData } from "../../../../../context";
 import { BPRFilter, BPRFilterState } from "../../../../../VectorFlow/types/BPR";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/store/store";
-import { useGetAllSKUs, useSearchSKUDescription } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
+import {
+  useGetAllSKUs,
+  useSearchSKUDescription,
+} from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
 
 interface ProductFilterProps {
@@ -86,12 +90,12 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
   const [hasSearched, setHasSearched] = useState(false);
 
   const { data: skuData, isLoading: isSkuDataLoading } = useGetAllSKUs();
-  
-  const { 
-    data: searchData, 
-    isLoading: isSearchLoading, 
+
+  const {
+    data: searchData,
+    isLoading: isSearchLoading,
     refetch: triggerSearch,
-    isFetching: isSearchFetching 
+    isFetching: isSearchFetching,
   } = useSearchSKUDescription(manualSearchQuery);
 
   const colorStyles = useColorThemeStyles({
@@ -114,21 +118,18 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
 
   const customFilterOption = (option: any, inputValue: string) => {
     if (!inputValue) return false;
-
     const searchTerm = inputValue.toLowerCase();
     const optionLabel = option.label.toLowerCase();
     const optionValue = option.value.toLowerCase();
-
     return optionLabel.includes(searchTerm) || optionValue.includes(searchTerm);
   };
 
   const localSKUOptions = useMemo((): SKUOption[] => {
     if (!skuData?.data?.data || !shouldUseLocalData) return [];
-
     return skuData.data.data.map((sku: any) => {
       const label = filterType === "SKU Code" ? sku.sc : sku.sd;
       return {
-        label: label,
+        label,
         value: sku.sc,
         id: sku.sc,
         originalData: sku,
@@ -138,13 +139,11 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
 
   const searchSKUOptions = useMemo((): SKUOption[] => {
     if (!searchData || shouldUseLocalData) return [];
-    
     try {
-      let results = [];
-      
+      let results: any[] = [];
       if (Array.isArray(searchData)) {
         results = searchData;
-      } else if (searchData && typeof searchData === 'object') {
+      } else if (searchData && typeof searchData === "object") {
         if (searchData.data && Array.isArray(searchData.data)) {
           results = searchData.data;
         } else {
@@ -153,25 +152,26 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
       } else {
         results = [];
       }
-      
+
       return results.map((sku: any) => {
         const label = filterType === "SKU Code" ? sku.sc : sku.sd;
         return {
-          label: label,
+          label,
           value: sku.sc,
           id: sku.sc,
           originalData: sku,
         };
       });
     } catch (error) {
-      console.error('Error processing search results:', error);
+      console.error("Error processing search results:", error);
       return [];
     }
   }, [searchData, filterType, shouldUseLocalData]);
 
   const skuOptions = shouldUseLocalData ? localSKUOptions : searchSKUOptions;
-
-  const isLoading = shouldUseLocalData ? isSkuDataLoading : (isSearchLoading || isSearchFetching);
+  const isLoading = shouldUseLocalData
+    ? isSkuDataLoading
+    : isSearchLoading || isSearchFetching;
 
   const CustomOption = (props: any) => {
     const optionStyles = useColorOptionStyles();
@@ -190,20 +190,25 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
     );
   };
 
+  const isUpdatingFromInternal = useRef(false);
+
   useEffect(() => {
+    if (isUpdatingFromInternal.current) {
+      isUpdatingFromInternal.current = false;
+      return;
+    }
+
     const parentId = "productFilter";
     const savedFilters = multiFilter[parentId]?.filters || [];
     const savedSKUFilters = savedFilters.filter((f) => f.name === "PF6");
-    const skuOptionsMap = new Map();
-    localSKUOptions.forEach((option) => {
-      skuOptionsMap.set(option.value, option);
-    });
+    const skuOptionsMap = new Map<string, SKUOption>();
+    localSKUOptions.forEach((option) =>
+      skuOptionsMap.set(option.value, option)
+    );
 
     const restoredSKUs = savedSKUFilters.map((f) => {
-      const existingOption = skuOptionsMap.get(f.value);
-      if (existingOption) {
-        return existingOption;
-      }
+      const existing = skuOptionsMap.get(f.value);
+      if (existing) return existing;
       return {
         value: f.value,
         label: f.label || f.value,
@@ -253,10 +258,10 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
     setRowFilterIndexMap(indexMap);
     setIsInitialized(true);
   }, [
-    isInitialized,
     multiFilter?.productFilter?.filters,
-    setFilterRows,
     localSKUOptions,
+    setFilterRows,
+    resetFilterRows,
   ]);
 
   const onFilterChange = (
@@ -312,6 +317,7 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
         newIndexMap[rowId] = nextFilters.length - 1;
       }
 
+      isUpdatingFromInternal.current = true;
       onMultiFilterChange({
         ...multiFilter,
         [parentId]: {
@@ -330,41 +336,58 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
     const parentId = "productFilter";
     const existingFilters = (multiFilter[parentId]?.filters ||
       []) as BPRFilter[];
-    const operationFilters = existingFilters.filter(
-      (f) => !f.name.startsWith("PF6")
-    );
     const skuFilters = existingFilters.filter((f) => f.name === "PF6");
 
-    const idx = rowFilterIndexMap[rowId];
-
-    const nextFilters = operationFilters.slice();
-    const newIndexMap = { ...rowFilterIndexMap };
-
-    if (typeof idx === "number" && idx >= 0 && idx < nextFilters.length) {
-      nextFilters.splice(idx, 1);
-
-      Object.keys(newIndexMap).forEach((k) => {
-        const rid = Number(k);
-        if (rid === rowId) return;
-        if (newIndexMap[rid] > idx) newIndexMap[rid] = newIndexMap[rid] - 1;
-      });
-    }
-
     handleRemoveRow(rowId);
-    setRowSelections((prev) => {
-      const copy = { ...prev };
-      delete copy[rowId];
-      return copy;
-    });
-    delete newIndexMap[rowId];
-    setRowFilterIndexMap(newIndexMap);
 
-    onMultiFilterChange({
-      ...multiFilter,
-      [parentId]: {
-        ...multiFilter[parentId],
-        filters: [...nextFilters, ...skuFilters],
-      },
+    setRowSelections((prev) => {
+      const updated = { ...prev };
+      delete updated[rowId];
+
+      const remainingRowIds = Object.keys(updated)
+        .map(Number)
+        .sort((a, b) => a - b);
+
+      const newFilters: BPRFilter[] = [];
+      const newIndexMap: Record<number, number> = {};
+
+      remainingRowIds.forEach((rid, newIdx) => {
+        const current = updated[rid];
+        if (
+          current?.column &&
+          current?.operation &&
+          (current.operation.value === "hasvalue" ||
+            current.operation.value === "hasnovalue" ||
+            (current.value !== undefined && current.value !== ""))
+        ) {
+          newFilters.push({
+            attributeName: current.column.value,
+            operator: current.operation.value,
+            value:
+              current.operation.value === "hasvalue"
+                ? "hasvalue"
+                : current.operation.value === "hasnovalue"
+                ? "hasnovalue"
+                : current.value,
+            label: current.column.label,
+            name: current.column.name,
+          });
+          newIndexMap[rid] = newIdx;
+        }
+      });
+
+      setRowFilterIndexMap(newIndexMap);
+
+      isUpdatingFromInternal.current = true;
+      onMultiFilterChange({
+        ...multiFilter,
+        [parentId]: {
+          ...multiFilter[parentId],
+          filters: [...newFilters, ...skuFilters],
+        },
+      });
+
+      return updated;
     });
   };
 
@@ -394,6 +417,7 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
       name: "PF6",
     }));
 
+    isUpdatingFromInternal.current = true;
     const updatedMultiFilter: BPRFilterState = {
       ...multiFilter,
       [parentId]: {
@@ -406,21 +430,20 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
   };
 
   const handleSearchApply = async () => {
-
     if (searchQuery && searchQuery.length >= 2) {
       setHasSearched(true);
       setManualSearchQuery(searchQuery);
-      
+
       try {
         await triggerSearch();
       } catch (error) {
-        console.error('Search failed:', error);
+        console.error("Search failed:", error);
       }
     }
   };
 
   const handleKeyPress = (event: React.KeyboardEvent) => {
-    if (event.key === 'Enter' && !shouldUseLocalData) {
+    if (event.key === "Enter" && !shouldUseLocalData) {
       handleSearchApply();
     }
   };
@@ -439,6 +462,7 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
       (f) => !f.name.startsWith("PF6")
     );
 
+    isUpdatingFromInternal.current = true;
     const updatedMultiFilter: BPRFilterState = {
       ...multiFilter,
       [parentId]: {
@@ -544,7 +568,8 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
                   marginBottom: "2px",
                 }}
               >
-                <IconWrapper theme_ui={user.user.theme_ui}
+                <IconWrapper
+                  theme_ui={user.user.theme_ui}
                   style={{
                     opacity: isRowComplete(row.id) ? 0 : 1,
                     cursor: isRowComplete(row.id) ? "default" : "pointer",
@@ -595,14 +620,8 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
                 options={shouldUseLocalData ? filteredOptions : skuOptions}
                 styles={{
                   ...colorStyles,
-                  menu: (base) => ({
-                    ...base,
-                    minWidth: "620px",
-                  }),
-                  input: (base) => ({
-                    ...base,
-                    color: "#333",
-                  }),
+                  menu: (base) => ({ ...base, minWidth: "620px" }),
+                  input: (base) => ({ ...base, color: "#333" }),
                 }}
                 components={{
                   Option: CustomOption,
@@ -661,10 +680,7 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
                     { value: "SKU Code", label: "SKU Code" },
                     { value: "SKU Description", label: "SKU Description" },
                   ]}
-                  value={{
-                    value: filterType,
-                    label: filterType,
-                  }}
+                  value={{ value: filterType, label: filterType }}
                   onChange={handleFilterTypeChange}
                 />
               </div>
