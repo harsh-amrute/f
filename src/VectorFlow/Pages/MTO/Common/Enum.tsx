@@ -70,7 +70,9 @@ export enum UIGridCode {
         "ProdStplAndFullKit" = 210,
         "ProdElapsedTime" = 211,
         "ProdOrderAtRisk" = 212,
-        "ProdOrderBalance" = 213,
+    "ProdOrderBalance" = 213,
+        
+    "prodFutureLoadChart" = 214,
 
     // POOGI
         "PoogiReasonForDelayedOrders" = 300,
@@ -98,7 +100,9 @@ export enum FilterPageName {
     Prod_STPL_And_FullKits="Prod_STPL_And_FullKits",
     Prod_Order_Balance="Prod_Order_Balance",
     Prod_Order_At_Risk="Prod_Order_At_Risk",
-    Prod_Order_Rescheduling="Prod_Order_Rescheduling",
+    Prod_Order_Rescheduling = "Prod_Order_Rescheduling",
+    
+    Future_Order_Load_Chart='Future_Order_Load_Chart',
 
     Poogi_Reason_For_Delayed_Orders="Poogi_Reason_For_Delayed_Orders",
     Poogi_OTIF_Analysis= "Poogi_OTIF_Analysis",

@@ -616,6 +616,12 @@ export const listMenuParent: any = [
             role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
           },
           {
+            name: "Future Order Load",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: '/mto/production-planning-scheduling/insight-and-trends/future-order-load-chart',
+            role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
+          },
+          {
             name: "FOL Summary",
             img: "/assets/img/nav/arrow_down.svg",
             url: "/mto/production-planning-scheduling/insights-and-trends/fol-summary",
@@ -852,7 +858,7 @@ export const listMenuParent: any = [
             img: "/assets/img/nav/arrow_down.svg",
             url: '/mto/manufacturing-intelligence-hub/delivery-performance/lead-time',
             role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
-          }
+          },
 
         ],
 
@@ -951,6 +957,20 @@ export const listMenuParent: any = [
             url: '/mto/manufacturing-intelligence-hub/improvement-areas/resource-wip-profile',
             role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
           },
+        ]
+      },
+      {
+        name: "navbar.listMenuParent.manufacturingHub.futureorderloadchart",
+        img: "/assets/img/nav/arrow_down.svg",
+        url: "",
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+        child: [
+          {
+            name: "navbar.listMenuParent.manufacturingHub.futureorderloadchart",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: '/mto/manufacturing-intelligence-hub/future-order-load-chart',
+            role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
+          }
         ]
       }
     ],

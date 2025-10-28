@@ -202,5 +202,11 @@ export const APIFilterConfig = {
             res: true,
             cus: true
         },
+        'Future_Order_Load_Chart': {
+            mjr : false,
+            or: true,
+            res: false,
+            cus: true
+        }
     }
 };
