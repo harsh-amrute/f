@@ -2,7 +2,6 @@ import { useQuery,useMutation } from '@tanstack/react-query'
 import { BPRDataPayload, GetDailyDataPayload, SubmitBPRRemarkPayload } from '../../../../../VectorFlow/types/BPR';
 
 import { BPRService } from './api'
-import { useState } from 'react';
 import axios from 'axios';
 
 
