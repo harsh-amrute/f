@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router'
 import { UserDataContext, useUserData } from '../../../context';
 import { listMenuParent } from "../NavbarMenu/listMenu";
 import { notifyError } from '../../../helpers/notify';
-import { useUser } from '../../../UserDataContext';
 
 interface AuthenticationTemplateProps {
   isAnonymous: boolean
