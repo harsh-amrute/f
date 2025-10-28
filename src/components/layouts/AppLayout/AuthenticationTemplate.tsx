@@ -2,7 +2,7 @@ import React, { type PropsWithChildren, useEffect, useRef, useState } from 'reac
 import { getRedirecting, loginRedirect } from '../../../helpers/utils'
 import { MainService } from '../../../module-main/services/api'
 import { useNavigate } from 'react-router'
-import { UserDataContext } from '../../../context';
+import { UserDataContext, useUserData } from '../../../context';
 import { listMenuParent } from "../NavbarMenu/listMenu";
 import { notifyError } from '../../../helpers/notify';
 import { useUser } from '../../../UserDataContext';
@@ -51,55 +51,53 @@ const AuthenticatedTemplate = (
   Pick<AuthenticationTemplateProps, 'loadingComponent' | 'setMenuItem'>
   >
 ) => {
-  const navigate = useNavigate()
-  const [loading, setLoading] = useState(true)
-  const [isSideBarOpen, toggleSidebar] = useState<boolean>(false)
-  const { userData, setUserData } = useUser();
-  const { children, loadingComponent: Loading } = props;
-  
-  useEffect(() => {
-    const verifyUserSession = async () => {
-      try {
-        if (getRedirecting()) return;
 
-        const response = await MainService.getProfile();
-        setUserData(response.data.data);
-        props.setMenuItem(getSelectedMenuItem(response.data.data.roles.permission));
-        
-      } catch (err) {
-          loginRedirect(navigate); 
-      } finally {
+  console.log("this is mounting....");
+  const {user, setUser}  = useUserData();
+  const { children, loadingComponent: Loading } = props;
+  const [loading,setLoading] = useState(false);
+
+  const navigate = useNavigate();
+
+   
+    useEffect(() => {
+      const verifyUserSession = async () => {
+        try {
+          if (getRedirecting()) return;
+  
+          const response = await MainService.getProfile();
+          console.log("user in authentication",user);
+          setUser(response.data.data);
+          if(response.data.data){
+            console.log("response Data", response.data.data);
+            console.log()
+            props.setMenuItem(getSelectedMenuItem(response.data.data.roles.permission));      
+          }  
+        } catch (err) {
+            console.log("errr", err);
+            loginRedirect(navigate); 
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      if (!user && !getRedirecting()) {
+        verifyUserSession();
+      } else {
         setLoading(false);
       }
-    };
+    }, []);
 
-    if (!userData && !getRedirecting()) {
-      verifyUserSession();
-    } else {
-      setLoading(false);
-    }
-  }, []);
 
-  const changeColorTheme = (color: string) => {
 
-    if(userData){
-
-      const newUserData: any = {...userData}
-      newUserData.user.theme_ui = color
-      
-      setUserData(newUserData);
-    }
+  if(!user){
+    return Loading;
   }
-
-  if (!userData && loading) {
-    return Loading
-  }
-
-  if (userData) {
+  if (user) {
     return (
-      <UserDataContext.Provider value={{ user: userData, changeColorTheme,isSideBarOpen:isSideBarOpen,toggleSideBar:toggleSidebar }}>
+      <>
         {children}
-      </UserDataContext.Provider>
+      </>
     )
   }
 
