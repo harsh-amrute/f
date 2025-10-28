@@ -242,7 +242,7 @@ const FutureOrderLoadChart = () => {
 
   const onSubmit = async () => {
     if (selectedCCR == undefined || selectedAction == undefined || !fromDate || !toDate) {
-      notifyError("Please select all filters")
+      notifyError("Please select CCR, Action, and Date filters")
       return;
     }
     

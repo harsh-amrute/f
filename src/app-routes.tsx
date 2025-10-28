@@ -241,7 +241,6 @@ const lazyLoad = (children?: React.ReactNode, userData?:any) => {
 
   const urlCurrent = window.location.pathname
 
-
   if (urlAllPage.includes(urlCurrent)) {
     if (newUrlPermiss.includes(urlCurrent)) {
       return (
@@ -847,7 +846,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<FutureOrderLoadChart />)
+          element: lazyLoad(<FutureOrderLoadChart />, userData)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -1202,7 +1201,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<FutureOrderLoadChart />)
+          element: lazyLoad(<FutureOrderLoadChart />, userData)
         }
       ]
     },

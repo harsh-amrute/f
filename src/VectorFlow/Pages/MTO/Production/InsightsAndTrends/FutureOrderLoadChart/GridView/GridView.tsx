@@ -18,27 +18,32 @@ const GridView = ({ setCurrentGridRef,context, currentGridRef,Viewtabs, columnSt
     const { user } = useUserData();
     const theme_ui = user.user.theme_ui
 
-    const defaultColDef = {
-          autoHeaderHeight: true,
-          filter: "agTextColumnFilter",
-          floatingFilter: true,
-          enableRowGroup: true,
-          floatingFilterComponentParams: { suppressFilterButton: true },
-          tooltipComponent: LoadTagTooltip,
-          initialWidth: 110,
-          cellStyle: {
-              'text-align': 'center',
-              'height': '50px',
-              "font-style": "normal",
-              "font-variant": "normal",
-              "font-size": "12px",
-              "font-family": "Roboto",
-              'text-overflow': 'ellipsis',
-              'white-space': 'nowrap',
-              'resizable': 'true',
-  
-      },
-    }
+  const agGridProps = {
+    defaultColDef: {
+      autoHeaderHeight: true,
+      filter: "agMultiColumnFilter",
+      floatingFilter: true,
+      enableRowGroup: true,
+      floatingFilterComponentParams: { suppressFilterButton: false },
+      tooltipComponent: LoadTagTooltip,
+      initialWidth: 110,
+
+    },
+    cellStyle: {
+        'text-align': 'center',
+        'height': '50px',
+        "font-style": "normal",
+        "font-variant": "normal",
+        "font-size": "12px",
+        "font-family": "Roboto",
+        'text-overflow': 'ellipsis',
+        'white-space': 'nowrap',
+        'resizable': 'true',
+
+    },
+  }
+
+   
         useEffect(() => {
           if (currentGridRef?.current && columnState?.length ) {
             const isLoadWise = currTab === 'Load Wise';
@@ -76,19 +81,15 @@ const GridView = ({ setCurrentGridRef,context, currentGridRef,Viewtabs, columnSt
               );
     }; 
     
-    
-  const customPage = () => (
-    <div style={{ display: 'flex', justifyContent: 'end', gap: '1rem', width: '100%',paddingBottom: '3px' }}>
-      <CustomPageSizeInput
-        savePageSize={savePageSize}
-        userPageSize={userPageSize}
-      />
-    </div>
-  );
+    const customPage = () => (
+      <div style={{ display: 'flex', justifyContent: 'end', gap: '1rem', width: '100%',paddingBottom: '3px' }}>
+        <CustomPageSizeInput
+          savePageSize={savePageSize}
+          userPageSize={userPageSize}
+        />
+      </div>
+    );
 
-
-    
-    
   const getRowStyle = (params: any) => {
     if (params.node.rowIndex % 2 === 0) {
       return { background: "white" };
@@ -96,12 +97,8 @@ const GridView = ({ setCurrentGridRef,context, currentGridRef,Viewtabs, columnSt
     return { background: "#F4F4F4" };
   };
 
-
-  
-
     return (
         <>
-            
             <TabsSection style={{paddingTop:'6px', marginTop:'10px'}}>
                 <ApplyZoomOut>
                     <MyFutureOrderTabsFix>
@@ -115,10 +112,10 @@ const GridView = ({ setCurrentGridRef,context, currentGridRef,Viewtabs, columnSt
             </TabsSection>
             
             <VFTableWrapper style={{height: '72vh', marginTop: '20px', paddingLeft: '25px'}}>
-                <VFTable 
+          <VFTable 
+            {...agGridProps}
                     columnDefs={colDef}
                     rowData={rowData}
-                    defaultColDef={defaultColDef}
                     getRowStyle={getRowStyle}
                     tooltipHideDelay={100000}
                     gridOptions={{
@@ -150,7 +147,7 @@ const GridView = ({ setCurrentGridRef,context, currentGridRef,Viewtabs, columnSt
                     onGridReady={(params: any) => {
                       params.api.autoSizeAllColumns();
                         setCurrentGridRef(gridRef);
-                        }}
+                      }}
                     onFilterChanged={()=>{Object.keys((currentGridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
                 />
             </VFTableWrapper>

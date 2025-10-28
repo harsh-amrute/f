@@ -473,7 +473,7 @@ const GraphView = ({Viewtabs, currView, setCurrView, selectedCCR, horizonData, g
         <SCHorizontalDivider />
         <ApplyZoomOut style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', zoom: 0.6, paddingBottom: '10px' }}>
           <MyFutureOrderTabsFix>
-            <VFFloatingTab  style={{minWidth:'0px' }}
+            <VFFloatingTab
               handleClick={(e) => setCurrView(e.id)}
               tabs={Viewtabs}
               defaultTab={Viewtabs.findIndex((tab:any) => tab.id === currView) || 0}
