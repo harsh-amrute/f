@@ -36,9 +36,9 @@ export const setupAxios = () => {
     async (error) => {
       const originalRequest = error.config;
 
-      // if (originalRequest._skipAuthRefresh) {
-      //   return Promise.reject(error);
-      // }
+      if (originalRequest._skipAuthRefresh) {
+        return Promise.reject(error);
+      }
 
       let errorResp
 

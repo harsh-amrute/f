@@ -2,9 +2,8 @@ import React, { type PropsWithChildren, useEffect, useRef, useState } from 'reac
 import { getRedirecting, loginRedirect } from '../../../helpers/utils'
 import { MainService } from '../../../module-main/services/api'
 import { useNavigate } from 'react-router'
-import { UserDataContext, useUserData } from '../../../context';
+import { useUserData } from '../../../context';
 import { listMenuParent } from "../NavbarMenu/listMenu";
-import { notifyError } from '../../../helpers/notify';
 
 interface AuthenticationTemplateProps {
   isAnonymous: boolean
