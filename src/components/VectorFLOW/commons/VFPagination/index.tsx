@@ -19,7 +19,10 @@ export interface VFPaginationProps{
     style?:CSSProperties,
     resetGridRef?: any,
     isDisabled?:any,
-    isClearGridFilter?:boolean
+    isClearGridFilter?:boolean,
+    customPageSizeEnabled?:any,
+    userPageSize?:number,
+    savePageSize?:(pageSize:number)=>void
     
 }
 

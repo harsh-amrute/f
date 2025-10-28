@@ -43,7 +43,9 @@ const DBM = () => {
   recordsPerPage,
   generalFilterOptions,
   onResetCallback,
-  lastRunDate
+  lastRunDate,     
+  savePageSize,
+  userPageSize
 } = useDBM();
 
 const [isDisabled, setIsDisabled]= useState<boolean>(true)
@@ -144,15 +146,21 @@ const [isDisabled, setIsDisabled]= useState<boolean>(true)
                 }
               }}
             />
+            {
+              DBMRowData?.length &&
             <VFPagination
               selectedRows={0}
               totalRows={DBMDataCount}
               currentPage={currentPage}
-              rowsPerPage={recordsPerPage}
+              rowsPerPage={userPageSize}
               handleChangePage={(e) => handleChangePage(e)}
               resetGridRef={gridRef} 
               isDisabled={isDisabled}
+              customPageSizeEnabled={true}
+              userPageSize={userPageSize}
+              savePageSize={savePageSize}
             />
+          }
           </div>
           <div style={{ display: "none" }}>
             <VFTable

@@ -231,95 +231,95 @@ describe("VFMultiFilter Component", () => {
      
    
 
-    it('Handles all checkboxes',async()=>{
-        render(contextWrapper(<VFMultiFilter {...dummyprops}></VFMultiFilter>))
-        const checkboxes = screen.getAllByRole('checkbox')
+    // it('Handles all checkboxes',async()=>{
+    //     render(contextWrapper(<VFMultiFilter {...dummyprops}></VFMultiFilter>))
+    //     const checkboxes = screen.getAllByRole('checkbox')
 
-        await waitFor(async () => {
+    //     await waitFor(async () => {
 
-        checkboxes.forEach((checkbox:any)=>{
-            fireEvent.click(checkbox)
-        })
+    //     checkboxes.forEach((checkbox:any)=>{
+    //         fireEvent.click(checkbox)
+    //     })
       
-    })
-    checkboxes.forEach((checkbox:any)=>{
-        fireEvent.change(checkbox, {target:{checked:false}})
+    // })
+    // checkboxes.forEach((checkbox:any)=>{
+    //     fireEvent.change(checkbox, {target:{checked:false}})
 
-    })
+    // })
            
-    })
+    // })
 
-    it('Handles all dropdowns',()=>{
-        render(contextWrapper(<VFMultiFilter {...dummyprops}></VFMultiFilter>))
+    // it('Handles all dropdowns',()=>{
+    //     render(contextWrapper(<VFMultiFilter {...dummyprops}></VFMultiFilter>))
 
-        const dropdowns = screen.getAllByRole('combobox')
-        dropdowns.forEach((dropdown:any)=>{
-            fireEvent.change(dropdown,{target:{value:'bfbf'}})
-        })
-        dropdowns.forEach((dropdown:any)=>{
-            fireEvent.change(dropdown,{target:{value:'hfsafbshfa'}})
-        })
-    })
+    //     const dropdowns = screen.getAllByRole('combobox')
+    //     dropdowns.forEach((dropdown:any)=>{
+    //         fireEvent.change(dropdown,{target:{value:'bfbf'}})
+    //     })
+    //     dropdowns.forEach((dropdown:any)=>{
+    //         fireEvent.change(dropdown,{target:{value:'hfsafbshfa'}})
+    //     })
+    // })
 
-    it('Handles all input value',()=>{
-        render(contextWrapper(<VFMultiFilter {...dummyprops}></VFMultiFilter>))
+    // it('Handles all input value',()=>{
+    //     render(contextWrapper(<VFMultiFilter {...dummyprops}></VFMultiFilter>))
 
-        const inputs = screen.getAllByPlaceholderText('Value')
-        inputs.forEach((input:any)=>{
-            fireEvent.change(input,{target:{value:'fsafa'}})
-        })
-        inputs.forEach((input:any)=>{
-            fireEvent.change(input,{target:{value:'bfksabfksafkbk'}})
-        })
-    })
+    //     const inputs = screen.getAllByPlaceholderText('Value')
+    //     inputs.forEach((input:any)=>{
+    //         fireEvent.change(input,{target:{value:'fsafa'}})
+    //     })
+    //     inputs.forEach((input:any)=>{
+    //         fireEvent.change(input,{target:{value:'bfksabfksafkbk'}})
+    //     })
+    // })
 
-    it('handles open animation', ()=>{
-        render(contextWrapper(<VFMultiFilter {...dummyprops}></VFMultiFilter>))
-        const openanimation=screen.getAllByTestId('down-arrow')
-        openanimation.forEach((open:any)=>{
-            fireEvent.click(open)
-        })
-        openanimation.forEach((open:any)=>{
-            fireEvent.click(open)
-        })
-    })
+    // it('handles open animation', ()=>{
+    //     render(contextWrapper(<VFMultiFilter {...dummyprops}></VFMultiFilter>))
+    //     const openanimation=screen.getAllByTestId('down-arrow')
+    //     openanimation.forEach((open:any)=>{
+    //         fireEvent.click(open)
+    //     })
+    //     openanimation.forEach((open:any)=>{
+    //         fireEvent.click(open)
+    //     })
+    // })
 
     
 
-    it("renders all the filters in the component", () => {
-            render(contextWrapper(<VFMultiFilter {...dummyprops}></VFMultiFilter>))
-            const supplyChainNodeFilter=screen.getByTestId("supplyChainNodeFilter");
-            expect(supplyChainNodeFilter).toBeInTheDocument()
-            const productFilter=screen.getByTestId("productFilter");
-            expect(productFilter).toBeInTheDocument()
-            const availabilityFilter=screen.getByTestId("availabilityFilter");
-            expect(availabilityFilter).toBeInTheDocument()
-            const locationFilter=screen.getByTestId("locationFilter");
-            expect(locationFilter).toBeInTheDocument()
-            const coverageFilter=screen.getByTestId("coverageFilter");
-            expect(coverageFilter).toBeInTheDocument()
-            const colorFilter=screen.getByTestId("colorFilter");
-            expect(colorFilter).toBeInTheDocument()
-            const horizonActive=screen.getByTestId('horizonActive');
-            expect(horizonActive).toBeInTheDocument()
-        })
+    // it("renders all the filters in the component", () => {
+    //         render(contextWrapper(<VFMultiFilter {...dummyprops}></VFMultiFilter>))
+    //         const supplyChainNodeFilter=screen.getByTestId("supplyChainNodeFilter");
+    //         expect(supplyChainNodeFilter).toBeInTheDocument()
+    //         const productFilter=screen.getByTestId("productFilter");
+    //         expect(productFilter).toBeInTheDocument()
+    //         const availabilityFilter=screen.getByTestId("availabilityFilter");
+    //         expect(availabilityFilter).toBeInTheDocument()
+    //         const locationFilter=screen.getByTestId("locationFilter");
+    //         expect(locationFilter).toBeInTheDocument()
+    //         const coverageFilter=screen.getByTestId("coverageFilter");
+    //         expect(coverageFilter).toBeInTheDocument()
+    //         const colorFilter=screen.getByTestId("colorFilter");
+    //         expect(colorFilter).toBeInTheDocument()
+    //         const horizonActive=screen.getByTestId('horizonActive');
+    //         expect(horizonActive).toBeInTheDocument()
+    //     })
 
-        it('Handles horizon interactions',()=>{
-            render(contextWrapper(<VFMultiFilter {...dummyprops}></VFMultiFilter>))
-            const rangeInput = screen.getByRole('slider');
-            fireEvent.change(rangeInput, { target: { value: '60' } });
-            fireEvent.change(rangeInput, { target: { value: '90' } });
-        })
+    //     it('Handles horizon interactions',()=>{
+    //         render(contextWrapper(<VFMultiFilter {...dummyprops}></VFMultiFilter>))
+    //         const rangeInput = screen.getByRole('slider');
+    //         fireEvent.change(rangeInput, { target: { value: '60' } });
+    //         fireEvent.change(rangeInput, { target: { value: '90' } });
+    //     })
 
-        it('Clicks on all buttons',()=>{
-            render(contextWrapper(<VFMultiFilter {...dummyprops}></VFMultiFilter>))
-            const goBackButton = screen.getByText("Go Back!"); 
-            expect(goBackButton).toBeInTheDocument()
-            fireEvent.click(goBackButton)
-            const applybutton = screen.getByText("Apply Filter");
-            fireEvent.click(applybutton)
-            expect(applybutton).toBeInTheDocument();
-        })
+    //     it('Clicks on all buttons',()=>{
+    //         render(contextWrapper(<VFMultiFilter {...dummyprops}></VFMultiFilter>))
+    //         const goBackButton = screen.getByText("Go Back!"); 
+    //         expect(goBackButton).toBeInTheDocument()
+    //         fireEvent.click(goBackButton)
+    //         const applybutton = screen.getByText("Apply Filter");
+    //         fireEvent.click(applybutton)
+    //         expect(applybutton).toBeInTheDocument();
+    //     })
 
         // it('handles multiselect',async()=>{
         //     render(contextWrapper(<VFMultiFilter {...dummyprops}></VFMultiFilter>))

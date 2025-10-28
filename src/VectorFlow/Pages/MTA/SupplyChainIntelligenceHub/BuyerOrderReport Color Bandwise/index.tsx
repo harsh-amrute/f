@@ -51,7 +51,9 @@ const BuyerOrderReportColorBandwise = ()=>{
         lastRunDate,
         isRemarkHistoryToolTipOpen,
         remarkHistory,
-        onCloseRemarkHistory
+        onCloseRemarkHistory,
+        savePageSize,
+        userPageSize
     } = useBORColorBandwise()
 
     const [isDisabled, setIsDisabled]= useState<boolean>(true)
@@ -152,10 +154,14 @@ const BuyerOrderReportColorBandwise = ()=>{
                   selectedRows={0}
                   totalRows={recordCount}
                   currentPage={currentPage}
-                  rowsPerPage={parseInt(BOR_COLORBANDWISE_ROWS_PER_PAGE || '100')}
+                  rowsPerPage={userPageSize || parseInt(BOR_COLORBANDWISE_ROWS_PER_PAGE || '100')}
                   handleChangePage={handleChangePage}
                   resetGridRef={ref} 
-                  isDisabled={isDisabled}/>           
+                  isDisabled={isDisabled}  
+                  customPageSizeEnabled={true}
+                    userPageSize={userPageSize}
+                    savePageSize={savePageSize}  
+                    />       
                 <VFSaveRemark onSubmitRemarks={onSubmitRemarks} />
                 </>
              }

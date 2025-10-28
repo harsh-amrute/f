@@ -73,6 +73,7 @@ const mtaState: MTAStore = {
         currentCategory: '',
         currentView: ''
     },
+    lastRunDate: '',
     EnvConfig:[],
 
 }
