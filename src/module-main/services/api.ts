@@ -119,7 +119,6 @@ export namespace MainService {
         
         if (process.env.REACT_APP_VTM_ENABLED ) {
           try {
-            // const user = { ...resp?.data?.data?.user, roles: resp?.data?.data?.roles };  
             const user = {...resp.data?.data?.user,roles: resp.data?.data?.roles, app_name: "VFlow 2.0" };
             
             await loadScript(process.env.REACT_APP_VTM_SCRIPT_URL || '');
