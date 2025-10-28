@@ -52,7 +52,6 @@ const AuthenticatedTemplate = (
   >
 ) => {
 
-  console.log("this is mounting....");
   const {user, setUser}  = useUserData();
   const { children, loadingComponent: Loading } = props;
   const [loading,setLoading] = useState(false);
@@ -66,15 +65,11 @@ const AuthenticatedTemplate = (
           if (getRedirecting()) return;
   
           const response = await MainService.getProfile();
-          console.log("user in authentication",user);
           setUser(response.data.data);
           if(response.data.data){
-            console.log("response Data", response.data.data);
-            console.log()
             props.setMenuItem(getSelectedMenuItem(response.data.data.roles.permission));      
           }  
         } catch (err) {
-            console.log("errr", err);
             loginRedirect(navigate); 
         } finally {
           setLoading(false);

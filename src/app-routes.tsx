@@ -92,7 +92,6 @@ import ManageEnvConfig from './components/VectorFLOW/layouts/VectorAdmin/ManageE
 import ManagePermissions from './components/VectorFLOW/layouts/VectorAdmin/ManagePermissions'
 import ManageUIReportConfig from './components/VectorFLOW/layouts/VectorAdmin/ManageUIReportConfig'
 import ManageUIMDMConfig from './components/VectorFLOW/layouts/VectorAdmin/ManageUIMDMConfig'
-import { useUser } from './UserDataContext'
 import { useUserData } from './context'
 
 // to show loading state for desired page only instead of the entire screen
@@ -253,7 +252,6 @@ const lazyLoad = (children?: React.ReactNode) => {
 }
 
 export const initRoutes = (): RouteObject[] => {
-  const { user: userData } = useUserData();
   const routes: RouteObject[] = []
 
   routes.push({ path: '/login', element: lazyLoad(<Login /> ) })
