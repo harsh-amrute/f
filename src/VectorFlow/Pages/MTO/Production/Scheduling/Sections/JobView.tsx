@@ -89,7 +89,6 @@ const JobView = ({ResourceData}: any) => {
     });
   });
 
-  console.log("TaskData", TaskData);
 
   const colors:any = ResourceData.Workstation_master;
 
