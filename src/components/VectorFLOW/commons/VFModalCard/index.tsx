@@ -23,7 +23,8 @@ interface VFModalProps {
   headerTextColor?:string;
   closeIcon?:string;
   backgroundColor?:string;
-  zoom?:string
+  zoom?:string;
+  absolute?:boolean;
 }
 
 
@@ -38,7 +39,8 @@ const VFModalCard = ({
   headerBgColor,
   headerTextColor,
   backgroundColor,
-  zoom = '1'
+  zoom = '1',
+  absolute
 }: VFModalProps) => {
 
 
@@ -71,7 +73,7 @@ const VFModalCard = ({
                 >
                   <Dialog.Panel className="modal-forced--block">
                     <Dialog.Title as="h3" className="modal-title-forced" style={{backgroundColor:headerBgColor, boxShadow:'0px 5px 10px 0px rgba(110, 107, 107,0.11)', position:'relative', zIndex:'10'}}>
-                    <VFHeaderWrapper headerBgColor={headerBgColor}>
+                    <VFHeaderWrapper headerBgColor={headerBgColor} absolute={absolute}>
                       <SCHeader>
                         {headerIcon.length > 0 && <img src={headerIcon} height={20} width={20} data-testid='vfmodal-img'/>} 
                         <SCTextTitle headerTextColor={headerTextColor}>{headerText}</SCTextTitle>

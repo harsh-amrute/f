@@ -58,7 +58,9 @@ const BPR = ()=>{
         onDeleteFilter,
         lastRunDate,
         generalFilterOptions,
-      onResetCallback
+      onResetCallback,
+      savePageSize,
+      userPageSize,
     } = useBPR();
 
     const [isDisabled, setIsDisabled]= useState<boolean>(true)
@@ -174,17 +176,23 @@ const BPR = ()=>{
             />
               </Wrapper>
               
-
+                {BPRRowData?.length && 
+                <>
                 <VFPagination
                     selectedRows={0}
                     totalRows={recordCount}
                     currentPage={currGridPage}
-                    rowsPerPage={rowsPerPage}
+                    rowsPerPage={userPageSize}
                     handleChangePage={handleOnPageChange}
                     resetGridRef={ref} 
                     isDisabled={isDisabled}
+                    customPageSizeEnabled={true}
+                    userPageSize={userPageSize}
+                    savePageSize={savePageSize}
                 />
                 <VFSaveRemark onSubmitRemarks={onSubmitRemarks} />
+                </>
+                }
               {/* {onSubmitRemarks && (
                  <CustomizedOutlineWrapper style={{ margin: '1rem 0', padding: 0 }}>
                     <VFButtonOutline 

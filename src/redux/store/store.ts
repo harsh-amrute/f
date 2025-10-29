@@ -9,6 +9,36 @@ import { createTransform } from 'redux-persist';
 import persistReducer from 'redux-persist/es/persistReducer';
 import persistStore from 'redux-persist/es/persistStore';
 import storage from 'redux-persist/lib/storage';
+import { encryptStorageData,decryptStorageData} from '../../VectorFlow/Pages/MTO/Common/encryption';
+
+
+const encryptedStorage = {
+  setItem: async (key: string, value: string): Promise<void> => {
+    try {
+      const encryptedValue = await encryptStorageData(value);
+      await storage.setItem(key, encryptedValue);
+    } catch (error) {
+      console.error("Failed to encrypt and set item:", error);
+    }
+  },
+  getItem: async (key: string): Promise<string | null> => {
+    try {
+      const encryptedValue = await storage.getItem(key);
+      if (encryptedValue === null) {
+        return null;
+      }
+      return await decryptStorageData(encryptedValue);
+    } catch (error) {
+      console.error("Failed to get and decrypt item:", error);
+      await storage.removeItem(key);
+      return null;
+    }
+  },
+  removeItem: async (key: string): Promise<void> => {
+    await storage.removeItem(key);
+  },
+};
+
 
 const mdmState:MDMStore = {
     allMasters:[],
@@ -43,6 +73,7 @@ const mtaState: MTAStore = {
         currentCategory: '',
         currentView: ''
     },
+    lastRunDate: '',
     EnvConfig:[],
 
 }
@@ -63,7 +94,7 @@ const MTATransform = createTransform(
 
 const mtaPersistConfig = {
   key: 'mtaEnvConfig',
-  storage,
+  storage: encryptedStorage,
   whitelist: ['EnvConfig'], 
   transforms: [MTATransform],
 };

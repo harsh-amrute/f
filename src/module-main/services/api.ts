@@ -6,6 +6,8 @@ import { LOCAL_STORAGE_KEY } from '../../helpers/constants'
 import { type QueryClient } from '@tanstack/react-query'
 import { isEmpty } from 'lodash'
 import { persistor } from '../../redux/store/store'
+import { encryptStorageData } from '../../VectorFlow/Pages/MTO/Common/encryption'
+import { notifySuccess } from '../../helpers/notify'
 
 const API_USER = 'api/user'
 
@@ -16,69 +18,76 @@ interface Token {
   expiryAt?: number
   apigeeToken: { access_token: string }
 }
+const loadScript = (src: string): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    if (document.querySelector(`script[src="${src}"]`)) {
+      return resolve(); 
+    }
+
+    const script = document.createElement('script');
+    script.src = src;
+    script.async = true;
+
+
+    script.onload = () => {
+      resolve();
+    };
+
+    script.onerror = () => {
+      console.error(`Failed to load script: ${src}`);
+      reject(new Error(`Failed to load script: ${src}`));
+    };
+
+    document.head.appendChild(script);
+  });
+};
 
 export namespace MainService {
-  export const acquireToken = async () => {
-    let token: Token
-    try {
-      token = JSON.parse(
-        localStorage.getItem(LOCAL_STORAGE_KEY.TOKEN_PAYLOAD) || '{}'
-      )
-      // if (token.expiryAt && token.accessToken && token.refreshToken) {
-      //   // minus 20 seconds for network latency
-      //   if (new Date(token.expiryAt - 20 * 1000) > new Date()) {
-      //     return token;
-      //   }
-      //   console.log('token expired, requesting a new token', 'expired at', new Date(token.expiryAt));
-      //   return refreshToken(token.refreshToken);
-      // } else {
-      //   return undefined;
-      // }
-      return isEmpty(token) ? undefined : token
-    } catch {
-      // in case token modified by human
-      return undefined
-    }
-  }
 
   // get a new access_token by refresh_token
   export const refreshToken = async () => {
     try {
-      const { refresh }: Token = JSON.parse(
-        localStorage.getItem(LOCAL_STORAGE_KEY.TOKEN_PAYLOAD) || '{}'
-      )
-      const response = await axios.post<Token>(getrefreshTokenUrl(), {
-        refresh
-      })
-      const token: any = response?.data
-      localStorage.setItem(
-        LOCAL_STORAGE_KEY.TOKEN_PAYLOAD,
-        JSON.stringify(token?.data?.token)
-      )
-      return token?.data?.token
+
+      const response = await axios.post(getrefreshTokenUrl(),null, { _skipAuthRefresh: true } as any);
+      return response;
+
     } catch (error) {
-      console.log(error)
+      console.error("Refresh token failed:", error);
       //  refresh token not valid or expired
       throw error
     }
   }
 
-  export const logout = async (queryClient: QueryClient) => {
-    const { refresh }: Token = JSON.parse(
-      localStorage.getItem(LOCAL_STORAGE_KEY.TOKEN_PAYLOAD) || '{}'
-    )
-
+  export const logout = async (isUnAuth=false, queryClient?: QueryClient,) => {
+    let toastMessage: string | null = null;
+  
     try {
-      // logout from server
-      await axios.post(getLogoutUrl(), { refresh })
+      await axios.post(getLogoutUrl(), {}, { _skipAuthRefresh: true } as any);
+      if (isUnAuth) {
+        toastMessage = 'Session expired or invalid. Please log in again.';
+      } else {
+        toastMessage = 'User logged out successfully';
+      }
+  
+    } catch (error: any) {
+      console.log(error,"error");
+      if (error.response?.status === 401) {
+        toastMessage = 'Session expired or invalid. Please log in again.';
+      } 
     } finally {
-      queryClient.clear()
-      localStorage.removeItem(LOCAL_STORAGE_KEY.TOKEN_PAYLOAD)
-      localStorage.removeItem(LOCAL_STORAGE_KEY.URL_PERMISSION)
-      localStorage.removeItem('isCheckLogin')
-      await persistor.purge();
+      queryClient?.clear();
+      await persistor.purge();  
+      localStorage.clear();
+      sessionStorage.clear();
+      if (typeof window.terminateVTM === 'function') {
+        window.terminateVTM();  
+      }
     }
-  }
+  
+    if (toastMessage) {
+      notifySuccess(toastMessage);
+    }
+  };
 
   export const getrefreshTokenUrl = () => {
     return `/${API_USER}/token/refresh/`
@@ -94,31 +103,39 @@ export namespace MainService {
 
   export const login = async (payload: LoginRequest) => {
     return await axios
+
       .post(`/${API_USER}/login/`, payload)
       .then(async (resp) => {
-        localStorage.setItem(
-          LOCAL_STORAGE_KEY.TOKEN_PAYLOAD,
-          JSON.stringify(resp?.data?.data?.token)
-        )
-        localStorage.setItem(
-          LOCAL_STORAGE_KEY.URL_PERMISSION,
-          JSON.stringify(resp?.data?.data?.url_permission)
-        )
-        localStorage.setItem(
-          LOCAL_STORAGE_KEY.LANDING_PAGE,
-          resp?.data?.data?.landing_page
-        )
+      
         localStorage.setItem(
           LOCAL_STORAGE_KEY.User_ID,
-          resp?.data?.data?.user?.id
-        )
+         await encryptStorageData(resp?.data?.data?.user?.id)
+        );
+
         localStorage.setItem(
           LOCAL_STORAGE_KEY.User_Name,
-          resp?.data?.data?.user?.name
-        )
-        return await Promise.resolve(resp)
-      })
-  }
+          await encryptStorageData(resp?.data?.data?.user?.name)
+        );
+        
+        if (process.env.REACT_APP_VTM_ENABLED ) {
+          try {
+            const user = {...resp.data?.data?.user,roles: resp.data?.data?.roles, app_name: "VFlow 2.0" };
+            
+            await loadScript(process.env.REACT_APP_VTM_SCRIPT_URL || '');
+            if (user && typeof window.initVTM === "function") {
+              window.initVTM(user);
+            } else {
+              console.warn("VTM initialization failed: User or initVTM not available.");
+            }
+          } catch (scriptError) {
+            console.error("Could not initialize VTM due to a script loading error.", scriptError);
+          }
+        }
+        return await Promise.resolve(resp);
+      });
+  };
+
+
 
   export const forgotPassword = async (payload: { email: string }) => {
     return await axios.post(`/${API_USER}/send-email-reset-pwd/`, payload)

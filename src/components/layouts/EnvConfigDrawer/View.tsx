@@ -10,9 +10,22 @@ import { notifyError } from '../../../helpers/notify'
 import { useGetAllEnvironmentConfiguration } from '../../../VectorFlow/Services/MTA/MDM'
 import { GridRef } from '../../../VectorFlow/types/MDM'
 import { GridFilterWrapper, TextBtn } from '../../../VectorFlow/Pages/MTO/Common/VFPagination/styles'
+import { useDispatch } from 'react-redux'
+import { UPDATE_ENV_CONFIG } from '../../../redux/actions/MTA'
 
-
-const ViewURLs = (props:{onEdit:(data:any)=>void})=>{
+ type EnvConfig = {
+    Id: number;
+    ConfigKey: string;
+    ConfigValue: string;
+    Description: string;
+    Category: string; 
+    };
+ const initialConfig = {
+        EnvProductPermissionArray: [],
+        EnvLocationPermissionArray: []
+    };
+    
+const ViewEnvConfig = (props:{onEdit:(data:any)=>void})=>{
 
     const {
         onEdit
@@ -22,14 +35,31 @@ const ViewURLs = (props:{onEdit:(data:any)=>void})=>{
     const ref = useRef<GridRef>();
     const [isDisabled, setIsDisabled]= useState<boolean>(true)
     const themeUi = user.user.theme_ui
-
+    const dispatch = useDispatch();
     const [rowData,setRowData] = useState<Array<any>>([])
     const {mutateAsync : getAllEnvConfiguration} = useGetAllEnvironmentConfiguration();
     const getAllEnvConfig = useCallback(async()=>{
         try{
             const response = await getAllEnvConfiguration();
-            const data = response?.data?.data;
-            setRowData(data.sort((row1:any,row2:any)=>row1.id - row2.id))
+            const data : EnvConfig[]  = response?.data?.data;
+            
+            const configMap = data.reduce((map: any, item: EnvConfig) => {
+                map[item.ConfigKey] = item.ConfigValue;
+                if (item.Category === 'ProductPermission') {
+                    map.EnvProductPermissionArray.push(item.ConfigValue);
+                } else if (item.Category === 'LocationPermission') {
+                    map.EnvLocationPermissionArray.push(item.ConfigValue);
+                }
+                return map;
+            }, JSON.parse(JSON.stringify(initialConfig)));
+
+            dispatch(UPDATE_ENV_CONFIG(configMap));
+
+
+            const filteredData = data.filter(item => 
+                item.Category !== "Filters"
+            );
+            setRowData(filteredData.sort((row1:any,row2:any)=>row1.id - row2.id));
         }catch(error:any){
             console.error(error)
             notifyError("Server Went Unresponsive")
@@ -53,6 +83,7 @@ const ViewURLs = (props:{onEdit:(data:any)=>void})=>{
     useEffect(()=>{
         getAllEnvConfig()
     },[])
+
 
     if(isLoading){
         return (
@@ -152,4 +183,4 @@ const ViewURLs = (props:{onEdit:(data:any)=>void})=>{
     )
 }
 
-export default ViewURLs
+export default ViewEnvConfig

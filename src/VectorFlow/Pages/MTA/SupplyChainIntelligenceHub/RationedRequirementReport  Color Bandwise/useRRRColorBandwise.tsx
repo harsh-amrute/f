@@ -95,19 +95,19 @@ const useRRRColorBandwise = () => {
     RRR_COLORBANDWISE_ROWS_PER_PAGE || "100"
   );
 
-   
+  const [userPageSize , setUserPageSize]  = useState<number>(RRR_COLORBANDWISE_ROWS_PER_PAGE?parseInt(RRR_COLORBANDWISE_ROWS_PER_PAGE):50)  
 
   const [initialColumnState, setInitialColumnState] = useState<any>(undefined);
   const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      await handleGetRecordsCount();
-      await getRRRColorBandWiseUiConfig();
-      await loadGridData(currentPage);
-    };
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     await handleGetRecordsCount();
+  //     await getRRRColorBandWiseUiConfig();
+  //     await loadGridData(currentPage);
+  //   };
+  //   fetchData();
+  // }, []);
 
   const getRRRColorBandWiseUiConfig = async () => {
     try {
@@ -196,10 +196,10 @@ const useRRRColorBandwise = () => {
     setRecordsCount(resultCount?.data?.data[0]?.count || 0);
   };
 
-  const loadGridData = async (pageNo: any, filter?: any) => {
+    const loadGridData = async (pageNo:any,filter?:any , pageSize?:any)=>{
     const payload = {
       filters: filter || currFilter,
-      paginationParameter: { pageNumber: pageNo, recordsPerPage: rowsPerPage },
+      paginationParameter: { pageNumber: pageNo, recordsPerPage: pageSize || userPageSize || rowsPerPage || 100 },
     };
     const result = await getData(payload);
     setRowData(result?.data.data);
@@ -246,6 +246,7 @@ const useRRRColorBandwise = () => {
   }
 
   const onApplyFilter = async (filter: any) => {
+    await getRRRColorBandWiseUiConfig();
     await handleGetRecordsCount(filter);
     await loadGridData(1, filter);
     setCurrFilter(filter);
@@ -367,6 +368,11 @@ const onExportToExcelCallBack=async(pageNumber:number)=>{
     return convertUiConfigToOptions(RRRColorBandWiseColumns);
   }, [RRRColorBandWiseColumns]);
 
+  
+    const savePageSize = async( pageSize:number)=>{
+        setUserPageSize(pageSize)
+        await loadGridData(currentPage,currFilter, pageSize);
+    }
   return {
     isSideBarOpen,
     RRRColorBandWiseColumns,
@@ -393,7 +399,9 @@ const onExportToExcelCallBack=async(pageNumber:number)=>{
     ref,
     generalFilterOptions,
     setCurrentPage,
-    onResetCallback
+    onResetCallback,
+    savePageSize,
+    userPageSize
   };
 };
 

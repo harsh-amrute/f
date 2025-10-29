@@ -1,14 +1,24 @@
 import styled from 'styled-components'
 
-export const VFHeaderWrapper = styled.div<{headerBgColor:string | undefined}>`
-display:flex;
-flex-direction:row;
-justify-content:space-between;
-align-items:center;
-width:100%;
-height:30px;
-border-radius:0px 0px 12px 12px;
-background-color:${props => props.headerBgColor ? props.headerBgColor : '#FFFFFF'}
+export const VFHeaderWrapper = styled.div<{headerBgColor:string | undefined, absolute:boolean | undefined}>`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: ${(props) => (props.absolute ? '44px' : '40px')};
+  border-radius: ${(props) => (props.absolute ? '12px 12px 0 0' : '0 0 12px 12px')};
+  background-color: ${(props) => props.headerBgColor || '#FFFFFF'};
+  padding: ${(props) => (props.absolute ? '0 12px' : '0')};
+
+  ${(props) =>
+    props.absolute &&
+    `
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+  `}
 `;
 
 export const SCModalContent = styled.div`

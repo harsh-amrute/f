@@ -69,6 +69,8 @@ import { InputCheckBox } from "./styles";
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import BomExcelModal from "../../Common/BomExcelModal";
 import useColDef from "../../../../../hooks/useColDef";
+import { createDynamicColumnDefs } from "../../../../../helpers/gridUtils";
+import CustomHeaderCheckbox from "../../../../../VectorFlow/Pages/MTO/Common/CustomHeaderCheckbox";
 
 
 interface ApiResponse {
@@ -204,31 +206,22 @@ const OverallBmReport = () => {
   );
   const [highAgeing, sethighAgeing] = useState<any>();
   const [tempColdef, setTempColdef] = useState<any>();
-
   const [bomHeader, setBomHeader]= useState([])
   const [bomActive, setBomActive] = useState<any>(undefined);
   const ReportName='BomExplosion'
-
-
-
   const { mutateAsync: getUserUIConfigData, isLoading: isGetStateLoading } =
     useGetUserUIConfigData();
   const { mutateAsync: updateUserUIConfigData, isLoading: isUpdateUserConfig } =
     useUpdateUserUIConfigData();
-
   const {
     mutateAsync: getShortOrderCompleteOrder,
     isLoading: isShortOrderCompleteOrder,
   } = useShortOrderCompleteOrder();
-
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui; 
+  const feature_permission = user?.feature_permission || [];
+  const canShowOrderClosing = feature_permission.includes("Order_Closing");
 
-const feature_permission = user?.feature_permission || [];
-const canShowOrderClosing = feature_permission.includes("Order_Closing");
-
-
-   
   const dispatch = useDispatch();
   const [userPageSize, setUserPageSize] = useState<any>();
 
@@ -261,16 +254,12 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
   const onOpenRemarkHistory = async (data: any) => {
     // Function implementation for remark history
     try {
-      //console.log('data.rm', data.rm.length)
-      // if (data.rm.length === 0) {
       const RemarkHistory = await getPoogIRemarks(data.ok);
-      //console.log('RemarkHistory', RemarkHistory?.data?.data)
       if (RemarkHistory.data?.data === "No remarks are present for the order") {
         data.rm = [];
       } else {
         data.rm = RemarkHistory.data?.data;
       }
-      // }
       setRemarkHistory(data.rm);
       setIsRemarkHistoryOpen(true);
     } catch (e) {
@@ -307,140 +296,29 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
     }
     },[bomActive])
 
-  const setColumnDef = async () => {
-    try {
-      const reportName = "BMReport";
-      const response = await getUIConfigData(reportName);
-      getGroupedColDef(response)
-      
+const setColumnDef = async () => {
+  try {
+    const reportName = "BMReport";
+    const response = await getUIConfigData(reportName);
+    getGroupedColDef(response);
 
-      const modifiedResponse: ApiResponseItem[] = addDefaultAttributes(
-        response?.data?.data
-      );
-
-     
-      const coldef = mapApiResponseToColDefs(modifiedResponse);
-      setColdef(coldef);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-  
-  const addDefaultAttributes = (
-    apiResponse: ApiResponseItem[]
-  ): ApiResponseItem[] => {
-    const modifiedResponse: ApiResponseItem[] = [];
-    const cpMap: { [key: string]: number } = {};
-
-    // Create the specified default objects for the item's ch array
-
-    const defaultSecondObject: any = {
-      cc: "ic",
-      cp: 2,
-      hd: "",
-      v: true,
-      cla: "centre",
-      scc: "ic",
+    const gridOptions = {
+      bomActive: bomActive,
+      orderClosingEnable: canShowOrderClosing,
+      canAddComments: false,
+      onOpenRemarkHistory: onOpenRemarkHistory,
     };
 
-    apiResponse.forEach((item) => {
-      const modifiedItem = { ...item };
-      // Initialize cp for this cc if not already done
-      if (!(item.cc in cpMap)) {
-        cpMap[item.cc] = 3; // Start from 3 since 1 and 2 are taken by default objects
-      }
-      // Add new properties to the outer object
-      modifiedItem.cp = cpMap[item.cc]++;
-      modifiedItem.hd = item.hd || item.cc; // Set hd to the name of cc
-      modifiedItem.cla = "Centre"; // Fixed value
-      modifiedItem.scc = item.scc; // Set scc to the name of ccc
+    const colDefsData = createDynamicColumnDefs(response?.data?.data || [], gridOptions);
 
- 
-  
+    setColdef(colDefsData);
+  } catch (e) {
+    console.log(e);
+    notifyError("Failed to build grid columns.");
+  }
+};
 
-      if (item.cc) {
-        if (item.cc.includes("Dept") && modifiedItem.ch) {
-          modifiedItem.ch = item.ch?.map((child) => {
-            return { ...child, scc: `ddtl.${item.cc}.${child.scc}` };
-          });
-        }
-
-      }
-
-      // If it's the first object, add default items to the ch array
-
-      // Push the modified item to the response array
-      modifiedResponse.push(modifiedItem);
-    });
-    // Add a default object outside each main object
-    const defaultOuterObject: ApiResponseItem = {
-      cc: "chckbx",
-      v: true,
-      cp: 0,
-      hd: "",
-      cla: "Centre",
-      scc: "chckbx",
-      pinned: "left",
-    };
-
-    // Prepend the default outer object
-    modifiedResponse.unshift(defaultOuterObject);
-
-    // Calculate cp for the additional object based on existing cp values
-    const maxCp = Math.max(...modifiedResponse.map((item) => item.cp || 0));
-
-    // Create the additional object to be added at the end
-    const additionalObject: ApiResponseItem = {
-      cc: "",
-      cp: maxCp + 1, // Set cp based on the maximum cp value
-      hd: " ",
-      v: true,
-      cla: "Centre",
-      scc: "rmk",
-      pinned: "right",
-      ch:[]
-    };
-
-
-    // const short_complete_OrderColumn: ApiResponseItem = {
-    //     cc: "oca",
-    //     cp: maxCp + 2,
-    //     hd: "Order Close Action",
-    //     v: true,
-    //     cla: "Centre",
-    //     scc: "oca",
-    //     ch: [],
-    // }
-    const short_complete_OrderColumn: ApiResponseItem = {
-      cc: "",
-      cp: maxCp + 2, // Set cp based on the maximum cp value
-      hd: " ",
-      v: true,
-      cla: "Centre",
-      scc: "",
-      pinned: "right",
-      ch: [
-        {
-          cc: "ct",
-          cp: maxCp + 2,
-          hd: "Order Close Action",
-          v: true,
-          cla: "Centre",
-          scc: "ct",
-          pinned: "right",
-        },
-      ],
-    };
-
-    // Add the additional object to the end of the modified response
-    modifiedResponse.push(additionalObject);
-
-    if (orderClosingEnable) modifiedResponse.push(short_complete_OrderColumn);
-
-    return modifiedResponse;
-  };
-
-  interface ActionOption {
+ interface ActionOption {
     value: string;
     label: string;
   }
@@ -457,46 +335,68 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
   const [totalOrderCount, setTotalOrderCount] = useState<any>(0);
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
 
-  const onCheckBoxToggle = (e: any) => {
-    setIsGridLoading(true);
-    
-    const isChecked = e.target.checked;
 
-     setIsCheckboxChecked(isChecked);
-      if (refGraph2.current?.api) {
-        
-        if (isChecked) {
-          refGraph2.current.api.selectAll();
-          // refGraph2.current.api.selectAllFiltered();          // Selects all filtered rows
-
-        } else {
-          refGraph2.current.api.deselectAll();
-        }
-    }
-    
-  };
+  // AFTER (The fix)
+const onCheckBoxToggle = (e: any) => {
+  setIsGridLoading(true);
+  const isChecked = e.target.checked;
+  setIsCheckboxChecked(isChecked);
   
+  if (refGraph2.current?.api) {
+    if (isChecked) {
+      // This method respects the current filter and only selects visible rows
+      refGraph2.current.api.selectAllFiltered();
+    } else {
+      // This deselects all rows (filtered or not), which is usually the desired behavior on uncheck
+      refGraph2.current.api.deselectAll();
+      setSelectedAction(null);    
+    }
+  }
+};
 
   const toggleCheckBox = () => {
     const selectedNodes = refGraph2?.current?.api?.getSelectedRows();
     const totalRows = refGraph2?.current?.api?.getDisplayedRowCount();
+    
+    // Only update checkbox state if all filtered rows are selected
+     setIsCheckboxChecked(totalRows > 0 && selectedNodes?.length === totalRows);
 
-    setIsCheckboxChecked(totalRows > 0 && selectedNodes?.length === totalRows);
   };
+ 
+const handleActionChange = (option: any) => {
+  setSelectedAction(option);
 
-  const handleActionChange = (option: any) => {
-    setSelectedAction(option);
-    // const mySelectedNodes = refGraph2.current.api.getSelectedRows();
-    const newData: any = [];
-    gridData?.forEach((ele: any) => {
-      const newEle = _.cloneDeep(ele);
-      newEle.oca = option.value;
-      newData.push(newEle);
-    });
+  if (!option) {
+    return;
+  }
 
-    setGridData([...newData]);
-  };
+  // Updating across all pages
+  setMasterSelectedRowData((updated: any) =>
+    updated.map((masterRow: any) => ({
+      ...masterRow,
+      oca: option.value
+    }))
+  );
 
+  // updating currently visible rows
+  if (refGraph2.current?.api) {
+    const currentlyVisibleSelectedRows = refGraph2.current.api.getSelectedRows();
+    const visibleSelectedKeys = new Set(currentlyVisibleSelectedRows.map((row: any) => row.ok));
+
+    setGridData((currentGridData: any) =>
+      currentGridData.map((row: any) => {
+        if (visibleSelectedKeys.has(row.ok)) {
+          return { ...row, oca: option.value };
+        }
+        return row;
+      })
+    ); 
+  }
+};
+
+
+
+  
   const updateActionAPI = async (action: string, order_ids: any) => {
     try {
       if (action === "undo") {
@@ -520,19 +420,42 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
 
   const [showModal, setShowModal] = useState(false); // Renamed state
 
+  const [shortCloseTracker, setShortCloseTracker] = useState(0)
+  const [completeCloseTracker, setCompleteCloseTracker]=useState(0)
+
   const handleRightArrowClick = () => {
-    setShowModal(true); // Open the modal
+    setShowModal(true);
     setTextAction(selectedAction?.label);
-
+  
     if (Array.isArray(masterSelectedRowData)) {
-      const okValues = masterSelectedRowData
-        .map((item) => item?.ok)
-        .filter((value) => value !== undefined);
-
+      let shortCloseCount = 0;
+      let compCloseCount = 0;
+      
+      //  orders that haven't been closed yett
+      const openOrders = masterSelectedRowData.filter(
+        (item) => item?.ct === null || item?.ct === undefined
+      );
+      
+      masterSelectedRowData.forEach((item) => {
+        if (item?.oca === "Short Close" && (item.ct===null || item.ct==undefined) ) {
+          shortCloseCount++;
+        } else if (item?.oca === "Complete Close" && (item.ct===null || item.ct==undefined)) {
+          compCloseCount++;
+        }
+      });
+      
+      setShortCloseTracker(shortCloseCount);
+      setCompleteCloseTracker(compCloseCount);
+      
+      const okValues = openOrders
+        .map((item: any) => item?.ok)
+        .filter((value: any) => value !== undefined);
+    
       setTotalOrderCount(okValues.length);
     }
+    
   };
-
+  
   const handleRightArrowClick1 = (action: string, orderId: string) => {
     setShowModal(true); // Open the modal
     setTextAction(action);
@@ -565,7 +488,7 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
         }
       } else if (Array.isArray(masterSelectedRowData)) {
         const okValues = masterSelectedRowData
-          .map((item) => item?.ok)
+          .map((item) => (item.ct === null || item.ct === undefined || item.ct === "") ? item?.ok : undefined)
           .filter((value) => value !== undefined);
 
         const response = await updateActionAPI(selectedAction.value, okValues);
@@ -582,6 +505,7 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
           setGridData(newGridData);
           setMasterSelectedRowData([]); // after short/complete close reset selected rows
 
+          setSelectedAction(null);
           notifySuccess("Order closed successfully!");
         } else {
           notifySuccess("something went wrong!");
@@ -591,6 +515,7 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
       console.error("Failed to perform action:", error);
     }
   };
+
 
   const undoClicked = async (props: any, orderId: string) => {
     try {
@@ -621,8 +546,9 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
   };
 
   const isRightArrowEnabled =
-    (isCheckboxChecked || masterSelectedRowData.length > 1) &&
+    (isCheckboxChecked  || masterSelectedRowData.length > 1) && 
     selectedAction != null;
+
 
   const DropdownArrowIcon = () => (
     <svg
@@ -658,6 +584,8 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
             justifyContent: "center",
             alignItems: "center",
             boxShadow: "rgba(133, 132, 132, 0.247) -5px 4px 10px",
+            opacity: isPivot ? 0.5 : 1,
+            pointerEvents: isPivot ? 'none' : 'auto',
             gap: "10px",
           }}
         >
@@ -672,7 +600,7 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
             options={actionOptions}
             themeUi={themeUi}
             icon={DropdownArrowIcon}
-            disabled={!isCheckboxChecked}
+            disabled={!isCheckboxChecked && masterSelectedRowData.length < 2}
             placeholder="Select Action"
             value={selectedAction}
             onChange={handleActionChange}
@@ -686,13 +614,13 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
           themeUi={themeUi}
           disabled={false}
           style={{
-            cursor: isRightArrowEnabled ? "pointer" : "not-allowed",
+            cursor: isRightArrowEnabled && !isPivot ? "pointer" : "not-allowed",
             height: "50px",
             width: "60px",
-            borderRadius: "3px",
-            opacity: isRightArrowEnabled ? 1 : 0.5, // Visual cue for disabled
-            pointerEvents: isRightArrowEnabled ? "auto" : "none", // Prevent click when disabled
-          }}
+            borderRadius: "3px",  
+            opacity: isRightArrowEnabled && !isPivot ? 1 : 0.5, 
+            pointerEvents: isRightArrowEnabled && !isPivot ? "auto" : "none",
+            }}
         >
           <img
             src="/assets/img/rightArrowHorizontal.svg"
@@ -700,31 +628,26 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
             width={7}
           />
         </VFButton>
-
-        {/* Confirmation Modal */}
-        {/* <ConfirmationModal
-      key={1}
-        isOpen={showModal}
-        onClose={handleModalClose}
-        onConfirm={handleModalConfirm}
-        title="Close Order"
-        message="Are you sure?"
-        actionText={selectedAction?.label||"action"}
-        orderCount={totalOrderCount}
-      /> */}
       </div>
     </>
   );
 
-  const onSelectChange = (props: any, option: any, index: number) => {
-  
-    const updatedData = { ...props.data, oca: option.value };
-    props.node.setData(updatedData); 
-    props.api.refreshCells({ rowNodes: [props.node], columns: ['oca'], force: true });
 
+  const onSelectChange = (props: any, option: any, index: number) => {
+  const updatedData = { ...props.data, oca: option.value };
+  props.node.setData(updatedData); 
+  props.api.refreshCells({ rowNodes: [props.node], columns: ['oca'], force: true });
+
+
+  setMasterSelectedRowData((currentMasterData:any) => 
+    currentMasterData.map((row:any) => 
+      row.ok === props.data.ok ? { ...row, oca: option.value } : row 
+    )
+  );
 };
 
   const DropDownCellRenderer = (props: any) => {
+
     return (
       <>
         
@@ -840,175 +763,6 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
   const excelColorArr = ["Black", "Red", "White", "Green", "Yellow", "Blue"]
 
 
-  const mapApiResponseToColDefs = (apiResponse: ApiResponseItem[]): any => {
-    const mapChildren: any = (
-      parent: any,
-      children: ApiResponse[]
-    ): ColDefChild[] => {
-      return children.map((child: ApiResponse) => ({
-        field: child.scc.trim(),
-        headerName: child.hd,
-        colId: `${parent}-${child.cc}`,
-        initialHide: !child.v,
-        suppressHeaderFilterButton: true,
-        filter:
-        (child.dt === "number" || child.dt === "decimal")
-          ? "agNumberColumnFilter"
-          : child.dt === "date"
-            ? "agDateColumnFilter"
-              : "agMultiColumnFilter",
-        
-        pinned: child.cc === "ct" ? "right" : null,
-        cellRenderer:
-          child.cc === "ec" && bomActive
-            ? "agGroupCellRenderer"
-            : child.cc === "ic"
-            ? "AgeingCellRenderer"
-            : child.cc === "BPP"
-            ? "colorCellRenderer"
-            : child.cc === "RemarkHistory"
-            ? "RemarkHistoryRenderer"
-            : child.cc === "ct"
-            ? "DropDownCellRenderer"
-            : undefined,
-        minWidth:
-          child.cc === "ec" || child.cc === "ic" || child.scc === "bpp"
-            ? 80
-            : 150,
-        // columnGroupShow: index > 2 ? "open" : undefined,
-        floatingFilter:
-          child.cc === "ec" ? false : child.cc === "ic" ? false : true,
-        valueFormatter: (params: any) => {
-          if (params.value) {
-              const format = (process.env.REACT_APP_NUMBER_FORMAT || '').toUpperCase();
-              const locale = format === 'USA' ? 'en-US' : format === 'IND' ? 'hi-IN' : undefined;
-        
-              if (child.dt === 'number') {
-                  return locale ? params.value.toLocaleString(locale) : params.value;
-              }
-        
-              if (child.dt === 'decimal') {
-                const fixedValue = parseFloat(params.value.toFixed(2)); 
-                return locale ? fixedValue.toLocaleString(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) :fixedValue;
-              }
-        
-              return params.value;
-          }
-        }, 
-        filterParams: {
-          buttons: ['reset'], 
-          comparator: (filterLocalDateAtMidnight: Date, cellValue: any) => {
-            if (!cellValue) return -1;
-          
-            const cellDate = new Date(cellValue);
-            if (isNaN(cellDate.getTime())) return -1;
-          
-            const cellDateOnly = new Date(
-              cellDate.getFullYear(),
-              cellDate.getMonth(),
-              cellDate.getDate()
-            );
-          
-            if (cellDateOnly < filterLocalDateAtMidnight) return -1;
-            if (cellDateOnly > filterLocalDateAtMidnight) return 1;
-            return 0;
-          }
-          
-        },
-        cellRendererParams: child?.hd.includes("Remark") ? {
-          onClick: child?.cc === 'RemarkHistory' ? (data: string) => onOpenRemarkHistory(data) : undefined
-        } : undefined,
-  
-        cellClassRules:
-          child.cc === "BPP" && excelColorArr.reduce(
-            (acc, color) => ({
-              ...acc,
-              [color]: (params: any) => !_.isEmpty(params.data) && params.data?.cl === color
-            }),
-            {}
-          ),
-        cellStyle:
-          child.cc === "Remark"
-            ? {
-                justifyContent: child.cla,
-                backgroundColor: "white",
-                border: "1px solid #b9bdba",
-                color: "black",
-                padding: "1px",
-              }
-            : child.cc === "da"
-            ? {
-                justifyContent: child.cla,
-                color: ColorsMTO.Pink.code,
-              }
-            : {
-                justifyContent: child.cla,
-                paddingRight: child.cla == "right" ? "3rem" : undefined,
-                paddingLeft: child.cla == "left" ? "1rem" : undefined,
-              },
-      }));
-
-    };
-
-    const res = apiResponse.map((section) => (
-      {
-      headerCheckboxSelection: (params:any) => {
-        // Only show if no grouping is applied
-        return section.scc === "chckbx" && params.api.getRowGroupColumns().length === 0;
-      },
-      checkboxSelection: (params:any) => {
-        // Only show on leaf rows, not group rows
-        return section.scc === "chckbx" && params.node && !params.node.group;
-      },
-      // headerCheckboxSelection: section.scc === "chckbx" ? true : undefined,
-      // checkboxSelection: section.scc === "chckbx" ? true : undefined,
-      pinned: section.pinned || null,
-      floatingFilterComponentParams:
-        section.scc === "chckbx" || section.scc == "ic"
-          ? { suppressFilterButton: false }
-          : undefined,
-      suppressHeaderFilterButton:
-        section.scc === "chckbx" || section.scc === "ic" ? true : false,
-      suppressMenu:
-        section.scc === "chckbx" || section.scc === "ic" ? true : false,
-      sortable: section.scc === "chckbx" || section.scc === "ic" ? false : true,
-      maxWidth:
-        section.scc === "chckbx" || section.scc == "ic" ? 60 : undefined,
-      floatingFilter:
-        section.scc === "chckbx" || section.scc == "ic" ? false : undefined,
-      headerName: section.hd,
-      suppressStickyLabel: section.scc === "chckbx" ? undefined : true,
-      colId: section.cc,
-      // pinned: section.scc==="scos"?'right':"",
-
-      cellRenderer:
-        section.cc === "ec" || (section.scc === "chckbx" && bomActive)
-          ? "agGroupCellRenderer"
-          : section.cc === "ic"
-          ? "AgeingCellRenderer"
-          : section.scc == "oca"
-          ? "DropDownCellRenderer"
-          : undefined,
-      
-      openByDefault:
-        section.scc === "chckbx"
-          ? undefined
-          : section.scc === "rmk"
-          ? false
-          : true,
-
-      ////////this could be some problem
-      children:
-        section.scc === "chckbx" || section.scc === "oca"
-          ? undefined
-          : section.ch
-          ? mapChildren(section.cc, section.ch)
-          : undefined,
-    }));
-
-    return res;
-  };
-
   const getFilterData = async () => {
     try {
       const response = await getPageWiseFilterData({
@@ -1030,6 +784,7 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
       AgeingCellRenderer: AgeingCellRenderer,
       RemarkHistoryRenderer: RemarkHistoryRenderer,
       DropDownCellRenderer: DropDownCellRenderer,
+      customHeaderCheckbox: CustomHeaderCheckbox,
     }),
     []
   );
@@ -1128,7 +883,7 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
     setCurrentPage(currPage);
     setIsCheckboxChecked(false);
     getInitialGridData(currPage);
-  }, []);
+  }, [getInitialGridData]);
 
   const savePageSize = (pageSize: any) => {
     if (pageSize) {
@@ -1192,22 +947,25 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
   
     // Create a map for quick access to mergedData items
     const mergedDataMap = new Map(masterSelectedRowData.map((item: any) => [item.ok, item]));
-  
+   
     selectedData.forEach((newItem: any) => {
       if (!mergedDataMap.has(newItem.ok)) {
+
         mergedDataMap.set(newItem.ok, newItem);
         updated = true;
       }
     });
-  
     // Filter out unselected items
-    gridData?.forEach((item: any) => {
-      if (item && item.ok && !selectedKeys.has(item.ok) && mergedDataMap.has(item.ok)) {
+     gridData?.forEach((item: any) => {
+       if (item && item.ok && !selectedKeys.has(item.ok) && mergedDataMap.has(item.ok)) {
+        item.oca = null; 
         mergedDataMap.delete(item.ok);
         updated = true;
+
       }
-    });
-  
+
+     });    
+    
     // Only update state if there's a change
     if (updated) {
       setMasterSelectedRowData(Array.from(mergedDataMap.values()));
@@ -1217,7 +975,7 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
     refGraph2.current.api.refreshCells();  // Refresh cells in the grid
     setIsGridLoading(false);
   };
-  
+
   useEffect(() => {
     if (masterSelectedRowData.length > 0) {
       const selectedOrderKeys: orderkeyObj[] = [];
@@ -1252,7 +1010,7 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
           const element = masterSelectedRowData[index];
           if (element.ok === node.data.ok) {
             node.data.Remark = element.Remark;
-            // node.data.oca = element.oca;
+            node.data.oca = element.oca;
           }
         }
         nodesToSelect.push(node);
@@ -1263,10 +1021,13 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
     toggleCheckBox();
   };
 
-  const onPivotModeChanged = (event: any) => {
-    const isPivotOn = event.api.isPivotMode();
-    setIsPivot(isPivotOn);
-  };
+ 
+const onPivotModeChanged = (event: any) => {
+  const isPivotOn = event.api.isPivotMode();
+  setIsPivot(isPivotOn);
+  
+  event.api.getColumnApi()?.setColumnVisible('chckbx', !isPivotOn);
+};
 
       const detailCellRendererParamsConfig = useMemo(() => {
           const itemNameColumnDef = columnBomDefs.find((a: any) => a.colId === "ItemName");
@@ -1409,7 +1170,7 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
 
   const onExcelExport = () => {
     if (isPivot) {
-      getTempGridData(); 
+      getTempGridData();
     } else {
       if (bomActive) {
         setShowExcelModal(true)
@@ -1418,13 +1179,6 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
       }
     }
   };
-  
-  
-
-
-
-  
-
   useEffect(() => {
     if (tempGridData) {
       const colState = refGraph2.current?.api?.getColumnState();
@@ -1705,6 +1459,8 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
           // message="Are you sure?"
           actionText={textAction}
           orderCount={totalOrderCount}
+          completeCloseTracker={completeCloseTracker}
+          shortCloseTracker={shortCloseTracker}
         />
       </HorizontalViewWrapper>
 

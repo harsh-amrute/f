@@ -69,18 +69,18 @@ const useRRR =()=>{
     const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
     const RRR_ROWS_PER_PAGE = EnvConfig['RRR_ROWS_PER_PAGE'];   
     const rowsPerPage = parseInt(RRR_ROWS_PER_PAGE || '100');
-
+    const [userPageSize , setUserPageSize]  = useState<number>(RRR_ROWS_PER_PAGE?parseInt(RRR_ROWS_PER_PAGE):50)  
     const {date:lastRunDate} = useGetLastRunData()
   
-    useEffect(()=>{       
-        const fetchData = async () => {
-            await getDataCount();
-            await getRRRRowData(currentPage);
-            await getRRRUiConfig();
-            setGeneralFilterOptions(convertUiConfigToOptions(initialColumnState))
-        };
-        fetchData();
-    }, []);
+    // useEffect(()=>{       
+    //     const fetchData = async () => {
+    //         await getDataCount();
+    //         await getRRRRowData(currentPage);
+    //         await getRRRUiConfig();
+    //         setGeneralFilterOptions(convertUiConfigToOptions(initialColumnState))
+    //     };
+    //     fetchData();
+    // }, []);
 
     useEffect(() => {
         const getTableState = async () => {
@@ -130,7 +130,7 @@ const useRRR =()=>{
   
     useEffect(() => {
         if (internalRef && gridState && gridState.columns) {
-            const result = internalRef.api.applyColumnState({ state: gridState.columns, applyOrder: true });
+            const result = internalRef?.api.applyColumnState({ state: gridState.columns, applyOrder: true });
             internalRef?.api.sizeColumnsToFit();
             if (!result) {
                 console.error("Failed to apply column state", result);
@@ -180,7 +180,7 @@ const useRRR =()=>{
         setRRRDataCount(rowDataCount?.data?.recordCount)
     }
 
-    const getRRRRowData= async(pageNo:any)=>{
+    const getRRRRowData= async(pageNo:any , pageSize?:number)=>{
         try{
             if(RRRDataCount===0){
                 await getDataCount(currFilter);
@@ -190,7 +190,7 @@ const useRRR =()=>{
                 filters:currFilter,
                 paginationParameter:{
                     pageNumber:pageNo,
-                    recordsPerPage:parseInt(RRR_ROWS_PER_PAGE || '100')
+                    recordsPerPage:pageSize ||parseInt(RRR_ROWS_PER_PAGE || '100')
                 }
             })
             
@@ -214,12 +214,13 @@ const useRRR =()=>{
             paginationParameter: {
               pageNumber: 1,
               recordsPerPage: parseInt(
-                RRR_ROWS_PER_PAGE || "100"
+                userPageSize || RRR_ROWS_PER_PAGE || "100"
               ),
             },
           });
 
           // setRecordCount(rowData.data.recordCount)
+          await getRRRUiConfig();
           setCurrFilter(filter);
           setCurrentPage(1);
           if(rowData.data.data && Array.isArray(rowData.data.data))setRRRRowData(rowData?.data?.data);
@@ -361,6 +362,10 @@ const useRRR =()=>{
         }
     }
 
+    const savePageSize = async( pageSize:number)=>{
+        setUserPageSize(pageSize)
+        await getRRRRowData(currentPage,pageSize)
+    }
     return {
         isSideBarOpen,
         RRRColumns,
@@ -387,7 +392,9 @@ const useRRR =()=>{
         ref,
         generalFilterOptions,
         onResetCallback,
-        lastRunDate
+        lastRunDate,
+        savePageSize,
+        userPageSize
     }
 }
 

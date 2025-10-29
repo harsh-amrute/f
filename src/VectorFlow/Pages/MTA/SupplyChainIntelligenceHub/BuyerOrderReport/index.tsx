@@ -52,7 +52,9 @@ const BuyerOrderReport = ()=>{
         generalFilterOptions,
         onCloseRemarkHistory,
         onResetCallback,
-        lastRunDate
+        lastRunDate,
+         savePageSize,
+        userPageSize
     } = useBOR()
 
     const [isDisabled, setIsDisabled]= useState<boolean>(true)
@@ -145,18 +147,24 @@ const BuyerOrderReport = ()=>{
                   }}
       
                   />
-                <VFPagination
+              {
+              rowData?.length && 
+              <>
+              <VFPagination
                   selectedRows={0}
                   totalRows={recordCount}
                   currentPage={currentPage}
-                  rowsPerPage={parseInt(BOR_ROWS_PER_PAGE || '100')}
+                  rowsPerPage={userPageSize || parseInt(BOR_ROWS_PER_PAGE || '100')}
                   handleChangePage={(e) => handleChangePage(e)}
                   resetGridRef={ref} 
                   isDisabled={isDisabled} 
+                      customPageSizeEnabled={true}
+                    userPageSize={userPageSize}
+                    savePageSize={savePageSize}
                   />
-
                 <VFSaveRemark onSubmitRemarks={onSubmitRemarks}/>
-
+              </> 
+                }
               </div>
           
           {/* <div style={{ display: 'none' }}>

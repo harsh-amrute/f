@@ -23,15 +23,11 @@ export interface VFTaskBarProps {
     onEditOnlineSave: () => void
     onSaveToDraft: () => void
     onDeleteSelected: () => void
-    onSeasonalityResume: () => void
-    onSeasonalityStop: () => void
     onPhaseInPhaseOutStop: () => void
     onDeleteOnline: () => void
     onDeleteOnlineReset: () => void
     onDeleteOnlineSubmit: () => void
     onDeleteData: () => void
-    disableStopSeasonality: () => boolean
-    disableResumeSeasonality: () => boolean
     enableEditOnlineReset: boolean
     showSubmittedExportError: boolean
     masterId: number
@@ -65,13 +61,9 @@ const VFTaskBar = (props: VFTaskBarProps) => {
         onEditOnlineSave,
         onSaveToDraft,
         onDeleteSelected,
-        onSeasonalityResume,
-        onSeasonalityStop,
         onDeleteOnline,
         onDeleteOnlineReset,
         onDeleteData,
-        disableStopSeasonality,
-        disableResumeSeasonality,
         onPhaseInPhaseOutStop,
         masterId,
         mtoSaveData,
@@ -86,8 +78,6 @@ const VFTaskBar = (props: VFTaskBarProps) => {
     const themeUi = user.user.theme_ui
 
     const width = isSideBarOpen ? "77%" : '97%'
-
-
 
     const getStepperState = (): StepItem[] => {
         switch (masterProgress) {
@@ -285,33 +275,34 @@ const VFTaskBar = (props: VFTaskBarProps) => {
 
     if (mtoSaveData) {
         return (
-            <TaskBarContainer data-testid="taskbar" style={{ width: width }}>
-                <VFTaskBarButtonGroup>
-                    <BackButton />
-                    <VFButtonOutline onClick={onExportData} themeUi={themeUi} disabled={false} width={139}>
-                        Export Data
-                    </VFButtonOutline>
-                    {
-                        isMTOExcludeButton &&
+            <div style={{ zoom: 0.8 }}>
+                <TaskBarContainer data-testid="taskbar" style={{ width: width }}>
+                    <VFTaskBarButtonGroup>
+                        <BackButton />
+                        <VFButtonOutline onClick={onExportData} themeUi={themeUi} disabled={false} width={139}>
+                            Export Data
+                        </VFButtonOutline>
+                        {
+                            isMTOExcludeButton &&
                         
-                        (<VFButton onClick={() => onClearAndExportErrors(false)} themeUi={themeUi} disabled={false} width={183}>
-                            Clear & Export Errors
-                        </VFButton>)
-                    }
-                    <VFButtonOutline onClick={onMTOSaveAsDraft? onMTOSaveAsDraft: () => { return null; }} themeUi={themeUi} disabled={isMTODraftDisabled} width={139}>
-                        Save As Draft
-                    </VFButtonOutline>
-                    <VFButtonOutline onClick={onMTOSaveData && (!isMTOSaveDataDisabled) ? onMTOSaveData : () => {return null;}} themeUi={themeUi} disabled={isMTOSaveDataDisabled} width={139}>
-                        Save As Task
-                    </VFButtonOutline>
-                </VFTaskBarButtonGroup>
-                <div>
+                            (<VFButton onClick={() => onClearAndExportErrors(false)} themeUi={themeUi} disabled={false} width={183}>
+                                Clear & Export Errors
+                            </VFButton>)
+                        }
+                        <VFButtonOutline style={{ display: "none" }} onClick={onMTOSaveAsDraft ? onMTOSaveAsDraft : () => { return null; }} themeUi={themeUi} disabled={isMTODraftDisabled} width={139}>
+                            Save As Draft
+                        </VFButtonOutline>
+                        <VFButtonOutline onClick={onMTOSaveData && (!isMTOSaveDataDisabled) ? onMTOSaveData : () => { return null; }} themeUi={themeUi} disabled={isMTOSaveDataDisabled} width={139}>
+                            Save As Task
+                        </VFButtonOutline>
+                    </VFTaskBarButtonGroup>
+                    <div>
                         <VFStepper
                             items={getStepperState()}
                         />
                     </div>
-
-            </TaskBarContainer>
+                </TaskBarContainer>
+            </div>
         )
     }
 
@@ -458,23 +449,6 @@ const VFTaskBar = (props: VFTaskBarProps) => {
                             items={getStepperState()}
                         />
                     </div>
-                </TaskBarContainer>
-            )
-        case 'seasonality':
-            return (
-                <TaskBarContainer data-testid="taskbar" style={{ width: width }}>
-                    <VFTaskBarButtonGroup>
-                        <BackButton />
-                        <VFButtonOutline themeUi={themeUi} onClick={onSeasonalityResume} disabled={disableResumeSeasonality()}>
-                            Resume
-                        </VFButtonOutline >
-                        <VFButtonOutline onClick={onSaveToDraft} themeUi={themeUi} disabled={masterId > 14} width={139}>
-                            Save as draft
-                        </VFButtonOutline>
-                        <VFButtonOutline themeUi={themeUi} onClick={onSeasonalityStop} disabled={disableStopSeasonality()}>
-                            Stop Selected
-                        </VFButtonOutline>
-                    </VFTaskBarButtonGroup>
                 </TaskBarContainer>
             )
         case 'phaseInPhaseOut':
