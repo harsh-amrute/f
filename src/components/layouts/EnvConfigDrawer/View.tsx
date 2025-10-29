@@ -42,7 +42,24 @@ const ViewEnvConfig = (props:{onEdit:(data:any)=>void})=>{
         try{
             const response = await getAllEnvConfiguration();
             const data : EnvConfig[]  = response?.data?.data;
-            setRowData(data.sort((row1:any,row2:any)=>row1.id - row2.id))
+            
+            const configMap = data.reduce((map: any, item: EnvConfig) => {
+                map[item.ConfigKey] = item.ConfigValue;
+                if (item.Category === 'ProductPermission') {
+                    map.EnvProductPermissionArray.push(item.ConfigValue);
+                } else if (item.Category === 'LocationPermission') {
+                    map.EnvLocationPermissionArray.push(item.ConfigValue);
+                }
+                return map;
+            }, JSON.parse(JSON.stringify(initialConfig)));
+
+            dispatch(UPDATE_ENV_CONFIG(configMap));
+
+
+            const filteredData = data.filter(item => 
+                item.Category !== "Filters"
+            );
+            setRowData(filteredData.sort((row1:any,row2:any)=>row1.id - row2.id));
         }catch(error:any){
             console.error(error)
             notifyError("Server Went Unresponsive")
@@ -66,19 +83,6 @@ const ViewEnvConfig = (props:{onEdit:(data:any)=>void})=>{
     useEffect(()=>{
         getAllEnvConfig()
     },[])
-   useEffect(() => {
-        const configMap = rowData.reduce((map: any, item: EnvConfig) => {
-            map[item.ConfigKey] = item.ConfigValue;
-            if (item.Category === 'ProductPermission') {
-                map.EnvProductPermissionArray.push(item.ConfigValue);
-            } else if (item.Category === 'LocationPermission') {
-                map.EnvLocationPermissionArray.push(item.ConfigValue);
-            }
-            return map;
-        }, JSON.parse(JSON.stringify(initialConfig)));
-
-        dispatch(UPDATE_ENV_CONFIG(configMap));
-    }, [rowData, dispatch]);
 
 
     if(isLoading){

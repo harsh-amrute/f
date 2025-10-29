@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { MainService } from "../../../../module-main/services/api"// Adjust this import path as needed
+import { MainService } from '../../../../module-main/services/api';// Adjust this import path as needed
 import { notifyError } from "../../../../helpers/notify"// Adjust this import path as needed
 
 

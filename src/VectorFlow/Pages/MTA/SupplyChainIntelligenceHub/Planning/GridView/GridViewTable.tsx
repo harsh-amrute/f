@@ -119,7 +119,7 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                                 colDefs={[
                                     {
                                         headerName:"Stock at Parent",
-                                        colId:'sap',
+                                        colId:'slt',
                                         field:'sap'
                                     },
                                     {

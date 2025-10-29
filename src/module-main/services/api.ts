@@ -18,6 +18,29 @@ interface Token {
   expiryAt?: number
   apigeeToken: { access_token: string }
 }
+const loadScript = (src: string): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    if (document.querySelector(`script[src="${src}"]`)) {
+      return resolve(); 
+    }
+
+    const script = document.createElement('script');
+    script.src = src;
+    script.async = true;
+
+
+    script.onload = () => {
+      resolve();
+    };
+
+    script.onerror = () => {
+      console.error(`Failed to load script: ${src}`);
+      reject(new Error(`Failed to load script: ${src}`));
+    };
+
+    document.head.appendChild(script);
+  });
+};
 
 export namespace MainService {
 
@@ -25,7 +48,7 @@ export namespace MainService {
   export const refreshToken = async () => {
     try {
 
-      const response = await axios.post(getrefreshTokenUrl());
+      const response = await axios.post(getrefreshTokenUrl(),null, { _skipAuthRefresh: true } as any);
       return response;
 
     } catch (error) {
@@ -39,7 +62,7 @@ export namespace MainService {
     let toastMessage: string | null = null;
   
     try {
-      await axios.post(getLogoutUrl(), {});
+      await axios.post(getLogoutUrl(), {}, { _skipAuthRefresh: true } as any);
       if (isUnAuth) {
         toastMessage = 'Session expired or invalid. Please log in again.';
       } else {
@@ -56,6 +79,9 @@ export namespace MainService {
       await persistor.purge();  
       localStorage.clear();
       sessionStorage.clear();
+      if (typeof window.terminateVTM === 'function') {
+        window.terminateVTM();  
+      }
     }
   
     if (toastMessage) {
@@ -90,6 +116,21 @@ export namespace MainService {
           LOCAL_STORAGE_KEY.User_Name,
           await encryptStorageData(resp?.data?.data?.user?.name)
         );
+        
+        if (process.env.REACT_APP_VTM_ENABLED ) {
+          try {
+            const user = {...resp.data?.data?.user,roles: resp.data?.data?.roles, app_name: "VFlow 2.0" };
+            
+            await loadScript(process.env.REACT_APP_VTM_SCRIPT_URL || '');
+            if (user && typeof window.initVTM === "function") {
+              window.initVTM(user);
+            } else {
+              console.warn("VTM initialization failed: User or initVTM not available.");
+            }
+          } catch (scriptError) {
+            console.error("Could not initialize VTM due to a script loading error.", scriptError);
+          }
+        }
         return await Promise.resolve(resp);
       });
   };

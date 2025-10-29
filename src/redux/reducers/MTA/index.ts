@@ -56,6 +56,7 @@ const mtaReducer = (initialState:MTAStore) => createReducer(initialState, (build
       .addCase(UPDATE_DAILY_DATA,setDailyData)
       .addCase(UPDATE_GRID_STATE,updateGridState)
       .addCase(UPDATE_PLANNING_DATA,updatePlanningdata)
+      .addCase(UPDATE_LAST_RUN_DATE,updateLastRunDate)
       .addCase(UPDATE_ENV_CONFIG,updateEnvConfig)
   })
 

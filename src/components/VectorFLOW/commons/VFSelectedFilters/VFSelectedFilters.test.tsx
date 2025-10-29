@@ -77,6 +77,16 @@ const mockFilters:BPRFilterState = {
         id:'7',
         label:'General',
         filters:[]
+    },
+    customAttributeFilter:{
+        id:'8',
+        label:'Attribute',
+        filters:[]
+    },
+    horizonFilter: {
+        id:'9',
+        label: 'Horizon',
+        filters: [],
     }
 };
 

@@ -4,7 +4,7 @@ import { useUserData } from "../../../context"
 import { useState } from "react"
 import NavigationTab from "../NavigationTab"
 import ViewUiReportConfig from "./View"
-import EditRole from "./Edit"
+import EditReportConfig from "./Edit"
 
 interface UIReportConfigDrawerProps{
     onClose:()=>void
@@ -27,7 +27,7 @@ const UIReportConfigDrawer = (props:UIReportConfigDrawerProps)=>{
 
     const [activeTab, setActiveTab] = useState(0);
 
-    const onEditRole = (row:any)=>{
+    const onEditReportConfig = (row:any)=>{
         setCurrTab(3); 
         setCurrUIReportConfig(row)
     }
@@ -59,13 +59,13 @@ const UIReportConfigDrawer = (props:UIReportConfigDrawerProps)=>{
             {currTab === 0 && (
                 <Content>
                     <ViewUiReportConfig
-                        onEdit={onEditRole}
+                        onEdit={onEditReportConfig}
                     />
                 </Content>
             )}          
             {currTab === 3 && (
                 <Content>
-                    <EditRole data={currUIReportConfig} cb={resetTab}/>
+                    <EditReportConfig data={currUIReportConfig} cb={resetTab}/>
                 </Content>
             )}
             

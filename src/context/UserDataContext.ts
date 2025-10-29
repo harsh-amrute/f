@@ -15,6 +15,7 @@ export interface Permission {
 
 export interface UserData {
   user: any,
+  setUser?: any,
   changeColorTheme: (color: string) => void,
   isSideBarOpen:boolean,
   toggleSideBar:any
@@ -29,6 +30,7 @@ export const UserDataContext = React.createContext<UserData>({
     role: ''
     
   },
+  setUser: null,
   changeColorTheme: (color) => {return color},
   isSideBarOpen:false,
   toggleSideBar:()=>{return}

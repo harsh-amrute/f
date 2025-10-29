@@ -58,7 +58,9 @@ const BPR = ()=>{
         onDeleteFilter,
         lastRunDate,
         generalFilterOptions,
-      onResetCallback
+      onResetCallback,
+      savePageSize,
+      userPageSize,
     } = useBPR();
 
     const [isDisabled, setIsDisabled]= useState<boolean>(true)
@@ -180,10 +182,13 @@ const BPR = ()=>{
                     selectedRows={0}
                     totalRows={recordCount}
                     currentPage={currGridPage}
-                    rowsPerPage={rowsPerPage}
+                    rowsPerPage={userPageSize}
                     handleChangePage={handleOnPageChange}
                     resetGridRef={ref} 
                     isDisabled={isDisabled}
+                    customPageSizeEnabled={true}
+                    userPageSize={userPageSize}
+                    savePageSize={savePageSize}
                 />
                 <VFSaveRemark onSubmitRemarks={onSubmitRemarks} />
                 </>
