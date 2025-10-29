@@ -9,6 +9,7 @@ import { notifyError, notifySuccess, notifyWarning } from '../../../../../helper
 import OverlayLoader from '../../Common/Loader';
 import { useSearchParams } from 'react-router-dom';
 import { useUserData } from '../../../../../context';
+import { MainSection } from './SchedulingStyles';
 
 
 
@@ -47,7 +48,7 @@ const Scheduling = () => {
         catch(e:any){
             setRunStatus({status: 'FAILED_TO_FETCH', startTime: null, endTime: null, message: null});
             notifyError("Failed to fetch run status");
-            console.log('error', e);
+            console.error('error', e);
         }
     }
 
@@ -76,7 +77,7 @@ const Scheduling = () => {
             case "Final Result":
                 return <FinalResultSection setStep={setStep} finalResult={finalResult}/>
             default:
-                return <div>Upload Step</div>;
+                return null;
         }
     }
 
@@ -89,7 +90,6 @@ const Scheduling = () => {
             const result = await getFinalRunResult();
             if(result.status===200){
                 notifySuccess("Fetched Run Result Successfully");
-                console.log("result", result.data.data);
                 setFinalResult(result.data.data);
                 setSearchParams({ page: "ResourceView" });
                 setStep("Final Result");
@@ -168,7 +168,7 @@ const Scheduling = () => {
         }
         catch(e){
             notifyError("Failed to start the run");
-            console.log('error', e);
+            console.error('error', e);
         }
     }
 
@@ -190,7 +190,7 @@ const Scheduling = () => {
     
 
     return (
-        <div style={{display: 'flex',height: '100%', flexDirection: 'column', justifyContent: 'space-between'}} id='main-content' >
+        <MainSection id='main-content' >
             {
                 finalResultLoading &&
                 <OverlayLoader message='Fetching Run Result...'/>
@@ -204,7 +204,7 @@ const Scheduling = () => {
             {
                 getRunActionBar()
             }
-        </div>
+        </MainSection>
     )
 }
 

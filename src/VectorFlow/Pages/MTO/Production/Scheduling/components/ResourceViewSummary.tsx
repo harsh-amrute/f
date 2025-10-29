@@ -183,7 +183,6 @@ const options = ["Percentage Wise", "Day Wise", "Hrs Wise", "Count Wise"];
   };
 
   useEffect(() => {
-    console.log("active", active);
     setRowData(generateSummaryData());
   }, [active, activeWorkStation, ResourceData]);
 

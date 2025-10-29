@@ -62,7 +62,6 @@ const JobView = ({ResourceData}: any) => {
   });
 
   const RowData = Array.from(new Set(JobData)).map((j: any) => ({ jobId: j }));
-  console.log("RowData", RowData);
 
   const TaskData: {
     jobId: any;

@@ -95,3 +95,10 @@ export const LeftSection = styled.span`
     gap: 24px;
     margin-left: 20px;
 `
+export const MainSection = styled.div`
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: space-between;
+
+`

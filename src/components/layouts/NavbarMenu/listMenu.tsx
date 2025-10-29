@@ -549,7 +549,7 @@ export const listMenuParent: any = [
     app_id : 3,
     lp_img : "/assets/img/Prod-icon.svg",
     rp_img : "/assets/img/Prod-icon1.svg",
-    url: "/production-planning-scheduling/enquiry-response",
+    url: "/mto/production-planning-scheduling/enquiry-response",
     status: false,
     role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater", "BMReportManager","MasterScheduler"],
     avoidHeader: true,
@@ -557,8 +557,8 @@ export const listMenuParent: any = [
       {
         name: "navbar.listMenuParent.prodAndPlanningScheduling.title",
         img: "/assets/img/nav/prod-plan-icon",
-        url: "/production-planning-scheduling/enquiry-response", 
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater", "BMReportManager", "MasterScheduler"],
+        url: "/mto/production-planning-scheduling/enquiry-response", 
+        role: [],
         child: [
           {
             name: "navbar.listMenuParent.prodAndPlanningScheduling.enquiryResponse",

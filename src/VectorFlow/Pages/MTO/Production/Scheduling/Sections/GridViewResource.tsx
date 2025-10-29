@@ -27,7 +27,6 @@ const GridViewResource = ({ResourceData, setExcelGridRef}: any) => {
       });
     });
 
-    console.log('Available task types:', Array.from(taskTypes)); // Debug log
 
     // Define base column structure
     const columnDefs:any = [
