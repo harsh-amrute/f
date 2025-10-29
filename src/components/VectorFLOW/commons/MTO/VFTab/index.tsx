@@ -49,9 +49,9 @@ const VFTab = ({activeMaster,themeUi,onTabChange,onTabClose,newTabTitle,newTabIc
                       zIndex={masters.length-index} 
                       marLeft={index !== 0} 
                       themeUi={themeUi}
-                      onClick={() => { 
-                        onTabChange(master) 
-                      }}
+                      // onClick={() => { 
+                      //   onTabChange(master) 
+                      // }}
                       key={master.id}
                       data-testid="tab-button"
                       >

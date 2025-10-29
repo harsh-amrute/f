@@ -79,6 +79,7 @@ const useResearchInsights = () => {
     const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
     const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
     const RESEARCHINSIGHT_ROWS_PER_PAGE = EnvConfig['RESEARCHINSIGHT_ROWS_PER_PAGE'];
+    const [userPageSize , setUserPageSize]  = useState<number>(RESEARCHINSIGHT_ROWS_PER_PAGE?parseInt(RESEARCHINSIGHT_ROWS_PER_PAGE):50) 
     const [graphs, setGraphs] = useState<Array<ReseachInsightsGraphState>>([
         {
             type: { label: 'Self', value: 'Self' },
@@ -263,7 +264,7 @@ const useResearchInsights = () => {
         setRecordCount(countData.data.recordCount)
     }
 
-    const getRowData = async (filter: any, pageNo: number) => {
+    const getRowData = async (filter: any, pageNo: number , pageSize?:number) => {
         notifyLoader("Loading Grid Data")
         const rowData = await getBPRData({
             id: 1,
@@ -272,7 +273,7 @@ const useResearchInsights = () => {
             filters: filter,
             paginationParameter: {
                 pageNumber: pageNo,
-                recordsPerPage: parseInt(RESEARCHINSIGHT_ROWS_PER_PAGE || '50')
+                recordsPerPage: pageSize || userPageSize|| parseInt(RESEARCHINSIGHT_ROWS_PER_PAGE || '50')
             }
         })
         toast.dismiss()
@@ -312,6 +313,11 @@ const useResearchInsights = () => {
       
         const doesExist = calenderData.slice(0,horizon).find((d)=>isSameDay(d.date,date))
         return doesExist?doesExist.color:'gray'
+    }
+
+    const savePageSize = async( pageSize:number)=>{
+        setUserPageSize(pageSize)
+        await getRowData(currentFilter , currGridPage,pageSize)
     }
 
     function getColorValues(jsonData: any) {
@@ -750,7 +756,9 @@ const useResearchInsights = () => {
         continuousWhite,
         generalFilterOptions,
         onResetCallback,
-        lastRunDate
+        lastRunDate,
+        savePageSize,
+        userPageSize
     }
 }
 

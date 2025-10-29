@@ -155,7 +155,7 @@ const DueDateQuotation = () => {
         const DBRSettingsData = await getDBRsettingsData();
         const DBRSettings = DBRSettingsData.data?.data;
         if (DBRSettings && DBRSettings.length) {
-          const isDDQFromUI = DBRSettings.find((data: any) => data.flag === "IsDDQFromUI")?.value == "1" || true;
+          const isDDQFromUI = DBRSettings.find((data: any) => data.flag === "IsDDQFromUI")?.value == "0" ? false : true;
           if (!isDDQFromUI) {
             setShowWarningModal(true);
           } else {

@@ -43,6 +43,7 @@ const useElephantOrders= ()=>{
     const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
     const ELEPHANT_ORDER_ROWS_PER_PAGE = EnvConfig['ELEPHANT_ORDER_ROWS_PER_PAGE'];   
     const rowsPerPage = parseInt(ELEPHANT_ORDER_ROWS_PER_PAGE|| '100');
+    const [userPageSize , setUserPageSize]  = useState<number>(ELEPHANT_ORDER_ROWS_PER_PAGE?parseInt(ELEPHANT_ORDER_ROWS_PER_PAGE):50)  
     const {mutateAsync:submitDueDates} = useSubmitDueDates();
     const [editedDueDateRows, setEditedDueDateRows] = useState<any[]>([]);
 
@@ -307,7 +308,7 @@ const useElephantOrders= ()=>{
 
     
 
-    const GetEOData= async (PageNo:any)=>{
+    const GetEOData= async (PageNo:any , pageSize?:any )=>{
         try{
             if(EOCount===0){
                 await GetDataCount(currFilter);
@@ -317,7 +318,7 @@ const useElephantOrders= ()=>{
                 filters:currFilter,
                 paginationParameter:{
                     pageNumber:PageNo,
-                    recordsPerPage:rowsPerPage
+                    recordsPerPage:pageSize || userPageSize
                 }
             })
             setRowData(VDRData.data.data);
@@ -447,7 +448,7 @@ const useElephantOrders= ()=>{
                 filters:filter ,
                 paginationParameter:{
                     pageNumber:1,
-                    recordsPerPage:parseInt(ELEPHANT_ORDER_ROWS_PER_PAGE|| '100')
+                    recordsPerPage:userPageSize || parseInt(ELEPHANT_ORDER_ROWS_PER_PAGE|| '100')
                 }
             })
             setEOCount(DataCount.data.data[0].count);
@@ -456,7 +457,7 @@ const useElephantOrders= ()=>{
                 filters:filter ,
                 paginationParameter:{
                     pageNumber:1,
-                    recordsPerPage:parseInt(ELEPHANT_ORDER_ROWS_PER_PAGE || '100')
+                    recordsPerPage:userPageSize || parseInt(ELEPHANT_ORDER_ROWS_PER_PAGE || '100')
                 }
             })
             
@@ -478,6 +479,10 @@ const useElephantOrders= ()=>{
         onApplyFilter(updatedFilter)
     }
         
+    const savePageSize = async( pageSize:number)=>{
+        setUserPageSize(pageSize)
+        await GetEOData(currentPage, pageSize);
+    }
 
     return{
         isSavedDataLoading,
@@ -507,7 +512,9 @@ const useElephantOrders= ()=>{
         ref,
         generalFilterOptions,
         onResetCallback,
-        onSubmitDueDate
+        onSubmitDueDate,
+        savePageSize,
+        userPageSize
     }
     
 

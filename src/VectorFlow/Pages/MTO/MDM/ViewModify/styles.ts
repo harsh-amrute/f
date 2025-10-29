@@ -382,6 +382,7 @@ export const PoogiAddButtonWrapper = styled.div`
 
 interface ToggleProps {
     isActive: boolean;
+    isDisabled?: boolean;
   }
   
 export const ToggleContainer = styled.div<ToggleProps>`
@@ -390,7 +391,8 @@ export const ToggleContainer = styled.div<ToggleProps>`
     width: 120px;
     padding: 5px;
     border-radius: 50px;
-    cursor: pointer;
+    cursor:  ${(props) => (props.isDisabled ? "not-allowed" : "pointer")};
+    opacity:  ${(props) => (props.isDisabled ? 0.5 : 1)};
     border 3px solid;
     border-color: ${(props) => (props.isActive ? "#800040" : "#a0a0a0")};
     transition: background-color 0.3s ease;

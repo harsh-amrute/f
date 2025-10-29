@@ -37,5 +37,10 @@ export const useGetDynamicReleaseExcelData = () => {
     })
 }
 
+export const useFetchFOLGap = () => {
+    return useMutation(async (params: any) => {
+        return DynamicReleaseManagementService.FetchFOLGap(params);
+    })
+}
 
 
