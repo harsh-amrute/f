@@ -2574,27 +2574,50 @@ export const generateAndMapColumns = (reportName:string,fields:any ,includeRemar
 }
 
 
-const commonTooltip= {
-  enabled:true,
-  renderer:(params:any)=>{
-      const datum = params.datum
-      return {
-      title: `${params.yName}`,
-      content: `${datum[params.xKey]}: ${datum[params.yKey]}`,
-      }
-  },
-}
+const commonTooltip = {
+  enabled: true,
+  renderer: (params: any) => {
+    const { datum, xKey, yKey, yName } = params;
 
-const pieTooltip={
-  enabled:true,
-  renderer:(params:any)=>{
-      const datum = params.datum
-      return {
-      title: `${datum.color}`,
-      content: `${datum[params.angleKey]}%`,
-      }
+    return {
+      html: `
+        <div style="background:#6C696A; border-radius:6px; overflow:hidden; min-width:180px;">
+          <div style="color:white; padding:8px 10px; background-color:#6C696A; border-bottom:1px dashed #fff; text-align:center;">
+            <strong>${datum[xKey]}</strong>
+          </div>
+          <div style="color:white; background-color:#6C696A; padding:10px;">
+            <div style="display:flex; align-items:center; margin-bottom:6px;">
+              <div style="margin-right:10px; height:3px; width:15px; background-color:#E53935;"></div>
+              ${yName}: ${datum[yKey]}
+            </div>
+          </div>
+        </div>
+      `,
+    };
   },
-}
+};
+
+
+const pieTooltip = {
+  enabled: true,
+  renderer: (params: any) => {
+    const { datum, angleKey, labelKey, color } = params;
+
+    return {
+      html: `
+        <div style="background:#6C696A; border-radius:6px; overflow:hidden; text-align:center; min-width:140px;">
+          <div style="color:white; padding:6px 10px; background-color:${color}; font-weight:bold;">
+            ${datum[labelKey] || 'Slice'}
+          </div>
+          <div style="color:white; padding:8px 10px; background-color:#6C696A;">
+            ${datum[angleKey]}%
+          </div>
+        </div>
+      `,
+    };
+  },
+};
+
 
 
 export const createAxesForBarCharts = (keys:any,Labels:any)=>{
