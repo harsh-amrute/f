@@ -71,7 +71,7 @@ const AvailabilityTrend = ({
 
     const chartProps = { ...chartParams1, series: series };
     const customizedChartProps = generateChartOptions(data, chartProps);
-    customizedChartProps.data = data;
+    // customizedChartProps.data = data;
     setOptions(customizedChartProps);
 
   };
