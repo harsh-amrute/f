@@ -7,7 +7,10 @@ export const chartParams1 = {
         Xaxis:'Date',
         Yaxis:'Availability %'
     },
-    palette:{},
+    palette:{
+        fills:["#333333","#666666","#808080","#a6a6a6","#cccccc","#d8d8d8",],
+        strokes:[ "#ffffff","#ffffff","#ffffff","#ffffff","#ffffff","#ffffff",]
+    },
     legend: {
         enabled:true,
         position: 'bottom',
