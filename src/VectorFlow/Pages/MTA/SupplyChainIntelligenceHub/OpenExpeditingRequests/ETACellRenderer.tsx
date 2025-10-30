@@ -1,18 +1,16 @@
-import { format } from "date-fns"
-import { ETACellRendererWrapper,ETACellValue } from "./styles"
+import { format } from "date-fns";
+import { ETACellRendererWrapper, ETACellValue } from "./styles.css";
 
- const ETACellRenderer = (params:any)=>{
+const ETACellRenderer = (params: any) => {
+  const date = new Date(params.value);
 
+  const formattedDate = format(date, "P");
 
-    const date = new Date(params.value)
+  return (
+    <div className={ETACellRendererWrapper}>
+      <p className={ETACellValue}>{formattedDate}</p>
+    </div>
+  );
+};
 
-    const formattedDate = format(date,'P')
-
-    return(
-        <ETACellRendererWrapper>
-            <ETACellValue>{formattedDate}</ETACellValue>
-        </ETACellRendererWrapper>
-    )
-}
-
-export default ETACellRenderer
+export default ETACellRenderer;

@@ -1,20 +1,21 @@
-import { SCPageForbidden, PermissionForbiddenIcon } from './styles'
+import { SCPageForbidden, PermissionForbiddenIcon } from "./styles.css";
 
 const PageForbidden = () => {
   const params = new URLSearchParams(window.location.search);
   const URLPermission = params.get("URLPermission");
   return (
-    <SCPageForbidden>
-      {URLPermission ?
-        <PermissionForbiddenIcon
-          src="/assets/img/error-403.svg"
-        /> :
-        <PermissionForbiddenIcon
-          src="/assets/img/error-403-page.svg"
-        />
-      }
-    </SCPageForbidden>
-  )
-}
+    <div className={SCPageForbidden}>
+      <img
+        className={PermissionForbiddenIcon}
+        src={
+          URLPermission
+            ? "/assets/img/error-403.svg"
+            : "/assets/img/error-403-page.svg"
+        }
+        alt="Forbidden"
+      />
+    </div>
+  );
+};
 
-export default PageForbidden
+export default PageForbidden;

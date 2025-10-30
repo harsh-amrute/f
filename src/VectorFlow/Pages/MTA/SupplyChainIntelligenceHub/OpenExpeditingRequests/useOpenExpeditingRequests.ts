@@ -1,6 +1,6 @@
 import { CSSProperties, useMemo, useState,useEffect ,useRef} from "react";
 
-import {toast} from 'react-toastify'
+import {toast} from "react-toastify/unstyled"
 
 import useViewPort from "../../../../../hooks/useViewPort";
 

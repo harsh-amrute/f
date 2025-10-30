@@ -1,5 +1,7 @@
 import { useState, useRef } from "react";
-import * as ManualStyle from "./styles";
+import * as ManualStyle from "./styles.css";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
+import { manualBtnBgVar } from "./styles.css";
 import axios from "axios";
 import { FileUploader } from "react-drag-drop-files";
 import { notifyError } from "../../../helpers/notify";
@@ -7,7 +9,8 @@ import { Modal } from "../../../components";
 import { handleDownload } from "../../../helpers/utils";
 import { useTranslation } from "react-i18next";
 import { useUserData } from "../../../context";
-
+import * as globalStyles from "../../../styles/global"; // if you have it
+import './styles.css';
 declare global {
   interface Navigator {
     msSaveBlob: (blob: Blob, fileName: string) => boolean;
@@ -129,15 +132,16 @@ const ManualUpload = () => {
   };
 
   return (
-    <ManualStyle.SCManualBoxCenter>
-      <ManualStyle.SCManualBox>
-        <ManualStyle.SCManualText>
+    <div className={ManualStyle.SCManualBoxCenter}>
+      <div className={ManualStyle.SCManualBox}>
+        <div className={ManualStyle.SCManualText}>
           {t("manualUpload.title")}
-        </ManualStyle.SCManualText>
-        <ManualStyle.SCManualDrag>
+        </div>
+        <div className={ManualStyle.SCManualDrag}>
           <FileUploader
             id="fileInput"
             classes="drop_area"
+            className={ManualStyle.fileuploader_input}
             type="file"
             name="file"
             multiple
@@ -148,18 +152,18 @@ const ManualUpload = () => {
             }}
           >
             <div style={{ paddingTop: 20 }}>
-              <ManualStyle.SCManualExcel>
+              <div className={ManualStyle.SCManualExcel}>
                 <img src="/assets/img/manual/excel.png" />
-              </ManualStyle.SCManualExcel>
-              <ManualStyle.SCManualDragText>
+              </div>
+              <p className={ManualStyle.SCManualDragText}>
                 {t("manualUpload.dragDrop")}
-              </ManualStyle.SCManualDragText>
+              </p>
             </div>
           </FileUploader>
-          <ManualStyle.SCManualDowload>
-            <ManualStyle.SCManualDowloadText>
+          <div className={ManualStyle.SCManualDowload}>
+            <p className={ManualStyle.SCManualDowloadText}>
               {t("manualUpload.template")}
-            </ManualStyle.SCManualDowloadText>
+            </p>
             <img
               src={`/assets/img/manual/${
                 themeUi === "REGALBLAZE"
@@ -172,14 +176,15 @@ const ManualUpload = () => {
                 handleDownload(nameApi, "MANUAL UPLOAD TEMPLATE");
               }}
             />
-          </ManualStyle.SCManualDowload>
-          <ManualStyle.SCManualUpload>
-            <ManualStyle.SCManualUploadButton
-              className="file-upload"
+          </div>
+          <div className={ManualStyle.SCManualUpload}>
+            <button
+              className={ManualStyle.SCManualUploadButton}
               onClick={handleClick}
             >
               <img src="/assets/img/manual/plus.png" width={30} />
-              <ManualStyle.SCManualUploadInput
+              <input
+                className={ManualStyle.SCManualUploadInput}
                 type="file"
                 accept=".csv"
                 onChange={handleFileChange}
@@ -187,9 +192,10 @@ const ManualUpload = () => {
                 value=""
                 style={{ display: "none" }}
               />
-            </ManualStyle.SCManualUploadButton>
-            <ManualStyle.SCManualUploadText
-              style={{ color: `${fileUpload ? "black" : "#C8C5C5"}` }}
+            </button>
+            <p
+              className={ManualStyle.SCManualUploadText}
+              style={{ color: fileUpload ? "black" : "#C8C5C5" }}
             >
               {fileUpload ? (
                 <div>
@@ -206,23 +212,39 @@ const ManualUpload = () => {
               ) : (
                 t("manualUpload.uploadTitle")
               )}
-            </ManualStyle.SCManualUploadText>
-          </ManualStyle.SCManualUpload>
-        </ManualStyle.SCManualDrag>
-        <ManualStyle.SCManualUploadBtn
-          onClick={(e) => {
-            handleSubmit(e);
-          }}
-          disabled={!(fileUpload && isLoading)}
-          style={{ cursor: `${fileUpload && isLoading ? "" : "not-allowed"}` }}
-          themeUi={themeUi}
-        >
-          <ManualStyle.SCManualImgUpload src="/assets/img/manual/iconmonstr-upload-17.svg" />
-          {isLoading
-            ? t("manualUpload.uploadBtn")
-            : t("manualUpload.uploadingBtn")}
-        </ManualStyle.SCManualUploadBtn>
-      </ManualStyle.SCManualBox>
+            </p>
+          </div>
+        </div>
+        {(() => {
+          const regal =
+            globalStyles?.chooseThemeColor?.["REGALBLAZE"]?.color5 ?? "#FCA311";
+          const altGradient =
+            "linear-gradient(180deg, #bc3d81 0%, #820f4c 100%)";
+          const bg =
+            fileUpload && isLoading
+              ? themeUi === "REGALBLAZE"
+                ? regal
+                : altGradient
+              : "gray";
+
+          return (
+            <button
+              className={ManualStyle.SCManualUploadBtn}
+              onClick={(e) => handleSubmit(e)}
+              disabled={!(fileUpload && isLoading)}
+              style={assignInlineVars({ [manualBtnBgVar]: bg })}
+            >
+              <img
+                className={ManualStyle.SCManualImgUpload}
+                src="/assets/img/manual/iconmonstr-upload-17.svg"
+              />
+              {isLoading
+                ? t("manualUpload.uploadBtn")
+                : t("manualUpload.uploadingBtn")}
+            </button>
+          );
+        })()}
+      </div>
       <Modal
         fileJson="/assets/data.json"
         modalTitle={t("manualUpload.uploadInProcess")}
@@ -248,7 +270,7 @@ const ManualUpload = () => {
           text={t("manualUpload.modalTitle")}
         />
       )}
-    </ManualStyle.SCManualBoxCenter>
+    </div>
   );
 };
 

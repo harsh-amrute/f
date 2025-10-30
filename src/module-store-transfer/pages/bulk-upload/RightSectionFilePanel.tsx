@@ -1,5 +1,12 @@
 import { ButtonFloat } from "../../../components";
-import { FileName, FilePanel, HeaderText } from "./style";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
+import {
+  FileName,
+  FilePanel,
+  HeaderText,
+  headerFontSizeVar,
+  headerFontWeightVar,
+} from "./style.css";
 
 interface RightSectionFilePanelProps {
   img?: string;
@@ -14,32 +21,36 @@ function RightSectionFilePanel({
   imgStyles,
   btnIcon,
   iconStyles,
-  text
+  text,
 }: RightSectionFilePanelProps) {
   return (
-    <FilePanel>
-      <FileName>
+    <div className={FilePanel}>
+      <div className={FileName}>
         <img src={img} alt="file" style={imgStyles} />
-        <HeaderText fontSize="1.6rem" fontWeight="500">
+        <div
+          className={HeaderText}
+          style={assignInlineVars({
+            [headerFontSizeVar]: "1.6rem",
+            [headerFontWeightVar]: "500",
+          })}
+        >
           {text}
-        </HeaderText>
-      </FileName>
+        </div>
+      </div>
+
       <ButtonFloat
         icon={btnIcon}
         text=""
-        onClick={() => {
-          console.log("click");
-        }}
+        onClick={() => console.log("click")}
         styles={{
           width: "6rem",
           padding: "0.5rem 1rem",
           display: "grid",
           placeItems: "center",
         }}
-
         iconStyles={iconStyles}
       />
-    </FilePanel>
+    </div>
   );
 }
 

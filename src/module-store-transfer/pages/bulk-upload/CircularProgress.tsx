@@ -1,5 +1,5 @@
 import React from "react";
-import {  Svg, Circle, Text } from "./style";
+import { Svg, Circle, Text } from "./style.css";
 
 type CircularProgressProps = {
   size: number;
@@ -22,31 +22,31 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
   const offset = circumference - (progress / 100) * circumference;
 
   return (
-
-      <Svg width={size} height={size}>
-        <Circle
-          cx={center}
-          cy={center}
-          r={radius}
-          strokeWidth={strokeWidth}
-          stroke={bgColor}
-          fill="none"
-        />
-        <Circle
-          cx={center}
-          cy={center}
-          r={radius}
-          strokeWidth={strokeWidth}
-          stroke={color}
-          fill="none"
-          strokeDasharray={circumference}
-          strokeDashoffset={offset}
-          strokeLinecap="round"
-          transform={`rotate(-90 ${center} ${center})`}
-        />
-        <Text x="50%" y="50%" dy=".3em">{`${progress}%`}</Text>
-      </Svg>
-
+    <svg className={Svg} width={size} height={size}>
+      <circle
+        className={Circle}
+        cx={center}
+        cy={center}
+        r={radius}
+        strokeWidth={strokeWidth}
+        stroke={bgColor}
+        fill="none"
+      />
+      <circle
+        className={Circle}
+        cx={center}
+        cy={center}
+        r={radius}
+        strokeWidth={strokeWidth}
+        stroke={color}
+        fill="none"
+        strokeDasharray={circumference}
+        strokeDashoffset={offset}
+        strokeLinecap="round"
+        transform={`rotate(-90 ${center} ${center})`}
+      />
+      <text className={Text} x="50%" y="50%" dy=".3em">{`${progress}%`}</text>
+    </svg>
   );
 };
 

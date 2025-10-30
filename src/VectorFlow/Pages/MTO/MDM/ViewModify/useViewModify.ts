@@ -80,7 +80,7 @@ import {
 
 import _ from "lodash";
 import { useLocation, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { toast } from "react-toastify/unstyled";
 import { v4 as uuidv4 } from "uuid";
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
 import WarningCell from "../../../../../components/VectorFLOW/commons/WarningCell";

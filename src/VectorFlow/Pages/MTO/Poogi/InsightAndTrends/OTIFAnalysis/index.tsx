@@ -7,7 +7,7 @@ import {
   BTRAllomentSection,
   BTRTableWrapper,
   HorizontalViewWrapper,
-} from "./styles";
+} from "./styles.css";
 import TagCellToolTip from "./TagCellRenderer/TagCellRenderer";
 import { useGetFilterData } from "../../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
 import useFilter from "../../../../../../hooks/useFilter";
@@ -261,7 +261,7 @@ const OTIFAnalysis = () => {
         handleSaveClick={handleSaveClick}
         handleResetClick={handleResetClick}
       />
-      <HorizontalViewWrapper style={{ flex: 1 }}>
+      <div className={HorizontalViewWrapper} style={{ flex: 1 }}>
         {isGridView ? (
           <GridView
           getData={(params:any) => getOTIFAnalysisData({
@@ -282,22 +282,22 @@ const OTIFAnalysis = () => {
           />
 
         ) : (
-          <BTRTableWrapper style={{ maxHeight: "95%", paddingLeft: "20px" }}>
+          <div className={BTRTableWrapper} style={{ maxHeight: "95%", paddingLeft: "20px" }}>
             <Allotment vertical={false} separator={false}>
               <Allotment.Pane preferredSize={"50%"}>
-                <BTRAllomentSection>
+                <div className={BTRAllomentSection}>
                   <OTIFTrendsGraph graphData={graphData?.otif} />
-                </BTRAllomentSection>
+                </div>
               </Allotment.Pane>
               <Allotment.Pane preferredSize={"50%"}>
-                <BTRAllomentSection>
+                <div className={BTRAllomentSection}>
                   <OTAndIFTrendsGraph graphData={graphData?.ot_n_if} />
-                </BTRAllomentSection>
+                </div>
               </Allotment.Pane>
             </Allotment>
-          </BTRTableWrapper>
+          </div>
         )}
-      </HorizontalViewWrapper>
+      </div>
     </div>
   );
 };

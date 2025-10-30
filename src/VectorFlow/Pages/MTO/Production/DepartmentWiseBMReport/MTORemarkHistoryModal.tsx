@@ -1,7 +1,7 @@
 import { useUserData } from "../../../../../context"
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton"
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard"
-import { ButtonWrapper, RemarkDate, RemarkModalContentWrapper, RemarkModalRemarkCelLRenderer, RemarkModalTable, RemarkModalTableCell, RemarkModalTableHeader, RemarkModalTableHeaderContainer, RemarkModalTableRow, RemarkModalTableRowContainer, RemarkText } from "../../../MTA/Logistics/InTransitWhereAbouts/styles"
+import { ButtonWrapper, RemarkDate, RemarkModalContentWrapper, RemarkModalRemarkCelLRenderer, RemarkModalTable, RemarkModalTableCell, RemarkModalTableHeader, RemarkModalTableHeaderContainer, RemarkModalTableRow, RemarkModalTableRowContainer, RemarkText } from "../../../MTA/Logistics/InTransitWhereAbouts/styles.css"
 import UserIcon from "../../../MTA/Logistics/InTransitWhereAbouts/UserIcon";
 import { memo } from "react";
 
@@ -25,49 +25,49 @@ const MTORemarkHistoryModal = (props:RemarkModalProps)=>{
     return(
 
         <VFModalCard openModal={isOpen} headerIcon="/assets/img/VectorFLOW/BPR/remark.svg" headerText="Remark History" closeIcon="/assets/img/VectorFLOW/NMS/close-white.svg" closeModal={onClose}>
-            <RemarkModalContentWrapper>
-                <RemarkModalTable className="custom-scrollbar">
-                    <RemarkModalTableHeaderContainer>
-                        <RemarkModalTableHeader style={{textAlign:'center', paddingRight:'5px'}}>
+            <div className={RemarkModalContentWrapper}>
+                <div className={`${RemarkModalTable} custom-scrollbar`}>
+                    <div className={RemarkModalTableHeaderContainer}>
+                        <p className={RemarkModalTableHeader} style={{textAlign:'center', paddingRight:'5px'}}>
                             Name
-                        </RemarkModalTableHeader>
-                        <RemarkModalTableHeader>
+                        </p>
+                        <p className={RemarkModalTableHeader}>
                             Remarks
-                        </RemarkModalTableHeader>
-                    </RemarkModalTableHeaderContainer>
-                    <RemarkModalTableRowContainer>
+                        </p>
+                    </div>
+                    <div className={RemarkModalTableRowContainer}>
                         {(!data || data.length===0)?(
                             <p style={{textAlign:'center',height:200}}>No data to show</p>
                         ):(
                             data.map((d:any,index:number)=>{
                                 return(
-                                <RemarkModalTableRow key={index} style={{borderTop:index===0?'none':'dashed 1px gray'}}>
+                                <div className={RemarkModalTableRow} key={index} style={{borderTop:index===0?'none':'dashed 1px gray'}}>
                                     <UserIcon data={d.added_by}/>
-                                    <RemarkModalTableCell>
-                                        <RemarkModalRemarkCelLRenderer>
-                                            <RemarkText>
+                                    <div className={RemarkModalTableCell}>
+                                        <div className={RemarkModalRemarkCelLRenderer}>
+                                            <p className={RemarkText}>
                                                {d.remark}
-                                            </RemarkText>
-                                            <RemarkDate>
+                                            </p>
+                                            <p className={RemarkDate}>
                                                {d.added_on}
-                                            </RemarkDate>
-                                        </RemarkModalRemarkCelLRenderer>
-                                    </RemarkModalTableCell>
-                                </RemarkModalTableRow>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
                                 )
                             })
                         )}
-                    </RemarkModalTableRowContainer>
-                </RemarkModalTable>
-                <ButtonWrapper>
+                    </div>
+                </div>
+                <div className={ButtonWrapper}>
                     <VFButton
                         onClick={onClose}
                         themeUi={theme_ui}
                     >
                         Go Back!
                     </VFButton>
-                </ButtonWrapper>
-            </RemarkModalContentWrapper>
+                </div>
+            </div>
         </VFModalCard>
     )
 }

@@ -6,9 +6,9 @@ import VFTable from "../../../../../../../../../components/VectorFLOW/commons/VF
 import '../../../styles.css';
 import { useGetPlanningDataCustom } from "../../../../../../../../Services/MTA/SupplyChainIntelligenceHub/Planning";
 import VFLoader from "../../../../../../../../../components/VectorFLOW/commons/VFLoader";
-import { SCDynamicContainer } from "../../../styles";
+import { SCDynamicContainer } from "../../../style.css";
 import { notifyLoader,notifyError,notifySuccess } from "../../../../../../../../../helpers/notify";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify/unstyled";
 import { useGetState } from "../../../../../../../../Services/MTA/SupplyChainIntelligenceHub/BPR";
 import { GridStateContext } from "../../../../../../../../../context/GridStateContext";
 import { GridState } from "../../../../../../../../types/BPR";
@@ -124,7 +124,7 @@ const ExpediteChildCustomCharts = ({recordCount}:{recordCount:any}) => {
     
     return(
         <>
-        <SCDynamicContainer style={{height:'100%'}}>
+        <div className={SCDynamicContainer} style={{height:'100%'}}>
             <VFTable
                 ref={ref}
                 columnDefs={colDefs}
@@ -166,7 +166,7 @@ const ExpediteChildCustomCharts = ({recordCount}:{recordCount:any}) => {
                 rowHeight={30}
                 height={"80%"}
             />
-        </SCDynamicContainer>
+        </div>
         </>
     )
     

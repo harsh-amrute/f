@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import VFButtonOutline from '../../../../../components/VectorFLOW/commons/VFButtonOutline'
 import { useUserData } from '../../../../../context'
 import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar'
-import { Footer, Wrapper } from './DueDateQuotation.styled'
+import { Footer, Wrapper } from './DueDateQuotation.styled.css'
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton'
 import { useGetBufferMasterData, useGetCCRGroupMaster, useGetCCRItemTypeMappingMaster, useGetCCRMasterData, useGetDailyWorkingCalendar, useGetFOLData, useGetLineCCRDetails, useGetMarketOperatingLeadTimeMasterData, useGetUIConfig, useGetFilteredOrdersForDDQ, useGetOrdersForExcelDDQ, useUpdateScheduleOrders } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation'
 import { useGetDBRsettingsData } from '../../../../Services/MTO/Common/DBRSettings';
@@ -661,7 +661,7 @@ const DueDateQuotation = () => {
   
 
   return (
-    <Wrapper style={{ height: step === 2 && rowsSelectedForAssignment ? "130vh" : "100%" }} className="wrapper">
+    <div className={`${Wrapper} wrapper`} style={{ height: step === 2 && rowsSelectedForAssignment ? "130vh" : "100%" }} >
       {step === 1 ?
         <MTOActionToolBar
           comp="DDQ"
@@ -716,7 +716,7 @@ const DueDateQuotation = () => {
           </div>
         </div>
       </VFModalCard>
-      <Footer style={(rowsSelectedForAssignment && step == 2) ? { position: "fixed", bottom: 0, background: "white", width: "92.6%", zIndex: "2", padding: "1rem 0", paddingBottom: "20px", margin: 0 } : {}}>
+      <div className={Footer} style={(rowsSelectedForAssignment && step == 2) ? { position: "fixed", bottom: 0, background: "white", width: "92.6%", zIndex: "2", padding: "1rem 0", paddingBottom: "20px", margin: 0 } : {}}>
         {step != 1 && <VFButtonOutline
           themeUi={themeUi}
           onClick={() => {
@@ -781,7 +781,7 @@ const DueDateQuotation = () => {
           style={{ fontSize: "12px", width: "100px", height: "40px", display: "flex", justifyContent: "center", alignItems: "center" }}>
           {renderSubmitText()}
         </VFButton>
-      </Footer>
+      </div>
       <VFWarningModal
         warningMsg={"Access to this page is restricted because due date assignment is automatic in the current system."}
         actionButtonText={"Ok"}
@@ -790,7 +790,7 @@ const DueDateQuotation = () => {
         themeUI={user.user.theme_ui}
       />
       {/* <BomExplosionPOC/> */}
-    </Wrapper>
+    </div>
   )
 }
 

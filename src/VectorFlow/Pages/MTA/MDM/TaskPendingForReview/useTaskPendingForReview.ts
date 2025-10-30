@@ -7,7 +7,7 @@ import { GridRef, Master, TaskDataType } from "../../../../../VectorFlow/types/M
 import TaskPendingLinkCellRenderer from "./TaskPendingLinkCellRenderer"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState } from '../../../../../redux/store/store';
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify/unstyled";
 import { notifyLoader,notifyError,notifySuccess } from "../../../../../helpers/notify";
 import { SET_RECORD_COUNT } from "../../../../../redux/actions/MDM";
 import { useUserData } from "../../../../../context"

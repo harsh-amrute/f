@@ -1,4 +1,4 @@
-import { toast, ToastOptions, type Theme, type ToastPosition } from 'react-toastify'
+import { toast, ToastOptions, type Theme, type ToastPosition } from "react-toastify/unstyled"
 
 interface PromiseToastMsg{
   pending:string

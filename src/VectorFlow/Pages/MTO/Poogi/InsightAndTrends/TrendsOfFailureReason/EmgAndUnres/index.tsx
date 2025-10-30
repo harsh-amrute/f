@@ -2,7 +2,7 @@ import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer'
 import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VFInfoToolTip'
-import { SCChartHeaderContainer, SCChartMainContainer } from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer/styles'
+import { SCChartHeaderContainer, scChartMainContainer } from '../../../../Common/SplitGraphContainer/styles.css'
 import { useGetDate } from '../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting'
 import { AgChartOptions } from 'ag-charts-community'
 import { createSeriesData, getMyColumnDefinitions, TooltipRenderer } from '../Data'
@@ -21,7 +21,7 @@ const EmgAndUnres = (props: any) => {
     const generateHeader = () => {
         return (
             <>
-                <SCChartMainContainer style={{ zoom: 1, width: '100%' }}>
+                <div className={scChartMainContainer} style={{ zoom: 1, width: '100%' }}>
                     <div
                         data-testid="otif-graph"
                         style={{
@@ -35,15 +35,15 @@ const EmgAndUnres = (props: any) => {
                         <span style={{ fontWeight: 500 }}>Emergent & Unresolved Major-Minor Reasons Impacting OTIF &nbsp;</span>
                         <span style={{ fontWeight: 350 }}>{`(${moment(date).subtract(150, 'days').format('D MMM YYYY')} - ${moment(date).format('D MMM YYYY')})`}</span>
                     </div>
-                    <SCChartHeaderContainer>
+                    <div className={scChartMainContainer}>
                         <div style={{ marginLeft: 30, marginBottom: '-5px' }}>
                             <VFInfoToolTip infoList={infoTipData} />
                         </div>
                         <div onClick={() => { toggleChart1(!hideChart1) }} style={{ marginLeft: 10, marginBottom: '-5px', marginRight: '10px' }}>
                             <img src='/assets/img/VectorFLOW/BPR/minimize.svg' height={13} width={13} color={"#CCCCCC"} />
                         </div>
-                    </SCChartHeaderContainer>
-                </SCChartMainContainer>
+                    </div>
+                </div>
             </>
 
         )

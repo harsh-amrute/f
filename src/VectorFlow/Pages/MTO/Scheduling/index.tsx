@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { useGetRunState } from '../../../../VectorFlow/Services/MTO/Scheduling';
 import VFOverlayModal from '../../../../components/VectorFLOW/commons/VFOverlayModal';
 import FileUploadSection from './FileUploadSection';
-import styled from 'styled-components';
 import StatusBarBottom from './components/StatusBarBottom';
 import RunStatusModal from './components/RunStatusModal';
 import FinalResultSection from './FinalResultSection';

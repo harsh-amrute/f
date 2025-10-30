@@ -1,4 +1,4 @@
-import {RRRLayout} from './styles'
+import {RRRLayout} from './styles.css'
 import useRRRColorBandwise from './useRRRColorBandwise';
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import ActionToolBar from "../Planning/ActionToolBar"
@@ -76,7 +76,7 @@ const RRRColorBandwise = () => {
         onDelete={onDeleteFilter}
       />
     </div>
-    <RRRLayout>
+    <div className={RRRLayout}>
         {/* <RRRTaskBar style={{width:isSideBarOpen? '77%':'97%'}}>
             <VFButtonOutline
                     themeUi="NOIRFUSION"
@@ -151,7 +151,7 @@ const RRRColorBandwise = () => {
             maintainColumnOrder
           />
         </div>
-    </RRRLayout>
+    </div>
   </GridStateContext.Provider>
   )
 }

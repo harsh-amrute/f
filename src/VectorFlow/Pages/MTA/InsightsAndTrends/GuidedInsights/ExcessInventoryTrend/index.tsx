@@ -1,4 +1,4 @@
-import { SCChartContainer, SCDynamicContainer } from "../style";
+import { SCChartContainer, SCDynamicContainer } from "../style.css";
 import { AgCharts } from "ag-charts-react";
 import { Allotment } from "allotment";
 import {
@@ -121,7 +121,7 @@ const ExcessInventoryTrend = ({
     <OverlayLoader />;
   }
   return (
-    <SCDynamicContainer>
+    <div className={SCDynamicContainer}>
       <Allotment minSize={0} maxSize={590}>
 
         <Allotment.Pane preferredSize={"50%"}>
@@ -165,7 +165,7 @@ const ExcessInventoryTrend = ({
         </div>
       </Allotment>
 
-    </SCDynamicContainer>
+    </div>
   );
 };
 
@@ -173,7 +173,7 @@ export default ExcessInventoryTrend;
 
 export const CustomizedChartComponent = ({chartOptions,chartParams}:any) => {
   return (
-    <SCChartContainer>
+    <div className={SCChartContainer}>
       <div
         style={{
           height: "300px",
@@ -201,6 +201,6 @@ export const CustomizedChartComponent = ({chartOptions,chartParams}:any) => {
         </div>
         <AgCharts options={chartOptions} />
       </div>
-    </SCChartContainer>
+    </div>
   );
 };

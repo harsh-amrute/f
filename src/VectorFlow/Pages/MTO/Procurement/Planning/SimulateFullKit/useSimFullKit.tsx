@@ -14,7 +14,7 @@ import OverlayLoader from "../../../Common/Loader";
 // import VFPagination from "../../../../../../components/VectorFLOW/commons/VFPagination";
 import VFPagination from "../../../Common/VFPagination";
 import { notifyError, notifySuccess } from "../../../../../../helpers/notify";
-import { toast } from "react-toastify";
+import { toast } from "react-toastify/unstyled";
 import { useGetUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UIConfig';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig";
 import { FilterPageName, UIGridCode } from "../../../Common/Enum";

@@ -14,7 +14,7 @@ import { ColDef, SideBarDef } from 'ag-grid-enterprise';
 import WarningCell from '../../../../../components/VectorFLOW/commons/WarningCell';
 import { SeasonalityColorCellRenderer, SeasonalityGraphCellRenderer } from '../../../../../components/VectorFLOW/commons/SeasonalityCellRenderers';
 import _ from 'lodash';
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify/unstyled";
 import ConflictErrorCellRenderer from './ConflictErrorCellRenderer';
 import { v4 as uuidv4 } from 'uuid';
 import VFLoader from '../../../../../components/VectorFLOW/commons/VFLoader';

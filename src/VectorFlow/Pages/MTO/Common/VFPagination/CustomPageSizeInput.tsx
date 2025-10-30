@@ -1,17 +1,30 @@
-import React, { useEffect, useState } from "react";
-import { CustomPageSize, PageSizeInput, PageSizeInputDiv } from "./styles";
-import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
-import { useUserData } from "../../../../../context";
-import { notifyError } from "../../../../../helpers/notify";
+import React, { useEffect, useState } from 'react';
+import { assignInlineVars } from '@vanilla-extract/dynamic';
+import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
+import { useUserData } from '../../../../../context';
+import { notifyError } from '../../../../../helpers/notify';
 
-interface props {
-  savePageSize: any;
-  userPageSize: any;
+import {
+  brandColorVar,
+  customPageSizeDiv,
+  pageSizeInputDiv,
+  pageSizeInput,
+  noArrows,
+} from './styles.css';
+
+interface Props {
+  savePageSize?: (n: number) => void; // make optional to match parent usage
+  userPageSize?: number;
 }
 
-const CustomPageSizeInput = ({ savePageSize, userPageSize }: props) => {
+const brandColors = {
+  REGALBLAZE: '#CB830E',
+  DEFAULT: '#BC3D81',
+} as const;
+
+const CustomPageSizeInput = ({ savePageSize, userPageSize }: Props) => {
   const { user } = useUserData();
-  const themeUi = user?.user?.theme_ui;
+  const themeUi = (user?.user?.theme_ui as keyof typeof brandColors) ?? 'DEFAULT';
 
   const [customPageSize, setCustomPageSize] = useState<number | undefined>();
   const minPageSize = 1;
@@ -44,36 +57,40 @@ const CustomPageSizeInput = ({ savePageSize, userPageSize }: props) => {
     }
   };
 
+  const inlineVars = assignInlineVars({
+    [brandColorVar]: brandColors[themeUi],
+  });
+
   return (
-    <CustomPageSize>
+    <div className={customPageSizeDiv}>
       Page Size:
-      <PageSizeInputDiv>
-        <PageSizeInput
-          className="no-arrows"
+      <div className={pageSizeInputDiv}>
+        <input
+          className={`${pageSizeInput} ${noArrows}`}
           type="number"
-          themeUi={themeUi}
           value={customPageSize ?? ""}
           onChange={handleChange}
+          style={inlineVars}
+          min={minPageSize}
+          max={maxPageSize}
+          aria-label="Custom page size"
         />
         <VFButton
           onClick={validatePageSize}
           themeUi={themeUi}
           disabled={false}
           style={{
-            height: "100%",
-            width: "30%",
-            borderRadius: "0px 3px 3px 0px",
-            boxShadow: "none",
+            height: '100%',
+            width: '30%',
+            borderRadius: '0px 3px 3px 0px',
+            boxShadow: 'none',
           }}
+          aria-label="Apply page size"
         >
-          <img
-            src="/assets/img/rightArrowHorizontal.svg"
-            height={13}
-            width={7}
-          />
+          <img src="/assets/img/rightArrowHorizontal.svg" height={13} width={7} alt="" />
         </VFButton>
-      </PageSizeInputDiv>
-    </CustomPageSize>
+      </div>
+    </div>
   );
 };
 

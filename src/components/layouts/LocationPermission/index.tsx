@@ -7,58 +7,65 @@ import {
   SCFlexCenter,
   SCItemTitle,
   SCItemMulSelect,
-  Checkbox
-} from "./styles";
+  checkbox as checkboxCls,
+  checkboxAccentVar,
+} from "./styles.css";
 import { useUserData } from "../../../context";
-
-
+import { assignInlineVars } from "@vanilla-extract/dynamic";
+import * as globalStyles from "../../../styles/global";
 
 const LocationPermission = ({ ...props }: any) => {
-  const { prdPermissions, title, onSelectAll, isSelected,  } = props;
+  const { prdPermissions, title, onSelectAll, isSelected } = props;
 
-  const { user} = useUserData();
+  const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
+  const accentColor = globalStyles.chooseThemeColor[themeUi]?.color5 ?? "#000";
 
   return (
     <>
-      <SCSwapPermission>
-        <SCtitle>
+      <div className={SCSwapPermission}>
+        <div className={SCtitle}>
           {title}
-          <div style={{display:'flex', gap:'5px'}}>
-            <Checkbox themeUi={themeUi} checked={isSelected} type='checkbox' onClick={onSelectAll} /> 
-            <p style={{fontSize:'14px' }}>Select All</p>
+          <div style={{ display: "flex", gap: "5px" }}>
+            <input
+              type="checkbox"
+              checked={isSelected}
+              onClick={onSelectAll}
+              className={checkboxCls}
+              style={assignInlineVars({
+                [checkboxAccentVar]: accentColor,
+              })}
+            />
+            <p style={{ fontSize: "14px" }}>Select All</p>
           </div>
-        </SCtitle>
-        <SCSwapContent className="scroll-style">
-          {prdPermissions.map((item: any,index:number) => {
-            return (
-              <SCSwapItem key={index}>
-                <SCFlexCenter>
-                  <SCItemTitle>{item.title}</SCItemTitle>
-                  <SCItemMulSelect>
-                    <SearchInputMultiple
-                      placeholder={item.placeholder}
-                      options={item.options}
-                      value={item.value}
-                      setValue={item.setValue}
-                      handleListChild={item.handleAction}
-                      disabled={false}
-                      key={index}
-                      isCheckBoxRef={item.isCheckBoxRef}
-                      from={item.from}
-                      activeApplicationId={item.activeApplicationId}
+        </div>
 
-                    />
-                  </SCItemMulSelect>
-                </SCFlexCenter>
-              </SCSwapItem>
-            );
-          })}
-        </SCSwapContent>
-      </SCSwapPermission>
+        <div className={`${SCSwapContent} scroll-style`}>
+          {prdPermissions.map((item: any, index: number) => (
+            <div className={SCSwapItem} key={index}>
+              <div className={SCFlexCenter}>
+                <span className={SCItemTitle}>{item.title}</span>
+                <div className={SCItemMulSelect}>
+                  <SearchInputMultiple
+                    placeholder={item.placeholder}
+                    options={item.options}
+                    value={item.value}
+                    setValue={item.setValue}
+                    handleListChild={item.handleAction}
+                    disabled={false}
+                    key={index}
+                    isCheckBoxRef={item.isCheckBoxRef}
+                    from={item.from}
+                    activeApplicationId={item.activeApplicationId}
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </>
   );
 };
 
 export default LocationPermission;
-

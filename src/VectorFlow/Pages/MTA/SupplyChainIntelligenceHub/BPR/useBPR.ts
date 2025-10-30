@@ -5,7 +5,7 @@ import { useGetBPRData, useGetBPRRemarkHistory, useSubmitBPRRemark, useGetDailyD
 import { BPREcoColorCellRenderer,BPRRemarksCellRenderer,BPRSubmitRemarkCellRenderer,BPRTagsCellRenderer,BPRTechColorCellRenderer } from "./BPRCellRenderers"
 import { convertUiConfigToOptions, mapBPRRowData, MainMenuItemsCustomization, getColumnDefinationsMTA, CsvExportMTA } from "../../../../../helpers/utils"
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify"
-import { toast } from "react-toastify"
+import { toast } from "react-toastify/unstyled"
 import BPRGraphCellRenderer from "./BPRGraphCellRenderer"
 import useViewPort from "../../../../../hooks/useViewPort"
 import type { RootState } from '../../../../../redux/store/store';

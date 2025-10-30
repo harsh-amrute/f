@@ -1,4 +1,4 @@
-import {SDRColorCellRendererWrapper} from './styles'
+import {SDRColorCellRendererWrapper} from './styles.css'
 
 const colorMapper =(color:string)=> {
 
@@ -51,8 +51,8 @@ export const SDRDispatchColorCellRenderer = (params:any)=>{
     }
 
     return(
-        <SDRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text}}>
+        <div className={SDRColorCellRendererWrapper} style={{backgroundColor:cellColor.bg,color:cellColor.text}}>
             {params.data.DispatchPen}%
-        </SDRColorCellRendererWrapper>
+        </div>
     )
 }

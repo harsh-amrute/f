@@ -7,7 +7,7 @@ import ColorCellRenderer from "../../Common/ColorCellRenderer/ColorCellRenderer"
 import { useGetOpenSODetailsData, useGetOpenSODetailsDataForExcelExport } from "../../../../../VectorFlow/Services/MTO/Procurement/MaterialCoverage";
 import CustomGroupCellRenderer from "./CustomGroupCellRenderer";
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify";
-import { toast } from "react-toastify";
+import { toast } from "react-toastify/unstyled";
 import { FilterPageName, pagination } from "../../Common/Enum";
 import { DownloadExcel, formatFilterJSON } from "../../../../../helpers/utils";
 

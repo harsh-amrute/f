@@ -1,52 +1,55 @@
-import React, { useState } from 'react'
-import styled from 'styled-components';
-import Scheduling from '.';
-import SchedulingActionToolbar from './components/SchedulingActionToolbar';
-import ResourceView from './Sections/ResourceView';
-import JobView from './Sections/JobView';
-import GridViewResource from './Sections/GridViewResource';
-import GridViewJob from './Sections/GridViewJob';
-import VFOverlayModal from '../../../../components/VectorFLOW/commons/VFOverlayModal';
-import FilterModal from './components/FilterModal';
+import { useState } from "react";
+import SchedulingActionToolbar from "./components/SchedulingActionToolbar";
+import ResourceView from "./Sections/ResourceView";
+import JobView from "./Sections/JobView";
+import GridViewResource from "./Sections/GridViewResource";
+import GridViewJob from "./Sections/GridViewJob";
+import VFOverlayModal from "../../../../components/VectorFLOW/commons/VFOverlayModal";
+import FilterModal from "./components/FilterModal";
+import { finalResultSectionWrapper } from "./styles.css";
 
-
-const FinalResultSectionWrapper = styled.div`
-height: fit-content;
-postion: relative;
-`
-
-const FinalResultSection = ({setStep}:any) => {
+const FinalResultSection = ({ setStep }: any) => {
   const [currentView, setCurrentView] = useState("ResourceView");
-  const getCurrentView = ()=>{
-    switch(currentView){
+  const getCurrentView = () => {
+    switch (currentView) {
       case "ResourceView":
-        return <ResourceView/>
+        return <ResourceView />;
       case "JobView":
-        return <JobView/>
+        return <JobView />;
       case "GridViewR":
-        return <GridViewResource/>
+        return <GridViewResource />;
       case "GridViewJ":
-        return <GridViewJob/>
+        return <GridViewJob />;
       default:
-        return <ResourceView/>;
+        return <ResourceView />;
     }
-  }
+  };
 
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
   return (
-    <FinalResultSectionWrapper>
-      <SchedulingActionToolbar onGoBack={()=>{setStep("Upload")}} on currentView={currentView} setCurrentView={setCurrentView} setIsFilterModalOpen={setIsFilterModalOpen}/>
-        {getCurrentView()}
+    <div className={finalResultSectionWrapper}>
+      {/* Note: there was a stray `on` prop in your original; removed below */}
+      <SchedulingActionToolbar
+        onGoBack={() => {
+          setStep("Upload");
+        }}
+        currentView={currentView}
+        setCurrentView={setCurrentView}
+        setIsFilterModalOpen={setIsFilterModalOpen}
+      />
+      {getCurrentView()}
 
-      {
-        isFilterModalOpen && 
-          <VFOverlayModal parentSelector="#main-content" openModal={isFilterModalOpen}  >
-            <FilterModal setIsFilterModalOpen={setIsFilterModalOpen}/>
-          </VFOverlayModal>
-      }
-    </FinalResultSectionWrapper>
-  )
-}
+      {isFilterModalOpen && (
+        <VFOverlayModal
+          parentSelector="#main-content"
+          openModal={isFilterModalOpen}
+        >
+          <FilterModal setIsFilterModalOpen={setIsFilterModalOpen} />
+        </VFOverlayModal>
+      )}
+    </div>
+  );
+};
 
-export default FinalResultSection
+export default FinalResultSection;

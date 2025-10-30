@@ -10,7 +10,7 @@ import useInTransitWhereAbouts from "./useInTransitWhereAbouts"
 import ContactDetailsModal from "./ContactDetailsModal"
 import RemarkModal from "./RemarkModal"
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
-import { ButtonWrapper } from "../../SupplyChainIntelligenceHub/OpenExpeditingRequests/styles"
+import { ButtonWrapper } from "../../SupplyChainIntelligenceHub/OpenExpeditingRequests/styles.css"
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline"
 import LastRunDateComponent from "../../../../../components/commons/lastRundate";
 import { useState } from "react"

@@ -10,12 +10,14 @@ import {
   BMDepWrapper,
   BMDepHeaderWraper,
   VFWrapper,
-} from "../DepartmentWiseBMReport/styles";
+} from "../DepartmentWiseBMReport/styles.css";
 import {
   BTRAllomentSection,
   BTRTableWrapper,
   HorizontalViewWrapper,
-} from "../../Common/SplitGraphContainer/styles";
+  // setBprAnalyticsTheme,
+  // setBprHeaderBorder,
+} from "../../Common/SplitGraphContainer/styles.css";
 import { Allotment } from "allotment";
 //import BPRRemarkHistoryModal from '../DepartmentWiseBMReport/MTORemarkHistoryModal';
 // import useViewPort from '../../../../../hooks/useViewPort';
@@ -48,13 +50,18 @@ import OverlayLoader from "../../Common/Loader";
 import { ColorsMTO } from "../../Common/Colors";
 import { useGetFilterData } from "../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
 import useFilter from "../../../../../hooks/useFilter";
-import { formatFilterJSON, getColumnDefinations,DownloadExcel, getBodyForExcelExport } from "../../../../../helpers/utils";
+import {
+  formatFilterJSON,
+  getColumnDefinations,
+  DownloadExcel,
+  getBodyForExcelExport,
+} from "../../../../../helpers/utils";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import { FilterPageName, UIGridCode } from "../../Common/Enum";
 import { useDispatch } from "react-redux";
 import { BM_REPORT_ANALYTICS } from "../../../../../redux/actions/MTO";
 import { modifyAnalyticsData } from "../DepartmentWiseBMReport/helper";
-import { useGetDBRsettingsData } from '../../../../Services/MTO/Common/DBRSettings';
+import { useGetDBRsettingsData } from "../../../../Services/MTO/Common/DBRSettings";
 import _ from "lodash";
 import {
   useGetUserUIConfigData,
@@ -65,12 +72,14 @@ import { useGetDate } from "../../../../../VectorFlow/Services/MTO/Production/In
 import moment from "moment";
 import VFSelect from "../../../../../../src/components/VectorFLOW/commons/MTO/VFSelect";
 import ConfirmationModal from "./ConfirmationModal";
-import { InputCheckBox } from "./styles";
+import { InputCheckBox, vAccent } from "./styles.css";
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import BomExcelModal from "../../Common/BomExcelModal";
 import useColDef from "../../../../../hooks/useColDef";
 import { createDynamicColumnDefs } from "../../../../../helpers/gridUtils";
 import CustomHeaderCheckbox from "../../../../../VectorFlow/Pages/MTO/Common/CustomHeaderCheckbox";
+import * as globalstyles from "../../../../../styles/global";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 
 
 interface ApiResponse {
@@ -144,12 +153,14 @@ const APIFilterConfig = {
 };
 
 const OverallBmReport = () => {
-  const { mutateAsync: getOverallBMReportData} = useGetOverAllBMReport();
+  const { mutateAsync: getOverallBMReportData } = useGetOverAllBMReport();
   const { mutateAsync: getBOMExplosionData /*isLoading :BombDataLoading*/ } =
     useGetBOMExplosionData();
-  const { mutateAsync: getDBRsettingsData} = useGetDBRsettingsData();
-  const { mutateAsync: getHighAgeingData, isLoading: isHighAgeingData } = useGetHighAgeingData();
-  const { mutateAsync: getDeptWiseWipData, isLoading: isDeptWiseWipData} = useGetDeptWiseWipData();
+  const { mutateAsync: getDBRsettingsData } = useGetDBRsettingsData();
+  const { mutateAsync: getHighAgeingData, isLoading: isHighAgeingData } =
+    useGetHighAgeingData();
+  const { mutateAsync: getDeptWiseWipData, isLoading: isDeptWiseWipData } =
+    useGetDeptWiseWipData();
   const { mutateAsync: getPoogIRemarks } = useGetPoogiRemarks();
   const { mutateAsync: getUIConfigData } = useGetUIConfigData();
   // const { screenHeight } = useViewPort();
@@ -161,7 +172,8 @@ const OverallBmReport = () => {
   const [gridData, setGridData] = useState<any>();
   const [gridDataCount, setGridDataCount] = useState<number>(0);
   const rowsSelected = useRef(false);
-  const [isRemarkHistoryOpen, setIsRemarkHistoryOpen] =useState<boolean>(false);
+  const [isRemarkHistoryOpen, setIsRemarkHistoryOpen] =
+    useState<boolean>(false);
   const [remarkHistory, setRemarkHistory] = useState<any>();
   const [currentPage, setCurrentPage] = useState<number>(1);
   const cache = useRef<any>({});
@@ -180,16 +192,15 @@ const OverallBmReport = () => {
     }
   );
   const [deptWiseWipData, setDeptWiseWipData] = useState<any>();
-  
+
   const [deptName, setDeptName] = useState<any>([]);
   const [isOrderElapsedGrid, setIsOrderElapsedGrid] = useState<boolean>(false);
   const [filterData, setFilterData] = useState({});
   const [isGridLoading, setIsGridLoading] = useState(false);
   const [showExcelModal, setShowExcelModal] = useState(false);
-  
 
   const { mutateAsync: getPageWiseFilterData /*isLoading*/ } =
-  useGetFilterData();
+    useGetFilterData();
   const {
     state: currFilter,
     setState: setCurrFilter,
@@ -250,7 +261,6 @@ const OverallBmReport = () => {
     }
   }, [coldefs]);
 
-
   const onOpenRemarkHistory = async (data: any) => {
     // Function implementation for remark history
     try {
@@ -273,12 +283,13 @@ const OverallBmReport = () => {
       const DBRSettingsData: any = await getDBRsettingsData();
       const DBRSettings = DBRSettingsData.data?.data;
       if (DBRSettings && DBRSettings.length) {
-        const BomFlag = DBRSettings?.find((data: any) => data.flag === "BOMActive" && data.value == 1);
+        const BomFlag = DBRSettings?.find(
+          (data: any) => data.flag === "BOMActive" && data.value == 1
+        );
         if (BomFlag) {
-          setBomActive(true)
-        }
-        else {
-          setBomActive(false)
+          setBomActive(true);
+        } else {
+          setBomActive(false);
         }
         setorderClosingEnable(canShowOrderClosing);
         getFilterData();
@@ -290,11 +301,11 @@ const OverallBmReport = () => {
     }
   };
 
-   useEffect(()=>{
-    if(bomActive != undefined){
+  useEffect(() => {
+    if (bomActive != undefined) {
       setColumnDef();
     }
-    },[bomActive])
+  }, [bomActive]);
 
 const setColumnDef = async () => {
   try {
@@ -528,7 +539,7 @@ const handleActionChange = (option: any) => {
         });
 
         newGridData?.forEach((ele: any) => {
-          if (!_.isEmpty(ele)) {            
+          if (!_.isEmpty(ele)) {
             if (ele.ok === orderId) {
               ele.ct = null;
               ele.oca = null;
@@ -589,13 +600,17 @@ const handleActionChange = (option: any) => {
             gap: "10px",
           }}
         >
-          <InputCheckBox
-            onChange={onCheckBoxToggle}
+          <input
+            className={InputCheckBox}
             type="checkbox"
-            theme={themeUi}
+            onChange={onCheckBoxToggle}
             disabled={isPivot}
             checked={isCheckboxChecked}
+            style={assignInlineVars({
+              [vAccent]: globalstyles.chooseThemeColor[themeUi].color5,
+            })}
           />
+
           <VFSelect
             options={actionOptions}
             themeUi={themeUi}
@@ -650,25 +665,25 @@ const handleActionChange = (option: any) => {
 
     return (
       <>
-        
         {!_.isEmpty(props.data) && props.data?.ct === null ? (
           <>
-          <VFSelect
+            <VFSelect
               options={actionOptions}
               themeUi={themeUi}
               icon={DropdownArrowIcon}
               placeholder="Select Action"
               disabled={!props.node.selected}
               value={
-                props.node.selected ? 
-                  actionOptions.find((opt) => opt.value === props.data?.oca) :
-                  null}
-              onChange={(option: any) => {
-              if (option) {
-              onSelectChange(props, option, props.node.rowIndex);
+                props.node.selected
+                  ? actionOptions.find((opt) => opt.value === props.data?.oca)
+                  : null
               }
-            }}
-          />
+              onChange={(option: any) => {
+                if (option) {
+                  onSelectChange(props, option, props.node.rowIndex);
+                }
+              }}
+            />
 
             <div
               style={{
@@ -710,18 +725,17 @@ const handleActionChange = (option: any) => {
           </>
         ) : (
           <>
-          {!_.isEmpty(props.data) && 
-            <div
-              style={{
-                justifyContent: "space-between",
-                display: "flex",
-                alignItems: "center",
-                gap: "5px",
-                margin: "10px",
-              }}
-            >
-                {
-                  props?.data?.ct &&
+            {!_.isEmpty(props.data) && (
+              <div
+                style={{
+                  justifyContent: "space-between",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "5px",
+                  margin: "10px",
+                }}
+              >
+                {props?.data?.ct && (
                   <>
                     <p>{props.data?.ct}</p>
                     <div
@@ -749,13 +763,11 @@ const handleActionChange = (option: any) => {
                       />
                     </div>
                   </>
-                }
-              
-            </div>
-          }
+                )}
+              </div>
+            )}
           </>
-          )}
-          
+        )}
       </>
     );
   };
@@ -795,29 +807,32 @@ const handleActionChange = (option: any) => {
     };
   }, []);
 
-   useEffect(()=>{
-         if(coldefs && bomActive ){
-           getBOMUIConfigData()
-         }
-       }, [coldefs,bomActive])
-     
-  
-        const getBOMUIConfigData = async () => {
-          try {
-            const response = await getUIConfigData (ReportName);
-            setBomHeader(response?.data?.data)
-          } catch (err) {
-            console.error(err);
-            notifyError("Something Went Wrong!");
-          }
-        };
-      
-        const columnBomDefs = useMemo(() => {
-          return getColumnDefinations(bomHeader);
-        }, [bomHeader]);
+  useEffect(() => {
+    if (coldefs && bomActive) {
+      getBOMUIConfigData();
+    }
+  }, [coldefs, bomActive]);
 
+  const getBOMUIConfigData = async () => {
+    try {
+      const response = await getUIConfigData(ReportName);
+      setBomHeader(response?.data?.data);
+    } catch (err) {
+      console.error(err);
+      notifyError("Something Went Wrong!");
+    }
+  };
 
-  const getInitialGridData = async (currentPage: number, pageSize?: any, isExcelExport = false, isBomExplosion=0) => {
+  const columnBomDefs = useMemo(() => {
+    return getColumnDefinations(bomHeader);
+  }, [bomHeader]);
+
+  const getInitialGridData = async (
+    currentPage: number,
+    pageSize?: any,
+    isExcelExport = false,
+    isBomExplosion = 0
+  ) => {
     //excellll
 
     if (isExcelExport) {
@@ -840,44 +855,43 @@ const handleActionChange = (option: any) => {
       
       
     } else {
-    try {
-      setIsGridLoading(true);
-      const formatedFilters = formatFilterJSON(appliedFilters);
+      try {
+        setIsGridLoading(true);
+        const formatedFilters = formatFilterJSON(appliedFilters);
 
-      const gridData = await getOverallBMReportData({
-        page: currentPage,
-        appliedFilters: formatedFilters,
-        user,
-        page_size: pageSize || userPageSize
-      });
-      if (!gridData?.data?.data || gridData?.data?.data?.length === 0) {
+        const gridData = await getOverallBMReportData({
+          page: currentPage,
+          appliedFilters: formatedFilters,
+          user,
+          page_size: pageSize || userPageSize,
+        });
+        if (!gridData?.data?.data || gridData?.data?.data?.length === 0) {
+          setGridDataCount(0);
+          setGridData([]);
+          setIsGridLoading(false);
+          return;
+        }
+        const modifiedGridData = gridData?.data?.data?.results.map(
+          (data: any) => {
+            return {
+              ...data,
+              oca: null,
+            };
+          },
+          []
+        );
+        setGridData(modifiedGridData);
+        setGridDataCount(gridData?.data?.data?.count);
+        setIsGridLoading(false);
+      } catch (e) {
+        notifyError("No Records found for the selected filter!");
         setGridDataCount(0);
         setGridData([]);
         setIsGridLoading(false);
-        return;
+        console.log(e);
       }
-      const modifiedGridData = gridData?.data?.data?.results.map(
-        (data: any) => {
-          return {
-            ...data,
-            oca: null,
-          };
-        },
-        []
-      );
-      setGridData(modifiedGridData);
-      setGridDataCount(gridData?.data?.data?.count);
-      setIsGridLoading(false);
-    } catch (e) {
-      notifyError("No Records found for the selected filter!");
-      setGridDataCount(0);
-      setGridData([]);
-      setIsGridLoading(false);
-      console.log(e);
     }
-  }
   };
-
 
   const handlePageChange = useCallback((currPage: number) => {
     setCurrentPage(currPage);
@@ -889,13 +903,12 @@ const handleActionChange = (option: any) => {
     if (pageSize) {
       setCurrentPage(1);
       setUserPageSize(pageSize);
-      handleSaveClick(undefined,pageSize);
+      handleSaveClick(undefined, pageSize);
       getInitialGridData(1, pageSize);
     } else {
       notifyError("Invalide page size");
     }
-    
-  }
+  };
 
   const extractDepartmentNames = (orders: Orders): string[] => {
     const departmentNames: Set<string> = new Set();
@@ -940,11 +953,11 @@ const handleActionChange = (option: any) => {
   const getSelectedRow = () => {
     const selectedData = refGraph2.current?.api.getSelectedRows();
     rowsSelected.current = selectedData.length > 0;
-    
+
     // Use efficient data structures
     const selectedKeys = new Set(selectedData.map((item: any) => item.ok));
     let updated = false;
-  
+
     // Create a map for quick access to mergedData items
     const mergedDataMap = new Map(masterSelectedRowData.map((item: any) => [item.ok, item]));
    
@@ -970,11 +983,12 @@ const handleActionChange = (option: any) => {
     if (updated) {
       setMasterSelectedRowData(Array.from(mergedDataMap.values()));
     }
-  
-    toggleCheckBox();  // Ensure checkboxes are correctly toggled
-    refGraph2.current.api.refreshCells();  // Refresh cells in the grid
+
+    toggleCheckBox(); // Ensure checkboxes are correctly toggled
+    refGraph2.current.api.refreshCells(); // Refresh cells in the grid
     setIsGridLoading(false);
   };
+
 
   useEffect(() => {
     if (masterSelectedRowData.length > 0) {
@@ -1029,112 +1043,117 @@ const onPivotModeChanged = (event: any) => {
   event.api.getColumnApi()?.setColumnVisible('chckbx', !isPivotOn);
 };
 
-      const detailCellRendererParamsConfig = useMemo(() => {
-          const itemNameColumnDef = columnBomDefs.find((a: any) => a.colId === "ItemName");
-        
-          const config = {
-            masterDetail: bomActive?true:false,
-            detailCellRendererParams: {
-              suppressMenu: true,
-              detailGridOptions: {
-                rowHeight: 28,
-                headerHeight:30,
-                // domLayout: "autoHeight",
-                autoGroupColumnDef: {
-                  headerName:itemNameColumnDef?.headerName,
-                  cellRendererParams: {
-                    suppressCount: true,
-                  },
-                },
-                columnDefs:columnBomDefs.filter((col: any) => col.colId !== "ItemName"),
-                defaultColDef: {
-                  flex: 1,
-                  suppressMenu: true,
-                  cellStyle: {
-                    fontSize: "16px",
-                    display: "flex",
-                    alignItems: "center",
-                  },
-                },
-      
-                treeData: true,
-                getDataPath: (data: any) => {
-                  return data.path;
-                },
-              },
-              getDetailRowData: async (params: any) => {
-                if (!_.isEmpty(params.data)) {                
-                  if (cache.current[`${params.data.oid}-${params.data.lid}`]) {
-                    params.successCallback(
-                      cache.current[`${params.data.oid}-${params.data.lid}`]
-                    );
-                    return;
-                  }
-                  const data = await getBOMExplosionData({
-                    orderId: params.data.oid,
-                    lineId: params.data.lid,
-                  });
-                  cache.current[`${params.data.oid}-${params.data.lid}`] = data.data.data;
-                  params.successCallback(data?.data?.data);
-                  return;
-                }
-              },
-            },    
-          };
-          return config;
-        }, [columnBomDefs, bomHeader]);
+  const detailCellRendererParamsConfig = useMemo(() => {
+    const itemNameColumnDef = columnBomDefs.find(
+      (a: any) => a.colId === "ItemName"
+    );
 
-  const agGridProps: AgGridReactProps = {
-      tooltipShowDelay: 0,
-      tooltipTrigger: "focus",
-      gridOptions: {
-        rowHeight: 50,
-        getRowStyle: (params: any) => {
-          return {
-            background: params.node.rowIndex % 2 === 0 ? "#EBEBEB" : "#F7F7F7",
-          };
-        },
-        rowSelection: "multiple",
-        suppressRowClickSelection: true,
-        enableBrowserTooltips: true,
-        enableRangeSelection: true,
-        components: customCellRenderers,
-        pagination: true,
-        // pivotMode: false,
-        defaultColDef: {
-          enablePivot: true,
-          filter: "agTextColumnFilter",
-          floatingFilter: true,
-          //suppressFiltersToolPanel:true,
-          cellStyle: {
-            textAlign: "center",
-            //'height': '50px',
-            //"fontStyle": "Roboto",
-            //"fontVariant": "normal",
-            fontSize: "18px",
-            fontFamily: "Roboto",
-            whiteSpace: "nowrap",
-            resizable: "true",
-            color: "#000",
+    const config = {
+      masterDetail: bomActive ? true : false,
+      detailCellRendererParams: {
+        suppressMenu: true,
+        detailGridOptions: {
+          rowHeight: 28,
+          headerHeight: 30,
+          // domLayout: "autoHeight",
+          autoGroupColumnDef: {
+            headerName: itemNameColumnDef?.headerName,
+            cellRendererParams: {
+              suppressCount: true,
+            },
           },
-          // floatingFilterComponentParams: {
-          //   // suppressFilterButton: true,
-          // },
+          columnDefs: columnBomDefs.filter(
+            (col: any) => col.colId !== "ItemName"
+          ),
+          defaultColDef: {
+            flex: 1,
+            suppressMenu: true,
+            cellStyle: {
+              fontSize: "16px",
+              display: "flex",
+              alignItems: "center",
+            },
+          },
+
+          treeData: true,
+          getDataPath: (data: any) => {
+            return data.path;
+          },
+        },
+        getDetailRowData: async (params: any) => {
+          if (!_.isEmpty(params.data)) {
+            if (cache.current[`${params.data.oid}-${params.data.lid}`]) {
+              params.successCallback(
+                cache.current[`${params.data.oid}-${params.data.lid}`]
+              );
+              return;
+            }
+            const data = await getBOMExplosionData({
+              orderId: params.data.oid,
+              lineId: params.data.lid,
+            });
+            cache.current[`${params.data.oid}-${params.data.lid}`] =
+              data.data.data;
+            params.successCallback(data?.data?.data);
+            return;
+          }
         },
       },
-      sideBar: sideBar,
-      masterDetail: true,
-      //detailCellRenderer: RowGroupRenderer,
-      //detailCellRendererParams:RowGroupRenderer,
-      paginationAutoPageSize: true,
-      enterNavigatesVertically: true,
-      enterNavigatesVerticallyAfterEdit: true,
-      groupDefaultExpanded: 0,
-      // onSelectionChanged: debounce(getSelectedRow, 1000),
-      onSelectionChanged: getSelectedRow,
-      onRowDataUpdated: onFirstDataRendered,
-      onColumnPivotModeChanged: onPivotModeChanged,
     };
+    return config;
+  }, [columnBomDefs, bomHeader]);
+
+  const agGridProps: AgGridReactProps = {
+    tooltipShowDelay: 0,
+    tooltipTrigger: "focus",
+    gridOptions: {
+      rowHeight: 50,
+      getRowStyle: (params: any) => {
+        return {
+          background: params.node.rowIndex % 2 === 0 ? "#EBEBEB" : "#F7F7F7",
+        };
+      },
+      rowSelection: "multiple",
+      suppressRowClickSelection: true,
+      enableBrowserTooltips: true,
+      enableRangeSelection: true,
+      components: customCellRenderers,
+      pagination: true,
+      // pivotMode: false,
+      defaultColDef: {
+        enablePivot: true,
+        filter: "agTextColumnFilter",
+        floatingFilter: true,
+        //suppressFiltersToolPanel:true,
+        cellStyle: {
+          textAlign: "center",
+          //'height': '50px',
+          //"fontStyle": "Roboto",
+          //"fontVariant": "normal",
+          fontSize: "18px",
+          fontFamily: "Roboto",
+          whiteSpace: "nowrap",
+          resizable: "true",
+          color: "#000",
+        },
+        // floatingFilterComponentParams: {
+        //   // suppressFilterButton: true,
+        // },
+      },
+    },
+    sideBar: sideBar,
+    masterDetail: true,
+    //detailCellRenderer: RowGroupRenderer,
+    //detailCellRendererParams:RowGroupRenderer,
+    paginationAutoPageSize: true,
+    enterNavigatesVertically: true,
+    enterNavigatesVerticallyAfterEdit: true,
+    groupDefaultExpanded: 0,
+    // onSelectionChanged: debounce(getSelectedRow, 1000),
+    onSelectionChanged: getSelectedRow,
+    onRowDataUpdated: onFirstDataRendered,
+    onColumnPivotModeChanged: onPivotModeChanged,
+  };
 
   useEffect(() => {
     if (Object.keys(appliedFilters).length && userConfigFetched) {
@@ -1151,7 +1170,6 @@ const onPivotModeChanged = (event: any) => {
   const [isExcelLoading, setIsExcelLoading] = useState<boolean>(false);
 
   const getTempGridData = async () => {
-    
     setIsExcelLoading(true);
     try {
       const formatedFilters = formatFilterJSON(appliedFilters);
@@ -1171,9 +1189,10 @@ const onPivotModeChanged = (event: any) => {
   const onExcelExport = () => {
     if (isPivot) {
       getTempGridData();
+      getTempGridData();
     } else {
       if (bomActive) {
-        setShowExcelModal(true)
+        setShowExcelModal(true);
       } else {
         getInitialGridData(1, userPageSize, true, 0);
       }
@@ -1207,8 +1226,12 @@ const onPivotModeChanged = (event: any) => {
         rn_id: UIGridCode.ProdOverallBMReport,
       });
 
-      const newConfig = data?.data?.data?.length ? JSON.parse(data?.data?.data?.[0]?.columns_settings) || [] : [];
-      setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
+      const newConfig = data?.data?.data?.length
+        ? JSON.parse(data?.data?.data?.[0]?.columns_settings) || []
+        : [];
+      setUserPageSize(
+        newConfig.pageSize ? Number(newConfig.pageSize) : undefined
+      );
       setColumnState(newConfig.cs);
       setIsPivot(newConfig.pivot);
       setUserConfigFetched(true);
@@ -1221,11 +1244,15 @@ const onPivotModeChanged = (event: any) => {
     }
   };
 
-  const handleSaveClick = async (coldefs?: any,page_size?:any) => {
+  const handleSaveClick = async (coldefs?: any, page_size?: any) => {
     try {
       if (coldefs) {
         //reset case
-        const fullConfig = { pivot: false, cs: coldefs, pageSize: userPageSize };
+        const fullConfig = {
+          pivot: false,
+          cs: coldefs,
+          pageSize: userPageSize,
+        };
         const payload = {
           un: user.user.name,
           rn_id: UIGridCode.ProdOverallBMReport,
@@ -1249,7 +1276,11 @@ const onPivotModeChanged = (event: any) => {
         if (refGraph2?.current?.api) {
           const config = refGraph2.current.api.getColumnState();
           const isPivot = refGraph2.current?.api.isPivotMode();
-          const fullConfig = { pivot: isPivot, cs: config, pageSize: userPageSize };
+          const fullConfig = {
+            pivot: isPivot,
+            cs: config,
+            pageSize: userPageSize,
+          };
 
           // setColumnState(config);
 
@@ -1298,30 +1329,35 @@ const onPivotModeChanged = (event: any) => {
         "pivotMode",
         isPivot
       );
-      refGraph2.current.api.autoSizeAllColumns()
+      refGraph2.current.api.autoSizeAllColumns();
       if (!result || !applyPivot) {
         console.error("Failed to apply column state");
       }
     }
-  }, [columnState,refGraph2,refGraph2.current]);
+  }, [columnState, refGraph2, refGraph2.current]);
 
   const { data: apiResponseData /*isLoading, refetch*/ } = useGetDate();
 
   const date = apiResponseData?.data?.data;
 
-  const excelStyles = useMemo(() => 
-    excelColorArr.map((color) => ({
-      id: color,
-      font: { color: color === "White" ? "000000" : "#ffffff" },
-      interior: {
-        color: color === "White"  ? "#A8A8A8" : ColorsMTO[color as keyof typeof ColorsMTO]?.code,
-        pattern: 'Solid'
-      }
-    }))
-  , []);
+  const excelStyles = useMemo(
+    () =>
+      excelColorArr.map((color) => ({
+        id: color,
+        font: { color: color === "White" ? "000000" : "#ffffff" },
+        interior: {
+          color:
+            color === "White"
+              ? "#A8A8A8"
+              : ColorsMTO[color as keyof typeof ColorsMTO]?.code,
+          pattern: "Solid",
+        },
+      })),
+    []
+  );
 
   const handleExcelConfirm = () => {
-    setShowExcelModal(false);   
+    setShowExcelModal(false);
     getInitialGridData(1, userPageSize, true, 1);
   };
 
@@ -1329,11 +1365,10 @@ const onPivotModeChanged = (event: any) => {
     setShowExcelModal(false);
     getInitialGridData(1, userPageSize, true, 0);
   };
-  
 
   return (
-    <BMDepWrapper>
-      <BMDepHeaderWraper>
+    <div className={BMDepWrapper}>
+      <div className={BMDepHeaderWraper}>
         <MTOActionToolBar
           comp={"OverallBMReport"}
           isAddFilterButton
@@ -1352,7 +1387,7 @@ const onPivotModeChanged = (event: any) => {
           handleSaveClick={handleSaveClick}
           handleResetClick={handleResetClick}
         />
-      </BMDepHeaderWraper>
+      </div>
       <div
         style={{
           display: "flex",
@@ -1366,8 +1401,8 @@ const onPivotModeChanged = (event: any) => {
       >
         <p>{date && date.length ? moment(date).format("D MMM YYYY") : " "}</p>
       </div>
-      
-        <BomExcelModal
+
+      <BomExcelModal
         open={showExcelModal}
         onClose={() => setShowExcelModal(false)}
         onConfirm={handleExcelConfirm}
@@ -1375,19 +1410,22 @@ const onPivotModeChanged = (event: any) => {
         themeUi={themeUi}
         headerText={"Excel Export"}
         messageText={"Do you want to download Excel with BOM Data?"}
-                
       />
-      
+
       {(isGridLoading ||
         isExcelLoading ||
         isGetStateLoading ||
         isShortOrderCompleteOrder ||
         isUpdateUserConfig ||
-        isDeptWiseWipData || 
+        isDeptWiseWipData ||
         isHighAgeingData) && <OverlayLoader />}
 
-      <HorizontalViewWrapper style={{ marginTop: "0", paddingLeft:"25px" }}>
-        <BTRTableWrapper
+      <div
+        className={HorizontalViewWrapper}
+        style={{ marginTop: "0", paddingLeft: "25px" }}
+      >
+        <div
+          className={BTRTableWrapper}
           style={{
             height: rowsSelected.current ? "120vh" : "75vh",
             margin: "0",
@@ -1397,7 +1435,7 @@ const onPivotModeChanged = (event: any) => {
             <Allotment.Pane
               preferredSize={rowsSelected.current ? "45%" : "70%"}
             >
-              <BTRAllomentSection>
+              <div className={BTRAllomentSection}>
                 <GridView
                   reference={refGraph2}
                   agGridProps={agGridProps}
@@ -1409,8 +1447,10 @@ const onPivotModeChanged = (event: any) => {
                   currentPage={currentPage}
                   customPageSize={true}
                   savePageSize={savePageSize}
-                  userPageSize = {userPageSize}
-                  detailCellRendererParamsConfig={detailCellRendererParamsConfig}
+                  userPageSize={userPageSize}
+                  detailCellRendererParamsConfig={
+                    detailCellRendererParamsConfig
+                  }
                 />
                 {/* This Grid is only for the user to download the excel report */}
                 <div style={{ display: "none" }}>
@@ -1425,18 +1465,20 @@ const onPivotModeChanged = (event: any) => {
                     currentPage={currentPage}
                     excelStyles={excelStyles}
                     savePageSize={savePageSize}
-                    userPageSize = {userPageSize}
-                    detailCellRendererParamsConfig={detailCellRendererParamsConfig}
+                    userPageSize={userPageSize}
+                    detailCellRendererParamsConfig={
+                      detailCellRendererParamsConfig
+                    }
                   />
                 </div>
-              </BTRAllomentSection>
+              </div>
             </Allotment.Pane>
 
             <Allotment.Pane
               preferredSize={rowsSelected.current ? "55%" : "30%"}
             >
-              <VFWrapper>
-                <BTRAllomentSection>
+              <div className={VFWrapper}>
+                <div className={BTRAllomentSection}>
                   <OrderElapsedGrid
                     isTrue={isOrderElapsedGrid}
                     data={deptWiseWipData}
@@ -1444,11 +1486,11 @@ const onPivotModeChanged = (event: any) => {
                     selectedOrderCount={masterSelectedRowData.length}
                     highAgeingdata={highAgeing}
                   />
-                </BTRAllomentSection>
-              </VFWrapper>
+                </div>
+              </div>
             </Allotment.Pane>
           </Allotment>
-        </BTRTableWrapper>
+        </div>
 
         <ConfirmationModal
           key={2}
@@ -1462,14 +1504,14 @@ const onPivotModeChanged = (event: any) => {
           completeCloseTracker={completeCloseTracker}
           shortCloseTracker={shortCloseTracker}
         />
-      </HorizontalViewWrapper>
+      </div>
 
       <BPRRemarkHistoryModal
         data={remarkHistory}
         isOpen={isRemarkHistoryOpen}
         onClose={() => setIsRemarkHistoryOpen(false)}
       />
-    </BMDepWrapper>
+    </div>
   );
 };
 

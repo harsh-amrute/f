@@ -1,4 +1,3 @@
-import React from 'react'
 import ResourceViewChart from '../components/ResourceViewChart'
 
 const JobView = () => {

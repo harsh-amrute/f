@@ -3,14 +3,14 @@ import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/A
 import {
     BMDepWrapper,
     BMDepHeaderWraper
-} from './styles';
+} from './styles.css';
 import { AgGridReactProps } from 'ag-grid-react';
 //import { ColDef } from 'ag-grid-enterprise'
 
 //import { /*deptwiseBMReportData*/ RemarkHistoryData } from './DeptWiseBMReportData';
 import GridView from './GridView';
 import { Allotment } from 'allotment';
-import { BTRAllomentSection, BTRTableWrapper, HorizontalViewWrapper } from '../../Common/SplitGraphContainer/styles';
+import { BTRAllomentSection, BTRTableWrapper, HorizontalViewWrapper } from '../../Common/SplitGraphContainer/styles.css';
 // import useViewPort from '../../../../../hooks/useViewPort';
 import OrderElapsedGrid from './OrderElapsedGrid';
 import AgeingCellRenderer from './AgeingIconCellRenderer';
@@ -22,7 +22,7 @@ import Checkbox from '../../../../../components/VectorFLOW/commons/MTO/Checkbox'
 import { useUserData } from '../../../../../context';
 import { useAddBMReportRemark, useGetDeptWiseWipData, useGetFilteredDeptWiseBMReport, useGetHighAgeingData } from '../../../../../VectorFlow/Services/MTO/Production/DepartmentWiseBMReport/index'
 import { notifyError, notifyLoader, notifySuccess } from '../../../../../helpers/notify';
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify/unstyled";
 import OverlayLoader from '../../Common/Loader';
 import { useGetPoogiRemarks } from '../../../../../VectorFlow/Services/MTO/Poogi/ReasonOrderChange/index';
 import BPPRenderer from '../../Common/BPRRenderer/BPPRenderer';
@@ -1163,8 +1163,8 @@ const DptWiseBMReport = () => {
     }
 
     return (
-        <BMDepWrapper>
-            <BMDepHeaderWraper>
+        <div className={BMDepWrapper}>
+            <div className={BMDepHeaderWraper}>
                 <MTOActionToolBar
                     comp={'DeptWiseBMReport'}
                     isAddFilterButton
@@ -1192,7 +1192,7 @@ const DptWiseBMReport = () => {
                     onFilterRemove={onFilterRemove}
                     isMfgSelected={isMfgSelected}
                 />
-            </BMDepHeaderWraper>
+            </div>
             <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '14px', fontWeight: 'bold', fontFamily: 'Roboto', marginTop: "10px",}}>
             <p>{(date && date.length)? moment(date).format('D MMM YYYY'): ""}</p>
             </div>
@@ -1210,11 +1210,11 @@ const DptWiseBMReport = () => {
                 {
                     (isFilteredDataLoaded || isExcelLoading || isGetStateLoading) && <OverlayLoader /> }
 
-                        <HorizontalViewWrapper style={{ marginTop: '0px', paddingLeft:"25px" }}>
-                            <BTRTableWrapper style={{  height: areRowsSelected ? "120vh" : "75vh", margin: '0' }}>
+                        <div className={HorizontalViewWrapper} style={{ marginTop: '0px', paddingLeft:"25px" }}>
+                            <div className={BTRTableWrapper} style={{  height: areRowsSelected ? "120vh" : "75vh", margin: '0' }}>
                                 <Allotment vertical={true} separator={true} ref={allotementRef}>
                                     <Allotment.Pane preferredSize={areRowsSelected ? "60%" : '70%'}>
-                                        <BTRAllomentSection>
+                                        <div className={BTRAllomentSection}>
                                             <GridView
                                             // key={isReset? 1: 2}
                                             reference={refGraph1}
@@ -1232,11 +1232,11 @@ const DptWiseBMReport = () => {
                                                 // onGridReady={() => {applyColumnState()}}
                                                 />
                                         
-                                        </BTRAllomentSection>
+                                        </div>
                                     </Allotment.Pane>
 
                                     <Allotment.Pane preferredSize={areRowsSelected ? "40%" : '30%'}>
-                                        <BTRAllomentSection>
+                                        <div className={BTRAllomentSection}>
                                             <OrderElapsedGrid
                                                 isTrue={isOrderElapsedGrid}
                                                 data={deptWiseWipData}
@@ -1244,11 +1244,11 @@ const DptWiseBMReport = () => {
                                                 selectedOrderCount={masterSelectedRowData.length}
                                                 highAgeingdata={highAgeing}
                                             />
-                                        </BTRAllomentSection>
+                                        </div>
                                     </Allotment.Pane>
                                 </Allotment>
-                            </BTRTableWrapper>
-                        </HorizontalViewWrapper>
+                            </div>
+                        </div>
 
                 <div style={{ display: 'none' }}>
                     <GridView
@@ -1272,7 +1272,7 @@ const DptWiseBMReport = () => {
                 onClose={() => setIsRemarkHistoryOpen(false)}
             />
 
-        </BMDepWrapper>
+        </div>
 
     )
 }

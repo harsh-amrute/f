@@ -1,7 +1,7 @@
 
 import { CSSProperties, useMemo, useState,useEffect ,useRef} from "react";
 
-import {toast} from 'react-toastify'
+import {toast} from "react-toastify/unstyled"
 
 
 import { AgGridReactProps } from "ag-grid-react";

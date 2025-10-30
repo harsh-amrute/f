@@ -1,27 +1,27 @@
 import { useState } from "react";
-import { InputWrapper, URLsForm, Label } from "./styles";
 import {
-  Input,
-  PrimaryButton,
-  TextArea,
-} from "../../../components/commons/styled";
+  urlsForm,
+  row,
+  inputWrapper,
+  label,
+  ml10,
+  formActions,
+  focusOutlineVar,
+} from "./styles.css";
+import { input, primaryButton, textArea } from "../../commons/styled/index.css";
 import { useUserData } from "../../../context";
 import axios from "axios";
-import { notifyError,notifySuccess } from "../../../helpers/notify";
+import { notifyError, notifySuccess } from "../../../helpers/notify";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
+import * as globalStyles from "../../../styles/global";
 
-
-const AddURL = (props:{cb:()=>void}) => {
-
-  const {
-    cb
-} = props
+const AddURL = (props: { cb: () => void }) => {
+  const { cb } = props;
   const { user } = useUserData();
 
   const themeUi = user.user.theme_ui;
 
-
-
-  const [isSubmitting,setIsSubmitting] = useState<boolean>(false)
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const [formData, setFormData] = useState<any>({
     name: "",
@@ -38,87 +38,119 @@ const AddURL = (props:{cb:()=>void}) => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = async(e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-    setIsSubmitting(true)
-    try{
-      const response = await axios.post(`${process.env.REACT_APP_API_HOST}api/user/add-function/`,{
-        data:[formData]
-      },{
-        headers: { 'Content-Type': 'application/json' }
-      })
-      if(response.status === 400){
-        notifyError("A URL with the name " + formData.name  +" already exists" )
+    setIsSubmitting(true);
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_HOST}api/user/add-function/`,
+        {
+          data: [formData],
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      if (response.status === 400) {
+        notifyError("A URL with the name " + formData.name + " already exists");
+      } else {
+        notifySuccess("Successfully Added " + formData.name);
+        cb();
       }
-      else{
-        notifySuccess("Successfully Added " + formData.name)
-        cb()
-      }
-    }catch(error){
-      console.error(error)
-      notifyError("Server Went Unresponsive")
-    }finally{
-      setIsSubmitting(false)
+    } catch (error) {
+      console.error(error);
+      notifyError("Server Went Unresponsive");
+    } finally {
+      setIsSubmitting(false);
     }
   };
+
+  const focusColor =
+    globalStyles.chooseThemeColor[themeUi]?.color4 ?? "transparent";
+
   return (
-    <URLsForm onSubmit={handleSubmit}>
-      <div style={{ display: "flex" }}>
-        <InputWrapper>
-          <Label htmlFor="name"> Name</Label>
-          <Input
-            type={"text"}
+    <form className={urlsForm} onSubmit={handleSubmit}>
+      <div className={row}>
+        <div className={inputWrapper}>
+          <label className={label} htmlFor="name">
+            Name
+          </label>
+          <input
+            className={input}
+            type="text"
             required
             name="name"
             placeholder="Any name"
-            themeUi={themeUi}
+            style={assignInlineVars({
+              [focusOutlineVar]: focusColor,
+            })}
             onChange={handleChange}
           />
-        </InputWrapper>
-        <InputWrapper style={{ marginLeft: "10px" }}>
-          <Label htmlFor="code"> Code</Label>
-          <Input
-            type={"text"}
+        </div>
+
+        <div className={`${inputWrapper} ${ml10}`}>
+          <label className={label} htmlFor="code">
+            Code
+          </label>
+          <input
+            className={input}
+            type="text"
             required
             name="code"
             placeholder="URL code"
-            themeUi={themeUi}
+            style={assignInlineVars({
+              [focusOutlineVar]: focusColor,
+            })}
             onChange={handleChange}
           />
-        </InputWrapper>
+        </div>
       </div>
-      <InputWrapper>
-        <Label htmlFor="url">URL </Label>
-        <Input
-          type={"text"}
+
+      <div className={inputWrapper}>
+        <label className={label} htmlFor="url">
+          URL
+        </label>
+        <input
+          className={input}
+          type="text"
           name="url"
           required
           placeholder="Enter your url"
-          themeUi={themeUi}
+          style={assignInlineVars({
+            [focusOutlineVar]: focusColor,
+          })}
           onChange={handleChange}
         />
-      </InputWrapper>
-      <InputWrapper>
-        <Label htmlFor="description"> Description</Label>
-        <TextArea
+      </div>
+
+      <div className={inputWrapper}>
+        <label className={label} htmlFor="description">
+          Description
+        </label>
+        <textarea
+          className={textArea}
           name="description"
           required
           placeholder="Example : BPR url"
-          themeUi={themeUi}
+          style={assignInlineVars({
+            [focusOutlineVar]: focusColor,
+          })}
           onChange={handleChange}
         />
-      </InputWrapper>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "flex-end",
-          justifyContent: "flex-end",
-          flex: 10,
-        }}
-      >
-        <PrimaryButton themeUi={themeUi} disabled={isSubmitting}>Add Url</PrimaryButton>
       </div>
-    </URLsForm>
+
+      <div className={formActions}>
+        <button
+          className={primaryButton}
+          style={assignInlineVars({
+            [focusOutlineVar]: focusColor,
+          })}
+          disabled={isSubmitting}
+        >
+          Add Url
+        </button>
+      </div>
+    </form>
   );
 };
 

@@ -1,16 +1,15 @@
-
-import { NoData } from './style'
+import { NoData } from "./style.css";
 
 interface NoDataToDisplayProps {
-    imgSrc?: string
+  imgSrc?: string;
 }
 
-function NoDataToDisplay({imgSrc}:NoDataToDisplayProps) {
+function NoDataToDisplay({ imgSrc }: NoDataToDisplayProps) {
   return (
-   <NoData>
-        <img src={imgSrc} alt="" />
-   </NoData>
-  )
+    <div className={NoData}>
+      <img src={imgSrc} alt="" />
+    </div>
+  );
 }
 
-export default NoDataToDisplay
+export default NoDataToDisplay;

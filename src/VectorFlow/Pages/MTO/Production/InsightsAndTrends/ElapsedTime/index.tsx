@@ -1,7 +1,7 @@
 import { Allotment } from 'allotment'
 import { useEffect, useRef, useState } from 'react'
 import MTOActionToolBar from '../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar'
-import { BTRAllomentSection, BTRTableWrapper, HorizontalViewWrapper } from '../../../Common/SplitGraphContainer/styles'
+import { BTRAllomentSection, BTRTableWrapper, HorizontalViewWrapper } from '../../../Common/SplitGraphContainer/styles.css'
 import GridView from './GridView'
 import WeekWiseGraph from './WeekWiseGraph'
 import DeptWiseGraph from './DeptWiseGraph'
@@ -377,7 +377,7 @@ const ElapsedTime = () => {
             // onFilterRemove={onFilterRemove}
             // isMfgSelected={isMfgSelected}
             />
-            <HorizontalViewWrapper style={{ flex: 1 }}>
+            <div className={HorizontalViewWrapper} style={{ flex: 1 }}>
                 {isGridView ? (
                     <GridView
                         ref={elapsedTimeRef}
@@ -397,22 +397,22 @@ const ElapsedTime = () => {
                         rowData={gridData}
                     />
                 ) : (
-                    <BTRTableWrapper style={{ height:"95%", paddingLeft: "20px" }}>
+                    <div className={BTRTableWrapper} style={{ height:"95%", paddingLeft: "20px" }}>
                         <Allotment vertical={false} separator={false}   >
                             <Allotment.Pane minSize={400} preferredSize={'50%'} className='allotment-pane-custom'>
-                                <BTRAllomentSection>
+                                <div className={BTRAllomentSection}>
                                     <DeptWiseGraph chartData={deptwiseChartData} chartTableData={deptwiseChartTableData} alertData={alertData} />
-                                </BTRAllomentSection>
+                                </div>
                             </Allotment.Pane>
                             <Allotment.Pane minSize={400} preferredSize={'50%'} className='allotment-pane-custom'>
-                                <BTRAllomentSection>
+                                <div className={BTRAllomentSection}>
                                     <WeekWiseGraph handleSelectionChange={handleSelectionChange} chartTableData={weeklyChartTableData} chartData={weeklyChartData} plant={selectedPlant} dept={selectedDept} />
-                                </BTRAllomentSection>
+                                </div>
                             </Allotment.Pane>
                         </Allotment>
-                    </BTRTableWrapper>
+                    </div>
                 )}
-            </HorizontalViewWrapper>
+            </div>
            
         </div>
     )

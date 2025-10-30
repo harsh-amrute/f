@@ -1,53 +1,59 @@
-import { BTRLayoutTabsWrapper, BTRLayoutWrapper, ToggleViewBtnWrapper } from "./styles";
+import {
+  BTRLayoutTabsWrapper,
+  BTRLayoutWrapper,
+  ToggleViewBtnWrapper,
+} from "./styles.css";
 import useBTR from "./useBTR";
-import { SCViewBackground, SCViewContainer, SCViewImage, SCVerticalDivider } from '../../SupplyChainIntelligenceHub/Planning/ActionToolBar/styles';
+import {
+  SCViewBackground,
+  SCViewContainer,
+  SCViewImage,
+  SCVerticalDivider,
+} from "../../SupplyChainIntelligenceHub/Planning/ActionToolBar/styles.css";
 import { GridStateContext } from "../../../../../context/GridStateContext";
 import VFFloatingTab from "../../../../../components/VectorFLOW/commons/VFFloatingTab";
 import ActionToolBar from "../../SupplyChainIntelligenceHub/Planning/ActionToolBar";
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
 import LastRunDateComponent from "../../../../../components/commons/lastRundate";
-import DailyDataGraphModal from "../../../../../components/VectorFLOW/commons/DailyDataGraphModal"
+import DailyDataGraphModal from "../../../../../components/VectorFLOW/commons/DailyDataGraphModal";
 import OverlayLoader from "../../../../../VectorFlow/Pages/MTO/Common/Loader";
 import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons/NormChangeHistoryTable";
 
 const BufferTrendReport = () => {
-
-    const {
-        currentTab,
-        isLoading,
-        techColDefs,
-        ecoRef,
-        techRef,
-        techTotalRows,
-        verticalView,
-        toggleVerticalView,
-        toggleCurrentTab,
-        renderView,
-        tempRef,
-        onExportToExcelCallBack,
-        tempDownloadData,
-        setTempDownloadData,
-        tempAgGridProps,
-        exportExcelRowData,
-        showNormChangeHistoryTable,
-        setExportExcelRowData,
-        exportExcelColumns,
-        setExportExcelColumns,
-        currFilter,
-        dailyData,
-        setCurrFilter,
-        onDeleteFilter,
-        onApplyFilter,
-        themeUi,
-        horizon,
-        ecoColDefs,
-        setHorizon,
-        lastRunDate,
-        showDailyDataGraphModal,
-        onResetCallback
-    } = useBTR()
-
-    
+  const {
+    currentTab,
+    isLoading,
+    techColDefs,
+    ecoRef,
+    techRef,
+    techTotalRows,
+    verticalView,
+    toggleVerticalView,
+    toggleCurrentTab,
+    renderView,
+    tempRef,
+    onExportToExcelCallBack,
+    tempDownloadData,
+    setTempDownloadData,
+    tempAgGridProps,
+    exportExcelRowData,
+    showNormChangeHistoryTable,
+    setExportExcelRowData,
+    exportExcelColumns,
+    setExportExcelColumns,
+    currFilter,
+    dailyData,
+    setCurrFilter,
+    onDeleteFilter,
+    onApplyFilter,
+    themeUi,
+    horizon,
+    ecoColDefs,
+    setHorizon,
+    lastRunDate,
+    showDailyDataGraphModal,
+    onResetCallback,
+  } = useBTR();
 
     return (
         <GridStateContext.Provider
@@ -93,48 +99,95 @@ const BufferTrendReport = () => {
         {
             showNormChangeHistoryTable && <NormChangeHistoryTable data={dailyData.normChangeData} />
         }
-        <BTRLayoutWrapper>
-                <BTRLayoutTabsWrapper>
-                    <div style={{ zoom: 0.6}}>
-                        <VFFloatingTab
-                            handleClick={(tab: any) => toggleCurrentTab(tab)}
-                            tabs={[
-                                {
-                                    id: "1",
-                                      value: 'on-hand',
-                                    label: "On-Hand Inv. View"
-                                  
-                                },
-                                {
-                                    id: "2",
-                                     value: 'pipeline',
-                                    label: "Pipeline Inv. View"
-                                   
-                                },
-                                {
-                                    id: "3",
-                                     value: 'both',
-                                    label: "Both On-Hand & Pipeline View"
-                                }
-                            ]}
-                        />
-                    </div>
-                    {currentTab?.id === '3' && (
-                        <ToggleViewBtnWrapper>
-                            <SCViewBackground>
-                                <SCViewContainer onClick={() => toggleVerticalView(true)}>
-                                    <SCViewImage src={verticalView?themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/grid-view-regal.svg":"/assets/img/VectorFLOW/BPR/grid-view-pink.svg":"/assets/img/VectorFLOW/BPR/grid-view-grey.svg"} style={{ transform: 'rotate(90deg)' }} alt="" />
-                                    <p style={{ color: verticalView?themeUi!=="REGALBLAZE"? '#bc3d81':'#FCA311':'gray' }}>Vertical View</p>
-                                </SCViewContainer>
-                                <div><SCVerticalDivider /></div>
-                                <SCViewContainer onClick={() => toggleVerticalView(false)} >
-                                    <SCViewImage src={!verticalView?themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/grid-view-regal.svg":"/assets/img/VectorFLOW/BPR/grid-view-pink.svg":"/assets/img/VectorFLOW/BPR/grid-view-grey.svg"} alt="" />
-                                    <p style={{ color: !verticalView?themeUi!=="REGALBLAZE"? '#bc3d81':'#FCA311':'gray' }}>Horizontal View</p>
-                                </SCViewContainer>
-                            </SCViewBackground>
-                        </ToggleViewBtnWrapper>
-                    )}
-                </BTRLayoutTabsWrapper>
+      <div className={BTRLayoutWrapper}>
+        <div className={BTRLayoutTabsWrapper}>
+          <div style={{ zoom: 0.6 }}>
+            <VFFloatingTab
+              handleClick={(tab: any) => toggleCurrentTab(tab)}
+              tabs={[
+                {
+                  id: "1",
+                  value: "both",
+                  label: "Both On-Hand & Pipeline View",
+                },
+                {
+                  id: "2",
+                  value: "on-hand",
+                  label: "On-Hand Inv. View",
+                },
+                {
+                  id: "3",
+                  value: "pipeline",
+                  label: "Pipeline Inv. View",
+                },
+              ]}
+            />
+          </div>
+          {currentTab?.id === "1" && (
+            <div className={ToggleViewBtnWrapper}>
+              <div className={SCViewBackground}>
+                <div
+                  className={SCViewContainer}
+                  onClick={() => toggleVerticalView(true)}
+                >
+                  <img
+                    className={SCViewImage}
+                    src={
+                      verticalView
+                        ? themeUi === "REGALBLAZE"
+                          ? "/assets/img/VectorFLOW/BPR/grid-view-regal.svg"
+                          : "/assets/img/VectorFLOW/BPR/grid-view-pink.svg"
+                        : "/assets/img/VectorFLOW/BPR/grid-view-grey.svg"
+                    }
+                    style={{ transform: "rotate(90deg)" }}
+                    alt=""
+                  />
+                  <p
+                    style={{
+                      color: verticalView
+                        ? themeUi !== "REGALBLAZE"
+                          ? "#bc3d81"
+                          : "#FCA311"
+                        : "gray",
+                    }}
+                  >
+                    Vertical View
+                  </p>
+                </div>
+                <div>
+                  <SCVerticalDivider />
+                </div>
+                <div
+                  className={SCViewContainer}
+                  onClick={() => toggleVerticalView(false)}
+                >
+                  <img
+                    className={SCViewImage}
+                    src={
+                      !verticalView
+                        ? themeUi === "REGALBLAZE"
+                          ? "/assets/img/VectorFLOW/BPR/grid-view-regal.svg"
+                          : "/assets/img/VectorFLOW/BPR/grid-view-pink.svg"
+                        : "/assets/img/VectorFLOW/BPR/grid-view-grey.svg"
+                    }
+                    alt=""
+                  />
+                  <p
+                    style={{
+                      color: !verticalView
+                        ? themeUi !== "REGALBLAZE"
+                          ? "#bc3d81"
+                          : "#FCA311"
+                        : "gray",
+                    }}
+                  >
+                    Horizontal View
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
                 {isLoading && <OverlayLoader />}
                 {!isLoading && renderView()}
                 <div style={{ display: 'none' }}>
@@ -146,7 +199,7 @@ const BufferTrendReport = () => {
                         maintainColumnOrder={true}
                     />
                 </div>
-            </BTRLayoutWrapper>
+            </div>
         </GridStateContext.Provider>
     );
 };

@@ -10,7 +10,7 @@ import {createErrorRowData } from '../../../../../helpers/utils';
 
 import _ from 'lodash';
 import { notifyError,notifyLoader,notifySuccess } from '../../../../../helpers/notify';
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify/unstyled";
 
 const useDelete=()=>{
     const allMasters = useSelector((state:RootState)=>state.mdm.allMasters); 

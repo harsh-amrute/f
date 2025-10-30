@@ -1,98 +1,86 @@
-import { StoreDetails } from '../../../../../../VectorFlow/types/MCGrid'
-import {DetailToolTipWrapper,DetailToolTipHeader,DetailToolTipGrid, DetailToolTipGridRow, DetailToolTipGridHeader, DetailToolTipGridCell, HighlightedRow} from './styles'
+import { StoreDetails } from "../../../../../../VectorFlow/types/MCGrid";
+import {
+  DetailToolTipWrapper,
+  DetailToolTipHeader,
+  DetailToolTipGrid,
+  DetailToolTipGridRow,
+  DetailToolTipGridHeader,
+  DetailToolTipGridCell,
+  HighlightedRow,
+} from "./styles.css";
 
-const DetailToolTip = (props:{data:StoreDetails})=>{
+const DetailToolTip = (props: { data: StoreDetails }) => {
+  const { data } = props;
+  return (
+    <div className={DetailToolTipWrapper}>
+      <div className={DetailToolTipHeader}>Details</div>
+      <div className={DetailToolTipGrid}>
+        <div className={DetailToolTipGridRow}>
+          <span className={DetailToolTipGridHeader}></span>
+          <span className={DetailToolTipGridHeader}>Value (Lakhs)</span>
+          <span className={DetailToolTipGridHeader}>PCs/ %</span>
+        </div>
+        <div className={DetailToolTipGridRow}>
+          <span className={DetailToolTipGridCell}>Sales</span>
+          <span className={DetailToolTipGridCell}>{data.sales.value}</span>
+          <span className={DetailToolTipGridCell}>{data.sales.pcs}</span>
+        </div>
+        <div className={DetailToolTipGridRow}>
+          <span className={DetailToolTipGridCell}>Gross Margin</span>
+          <span className={DetailToolTipGridCell}>
+            {data["gross-margin"].value}
+          </span>
+          <span className={DetailToolTipGridCell}>
+            {data["gross-margin"].pcs}
+          </span>
+        </div>
+        <div
+          className={HighlightedRow}
+          style={{ borderRadius: "4px 4px 0px 0px" }}
+        >
+          <span className={DetailToolTipGridCell}>Planned Range</span>
+          <span className={DetailToolTipGridCell}>
+            {data["planned-range"].value}
+          </span>
+          <span className={DetailToolTipGridCell}>
+            {data["planned-range"].pcs}
+          </span>
+        </div>
+        <div
+          className={HighlightedRow}
+          style={{ borderBottom: "dashed 1px white" }}
+        >
+          <span className={DetailToolTipGridCell}>Range Available</span>
+          <span className={DetailToolTipGridCell}>
+            {data["range-available"].value}
+          </span>
+          <span className={DetailToolTipGridCell}>
+            {data["range-available"].pcs}
+          </span>
+        </div>
+        <div
+          className={HighlightedRow}
+          style={{ borderRadius: "0px 0px 4px 4px" }}
+        >
+          <span className={DetailToolTipGridCell}>Gap</span>
+          <span className={DetailToolTipGridCell}>{data.gap.value}</span>
+          <span className={DetailToolTipGridCell}>{data.gap.pcs}</span>
+        </div>
 
-    const {
-        data
-    } = props
-    return(
-        <DetailToolTipWrapper>
-            <DetailToolTipHeader>
-                Details
-            </DetailToolTipHeader>
-            <DetailToolTipGrid>
-                <DetailToolTipGridRow>
-                    <DetailToolTipGridHeader >
-
-                    </DetailToolTipGridHeader>
-                    <DetailToolTipGridHeader>
-                        Value (Lakhs)
-                    </DetailToolTipGridHeader>
-                    <DetailToolTipGridHeader >
-                        PCs/ %
-                    </DetailToolTipGridHeader>
-                </DetailToolTipGridRow>
-                <DetailToolTipGridRow>
-                    <DetailToolTipGridCell>
+        {/* <div className={DetailToolTipGridRow}>
+                    <span className={DetailToolTipGridCell}>
                         Sales
                     </DetailToolTipGridCell>
-                    <DetailToolTipGridCell>
-                        {data.sales.value}
-                    </DetailToolTipGridCell>
-                    <DetailToolTipGridCell>
-                        {data.sales.pcs}
-                    </DetailToolTipGridCell>
-                </DetailToolTipGridRow>
-                <DetailToolTipGridRow>
-                    <DetailToolTipGridCell>
-                        Gross Margin
-                    </DetailToolTipGridCell>
-                    <DetailToolTipGridCell>
-                        {data['gross-margin'].value}
-                    </DetailToolTipGridCell>
-                    <DetailToolTipGridCell>
-                        {data['gross-margin'].pcs}
-                    </DetailToolTipGridCell>
-                </DetailToolTipGridRow>
-                <HighlightedRow style={{borderRadius:'4px 4px 0px 0px'}}>
-                    <DetailToolTipGridCell>
-                       Planned Range
-                    </DetailToolTipGridCell>
-                    <DetailToolTipGridCell>
-                        {data['planned-range'].value}
-                    </DetailToolTipGridCell>
-                    <DetailToolTipGridCell>
-                        {data['planned-range'].pcs}
-                    </DetailToolTipGridCell>
-                </HighlightedRow>
-                <HighlightedRow style={{borderBottom:'dashed 1px white'}}>
-                    <DetailToolTipGridCell>
-                       Range Available
-                    </DetailToolTipGridCell>
-                    <DetailToolTipGridCell>
-                        {data['range-available'].value}
-                    </DetailToolTipGridCell>
-                    <DetailToolTipGridCell>
-                        {data['range-available'].pcs}
-                    </DetailToolTipGridCell>
-                </HighlightedRow>
-                <HighlightedRow style={{borderRadius:'0px 0px 4px 4px'}}>
-                    <DetailToolTipGridCell>
-                       Gap
-                    </DetailToolTipGridCell>
-                    <DetailToolTipGridCell>
-                        {data.gap.value}
-                    </DetailToolTipGridCell>
-                    <DetailToolTipGridCell>
-                        {data.gap.pcs}
-                    </DetailToolTipGridCell>
-                </HighlightedRow>
-                
-                {/* <DetailToolTipGridRow>
-                    <DetailToolTipGridCell>
-                        Sales
-                    </DetailToolTipGridCell>
-                    <DetailToolTipGridCell>
+                    <span className={DetailToolTipGridCell}>
                         
                     </DetailToolTipGridCell>
-                    <DetailToolTipGridCell>
+                    <span className={DetailToolTipGridCell}>
                         
                     </DetailToolTipGridCell>
                 </DetailToolTipGridRow> */}
-            </DetailToolTipGrid>
-        </DetailToolTipWrapper>
-    )
-}
+      </div>
+    </div>
+  );
+};
 
-export default DetailToolTip
+export default DetailToolTip;

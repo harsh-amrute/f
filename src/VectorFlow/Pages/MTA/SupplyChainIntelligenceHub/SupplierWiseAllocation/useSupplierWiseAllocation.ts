@@ -1,7 +1,7 @@
 // import { useGetBORUIConfiguration, useBORData, useBORDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport"
 import {useGetDailyData} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
 import { convertUiConfigToOptions, MainMenuItemsCustomization, getColumnDefinationsMTA  } from "../../../../../helpers/utils"
-import { useState,useMemo, useEffect,useRef } from "react"
+import { useState,useMemo, useEffect,useRef, CSSProperties } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import BPRGraphCellRenderer from "../BPR/BPRGraphCellRenderer"
 import { BPRFilterState } from "../../../../types/BPR"
@@ -12,7 +12,7 @@ import { RootState } from "../../../../../redux/store/store"
 import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA} from '../../../../../redux/actions/MTA';
 import { type DailyDataGraph } from "../../../../types/MTA";
 import { notifyError, notifyLoader, notifySuccess} from "../../../../../helpers/notify"
-import { toast } from "react-toastify"
+import { toast } from "react-toastify/unstyled"
 
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
@@ -23,7 +23,6 @@ import { ColDef } from "ag-grid-enterprise"
 import { useGetBORColorBandWisData, useGetBORColorBandWiseRecordCount, useGetBOROARemarkHistory, useSubmitBOROARemark } from '../../../../Services/MTA/SupplyChainIntelligenceHub/BORColorBandWise'
 import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
 import { BORRemarksCellRenderer } from "../BuyerOrderReport/BORCellRenderers"
-import { CSSProperties } from 'styled-components'
 import useViewPort from '../../../../../hooks/useViewPort'
 import { useGetUIConfigData } from '../../../../Services/MTA/Common/UIConfig'
 import { useGetState } from '../../../../Services/MTA/Common/UserUIConfig'

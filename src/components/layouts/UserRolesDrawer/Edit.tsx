@@ -1,31 +1,34 @@
-import React,{ useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 
 import Select from "react-select";
 
 import {
-  InputWrapper,
-  URLsForm,
-  Label,
-  ButtonsWrapper,
-  CheckBoxesWrapper,
-  CheckBoxesHeader,
-  CheckBoxesContainer,
-  CheckBoxWrapper,
-  CheckBoxesHeaderContainer,
-  SearchWrapper,
-  CheckBoxLabel,
-  URLSearch,
-} from "../UserURLsDrawer/styles";
+  inputWrapper,
+  urlsForm,
+  label,
+  buttonsWrapper,
+  checkBoxesWrapper,
+  checkBoxesHeader,
+  checkBoxesContainer,
+  checkBoxWrapper,
+  checkBoxesHeaderContainer,
+  searchWrapper,
+  checkBoxLabel,
+  urlSearch,
+  focusOutlineVar,
+} from "../UserURLsDrawer/styles.css";
 import {
-  Input,
-  PrimaryButton,
-  SecondaryButton,
-  Skeleton,
-  TextArea,
-} from "../../commons/styled";
+  input,
+  primaryButton,
+  secondaryButton,
+  skeleton,
+  textArea,
+} from "../../commons/styled/index.css";
 import { useUserData } from "../../../context";
 import axios from "axios";
 import { notifyError, notifySuccess } from "../../../helpers/notify";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
+import * as globalStyles from "../../../styles/global";
 
 interface FormDataType {
   name: string;
@@ -53,7 +56,7 @@ const EditRole = (props: { data: any; cb: () => void }) => {
 
   const [formData, setFormData] = useState<FormDataType>({ ...data });
 
-  const [urlSearchQuery,setUrlSearchQuery] = useState<string>("")
+  const [urlSearchQuery, setUrlSearchQuery] = useState<string>("");
 
   const sortUrls = (allUrlsArray: Array<any>): Array<any> => {
     const selectedUrls = formData.urls.map((url) => url.id);
@@ -190,21 +193,21 @@ const EditRole = (props: { data: any; cb: () => void }) => {
     let timeout: NodeJS.Timeout | null = null;
 
     return (...args: any[]) => {
-        if (timeout) {
-            clearTimeout(timeout);
-        }
+      if (timeout) {
+        clearTimeout(timeout);
+      }
 
-        timeout = setTimeout(() => {
-            fn(...args);
-        }, delay);
+      timeout = setTimeout(() => {
+        fn(...args);
+      }, delay);
     };
-};
+  };
 
-    const handleSearchURLs = (e:any)=>{
-        setUrlSearchQuery(e.target.value.toLowerCase())
-    }
+  const handleSearchURLs = (e: any) => {
+    setUrlSearchQuery(e.target.value.toLowerCase());
+  };
 
-    const debouncedSearch = debounce(handleSearchURLs,0)
+  const debouncedSearch = debounce(handleSearchURLs, 0);
 
   const isChecked = useCallback(
     (url: any) => {
@@ -213,77 +216,110 @@ const EditRole = (props: { data: any; cb: () => void }) => {
     [formData]
   );
 
-
   // const highlightText = (text: string, query: string) => {
   //   if (!query) return text
 
   //   const parts = text.split(new RegExp(`(${urlSearchQuery})`, 'gi'))
-  //   return parts.map((part, index) => 
-  //     part.toLowerCase() === query.toLowerCase() 
+  //   return parts.map((part, index) =>
+  //     part.toLowerCase() === query.toLowerCase()
   //       ? <span style={{backgroundColor:"#BC3D81",color:'white',borderRadius:'4px',padding:'0px 2px'}}>{part}</span>
   //       : <span style={{padding:'0px 2px'}}>{part}</span>
   //   )
   // }
 
-  const queriedURLs = useMemo(()=>{
-    if(!urlSearchQuery || urlSearchQuery.length === 0)return allUrls
-    return allUrls.filter((url)=>url.name.toLowerCase().includes(urlSearchQuery))
-  },[urlSearchQuery,allUrls])
+  const queriedURLs = useMemo(() => {
+    if (!urlSearchQuery || urlSearchQuery.length === 0) return allUrls;
+    return allUrls.filter((url) =>
+      url.name.toLowerCase().includes(urlSearchQuery)
+    );
+  }, [urlSearchQuery, allUrls]);
 
   if (isLoading) {
     return (
-      <URLsForm>
+      <form className={urlsForm}>
         <div style={{ display: "flex", height: 30, gap: 20 }}>
-          <Skeleton style={{ height: "100%", flex: 1, width: "100%" }} />
-          <Skeleton style={{ height: "100%", flex: 1, width: "100%" }} />
+          <div
+            className={skeleton}
+            style={{ height: "100%", flex: 1, width: "100%" }}
+          />
+          <div
+            className={skeleton}
+            style={{ height: "100%", flex: 1, width: "100%" }}
+          />
         </div>
-        <Skeleton style={{ height: 30, width: "100%", marginTop: 20 }} />
-        <Skeleton style={{ height: 30, width: "100%", marginTop: 20 }} />
+        <div
+          className={skeleton}
+          style={{ height: 30, width: "100%", marginTop: 20 }}
+        />
+        <div
+          className={skeleton}
+          style={{ height: 30, width: "100%", marginTop: 20 }}
+        />
 
-        <Skeleton style={{ height: 80, width: "100%", marginTop: 20 }} />
-        <ButtonsWrapper
+        <div
+          className={skeleton}
+          style={{ height: 80, width: "100%", marginTop: 20 }}
+        />
+        <div
+          className={buttonsWrapper}
           style={{
             alignItems: "flex-end",
             justifyContent: "flex-end",
             flex: 10,
           }}
         >
-          <Skeleton style={{ height: 30, width: "100px" }} />
-        </ButtonsWrapper>
-      </URLsForm>
+          <div className={skeleton} style={{ height: 30, width: "100px" }} />
+        </div>
+      </form>
     );
   }
+  const focusColor =
+    globalStyles.chooseThemeColor[themeUi]?.color4 ?? "transparent";
 
   return (
-    <URLsForm onSubmit={handleSubmit}>
+    <form className={urlsForm} onSubmit={handleSubmit}>
       <div style={{ display: "flex" }}>
-        <InputWrapper>
-          <Label htmlFor="name"> Name</Label>
-          <Input
+        <div className={inputWrapper}>
+          <label className={label} htmlFor="name">
+            {" "}
+            Name
+          </label>
+          <input
+            className={input}
             type={"text"}
             required
             name="name"
             value={formData.name}
             placeholder="Any name"
-            themeUi={themeUi}
+            style={assignInlineVars({
+              [focusOutlineVar]: focusColor,
+            })}
             onChange={handleChange}
           />
-        </InputWrapper>
-        <InputWrapper style={{ marginLeft: "10px" }}>
-          <Label htmlFor="code"> Code</Label>
-          <Input
+        </div>
+        <div className={inputWrapper} style={{ marginLeft: "10px" }}>
+          <label className={label} htmlFor="code">
+            {" "}
+            Code
+          </label>
+          <input
+            className={input}
             type={"text"}
             required
             name="code"
             placeholder="Role code"
-            themeUi={themeUi}
+            style={assignInlineVars({
+              [focusOutlineVar]: focusColor,
+            })}
             value={formData.code}
             onChange={handleChange}
           />
-        </InputWrapper>
+        </div>
       </div>
-      <InputWrapper>
-        <Label htmlFor="application_name">Applications </Label>
+      <div className={inputWrapper}>
+        <label className={label} htmlFor="application_name">
+          Applications{" "}
+        </label>
         <Select
           // defaultValue={{value:data.application_id,label:data.application_name}}
           options={applicationsFormattedData}
@@ -324,35 +360,42 @@ const EditRole = (props: { data: any; cb: () => void }) => {
             }),
           }}
         />
-      </InputWrapper>
-      <InputWrapper>
-        <Label htmlFor="description"> Description</Label>
-        <TextArea
+      </div>
+      <div className={inputWrapper}>
+        <label className={label} htmlFor="description">
+          {" "}
+          Description
+        </label>
+        <textarea
+          className={textArea}
           name="description"
           value={formData.description}
-          style={{ minHeight: 50 }}
           required
           placeholder="Example : BPR Manager"
-          themeUi={themeUi}
+          style={{minHeight: 50, ...assignInlineVars({
+            [focusOutlineVar]: focusColor,
+          })}}
           onChange={handleChange}
         />
-      </InputWrapper>
-      <CheckBoxesWrapper>
-        <CheckBoxesHeaderContainer>
-          <CheckBoxesHeader>Select URLS</CheckBoxesHeader>
-          <SearchWrapper>
-            <URLSearch
+      </div>
+      <div className={checkBoxesWrapper}>
+        <div className={checkBoxesHeaderContainer}>
+          <div className={checkBoxesHeader}>Select URLS</div>
+          <div className={searchWrapper}>
+            <input
+              className={urlSearch}
               // style={{ padding: "2px 5px", height: "25px" }}
+              // style={assignInlineVars({
               // themeUi={themeUi}
               type={"search"}
               placeholder="Search..."
               onChange={debouncedSearch}
             />
-            <img src="/assets/img/search-icon.svg"height={15} width={15}/>
-          </SearchWrapper>
-        </CheckBoxesHeaderContainer>
-        <CheckBoxesContainer
-            className="custom-scrollbar"
+            <img src="/assets/img/search-icon.svg" height={15} width={15} />
+          </div>
+        </div>
+        <div
+          className={`${checkBoxesContainer} custom-scrollbar`}
           style={{
             display: "flex",
             flexDirection: "column",
@@ -360,55 +403,60 @@ const EditRole = (props: { data: any; cb: () => void }) => {
             overflowY: "auto",
           }}
         >
-         
-          {queriedURLs.length?(
+          {queriedURLs.length ? (
             <React.Fragment>
-                 <CheckBoxWrapper style={{position:'sticky',top:0,backgroundColor:'white'}}>
-                    <input
-                    style={{ width: 10 }}
-                    type={"checkbox"}
-                    name={"all"}
-                    onChange={handleSelectAll}
-                    />
-                    <Label htmlFor={"all"}>
-                        <b> Select All</b>
-                    </Label>
-                </CheckBoxWrapper>
-                {queriedURLs.map((r) => {
+              <div
+                className={checkBoxWrapper}
+                style={{ position: "sticky", top: 0, backgroundColor: "white" }}
+              >
+                <input
+                  className={input}
+                  style={{ width: 10 }}
+                  type={"checkbox"}
+                  name={"all"}
+                  onChange={handleSelectAll}
+                />
+                <label className={label} htmlFor={"all"}>
+                  <b> Select All</b>
+                </label>
+              </div>
+              {queriedURLs.map((r) => {
                 return (
-                  <CheckBoxWrapper key={r.code}>
+                  <div className={checkBoxWrapper} key={r.code}>
                     <input
+                      className={input}
                       style={{ width: 10 }}
                       checked={isChecked(r)}
                       type={"checkbox"}
                       name={r.name}
                       onChange={(e) => handleCheck(e, r)}
                     />
-                    <Label htmlFor={r.name}>
-                    <CheckBoxLabel>
+                    <label className={label} htmlFor={r.name}>
+                      <div className={checkBoxLabel}>
                         {/* {highlightText(r.name,urlSearchQuery)} */}
-                        {r.name.split("").map((letter:string)=>{
-                          if(urlSearchQuery.includes(letter.toLowerCase())){
-                           return  <p style={{color:"#BC3D81"}}>{letter}</p>
+                        {r.name.split("").map((letter: string) => {
+                          if (urlSearchQuery.includes(letter.toLowerCase())) {
+                            return <p style={{ color: "#BC3D81" }}>{letter}</p>;
                           }
-                          return (
-                            <p>{letter}</p>
-                          )
+                          return <p>{letter}</p>;
                         })}
-                    </CheckBoxLabel>
-                    </Label>
-                  </CheckBoxWrapper>
+                      </div>
+                    </label>
+                  </div>
                 );
               })}
             </React.Fragment>
-            
-          ):(
-            <CheckBoxWrapper>
-                <p style={{fontSize:'14px',textAlign:'center',width:'100%'}}>No result</p>
-            </CheckBoxWrapper>
+          ) : (
+            <div className={checkBoxWrapper}>
+              <p
+                style={{ fontSize: "14px", textAlign: "center", width: "100%" }}
+              >
+                No result
+              </p>
+            </div>
           )}
-        </CheckBoxesContainer>
-      </CheckBoxesWrapper>
+        </div>
+      </div>
       <div
         style={{
           display: "flex",
@@ -418,14 +466,27 @@ const EditRole = (props: { data: any; cb: () => void }) => {
           gap: 10,
         }}
       >
-        <SecondaryButton type="button" onClick={cb} themeUi={themeUi}>
+        <button
+          className={secondaryButton}
+          type="button"
+          onClick={cb}
+          style={assignInlineVars({
+            [focusOutlineVar]: focusColor,
+          })}
+        >
           Cancel
-        </SecondaryButton>
-        <PrimaryButton disabled={!isFormValid} themeUi={themeUi}>
+        </button>
+        <button
+          className={primaryButton}
+          disabled={!isFormValid}
+          style={assignInlineVars({
+            [focusOutlineVar]: focusColor,
+          })}
+        >
           Update Role
-        </PrimaryButton>
+        </button>
       </div>
-    </URLsForm>
+    </form>
   );
 };
 

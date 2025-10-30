@@ -1,6 +1,8 @@
-import React, { CSSProperties,useState } from "react";
+// index.tsx (vanilla-extract version)
+import React, { CSSProperties, useState } from "react";
 
 import {
+  // classes
   CellIconLabel,
   CellIconWrapper,
   FloatingIconPostfix,
@@ -12,10 +14,14 @@ import {
   ContributionSection,
   ToolTipWrapper,
   InventoryToolTipContent,
-} from "./styles";
+  // vars
+  cellBgVar,
+  cellBorderVar,
+  themeAccentVar,
+  hiddenWidthVar,
+} from "./styles.css";
 
 import DetailToolTip from "./DetailToolTip";
-
 import Portal from "../../../../../../components/VectorFLOW/layouts/Portal";
 
 import { FloatingStoreDataType } from "../../../.././../types/MCGrid";
@@ -26,134 +32,161 @@ import {
 import { StoreHoveredIcon, StoreIcon } from "./Icon";
 import { useUserData } from "../../../../../../context";
 
-const StoreGroup = (props: { status: string; data: FloatingStoreDataType }) => {
-  const { status, data } = props;
+type Props = { status: string; data: FloatingStoreDataType };
 
-  const [isHovered1, setIsHovered1] = useState<boolean>(false);
-  const [isHovered2, setIsHovered2] = useState<boolean>(false);
+const StoreGroup: React.FC<Props> = ({ status, data }) => {
+  const [isHovered1, setIsHovered1] = useState(false);
+  const [isHovered2, setIsHovered2] = useState(false);
 
-  const [isOpen,toggleToolTip] = useState<boolean>(false)
+  const [isOpen, toggleToolTip] = useState(false);
+  const [toolTipPosition, setToolTipPosition] = useState<CSSProperties>();
 
-    const [toolTipPosition,setToolTipPosition] = useState<CSSProperties>()
-
-    const [isDetailToolTipOpen,toggleDetailToolTip] = useState<boolean>(false)
-
-
-    const onMouseIn = (e:React.MouseEvent<HTMLElement>)=>{
-        const {top,left} = e.currentTarget.getBoundingClientRect()
-        setToolTipPosition({
-            top:top -40,
-            left:left
-        })
-        toggleToolTip(true)
-    }
-
-    const onMouseOut = ()=>toggleToolTip(false)
-
-    const onDetailMouseIn =(e:React.MouseEvent<HTMLElement>)=>{
-      const {top,left} = e.currentTarget.getBoundingClientRect()
-      setToolTipPosition({
-          top:top ,
-          left:left,
-          
-      })
-      setIsHovered2(true)  
-      toggleDetailToolTip(true)  
-      
-  }
-
-  const onDetailMouseOut = ()=>{
-      setIsHovered2(false)
-      toggleDetailToolTip(false)
-  }
-
-  const [isContributionOpen, setIsContributionOpen] = useState<boolean>(false);
+  const [isDetailToolTipOpen, toggleDetailToolTip] = useState(false);
+  const [isContributionOpen, setIsContributionOpen] = useState(false);
 
   const { user } = useUserData();
-
   const themeUI = user.user.theme_ui;
 
-  const inventoryStatus = status==='surplus'?'Pull Out Surplus Inventory':'Require Inventory (Pull In)'
+  const borderAccent = getMCGridStoreIconColor(status);
+  const inventoryStatus =
+    status === "surplus"
+      ? "Pull Out Surplus Inventory"
+      : "Require Inventory (Pull In)";
+
+  const onMouseIn = (e: React.MouseEvent<HTMLElement>) => {
+    const { top, left } = e.currentTarget.getBoundingClientRect();
+    setToolTipPosition({ top: top - 40, left });
+    toggleToolTip(true);
+  };
+  const onMouseOut = () => toggleToolTip(false);
+
+  const onDetailMouseIn = (e: React.MouseEvent<HTMLElement>) => {
+    const { top, left } = e.currentTarget.getBoundingClientRect();
+    setToolTipPosition({ top, left });
+    setIsHovered2(true);
+    toggleDetailToolTip(true);
+  };
+  const onDetailMouseOut = () => {
+    setIsHovered2(false);
+    toggleDetailToolTip(false);
+  };
 
   return (
-    <ViewGridCell status={status}>
-      <CellIconWrapper
+    <div
+      className={ViewGridCell}
+      style={{
+        // supply runtime values for vars
+        [cellBgVar as any]: "white",
+        [cellBorderVar as any]: borderAccent,
+      }}
+    >
+      <div
+        className={CellIconWrapper}
         onMouseEnter={() => setIsHovered1(true)}
         onMouseLeave={() => setIsHovered1(false)}
       >
         {isHovered1 ? (
-          <React.Fragment>
+          <>
             <StoreHoveredIcon value={data.initial["grid-points"]} />
-            <CellIconLabel>Store Grid Points</CellIconLabel>
-          </React.Fragment>
+            <div className={CellIconLabel}>Store Grid Points</div>
+          </>
         ) : (
-          <React.Fragment>
+          <>
             <StoreIcon value={data.initial.stores} />
-            <CellIconLabel>Stores</CellIconLabel>
-          </React.Fragment>
+            <div className={CellIconLabel}>Stores</div>
+          </>
         )}
-      </CellIconWrapper>
-      <FloatingIconWrapper
-        style={{ border: `solid 1px ${getMCGridStoreIconColor(status)}`,cursor:'pointer' }}
+      </div>
+
+      <div
+        className={FloatingIconWrapper}
+        style={{ border: `solid 1px ${borderAccent}`, cursor: "pointer" }}
       >
-        <CellIconWrapper
-            onMouseEnter={onDetailMouseIn}
-            onMouseLeave={onDetailMouseOut}
+        <div
+          className={CellIconWrapper}
+          onMouseEnter={onDetailMouseIn}
+          onMouseLeave={onDetailMouseOut}
         >
           {isHovered2 ? (
-            <React.Fragment>
+            <>
               <StoreHoveredIcon
-                color={getMCGridStoreIconColor(status)}
+                color={borderAccent}
                 value={data.available["grid-points"]}
               />
-              <CellIconLabel>Store Grid Points</CellIconLabel>
-            </React.Fragment>
+              <div className={CellIconLabel}>Store Grid Points</div>
+            </>
           ) : (
-            <React.Fragment>
-              <StoreIcon
-                value={data.available.stores}
-                color={getMCGridStoreIconColor(status)}
-              />
-              <CellIconLabel>Stores</CellIconLabel>
-            </React.Fragment>
+            <>
+              <StoreIcon value={data.available.stores} color={borderAccent} />
+              <div className={CellIconLabel}>Stores</div>
+            </>
           )}
-        </CellIconWrapper>
-        <FloatingIconPostfix onMouseEnter={onMouseIn} onMouseLeave={onMouseOut} src={getMCGridStoreImgSrc(status)} />
-      </FloatingIconWrapper>
-      <ContributionWrapper
-        themeUI={themeUI}
+        </div>
+
+        <img
+          className={FloatingIconPostfix}
+          onMouseEnter={onMouseIn}
+          onMouseLeave={onMouseOut}
+          src={getMCGridStoreImgSrc(status)}
+          alt=""
+          draggable={false}
+        />
+      </div>
+
+      <div
+        className={ContributionWrapper}
+        style={{
+          [themeAccentVar as any]: borderAccent,
+        }}
         onMouseEnter={() => setIsContributionOpen(true)}
         onMouseLeave={() => setIsContributionOpen(false)}
       >
-        <ContributionSection>{data.contribution} %</ContributionSection>
-        <ContributionHiddenSection isOpen={isContributionOpen}>
-          <ContributionIcon
+        <div className={ContributionSection}>{data.contribution} %</div>
+
+        <div
+          className={ContributionHiddenSection}
+          style={{
+            [hiddenWidthVar as any]: isContributionOpen ? "auto" : "0",
+          }}
+        >
+          <img
+            className={ContributionIcon}
             src={
               themeUI === "REGALBLAZE"
                 ? "/assets/img/VectorFLOW/BPR/mc-grid-contribution-regal.svg"
                 : "/assets/img/VectorFLOW/BPR/mc-grid-contribution.svg"
             }
+            alt=""
+            draggable={false}
           />
-          <p> Contribution In Overall Gross Margin</p>
-        </ContributionHiddenSection>
-      </ContributionWrapper>
+          <p style={{ margin: 0 }}> Contribution In Overall Gross Margin</p>
+        </div>
+      </div>
+
       {isOpen && (
-            <Portal wrapperId="mc-grid">
-                <ToolTipWrapper  onMouseLeave={onMouseOut} style={{...toolTipPosition,transform:'translateX(-40%)'}}>
-                    <InventoryToolTipContent>
-                        {inventoryStatus}
-                    </InventoryToolTipContent>
-                </ToolTipWrapper>
-            </Portal>
-        )}
-        {(isDetailToolTipOpen && data.available.details)  && (
-            <Portal wrapperId="mc-grid">
-                <ToolTipWrapper  onMouseLeave={()=>toggleDetailToolTip(false)} style={{...toolTipPosition,transform:'translate(-30%,-100%)'}}>
-                    <DetailToolTip data={data.available.details}/>
-                </ToolTipWrapper>
-            </Portal>
-        )}
-    </ViewGridCell>
+        <Portal wrapperId="mc-grid">
+          <div
+            className={ToolTipWrapper}
+            onMouseLeave={onMouseOut}
+            style={{ ...toolTipPosition, transform: "translateX(-40%)" }}
+          >
+            <div className={InventoryToolTipContent}>{inventoryStatus}</div>
+          </div>
+        </Portal>
+      )}
+
+      {isDetailToolTipOpen && data.available.details && (
+        <Portal wrapperId="mc-grid">
+          <div
+            className={ToolTipWrapper}
+            onMouseLeave={() => toggleDetailToolTip(false)}
+            style={{ ...toolTipPosition, transform: "translate(-30%, -100%)" }}
+          >
+            <DetailToolTip data={data.available.details} />
+          </div>
+        </Portal>
+      )}
+    </div>
   );
 };
 

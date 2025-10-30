@@ -1,60 +1,55 @@
-import {DBMLayout} from './styles'
-import useDBM from './useDBM';
-import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
-import VFPagination from "../../../../../VectorFlow/Pages/MTO/Common/VFPagination"
-import ActionToolBar from '../../SupplyChainIntelligenceHub/Planning/ActionToolBar';
-import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
-import DailyDataGraphModal from '../../../../../components/VectorFLOW/commons/DailyDataGraphModal';
-import NormChangeHistoryTable from '../../../../../components/VectorFLOW/commons/NormChangeHistoryTable';
-import { GridStateContext } from '../../../../../context/GridStateContext';
+import { DBMLayout } from "./styles.css";
+import useDBM from "./useDBM";
+import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
+import VFPagination from "../../../../../VectorFlow/Pages/MTO/Common/VFPagination";
+import ActionToolBar from "../../SupplyChainIntelligenceHub/Planning/ActionToolBar";
+import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
+import DailyDataGraphModal from "../../../../../components/VectorFLOW/commons/DailyDataGraphModal";
+import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons/NormChangeHistoryTable";
+import { GridStateContext } from "../../../../../context/GridStateContext";
 import LastRunDateComponent from "../../../../../components/commons/lastRundate";
-import { useState } from 'react';
+import { useState } from "react";
 
 const DBM = () => {
+  const {
+    isLoading,
+    DBMColumns,
+    agGridProps,
+    DBMRowData,
+    handleChangePage,
+    DBMDataCount,
+    currentPage,
+    gridRef,
+    showAllCheckbox,
+    handleGoButton,
+    handleGoButtonForSleep,
+    showDailyDataGraphModal,
+    showNormChangeHistoryTable,
+    dailyData,
+    tempRef,
+    tempDownloadData,
+    setTempDownloadData,
+    tempAgGridProps,
+    exportExcelRowData,
+    setExportExcelRowData,
+    exportExcelColumns,
+    setExportExcelColumns,
+    handleApplyFilter,
+    currentFilter,
+    setCurrentFilter,
+    onDeleteFilter,
+    onExportToExcelCallBack,
+    recordsPerPage,
+    generalFilterOptions,
+    onResetCallback,
+    lastRunDate,
+  } = useDBM();
 
- const { 
-  isLoading,
-  DBMColumns,
-  agGridProps,
-  DBMRowData,
-  handleChangePage,
-  DBMDataCount,
-  currentPage,
-  gridRef,
-  showAllCheckbox,
-  handleGoButton,
-  handleGoButtonForSleep,
-  showDailyDataGraphModal,
-  showNormChangeHistoryTable,
-  dailyData,
-  tempRef,
-  tempDownloadData,
-  setTempDownloadData,
-  tempAgGridProps,
-  exportExcelRowData,
-  setExportExcelRowData,
-  exportExcelColumns,
-  setExportExcelColumns,
-  handleApplyFilter,
-  currentFilter,
-  setCurrentFilter,
-  onDeleteFilter,
-  onExportToExcelCallBack,
-  recordsPerPage,
-  generalFilterOptions,
-  onResetCallback,
-  lastRunDate
-} = useDBM();
+  const [isDisabled, setIsDisabled] = useState<boolean>(true);
 
-const [isDisabled, setIsDisabled]= useState<boolean>(true)
-
-
- if(isLoading){
-  return (
-    <VFLoader/>
-  )
-}
-
+  if (isLoading) {
+    return <VFLoader />;
+  }
 
   return (
     <>
@@ -94,7 +89,8 @@ const [isDisabled, setIsDisabled]= useState<boolean>(true)
           onDelete={onDeleteFilter}
         />
         {lastRunDate && <LastRunDateComponent lastRunDate={lastRunDate} />}
-        <DBMLayout>
+        <div className={DBMLayout}>
+          {" "}
           <div style={{ height: "70vh" }}>
             {showDailyDataGraphModal && (
               <DailyDataGraphModal
@@ -134,7 +130,7 @@ const [isDisabled, setIsDisabled]= useState<boolean>(true)
                 ],
               }}
               maintainColumnOrder
-              tooltipShowDelay={500}                  
+              tooltipShowDelay={500}
               onFilterChanged={() => {
                 const filterModel = gridRef?.current?.api?.getFilterModel();
                 if (filterModel && Object.keys(filterModel).length > 0) {
@@ -150,7 +146,7 @@ const [isDisabled, setIsDisabled]= useState<boolean>(true)
               currentPage={currentPage}
               rowsPerPage={recordsPerPage}
               handleChangePage={(e) => handleChangePage(e)}
-              resetGridRef={gridRef} 
+              resetGridRef={gridRef}
               isDisabled={isDisabled}
             />
           </div>
@@ -162,10 +158,10 @@ const [isDisabled, setIsDisabled]= useState<boolean>(true)
               {...tempAgGridProps}
             />
           </div>
-        </DBMLayout>
+        </div>
       </GridStateContext.Provider>
     </>
   );
-}
+};
 
-export default DBM
+export default DBM;

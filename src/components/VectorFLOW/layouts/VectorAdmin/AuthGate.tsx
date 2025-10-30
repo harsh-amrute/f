@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router"
-import { ToastContainer } from "react-toastify"
+import { ToastContainer } from "react-toastify/unstyled"
 import VectorAdminLayout from "."
 import { UserDataContext } from "../../../../context"
 import {  useState } from "react"

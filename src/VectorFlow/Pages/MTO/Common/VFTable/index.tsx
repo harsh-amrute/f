@@ -1,15 +1,16 @@
 import { forwardRef } from "react";
 import { AgGridReact, AgGridReactProps } from "ag-grid-react";
-import { VFTableWrapper } from "./styles";
+import { VFTableWrapper, vHeight } from "./style.css";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import './styles.css'
+import "./styles.css";
 import { useUserData } from "../../../../../context";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 
 interface VFTableProps extends AgGridReactProps {
   height?: string;
   disableZoomScaling?: boolean;
-  hideStatusBar?: boolean; 
+  hideStatusBar?: boolean;
 }
 
 const VFTable = forwardRef((props: VFTableProps, ref: any) => {
@@ -74,40 +75,44 @@ const VFTable = forwardRef((props: VFTableProps, ref: any) => {
       {
         statusPanel: "agAggregationComponent",
         statusPanelParams: {
-            aggFuncs: ["avg", "sum", "min", "max", "count"],
+          aggFuncs: ["avg", "sum", "min", "max", "count"],
         },
-    },
+      },
     ],
   };
 
   return (
-    <VFTableWrapper
-      className={`${getClassName()} ag-theme-alpine vfwrap`}
+    <div
+      className={`${VFTableWrapper} ${getClassName()} ag-theme-alpine vfwrap`}
       role="table"
-      height={props.height || "auto"}
-      disableZoomScaling={props.disableZoomScaling || false}
+      style={assignInlineVars({
+        [vHeight]: props.height || "auto",
+      })}
     >
       <AgGridReact
         ref={ref}
         {...props}
         gridOptions={gridOptions}
-        statusBar={props.hideStatusBar ? undefined : props.statusBar || defaultStatusBar} 
+        statusBar={
+          props.hideStatusBar ? undefined : props.statusBar || defaultStatusBar
+        }
         enableRangeSelection
         rowHeight={props.rowHeight || 30}
-        suppressMenuHide={props.suppressMenuHide !== undefined ? props.suppressMenuHide : false}
+        suppressMenuHide={
+          props.suppressMenuHide !== undefined ? props.suppressMenuHide : false
+        }
         suppressDragLeaveHidesColumns={
           props.suppressDragLeaveHidesColumns !== undefined
             ? props.suppressDragLeaveHidesColumns
             : true
         }
-        
         defaultColDef={{
           ...defaultGridOptions.defaultColDef,
           ...props?.gridOptions?.defaultColDef,
           ...props?.defaultColDef,
         }}
       />
-    </VFTableWrapper>
+    </div>
   );
 });
 

@@ -1,7 +1,7 @@
 import moment from 'moment'
 import { useState, useEffect } from 'react'
 import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VFInfoToolTip'
-import { SCChartHeaderContainer, SCChartMainContainer } from '../../../../Common/SplitGraphContainer/styles'
+import { SCChartHeaderContainer, scChartMainContainer } from '../../../../Common/SplitGraphContainer/styles.css'
 import { useGetDate } from '../../../../../../Services/MTO/Production/InsightsAndTrends/RMPMExpediting'
 import BoxPlotContainer from '../../../../Common/BoxPlotContainer'
 import { useGetDeptMasterData, useGetPlantMasterData } from '../../../../../../../VectorFlow/Services/MTO/Common/Masters'
@@ -95,7 +95,7 @@ const WeekWiseGraph = ({ handleSelectionChange, chartTableData, chartData, plant
     const generateHeader = () => {
         return (
             <>
-                <SCChartMainContainer style={{ zoom: 1, width: '100%' }}>
+                <div className={scChartMainContainer} style={{ zoom: 1, width: '100%' }}>
                     <div
                         data-testid="otif-graph"
                         style={{
@@ -132,7 +132,7 @@ const WeekWiseGraph = ({ handleSelectionChange, chartTableData, chartData, plant
                                 />
                         </VFButton>
                     </div>
-                    <SCChartHeaderContainer>
+                    <div className={scChartMainContainer}>
 
                         <div style={{ marginLeft: 30, marginBottom: '-5px' }}>
                             <VFInfoToolTip infoList={graph1} />
@@ -140,8 +140,8 @@ const WeekWiseGraph = ({ handleSelectionChange, chartTableData, chartData, plant
                         <div onClick={() => { toggleChart1(!hideChart1) }} style={{ marginLeft: 10, marginBottom: '-5px', marginRight: '10px' }}>
                             <img src='/assets/img/VectorFLOW/BPR/minimize.svg' height={13} width={13} color={"#CCCCCC"} />
                         </div>
-                    </SCChartHeaderContainer>
-                </SCChartMainContainer>
+                    </div>
+                </div>
             </>
 
         )

@@ -4,7 +4,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { MainService } from '../../../../../module-main/services/api';
 import { useIdleTimer } from './useIdleTimer';
 import { notifyLoader } from '../../../../../helpers/notify';
-import { toast } from 'react-toastify';
+import { toast } from 'react-toastify/unstyled';
 
 export function AutoLogoutTimer() {
   const navigate = useNavigate();

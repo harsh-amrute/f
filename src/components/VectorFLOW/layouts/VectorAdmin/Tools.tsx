@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router"
 import IconCard from "../../commons/VFCard/IconCard"
-import { PanelGrid } from "../SelectMaster/styles"
-import {  ToolsWrapper } from "./styles"
+import { PanelGrid } from "../SelectMaster/styles.css"
+import {  ToolsWrapper } from "./styles.css"
 
 
 const Tools = ()=>{
@@ -9,8 +9,8 @@ const Tools = ()=>{
     const navigate = useNavigate()
     
     return(
-        <ToolsWrapper>
-            <PanelGrid style={{
+        <div className={ToolsWrapper}>
+            <div className={PanelGrid} style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(4, 1fr)', 
                 gap: '20px', 
@@ -70,8 +70,8 @@ const Tools = ()=>{
                         themeUi="NOIRFUSION"
                     />
                 </div>
-            </PanelGrid>
-        </ToolsWrapper>
+            </div>
+        </div>
     )
 }
 

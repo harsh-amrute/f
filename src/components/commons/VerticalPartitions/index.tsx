@@ -1,7 +1,19 @@
-import { SCVerticalPartitions } from './style'
+import { assignInlineVars } from "@vanilla-extract/dynamic";
+import { SCVerticalPartitions, partitionHeightVar } from "./style.css";
 
-const VerticalPartitions = ({ height = '52px' }: any) => {
-  return <SCVerticalPartitions height={height}></SCVerticalPartitions>
-}
+type VerticalPartitionsProps = {
+  height?: string;
+};
 
-export default VerticalPartitions
+const VerticalPartitions: React.FC<VerticalPartitionsProps> = ({
+  height = "52px",
+}) => {
+  return (
+    <div
+      className={SCVerticalPartitions}
+      style={assignInlineVars({ [partitionHeightVar]: height })}
+    />
+  );
+};
+
+export default VerticalPartitions;

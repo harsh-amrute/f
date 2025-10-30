@@ -1,76 +1,93 @@
-import React, { useState, useRef, CSSProperties } from 'react';
-import Portal from '../../../../../components/VectorFLOW/layouts/Portal';
-import { TooltipContainer, TooltipTarget } from './styles';
-
+import React, { useState, useRef, CSSProperties } from "react";
+import Portal from "../../../../../components/VectorFLOW/layouts/Portal";
+import {
+  tooltipTarget,
+  tooltipContainer,
+  arrowLeftVar,
+  zoomVar,
+} from "./styles.css";
 interface IToolTipProps extends CSSProperties {
-    arrowLeft: string | number;
+  arrowLeft: string | number;
 }
 
-const Tooltip = ({ children, content, zoom = 1, style = {}, tooltipZoom = 1 }: any) => {
+const Tooltip = ({
+  children,
+  content,
+  zoom = 1,
+  style = {},
+  tooltipZoom = 1,
+}: any) => {
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [toolTipPosition, setoolTipPosition] = useState<IToolTipProps | null>();
+  const tooltipRef = useRef<HTMLDivElement>(null);
 
-    const [showTooltip, setShowTooltip] = useState(false);
-    const [toolTipPosition, setoolTipPosition] = useState<IToolTipProps | null>();
-    const tooltipRef = useRef<HTMLDivElement>(null);
+  const onMouseIn = (e: any) => {
+    e.stopPropagation();
+    setShowTooltip(true);
+    //add delay so that tooltip component is rendered
+    setTimeout(() => {
+      if (tooltipRef.current) {
+        const tooltipRect = tooltipRef.current.getBoundingClientRect();
+        const { top, left, width } = e.target.getBoundingClientRect();
+        let tooltipLeft = left + width / 2 - tooltipRect.width / 2;
+        let arrowLeft: any = "50%";
 
-    const onMouseIn = (e: any) => {
+        // Adjust if tooltip goes outside the viewport
+        let viewportWidth = window.innerWidth;
 
-        e.stopPropagation();
-        setShowTooltip(true)
-        //add delay so that tooltip component is rendered
-        setTimeout(() => {
-            if (tooltipRef.current) {
+        viewportWidth = viewportWidth * (1 / zoom) - 20;
 
-                const tooltipRect = tooltipRef.current.getBoundingClientRect();
-                const { top, left, width } = e.target.getBoundingClientRect();
-                let tooltipLeft = left + (width / 2) - (tooltipRect.width / 2);
-                let arrowLeft: any = "50%";
+        if (tooltipLeft < 0) {
+          arrowLeft = ((left + width / 2) / tooltipRect.width) * 100 + "%"; // Adjust the arrow when tooltip is at the left edge
+          tooltipLeft = 0 + 10;
+        } else if (tooltipLeft + tooltipRect.width >= viewportWidth) {
+          arrowLeft =
+            ((left + width / 2 - (viewportWidth - tooltipRect.width)) /
+              tooltipRect.width) *
+              100 +
+            "%"; // Adjust the arrow when tooltip is at the right edge
+          tooltipLeft = viewportWidth - tooltipRect.width;
+        }
+        setoolTipPosition({
+          top: top - tooltipRect.height - 15,
+          left: tooltipLeft,
+          arrowLeft: arrowLeft,
+        });
+      }
+    }, 0);
+  };
+  const onMouseOut = () => setShowTooltip(false);
+  const containerStyle = {
+    top: toolTipPosition?.top,
+    left: toolTipPosition?.left,
+    // runtime CSS vars for vanilla-extract
+    [arrowLeftVar as unknown as string]: toolTipPosition?.arrowLeft ?? "50%",
+    [zoomVar as unknown as string]: tooltipZoom ?? 1,
+  } as React.CSSProperties & Record<string, string | number>;
 
+  return (
+    <div
+      className={tooltipTarget}
+      onMouseEnter={onMouseIn}
+      onMouseLeave={onMouseOut}
+      style={style}
+    >
+      {children}
 
-                // Adjust if tooltip goes outside the viewport
-                let viewportWidth = window.innerWidth
-
-                viewportWidth = viewportWidth * (1 / zoom) - 20;
-
-
-                if (tooltipLeft < 0) {
-                    arrowLeft = ((left + width / 2) / tooltipRect.width) * 100 + "%"; // Adjust the arrow when tooltip is at the left edge
-                    tooltipLeft = 0 + 10;
-                } else if (tooltipLeft + tooltipRect.width >= viewportWidth) {
-                    arrowLeft = ((left + width / 2 - (viewportWidth - tooltipRect.width)) / tooltipRect.width) * 100 + "%"; // Adjust the arrow when tooltip is at the right edge
-                    tooltipLeft = viewportWidth - tooltipRect.width;
-                }
-                setoolTipPosition({
-                    top: top - tooltipRect.height - 15,
-                    left: tooltipLeft,
-                    arrowLeft: arrowLeft
-                })
-            }
-        }, 0)
-    }
-    const onMouseOut = () => setShowTooltip(false);
-
-    return (
-        <TooltipTarget
-            onMouseEnter={onMouseIn}
-            onMouseLeave={onMouseOut}
-            style={style}
-        >
-            {children}
-            {showTooltip &&
-
-                (
-                    //use portal here
-                    <Portal key={1} wrapperId="tooltip1">
-                        <TooltipContainer $myzoom={tooltipZoom} $arrowLeft={toolTipPosition?.arrowLeft} data-testid="tooltip" style={{ top: toolTipPosition?.top, left: toolTipPosition?.left }} ref={tooltipRef}>
-                            {content}
-                        </TooltipContainer>
-                    </Portal>
-                )
-
-
-            }
-        </TooltipTarget>
-    );
+      {showTooltip && (
+        <Portal key={1} wrapperId="tooltip1">
+          <div
+            className={tooltipContainer}
+            data-testid="tooltip"
+            style={containerStyle}
+            ref={tooltipRef}
+          >
+            {content}
+          </div>
+        </Portal>
+      )}
+    </div>
+  );
 };
 
 export default Tooltip;

@@ -1,5 +1,5 @@
 import { type ChangeEvent } from 'react'
-import { SCSearchText, SCIconLocation } from './styles'
+import { searchText, input as inputClass, iconLocation } from './styles.css';
 
 interface InputSearchListProps {
   placeholder: string
@@ -9,25 +9,26 @@ interface InputSearchListProps {
 }
 const InputSearchList = ({
   placeholder,
-  searchText,
+  searchText: value,
   srcIcon,
-  handleChangeText
+  handleChangeText,
 }: InputSearchListProps) => {
   return (
     <>
-      <SCIconLocation className="icon_location" src={srcIcon} />
-      <SCSearchText>
+      <img className={iconLocation} src={srcIcon} alt="" />
+      <div className={searchText}>
         <input
+          className={inputClass}
           placeholder={placeholder}
           aria-label="Search components"
-          id={'search-' + placeholder}
-          value={searchText}
+          id={`search-${placeholder}`}
+          value={value}
           type="text"
           onChange={handleChangeText}
         />
-      </SCSearchText>
+      </div>
     </>
-  )
-}
+  );
+};
 
-export default InputSearchList
+export default InputSearchList;

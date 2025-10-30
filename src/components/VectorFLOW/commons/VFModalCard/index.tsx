@@ -1,6 +1,8 @@
 import { Dialog, Transition } from "@headlessui/react";
-import "./styles.css";
-import { Fragment, ReactNode} from "react";
+import "./style.css";
+import { Fragment, ReactNode } from "react";
+
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 
 import {
   SCModalContent,
@@ -8,24 +10,29 @@ import {
   SCCloseModal,
   SCWrapperContent,
   VFHeaderWrapper,
-  SCHeader
-} from "./styles";  
+  SCHeader,
+  modalTitleForced,
+  modalForcedBlock,
+  headerBgVar,
+  headerTextVar,
+  contentLRVar,
+  contentBgVar,
+} from "./styles.css";
 import { noop } from "lodash";
 
 interface VFModalProps {
   openModal: boolean;
   closeModal?: () => void;
-  headerText?:string | ReactNode;
-  headerIcon:string;
-  children:ReactNode;
-  paddingLeftAndRight?:number;
-  headerBgColor?:string;
-  headerTextColor?:string;
-  closeIcon?:string;
-  backgroundColor?:string;
-  zoom?:string
+  headerText?: string | ReactNode;
+  headerIcon: string;
+  children: ReactNode;
+  paddingLeftAndRight?: number;
+  headerBgColor?: string;
+  headerTextColor?: string;
+  closeIcon?: string;
+  backgroundColor?: string;
+  zoom?: string;
 }
-
 
 const VFModalCard = ({
   openModal,
@@ -38,9 +45,14 @@ const VFModalCard = ({
   headerBgColor,
   headerTextColor,
   backgroundColor,
-  zoom = '1'
+  zoom = "1",
 }: VFModalProps) => {
-
+  const resolvedLR =
+    paddingLeftAndRight === 0
+      ? "0px"
+      : typeof paddingLeftAndRight === "number"
+      ? `${paddingLeftAndRight}px`
+      : "74px";
 
   return (
     <>
@@ -58,48 +70,94 @@ const VFModalCard = ({
             >
               <div className="modal-bg inset" />
             </Transition.Child>
-            <SCModalContent style={{zoom:zoom}}>
+
+            <div className={SCModalContent} style={{ zoom }}>
               <div className="modal-content--box">
                 <Transition.Child
                   as={Fragment}
                   enter="transition"
-                  enterFrom="opa-0 tranlate "
-                  enterTo="opa translate-y-0 "
+                  enterFrom="opa-0 tranlate"
+                  enterTo="opa translate-y-0"
                   leave="leave-modal"
                   leaveFrom="opa translate-y-0"
                   leaveTo="opacity-0 tranlate"
                 >
-                  <Dialog.Panel className="modal-forced--block">
-                    <Dialog.Title as="h3" className="modal-title-forced" style={{backgroundColor:headerBgColor, boxShadow:'0px 5px 10px 0px rgba(110, 107, 107,0.11)', position:'relative', zIndex:'10'}}>
-                    <VFHeaderWrapper headerBgColor={headerBgColor}>
-                      <SCHeader>
-                        {headerIcon.length > 0 && <img src={headerIcon} height={25} width={27} data-testid='vfmodal-img'/>} 
-                        <SCTextTitle headerTextColor={headerTextColor}>{headerText}</SCTextTitle>
-                      </SCHeader>
-                      {
-                        closeModal && (
-                          <SCCloseModal onClick={closeModal} data-testid="close-modal-icon">
+                  <Dialog.Panel className={modalForcedBlock}>
+                    <Dialog.Title
+                      as="h3"
+                      className={modalTitleForced}
+                      style={{
+                        backgroundColor: headerBgColor,
+                        boxShadow: "0px 5px 10px 0px rgba(110, 107, 107, 0.11)",
+                        position: "relative",
+                        zIndex: 10,
+                      }}
+                    >
+                      <div
+                        className={VFHeaderWrapper}
+                        style={assignInlineVars({
+                          [headerBgVar]: headerBgColor ?? "#FFFFFF",
+                        })}
+                      >
+                        <div className={SCHeader}>
+                          {headerIcon.length > 0 && (
+                            <img
+                              src={headerIcon}
+                              height={25}
+                              width={27}
+                              data-testid="vfmodal-img"
+                            />
+                          )}
+                          <span
+                            className={SCTextTitle}
+                            style={assignInlineVars({
+                              [headerTextVar]: headerTextColor ?? "#000000",
+                            })}
+                          >
+                            {headerText}
+                          </span>
+                        </div>
+
+                        {closeModal && (
+                          <span
+                            className={SCCloseModal}
+                            onClick={closeModal}
+                            data-testid="close-modal-icon"
+                          >
                             <img src={closeIcon} height={16} width={16} />
-                          </SCCloseModal>
-                        )
-                      }
-                      </VFHeaderWrapper>
+                          </span>
+                        )}
+                      </div>
                     </Dialog.Title>
-                    <SCWrapperContent paddingLeftAndRight={paddingLeftAndRight} backgroundColor={backgroundColor} >
-                       {children}
-                    </SCWrapperContent>
+
+                    <div
+                      className={SCWrapperContent}
+                      style={assignInlineVars({
+                        // include units; 0 should be '0px' (or '0') to avoid being ignored
+                        ...(resolvedLR !== undefined
+                          ? {
+                              [contentLRVar]:
+                                typeof resolvedLR === "number"
+                                  ? `${resolvedLR}px`
+                                  : resolvedLR,
+                            }
+                          : {}),
+                        ...(backgroundColor
+                          ? { [contentBgVar]: backgroundColor }
+                          : {}),
+                      })}
+                    >
+                      {children}
+                    </div>
                   </Dialog.Panel>
                 </Transition.Child>
               </div>
-            </SCModalContent>
+            </div>
           </Dialog>
         </Transition>
       }
     </>
   );
-
-}
+};
 
 export default VFModalCard;
-
-

@@ -12,13 +12,13 @@ import { ProcessRowGroupForExportParams, ExcelCell, ExcelRow, ExcelExportParams,
 import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from '../../../../../helpers/utils';
 import ChildrenProcPlanningCellRenderer from "../ChildrenProcPlanningCellRenderer";
 import { putUpdateProcurementSimulationData, useGetProcurementPlanningDataForExcelExport, userGetProcPlanningData } from "../../../../Services/MTO/Procurement/ProcPlanning/index";
-import { toast } from "react-toastify";
+import { toast } from "react-toastify/unstyled";
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import VFPagination from "../../Common/VFPagination";
 import OverlayLoader from "../../Common/Loader";
 import { INumberCellEditorParams } from "@ag-grid-community/core"
-import { TableWrapper } from "./styles";
+import { TableWrapper } from "./styles.css";
 //import { pagination } from "../../Common/Enum";
 import { useDispatch } from "react-redux";
 import { APPLIED_FILTERS, PROCPLANNING_ANALYTICS } from "../../../../../redux/actions/MTO";
@@ -670,7 +670,7 @@ const useProcPlanning = ( appliedFilters: any) => {
         switch (currentTab?.id) {
             case "ca":
                 return (
-                    <TableWrapper>
+                    <div className={TableWrapper}>
                         <VFTable
                             {...agGridProps}
                             
@@ -703,12 +703,12 @@ const useProcPlanning = ( appliedFilters: any) => {
                             userPageSize = {userPageSize}
 
                         />
-                    </TableWrapper>
+                    </div>
                 );
             case "short":
                 return (
 
-                    <TableWrapper>
+                    <div className={TableWrapper}>
                         {isOverlayLoading && <OverlayLoader message={"Updating the simulated data..."} />}
                         <VFTable
                             key={2}
@@ -789,12 +789,12 @@ const useProcPlanning = ( appliedFilters: any) => {
                             
                             }
 
-                    </TableWrapper>
+                    </div>
                 );
             
             default:
                 return(
-                    <TableWrapper>
+                    <div className={TableWrapper}>
                         <VFTable
                             {...agGridProps}
                             
@@ -826,7 +826,7 @@ const useProcPlanning = ( appliedFilters: any) => {
                             savePageSize={savePageSize}
                             userPageSize = {userPageSize}
                         />
-                    </TableWrapper>
+                    </div>
                 );
         }
     }

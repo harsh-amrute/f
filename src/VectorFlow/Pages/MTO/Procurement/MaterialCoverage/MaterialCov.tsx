@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import {
-  TextXAxis,
-  TextYAxis,
-  BTRLayoutTabsWrapper,
-} from '../MaterialCoverage/styles';
+  textXAxis,
+  textYAxis,
+  btrLayoutTabsWrapper,
+} from './styles.css';
 import VFFloatingTab from "../../../../../components/VectorFLOW/commons/VFFloatingTab"
 import ActionToolBar from "../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar"
 import FutureCov from './FutureCov';
@@ -12,7 +12,7 @@ import { MaterialCoverageString } from '../../Common/String';
 import MaterialSODetailed from './MaterialSODetailed';
 import { DetailsObj } from './CommonFunc';
 import { useGetSOSummaydetails } from '../../../../../VectorFlow/Services/MTO/Procurement/MaterialCoverage';
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify/unstyled";
 import { notifyError, notifyLoader, notifySuccess} from '../../../../../helpers/notify';
 import useFilter from "../../../../../hooks/useFilter";
 // import { APIResponseMock } from '../../Production/InsightsAndTrends/OrderBalance/OrderBalanceMockData';
@@ -385,14 +385,14 @@ const MaterialCov = () => {
           <div >
             <div style={{display: 'flex', justifyContent: isAllData?'right':'center', alignItems: 'center', width: '100%', padding: '0 1rem'}}>
 
-            <BTRLayoutTabsWrapper>
+            <div className={btrLayoutTabsWrapper}>
               <VFFloatingTab
                 handleClick={(e) => setCurrTab(e.value)}
                 tabs={tabs}
                 defaultTab={defaultTab}
               />
 
-              </BTRLayoutTabsWrapper>
+              </div>
               
            
               {isAllData &&
@@ -404,7 +404,7 @@ const MaterialCov = () => {
                 </div>
             <div style={{ display: 'flex', justifyContent: "center", width: "100%" }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: "center", width: "max-content", position: "relative" }}>
-                <TextXAxis style={{ height: 'max-content', position: "absolute", right: "100%" }}>
+                <div className={textXAxis} style={{ height: 'max-content', position: "absolute", right: "100%" }}>
                   {MaterialCoverageString.orderPriority}
                   <div style={{
                     width: "85%",
@@ -414,7 +414,7 @@ const MaterialCov = () => {
                     marginLeft: '5px'
                   }}>
                   </div>
-                </TextXAxis>
+                </div>
 
                 {/**code goes here */}
                 {
@@ -427,7 +427,7 @@ const MaterialCov = () => {
             </div>
 
             <div style={{ display: "flex", justifyContent: "center" }}>
-              <TextYAxis style={{ width: "max-content" }}>
+              <div className={textYAxis} style={{ width: "max-content" }}>
                 {MaterialCoverageString.statusKits}
                 <div style={{
                   width: "85%",
@@ -437,7 +437,7 @@ const MaterialCov = () => {
                   marginLeft: '5px'
                 }}>
                 </div>
-              </TextYAxis>
+              </div>
             </div>
           </div>
 

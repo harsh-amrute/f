@@ -1,11 +1,15 @@
-import { SCPageNotFound, PageNotFoundIcon } from './styles'
+import { SCPageNotFound, PageNotFoundIcon } from "./styles.css";
 
 const PageNotFound = () => {
   return (
-    <SCPageNotFound>
-      <PageNotFoundIcon src="/assets/img/error-404-page.svg" />
-    </SCPageNotFound>
-  )
-}
+    <div className={SCPageNotFound}>
+      <img
+        className={PageNotFoundIcon}
+        src="/assets/img/error-404-page.svg"
+        alt="Page not found"
+      />
+    </div>
+  );
+};
 
-export default PageNotFound
+export default PageNotFound;

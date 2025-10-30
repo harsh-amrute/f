@@ -1,20 +1,14 @@
-import React from 'react'
-import styled from 'styled-components'
-import ResourceViewChart from '../components/ResourceViewChart'
-import ResourceViewSummary from '../components/ResourceViewSummary'
+import ResourceViewChart from "../components/ResourceViewChart";
+import ResourceViewSummary from "../components/ResourceViewSummary";
+import {resourceViewWrapper} from './styles.css';
 
-const ResourceViewWrapper  = styled.div`
-    display: flex;
-    flex-direction: column;
-`
 const ResourceView = () => {
   return (
-    <ResourceViewWrapper>
-      <ResourceViewChart/>
-      <ResourceViewSummary/>
+    <div className={resourceViewWrapper}>
+      <ResourceViewChart />
+      <ResourceViewSummary />
+    </div>
+  );
+};
 
-    </ResourceViewWrapper>
-  )
-}
-
-export default ResourceView
+export default ResourceView;

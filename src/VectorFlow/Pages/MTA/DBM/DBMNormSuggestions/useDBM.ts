@@ -14,7 +14,7 @@ import { DailyDataGraph } from "../../../../types/MTA"
 import { useGetDailyData } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
 import useBPRFilter from '../../../../../hooks/useBPRFilter'
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify"
-import { toast } from "react-toastify"
+import { toast } from "react-toastify/unstyled"
 import SuggestionCategoryCellRenderer from "./SuggestionCategoryCellRendere"
 import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
 import { ColDef } from 'ag-grid-community';

@@ -1,11 +1,15 @@
-import { BPRRemarksCellRendererWrapper } from "../BPR/styles";
-import { SubmitRemarkInputWrapper } from "./styles";
+import { BPRRemarksCellRendererWrapper } from "../BPR/styles.css";
+import { SubmitRemarkInput } from "./styles.css";
 
-const SubmitRemarkCellRenderer = (params:any)=>{
-    const isEven = (params.rowIndex%2)===1
-    return(
-        <BPRRemarksCellRendererWrapper>
-            <SubmitRemarkInputWrapper 
+const SubmitRemarkCellRenderer = (params: any) => {
+  const isEven = params.rowIndex % 2 === 1;
+  return (
+    <div className={BPRRemarksCellRendererWrapper}>
+      <div className={SubmitRemarkInput[isEven ? "even" : "odd"]}>
+        {params.value}
+      </div>
+
+      {/* <SubmitRemarkInputWrapper 
             style={{backgroundColor:isEven?"#EFEFEF":'white'}}
             
             // ref={(ref) => {
@@ -18,8 +22,8 @@ const SubmitRemarkCellRenderer = (params:any)=>{
             // }}
             >
                 {params.value}
-            </SubmitRemarkInputWrapper>
-        </BPRRemarksCellRendererWrapper>
-    )
-}
-export default SubmitRemarkCellRenderer
+            </SubmitRemarkInputWrapper> */}
+    </div>
+  );
+};
+export default SubmitRemarkCellRenderer;

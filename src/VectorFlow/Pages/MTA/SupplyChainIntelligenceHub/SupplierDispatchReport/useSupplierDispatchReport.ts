@@ -4,7 +4,7 @@ import { convertUiConfigToOptions, getColumnDefinationsMTA, mapVDRFieldsToColDef
 import { useEffect, useState,useRef,useMemo } from 'react';
 import { notifyError,notifyLoader, notifySuccess} from '../../../../../helpers/notify';
 import useBPRFilter from '../../../../../hooks/useBPRFilter';
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify/unstyled";
 import { AgGridReactProps } from 'ag-grid-react';
 import {SDRDispatchColorCellRenderer} from './SDRCellRenderers'
 import { useGetState } from '../../../../../VectorFlow/Services/MTA/Common/UserUIConfig';

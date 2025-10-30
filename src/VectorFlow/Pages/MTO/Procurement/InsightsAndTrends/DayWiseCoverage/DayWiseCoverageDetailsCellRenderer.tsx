@@ -1,7 +1,7 @@
 import React from 'react'
 import { GridOptions } from 'ag-grid-enterprise'
 import VFTable from "../../../Common/VFTable";
-import { VFTableWrapper } from '../../../../../../components/VectorFLOW/commons/VFTable/styles'
+import { VFTableWrapper } from '../../../../../../components/VectorFLOW/commons/VFTable/styles.css'
 
 const DayWiseCoverageDetailsCellRenderer = (params: any) => {
 
@@ -40,7 +40,7 @@ const DayWiseCoverageDetailsCellRenderer = (params: any) => {
 
     return (
         // <div>{params.data.status}</div>
-        <VFTableWrapper style={{ padding: "2rem" }}>
+        <div className={VFTableWrapper} style={{ padding: "2rem" }}>
             <h4 style={{ margin: "0",padding: "0.25rem 0 1rem 0" ,fontSize: '1.6rem'}}>Raw Material Details</h4>
             <VFTable
                 className='child-grid'
@@ -53,7 +53,7 @@ const DayWiseCoverageDetailsCellRenderer = (params: any) => {
                     params?.api?.autoSizeAllColumns()
                 }}
             />
-        </VFTableWrapper>
+        </div>
     )
 }
 

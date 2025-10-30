@@ -8,7 +8,7 @@ import { ColDef } from 'ag-grid-enterprise'
 import columnData from './ColumnData'
 import { AgGridReactProps } from 'ag-grid-react'
 import { useGetOrderwiseCoverageData, useGetOrderwiseCoverageDataForExcelExport } from '../../../../../../VectorFlow/Services/MTO/Procurement/OrderwiseCoverage'
-import { toast } from 'react-toastify'
+import { toast } from "react-toastify/unstyled"
 import { notifyError, notifyLoader, notifySuccess } from '../../../../../../helpers/notify'
 import { useGetUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UIConfig'
 import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from '../../../../../../helpers/utils'
