@@ -2635,11 +2635,6 @@ export const generateChartOptions = (data: any, chartParams: any, isCategoryData
     mode:"single"
     },
     series: seriesMapped,
-    // ...(chartType !== 'pie' ? {
-    //   tooltip: {
-    //     range: 'nearest',
-    //   }
-    // } : {}),
     ...(chartType === 'pie' ? { legend: addLabelsToPieChart } : legend !== undefined ? { legend } : {}),
     ...(chartType != 'pie' ? createAxesForBarCharts(keys, Labels) : {}),
   };
