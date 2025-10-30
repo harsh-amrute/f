@@ -8,8 +8,19 @@ export const chartParams1 = {
         Yaxis:'Availability %'
     },
     palette:{
-        fills:["#333333","#666666","#808080","#a6a6a6","#cccccc","#d8d8d8",],
-        strokes:[ "#ffffff","#ffffff","#ffffff","#ffffff","#ffffff","#ffffff",]
+        fills:[
+          "#333333",
+          "#666666",
+          "#808080",
+          "#a6a6a6",
+          "#cccccc",
+          "#d8d8d8",
+          "#4d4d4d",
+          "#e0e0e0",
+          "#f2f2f2",
+          "#1a1a1a",
+        ],
+        strokes:[ "#ffffff","#ffffff","#ffffff","#ffffff","#ffffff","#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff"]
     },
     legend: {
         enabled:true,
