@@ -7,13 +7,19 @@ import Portal from "../../../components/VectorFLOW/layouts/Portal";
 import { DropdownWrapper } from "../../../components/commons/CustomDropdown/style";
 import Checkbox from "../../../components/VectorFLOW/commons/MTO/Checkbox";
 import VFButtonOutline from "../../../components/VectorFLOW/commons/VFButtonOutline";
-import { ContainerDrop, CheckboxRow, OptionsSection, CategoryHeader, SubItem, BottomButtons, Container, ScrollWrapper, ScrollContainer, RoleTab, ButtonGroup } from "./style";
-
-
-type RoleItem = {
-  id: string;
-  label: string;
-};
+import {
+  ContainerDrop,
+  CheckboxRow,
+  OptionsSection,
+  CategoryHeader,
+  SubItem,
+  BottomButtons,
+  Container,
+  ScrollWrapper,
+  ScrollContainer,
+  RoleTab,
+  ButtonGroup,
+} from "./style";
 
 
 const RoleDropdown = ({ allRoles, width, onApplyRole, currentRoles }: any) => {
@@ -54,70 +60,87 @@ const RoleDropdown = ({ allRoles, width, onApplyRole, currentRoles }: any) => {
 
   return (
     <ContainerDrop style={{ width: width + "px" }}>
-      <CheckboxRow style={{ width: "100%", cursor: 'pointer' }} onClick={handleSelectAll}>
+      <CheckboxRow
+        style={{ width: "100%", cursor: "pointer" }}
+        onClick={handleSelectAll}
+      >
         <Checkbox
           type="checkbox"
           style={{ zoom: 0.5 }}
           theme={themeUi}
           checked={
-            allRoles.length > 0 && selectedRoles?.size>0 &&
+            allRoles.length > 0 &&
+            selectedRoles?.size > 0 &&
             allRoles.every((id: any) => selectedRoles?.has(id))
           }
           onClick={(e) => e.stopPropagation()} // prevent double trigger
           onChange={handleSelectAll}
         />
-        <label style={{cursor: 'pointer'}}>Select all</label>
+        <label style={{ cursor: "pointer" }}>Select all</label>
       </CheckboxRow>
 
       <OptionsSection>
-
-
-      {applicationGroups.map((appName: any) => {
-        const roles = allRoles.filter(
-          (role: any) => role.application_name === appName
-        );
-        return (
-          <div key={appName}>
-            <CategoryHeader onClick={() => toggleExpand(appName)}>
-              <span>{appName}</span>
-              <span>{expanded[appName] ? <img src="\assets\img\nav\arrow_down.svg"></img> : <img src="\assets\img\mto\dayWiseCoverage\arrow_right.svg"></img>}</span>
-            </CategoryHeader>
-            {expanded[appName] &&
-              roles.map((role: any) => (
-                <SubItem
-                  key={role.id}
-                  style={{
-                    userSelect: "none",
-                    display: "flex",
-                    alignContent: "center",
-                    alignItems: "center",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => {
-                   selectedRoles?.size>0 &&  selectedRoles?.has(role) ? removeRole(role) : addRole(role);
-                  }}
-                >
-                  <div style={{width:'22px', height: '22px', display: 'flex', alignItems: 'center'}}>
-
-                  <Checkbox
-                    style={{ zoom: 0.5 }}
-                    theme={themeUi}
-                    type="checkbox"
-                    checked={selectedRoles?.size>0 && selectedRoles?.has(role)}
-                    onClick={(e) => e.stopPropagation()} // prevent double trigger
-                    onChange={(e) =>
-                      e.target.checked ? addRole(role) : removeRole(role)
-                    }
-                    />
+        {applicationGroups.map((appName: any) => {
+          const roles = allRoles.filter(
+            (role: any) => role.application_name === appName
+          );
+          return (
+            <div key={appName}>
+              <CategoryHeader onClick={() => toggleExpand(appName)}>
+                <span>{appName}</span>
+                <span>
+                  {expanded[appName] ? (
+                    <img src="\assets\img\nav\arrow_down.svg"></img>
+                  ) : (
+                    <img src="\assets\img\mto\dayWiseCoverage\arrow_right.svg"></img>
+                  )}
+                </span>
+              </CategoryHeader>
+              {expanded[appName] &&
+                roles.map((role: any) => (
+                  <SubItem
+                    key={role.id}
+                    style={{
+                      userSelect: "none",
+                      display: "flex",
+                      alignContent: "center",
+                      alignItems: "center",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      selectedRoles?.size > 0 && selectedRoles?.has(role)
+                        ? removeRole(role)
+                        : addRole(role);
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: "22px",
+                        height: "22px",
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Checkbox
+                        style={{ zoom: 0.5 }}
+                        theme={themeUi}
+                        type="checkbox"
+                        checked={
+                          selectedRoles?.size > 0 && selectedRoles?.has(role)
+                        }
+                        onClick={(e) => e.stopPropagation()} // prevent double trigger
+                        onChange={(e) =>
+                          e.target.checked ? addRole(role) : removeRole(role)
+                        }
+                      />
                     </div>
-                  <label style={{ cursor: "pointer" }}>{role.name}</label>
-                </SubItem>
-              ))}
-          </div>
-        );
-      })}
+                    <label style={{ cursor: "pointer" }}>{role.name}</label>
+                  </SubItem>
+                ))}
+            </div>
+          );
+        })}
       </OptionsSection>
-
 
       <BottomButtons>
         <VFButtonOutline
@@ -149,10 +172,21 @@ const RoleViewCellRenderer = (params: MyCellRendererProps) => {
   const user = useUserData();
 
   const themeUi = user.user.themeUi;
+  const activeApplications: string[] = [];
+  if (user.user.config_data.MTO_ACTIVE === true) {
+    activeApplications.push("Orders");
+  }
+  if (user.user.config_data.MTA_ACTIVE === true) {
+    activeApplications.push("Distribution");
+  }
   const roles = params?.data?.roles
     ? [...params.data.roles].map((role) => role.name)
     : [];
-  const allRoles = params.allRoles || [];
+  const allRoles =
+    params?.allRoles?.filter((ele) => {
+      return activeApplications?.some((app) => app === ele?.application_name);
+    }) || [];
+
   const buttonRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -266,7 +300,6 @@ const RoleViewCellRenderer = (params: MyCellRendererProps) => {
             <RoleDropdown
               allRoles={allRoles}
               currentRoles={params.data.roles}
-              
               onApplyRole={onApplyRole}
               width={
                 params.eGridCell.getBoundingClientRect().right -

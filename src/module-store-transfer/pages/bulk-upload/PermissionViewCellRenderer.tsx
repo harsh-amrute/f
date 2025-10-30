@@ -1,12 +1,14 @@
 import { CustomCellRendererProps } from "ag-grid-react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import VFButton from "../../../components/VectorFLOW/commons/VFButton";
 import { useUserData } from "../../../context";
+import { notifyWarning } from "../../../helpers/notify";
 
 interface MyCellRendererProps extends CustomCellRendererProps {
   allPermissions?: any[];
   setIsPermissionModalOpen?: (open: boolean) => void;
   setRowIndex: (index: number) => void;
+  enabledPermissionsRow?: any[];
 }
 
 const PermissionViewCellRenderer = (params: MyCellRendererProps) => {
@@ -24,24 +26,33 @@ const PermissionViewCellRenderer = (params: MyCellRendererProps) => {
     <>
       {PermissionCount > 0 ? (
         <VFButton
-          disabled={false}
           style={{ width: "140px", height: "25px", fontSize: "1rem" }}
           themeUi={themeUi}
           onClick={() => {
+            if(params?.data?.roles?.size && params?.data?.roles?.size > 0){ 
+
             params.setRowIndex(params.node.rowIndex || 0);
             params.setIsPermissionModalOpen?.(true);
+            }
+            else{
+              notifyWarning("select a role before editing permissions");
+            }
           }}
         >
-          {"Edit Permissions"}
+          {"View / Edit Permissions"}
         </VFButton>
       ) : (
         <VFButton
-          disabled={false}
           style={{ width: "140px", height: "25px", fontSize: "1rem" }}
           themeUi={themeUi}
           onClick={() => {
+            if(params?.data?.roles?.size && params?.data?.roles?.size > 0){ 
             params.setRowIndex(params.node.rowIndex || 0);
             params.setIsPermissionModalOpen?.(true);
+            }
+            else{
+              notifyWarning("select a role before selecting permissions");
+            }
           }}
         >
           {"Select Permissions"}

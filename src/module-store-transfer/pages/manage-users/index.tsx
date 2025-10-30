@@ -446,7 +446,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
                   icon="/assets/img/profile/icon_plus.svg"
                 />
               </SCItemBtn>
-              {process.env.REACT_APP_ENABLE_BULK_UPLOAD === "true" && (
+              {/* @TODO-BulkUpload add this in envConfiguration */}
                 <SCItemBtn>
                   <ButtonOutlineIcon
                     text={t("profile.tabContent.manageUsers.button.bulkUpload")}
@@ -459,7 +459,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
                     onClick={handleClickBulkUpload}
                   />
                 </SCItemBtn>
-              )}
+            
             </SCSubTitlePadItem>
           </SCSubTitlePad>
         </SCSubTitleBox>

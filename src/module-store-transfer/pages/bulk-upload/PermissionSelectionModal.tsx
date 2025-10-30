@@ -65,11 +65,11 @@ const ChartViewToggle = ({ isChartView, setIsChartView }: any) => {
 };
 
 
-const PermissionSelectionModal = ({selectedIndex, gridRef,dataAllPermissions,closeModal, updatePermissions, defaultPermissions }: {gridRef?: GridRef| any, selectedIndex?: any, dataAllPermissions: any, closeModal: any, updatePermissions: any, defaultPermissions?: any}) => {
+const PermissionSelectionModal = ({selectedIndex, gridRef,dataAllPermissions,closeModal, updatePermissions, activeApplications }: {gridRef?: GridRef| any, selectedIndex?: any, dataAllPermissions: any, closeModal: any, updatePermissions: any, activeApplications: any}) => {
   const [isChartView, setIsChartView] = React.useState(false);
-  const allApplications = dataAllPermissions?.map(
+  const [allApplications, setAllApplications] = useState<any>(dataAllPermissions?.map(
     (ele: any) => ele.application_name
-  );
+  ).filter((app: string) => activeApplications.includes(app)));
   const [selectedApplication, setSelectedApplication] = React.useState<
     string[]
   >(allApplications[0]);
@@ -86,8 +86,37 @@ const PermissionSelectionModal = ({selectedIndex, gridRef,dataAllPermissions,clo
     })
   }
   useEffect(()=>{
+   
+
       ResetPermissions();
+      let currentVal:any = gridRef?.current?.api?.getSelectedRows()?.[0] || {};
+      console.log("gridRef", gridRef?.current?.api?.getSelectedRows());
+      if(selectedIndex!==undefined && selectedIndex!==null){
+
+        gridRef?.current?.api?.forEachNode((node: IRowNode, index: number)=>{
+          if(selectedIndex===index){
+            currentVal = node.data || {};
+          }
+        })
+      }
+      console.log("val", currentVal);
+      setAllApplications(
+        dataAllPermissions
+          ?.map((ele: any) => ele.application_name)
+          .filter(
+            (app: string) =>
+              activeApplications.includes(app) &&
+              Array.from(currentVal?.roles ?? []).some(
+                (role: any) => role.application_name === app
+              )
+          )
+      );
+      
   },[selectedIndex, gridRef])
+
+  useEffect(()=>{
+    setSelectedApplication(allApplications[0]);
+  },[allApplications])
 
   const user = useUserData();
   const themeUi = user.user.user.theme_ui;

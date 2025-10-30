@@ -20,6 +20,10 @@ import OverlayLoader from "../../../VectorFlow/Pages/MTO/Common/Loader";
 import { SCGoBackContainer, SCGoBackText } from "../../../components/VectorFLOW/commons/MTO/ActionToolBar/styles";
 import _ from "lodash";
 import { notifyError, notifySuccess } from "../../../helpers/notify";
+import { useUserData } from "../../../context";
+import { useGetDBRsettingsData } from "../../../VectorFlow/Services/MTO/Common/DBRSettings";
+
+
 
 type Role = {
   id: number;
@@ -39,6 +43,7 @@ const PermissionSelectionPage = ({
   setIsAssignPage: any
 }) => {
 
+  const { mutateAsync: getDBRsettingsData} = useGetDBRsettingsData(); 
   const [isFinalView, setIsFinalView] = useState(false);
   const [isPermissionModalOpen, setIsPermissionModalOpen] =
     React.useState(false);
@@ -51,6 +56,57 @@ const PermissionSelectionPage = ({
   const [listRoles, setListRoles] = useState<any>([]);
   const gridRef = useRef<GridRef>(null);
 
+   
+  const [compulsorPermissions, setCompulsoryPermissionsApps] = useState<any>([]);
+  const addMTOToCompulsoryPermissions = async()=>{
+    try{
+      const response = await getDBRsettingsData();
+      if(response.status===200){
+        const DBRSettings = response?.data?.data || [];
+        const isMTOPermissionRequired = DBRSettings?.find((data: any) => data.flag === "IsDataPermissionEnabled" && data.value == 1);
+        const MTAPerm = _.uniq(listRoles?.filter((ele:any)=>ele.application_name==='Distribution').map((role:any)=>role.application_id)) || [];
+        if(isMTOPermissionRequired){
+          const MTOPerm = _.uniq(listRoles?.filter((ele:any)=>ele.application_name==='Orders').map((role:any)=>role.application_id)) || [];
+          setCompulsoryPermissionsApps([...MTAPerm,...MTOPerm]);
+        }
+        else{
+          console.log("MTAPerm", MTAPerm);
+          setCompulsoryPermissionsApps([...MTAPerm]);
+        }
+      }
+      else{
+        notifyError("Failed to fetch MTO setttings permission check might not work properly!");
+      }
+    }catch(e){
+      notifyError("Failed to fetch MTO setttings permission check might not work properly!");
+      return [];
+    }
+  }
+
+  const user = useUserData();
+  const activeApplications:any  = [];
+  if(user.user.config_data.MTO_ACTIVE===true){
+    activeApplications.push('Orders');
+  }
+  if(user.user.config_data.MTA_ACTIVE===true){
+    activeApplications.push('Distribution');
+  }
+
+  useEffect(()=>{
+    if(compulsorPermissions.length===0 && listRoles.length>0){
+      console.log("this is calling baar baar", compulsorPermissions.length===0);
+
+      if(activeApplications.includes('Orders')){
+        console.log("here");
+        addMTOToCompulsoryPermissions();
+      }else{
+        console.log("or here");
+        const MTAPerm = _.uniq(listRoles?.filter((ele:any)=>ele.application_name==='Distribution').map((role:any)=>role.application_id)) || [];
+        setCompulsoryPermissionsApps([...MTAPerm]);
+      }
+    }
+  },[activeApplications])
+
   const updateRolesForSelected = (selectedRoles: Set<Role>) => {
     gridRef.current?.api.forEachNode((node: any) => {
       if (node.isSelected()) {
@@ -61,6 +117,7 @@ const PermissionSelectionPage = ({
       }
     });
   };
+
 
   const updatePermissionsForSelected = (selectedPermissions: Set<string>) => {
     gridRef.current?.api.forEachNode((node: any) => {
@@ -264,16 +321,175 @@ const PermissionSelectionPage = ({
     // Example usage:
     // const optimizedData = optimizePermissionsAndRoles(yourDataObject);
 
+    /**
+     * A function to validate if all selected users have roles of the same application.
+     * @returns boolean
+     */
+
+    function validateUserPermissions({roles, finalData, compulsoryPermissionsApps}:any) {
+      const errors:any = [];
+      const warnings:any = [];
+      
+      // Create a map of role id to application_id for quick lookup
+      const roleToAppMap:any = {};
+      roles.forEach((role:any) => {
+          roleToAppMap[role.id] = role.application_id;
+      });
+      
+      // Task 1: Check if users with roles from compulsory apps have corresponding permissions
+      finalData.users.forEach((user:any )=> {
+          const userRoles = finalData.roles[user.rid]?.roles || [];
+          const userPermissions = finalData.permissions[user.perm_id] || {};
+          const userLocationPermissions = userPermissions.location_permissions || [];
+          const userProductPermissions = userPermissions.product_permissions || [];
+          
+          // Get application IDs from user's permissions (both location and product)
+          const userPermissionAppIdsLoc = new Set();
+          const userPermissionAppIdsPerm = new Set();
+          
+          // Add application IDs from location permissions
+          userLocationPermissions.forEach((perm:any) => {
+              userPermissionAppIdsLoc.add(perm.application_id);
+          });
+          
+          // Add application IDs from product permissions
+          userProductPermissions.forEach((perm:any) => {
+              userPermissionAppIdsPerm.add(perm.application_id);
+          });
+
+          if(userRoles.length === 0){
+            errors.push({
+              type: 'MISSING_COMPULSORY_PERMISSION',
+              message: `All users must have at least one role assigned`,
+              userId: user.id,
+              userName: user.name,
+              email: user.email,
+              permId: user.perm_id
+          });
+          }
+          
+         
+          // Check each role assigned to the user
+          userRoles.forEach((roleId:any) => {
+              const appId = roleToAppMap[roleId];
+              
+              // If the role belongs to a compulsory permissions app
+              if (compulsorPermissions.includes(appId)) {
+                  // Check if user has permissions for this application
+                  if (!userPermissionAppIdsLoc.has(appId) || !userPermissionAppIdsPerm.has(appId)) {
+                      errors.push({
+                          type: 'MISSING_COMPULSORY_PERMISSION',
+                          message: `All users with a role of application: ${dataAllPermissions.find((ele:any)=>ele.application_id===appId).application_name} must have Location and Product Permissions`,
+                          userId: user.id,
+                          userName: user.name,
+                          email: user.email,
+                          roleId: roleId,
+                          applicationId: appId,
+                          permId: user.perm_id
+                      });
+                  }
+              }
+          });
+      });
+      
+      // Task 2: Remove permissions for applications where user has no roles
+      const modifiedFinalData = JSON.parse(JSON.stringify(finalData)); // Deep clone
+      
+      finalData.users.forEach((user:any )=> {
+          const userRoles = finalData.roles[user.perm_id]?.roles || [];
+          const userPermissions = modifiedFinalData.permissions[user.perm_id];
+          
+          if (!userPermissions) {
+              return;
+          }
+          
+          // Get application IDs from user's roles
+          const userRoleAppIds = new Set(
+              userRoles.map((roleId:any) => roleToAppMap[roleId]).filter((appId:any) => appId !== undefined)
+          );
+          
+          // Handle location permissions
+          if (userPermissions.location_permissions) {
+              userPermissions.location_permissions = userPermissions.location_permissions.filter((perm:any) => {
+                  const shouldKeep = userRoleAppIds.has(perm.application_id);
+                  
+                  if (!shouldKeep) {
+                      warnings.push({
+                          type: 'LOCATION_PERMISSION_REMOVED',
+                          message: `Location permission for application id ${perm.application_id} removed for user ${user.name} (no corresponding role)`,
+                          userId: user.id,
+                          userName: user.name,
+                          email: user.email,
+                          permId: user.perm_id,
+                          removedApplicationId: perm.application_id,
+                          removedPermission: perm,
+                          permissionType: 'location'
+                      });
+                  }
+                  
+                  return shouldKeep;
+              });
+          }
+          
+          // Handle product permissions
+          if (userPermissions.product_permissions) {
+              const originalProductPermissions = [...userPermissions.product_permissions];
+              userPermissions.product_permissions = userPermissions.product_permissions.filter((perm:any) => {
+                  const shouldKeep = userRoleAppIds.has(perm.application_id);
+                  
+                  if (!shouldKeep) {
+                      warnings.push({
+                          type: 'PRODUCT_PERMISSION_REMOVED',
+                          message: `Product permission for application ${perm.application_id} removed for user ${user.name} (no corresponding role)`,
+                          userId: user.id,
+                          userName: user.name,
+                          email: user.email,
+                          permId: user.perm_id,
+                          removedApplicationId: perm.application_id,
+                          removedPermission: perm,
+                          permissionType: 'product'
+                      });
+                  }
+                  
+                  return shouldKeep;
+              });
+          }
+      });
+      
+      return {
+          isValid: errors.length === 0,
+          errors: errors,
+          warnings: warnings,
+          modifiedData: modifiedFinalData,
+          summary: {
+              totalErrors: errors.length,
+              totalWarnings: warnings.length,
+              compulsoryPermissionErrors: errors.filter((e:any) => e.type === 'MISSING_COMPULSORY_PERMISSION').length,
+              locationPermissionsRemoved: warnings.filter((w:any) => w.type === 'LOCATION_PERMISSION_REMOVED').length,
+              productPermissionsRemoved: warnings.filter((w:any) => w.type === 'PRODUCT_PERMISSION_REMOVED').length
+          }
+      };
+  }
+
     const createUsers = async()=>{
       const userDataAll: string[] = [];
       gridRef &&  gridRef.current && gridRef?.current.api.forEachNode((node: any)=>{
         userDataAll.push(node.data);
         
       })
-      // return;
       try{
         const finalData = optimizePermissionsAndRoles(transformUserData(userDataAll));
-        const response = await postPostBulkUploadUsers({...finalData})
+        console.log("finalData", finalData);
+        const {isValid, errors, modifiedData} = validateUserPermissions({roles: listRoles, finalData, compulsorPermissions});
+        console.log("errors", errors);
+        if(!isValid){
+          let errorMsg = "Errors found:\n";
+          errorMsg += `User: ${errors[0].userName} (${errors[0].email}) - ${errors[0].message}\n`;
+          notifyError(errorMsg);
+          console.error("Errors in user data:", errors);
+          return;
+        }
+        const response = await postPostBulkUploadUsers({...modifiedData})
         if(response.status===200){
           // setIsFinalView(true);
           const errorUserData = response?.data?.failed_users || [];
@@ -353,6 +569,9 @@ const PermissionSelectionPage = ({
         themeUi={themeUi} >Edit Role</VFButton>}: RoleViewCellRenderer,
         cellRendererParams: {
           allRoles: listRoles,
+          allPermissions: dataAllPermissions,
+          setIsPermissionModalOpen: setIsPermissionModalOpenForRow,
+          setRowIndex: setRowIndex
         },
         cellStyle: (props:any)=>{
           if (isFinalView && props.data.error) {
@@ -560,11 +779,13 @@ const PermissionSelectionPage = ({
           >
             {/* <PermissionHeirarchyCanvas  allPermissions={dataAllPermissions}/> */}
             <PermissionSelectionModal
+              gridRef={gridRef}
               dataAllPermissions={dataAllPermissions}
               updatePermissions={updatePermissionsForSelected}
               closeModal={() => {
                 setIsPermissionModalOpen(false);
               }}
+              activeApplications={activeApplications}
             />
           </VFModalCard>
         }
@@ -589,6 +810,7 @@ const PermissionSelectionPage = ({
               closeModal={() => {
                 setIsPermissionModalOpenForRow(false);
               }}
+              activeApplications={activeApplications}
             />
           </VFModalCard>
         }
@@ -603,6 +825,7 @@ const PermissionSelectionPage = ({
             }}
           >
             <RoleSelectionModal
+              activeApplications={activeApplications}
               listRoles={listRoles}
               updateRoles={updateRolesForSelected}
               closeModal={() => {

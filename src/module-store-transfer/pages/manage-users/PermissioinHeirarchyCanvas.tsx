@@ -1,13 +1,9 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { ReactFlow, Handle, Position } from "@xyflow/react";
-
 import "@xyflow/react/dist/style.css";
 import Checkbox from "../../../components/VectorFLOW/commons/MTO/Checkbox";
-
 import { useUserData } from "../../../context";
-
 import { ToggleContainer, ToggleButton, ChartWrapper } from "./PermissionHeirarchyStyles";
-import styled from "styled-components";
 
 const NodeDataContext = createContext<any>(undefined);
 
@@ -289,8 +285,6 @@ const nodeTypes = {
   customNode: CustomNode,
 };
 
-
-
 export default function PermissionHeirarchyCanvas({
   dataAllPermissions,
   selectedApplication,
@@ -457,7 +451,6 @@ export default function PermissionHeirarchyCanvas({
     return { nodes, edges };
   };
 
-  const { user } = useUserData();
 
   const [nodes, setNodes] = React.useState<any>([]);
   const [edges, setEdges] = React.useState<any>([]);
@@ -465,7 +458,7 @@ export default function PermissionHeirarchyCanvas({
   useEffect(() => {
     if (checked && checked.length && opened && opened.length) {
       const { nodes: generatedNodes, edges: generatedEdges } =
-        generateTreeNodesAndEdges(selectedAppAllPermissions[permissionType]);
+        generateTreeNodesAndEdges(selectedAppAllPermissions?.[permissionType] || {});
       setNodes(generatedNodes);
       setEdges(generatedEdges);
     }

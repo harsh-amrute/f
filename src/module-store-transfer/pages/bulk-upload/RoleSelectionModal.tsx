@@ -15,6 +15,7 @@ interface RoleSelectionModalProps {
   listRoles: Role[];
   updateRoles: (roles: Set<Role>) => void;
   closeModal: () => void;
+  activeApplications: string[];
 }
 
 
@@ -23,7 +24,9 @@ const RoleSelectionModal: React.FC<RoleSelectionModalProps> = ({
   listRoles,
   updateRoles,
   closeModal,
+  activeApplications
 }) => {
+
   const user = useUserData();
   const themeUi = user.user.user.theme_ui;
   const [selectedRoles, setSelectedRoles] = useState<Set<Role>>(new Set());
@@ -38,7 +41,7 @@ const RoleSelectionModal: React.FC<RoleSelectionModalProps> = ({
     });
   };
   const applicationGroups = Array.from(
-    new Set(listRoles.map((role) => role.application_name))
+    new Set(listRoles.map((role) => role.application_name).filter(app => activeApplications.includes(app)))
   );
 
   const [expandedApps, setExpandedApps] = useState<Record<string, boolean>>(
