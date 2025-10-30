@@ -1,59 +1,27 @@
 import React, { useRef, useState } from "react";
-import styled from "styled-components";
-import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
-import { useUserData } from "../../../../../context";
-import * as ManualStyle from "../../../../../module-store-transfer/pages/manual-upload/styles";
-import { notifyError } from "../../../../../helpers/notify";
+import VFButton from "../../../../../../components/VectorFLOW/commons/VFButton";
+import { useUserData } from "../../../../../../context";
+import * as ManualStyle from "../../../../../../module-store-transfer/pages/manual-upload/styles";
+import { ButtonContentWrapper, ButtonsWrapper, Container, LeftSection } from "./FileUploadTileStyles";
 
 type ReportActionCardProps = {
   title: string;
-  onDownload: () => void;
-  onUpload: () => void;
+  onDownload: (file_name: string, expected_extension: string) => void;
+  onUpload: (props: any) => void;
   lastUpdateStatus: any;
-  fileUploadType: 'UI'|'FTP'|'DB'|any
+  fileUploadType: 'UI'|'FTP'|'DB'|any;
+  expected_extension: string;
 };
 
-const Container = styled.div`
-  border: 1.5px dashed #d17ca0; /* Pink dashed border */
-  padding: 14px 16px;
-  display: flex;
-  width: 100%;
-  align-items: center;
-  justify-content: space-between;
-  border-radius: 8px;
-  background: #fff;
-  max-width: 500px;
-`;
 
-const LeftSection = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-weight: 600;
-  font-size: 1.1rem;
-  cursor: pointer;
-`;
-
-const ButtonsWrapper = styled.div`
-  display: flex;
-  gap: 10px;
-`;
-
-const ButtonContentWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  font-size: 1.1rem;
-  color: #ffffff;
-`;
 
 const FileUploadTile: React.FC<ReportActionCardProps> = ({
   title,
   onDownload,
   onUpload,
   lastUpdateStatus,
-  fileUploadType
+  fileUploadType,
+  expected_extension
 }) => {
   const themeUi = useUserData().user.user.themeUi;
 
@@ -74,18 +42,18 @@ const FileUploadTile: React.FC<ReportActionCardProps> = ({
     }
 
     const file = e?.target?.files?.[0];
-    switch (file?.type) {
-      case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+    // switch (file?.type) {
+    //   case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
         setFile(file);
-        break;
-      default:
-        notifyError("Only xlsx files are accepted");
-    }
+      //   break;
+      // default:
+      //   notifyError("Only xlsx files are accepted");
+    // }
   };
 
   return (
     <Container style={{border: `1.5px dashed ${lastUpdateStatus ? '#d17ca0' : '#cecece'}`}}>
-      <LeftSection onClick={handleClick}>
+      <LeftSection onClick={handleClick} style={{cursor: fileUploadType==='UI' ? 'pointer' : 'default'}}>
         <img
           src="/assets/img/scheduling/Folder-icon.svg"
           style={{ height: "40px", width: "40px" }}
@@ -114,7 +82,7 @@ const FileUploadTile: React.FC<ReportActionCardProps> = ({
         
         <VFButton
           themeUi={themeUi}
-          onClick={onDownload}
+          onClick={()=>onDownload(title, expected_extension)}
           style={{ fontSize: "0.9rem", height: "32px", width: '100px' }}
           disabled={!lastUpdateStatus}
         >
@@ -129,7 +97,8 @@ const FileUploadTile: React.FC<ReportActionCardProps> = ({
         </VFButton>
         <VFButton
           themeUi={themeUi}
-          onClick={onUpload}
+          disabled={!file}
+          onClick={()=>{onUpload({file, file_type: expected_extension, file_name: title}); setFile(null)}}
           style={{ fontSize: "0.9rem", height: "32px", width: '100px' }}
           >
                    <ButtonContentWrapper>
@@ -144,7 +113,7 @@ const FileUploadTile: React.FC<ReportActionCardProps> = ({
 
         <ManualStyle.SCManualUploadInput
               type="file"
-              accept=".xlsx"
+              accept={expected_extension}
               onChange={handleFileChange}
               ref={inputRef}
               value=""

@@ -549,7 +549,7 @@ export const listMenuParent: any = [
     app_id : 3,
     lp_img : "/assets/img/Prod-icon.svg",
     rp_img : "/assets/img/Prod-icon1.svg",
-    url: "/mto/production-planning-scheduling/deptwise-bm-report",
+    url: "/mto/production-planning-scheduling/enquiry-response",
     status: false,
     role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater", "BMReportManager","MasterScheduler"],
     avoidHeader: true,
@@ -557,7 +557,8 @@ export const listMenuParent: any = [
       {
         name: "navbar.listMenuParent.prodAndPlanningScheduling.title",
         img: "/assets/img/nav/prod-plan-icon",
-        url: "/mto/production-planning-scheduling/deptwise-bm-report", role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater", "BMReportManager", "MasterScheduler"],
+        url: "/mto/production-planning-scheduling/enquiry-response", 
+        role: [],
         child: [
           {
             name: "navbar.listMenuParent.prodAndPlanningScheduling.enquiryResponse",
@@ -600,6 +601,20 @@ export const listMenuParent: any = [
             img: "/assets/img/nav/arrow_down.svg",
             url: "/mto/production-planning-scheduling/overall-bm-report",
             role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "BMReportManager","MasterScheduler"],
+          },
+        ]
+      },
+      {
+        name: "navbar.listMenuParent.prodAndPlanningScheduling.Scheduling",
+        img: "/assets/img/nav/arrow_down.svg",
+        url: "",
+        role: [],
+        child: [
+          {
+            name: "Scheduling",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/mto/production/scheduling",
+            role: [],
           },
         ]
       },

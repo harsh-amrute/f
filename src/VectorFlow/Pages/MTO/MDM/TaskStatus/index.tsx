@@ -95,20 +95,23 @@ const MTOTaskStatus = ()=>{
 
     const MTOToMTAFormat = (taskData: any, allUsers: any) => {
 
-        const newData:any = [];
-        taskData.forEach((val:any)=>{
-            const newVal:any = {}
-            newVal.TaskID = val.tid;
-            newVal.PendingSince = convertDateFormat(val.co);
-            newVal.TaskName = val.tnm;
-            newVal.TaskStatus = val.std;
-            newVal.Requester = val.r_nm;
-            newVal.Approver = mapIdsToNames(val.a_ids, allUsers);
-            newVal.Approvers = mapIdsToNames(val.a_ids, allUsers);
-            newVal.Aids = val.a_ids;
+        const newData: any = [];
+        taskData
+            .filter((taskData: any) => {
+                return taskData.r_id === String(user.user.id);
+            }).forEach((val: any) => {
+                const newVal: any = {}
+                newVal.TaskID = val.tid;
+                newVal.PendingSince = convertDateFormat(val.co);
+                newVal.TaskName = val.tnm;
+                newVal.TaskStatus = val.std;
+                newVal.Requester = val.r_nm;
+                newVal.Approver = allUsers.map((allUser: any) => allUser.name);
+                newVal.Approvers = mapIdsToNames(String(val.approved_by), allUsers);
+                newVal.Aids = val.a_ids;
 
-            newData.push(newVal);
-        })
+                newData.push(newVal);
+            });
 
         return newData;
     }

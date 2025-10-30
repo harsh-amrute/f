@@ -5,6 +5,7 @@ import { MainService } from '../../../../../module-main/services/api';
 import { useIdleTimer } from './useIdleTimer';
 import { notifyLoader } from '../../../../../helpers/notify';
 import { toast } from 'react-toastify';
+import { useUserData } from '../../../../../context';
 
 export function AutoLogoutTimer() {
   const navigate = useNavigate();
@@ -13,18 +14,21 @@ export function AutoLogoutTimer() {
 
   const [isWarningVisible, setWarningVisible] = useState(false);
   const finalLogoutTimerRef = useRef<number | null>(null);
-
+  const { user, setUser } = useUserData();
+  
   // Timeout Configuration 
-  const logoutTimeout = parseInt(process.env.REACT_APP_IDLE_TIMEOUT || '900000', 10);
+  const logoutTimeout = parseInt(user?.config_data?.IDLE_TIMEOUT || '900000', 10);
   const promptDuration = 60 * 1000;
   const promptTimeout = logoutTimeout - promptDuration;
-
 
   const performLogout = useCallback(async () => {
     if (location.pathname !== '/login') {
       toast.dismiss();
       setWarningVisible(false);
-      await MainService.logout(true, queryClient);
+      const response = await MainService.logout(true, queryClient);
+      if (response?.status == 200) {
+        setUser(undefined);
+      }
       navigate('/login');
     }
   }, [location.pathname, navigate, queryClient]); 
