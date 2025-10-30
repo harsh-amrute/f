@@ -60,9 +60,9 @@ export namespace MainService {
 
   export const logout = async (isUnAuth=false, queryClient?: QueryClient,) => {
     let toastMessage: string | null = null;
-  
+    let response
     try {
-      await axios.post(getLogoutUrl(), {}, { _skipAuthRefresh: true } as any);
+      response = await axios.post(getLogoutUrl(), {}, { _skipAuthRefresh: true } as any);
       if (isUnAuth) {
         toastMessage = 'Session expired or invalid. Please log in again.';
       } else {
@@ -87,6 +87,7 @@ export namespace MainService {
     if (toastMessage) {
       notifySuccess(toastMessage);
     }
+    return response;
   };
 
   export const getrefreshTokenUrl = () => {

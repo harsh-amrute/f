@@ -19,7 +19,7 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
   const [listMenu, setListMenu] = useState(listMenuParent);
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   const queryClient = useQueryClient();
-  const { user } = useUserData();
+  const { user, setUser } = useUserData();
   const themeUi = user?.user?.theme_ui;
   const [activeTooltip, setActiveTooltip] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -232,8 +232,12 @@ const handleClickMenu = async (item: any, index: number) => {
 };
 
   const navigateTo = useNavigate();
+  
   const handleLogout = async () => {
-    await MainService.logout(false,queryClient);
+    const response = await MainService.logout(false, queryClient);
+    if (response?.status == 200) {
+      setUser(undefined);
+    }
     navigateTo("/login");
   };
 
