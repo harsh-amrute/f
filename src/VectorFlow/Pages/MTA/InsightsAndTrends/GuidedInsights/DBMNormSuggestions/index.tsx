@@ -181,7 +181,7 @@ const DBMNormSuggestions = ({ filter }: { filter: any }) => {
               <Allotment.Pane preferredSize={"48%"}>
                 
                 <PieChartandGrid 
-                    height={"95%"}
+                    height={"100%"}
                     chartParams={chartParams2}
                     colDefs={coldefs2}
                     rowData={ActiveDBMSuggestionData}
