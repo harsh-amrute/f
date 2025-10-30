@@ -14,13 +14,12 @@ export function AutoLogoutTimer() {
 
   const [isWarningVisible, setWarningVisible] = useState(false);
   const finalLogoutTimerRef = useRef<number | null>(null);
-
+  const { user, setUser } = useUserData();
+  
   // Timeout Configuration 
-  const logoutTimeout = parseInt(process.env.REACT_APP_IDLE_TIMEOUT || '900000', 10);
+  const logoutTimeout = parseInt(user?.config_data?.IDLE_TIMEOUT || '900000', 10);
   const promptDuration = 60 * 1000;
   const promptTimeout = logoutTimeout - promptDuration;
-  const { setUser } = useUserData();
-
 
   const performLogout = useCallback(async () => {
     if (location.pathname !== '/login') {
