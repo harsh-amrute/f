@@ -519,7 +519,7 @@ const getFilterData = async () => {
     if (Object.entries(appliedFilters).length && !isGridView && selectedCCR && selectedAction && fromDate && toDate) {
       onSubmit(); 
     }
-   }, [appliedFilters, isGridView, selectedCCR, selectedAction])
+   }, [appliedFilters, isGridView])//selectedAction,selectedCCR
 
   
   useEffect(() => {
