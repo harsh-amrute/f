@@ -1,7 +1,7 @@
 
 import { ColDef, ColGroupDef } from "ag-grid-enterprise"
 import { useEffect, useRef, useState } from "react"
-import { useApproveTask, useGetBufferMasterData, useGetCCRMasterData, useGetMasterUIConfiguration, useGetMTOMasterUIConfiguration, useGetMTOTaskById, useGetMTOTaskStatusData, usePutMtoBufferMasterData, usePutMtoCalendarMasterData, usePutMtoCCRMasterData, usePutMtoPoogiMasterData } from "../../../../../VectorFlow/Services/MTA/MDM"
+import { useApproveTask, useGetApproverName, useGetBufferMasterData, useGetCCRMasterData, useGetMasterUIConfiguration, useGetMTOMasterUIConfiguration, useGetMTOTaskById, useGetMTOTaskStatusData, usePutMtoBufferMasterData, usePutMtoCalendarMasterData, usePutMtoCCRMasterData, usePutMtoPoogiMasterData } from "../../../../../VectorFlow/Services/MTA/MDM"
 
 import { createTaskPendingSubmitPayload, getActionName, getCCRNamesFromId, getCellFilter, getExistingColumnFields, getExistingColumns, mapMasterToColumnGroupDefs, mapNewAndOldMasterRowDataToCustomRowData, mapPendingTaskToColumnDefs } from "../../../../../helpers/utils"
 import { GridRef, Master, TaskDataType } from "../../../../../VectorFlow/types/MDM"
@@ -86,14 +86,41 @@ const useTaskPendingForReview = ()=>{
     const rowsPerPage = 50;
 
     // const {data,isLoading,refetch} = useGetPendingTasks();
-    const {mutateAsync : getMTOTaskStatusData, isLoading: showLoader} = useGetMTOTaskStatusData();
+    const { mutateAsync: getMTOTaskStatusData, isLoading: showLoader } = useGetMTOTaskStatusData();
+    const {mutateAsync:getApproverNames} = useGetApproverName();
+    
 
     const [mtoPendingTaskData, setMTOPendingTaskData ] = useState<any>([]);
 
+    const getUniqueAppIds = (taskData: any[]): any[] => {
+        const allIds: number[] = [];
+        
+        taskData.forEach(task => {
+          if (task.a_ids) {
+            const ids = task.a_ids.split(',').map((id: string) => parseInt(id.trim(), 10));
+            allIds.push(...ids);
+          }
+        });
+      
+        const uniqueIds: number[] = [];
+        allIds.filter(id => !isNaN(id)).forEach(id => {
+          if (!uniqueIds.includes(id)) {
+            uniqueIds.push(id);
+          }
+        });
+        
+        return uniqueIds;
+    };
+    
     const GetMTOData = async()=>{
         try{
             const response = await getMTOTaskStatusData();
-            setMTOPendingTaskData(MTOToMTAFormat(response.data.data))
+            const allApproverIds = getUniqueAppIds(response.data.data);
+
+            const approverNames = await getApproverNames({approver_ids: allApproverIds })
+            const allUsersData = approverNames.data || [];
+
+            setMTOPendingTaskData(MTOToMTAFormat(response.data.data, allUsersData))
             
         }
         catch(error){
@@ -610,9 +637,15 @@ const useTaskPendingForReview = ()=>{
         return dayDifference;
     };
 
-    const MTOToMTAFormat = (inData: any[]) => {
+    const MTOToMTAFormat = (inData: any[], allUsersData: any) => {
+
+        const allUserId = new Set(allUsersData.map((allUsersData: any) => allUsersData.id));
+        
         return inData
-            .filter((val: any) => val.std === "Pending")
+            .filter((val: any) => {
+                if (val.std !== "Pending") return false;
+                return allUserId.has(user.user.id);
+             })
             .map((val: any) => ({
                 TaskID: val.tid,
                 PendingSince: convertDateFormat(val.co),

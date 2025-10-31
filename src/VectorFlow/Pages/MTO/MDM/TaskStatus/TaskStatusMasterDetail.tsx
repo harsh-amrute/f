@@ -201,8 +201,6 @@ const getStepperState = (data:any):StepItem[]=>{
 }
 
 const TaskStatusMasterDetail = (props:TaskStatusMasterDetailProps)=>{
-
-
     const{
         data,
         onDownload
@@ -210,8 +208,6 @@ const TaskStatusMasterDetail = (props:TaskStatusMasterDetailProps)=>{
     const approvedStatuses = ["Approved","Partially Approved - DB update Pending","Approved - DB update Pending","Approved - DB Updated"]
     const {user} = useUserData()
     const {Approvers} = data;
-
-    
 
     const showDisplayDownloadButton = (status:string):boolean=>{
         return approvedStatuses.includes(status)
