@@ -67,8 +67,9 @@ const DBMNormSuggestions = ({ filter }: { filter: any }) => {
       );
       ///fwefwe
       SetActiveDBMSuggestionData(formattedRowData2);
-      setChartThemeOverridesG2(generateChartForGraph2(chartParams2)
-      );
+      // setChartThemeOverridesG2(generateChartForGraph2(chartParams2)
+      // );
+      setChartThemeOverridesG2({});
 
       const formattedRowData3 = sortDBMSuggestionSKUData(
         DBMSuggestionSkuDataD?.data?.data
@@ -108,48 +109,48 @@ const DBMNormSuggestions = ({ filter }: { filter: any }) => {
   };
 
 
-  const generateChartForGraph2 = (params:any) =>{
-    return {
-      palette: params.palette,
-      common: {
-        title:{
-          fontSize:7,
-          color:'white',
-          enabled:true,
-          text:params.downloadName,
-        },
-        legend: params.legend,
-        axes: {
-          category: {
-            title: {
-              enabled: true,
-              text: "SKU Code",
-              position: "bottom",
-              fontSize:8,
-              fontFamily:'Roboto'
-            },
-            label:{
-              formatter:(params:any)=>{
-                if(params.value.value.length > 10) return params.value.toString().slice(0,10) + '...';
-                return params.value;
-              },
-              fontSize:8,
-              fontFamily:'Roboto'
-            }
-          },
-          number: {
-            title: {
-              enabled: true,
-              text: "Count of Locations",
-              position: "left",
-              fontSize:10,
-              fontFamily:'Roboto'
-            },
-          },
-        },
-      },
-    };
-  }
+  // const generateChartForGraph2 = (params:any) =>{
+  //   return {
+  //     palette: params.palette,
+  //     common: {
+  //       title:{
+  //         fontSize:7,
+  //         color:'white',
+  //         enabled:true,
+  //         text:params.downloadName,
+  //       },
+  //       legend: params.legend,
+  //       axes: {
+  //         category: {
+  //           title: {
+  //             enabled: true,
+  //             text: "SKU Code",
+  //             position: "bottom",
+  //             fontSize:8,
+  //             fontFamily:'Roboto'
+  //           },
+  //           label:{
+  //             formatter:(params:any)=>{
+  //               if(params.value.value.length > 10) return params.value.toString().slice(0,10) + '...';
+  //               return params.value;
+  //             },
+  //             fontSize:8,
+  //             fontFamily:'Roboto'
+  //           }
+  //         },
+  //         number: {
+  //           title: {
+  //             enabled: true,
+  //             text: "Count of Locations",
+  //             position: "left",
+  //             fontSize:10,
+  //             fontFamily:'Roboto'
+  //           },
+  //         },
+  //       },
+  //     },
+  //   };
+  // }
 
 
   if (
