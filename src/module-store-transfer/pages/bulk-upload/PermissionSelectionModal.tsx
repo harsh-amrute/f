@@ -64,6 +64,26 @@ const ChartViewToggle = ({ isChartView, setIsChartView }: any) => {
   );
 };
 
+const hasSelectedPermissions = (permissions: any): boolean => {
+  if (!permissions || typeof permissions !== 'object' || Object.keys(permissions).length === 0) {
+    return false; 
+  }
+  for (const appName in permissions) {
+    const appPermissions = permissions[appName];
+    if (appPermissions && typeof appPermissions === 'object') {
+      
+      for (const permType in appPermissions) {
+        const permList = appPermissions[permType];
+        
+        if (Array.isArray(permList) && permList.length > 0) {
+          return true; // Found at least one permission
+        }
+      }
+    }
+  }
+
+  return false; 
+};
 
 const PermissionSelectionModal = ({selectedIndex, gridRef,dataAllPermissions,closeModal, updatePermissions, activeApplications }: {gridRef?: GridRef| any, selectedIndex?: any, dataAllPermissions: any, closeModal: any, updatePermissions: any, activeApplications: any}) => {
   const [isChartView, setIsChartView] = React.useState(false);
@@ -71,13 +91,13 @@ const PermissionSelectionModal = ({selectedIndex, gridRef,dataAllPermissions,clo
     (ele: any) => ele.application_name
   ).filter((app: string) => activeApplications.includes(app)));
   const [selectedApplication, setSelectedApplication] = React.useState<
-    string[]
+  string[]
   >(allApplications[0]);
-
-
-
+  
+  
+  
   const [selectedPermissions, setSelectedPermissions] = useState<any>({});
-
+  
   const ResetPermissions = ()=>{
     gridRef?.current?.api?.forEachNode((node: IRowNode, index: number)=>{
       if(selectedIndex===index){
@@ -88,7 +108,7 @@ const PermissionSelectionModal = ({selectedIndex, gridRef,dataAllPermissions,clo
   useEffect(()=>{
    
 
-      ResetPermissions();
+    ResetPermissions();
       let currentVal:any = gridRef?.current?.api?.getSelectedRows()?.[0] || {};
       console.log("gridRef", gridRef?.current?.api?.getSelectedRows());
       if(selectedIndex!==undefined && selectedIndex!==null){
@@ -117,14 +137,15 @@ const PermissionSelectionModal = ({selectedIndex, gridRef,dataAllPermissions,clo
   useEffect(()=>{
     setSelectedApplication(allApplications[0]);
   },[allApplications])
-
+  
   const user = useUserData();
   const themeUi = user.user.user.theme_ui;
-
+  
   const clearAllPermissions = () => {
     setSelectedPermissions({});
   }
-
+  
+  const isApplyDisabled = !hasSelectedPermissions(selectedPermissions);
   return (
       <div style={{ width: "80vw", height: "80vh", padding: "25px" }}>
         <div
@@ -134,16 +155,16 @@ const PermissionSelectionModal = ({selectedIndex, gridRef,dataAllPermissions,clo
             display: "flex",
             justifyContent: "space-between",  
           }}
-        >
+          >
           <ViewToggle
             allApplications={allApplications}
             selectedApplication={selectedApplication}
             setSelectedApplication={setSelectedApplication}
-          />
+            />
           <ChartViewToggle
             isChartView={isChartView}
             setIsChartView={setIsChartView}
-          />
+            />
         </div>
         <div style={{height: '80%'}}>
 
@@ -155,17 +176,17 @@ const PermissionSelectionModal = ({selectedIndex, gridRef,dataAllPermissions,clo
           selectedPermissions={selectedPermissions}
           setSelectedPermissions={setSelectedPermissions}
           />
-
+          
         ) : (
           <PermissionForm
           currentAppAllPermissions={dataAllPermissions.find(
-              (ele: any) => ele.application_name === selectedApplication
-            )}
-            selectedApplication={selectedApplication}
-            selectedPermissions={selectedPermissions}
-            setSelectedPermissions={setSelectedPermissions}
-            />
+            (ele: any) => ele.application_name === selectedApplication
           )}
+          selectedApplication={selectedApplication}
+          selectedPermissions={selectedPermissions}
+          setSelectedPermissions={setSelectedPermissions}
+          />
+        )}
           </div>
         <div style={{display: 'flex', justifyContent: 'space-between', marginTop: '20px', gap: '10px'}}>
           <div>
@@ -187,6 +208,7 @@ const PermissionSelectionModal = ({selectedIndex, gridRef,dataAllPermissions,clo
           <VFButton
           style={{height: '3.5rem', fontSize: '1.2rem'}}
           themeUi={themeUi}
+          disabled={isApplyDisabled}
           onClick={() => {updatePermissions(selectedPermissions); closeModal()}}
           >Apply</VFButton>
           

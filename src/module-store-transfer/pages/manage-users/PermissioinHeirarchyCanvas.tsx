@@ -307,162 +307,186 @@ export default function PermissionHeirarchyCanvas({
         (ele: any) => ele.application_name === selectedApplication
       )
     );
-  }, [selectedApplication]);
+  }, [selectedApplication,dataAllPermissions]);
 
   const [opened, setOpened] = useState<any>([]);
 
   const [checked, setChecked] = useState<any>([]);
+  function createEdge(sourceId: string, targetId: string) {
+    return {
+      id: `${sourceId}-${targetId}`,
+      source: sourceId,
+      target: targetId,
+      selectable: false,
+      style: {
+        stroke: "#676565",
+        strokeDasharray: "5 5",
+        PointerEvents: "none",
+        cursor: "grab",
+      },
+    };
+  }
+const generateTreeNodesAndEdges = (
+  allNodes: any,
+  permissionType: string,
+  opened: number[]
+) => {
+  if (!allNodes) {
+    return { nodes: [], edges: [] };
+  }
+  const level1Keys = Object.keys(allNodes);
+  const level1: { id: string; key: string; index: number }[] = [];
+  const level2: { id: string; key: string; index: number }[] = [];
+  const level3: { id: string; key: string; index: number }[] = [];
+  const childrenMap = new Map<string, string[]>(); // <ParentID, ChildID[]>
 
-  const generateTreeNodesAndEdges = (allNodes: any) => {
-    const nodes: any[] = [];
-    const edges: any[] = [];
-    const positionX = 100;
-    const positionY = 0;
+  let l1Index = 0;
+  let l2Index = level1Keys.length;
+  let l3BaseIndex = -1; // Will be set after L2
+  
+  level1Keys.forEach((key, index) => {
+    const l1Id = `${index}_${key}`;
+    level1.push({ id: l1Id, key: key, index: index });
+    childrenMap.set(l1Id, []);
+    l1Index++;
+  });
 
-    const level1 = Object.keys(allNodes);
-    let level2: string[] = [];
-    let inIndex = level1.length;
-    level1.forEach((key, index) => {
-      const arr = Object.keys(allNodes[key]);
-      const newArr: string[] = [];
-      arr.forEach((item) => {
-        const val = `${index}_${key}>${inIndex}_${item}`;
-        newArr.push(val);
-        inIndex++;
-      });
-      level2 = [...level2, ...newArr];
+  level1.forEach((l1Node) => {
+    const arr = Object.keys(allNodes[l1Node.key]);
+    arr.forEach((item) => {
+      const l2Id = `${l1Node.id}>${l2Index}_${item}`;
+      level2.push({ id: l2Id, key: item, index: l2Index });
+      childrenMap.get(l1Node.id)!.push(l2Id);
+      childrenMap.set(l2Id, []);
+      l2Index++;
     });
-
-    const level3: string[] = [];
-    inIndex = level1.length;
-    let inIndex2 = level1.length + level2.length - 1;
-    level1.forEach((key, index) => {
-      const arr = Object.keys(allNodes[key]);
-
-      arr.forEach((item) => {
-        allNodes[key][item].forEach((ele: any) => {
-          if (permissionType === "location_permission") {
-            level3.push(
-              `${index}_${key}>${inIndex}_${item}>${inIndex2}_${
-                ele[permissionType.split("_")[0] + "_heirarchy_3"]
-              }`
-            );
-          } else {
-            level3.push(
-              `${index}_${key}>${inIndex}_${item}>${inIndex2}_${
-                ele[permissionType.split("_")[0] + "_hierarchy_3"]
-              }`
-            );
-          }
-          inIndex2++;
-        });
-        inIndex++;
+  });
+  l3BaseIndex = l1Index + level2.length;
+  let l3RelativeIndex = 0;
+  level1.forEach((l1Node) => {
+    childrenMap.get(l1Node.id)!.forEach((l2Id) => {
+      const l2Node = level2.find(n => n.id === l2Id)!;
+      const l3Items = allNodes[l1Node.key][l2Node.key];
+      
+      l3Items.forEach((ele: any) => {
+        const l3Prop =
+          permissionType === "location_permission"
+            ? "location_heirarchy_3"
+            : "product_hierarchy_3";
+        const l3Key = ele[l3Prop];
+        
+        const l3Index = l3BaseIndex + l3RelativeIndex;
+        
+        const l3Id = `${l2Id}>${l3Index}_${l3Key}`; 
+        
+        level3.push({ id: l3Id, key: l3Key, index: l3Index });
+        childrenMap.get(l2Id)!.push(l3Id);
+        l3RelativeIndex++;
       });
     });
-    const level1Gap = level3.length / level1.length;
+  });
+  
+  
+  const finalNodes: any[] = [];
+  const finalEdges: any[] = [];
+  
+  const START_X = 100;
+  const START_Y = 100;
+  const HORIZONTAL_GAP = 400;
+  const NODE_VERTICAL_SPACING = 100; // Vertical gap between nodes
+  const GROUP_VERTICAL_SPACING = 50;  // Extra gap between L1 groups
 
-    let index = 0;
-    let indexY = 0;
+  let currentY = START_Y;
 
-    level1.forEach((key) => {
-      const id = index + "_" + key;
-      nodes.push({
-        id: id,
-        type: "customNode",
-        position: {
-          x: positionX,
-          y: positionY + (indexY * level1Gap * 100 + 150),
-        },
-        data: { label: key, key: id, isOpen: false, index: index, level: 0 },
-      });
-      index++;
-      indexY++;
-    });
-    indexY = 0;
+  const positionCache = new Map<string, { y: number; yStart: number; yEnd: number }>();
 
-    level2.forEach((key) => {
-      const parts = key.split(">");
-      const parentId = parts[0];
-      const label = parts[1].split("_")[1];
-      if (opened[key.split("_")[0]] == 0) {
-        index++;
-        indexY++;
-        return;
+  function calculateNodePosition(nodeId: string, level: number) {
+    if (positionCache.has(nodeId)) {
+      return positionCache.get(nodeId)!;
+    }
+
+    const nodeInfo = 
+        level === 0 ? level1.find(n => n.id === nodeId) :
+        level === 1 ? level2.find(n => n.id === nodeId) :
+        level3.find(n => n.id === nodeId);
+        
+    if (!nodeInfo) return { y: 0, yStart: 0, yEnd: 0 };
+
+    const children = childrenMap.get(nodeId) || [];
+    const isOpened = opened[nodeInfo.index] === 1;
+
+    let yPosition: number;
+    let yStartSpan: number;
+    let yEndSpan: number;
+
+    if (children.length === 0 || !isOpened) {
+      yPosition = currentY;
+      yStartSpan = currentY;
+      yEndSpan = currentY;
+      
+      currentY += NODE_VERTICAL_SPACING;
+    } else {
+      const firstChildSpan = calculateNodePosition(children[0], level + 1);
+      yStartSpan = firstChildSpan.yStart;
+      yEndSpan = firstChildSpan.yEnd;
+      for (let i = 1; i < children.length; i++) {
+        const childSpan = calculateNodePosition(children[i], level + 1);
+        yEndSpan = childSpan.yEnd; // Update the end of the span
       }
-      nodes.push({
-        id: key,
-        type: "customNode",
-        position: { x: positionX + 400, y: positionY + indexY * 100 },
-        data: {
-          label: label,
-          key,
-          isOpen: false,
-          index: level1.length + indexY,
-          level: 1,
-        },
-      });
-      edges.push({
-        id: `${parentId}-${key}`,
-        source: key.split(">")[0],
-        target: key,
-        selectable: false,
-        style: { stroke: "#676565", strokeDasharray: "5 5", PointerEvents: 'none' , cursor: 'grab'},
-      });
-      index++;
-      indexY++;
-    });
-    indexY = 0;
+      
+      yPosition = yStartSpan + (yEndSpan - yStartSpan) / 2;
+    }
 
-    level3.forEach((key, index3) => {
-      const parts = key.split(">");
-      const parentId = parts[0] + ">" + parts[1];
-      const label = parts[2].split("_")[1];
-      if (
-        opened[parts[0].split("_")[0]] == 0 ||
-        opened[parts[1].split("_")[0]] == 0
-      ) {
-        index++;
-        indexY++;
-        return;
-      }
-      nodes.push({
-        id: key,
-        type: "customNode",
-        position: { x: positionX + 800, y: positionY + indexY * 100 },
-        data: {
-          label: label,
-          key,
-          isOpen: false,
-          index: level1.length + level2.length + index3,
-          level: 2,
-        },
-      });
-      edges.push({
-        id: `${parentId}-${key}`,
-        source: key.split(">")[0] + ">" + key.split(">")[1],
-        target: key,
-        selectable: false,
-        style: { stroke: "#676565", strokeDasharray: "5 5", PointerEvents: 'none' , cursor: 'grab'},
-      });
-      index++;
-      indexY++;
+    finalNodes.push({
+      id: nodeInfo.id,
+      type: "customNode",
+      position: { x: START_X + level * HORIZONTAL_GAP, y: yPosition },
+      data: {
+        label: nodeInfo.key,
+        key: nodeInfo.id,
+        isOpen: isOpened, // You can use this prop inside CustomNode
+        index: nodeInfo.index,
+        level: level,
+      },
     });
 
-    return { nodes, edges };
-  };
+    // Add edges for all visible children
+    if (isOpened) {
+      children.forEach(childId => {
+        finalEdges.push(createEdge(nodeId, childId));
+      });
+    }
 
+    const position = { y: yPosition, yStart: yStartSpan, yEnd: yEndSpan };
+    positionCache.set(nodeId, position);
+    return position;
+  }
+
+  level1.forEach(l1Node => {
+    calculateNodePosition(l1Node.id, 0);
+    currentY += GROUP_VERTICAL_SPACING;
+  });
+  
+  return { nodes: finalNodes, edges: finalEdges };
+};
+
+  const { user } = useUserData();
 
   const [nodes, setNodes] = React.useState<any>([]);
   const [edges, setEdges] = React.useState<any>([]);
 
   useEffect(() => {
-    if (checked && checked.length && opened && opened.length) {
-      const { nodes: generatedNodes, edges: generatedEdges } =
-        generateTreeNodesAndEdges(selectedAppAllPermissions?.[permissionType] || {});
-      setNodes(generatedNodes);
-      setEdges(generatedEdges);
-    }
-  }, [opened, checked, selectedAppAllPermissions, permissionType]);
+     if (checked && checked.length && opened && opened.length&& selectedAppAllPermissions ) {
+     const { nodes: generatedNodes, edges: generatedEdges } =
+     generateTreeNodesAndEdges( 
+     selectedAppAllPermissions[permissionType],
+     permissionType,
+     opened 
+     );
+     setNodes(generatedNodes);
+     setEdges(generatedEdges);
+     }
+     }, [opened, checked, selectedAppAllPermissions, permissionType]);
 
   useEffect(() => {
     if (
@@ -511,7 +535,7 @@ export default function PermissionHeirarchyCanvas({
         });
       });
 
-      setOpened(Array(level1.length + level2.length + level3.length).fill(1));
+      setOpened(Array(level1.length + level2.length + level3.length).fill(0));
       setChecked(Array(level1.length + level2.length + level3.length).fill(0));
     }
   }, [selectedAppAllPermissions, permissionType]);
