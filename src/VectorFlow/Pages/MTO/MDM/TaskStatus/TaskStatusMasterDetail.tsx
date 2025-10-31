@@ -224,7 +224,7 @@ const TaskStatusMasterDetail = (props:TaskStatusMasterDetailProps)=>{
                         <VFTaskStatusStepperWrapper gridFraction={gridFraction}>
                         {/* <VFTaskStatusStepperLabel></VFTaskStatusStepperLabel> */}
                             <VFStepper
-                                items={getStepperState({...approver, Requester: props.data.Requester, Approver: props.data.Approver[index], TaskStatus: props.data.TaskStatus})}
+                                items={getStepperState({...approver, Requester: props.data.Requester, Approver: props.data.Approvers[index], TaskStatus: props.data.TaskStatus})}
                                 dashWidth="500px"
                                 zoom={0.7}
                             />

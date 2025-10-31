@@ -9,8 +9,11 @@ import { CloseButton, FooterWrapper, ModalHeader, ModalWrapper } from './RunStat
 
 
 const StatusBarBottom = ({status,isRunEnabled=true, isGoToFinalResult,last_success_run, onGoToFinalResult, StartRun}: any) => {
-    const themeUi = useUserData().user.user.theme_ui;
+    const {user} = useUserData()
     const [isRunConfirm, setIsRunConfirm] = useState(false);
+    const themeUi = user?.user?.theme_ui; 
+    const feature_permission = user?.feature_permission || [];
+    const canTriggerRun = feature_permission.includes("Scheduler_Run_Trigger");
   return (
     <StatusBarWrapper>
         <VFOverlayModal parentSelector="#main-content" openModal={isRunConfirm}  >
@@ -59,12 +62,16 @@ const StatusBarBottom = ({status,isRunEnabled=true, isGoToFinalResult,last_succe
         
 
         <LeftSection>
-        <VFButton style={{fontSize: '1.1rem', height: '3.2rem', width: 'fit-content', padding: '4px 16px', display: 'flex', gap: '8px', alignItems: 'center', justifyContent:'center'}} themeUi={themeUi} onClick={() => {setIsRunConfirm(true)}} disabled={!isRunEnabled}>
+          {
+            canTriggerRun && 
+
+            <VFButton style={{fontSize: '1.1rem', height: '3.2rem', width: 'fit-content', padding: '4px 16px', display: 'flex', gap: '8px', alignItems: 'center', justifyContent:'center'}} themeUi={themeUi} onClick={() => {setIsRunConfirm(true)}} disabled={!isRunEnabled}>
             <span>
                 Run Now
             </span>
             <img src="/assets/img/scheduling/play.svg" alt="Run Now" style={{ width: '14px', height: '14px' }} />
         </VFButton>
+        }
         <VFButton style={{fontSize: '1.1rem', height: '3.2rem', width: 'fit-content', padding: '4px 16px', display: 'flex', gap: '8px', alignItems: 'center', justifyContent:'center'}} themeUi={themeUi} onClick={onGoToFinalResult} disabled={!isGoToFinalResult}>
             <span>
                 Go To Final Result

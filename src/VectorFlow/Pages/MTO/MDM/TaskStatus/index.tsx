@@ -36,6 +36,8 @@ const MTOTaskStatus = ()=>{
     const [currentMasterName,setCurrentMasterName] = useState<string>('')
     const [tempAgGridColDefs,setTempAgGridColDefs] = useState<ColDef[]>([])
     const [tempDownloadData,setTempDownloadData] = useState<boolean>(false);
+ 
+ 
     
     const tempAgGridProps:AgGridReactProps = {
         columnDefs:tempAgGridColDefs,
@@ -94,6 +96,8 @@ const MTOTaskStatus = ()=>{
     };
 
     const MTOToMTAFormat = (taskData: any, allUsers: any) => {
+        const allUserName = allUsers.map((allUser: any) => allUser.name);
+
 
         const newData: any = [];
         taskData
@@ -105,9 +109,12 @@ const MTOTaskStatus = ()=>{
                 newVal.PendingSince = convertDateFormat(val.co);
                 newVal.TaskName = val.tnm;
                 newVal.TaskStatus = val.std;
+                newVal.TaskStatus = val.std;
                 newVal.Requester = val.r_nm;
-                newVal.Approver = allUsers.map((allUser: any) => allUser.name);
-                newVal.Approvers = mapIdsToNames(String(val.approved_by), allUsers);
+                newVal.Approver = allUserName;
+                newVal.Approvers = val.std === "Approved" ?
+                    mapIdsToNames(String(val.approved_by), allUsers)
+                    : allUserName;
                 newVal.Aids = val.a_ids;
 
                 newData.push(newVal);
