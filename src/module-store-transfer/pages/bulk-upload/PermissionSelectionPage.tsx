@@ -154,6 +154,20 @@ const PermissionSelectionPage = ({
 
     const dataAllPermissions = dataPermissions?.data;
 
+    useEffect(() => {
+      if (!isFinalView) {
+        return;
+      }  
+      if (!gridRef.current?.api) {
+        return;
+      }
+      const hasErrors = validUserData.some((row:any) => 
+        row.error && 
+        (Array.isArray(row.error) ? row.error.length > 0 : !!row.error)
+      );
+      gridRef.current.api.setColumnsVisible(['error'], hasErrors);
+    }, [ isFinalView]); 
+
 
     const transformUserData=(inputUsers: any[])=> {
       const output: any = {
@@ -530,7 +544,7 @@ const PermissionSelectionPage = ({
         pinned: isFinalView?'left':undefined,
         suppressFloatingFilterButton: true,
         filter: isFinalView?"agMultiColumnFilter": false,
-        enablePivot: true,
+        enablePivot: false,
         valueFormatter: (params) => {
           if (isFinalView) {
             if (!params.value){
@@ -547,6 +561,7 @@ const PermissionSelectionPage = ({
           return "";
         },
         suppressFillHandle: true,
+        hide: isFinalView,
       },
       {
         headerName: "Sr.No",
@@ -597,6 +612,7 @@ const PermissionSelectionPage = ({
           setRowIndex: setRowIndex
         },
       },
+      
     ];
 
     const [isBulkActionEnabled, setIsBulkActionEnabled] = useState(false);
@@ -614,6 +630,7 @@ const PermissionSelectionPage = ({
     
       },
       enableFillHandle: true,
+      sideBar:false,
       defaultColDef: {
         flex: 1,
         resizable: true,
