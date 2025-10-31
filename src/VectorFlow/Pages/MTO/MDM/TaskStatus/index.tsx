@@ -109,7 +109,6 @@ const MTOTaskStatus = ()=>{
                 newVal.PendingSince = convertDateFormat(val.co);
                 newVal.TaskName = val.tnm;
                 newVal.TaskStatus = val.std;
-                newVal.TaskStatus = val.std;
                 newVal.Requester = val.r_nm;
                 newVal.Approver = allUserName;
                 newVal.Approvers = val.std === "Approved" ?
