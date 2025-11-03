@@ -137,7 +137,19 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
                   ...base,
                   maxHeight: 500,
                   overflowY: "auto",
-                  scrollbarWidth: "none",
+                  scrollbarWidth: "thin",
+                  scrollbarColor: "#888 transparent",
+
+                  "&::-webkit-scrollbar": {
+                    width: "6px",
+                  },
+                  "&::-webkit-scrollbar-thumb": {
+                    backgroundColor: "#888",
+                    borderRadius: "4px",
+                  },
+                  "&::-webkit-scrollbar-thumb:hover": {
+                    backgroundColor: "#555",
+                  },
                 }),
               }}
               placeholder="Location Type"
@@ -185,7 +197,19 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
                   ...base,
                   maxHeight: 500,
                   overflowY: "auto",
-                  scrollbarWidth: "none",
+                  scrollbarWidth: "thin",
+                  scrollbarColor: "#888 transparent",
+
+                  "&::-webkit-scrollbar": {
+                    width: "6px",
+                  },
+                  "&::-webkit-scrollbar-thumb": {
+                    backgroundColor: "#888",
+                    borderRadius: "4px",
+                  },
+                  "&::-webkit-scrollbar-thumb:hover": {
+                    backgroundColor: "#555",
+                  },
                 }),
               }}
               placeholder="Location Type"

@@ -409,7 +409,7 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
                 <img 
                   src="/assets/img/MTAVFMultiFilter/Error.svg" 
                   alt="error" 
-                  title={isRowComplete(column.value) ? "All fields are filled" : "Some fields are empty"}
+                  title={isRowComplete(column.value) ? "All fields are filled" : "Must select a column."}
                 />
               </IconWrapper>
 

@@ -14,7 +14,7 @@ import {
   useColorOptionStyles,
   useColorThemeStyles,
 } from "../../../../../hooks/useVFFilterContent";
-import { useFilterRows, stringOpertors } from "./useVFFilterContent";
+import { useFilterRows, stringOpertors, useRowCompletion } from "./useVFFilterContent";
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import { useUserData } from "../../../../../context";
 import { BPRFilter, BPRFilterState } from "../../../../../VectorFlow/types/BPR";
@@ -69,10 +69,7 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
     [rowId: number]: { column?: any; operation?: any; value?: any };
   }>({});
 
-  const isRowComplete = (rowId: number) => {
-    const row = rowSelections[rowId];
-    return row && row.operation && row.value && row.value.trim() !== "";
-  };
+  const {isRowComplete} = useRowCompletion(rowSelections);
 
   const [rowFilterIndexMap, setRowFilterIndexMap] = useState<
     Record<number, number>
@@ -501,7 +498,7 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
   if (!isInitialized) {
     return null;
   }
-  if (isSkuDataLoading) {
+  if (!isInitialized) {
     return <VFLoader />;
   }
   return (
@@ -576,6 +573,7 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
                   <img
                     src="/assets/img/MTAVFMultiFilter/Error.svg"
                     alt="error"
+                    title={isRowComplete(row.id) ? "All fields are filled" : "Must select a column."}
                   />
                 </IconWrapper>
                 <IconWrapper

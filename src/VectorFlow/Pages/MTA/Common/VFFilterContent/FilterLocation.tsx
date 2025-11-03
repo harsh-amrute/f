@@ -13,7 +13,7 @@ import {
   useColorThemeStyles,
   useThemeStyles,
 } from "../../../../../hooks/useVFFilterContent";
-import { useFilterRows, stringOpertors } from "./useVFFilterContent";
+import { useFilterRows, stringOpertors, useRowCompletion } from "./useVFFilterContent";
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import { useUserData } from "../../../../../context";
 import { useSelector } from "react-redux";
@@ -83,10 +83,7 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
     [rowId: number]: { column?: any; operation?: any; value?: any };
   }>({});
 
-  const isRowComplete = (rowId: number) => {
-    const row = rowSelections[rowId];
-    return row && row.operation && row.value && row.value.trim() !== "";
-  };
+  const {isRowComplete} = useRowCompletion(rowSelections);
 
   const [rowFilterIndexMap, setRowFilterIndexMap] = useState<
     Record<number, number>
@@ -499,7 +496,7 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
 
   if (!isInitialized) return null;
 
-  if (isLocationDataLoading) {
+  if (!isInitialized) {
     return <VFLoader />;
   }
 
@@ -569,6 +566,7 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
                   <img
                     src={"/assets/img/MTAVFMultiFilter/Error.svg"}
                     alt="error"
+                    title={isRowComplete(row.id) ? "All fields are filled" : "Must select a column."}
                   />
                 </IconWrapper>
                 <IconWrapper

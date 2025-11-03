@@ -18,6 +18,17 @@ interface SelectChangeParams {
   attributeName?: string;
 }
 
+interface RowData {
+  column?: any;
+  operation?: any;
+  value?: any;
+}
+
+interface RowSelections {
+  [rowId: number]: RowData;
+}
+
+
 export const useFilterRows = (initialCount = 1, maxRows = 5) => {
   const [filterRows, setFilterRows] = useState<FilterRow[]>(
     Array(initialCount)
@@ -132,9 +143,13 @@ export const availabilityFilterOptions = [
 ]
 
 export const horizonFilterOptions = [
-  { label: 'Start Date', value: 'StartDate'},
-  { label: 'EndDate', value: 'EndDate'},
+  { label: 'Start Date', value: 'StartDate' },
+  { label: 'EndDate', value: 'EndDate' },
 ]
+export const colorTypeFilterOptions = [
+  { value: "colorcount", label: "Color Count" },
+  { value: "colorage", label: "Color Age" },
+];
 
 export const getStartDate = (endDate: string): string => {
   const date = new Date(endDate);
@@ -207,4 +222,27 @@ export const useVFMultiFilter = ({
     getSelectedValues,
     setSelectedValues
   };
+};
+
+export const useRowCompletion = (rowSelections: RowSelections) => {
+  const isRowComplete = useCallback(
+    (rowId: number): boolean => {
+      const row = rowSelections[rowId];
+      if (!row) return false;
+      const hasColumn = !!row.column;
+      const hasOperation = !!row.operation;
+      if (
+        row.operation?.value === "hasvalue" ||
+        row.operation?.value === "hasnovalue"
+      ) {
+        return hasColumn && hasOperation;
+      }
+      const value = typeof row.value === "string" ? row.value.trim() : row.value;
+      const hasValue = value !== "" && value !== undefined && value !== null;
+      return hasColumn && hasOperation && hasValue;
+    },
+    [rowSelections]
+  );
+
+  return { isRowComplete };
 };

@@ -9,7 +9,7 @@ import {
 } from "./style";
 import Select from "react-select";
 import { useThemeStyles } from "../../../../../hooks/useVFFilterContent";
-import { useFilterRows, stringOpertors } from "./useVFFilterContent";
+import { useFilterRows, stringOpertors, useRowCompletion } from "./useVFFilterContent";
 import { useUserData } from "../../../../../context";
 import { useGetUIConfigData } from "../../../../Services/MTA/Common/UIConfig";
 import { UIColumnConfigName } from "../../../../../helpers/Enum";
@@ -54,10 +54,7 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
   const commonFilterKeywords = ["skulocattr", "skuattr", "locattr"];
   const isUpdatingFromInternal = useRef(false);
 
-  const isRowComplete = (rowId: number) => {
-    const row = rowSelections[rowId];
-    return row && row.operation && row.value && row.value.trim() !== "";
-  };
+  const {isRowComplete} = useRowCompletion(rowSelections);
 
   useEffect(() => {
     const loadAttributes = async () => {
@@ -332,6 +329,7 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
                 <img
                   src={"/assets/img/MTAVFMultiFilter/Error.svg"}
                   alt="error"
+                  title={isRowComplete(row.id) ? "All fields are filled" : "Must select a column."}
                 />
               </IconWrapper>
               <IconWrapper
