@@ -563,19 +563,22 @@ const getFilterData = async () => {
     return a;
 
   };
+
   const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
   const disabledFOLHorizonDate = (current: Date) => {
     if (selectedAction?.value !== "BFH") return false;
-
+ 
     const horizonDateStr = getSelectedCCRDate(); //fol ka date (2025-09-10)
     if (!horizonDateStr) return false;
-
+ 
     const horizonDate = new Date(horizonDateStr);
-
+ 
     return current >= today && current <= horizonDate;
   };
 
+ 
   const currentYear = new Date().getFullYear();
   const maxAllowedDate = new Date(currentYear + 3, 11, 31);
  
