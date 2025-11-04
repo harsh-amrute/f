@@ -14,12 +14,12 @@ export const listMenuParent: any = [
         url: "/profile",
         role: ["IST Admin", "Admin"],
       },
-      // {
-      //   name: "navbar.listMenuParent.userManagement.analytics_usage",
-      //   img: "/assets/img/nav/arrow_down.svg",
-      //   url: "",
-      //   role: ["IST Admin", "Admin"],
-      // },
+      {
+        name: "Login Audit Report",
+        img: "/assets/img/nav/arrow_down.svg",
+        url: "/login-audit-report",
+        role: ["IST Admin", "Admin"],
+      },
       // {
       //   name: "navbar.listMenuParent.userManagement.issueLogs",
       //   img: "/assets/img/nav/arrow_down.svg",
