@@ -48,7 +48,7 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
     const MTAVFMultiFilter = useSelector((state: RootState) => state.mta.mtaVFMultiFilter);
     let payloadString = ""
     console.log("VVVV",MTAVFMultiFilter);
-       const onGetAnalyticsData = async()=>{
+    const onGetAnalyticsData = async()=>{
         const pathname:string = location.pathname
         if(location.pathname==='/mta/supply-chain-intelligence-hub/planning'){
             if(currentCategory!==""){
