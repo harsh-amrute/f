@@ -319,7 +319,7 @@ const useAdd=()=>{
           const submittedRecordsCount = totalRecords - errorRowData.length - conflictCount
 
           if(submittedRecordsCount === totalRecords){
-            notifySuccess("Addition Successful")
+            notifySuccess("Added Successfully")
           }
 
           else if(errorRowData.length > 0 || conflictCount > 0){
@@ -338,7 +338,7 @@ const useAdd=()=>{
               notifyError(`Submitted ${submittedRecordsCount} records out of ${totalRecords}. ${conflictCount} records have conflicts. `)
             }
           }
-          else notifySuccess("Addition Successful")
+          else notifySuccess("Added Successfully")
           dispatch(UPDATE_PROGRESS_STATE('submitted'));
           dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
           if(draftID.length > 0){

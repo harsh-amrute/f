@@ -7,7 +7,10 @@ export const chartParams1 = {
         Xaxis:'Date',
         Yaxis:'No Of SKU-Locations'
     },
-    palette:{},
+    palette:{
+        fills: ['#DA3535', '#000000', '#BFBFBF'],
+        strokes: ['#ffffff', '#ffffff', '#ffffff'],
+    },
     legend: {
         enabled:true,
         position: 'bottom',
