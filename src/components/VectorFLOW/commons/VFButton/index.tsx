@@ -3,7 +3,7 @@ import { SCButton, TooltipText } from "./styles"
 import React, { CSSProperties, ReactNode } from 'react';
 
 interface VFButtonProps {
-    onClick: () => void,
+    onClick: any ,
     themeUi: string,
     disabled?: boolean,
     width?: number,

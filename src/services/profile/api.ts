@@ -64,4 +64,12 @@ export namespace MainService {
   export const getHeadersData = async () => {
     return await axios.get(`${API_USER}/get-headers-data/`)
   }
+
+  export const postUsersDataForValidation = async (data:any)=>{
+    return await axios.post(`${API_USER}/bulkUploadUsers/`, data)
+  }
+
+  export const postBulkUploadUsers = async (data:any)=>{
+    return await axios.post(`${API_USER}/bulkUsersRegister/`, data)
+  }
 }

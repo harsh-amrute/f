@@ -5,11 +5,18 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import './styles.css'
 import { useUserData } from "../../../../../context";
+import { FillOperationParams } from "ag-grid-enterprise";
 
 interface VFTableProps extends AgGridReactProps {
   height?: string;
   disableZoomScaling?: boolean;
   hideStatusBar?: boolean; 
+  cellSelection?: {
+    handle: {
+      mode: string;
+      setFillValue: (params: FillOperationParams) => void;
+    };
+  };
 }
 
 const VFTable = forwardRef((props: VFTableProps, ref: any) => {

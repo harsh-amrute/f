@@ -231,6 +231,7 @@ const lazyLoad = (children?: React.ReactNode) => {
     "/mto/master-data-management/task-status",
     "/mto/master-data-management/task-pending",
     "/mto/master-data-management/data-modification-history",
+    '/profile/bulk-upload',
     "/mto/production/scheduling"
   ]
 

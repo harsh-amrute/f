@@ -12,7 +12,7 @@ type CircularProgressProps = {
 const CircularProgress: React.FC<CircularProgressProps> = ({
   size,
   progress,
-  strokeWidth = 15,
+  strokeWidth = 10,
   color = "#bd2c84",
   bgColor = "#eee",
 }) => {
