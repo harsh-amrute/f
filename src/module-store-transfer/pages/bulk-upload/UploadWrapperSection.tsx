@@ -74,7 +74,6 @@ function UploadWrapperSection({
   }, [isSuccess]);
 
   const handleUploadClick = async () => {
-    console.log("also here");
     setProgress(0);
 
     if (!file) {
