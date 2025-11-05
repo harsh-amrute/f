@@ -26,10 +26,10 @@ import { useTranslation } from "react-i18next";
 // import { dataListRoles } from "./listRoles";
 import { generateRolesObject } from '../../../helpers/utils';
 import _ from 'lodash'
-import VFModalCard from "../../../components/VectorFLOW/commons/VFModalCard";
 import { useNavigate } from "react-router";
 import { notifyError } from "../../../helpers/notify";
 import { APPLICATION_NAMES } from "../../../helpers/constants";
+import { useUserData } from "../../../context";
 
 
 interface ManageUsersProps{
@@ -93,6 +93,10 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   const [storePermission,setStorePermission] = useState([]);
   const [currentItem,setCurrentItem] = useState();
   const [isEditUser,setIsEditUser] = useState<boolean | undefined>()
+
+  const {user} = useUserData()
+  const feature_permission = user?.feature_permission || [];
+  const bulkUploadEnabled = feature_permission.includes("Bulk_upload");
 
   const isCheckBoxRef = useRef<any>({
     isPrdCheck: {},
@@ -446,7 +450,10 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
                   icon="/assets/img/profile/icon_plus.svg"
                 />
               </SCItemBtn>
-              {/* @TODO-BulkUpload add this in envConfiguration */}
+             
+             {
+              bulkUploadEnabled &&
+
                 <SCItemBtn>
                   <ButtonOutlineIcon
                     text={t("profile.tabContent.manageUsers.button.bulkUpload")}
@@ -454,11 +461,12 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
                       themeUi === "REGALBLAZE"
                         ? "icon_upload_yellow"
                         : "icon_upload"
-                    }.svg`}
-                    disabled={false}
-                    onClick={handleClickBulkUpload}
-                  />
+                        }.svg`}
+                        disabled={false}
+                        onClick={handleClickBulkUpload}
+                        />
                 </SCItemBtn>
+                      }
             
             </SCSubTitlePadItem>
           </SCSubTitlePad>
