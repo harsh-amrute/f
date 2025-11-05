@@ -5,11 +5,10 @@ const useColDef = () => {
     const groupedColDefsRef = useRef<any>(null);
 
 
-    const getColDef = (response : any) =>{
+    const getColDef = (response: any) => {
         response.data.data?.forEach((row : any) =>{
             colDefMap.current.set(row.cc , { hd: row.hd, scc: row.scc })
         })
-    
     }
 
     const getGroupedColDef = (response: any) => {

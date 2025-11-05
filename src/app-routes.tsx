@@ -87,8 +87,9 @@ import OrderAllocationReport from './VectorFlow/Pages/MTA/SupplyChainIntelligenc
 import TotalRequirementReport from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/TotalRequirementReport'
 import BulkUploadPage from './module-store-transfer/pages/bulk-upload'
 import ElephantOrder from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/ElephantOrders'
-import Scheduling from './VectorFlow/Pages/MTO/Scheduling'
+import Scheduling from './VectorFlow/Pages/MTO/Production/Scheduling'
 import ManageEnvConfig from './components/VectorFLOW/layouts/VectorAdmin/ManageEnvConfig'
+import FutureOrderLoadChart from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/FutureOrderLoadChart'
 import ManagePermissions from './components/VectorFLOW/layouts/VectorAdmin/ManagePermissions'
 import ManageUIReportConfig from './components/VectorFLOW/layouts/VectorAdmin/ManageUIReportConfig'
 import ManageUIMDMConfig from './components/VectorFLOW/layouts/VectorAdmin/ManageUIMDMConfig'
@@ -168,6 +169,10 @@ const lazyLoad = (children?: React.ReactNode) => {
     '/mto/procurement/insights-and-trends/rmpm-expediting-rm-suppliers',
     '/mto/production-planning-scheduling/enquiry-response',
     '/mto/production-planning-scheduling/insight-and-trends/bm-trends',
+
+    '/mto/production-planning-scheduling/insight-and-trends/future-order-load-chart',
+
+
     '/mto/production-planning-scheduling/deptwise-bm-report',
     '/mto/production-planning-scheduling/insight-and-trends/stpl-full-kits',
     '/mto/production-planning-scheduling/full-kit-assignment',
@@ -195,6 +200,8 @@ const lazyLoad = (children?: React.ReactNode) => {
     '/mto/manufacturing-intelligence-hub/delivery-performance/otif-analysis',
     '/mto/manufacturing-intelligence-hub/delivery-performance/ot-and-if-analysis',
     '/mto/manufacturing-intelligence-hub/delivery-performance/lead-time',
+    '/mto/manufacturing-intelligence-hub/future-order-load-chart',
+
 
     '/mto/manufacturing-intelligence-hub/congestion-analysis/elapsed-time',
     '/mto/manufacturing-intelligence-hub/congestion-analysis/orders-at-risk',
@@ -224,9 +231,8 @@ const lazyLoad = (children?: React.ReactNode) => {
     "/mto/master-data-management/task-status",
     "/mto/master-data-management/task-pending",
     "/mto/master-data-management/data-modification-history",
-    "/scheduling",
-    '/profile/bulk-upload'
-  
+    '/profile/bulk-upload',
+    "/mto/production/scheduling"
   ]
 
   const {user: myUser} = useUserData();
@@ -235,7 +241,6 @@ const lazyLoad = (children?: React.ReactNode) => {
   const newUrlPermiss = [...authenPage, ...urlPermissionArr]
 
   const urlCurrent = window.location.pathname
-
 
   if (urlAllPage.includes(urlCurrent)) {
     if (newUrlPermiss.includes(urlCurrent)) {
@@ -834,6 +839,20 @@ export const initRoutes = (): RouteObject[] => {
         ...getStoreTransferModuleRoutes()
       ]
     },
+
+    {
+      path: '/mto/production-planning-scheduling/insight-and-trends/future-order-load-chart',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<FutureOrderLoadChart />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+
+
     {
       path: '/mto/production-planning-scheduling/insight-and-trends/stpl-full-kits',
       element: <AppLayout />,
@@ -1177,6 +1196,16 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
+      path: '/mto/manufacturing-intelligence-hub/future-order-load-chart',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<FutureOrderLoadChart />)
+        }
+      ]
+    },
+    {
       path: '/mto/manufacturing-intelligence-hub/delivery-performance/ot-and-if-analysis',
       element: <AppLayout />,
       children: [
@@ -1317,7 +1346,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/scheduling',
+      path: '/mto/production/scheduling',
       element: <AppLayout />,
       children: [
         {

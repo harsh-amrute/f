@@ -119,6 +119,7 @@ const BreadCrumb = () => {
   if (location.pathname === '/mto/manufacturing-intelligence-hub/congestion-analysis/order-balance') return <span>Manufacturing Intelligence Hub <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan>Congestion Analysis / Order Balance</BoldSpan></span>
 
 
+  if (location.pathname === '/mto/manufacturing-intelligence-hub/future-order-load-chart') return <span>Manufacturing Intelligence Hub <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan>Future Order Load Chart</BoldSpan></span>
 
 
 
@@ -187,6 +188,12 @@ const BreadCrumb = () => {
 
   if (location.pathname === '/mto/manufacturing-intelligence-hub/improvement-areas/resource-wip-profile') return <span>Manufacturing Intelligence Hub <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan>Improvement Areas / Resource Utilization & WIP Profile</BoldSpan></span>
 
+
+  if( location.pathname==='/mto/production/scheduling' && location.search==='?page=ResourceView') return <span>Production Planning & Scheduling<img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan>Scheduling / Resource View</BoldSpan></span>
+  if( location.pathname==='/mto/production/scheduling' && location.search==='?page=JobView') return <span>Production Planning & Scheduling<img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan>Scheduling / Job View</BoldSpan></span>
+  if( location.pathname==='/mto/production/scheduling' && location.search==='?page=GridViewR') return <span>Production Planning & Scheduling<img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan>Scheduling / GridView - Resource List</BoldSpan></span>
+  if( location.pathname==='/mto/production/scheduling' && location.search==='?page=GridViewJ') return <span>Production Planning & Scheduling<img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan>Scheduling / GridView - Job List</BoldSpan></span>
+  if( location.pathname==='/mto/production/scheduling') return <span>Production Planning & Scheduling<img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan>Scheduling / Download-Upload Template</BoldSpan></span>
 
 
 

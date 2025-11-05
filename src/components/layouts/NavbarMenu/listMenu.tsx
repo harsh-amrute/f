@@ -549,7 +549,7 @@ export const listMenuParent: any = [
     app_id : 3,
     lp_img : "/assets/img/Prod-icon.svg",
     rp_img : "/assets/img/Prod-icon1.svg",
-    url: "/mto/production-planning-scheduling/deptwise-bm-report",
+    url: "/mto/production-planning-scheduling/enquiry-response",
     status: false,
     role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater", "BMReportManager","MasterScheduler"],
     avoidHeader: true,
@@ -557,7 +557,8 @@ export const listMenuParent: any = [
       {
         name: "navbar.listMenuParent.prodAndPlanningScheduling.title",
         img: "/assets/img/nav/prod-plan-icon",
-        url: "/mto/production-planning-scheduling/deptwise-bm-report", role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater", "BMReportManager", "MasterScheduler"],
+        url: "/mto/production-planning-scheduling/enquiry-response", 
+        role: [],
         child: [
           {
             name: "navbar.listMenuParent.prodAndPlanningScheduling.enquiryResponse",
@@ -604,6 +605,20 @@ export const listMenuParent: any = [
         ]
       },
       {
+        name: "navbar.listMenuParent.prodAndPlanningScheduling.Scheduling",
+        img: "/assets/img/nav/arrow_down.svg",
+        url: "",
+        role: [],
+        child: [
+          {
+            name: "Scheduling",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/mto/production/scheduling",
+            role: [],
+          },
+        ]
+      },
+      {
         name: "navbar.listMenuParent.prodAndPlanningScheduling.insightAndTrends",
         img: "/assets/img/nav/arrow_down.svg",
         url: "",
@@ -613,6 +628,12 @@ export const listMenuParent: any = [
             name: "BM Trends",
             img: "/assets/img/nav/arrow_down.svg",
             url: "/mto/production-planning-scheduling/insight-and-trends/bm-trends",
+            role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
+          },
+          {
+            name: "Future Order Load",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: '/mto/production-planning-scheduling/insight-and-trends/future-order-load-chart',
             role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
           },
           {
@@ -852,7 +873,7 @@ export const listMenuParent: any = [
             img: "/assets/img/nav/arrow_down.svg",
             url: '/mto/manufacturing-intelligence-hub/delivery-performance/lead-time',
             role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
-          }
+          },
 
         ],
 
@@ -951,6 +972,20 @@ export const listMenuParent: any = [
             url: '/mto/manufacturing-intelligence-hub/improvement-areas/resource-wip-profile',
             role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
           },
+        ]
+      },
+      {
+        name: "navbar.listMenuParent.manufacturingHub.futureorderloadchart",
+        img: "/assets/img/nav/arrow_down.svg",
+        url: "",
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+        child: [
+          {
+            name: "navbar.listMenuParent.manufacturingHub.futureorderloadchart",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: '/mto/manufacturing-intelligence-hub/future-order-load-chart',
+            role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
+          }
         ]
       }
     ],

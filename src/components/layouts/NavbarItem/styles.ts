@@ -122,7 +122,7 @@ export const SCIconMenu = styled.img<{ themeUi: string; isHide: boolean }>`
   position: absolute;
   right: -24px;
   width: 40px;
-  z-index:20;
+  z-index:300;
   border: ${(props) =>
     props.themeUi === "REGALBLAZE" ? "unset" : "5px solid #f9f9f9"};
   border-radius: 50%;
