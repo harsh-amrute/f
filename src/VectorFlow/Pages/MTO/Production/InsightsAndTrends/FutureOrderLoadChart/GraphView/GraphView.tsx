@@ -7,7 +7,7 @@ import VFFloatingTab from "../../../../../../../components/VectorFLOW/commons/VF
 import { MyFutureOrderTabsFix } from "../styles";
 import CustomLegend from "../../../../../../../VectorFlow/Pages/MTO/Common/CustomLegend/index";
 
-const GraphView = ({Viewtabs, currView, setCurrView, selectedCCR, horizonData, graphData, cwl, selectedAction, currTab }: any) => {
+const GraphView = ({ Viewtabs, currView, setCurrView, selectedCCR, horizonData, graphData, cwl, selectedAction, currTab }: any) => {
   
   const [cwlValue, setCwlValue] = useState(0);
   const [selectedCCRHorizonDate, setSelectedCCRHorizonDate] = useState<any>('');
@@ -148,10 +148,10 @@ const GraphView = ({Viewtabs, currView, setCurrView, selectedCCR, horizonData, g
         };
       }
   
-      if (currView === "weekly" || currView === "monthly") {
+        if (currView === "weekly" || currView === "monthly") {
         return {
           date: item.date,
-          load: item.load, 
+          load: index===0? ( item.load - graphData.pastorder_load ): item.load, //item.load, 
           holiday: item.is_holiday,
           past: index === 0 ? graphData.pastorder_load : "", 
           limit: cwlValue,

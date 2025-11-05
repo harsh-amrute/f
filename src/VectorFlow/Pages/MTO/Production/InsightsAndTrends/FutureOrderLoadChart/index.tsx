@@ -148,7 +148,13 @@ const FutureOrderLoadChart = () => {
     setSelectedAction(option);
   }
   
-
+  useEffect(() => {
+    if (selectedCCR && selectedAction && fromDate && toDate) {
+      setFromDate('')
+      setToDate('')
+    }
+  }, [selectedAction]);
+  
 
   const setColumnDef = async () => {
     try {
@@ -279,7 +285,7 @@ const FutureOrderLoadChart = () => {
           transformedData = transformedData.map((item: any, index: number) => {          
             return {
 
-              ccr: item.ccr_name,
+              ccr: item.ccr,
               load: index===0 ? pastOrderLoad: item.load,
               tag: index === 0 ? 'Past Scheduling' : item.tag , 
               date: item.date || new Date().toLocaleDateString("en-US")
@@ -563,19 +569,22 @@ const getFilterData = async () => {
     return a;
 
   };
+
   const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
   const disabledFOLHorizonDate = (current: Date) => {
     if (selectedAction?.value !== "BFH") return false;
-
+ 
     const horizonDateStr = getSelectedCCRDate(); //fol ka date (2025-09-10)
     if (!horizonDateStr) return false;
-
+ 
     const horizonDate = new Date(horizonDateStr);
-
+ 
     return current >= today && current <= horizonDate;
   };
 
+ 
   const currentYear = new Date().getFullYear();
   const maxAllowedDate = new Date(currentYear + 3, 11, 31);
  
