@@ -148,7 +148,13 @@ const FutureOrderLoadChart = () => {
     setSelectedAction(option);
   }
   
-
+  useEffect(() => {
+    if (selectedCCR && selectedAction && fromDate && toDate) {
+      setFromDate('')
+      setToDate('')
+    }
+  }, [selectedAction]);
+  
 
   const setColumnDef = async () => {
     try {
@@ -279,7 +285,7 @@ const FutureOrderLoadChart = () => {
           transformedData = transformedData.map((item: any, index: number) => {          
             return {
 
-              ccr: item.ccr_name,
+              ccr: item.ccr,
               load: index===0 ? pastOrderLoad: item.load,
               tag: index === 0 ? 'Past Scheduling' : item.tag , 
               date: item.date || new Date().toLocaleDateString("en-US")
