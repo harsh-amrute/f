@@ -46,8 +46,41 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
     // const { date: lastRunDate } = useGetlastRunData()
     const {mutateAsync:getAnalyticsData,isLoading} = useGetAnalyticsData()
     const MTAVFMultiFilter = useSelector((state: RootState) => state.mta.mtaVFMultiFilter);
+    let payloadString = ""
     console.log("VVVV",MTAVFMultiFilter);
-    
+       const onGetAnalyticsData = async()=>{
+        const pathname:string = location.pathname
+        if(location.pathname==='/mta/supply-chain-intelligence-hub/planning'){
+            if(currentCategory!==""){
+                switch(currentCategory){
+                    case "GITFromParent":
+                        payloadString = "gitparent"
+                        break
+                    case "GITToChild":
+                        payloadString = currentTab==="locationWise" ? "gitchildlocation" : "gitchildtransporter"
+                        break
+                    case "ExpediteFromParent":
+                        payloadString = "expediteparent"
+                        break
+                    case "ExpediteToChild":
+                        payloadString = "expeditechild"
+                        break
+                    case "ExcessInventory":
+                        payloadString = "excessinventory"
+                        break
+                    case "OrderFulfillment":
+                        payloadString = "orderfulfillment"
+                        break
+                    default:
+                        return
+                }
+            }
+            else{
+                payloadString = "planning"
+            }
+           
+        }
+        else payloadString = routerToAnalyticsStringMap[pathname]
 
     const {user} = useUserData()
 
@@ -94,10 +127,9 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
             notifyLoader("Loading Analytics Data")
             const rowData =await  getAnalyticsData({
                 id: 1,
-                name: "",
+                name: payloadString,
                 fields: [],
                 filters:filter,
-         
             })
             toast.dismiss()
             notifySuccess("Analytics Loaded Successfully")
