@@ -41,5 +41,6 @@ export interface MTAStore{
         currentView:string
     },
     lastRunDate:string,
-    EnvConfig:any
+    EnvConfig:any,
+    mtaVFMultiFilter:any
 }
