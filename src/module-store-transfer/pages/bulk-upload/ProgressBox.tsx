@@ -4,12 +4,13 @@ import CircularProgress from './CircularProgress'
 
 interface ProgressBoxProps {
     label : string;
+    progress: number;
 }
 
-function ProgressBox({label} : ProgressBoxProps) {
+function ProgressBox({label, progress} : ProgressBoxProps) {
   return (
     <ProgressBoxWrapper>
-        <CircularProgress size={130} progress={75} />
+        <CircularProgress size={120} progress={progress} />
         <LabelText>{label}</LabelText>
     </ProgressBoxWrapper>
   )
