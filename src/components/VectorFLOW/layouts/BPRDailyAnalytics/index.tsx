@@ -45,42 +45,8 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
     // const activeReportData = useSelector((state: RootState) => state.mta.activeReportData);
     // const { date: lastRunDate } = useGetlastRunData()
     const {mutateAsync:getAnalyticsData,isLoading} = useGetAnalyticsData()
+    const {currentCategory,currentTab,currentView} = useSelector((state:RootState)=>state.mta.planning)
     const MTAVFMultiFilter = useSelector((state: RootState) => state.mta.mtaVFMultiFilter);
-    let payloadString = ""
-    console.log("VVVV",MTAVFMultiFilter);
-    const onGetAnalyticsData = async()=>{
-        const pathname:string = location.pathname
-        if(location.pathname==='/mta/supply-chain-intelligence-hub/planning'){
-            if(currentCategory!==""){
-                switch(currentCategory){
-                    case "GITFromParent":
-                        payloadString = "gitparent"
-                        break
-                    case "GITToChild":
-                        payloadString = currentTab==="locationWise" ? "gitchildlocation" : "gitchildtransporter"
-                        break
-                    case "ExpediteFromParent":
-                        payloadString = "expediteparent"
-                        break
-                    case "ExpediteToChild":
-                        payloadString = "expeditechild"
-                        break
-                    case "ExcessInventory":
-                        payloadString = "excessinventory"
-                        break
-                    case "OrderFulfillment":
-                        payloadString = "orderfulfillment"
-                        break
-                    default:
-                        return
-                }
-            }
-            else{
-                payloadString = "planning"
-            }
-           
-        }
-        else payloadString = routerToAnalyticsStringMap[pathname]
 
     const {user} = useUserData()
 
@@ -123,7 +89,40 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
 
     // }
 
-        const onGetAnalyticsData = async(filter:any)=>{
+    const onGetAnalyticsData = async(filter:any)=>{
+        const pathname:string = location.pathname;
+        let payloadString = "";
+        if(location.pathname==='/mta/supply-chain-intelligence-hub/planning'){
+            if(currentCategory!==""){
+                switch(currentCategory){
+                    case "GITFromParent":
+                        payloadString = "gitparent"
+                        break
+                    case "GITToChild":
+                        payloadString = currentTab==="locationWise" ? "gitchildlocation" : "gitchildtransporter"
+                        break
+                    case "ExpediteFromParent":
+                        payloadString = "expediteparent"
+                        break
+                    case "ExpediteToChild":
+                        payloadString = "expeditechild"
+                        break
+                    case "ExcessInventory":
+                        payloadString = "excessinventory"
+                        break
+                    case "OrderFulfillment":
+                        payloadString = "orderfulfillment"
+                        break
+                    default:
+                        return
+                }
+            }
+            else{
+                payloadString = "planning"
+            }
+        }
+        else payloadString = routerToAnalyticsStringMap[pathname]
+        try{
             notifyLoader("Loading Analytics Data")
             const rowData =await  getAnalyticsData({
                 id: 1,
@@ -133,15 +132,19 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
             })
             toast.dismiss()
             notifySuccess("Analytics Loaded Successfully")
-            console.log("ROW DATA",JSON.parse(rowData.data.data));
+            console.log("ROW DATA",rowData);
             
             if(rowData.data.data) {
-                const parsedData = JSON.parse(rowData.data.data);
-                setRowData(transformAnalyticsData(parsedData));
+                setRowData(transformAnalyticsData(rowData.data.data));
             }
             else setRowData([])
-            
         }
+        catch (Exception:any){
+            toast.dismiss()
+            toast.error("Error in loading Analytics Data")
+            setRowData([])
+        }
+    }
     useEffect(()=>{
         onGetAnalyticsData(MTAVFMultiFilter)
     },[MTAVFMultiFilter])
@@ -197,7 +200,7 @@ console.log("HIIIIII",rowData);
                         colDefs.map((colDef:ColDef)=>{
                             if(colDef.colId==='color'){
                                 return(
-                                    <BPRDailyAnalyticsTableHeader style={{width:25}}/>
+                                    <BPRDailyAnalyticsTableHeader style={{width:110}}/>
                                 )
                             }
                             return(
