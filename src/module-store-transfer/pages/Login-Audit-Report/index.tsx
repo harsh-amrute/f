@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import VFTable from "../../../VectorFlow/Pages/MTO/Common/VFTable";
-import { ColDef } from "ag-grid-community";
 import MTOActionToolBar from "../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
 import { GridFilterWrapper, TextBtn } from "../../../VectorFlow/Pages/MTO/Common/VFPagination/styles";
 import { useUserData } from "../../../context";
@@ -32,7 +31,7 @@ const AuditReport = () => {
     getLoginDetails();
   }, []); 
 
-  const [columnDefs] = useState<ColDef[]>([
+  const [columnDefs] = useState<any>([
     {
       headerName: "Username",
       field: "username", // Matches API
