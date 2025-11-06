@@ -5,6 +5,7 @@ import { GridFilterWrapper, TextBtn } from "../../../VectorFlow/Pages/MTO/Common
 import { useUserData } from "../../../context";
 import { useLoginAuditReport } from "../../../VectorFlow/Services/MTO/Login-Audit-Report";
 import OverlayLoader from "../../../VectorFlow/Pages/MTO/Common/Loader";
+import { TableWrapper } from "./styles";
 
 const AuditReport = () => {
   const { mutateAsync: getLoginAuditReport, isLoading } = useLoginAuditReport();
@@ -18,7 +19,6 @@ const AuditReport = () => {
   const getLoginDetails = async () => {
     try {
       const response = await getLoginAuditReport();
-      console.log("Login Audit Report Data:", response.data);
       
    
       setRowData(response.data.data); 
@@ -114,15 +114,15 @@ const AuditReport = () => {
         isExcelExport
         onExcelExportClick={ExcelExport}
       />
+      <TableWrapper>
       <VFTable
         ref={gridRef}
         columnDefs={columnDefs}
         rowData={rowData}
         pagination={true}
         paginationPageSize={10}
-        height="500px"
         sideBar={false}
-        style={{ marginTop: '10px' }}
+        height="100%"
         statusBar={{
           statusPanels: [
             { statusPanel: CustomStatusPanel, align: "left" },
@@ -130,17 +130,18 @@ const AuditReport = () => {
           ],
         }}
         onGridReady={(params: any) => {
-            params.api.addEventListener('filterChanged', () => {
-                const filterModel = params.api.getFilterModel();
-                if (Object.keys(filterModel).length > 0) {
-                    setIsDisabled(false);
-                } else {
-                    setIsDisabled(true);
-                }
-            });
-            
+          params.api.addEventListener('filterChanged', () => {
+            const filterModel = params.api.getFilterModel();
+            if (Object.keys(filterModel).length > 0) {
+              setIsDisabled(false);
+            } else {
+              setIsDisabled(true);
+            }
+          });
+          
         }}
-      />
+        />
+        </TableWrapper>
     </>
   );
 };

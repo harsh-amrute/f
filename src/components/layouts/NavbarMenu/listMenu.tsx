@@ -18,7 +18,6 @@ export const listMenuParent: any = [
         name: "Login Audit Report",
         img: "/assets/img/nav/arrow_down.svg",
         url: "/login-audit-report",
-        role: ["IST Admin", "Admin"],
       },
       // {
       //   name: "navbar.listMenuParent.userManagement.issueLogs",
