@@ -110,11 +110,11 @@ const AuditReport = () => {
   return (
     <>
     {isLoading && <OverlayLoader/>}
+    <TableWrapper>
       <MTOActionToolBar
         isExcelExport
         onExcelExportClick={ExcelExport}
       />
-      <TableWrapper>
       <VFTable
         ref={gridRef}
         columnDefs={columnDefs}

@@ -17,7 +17,6 @@ interface VFTableProps extends AgGridReactProps {
       setFillValue: (params: FillOperationParams) => void;
     };
   };
-  style?: any;
 }
 
 const VFTable = forwardRef((props: VFTableProps, ref: any) => {
@@ -94,7 +93,6 @@ const VFTable = forwardRef((props: VFTableProps, ref: any) => {
       role="table"
       height={props.height || "auto"}
       disableZoomScaling={props.disableZoomScaling || false}
-      style={props.style}
     >
       <AgGridReact
         ref={ref}
