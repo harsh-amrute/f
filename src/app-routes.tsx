@@ -94,6 +94,7 @@ import ManagePermissions from './components/VectorFLOW/layouts/VectorAdmin/Manag
 import ManageUIReportConfig from './components/VectorFLOW/layouts/VectorAdmin/ManageUIReportConfig'
 import ManageUIMDMConfig from './components/VectorFLOW/layouts/VectorAdmin/ManageUIMDMConfig'
 import { useUserData } from './context'
+import AuditReport from './module-store-transfer/pages/Login-Audit-Report'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children?: React.ReactNode) => {
@@ -114,6 +115,7 @@ const lazyLoad = (children?: React.ReactNode) => {
   const urlAllPage = [
     ...authenPage,
     "/profile/bulk-upload",
+    '/login-audit-report',
     '/',
     '/manual-upload',
     '/ist-forced-closure',
@@ -351,6 +353,18 @@ export const initRoutes = (): RouteObject[] => {
         ...getStoreTransferModuleRoutes()
       ]
     },
+    {
+      path: '/login-audit-report',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<AuditReport />  )
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+
     {
       path: '/profile/bulk-upload',
       element: <AppLayout />,
