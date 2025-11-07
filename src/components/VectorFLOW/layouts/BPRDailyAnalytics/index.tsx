@@ -123,15 +123,12 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
         }
         else payloadString = routerToAnalyticsStringMap[pathname]
         try{
-            notifyLoader("Loading Analytics Data")
             const rowData =await  getAnalyticsData({
                 id: 1,
                 name: payloadString,
                 fields: [],
                 filters:filter,
             })
-            toast.dismiss()
-            notifySuccess("Analytics Loaded Successfully")
             
             if(rowData.data.data) {
                 setRowData(transformAnalyticsData(rowData.data.data));
