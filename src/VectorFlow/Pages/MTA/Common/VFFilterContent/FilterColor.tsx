@@ -110,9 +110,11 @@ export const ColorFilters: React.FC<FilterSectionProps> = ({
           label: "Color",
           filters: [],
         };
+      } else {
+        updatedMultiFilter.colorFilter = { ...updatedMultiFilter.colorFilter };
       }
 
-      const existingFilters = updatedMultiFilter.colorFilter.filters || [];
+      const existingFilters = updatedMultiFilter.colorFilter.filters ? [...updatedMultiFilter.colorFilter.filters] : [];
       const filteredFilters = existingFilters.filter(
         (f: BPRFilter) => f.name !== rowId
       );

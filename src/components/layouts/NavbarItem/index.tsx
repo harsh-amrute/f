@@ -40,7 +40,8 @@ const NavbarItem = ({
   const { user, isSideBarOpen, toggleSideBar } = useUserData();
   const permission: any = user?.roles?.permission;
   const { currentView, currentCategory } = useSelector((state: RootState) => state.mta.planning)
-  const analyticsPaths: Array<string> = ["/mta/supply-chain-intelligence-hub/bpr", "/mta/insights-and-trends/research-insights", "/mta/insights-and-trends/buffer-trend-report", "/mta/insights-and-trends/buffer-trends"]
+  // const analyticsPaths: Array<string> = ["/mta/supply-chain-intelligence-hub/bpr", "/mta/insights-and-trends/research-insights", "/mta/insights-and-trends/buffer-trend-report", "/mta/insights-and-trends/buffer-trends"]
+  const analyticsPaths: Array<string> = ["/mta/supply-chain-intelligence-hub/bpr"]
   const themeUi = user?.user?.theme_ui;
   const navigate = useNavigate();
   const location = useLocation();
@@ -114,21 +115,17 @@ const NavbarItem = ({
 
 
   const renderAnalyticsGrid = useCallback(() => {
+    // if (location.pathname === "/mta/supply-chain-intelligence-hub/planning") {
 
-    if (location.pathname === "/mta/supply-chain-intelligence-hub/planning") {
-
-      if (currentView !== 'chart' && currentCategory !== "") {
-        return true
-      }
-      if (currentCategory === "") {
-        return true
-      }
-    }
-    if (analyticsPaths.includes(pathname)) {
-      return true
-    }
-    return false
-  }, [location.pathname, currentCategory, currentView])
+    //   if (currentView !== 'chart' && currentCategory !== "") {
+    //     return true
+    //   }
+    //   if (currentCategory === "") {
+    //     return true
+    //   }
+    // }
+    return analyticsPaths.includes(pathname);
+  }, [pathname]);
 
 
   const renderListMenuChild = (listChild: any, status: boolean) => {
