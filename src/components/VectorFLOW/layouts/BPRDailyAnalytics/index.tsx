@@ -132,7 +132,6 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
             })
             toast.dismiss()
             notifySuccess("Analytics Loaded Successfully")
-            console.log("ROW DATA",rowData);
             
             if(rowData.data.data) {
                 setRowData(transformAnalyticsData(rowData.data.data));
@@ -186,7 +185,6 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
     }
     
 
-console.log("HIIIIII",rowData);
 
     return(
         <BPRDailyAnalyticsWrapper>
