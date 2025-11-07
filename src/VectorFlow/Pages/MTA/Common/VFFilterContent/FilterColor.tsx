@@ -165,6 +165,7 @@ export const ColorFilters: React.FC<FilterSectionProps> = ({
     const updatedMultiFilter = { ...multiFilter };
     
     if (updatedMultiFilter.colorFilter?.filters) {
+      updatedMultiFilter.colorFilter = { ...updatedMultiFilter.colorFilter };
       const filteredFilters = updatedMultiFilter.colorFilter.filters.filter(
         (f: BPRFilter) => f.name !== rowId
       );
