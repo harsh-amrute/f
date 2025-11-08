@@ -2591,15 +2591,27 @@ const createCommonTooltip = (seriesColor: string) => ({
   },
 });
 
+const colorNameMap: Record<string, string> = {
+  "#fff": "White",
+  "#000000": "Black",
+  "#ED1C24": "Red",
+  "#FFCB05": "Yellow",
+  "#418D18": "Green",
+  "#BCBCBC": "Gray",
+  "#355FD3": "Blue",
+};
+
 const pieTooltip = {
   enabled: true,
   renderer: (params: any) => {
-    const { datum, angleKey, labelKey } = params;
-    const color = params.fill || params.color || datum.color || '#666666';
+    const { datum, angleKey, fill, color } = params;
+    const sliceColor = fill || color || datum.color || "#666666";
+    const colorName = colorNameMap[sliceColor] || "Unknown";
+
     return `
       <div style="background: #6C696A; border-radius: 6px; overflow: hidden; text-align: center; min-width: 140px;">
-        <div style="color: white; padding: 6px 10px; background-color: ${color}; font-weight: bold;">
-          ${datum[labelKey] || 'Slice'}
+        <div style="color: white; padding: 6px 10px; background-color: ${sliceColor}; font-weight: bold;">
+          ${colorName}
         </div>
         <div style="color: black; padding: 8px 10px; background-color: #ede7e9ff;">
           ${datum[angleKey]}%
