@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { BPRFilterState, BPRFilter } from "../../../../types/BPR";
-
+import { MutableRefObject } from "react";
 interface FilterRow {
   id: number;
 }
@@ -28,6 +28,17 @@ interface RowSelections {
   [rowId: number]: RowData;
 }
 
+interface FilterChangeProps {
+  parentId: keyof BPRFilterState;
+  prefix: string;
+  rowSelections: Record<number, any>;
+  setRowSelections: React.Dispatch<React.SetStateAction<Record<number, any>>>;
+  multiFilter: BPRFilterState;
+  onMultiFilterChange: (newMultiFilter: BPRFilterState) => void;
+  rowFilterIndexMap: Record<number, number>;
+  setRowFilterIndexMap: React.Dispatch<React.SetStateAction<Record<number, number>>>;
+  isUpdatingFromInternal: MutableRefObject<boolean>;
+}
 
 export const useFilterRows = (initialCount = 1, maxRows = 5) => {
   const [filterRows, setFilterRows] = useState<FilterRow[]>(
@@ -246,3 +257,87 @@ export const useRowCompletion = (rowSelections: RowSelections) => {
 
   return { isRowComplete };
 };
+
+export const useMultiFilterChange = ({
+  parentId,
+  prefix,
+  rowSelections,
+  setRowSelections,
+  multiFilter,
+  onMultiFilterChange,
+  rowFilterIndexMap,
+  setRowFilterIndexMap,
+  isUpdatingFromInternal,
+}: FilterChangeProps) => {
+  const onFilterChange = (
+    rowId: number,
+    field: "column" | "operation" | "value",
+    selected: any
+  ) => {
+    const updatedSelections = {
+      ...rowSelections,
+      [rowId]: { ...rowSelections[rowId], [field]: selected },
+    };
+    setRowSelections(updatedSelections);
+
+    const current = updatedSelections[rowId];
+
+    const existingFilters = (multiFilter[parentId]?.filters || []) as BPRFilter[];
+    const operationFilters = existingFilters.filter(
+      (f) => !f.name.startsWith(`${prefix}6`)
+    );
+    const specialFilters = existingFilters.filter((f) => f.name.startsWith(`${prefix}6`));
+
+    const nextFilters = operationFilters.slice();
+    const newIndexMap = { ...rowFilterIndexMap };
+    const idx = rowFilterIndexMap[rowId];
+
+    if (
+      current?.column &&
+      current?.operation &&
+      (current?.operation?.value === "hasvalue" ||
+        current?.operation?.value === "hasnovalue" ||
+        (current?.value !== undefined && current?.value !== ""))
+    ) {
+      const newFilter: BPRFilter = {
+        attributeName: current.column.value,
+        value:
+          current?.operation?.value === "hasvalue"
+            ? "hasvalue"
+            : current?.operation?.value === "hasnovalue"
+            ? "hasnovalue"
+            : current.value,
+        operator: current.operation.value,
+        label: current.column.label,
+        name: current.column.name,
+      };
+
+      if (typeof idx === "number" && idx >= 0 && idx < nextFilters.length) {
+        nextFilters[idx] = newFilter;
+      } else {
+        nextFilters.push(newFilter);
+        newIndexMap[rowId] = nextFilters.length - 1;
+      }
+    } 
+    else {
+      if (typeof idx === "number" && idx >= 0 && idx < nextFilters.length) {
+        nextFilters.splice(idx, 1);
+        delete newIndexMap[rowId];
+      }
+    }
+
+    isUpdatingFromInternal.current = true;
+    onMultiFilterChange({
+      ...multiFilter,
+      [parentId]: {
+        ...multiFilter[parentId],
+        filters: [...nextFilters, ...specialFilters],
+      },
+    });
+
+    setRowFilterIndexMap(newIndexMap);
+  };
+
+  return { onFilterChange };
+};
+

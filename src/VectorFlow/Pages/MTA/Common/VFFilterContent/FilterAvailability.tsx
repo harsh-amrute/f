@@ -161,7 +161,7 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
   const colorStyles = useColorThemeStyles();
   const { user } = useUserData();
   const availabilityTags = ["PIPO", "Seasonality"];
-  const { handleSelectChange, getSelectedValues, setSelectedValues } =
+  const { handleSelectChange} =
     useVFMultiFilter({
       multiFilter,
       onMultiFilterChange,
@@ -195,7 +195,7 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
     if (
       columnInfo &&
       current?.operation &&
-      current?.value !== undefined &&
+      current.value?.trim() !== undefined &&
       current?.value !== ""
     ) {
       const newFilter: BPRFilter = {
@@ -220,6 +220,22 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
       };
 
       onMultiFilterChange(updatedMultiFilter);
+    } else if (columnInfo) {
+      const existingFilters = multiFilter[parentId]?.filters || [];
+      const filteredFilters = existingFilters.filter(
+        (f: BPRFilter) => f.name !== columnInfo.name
+      );
+
+      if (existingFilters.length !== filteredFilters.length) {
+        const updatedMultiFilter = {
+          ...multiFilter,
+          [parentId]: {
+            ...multiFilter[parentId],
+            filters: filteredFilters,
+          },
+        };
+        onMultiFilterChange(updatedMultiFilter);
+      }
     }
   };
 

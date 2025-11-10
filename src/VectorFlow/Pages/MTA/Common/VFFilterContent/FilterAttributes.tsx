@@ -9,7 +9,7 @@ import {
 } from "./style";
 import Select from "react-select";
 import { useThemeStyles } from "../../../../../hooks/useVFFilterContent";
-import { useFilterRows, stringOpertors, useRowCompletion } from "./useVFFilterContent";
+import { useFilterRows, stringOpertors, useRowCompletion, useMultiFilterChange } from "./useVFFilterContent";
 import { useUserData } from "../../../../../context";
 import { useGetUIConfigData } from "../../../../Services/MTA/Common/UIConfig";
 import { UIColumnConfigName } from "../../../../../helpers/Enum";
@@ -157,63 +157,17 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
     setFilterRows,
   ]);
 
-  const onFilterChange = (
-    rowId: number,
-    field: "column" | "operation" | "value",
-    selected: any
-  ) => {
-    const updatedSelections = {
-      ...rowSelections,
-      [rowId]: { ...rowSelections[rowId], [field]: selected },
-    };
-    setRowSelections(updatedSelections);
-
-    const parentId = "customAttributeFilter";
-    const current = updatedSelections[rowId];
-
-    if (
-      current?.column &&
-      current?.operation &&
-      (current?.operation?.value === "hasvalue" ||
-        current?.operation?.value === "hasnovalue" ||
-        (current?.value !== undefined && current?.value !== ""))
-    ) {
-      const newFilter: BPRFilter = {
-        attributeName: current.column.value,
-        value:
-          current?.operation?.value === "hasvalue"
-            ? "hasvalue"
-            : current?.operation?.value === "hasnovalue"
-            ? "hasnovalue"
-            : current.value,
-        operator: current.operation.value,
-        label: current.column.label,
-        name: current.column.name,
-      };
-
-      const existingFilters = (multiFilter[parentId]?.filters ||
-        []) as BPRFilter[];
-      const nextFilters = existingFilters.slice();
-      const idx = rowFilterIndexMap[rowId];
-      const newIndexMap = { ...rowFilterIndexMap };
-
-      if (typeof idx === "number" && idx >= 0 && idx < nextFilters.length) {
-        nextFilters[idx] = newFilter;
-      } else {
-        nextFilters.push(newFilter);
-        newIndexMap[rowId] = nextFilters.length - 1;
-      }
-
-      isUpdatingFromInternal.current = true;
-      onMultiFilterChange({
-        ...multiFilter,
-        [parentId]: { ...multiFilter[parentId], filters: nextFilters },
-      });
-
-      setRowFilterIndexMap(newIndexMap);
-    }
-  };
-
+  const { onFilterChange } = useMultiFilterChange({
+    parentId: "customAttributeFilter",
+    prefix: "CAF",
+    rowSelections,
+    setRowSelections,
+    multiFilter,
+    onMultiFilterChange,
+    rowFilterIndexMap,
+    setRowFilterIndexMap,
+    isUpdatingFromInternal,
+  });
   const handleRemoveRowWithFilter = (rowId: number) => {
     if (isMinRows) return;
 
@@ -257,9 +211,6 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
     return <NoAttributesFilters reportName={reportName} />;
   }
 
-  if (!isInitialized && attributeOptions.length > 0) {
-    return <VFLoader />;
-  }
 
   return (
     <FilterGroup>
