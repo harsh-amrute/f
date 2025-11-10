@@ -72,7 +72,7 @@ const DueDateCellRenderer = (params: any) => {
     return <></>
   }
 
-  const [holidayDates, setHolidayDates] = useState([])
+  const [holidayDates, setHolidayDates] = useState<any>([])
   const [forceOpenCalendar, setForceOpenCalendar] = useState(false);
 
   const handleCalendarIconClick = async (rowData: any) => {
@@ -98,6 +98,13 @@ const DueDateCellRenderer = (params: any) => {
     }
   };
 
+  const tileDisabled = ({ date }:any) => {
+    const formattedDate = moment(date).format('YYYY-MM-DD');
+      return holidayDates.includes(formattedDate);
+    }
+
+  
+
   return (
     <>
     {(isLoading ) && (
@@ -118,7 +125,7 @@ const DueDateCellRenderer = (params: any) => {
       onClick={() => handleCalendarIconClick(params.data)}
       showCalendarIcon={params.node.selected}
       forceOpenCalendar={forceOpenCalendar}
-      disabledHolidayDates={holidayDates}
+      tileDisabled={tileDisabled}
       />
     </>
   );

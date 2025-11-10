@@ -24,9 +24,8 @@ interface CustomDatePickerProps {
     onClick?: any,
     enableIconClick?: boolean;
     forceOpenCalendar?: boolean;
-  disabledHolidayDates?: any; 
-  disabledFOLHorizonDate?: any;
   maxDate?: any;
+  tileDisabled?: any
   }
   
 
@@ -46,9 +45,8 @@ const VFDatePicker = ({
   onClick,
   enableIconClick,
   forceOpenCalendar,
-  disabledHolidayDates,
-  disabledFOLHorizonDate,
-  maxDate
+  tileDisabled,
+  maxDate,
 }: CustomDatePickerProps) => {
   const [showCalendar, setShowCalendar] = useState(false);
   const [calendarPosition, setCalendarPosition] = useState({ top: 0, left: 0 });
@@ -109,6 +107,8 @@ const VFDatePicker = ({
     }
   }, [forceOpenCalendar]);
   
+
+
   
   return (
     <DatePickerWrapper>
@@ -163,31 +163,7 @@ const VFDatePicker = ({
                   onChange={handleCalendarChange}
                   value={date ? new Date(date) : new Date()}
                   minDate={minDate}
-                  // tileDisabled={({ date }) => {
-                  //   const formattedDate = moment(date).format('YYYY-MM-DD');
-                  //   // console.log('formateedDate', formattedDate)
-                  //   return disabledHolidayDates.includes(formattedDate);
-                  // maxDate={maxDate}
-                  // tileDisabled={({ date }) => {
-                  //   if (disabledFOLHorizonDate) {
-                  //     return disabledFOLHorizonDate(date);
-                  //   }
-                  //   return false;
-                  // }}
-                  tileDisabled={({ date }) => {
-                    if (disabledFOLHorizonDate) {
-                          return disabledFOLHorizonDate(date);
-                    }
-                    else if (disabledHolidayDates) {
-                      const formattedDate = moment(date).format('YYYY-MM-DD');
-                        // console.log('formateedDate', formattedDate)
-                        return disabledHolidayDates.includes(formattedDate);
-                    }
-                    else {
-                      return false;
-                    }
-                  }
-                  }
+                  tileDisabled={tileDisabled} 
                 />
               </div>,
               document.body
