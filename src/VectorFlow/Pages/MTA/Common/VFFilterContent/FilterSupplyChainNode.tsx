@@ -9,7 +9,6 @@ import Select, { components } from "react-select";
 import { useColorThemeStyles } from "../../../../../hooks/useVFFilterContent";
 import useGetLocation from "../../../../../hooks/useGetLocation";
 import { useUserData } from "../../../../../context";
-import { useGetAllLocations } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 import { BPRFilter, BPRFilterState } from "../../../../../VectorFlow/types/BPR";
 import { useVFMultiFilter } from "./useVFFilterContent";
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
@@ -45,31 +44,18 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
   const { locations } = useGetLocation();
   const colorStyles = useColorThemeStyles();
 
-  const { handleSelectChange, getSelectedValues, setSelectedValues } =
-    useVFMultiFilter({
-      multiFilter,
-      onMultiFilterChange,
-    });
+  const { handleSelectChange } = useVFMultiFilter({
+    multiFilter,
+    onMultiFilterChange,
+  });
 
   const [selectedOptions, setSelectedOptions] = useState<{
     ForLocation: string[];
     ForChildren: string[];
-    ForChildrenLocationCode: string[];
   }>({
     ForLocation: [],
     ForChildren: [],
-    ForChildrenLocationCode: [],
   });
-
-  const { data: locationData, isLoading: isLocationDataLoading } =
-    useGetAllLocations();
-
-  const locationCheckboxOptions =
-    locationData?.data?.data?.map((location: any) => ({
-      label: `${location.wc} (${location.wd})`,
-      id: location.wc,
-      value: location.wc,
-    })) || [];
 
   const locationOptionsWithValue = locations.map((location: any) => ({
     label: location.label,
@@ -86,23 +72,15 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
         (f: BPRFilter) => f.name === "SCF2"
       );
 
-      const forChildrenLocationCode =
-        multiFilter.supplyChainFilter.filters.filter(
-          (f: BPRFilter) => f.name === "SCF3"
-        );
-
       setSelectedOptions((prev) => ({
         ...prev,
         ForLocation: forLocationFilters.map((f: BPRFilter) => f.value),
         ForChildren: forChildrenFilters.map((f: BPRFilter) => f.value),
-        ForChildrenLocationCode: forChildrenLocationCode.map(
-          (f: BPRFilter) => f.value
-        ),
       }));
     }
   }, [multiFilter]);
 
-  if (isLocationDataLoading) {
+  if (!locations) {
     return <VFLoader />;
   }
 
@@ -137,7 +115,19 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
                   ...base,
                   maxHeight: 500,
                   overflowY: "auto",
-                  scrollbarWidth: "none",
+                  scrollbarWidth: "thin",
+                  scrollbarColor: "#888 transparent",
+
+                  "&::-webkit-scrollbar": {
+                    width: "6px",
+                  },
+                  "&::-webkit-scrollbar-thumb": {
+                    backgroundColor: "#888",
+                    borderRadius: "4px",
+                  },
+                  "&::-webkit-scrollbar-thumb:hover": {
+                    backgroundColor: "#555",
+                  },
                 }),
               }}
               placeholder="Location Type"
@@ -158,7 +148,7 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
         </FilterColumn>
 
         <FilterColumn>
-          <TextWrapper>For Children</TextWrapper>
+          <TextWrapper>For Children Of</TextWrapper>
           <DropDownWrapper style={{ gap: "20px" }}>
             <Select
               options={locationOptionsWithValue}
@@ -185,7 +175,19 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
                   ...base,
                   maxHeight: 500,
                   overflowY: "auto",
-                  scrollbarWidth: "none",
+                  scrollbarWidth: "thin",
+                  scrollbarColor: "#888 transparent",
+
+                  "&::-webkit-scrollbar": {
+                    width: "6px",
+                  },
+                  "&::-webkit-scrollbar-thumb": {
+                    backgroundColor: "#888",
+                    borderRadius: "4px",
+                  },
+                  "&::-webkit-scrollbar-thumb:hover": {
+                    backgroundColor: "#555",
+                  },
                 }),
               }}
               placeholder="Location Type"
@@ -198,70 +200,6 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
                   newValue,
                   header: "ForChildren",
                   filterId: "SCF2",
-                  parentId: "supplyChainFilter",
-                })
-              }
-            />
-          </DropDownWrapper>
-        </FilterColumn>
-      </FilterGroup>
-
-      <FilterGroup style={{ paddingTop: "10px" }}>
-        <FilterColumn style={{ maxWidth: "100%", flex: 1, width: "100%" }}>
-          <TextWrapper>Select Location</TextWrapper>
-          <DropDownWrapper style={{ gap: "20px" }}>
-            <Select
-              options={locationCheckboxOptions}
-              isMulti
-              closeMenuOnSelect={false}
-              hideSelectedOptions={false}
-              components={{
-                Option: CustomOption,
-                IndicatorSeparator: () => null,
-                ClearIndicator: () => null,
-                DropdownIndicator: () => (
-                  <img
-                    src={"/assets/img/VectorFLOW/NMS/search.svg"}
-                    style={{
-                      marginRight: "8px",
-                      width: "14px",
-                      height: "14px",
-                    }}
-                    alt="search"
-                  />
-                ),
-              }}
-              styles={{
-                ...useColorThemeStyles({
-                  minWidth: "750px",
-                  inputColor: "#333",
-                  placeholderColor: "#999",
-                  menuListMaxHeight: 450,
-                  gridColumns: 2,
-                  menuWidth: "750px",
-                  gridGap: "12px",
-                  optionPadding: "8px 16px",
-                }),
-                input: (base) => ({
-                  ...base,
-                  color: "#333",
-                }),
-                placeholder: (base) => ({
-                  ...base,
-                  color: "#999",
-                  display: "block",
-                }),
-              }}
-              placeholder="Search By Locations"
-              value={selectedOptions.ForChildrenLocationCode.map((option) => ({
-                label: option,
-                value: option,
-              }))}
-              onChange={(newValue) =>
-                handleSelectChange({
-                  newValue,
-                  header: "ForChildrenLocationCode",
-                  filterId: "SCF3",
                   parentId: "supplyChainFilter",
                 })
               }
