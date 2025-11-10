@@ -12,6 +12,8 @@ import { useThemeStyles } from "../../../../../hooks/useVFFilterContent";
 import { colorFilterOptions, numericOperators } from "./useVFFilterContent";
 import { useUserData } from "../../../../../context";
 import { BPRFilter, BPRFilterState } from "../../../../../VectorFlow/types/BPR";
+import { useDispatch } from "react-redux";
+import { UPDATE_MTA_VF_MULTI_FILTER } from "../../../../../redux/actions/MTA";
 
 interface FilterSectionProps {
   filters: any;
@@ -42,7 +44,7 @@ export const ColorFilters: React.FC<FilterSectionProps> = ({
   const isUpdatingFromInternal = useRef(false);
 
   const [filterRows, setFilterRows] = useState<FilterRowState[]>(INITIAL_ROWS);
-
+  const dispatch = useDispatch();
   const colorTypeFilterOptions = [
     { value: "colorcount", label: "Color Count" },
     { value: "colorage", label: "Color Age" },
@@ -135,6 +137,7 @@ export const ColorFilters: React.FC<FilterSectionProps> = ({
       }
       isUpdatingFromInternal.current = true;
       onMultiFilterChange(updatedMultiFilter);
+      dispatch(UPDATE_MTA_VF_MULTI_FILTER(updatedMultiFilter))
     }
   };
 
