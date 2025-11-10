@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
-import Calendar,{CalendarProps} from 'react-calendar';
+import {CalendarProps} from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import ReactDOM from 'react-dom';
 import { useUserData } from "../../../../../context/index";
@@ -21,7 +21,11 @@ interface CustomDatePickerProps {
     dateInputStyle?: React.CSSProperties;
     imgStyle?: React.CSSProperties;
     showCalendarIcon?: boolean;
-}
+    onClick?: any,
+    enableIconClick?: boolean;
+    forceOpenCalendar?: boolean;
+    disabledHolidayDates?: any; 
+  }
 
 type Value = CalendarProps['value'];
 
@@ -33,7 +37,11 @@ const VFDatePicker = ({
   dateInputStyle,
   imgStyle,
   showCalendarIcon,
-  minDate
+  minDate,
+  onClick,
+  enableIconClick,
+  forceOpenCalendar,
+  disabledHolidayDates
 }: CustomDatePickerProps) => {
   const [showCalendar, setShowCalendar] = useState(false);
   const [calendarPosition, setCalendarPosition] = useState({ top: 0, left: 0 });
@@ -81,6 +89,20 @@ const VFDatePicker = ({
     }
   };
 
+  useEffect(() => {
+    if (forceOpenCalendar) {
+      const rect = inputRef.current?.getBoundingClientRect();
+      if (rect) {
+        setCalendarPosition({
+          top: rect.bottom + window.scrollY,
+          left: rect.left + window.scrollX,
+        });
+      }
+      setShowCalendar(true);
+    }
+  }, [forceOpenCalendar]);
+  
+  
   return (
     <DatePickerWrapper>
       <TextInputWrapper
@@ -96,9 +118,17 @@ const VFDatePicker = ({
 
       {showCalendarIcon &&
         <>
-          <ButtonWrapper type="button" onClick={toggleCalendar}>
+        <ButtonWrapper type="button"
+         onClick={(e) => {
+          if (enableIconClick && onClick ) {
+            onClick(e);  
+            return;
+           }
+           toggleCalendar();
+        }}
+        >
             <ImageWrapper
-              style={imgStyle}
+            style={imgStyle}
               src={
                 themeUi === 'REGALBLAZE'
                   ? '/assets/img/mto/OrderRescheduling/edit-calendar-yellow.svg'
@@ -126,6 +156,11 @@ const VFDatePicker = ({
                   onChange={handleCalendarChange}
                   value={date ? new Date(date) : new Date()}
                   minDate={minDate}
+                  tileDisabled={({ date }) => {
+                    const formattedDate = moment(date).format('YYYY-MM-DD');
+                    // console.log('formateedDate', formattedDate)
+                    return disabledHolidayDates.includes(formattedDate);
+                  }}
                 />
               </div>,
               document.body
