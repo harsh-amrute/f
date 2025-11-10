@@ -5,7 +5,7 @@ import { useUserData } from "../../../../../context";
 import { notifyError } from "../../../../../helpers/notify";
 
 interface props {
-  savePageSize: any;
+  savePageSize?: any;
   userPageSize: any;
 }
 

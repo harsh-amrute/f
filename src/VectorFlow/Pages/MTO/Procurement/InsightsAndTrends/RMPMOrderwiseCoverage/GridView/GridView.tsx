@@ -30,6 +30,7 @@ const GridView = ({ agGridProps, colDef, ShortageDatas, setCurrentGridRef, curre
         }
     });
 
+
     return (
 
         <TableWrapper>

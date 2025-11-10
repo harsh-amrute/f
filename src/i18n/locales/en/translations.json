@@ -175,7 +175,8 @@
         "improvementaread":"Improvement Areas",
         "topfailurereason":"Top Failure Reasons",
         "trenfailurereason":"Trend Of Failure Reasons",
-        "resourceutilizationwip":"Resource Utilization & WIP Profile"
+        "resourceutilizationwip":"Resource Utilization & WIP Profile",
+        "futureorderloadchart":"Future Order Load Chart"
       }
     },
     "particulars": {

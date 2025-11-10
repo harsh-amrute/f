@@ -8,7 +8,7 @@ interface SelectSearchMultipleProps {
   setValue: any;
   options: any;
   placeholder: string;
-  handleListChild: (e: object) => void;
+  handleListChild?: (e: object) => void;
   disabled: any;
   icon?: any;
   maxToShow?: number;

@@ -57,7 +57,7 @@ const TechnicalWise = ({ data, isLoading, graphs, updateGraphState, setHorizonda
     function TooltipRenderer({ datum }: any) {
     
         return `
-            <div style="background:#6C696A; color:white; padding:10px;transform: translateY(-200px)">
+            <div style="background:#6C696A; color:white; padding:10px;">
                 <div style="color: white; padding: 5px; text-align: center;">
                     <b>${datum.dt || "No Date"}</b>
                 </div>
@@ -134,6 +134,13 @@ const TechnicalWise = ({ data, isLoading, graphs, updateGraphState, setHorizonda
     }
 
     const options: AgChartOptions = {
+        tooltip: {
+            position: {
+            xOffset: -50,
+            yOffset: -10,
+        },
+        range: "nearest",
+    },
         axes: [
             {
 

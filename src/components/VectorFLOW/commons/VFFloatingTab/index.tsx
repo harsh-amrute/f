@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
 import { useUserData } from '../../../../context'
 import {VFFloatingTabWrapper,VFFloatingTabButton,VFFloatingTabButtonActiveShadow} from './styles'
+import { CSSProperties } from 'styled-components'
 
 export interface VFFloatingTabItemProps{
     label:string
     value:string
-    id:string
+    id: string
 }
 
 
@@ -13,6 +14,7 @@ export interface VFFloatingTabProps{
     tabs:Array<VFFloatingTabItemProps>
     defaultTab?:number
     handleClick?: (i: any) => void  
+    style?: CSSProperties
 }
 
 interface ActiveShadowDataType{
@@ -26,6 +28,7 @@ const VFFloatingTab = (props:VFFloatingTabProps)=>{
         tabs,
         defaultTab=0,
         handleClick,
+        style
     } = props
 
     const {user} = useUserData()
@@ -65,6 +68,7 @@ const VFFloatingTab = (props:VFFloatingTabProps)=>{
                         key={index}
                         onClick={(e)=>onClick(e,index)}
                         data-testid='floatingTabButton'
+                        style={style}
                     >
                         {t.label}
                     </VFFloatingTabButton>
