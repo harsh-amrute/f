@@ -18,7 +18,7 @@ interface LeftCommonComProps {
   btnImg: string;
   btnStyles?: React.CSSProperties;
   imgStyles?: React.CSSProperties;
-  setNoData?: React.Dispatch<React.SetStateAction<boolean>>;
+  handleClick: (e:any)=>void;
 }
 
 function LeftCommonCom({
@@ -30,15 +30,8 @@ function LeftCommonCom({
   btnImg,
   btnStyles,
   imgStyles,
-  setNoData
+  handleClick
 }: LeftCommonComProps) {
-
-
-  const handleUpload = () => {
-    if(setNoData){
-        setNoData(false);
-    }
-  };
 
   
   return (
@@ -56,11 +49,11 @@ function LeftCommonCom({
           <img src={img} alt="" style={imgStyles} />
           <HeaderSection>
             <HeaderText>{headerText}</HeaderText>
-            <SubText fontSize="1.4rem" >{subText}</SubText>
+            <SubText fontSize="1.15rem" >{subText}</SubText>
           </HeaderSection>
         </div>
         <ButtonFloat
-          onClick={handleUpload}
+          onClick={(e:any)=>{handleClick(e)}}
           text={btnText}
           icon={btnImg}
           styles={btnStyles}

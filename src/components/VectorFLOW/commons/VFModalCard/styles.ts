@@ -41,7 +41,7 @@ export const SCTextTitle = styled.span<{headerTextColor:string | undefined}>`
   font-style:normal;
   font-variant:normal;
   font-weight:500;
-  font-size:18px;
+  font-size:14px;
   line-height:21px;
   font-family:Roboto;
   letter-spacing: 0px;
