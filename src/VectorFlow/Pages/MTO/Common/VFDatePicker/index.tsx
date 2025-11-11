@@ -4,6 +4,7 @@ import {CalendarProps} from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import ReactDOM from 'react-dom';
 import { useUserData } from "../../../../../context/index";
+import './styles.css' 
 import {
   DatePickerWrapper,
   TextInputWrapper,
@@ -26,6 +27,7 @@ interface CustomDatePickerProps {
     forceOpenCalendar?: boolean;
   maxDate?: any;
   tileDisabled?: any
+  isIconLoader?: any
   }
   
 
@@ -46,6 +48,7 @@ const VFDatePicker = ({
   enableIconClick,
   forceOpenCalendar,
   tileDisabled,
+  isIconLoader,
   maxDate,
 }: CustomDatePickerProps) => {
   const [showCalendar, setShowCalendar] = useState(false);
@@ -107,9 +110,6 @@ const VFDatePicker = ({
     }
   }, [forceOpenCalendar]);
   
-
-
-  
   return (
     <DatePickerWrapper>
       <TextInputWrapper
@@ -125,17 +125,21 @@ const VFDatePicker = ({
 
       {showCalendarIcon &&
         <>
+
         <ButtonWrapper type="button"
-         onClick={(e) => {
-          if (enableIconClick && onClick ) {
-            onClick(e);  
-            return;
-           }
-           toggleCalendar();
-        }}
+          onClick={(e) => {
+            if (enableIconClick && onClick ) {
+              onClick(e);  
+              return;
+            }
+            toggleCalendar();
+          }}
         >
-            <ImageWrapper
-            style={imgStyle}
+          {isIconLoader ? (
+            <div className="calendar-loader" style={{zoom:'0.47'}}></div>
+          ) : (
+            <img
+              style={imgStyle}
               src={
                 themeUi === 'REGALBLAZE'
                   ? '/assets/img/mto/OrderRescheduling/edit-calendar-yellow.svg'
@@ -143,7 +147,9 @@ const VFDatePicker = ({
               }
               alt="calendar-icon"
             />
-          </ButtonWrapper>
+          )}
+        </ButtonWrapper>
+
 
           {showCalendar &&
             ReactDOM.createPortal(

@@ -7,7 +7,6 @@ import VFDatePicker from '../../Common/VFDatePicker';
 import _ from 'lodash';
 import { useGetHolidaysForMaxFolCCROfOrder } from '../../../../../VectorFlow/Services/MTO/Production/OrderRescheduling';
 import { notifyError } from '../../../../../helpers/notify';
-import OverlayLoader from "../../Common/Loader";
 
 type Value = CalendarProps['value'];
 
@@ -107,9 +106,6 @@ const DueDateCellRenderer = (params: any) => {
 
   return (
     <>
-    {(isLoading ) && (
-      <OverlayLoader />
-    )}
 
     <VFDatePicker
       dateInputStyle={{
@@ -125,7 +121,8 @@ const DueDateCellRenderer = (params: any) => {
       onClick={() => handleCalendarIconClick(params.data)}
       showCalendarIcon={params.node.selected}
       forceOpenCalendar={forceOpenCalendar}
-      tileDisabled={tileDisabled}
+        tileDisabled={tileDisabled}
+        isIconLoader={isLoading}
       />
     </>
   );
