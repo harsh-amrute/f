@@ -15,31 +15,30 @@ import { notifyError } from "../../../helpers/notify";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
 import * as globalStyles from "../../../styles/global";
 
-const ViewURLs = (props: {
-  onDelete: (data: any) => void;
-  onEdit: (data: any) => void;
-}) => {
-  const { onDelete, onEdit } = props;
+const ViewURLs = (props:{onDelete:(data:any)=>void,onEdit:(data:any)=>void})=>{
 
-  const { user } = useUserData();
+    const {
+        onDelete,
+        onEdit
+    } = props
 
-  const themeUi = user.user.theme_ui;
+    const {user} = useUserData()
 
-  const [rowData, setRowData] = useState<Array<any>>([]);
+    const themeUi = user.user.theme_ui
 
-  const getAllRoles = useCallback(async () => {
-    try {
-      const { data } = await axios.get(
-        `${process.env.REACT_APP_API_HOST}/api/user/all-role/`
-      );
-      setRowData(data.sort((row1: any, row2: any) => row1.id - row2.id));
-    } catch (error: any) {
-      console.error(error);
-      notifyError("Server Went Unresponsive");
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+    const [rowData,setRowData] = useState<Array<any>>([])
+
+    const getAllRoles = useCallback(async()=>{
+        try{
+            const {data} = await axios.get(`${process.env.REACT_APP_API_HOST}api/user/all-role/`)
+            setRowData(data.sort((row1:any,row2:any)=>row1.id - row2.id))
+        }catch(error:any){
+            console.error(error)
+            notifyError("Server Went Unresponsive")
+        }finally{
+            setIsLoading(false)
+        }
+    },[])
 
   // const allUrls = [
   //     {

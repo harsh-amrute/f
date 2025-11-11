@@ -861,6 +861,7 @@ const EnquiryResponse = () => {
                   columnState={columnState}
                   savePageSize={savePageSize}
                   userPageSize={userPageSize}
+                  height={"100%"}
                 />
               </div>
             </Allotment.Pane>

@@ -43,14 +43,14 @@ const DayWiseCoverageCalender = ({
     });
     return (
       <div className={CalenderContainer}>
-        <div className={CalenderTitle}>
+        <h1 className={CalenderTitle}>
           Calender {Array.from(years).join("/")}
-        </div>
+        </h1>
         <div className={CalenderContent}>
           <div className={CalenderMonths}>
             {monthRange.map((month: any) => {
               return (
-                <div className={CalenderMonths}>{format(month, "MMM")}</div>
+                <div className={CalenderMonth}>{format(month, "MMM")}</div>
               );
             })}
           </div>

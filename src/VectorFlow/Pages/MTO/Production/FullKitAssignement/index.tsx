@@ -18,7 +18,7 @@ import {
   buttonBgVar,
   buttonTextVar,
   buttonArrowUrlVar,
-} from "./FullKitAssignment.styled.css";
+} from "./FullKitAssignment.css";
 import { useUserData } from "../../../../../context";
 import MTOActionToolBar from "../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
 import EditRouteModal from "../../Common/EditRouteModal";

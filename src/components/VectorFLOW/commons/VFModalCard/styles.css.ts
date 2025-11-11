@@ -7,6 +7,9 @@ export const headerTextVar = createVar();
 export const contentLRVar = createVar();
 export const contentBgVar = createVar();
 
+export const heightVar = createVar();
+export const headerBorderRadius = createVar();
+export const headerPadding = createVar();
 /* ====== Replacing style.ts (styled-components) ====== */
 
 export const VFHeaderWrapper = style({
@@ -15,11 +18,19 @@ export const VFHeaderWrapper = style({
   justifyContent: 'space-between',
   alignItems: 'center',
   width: '100%',
-  height: '40px',
-  borderRadius: '0 0 12px 12px',
+  height: heightVar,
+  borderRadius: headerBorderRadius,
   // dynamic color via CSS var; default to white if not provided at runtime
   backgroundColor: `var(${headerBgVar}, #FFFFFF)`,
+  padding: headerPadding
 });
+
+export const absolutePosition = style({
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  right: 0,
+})
 
 export const SCModalContent = style({
   overflowY: 'hidden',
@@ -113,6 +124,7 @@ export const modalForcedBlock = style({
   maxWidth: '90%',
   minWidth: '500px',
   borderRadius: '12px',
+  backgroundColor: 'white'
 });
 
 /* If you had other global classes (e.g., transition utilities),

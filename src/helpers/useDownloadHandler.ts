@@ -1,6 +1,5 @@
 import { LOCAL_STORAGE_KEY } from "./constants";
 import axios from "axios";
-import { MainService } from "../module-main/services/api";
 import { notifyError } from "./notify";
 import { decryptStorageData } from "../VectorFlow/Pages/MTO/Common/encryption";
 

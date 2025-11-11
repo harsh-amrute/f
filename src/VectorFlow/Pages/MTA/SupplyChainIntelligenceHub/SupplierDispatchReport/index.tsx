@@ -33,7 +33,9 @@ const SupplierDispatchReport = () => {
     ref,
     agGridProps,
     generalFilterOptions,
-    onResetCallback,
+    onResetCallback,     
+  savePageSize,
+  userPageSize
   } = useSupplierDispatchReport();
 
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
@@ -75,36 +77,42 @@ const SupplierDispatchReport = () => {
         />
       </div>
       <div className={VDRLayout}>
-        {isLoading ? (
-          <VFLoader />
-        ) : (
-          <div style={{ height: "70vh" }}>
-            <VFTable
-              ref={ref}
-              {...agGridProps}
-              columnDefs={VDRColumns}
-              rowData={RowData}
-              height={"100%"}
-              onFilterChanged={() => {
-                const filterModel = ref?.current?.api?.getFilterModel();
-                setIsDisabled(
-                  !(filterModel && Object.keys(filterModel).length > 0)
-                );
-              }}
-              maintainColumnOrder
-            />
-            <div>
-              <VFPagination
-                selectedRows={0}
-                totalRows={SDRCount}
-                currentPage={currentPage}
-                rowsPerPage={parseInt(
-                  SUPPLIER_DISPATCH_REPORT_PER_PAGE || "100"
-                )}
-                handleChangePage={(e) => GetSDRData(e)}
-                resetGridRef={ref}
+      {(isLoading )?(
+          <VFLoader/>
+        ):
+      (<div style={{height:'70vh'}}>
+       <VFTable
+                  ref={ref}
+                  {...agGridProps}
+                  columnDefs={VDRColumns}
+                  rowData={RowData}
+                  height={'100%'}
+                  onFilterChanged={() => {
+                    const filterModel = ref?.current?.api?.getFilterModel();
+                    if (filterModel && Object.keys(filterModel).length > 0) {
+                      setIsDisabled(false);
+                    } else {
+                      setIsDisabled(true);
+                    }
+                }}
+                  maintainColumnOrder
+        />
+        <div>
+          {
+              RowData?.length &&
+        <VFPagination 
+                selectedRows={0} 
+                totalRows={SDRCount} 
+                currentPage={currentPage} 
+                rowsPerPage={userPageSize}
+                handleChangePage={(e)=>GetSDRData(e)} 
+                resetGridRef={ref} 
                 isDisabled={isDisabled}
+                customPageSizeEnabled={true}
+              userPageSize={userPageSize}
+              savePageSize={savePageSize}
               />
+               }
             </div>
           </div>
         )}

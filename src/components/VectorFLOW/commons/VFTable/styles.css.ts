@@ -23,6 +23,7 @@ export const VFTableWrapper = style({
   overflow: 'hidden',
   // if inside a flex parent:
   minWidth: 0,
+  zoom: '1 !important',
 
   // reset margins whether the theme is on this element or its direct child
   // selectors: {
@@ -32,7 +33,7 @@ export const VFTableWrapper = style({
 
   // default behavior (disableZoomScaling = false)
   // TS doesn't love "zoom"—cast is fine.
-  zoom: 0.75 as unknown as string | number,
+  // zoom: 0.75 as unknown as string | number,
 
   '@media': {
     // keep 0.75 between laptop and desktop
@@ -45,13 +46,13 @@ export const VFTableWrapper = style({
     },
   },
 
-    // defaults (zoom scaling ON)
-    vars: {
-      [vHeight]: '600px',   // default height; gets overridden inline
-      [vZoomBase]: '0.75',
-      [vZoomLaptop]: '0.75',
-      [vZoomDesktop]: '1',
-    },  
+  //   // defaults (zoom scaling ON)
+  //   vars: {
+  //     [vHeight]: '600px',   // default height; gets overridden inline
+  //     [vZoomBase]: '0.75',
+  //     [vZoomLaptop]: '0.75',
+  //     [vZoomDesktop]: '1',
+  //   },  
 });
 
 

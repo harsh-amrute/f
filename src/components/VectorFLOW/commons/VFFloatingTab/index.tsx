@@ -1,113 +1,101 @@
-import { useLayoutEffect, useEffect, useState } from "react";
-import { useUserData } from "../../../../context";
+import { useEffect, useState } from 'react'
+import { useUserData } from '../../../../context'
 import {
   VFFloatingTabWrapper,
   VFFloatingTabButton,
-  VFFloatingTabButtonActive,
-  VFFloatingTabButtonInactive,
   VFFloatingTabButtonActiveShadow,
-} from "./styles.css";
-import * as globalStyles from "../../../../styles/global";
+  tabTextColorVar,
+  shadowLeftVar,
+  shadowWidthVar,
+  shadowBgVar,
+} from './styles.css'
+import * as globalStyles from '../../../../styles/global'
+import { assignInlineVars } from '@vanilla-extract/dynamic'
 
 export interface VFFloatingTabItemProps {
-  label: string;
-  value: string;
-  id: string;
+  label: string
+  value: string
+  id: string
 }
 
 export interface VFFloatingTabProps {
-  tabs: Array<VFFloatingTabItemProps>;
-  defaultTab?: number;
-  handleClick?: (item: VFFloatingTabItemProps, index: number) => void;
+  tabs: Array<VFFloatingTabItemProps>
+  defaultTab?: number
+  handleClick?: (i: any) => void
 }
 
 interface ActiveShadowDataType {
-  width: number;
-  left: number;
+  width: number | string | undefined
+  left: number | string | undefined
 }
 
-const VFFloatingTab = ({ tabs, defaultTab = 0, handleClick }: VFFloatingTabProps) => {
-  const { user } = useUserData();
-  const themeUi = user?.user?.theme_ui ?? "DEFAULT";
+const VFFloatingTab = (props: VFFloatingTabProps) => {
+  const { tabs, defaultTab = 0, handleClick } = props
+  const { user } = useUserData()
+  const themeUi = user?.user?.theme_ui ?? 'DEFAULT'
 
-  const [activeIndex, setActiveIndex] = useState<number>(defaultTab);
-  const [activeShadowData, setActiveShadowData] = useState<ActiveShadowDataType | null>(null);
-
-  const measureActive = (idx: number) => {
-    const targetId = tabs[idx]?.id;
-    if (!targetId) return;
-    const el = document.getElementById(targetId);
-    if (!el) return;
-    setActiveShadowData({
-      left: el.offsetLeft,
-      width: el.offsetWidth,
-    });
-  };
-
-  useLayoutEffect(() => {
-    setActiveIndex(defaultTab);
-    measureActive(defaultTab);
-  }, [tabs, defaultTab]);
+  const [activeIndex, setActiveIndex] = useState<number>(defaultTab)
+  const [activeShadowData, setActiveShadowData] =
+    useState<ActiveShadowDataType | null>(null)
 
   useEffect(() => {
-    let raf = 0;
-    const onResize = () => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => measureActive(activeIndex));
-    };
-    window.addEventListener("resize", onResize);
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("resize", onResize);
-    };
-  }, [activeIndex, tabs]);
-
-  const onClick = (e: React.MouseEvent<HTMLButtonElement>, index: number) => {
-    setActiveIndex(index);
+    const el = document.getElementById(tabs[defaultTab].id)
     setActiveShadowData({
-      left: (e.currentTarget as HTMLButtonElement).offsetLeft,
-      width: (e.currentTarget as HTMLButtonElement).offsetWidth,
-    });
-    if (handleClick) handleClick(tabs[index], index);
-  };
+      left: el?.offsetLeft,
+      width: el?.offsetWidth,
+    })
+  }, [])
 
-  // Theme color (fallbacks)
-  const activeBg =
-    globalStyles?.chooseThemeColor?.[themeUi]?.colorButton ??
-    (themeUi === "REGALBLAZE" ? "#FCA311" : "#BC3D81");
+  const onClick = (e: any, index: number) => {
+    setActiveShadowData({
+      left: e.currentTarget.offsetLeft,
+      width: e.currentTarget.offsetWidth,
+    })
+    setActiveIndex(index)
+    if (handleClick) handleClick(tabs[index])
+  }
+
+  // theme button background (same logic as before)
+  const activeBg = globalStyles.chooseThemeColor[themeUi].colorButton
 
   return (
     <div className={VFFloatingTabWrapper}>
-      {activeShadowData && (
-        <div
-          className={VFFloatingTabButtonActiveShadow}
-          style={{
-            left: activeShadowData.left,
-            width: activeShadowData.width,
-            background: activeBg,
-          }}
-          aria-hidden
-        />
-      )}
-
-      {tabs.map((t, index) => (
+      {tabs.map((t: VFFloatingTabItemProps, index: number) => (
         <button
           id={t.id}
-          key={t.id}
+          key={index}
           type="button"
+          className={VFFloatingTabButton}
           onClick={(e) => onClick(e, index)}
-          className={
-            `${VFFloatingTabButton} ` +
-            (index === activeIndex ? VFFloatingTabButtonActive : VFFloatingTabButtonInactive)
-          }
           data-testid="floatingTabButton"
+          style={assignInlineVars({
+            [tabTextColorVar]: index === activeIndex ? 'white' : '#2E2E2E',
+          })}
           aria-pressed={index === activeIndex}
         >
           {t.label}
         </button>
       ))}
-    </div>
-  );
-};
 
-export default VFFloatingTab;
+      {activeShadowData && (
+        <div
+          className={VFFloatingTabButtonActiveShadow}
+          style={assignInlineVars({
+            [shadowBgVar]: activeBg,
+            [shadowLeftVar]:
+              typeof activeShadowData.left === 'number'
+                ? `${activeShadowData.left}px`
+                : `${activeShadowData.left || 0}`,
+            [shadowWidthVar]:
+              typeof activeShadowData.width === 'number'
+                ? `${activeShadowData.width}px`
+                : `${activeShadowData.width || 0}`,
+          })}
+          aria-hidden
+        />
+      )}
+    </div>
+  )
+}
+
+export default VFFloatingTab

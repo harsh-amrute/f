@@ -49,19 +49,24 @@ const EditEnvConfig = (props: { data: any; cb: () => void }) => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleChangeValue = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    if (data?.Datatype === "Number") {
-      const naturalNumberRegex = /^[1-9]\d*$/;
-      if (value === "" || naturalNumberRegex.test(value)) {
-        setFormData({ ...formData, [name]: value });
-      }
-    } else {
-      setFormData({ ...formData, [name]: value });
+const handleChangeValue = (
+  e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+) => {
+  const { name, value } = e.target;
+  if (data?.Datatype === "Number") {
+    const numberRegex = /^\d*$/; 
+    if (!numberRegex.test(value)) {
+      return; 
     }
-  };
+    if (data?.ConfigKey?.endsWith("PAGE") && value !== "" && parseInt(value, 10) > 5000) {
+        notifyError("Value for ROWS PER PAGE configuration cannot exceed 5000.");
+        return;
+    }
+    setFormData({ ...formData, [name]: value });
+  } else {
+    setFormData({ ...formData, [name]: value });
+  }
+};
 
   const isChanged = useMemo((): boolean => {
     return JSON.stringify(formData) !== JSON.stringify(data);

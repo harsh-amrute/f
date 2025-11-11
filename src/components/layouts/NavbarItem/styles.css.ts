@@ -80,7 +80,7 @@ export const SCIconMenu = recipe({
     position: 'absolute',
     right: '-24px',
     width: '40px',
-    zIndex: 20,
+    zIndex: 300,
     borderRadius: '50%',
     cursor: 'pointer',
     marginTop: '20px',

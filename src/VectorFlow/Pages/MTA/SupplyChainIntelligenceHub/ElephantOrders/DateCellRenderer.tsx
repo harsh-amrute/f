@@ -10,9 +10,7 @@ import {
   buttonWrapper,
   imageWrapper,
   calendarBase,
-  calendarRegal,
-  calendarMagenta,
-  calendarPopup,
+  // calendarPopup,
 } from "./styles.css";
 
 interface AGGridProps {
@@ -140,12 +138,12 @@ const DateCellRenderer = (props: AGGridProps) => {
         ReactDOM.createPortal(
           <div
             ref={calendarRef}
-            className={calendarPopup}
+            // className={calendarPopup}
             style={{ top: calendarPosition.top, left: calendarPosition.left }}
           >
             <Calendar
               className={`${calendarBase} ${
-                themeUi === "REGALBLAZE" ? calendarRegal : calendarMagenta
+                themeUi === "REGALBLAZE" ? "regalblaze" : "magenta"
               }`}
               onChange={handleCalendarChange}
               value={value ? new Date(value) : new Date()}

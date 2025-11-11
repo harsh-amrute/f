@@ -17,21 +17,26 @@ import {
   headerTextVar,
   contentLRVar,
   contentBgVar,
+  heightVar,
+  headerBorderRadius,
+  headerPadding,
+  absolutePosition
 } from "./styles.css";
 import { noop } from "lodash";
 
 interface VFModalProps {
   openModal: boolean;
   closeModal?: () => void;
-  headerText?: string | ReactNode;
-  headerIcon: string;
-  children: ReactNode;
-  paddingLeftAndRight?: number;
-  headerBgColor?: string;
-  headerTextColor?: string;
-  closeIcon?: string;
-  backgroundColor?: string;
-  zoom?: string;
+  headerText?:string | ReactNode;
+  headerIcon:string;
+  children:ReactNode;
+  paddingLeftAndRight?:number;
+  headerBgColor?:string;
+  headerTextColor?:string;
+  closeIcon?:string;
+  backgroundColor?:string;
+  zoom?:string;
+  absolute?:boolean;
 }
 
 const VFModalCard = ({
@@ -45,7 +50,8 @@ const VFModalCard = ({
   headerBgColor,
   headerTextColor,
   backgroundColor,
-  zoom = "1",
+  zoom = '1',
+  absolute
 }: VFModalProps) => {
   const resolvedLR =
     paddingLeftAndRight === 0
@@ -54,6 +60,7 @@ const VFModalCard = ({
       ? `${paddingLeftAndRight}px`
       : "74px";
 
+      console.log(headerBgColor,"headerBgColor");
   return (
     <>
       {
@@ -94,10 +101,12 @@ const VFModalCard = ({
                       }}
                     >
                       <div
-                        className={VFHeaderWrapper}
-                        style={assignInlineVars({
-                          [headerBgVar]: headerBgColor ?? "#FFFFFF",
-                        })}
+                        className={`${VFHeaderWrapper} ${absolute ? absolutePosition : ""}`}
+                        style={{backgroundColor: headerBgColor, ...assignInlineVars({
+                          [heightVar]: absolute ? '44px' : '40px', 
+                          [headerBorderRadius]: absolute ? '12px 12px 0 0' : '0 0 12px 12px',
+                          [headerPadding] : absolute ? '0 12px' : '0',
+                        })}}
                       >
                         <div className={SCHeader}>
                           {headerIcon.length > 0 && (

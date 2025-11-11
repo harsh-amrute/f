@@ -40,5 +40,6 @@ export interface MTAStore{
         currentCategory:string
         currentView:string
     },
+    lastRunDate:string,
     EnvConfig:any
 }

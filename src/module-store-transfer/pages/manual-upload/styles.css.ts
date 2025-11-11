@@ -137,17 +137,12 @@ export const SCManualUploadInput = style({});
 
 /* big “Upload” CTA */
 export const SCManualUploadBtn = style({
-  background: `var(${manualBtnBgVar})`,
-  borderRadius: 6,
-  fontSize: '2.2rem',
-  color: '#ffffff',
-  padding: '10px 40px',
-  border: 'none',
-  display: 'inline-flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  gap: 12,
-  cursor: 'pointer',
+  background: manualBtnBgVar,
+  borderRadius: "6px",
+  fontSize:"2.2rem",
+  color: "rgb(255, 255, 255)",
+  padding: "10px 40px",
+  border: "none",
   selectors: {
     '&:disabled': {
       background: 'gray',
@@ -168,12 +163,53 @@ export const SCManualImgUpload = style({
 //     pointerEvents: "none"
 // })
 
-export const fileuploader_input = style({
+// export const fileuploader_input = style({
+// });
+
+// globalStyle(`drop_area input`, {
+//     display: "block",
+//     opacity: 0,
+//     position: "absolute",
+//     pointerEvents: "none"
+// })
+
+
+export const drop_area = style({
+  // position: "relative",
+  // border: "2px dashed #4a90e2",
+  // borderRadius: "8px",
+  // padding: "2rem",
+  // textAlign: "center",
+  // backgroundColor: "#fafafa",
+  // cursor: "pointer",
+  // transition: "background-color 0.3s ease",
+
+  // ":hover": {
+  //   backgroundColor: "#f0f8ff",
+  // },
+
+  // 🔥 Target the internal <input type="file">
+  // selectors: {
+  //   [`& input[type="file"]`]: {
+  //     opacity: 0,
+  //     position: "absolute",
+  //     width: "100%",
+  //     height: "100%",
+  //     top: 0,
+  //     left: 0,
+  //     cursor: "pointer",
+  //   },
+  // },
 });
 
-globalStyle(`drop_area input`, {
-    display: "block",
-    opacity: 0,
-    position: "absolute",
-    pointerEvents: "none"
-})
+/** Make the *internal* <input type="file"> invisible but clickable */
+globalStyle(`${drop_area} input[type="file"]`, {
+  opacity: 0,
+  position: "absolute",
+  // width: "100%",
+  // height: "100%",
+  // top: 0,
+  // left: 0,
+  cursor: "pointer",
+});
+

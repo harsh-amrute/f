@@ -24,7 +24,6 @@ import VFPagination from "../../../../../VectorFlow/Pages/MTO/Common/VFPaginatio
 
 const BPR = () => {
   const {
-    // isSideBarOpen,
     isSubGridOpen,
     isLoading,
     activeRow,
@@ -61,6 +60,8 @@ const BPR = () => {
     lastRunDate,
     generalFilterOptions,
     onResetCallback,
+    savePageSize,
+    userPageSize,
   } = useBPR();
 
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
@@ -186,10 +187,13 @@ const BPR = () => {
                     selectedRows={0}
                     totalRows={recordCount}
                     currentPage={currGridPage}
-                    rowsPerPage={rowsPerPage}
+                    rowsPerPage={userPageSize}
                     handleChangePage={handleOnPageChange}
                     resetGridRef={ref}
                     isDisabled={isDisabled}
+                    customPageSizeEnabled={true}
+                    userPageSize={userPageSize}
+                    savePageSize={savePageSize}
                   />
                   <VFSaveRemark onSubmitRemarks={onSubmitRemarks} />
                 </>

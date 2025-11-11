@@ -149,7 +149,7 @@ const GridViewTable = ({
                 colDefs={[
                   {
                     headerName: "Stock at Parent",
-                    colId: "sap",
+                    colId: "slt",
                     field: "sap",
                   },
                   {

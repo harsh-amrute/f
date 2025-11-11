@@ -90,15 +90,17 @@ export const VFTableWrapper = style({
   /* sensible defaults that you can override via vars */
   vars: {
     [vfHeightVar]: "auto",
-    [vfZoomMdVar]: "0.75", // matches your previous default when disableZoomScaling was false
+    // [vfZoomMdVar]: "1", // matches your previous default when disableZoomScaling was false
   },
+  zoom: '1 !important',
 
   position: "relative",
   width: "100%",
   display: "flex",
   margin: "20px 0",
   height: vfHeightVar, // use the var for height
-  zoom: "1", // default zoom
+  // zoom: "1", // default zoom
+  overflow: 'hidden',
 
   /* Flex the AG grid content */
   // selectors: {
@@ -149,13 +151,13 @@ globalStyle(`${VFTableWrapper} :global(.ag-paging-panel)`, {
 });
 
 globalStyle(`${VFTableWrapper} :global(.ag-status-bar)`, {
-  zIndex: 2,
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  border: "none",
-  width: "calc(100% - 230px)",
-  position: "absolute",
-  bottom: 0,
+  zIndex: '2 !important',
+  display: "flex !important",
+  justifyContent: 'space-between !important',
+  alignItems: 'center !important',
+  border: 'none !important',
+  width: 'calc(100% - 230px) !important',
+  position: 'absolute',
+  bottom: '0px !important',
 });
 

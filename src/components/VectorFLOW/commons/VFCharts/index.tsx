@@ -138,7 +138,7 @@ const VFCharts = (props: any) => {
       style={{
         ...containerStyle,
         ...assignInlineVars({
-          [chartHeightVar]: height ?? "auto",
+          [chartHeightVar]: height,
         }),
       }}
     >

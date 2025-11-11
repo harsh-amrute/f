@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import VFTable from "../../../Common/VFTable";
-import { VFTableWrapper, vfHeightVar, vfZoomMdVar } from "./styles.css";
+import { VFTableWrapper, vfHeightVar } from "./styles.css";
 import {
   gridFilterWrapper,
   textBtn,
@@ -116,53 +116,63 @@ const ResizableTable = (props: IResizeTableProps) => {
     </div>
   );
 
+
+
   return (
     <div
       className={VFTableWrapper}
       style={assignInlineVars({
         // optional overrides; these default in styles.css.ts if you omit them
-        [vfHeightVar]: height ?? "auto",
-        [vfZoomMdVar]: disableZoomScaling ? "1" : "0.75",
+        [vfHeightVar]: height,
+        // [vfZoomMdVar]: disableZoomScaling ? "1" : "0.75",
       })}
     >
-      <VFTable
+            <VFTable
         ref={gridRef}
         columnDefs={colDef}
         rowData={data}
         defaultColDef={defaultColDef}
         getRowStyle={getRowStyle}
-        pagination
-        gridOptions={{ sideBar: { toolPanels: ["agColumnsToolPanel"] } }}
+        pagination={true}
+        gridOptions={{
+          sideBar: {
+            toolPanels: ["agColumnsToolPanel"],
+          },
+        }}
         maintainColumnOrder
-        statusBar={{
+        
+        statusBar = {{
           statusPanels: [
             { statusPanel: CustomStatusPanel, align: "left" },
-            {
-              statusPanel: "agTotalAndFilteredRowCountComponent",
-              align: "left",
-            },
+            { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
             {
               statusPanel: "agAggregationComponent",
-              align: "left",
+              align: "left", 
               statusPanelParams: {
-                aggFuncs: ["avg", "sum", "max", "min", "count"],
+                  aggFuncs: ["avg", "sum", "max", "min", "count"],
               },
-            },
-            { statusPanel: customPage, align: "right" },
+          },
+            { statusPanel: customPage, align:'right' }
           ],
-        }}
+        }}  
         paginationPageSize={userPageSize}
-        paginationPageSizeSelector={false}
+        paginationPageSizeSelector={false}        
         onGridReady={(params: any) => {
           params.api.autoSizeAllColumns();
           setCurrentGridRef(gridRef);
-          params.api.addEventListener("filterChanged", () => {
-            const hasFilters =
-              Object.keys(params.api.getFilterModel() || {}).length > 0;
-            setIsDisabled(!hasFilters);
-          });
+          params.api.addEventListener('filterChanged', () => {
+            const filterModel = params.api.getFilterModel();
+            if (Object.keys(filterModel).length > 0) {
+                setIsDisabled(false); 
+            } else {
+                setIsDisabled(true); 
+            }
+            });
         }}
-      />
+
+
+        />
+
     </div>
   );
 };

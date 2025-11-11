@@ -37,7 +37,7 @@ const VFTable = forwardRef((props: VFTableProps, ref: any) => {
     <div
       className={clsx(
         VFTableWrapper,
-        vfNoZoomScale,
+        // vfNoZoomScale,
         getClassName(),
         "ag-theme-alpine" // or whatever AG Grid theme you use
       )}

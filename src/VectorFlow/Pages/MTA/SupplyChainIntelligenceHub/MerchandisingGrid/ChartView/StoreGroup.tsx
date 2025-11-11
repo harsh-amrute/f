@@ -28,9 +28,11 @@ import { FloatingStoreDataType } from "../../../.././../types/MCGrid";
 import {
   getMCGridStoreIconColor,
   getMCGridStoreImgSrc,
+  storeCellColors
 } from "../../../../../../helpers/utils";
 import { StoreHoveredIcon, StoreIcon } from "./Icon";
 import { useUserData } from "../../../../../../context";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 
 type Props = { status: string; data: FloatingStoreDataType };
 
@@ -74,11 +76,10 @@ const StoreGroup: React.FC<Props> = ({ status, data }) => {
   return (
     <div
       className={ViewGridCell}
-      style={{
-        // supply runtime values for vars
-        [cellBgVar as any]: "white",
-        [cellBorderVar as any]: borderAccent,
-      }}
+      style={assignInlineVars({
+        [cellBgVar as any]: storeCellColors[status].backgroundColor,
+        [cellBorderVar as any]: storeCellColors[status].border,
+      })}
     >
       <div
         className={CellIconWrapper}
@@ -145,9 +146,9 @@ const StoreGroup: React.FC<Props> = ({ status, data }) => {
 
         <div
           className={ContributionHiddenSection}
-          style={{
-            [hiddenWidthVar as any]: isContributionOpen ? "auto" : "0",
-          }}
+          style={assignInlineVars({
+            [hiddenWidthVar]: isContributionOpen ? "auto" : "0",
+          })}
         >
           <img
             className={ContributionIcon}

@@ -27,8 +27,10 @@ import VFMultiFilter from "../../../../components/VectorFLOW/commons/VFMultiFilt
 import * as globalStyles from "../../../../styles/global";
 import useGetLocation from "../../../../hooks/useGetLocation";
 import useGetlastRunData from "../../../../hooks/useGetLastRunData";
-import { skeleton } from "../../../commons/styled/index.css";
 import { LastRunDateHeader } from "../../../../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/Planning/ActionToolBar/styles.css";
+import MTAVFMultiFilter from "../../../../VectorFlow/Pages/MTA/Common/MTAVFMultiFilter";
+
+import { skeleton } from "../../../commons/styled/index.css";
 
 interface CountProp {
   childMonitorCount: number;
@@ -79,8 +81,12 @@ const SelectCategory = (props: CountProp) => {
   const themeUi = user.user.theme_ui;
 
   const currentTheme = globalStyles.chooseThemeColor[themeUi];
-
+  const handleResetFilters = () => {
+    console.log("Filters reset");
+    // Handle reset logic if needed beyond the modal
+  };
   const handleApplyFilter = (state: any) => {
+    setMultiFilter(state);
     onApplyFilter(state);
     toggleFilter(false);
   };
@@ -117,17 +123,12 @@ const SelectCategory = (props: CountProp) => {
           </VFButton>
 
           {isFilterOpen && (
-            <VFMultiFilter
-              isFilterOpen={isFilterOpen}
-              onApplyFilter={handleApplyFilter}
-              onGoBack={() => toggleFilter(false)}
+            <MTAVFMultiFilter
+              isOpen={isFilterOpen}
+              onApply={handleApplyFilter}
               multiFilter={multiFilter}
-              setMultiFilter={setMultiFilter}
-              locationFilterActive
-              productFilterActive
-              supplyChainNodeFilterActive
-              supplyChainForLocationCheckBoxList={locations}
-              supplyChainForChildrenOfCheckBoxList={locations}
+              onClose={() => toggleFilter(false)}
+              onReset={handleResetFilters}
             />
           )}
         </div>

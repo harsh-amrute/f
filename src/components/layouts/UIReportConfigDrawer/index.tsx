@@ -8,7 +8,7 @@ import { useUserData } from "../../../context";
 import { useState } from "react";
 import NavigationTab from "../NavigationTab";
 import ViewUiReportConfig from "./View";
-import EditRole from "./Edit";
+import EditReportConfig from "./Edit";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
 import * as globalStyles from "../../../styles/global";
 
@@ -29,7 +29,7 @@ const UIReportConfigDrawer = (props: UIReportConfigDrawerProps) => {
 
   const [activeTab, setActiveTab] = useState(0);
 
-  const onEditRole = (row: any) => {
+  const onEditReportConfig = (row: any) => {
     setCurrTab(3);
     setCurrUIReportConfig(row);
   };
@@ -56,12 +56,12 @@ const UIReportConfigDrawer = (props: UIReportConfigDrawerProps) => {
     >
       {currTab === 0 && (
         <div className={content}>
-          <ViewUiReportConfig onEdit={onEditRole} />
+          <ViewUiReportConfig onEdit={onEditReportConfig} />
         </div>
       )}
       {currTab === 3 && (
         <div className={content}>
-          <EditRole data={currUIReportConfig} cb={resetTab} />
+          <EditReportConfig data={currUIReportConfig} cb={resetTab} />
         </div>
       )}
     </Drawer>

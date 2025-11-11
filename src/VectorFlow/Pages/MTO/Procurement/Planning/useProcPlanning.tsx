@@ -673,7 +673,7 @@ const useProcPlanning = ( appliedFilters: any) => {
                     <div className={TableWrapper}>
                         <VFTable
                             {...agGridProps}
-                            
+                            height={"100%"}
                             columnDefs={colDef}
                             rowData={CompleteAvailableDatas}
                             tooltipHideDelay={100000}
@@ -713,6 +713,7 @@ const useProcPlanning = ( appliedFilters: any) => {
                         <VFTable
                             key={2}
                             {...agGridProps}
+                            height={"100%"}
                             columnDefs={colDef}
                             rowData={ShortageDatas}
                             tooltipHideDelay={100000}
@@ -797,7 +798,7 @@ const useProcPlanning = ( appliedFilters: any) => {
                     <div className={TableWrapper}>
                         <VFTable
                             {...agGridProps}
-                            
+                            height={"100%"}
                             columnDefs={colDef}
                             rowData={CompleteAvailableDatas}
                             tooltipHideDelay={100000}

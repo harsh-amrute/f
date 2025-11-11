@@ -29,7 +29,7 @@ import VFMasterFieldSearch from "../../commons/VFMasterFieldSearch";
 import { useSpring, animated } from "react-spring";
 import Select, { components, StylesConfig } from "react-select";
 import "./styles.css";
-import "./react-select.css";
+// import "./react-select.css";
 
 import { notifyError, notifySuccess } from "../../../../helpers/notify";
 

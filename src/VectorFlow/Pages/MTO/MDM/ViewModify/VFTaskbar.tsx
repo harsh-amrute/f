@@ -275,32 +275,33 @@ const VFTaskBar = (props: VFTaskBarProps) => {
 
     if (mtoSaveData) {
         return (
-<div className={TaskBarContainer} data-testid="taskbar" style={{ width }}>
-<div className={VFTaskBarButtonGroup}>
-<BackButton />
-                    <VFButtonOutline onClick={onExportData} themeUi={themeUi} disabled={false} width={139}>
-                        Export Data
-                    </VFButtonOutline>
-                    {
-                        isMTOExcludeButton &&
+            <div style={{ zoom: 0.8 }}>
+    <div className={TaskBarContainer} data-testid="taskbar" style={{ width }}>
+    <div className={VFTaskBarButtonGroup}>
+    <BackButton />
+                        <VFButtonOutline onClick={onExportData} themeUi={themeUi} disabled={false} width={139}>
+                            Export Data
+                        </VFButtonOutline>
+                        {
+                            isMTOExcludeButton &&
                         
-                        (<VFButton onClick={() => onClearAndExportErrors(false)} themeUi={themeUi} disabled={false} width={183}>
-                            Clear & Export Errors
-                        </VFButton>)
-                    }
-                    <VFButtonOutline style={{display:"none"}} onClick={onMTOSaveAsDraft? onMTOSaveAsDraft: () => { return null; }} themeUi={themeUi} disabled={isMTODraftDisabled} width={139}>
-                        Save As Draft
-                    </VFButtonOutline>
-                    <VFButtonOutline onClick={onMTOSaveData && (!isMTOSaveDataDisabled) ? onMTOSaveData : () => {return null;}} themeUi={themeUi} disabled={isMTOSaveDataDisabled} width={139}>
-                        Save As Task
-                    </VFButtonOutline>
-                </div>
-                <div>
+                            (<VFButton onClick={() => onClearAndExportErrors(false)} themeUi={themeUi} disabled={false} width={183}>
+                                Clear & Export Errors
+                            </VFButton>)
+                        }
+                        <VFButtonOutline style={{ display: "none" }} onClick={onMTOSaveAsDraft ? onMTOSaveAsDraft : () => { return null; }} themeUi={themeUi} disabled={isMTODraftDisabled} width={139}>
+                            Save As Draft
+                        </VFButtonOutline>
+                        <VFButtonOutline onClick={onMTOSaveData && (!isMTOSaveDataDisabled) ? onMTOSaveData : () => { return null; }} themeUi={themeUi} disabled={isMTOSaveDataDisabled} width={139}>
+                            Save As Task
+                        </VFButtonOutline>
+                    </div>
+                    <div>
                         <VFStepper
                             items={getStepperState()}
                         />
                     </div>
-
+                </div>
             </div>
         )
     }

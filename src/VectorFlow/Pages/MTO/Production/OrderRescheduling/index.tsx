@@ -683,7 +683,23 @@ const OrderRescheduling = () => {
   return (
     <>
       <div className={orderReschedulingWrapper}>
-        <MTOActionToolBar /* ...props */ />
+        <MTOActionToolBar
+          comp={"orderReschedule"}
+          themeUi={themeUi}
+          isExcelExport
+          onExcelExportClick={GetExcelData}
+          handleSaveClick={handleSaveClick}
+          handleResetClick={handleResetClick}
+          isAddFilterButton
+          isFilterOpen={isFilterOpen}
+          onAddFilter={onAddFilter}
+          toggleFilter={toggleFilter}
+          onApplyFilter={onApplyFilter}
+          multiFilter={currFilter}
+          setMultiFilter={setCurrFilter}
+          onFilterRemove={onFilterRemove}
+          isMfgSelected={isMfgSelected}
+        />
         {(isLoading || isUpdateUserConfig || isGetUserConfig) && (
           <OverlayLoader />
         )}

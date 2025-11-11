@@ -18,7 +18,7 @@ import LastRunDateComponent from "../../../../../components/commons/lastRundate"
 import DailyDataGraphModal from "../../../../../components/VectorFLOW/commons/DailyDataGraphModal";
 import OverlayLoader from "../../../../../VectorFlow/Pages/MTO/Common/Loader";
 import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons/NormChangeHistoryTable";
-
+import "./style.css";
 const BufferTrendReport = () => {
   const {
     currentTab,
@@ -55,50 +55,60 @@ const BufferTrendReport = () => {
     onResetCallback,
   } = useBTR();
 
-    return (
-        <GridStateContext.Provider
-            value={{
-                ref: currentTab.id === "1" ? techRef : currentTab.id === "2" ? ecoRef : "",
-                exportExcelColumns: exportExcelColumns,
-                setExportExcelColumns: setExportExcelColumns,
-                tempDownloadData: tempDownloadData,
-                setTempDownloadData: setTempDownloadData,
-                exportExcelRowData: exportExcelRowData,
-                setExportExcelRowData: setExportExcelRowData,
-                onResetCallback: onResetCallback
-            }}
-        >
-            <div style={{zoom:0.9,marginLeft:'10px'}}>
-                <ActionToolBar 
-                    view={'grid'} 
-                    setCurrentTab={''} 
-                    currCategory={'BTR'} 
-                    currentTab={currentTab.value} 
-                    tabsList={[]} 
-                    onFloatingTabChange={()=>console.log('')} 
-                    onGoBack={()=>console.log('')} 
-                    onViewChange={()=>console.log('')} 
-                    onExportToExcelCallBack={(pageNumber:number)=>{return onExportToExcelCallBack(pageNumber,currentTab.value)}}
-                    genericRecordCount={parseInt(techTotalRows)}
-                    multiFilter={currFilter}
-                    lastRunDate={lastRunDate}
-                    setMultiFilter={setCurrFilter}
-                    onDelete={onDeleteFilter}
-                    onApplyFilter={onApplyFilter}
-                    horizon={horizon}
-                    onChangeHorizon={(value:number)=>setHorizon(value)}
- 
-                />
-            </div>
-            {lastRunDate && (
-                <LastRunDateComponent lastRunDate={lastRunDate} />
-            )}
-             {
-            showDailyDataGraphModal && <DailyDataGraphModal rowData={dailyData.rowData} chartData={dailyData.chartData} normChangeData={dailyData.normChangeData} masterData={dailyData.masterData} isModalOpen={showDailyDataGraphModal} suggestionData={dailyData.suggestionData} monitoringData={dailyData.monitoringData} skuKey={'SKUCode'} whKey={'LocationName'} />
-        }
-        {
-            showNormChangeHistoryTable && <NormChangeHistoryTable data={dailyData.normChangeData} />
-        }
+  return (
+    <GridStateContext.Provider
+      value={{
+        ref:
+          currentTab.id === "1" ? techRef : currentTab.id === "2" ? ecoRef : "",
+        exportExcelColumns: exportExcelColumns,
+        setExportExcelColumns: setExportExcelColumns,
+        tempDownloadData: tempDownloadData,
+        setTempDownloadData: setTempDownloadData,
+        exportExcelRowData: exportExcelRowData,
+        setExportExcelRowData: setExportExcelRowData,
+        onResetCallback: onResetCallback,
+      }}
+    >
+      <div style={{ zoom: 0.9, marginLeft: "10px" }}>
+        <ActionToolBar
+          view={"grid"}
+          setCurrentTab={""}
+          currCategory={"BTR"}
+          currentTab={currentTab.value}
+          tabsList={[]}
+          onFloatingTabChange={() => console.log("")}
+          onGoBack={() => console.log("")}
+          onViewChange={() => console.log("")}
+          onExportToExcelCallBack={(pageNumber: number) => {
+            return onExportToExcelCallBack(pageNumber, currentTab.value);
+          }}
+          genericRecordCount={parseInt(techTotalRows)}
+          multiFilter={currFilter}
+          lastRunDate={lastRunDate}
+          setMultiFilter={setCurrFilter}
+          onDelete={onDeleteFilter}
+          onApplyFilter={onApplyFilter}
+          horizon={horizon}
+          onChangeHorizon={(value: number) => setHorizon(value)}
+        />
+      </div>
+      {lastRunDate && <LastRunDateComponent lastRunDate={lastRunDate} />}
+      {showDailyDataGraphModal && (
+        <DailyDataGraphModal
+          rowData={dailyData.rowData}
+          chartData={dailyData.chartData}
+          normChangeData={dailyData.normChangeData}
+          masterData={dailyData.masterData}
+          isModalOpen={showDailyDataGraphModal}
+          suggestionData={dailyData.suggestionData}
+          monitoringData={dailyData.monitoringData}
+          skuKey={"SKUCode"}
+          whKey={"LocationName"}
+        />
+      )}
+      {showNormChangeHistoryTable && (
+        <NormChangeHistoryTable data={dailyData.normChangeData} />
+      )}
       <div className={BTRLayoutWrapper}>
         <div className={BTRLayoutTabsWrapper}>
           <div style={{ zoom: 0.6 }}>
@@ -107,23 +117,23 @@ const BufferTrendReport = () => {
               tabs={[
                 {
                   id: "1",
-                  value: "both",
-                  label: "Both On-Hand & Pipeline View",
-                },
-                {
-                  id: "2",
                   value: "on-hand",
                   label: "On-Hand Inv. View",
                 },
                 {
-                  id: "3",
+                  id: "2",
                   value: "pipeline",
                   label: "Pipeline Inv. View",
+                },
+                {
+                  id: "3",
+                  value: "both",
+                  label: "Both On-Hand & Pipeline View",
                 },
               ]}
             />
           </div>
-          {currentTab?.id === "1" && (
+          {currentTab?.id === "3" && (
             <div className={ToggleViewBtnWrapper}>
               <div className={SCViewBackground}>
                 <div
@@ -155,7 +165,7 @@ const BufferTrendReport = () => {
                   </p>
                 </div>
                 <div>
-                  <SCVerticalDivider />
+                  <div className={SCVerticalDivider} />
                 </div>
                 <div
                   className={SCViewContainer}
@@ -188,20 +198,20 @@ const BufferTrendReport = () => {
             </div>
           )}
         </div>
-                {isLoading && <OverlayLoader />}
-                {!isLoading && renderView()}
-                <div style={{ display: 'none' }}>
-                    <VFTable
-                        ref={tempRef}
-                        columnDefs={currentTab.id==='2'?techColDefs:ecoColDefs}
-                        rowData={exportExcelRowData}
-                        {...tempAgGridProps}
-                        maintainColumnOrder={true}
-                    />
-                </div>
-            </div>
-        </GridStateContext.Provider>
-    );
+        {isLoading && <OverlayLoader />}
+        {!isLoading && renderView()}
+        <div style={{ display: "none" }}>
+          <VFTable
+            ref={tempRef}
+            columnDefs={currentTab.id === "2" ? techColDefs : ecoColDefs}
+            rowData={exportExcelRowData}
+            {...tempAgGridProps}
+            maintainColumnOrder={true}
+          />
+        </div>
+      </div>
+    </GridStateContext.Provider>
+  );
 };
 
 export default BufferTrendReport;

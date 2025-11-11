@@ -1,7 +1,7 @@
 import { useRef, useMemo, useState, useEffect } from "react";
 import { Allotment } from "allotment";
 import "allotment/dist/style.css";
-import "./styles.css";
+// import "./styles.css";
 import VFTable from "../../../../../../../../../components/VectorFLOW/commons/VFTable";
 import { type GridRef } from "../../../../../../../../types/MDM";
 import {

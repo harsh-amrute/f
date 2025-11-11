@@ -44,8 +44,9 @@ globalStyle(`${ChildTableWrapper} :global(.ag-header-cell-text)`, {
 });
 
 export const TableWrapper = style({
+
   height: "100%",
-  flex: 1,
+  flex: "1 1 0%",
   width: "100%",
   display: "flex",
   flexDirection: "column",
@@ -66,7 +67,7 @@ export const TableWrapper = style({
   // },
 });
 // children of TableWrapper
-globalStyle(`${TableWrapper} > :global(.ag-theme-alpine)`, {
+globalStyle(`${TableWrapper} > .ag-theme-alpine`, {
   height: "100%",
   width: "100%",
   marginLeft: "3rem",

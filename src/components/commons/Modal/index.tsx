@@ -88,7 +88,7 @@ const Modal = ({
                         loop
                         autoplay
                         style={{
-                          width: "148px",
+                          // width: "148px",
                           height: "148px",
                           marginTop: "50px",
                           background: "transparent",

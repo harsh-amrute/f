@@ -1526,7 +1526,7 @@ const useViewModify = (pageType:string) => {
             return 
           } 
          if(!isConflicts){
-          if(localErrorCount>0 || errorCount>0){
+          if(localErrorCount>0 ){
             
             if(localErrorCount>0){
               errorRowData = createErrorRowData(localErrorData,activeMaster.id)

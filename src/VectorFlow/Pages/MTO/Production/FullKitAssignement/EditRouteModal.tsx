@@ -6,7 +6,7 @@ import {
 } from "../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation";
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard";
 import RouteAssignment from "../../Common/RouteAssignment/RouteAssignment";
-import { ContentWrapper, Text } from "./FullKitAssignment.styled.css";
+import { ContentWrapper, Text } from "./FullKitAssignment.css";
 // import { Rectangle } from "./RectangleMarker";
 import { notifyError } from "../../../../../helpers/notify";
 import _ from "lodash";

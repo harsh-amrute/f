@@ -37,6 +37,8 @@ const ElephantOrder = () => {
     generalFilterOptions,
     onResetCallback,
     onSubmitDueDate,
+    savePageSize,
+    userPageSize,
   } = useElephantOrders();
 
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
@@ -77,9 +79,68 @@ const ElephantOrder = () => {
           onDelete={onDeleteFilter}
         />
       </div>
+
       <div className={eoLayout}>
         {(isLoading || isSavedDataLoading) && <OverlayLoader />}
-        {/* ...rest of your EO layout content... */}
+
+        <div style={{ height: "60vh" }}>
+          <VFTable
+            ref={ref}
+            {...agGridProps}
+            columnDefs={VDRColumns}
+            rowData={RowData}
+            statusBar={{
+              statusPanels: [
+                { statusPanel: "agTotalAndFilteredRowCountComponent", align: "left" },
+                { statusPanel: "agTotalRowCountComponent", align: "left" },
+                { statusPanel: "agFilteredRowCountComponent", align: "left" },
+                { statusPanel: "agSelectedRowCountComponent", align: "left" },
+                { statusPanel: "agAggregationComponent", align: "left" },
+              ],
+            }}
+            height={"100%"}
+            maintainColumnOrder={true}
+            onFilterChanged={() => {
+              const filterModel = ref?.current?.api?.getFilterModel();
+              if (filterModel && Object.keys(filterModel).length > 0) {
+                setIsDisabled(false);
+              } else {
+                setIsDisabled(true);
+              }
+            }}
+          />
+
+          <div>
+            {RowData?.length > 0 ? (
+              <VFPagination
+                selectedRows={0}
+                totalRows={EOCount}
+                currentPage={currentPage}
+                rowsPerPage={
+                  userPageSize ||
+                  parseInt(ELEPHANT_ORDER_ROWS_PER_PAGE || "100", 10)
+                }
+                handleChangePage={(e) => GetEOData(e)}
+                resetGridRef={ref}
+                isDisabled={isDisabled}
+                customPageSizeEnabled={true}
+                userPageSize={userPageSize}
+                savePageSize={savePageSize}
+              />
+            ) : null}
+
+            <VFSave onSubmitDueDate={onSubmitDueDate} />
+          </div>
+        </div>
+
+        <div style={{ display: "none" }}>
+          <VFTable
+            ref={tempRef}
+            columnDefs={VDRColumns}
+            rowData={exportExcelRowData}
+            {...tempAgGridProps}
+          />
+        </div>
       </div>
     </GridStateContext.Provider>
   );

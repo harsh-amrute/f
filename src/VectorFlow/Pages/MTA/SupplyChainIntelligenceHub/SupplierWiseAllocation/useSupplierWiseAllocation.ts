@@ -73,6 +73,7 @@ export const useSupplierWiseAllocation =()=>{
     const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
     const SUPPLY_WISE_ALLOCATION_HUB_ROWS_PER_PAGE = EnvConfig['SUPPLY_WISE_ALLOCATION_HUB_ROWS_PER_PAGE'];   
      const rowsPerPage = parseInt(SUPPLY_WISE_ALLOCATION_HUB_ROWS_PER_PAGE || '5000');
+    const [userPageSize , setUserPageSize]  = useState<number>(SUPPLY_WISE_ALLOCATION_HUB_ROWS_PER_PAGE?parseInt(SUPPLY_WISE_ALLOCATION_HUB_ROWS_PER_PAGE):50)  
 
      const {date:lastRunDate} = useGetLastRunData()
 
@@ -253,12 +254,12 @@ export const useSupplierWiseAllocation =()=>{
     }, []);
 
 
-      const getRecordsCount=async(filter?:any)=>{
+      const getRecordsCount=async(filter?:any , pageSize?:number)=>{
         const payload={
           filters:filter || {},
           paginationParameter: {
             pageNumber: currentPage,
-            recordsPerPage: parseInt(SUPPLY_WISE_ALLOCATION_HUB_ROWS_PER_PAGE || '100')
+            recordsPerPage: pageSize || userPageSize || parseInt(SUPPLY_WISE_ALLOCATION_HUB_ROWS_PER_PAGE || '100')
           }
         }
         const resultCount=await getDataCount(payload);
@@ -266,12 +267,12 @@ export const useSupplierWiseAllocation =()=>{
         setRecordCount(resultCount?.data?.data[0]?.count || 0); 
       }
     
-    const loadGridData = async (pageNo:any,filter?:any)=> {
+    const loadGridData = async (pageNo:any,filter?:any , pageSize ?:number)=> {
         try{
           notifyLoader("loading Grid Data")
           const payload={
             filters:filter || {},
-            paginationParameter:{pageNumber:pageNo,recordsPerPage:rowsPerPage}
+            paginationParameter:{pageNumber:pageNo,recordsPerPage:pageSize || userPageSize || userPageSize}
         }
         const result = await getData(payload);
         setRowData(result.data.data)
@@ -488,7 +489,11 @@ export const useSupplierWiseAllocation =()=>{
         }
       }, [BORCBColumns])
 
-  
+      const savePageSize = async( pageSize:number)=>{
+        setUserPageSize(pageSize)
+        await loadGridData(currentPage,currFilter ,pageSize)
+      await getRecordsCount(currFilter , pageSize)
+    }
      return {   
         ref,    
         isLoading :isUIConfigLoading || isDataLoading || isCountLoading,      
@@ -526,6 +531,8 @@ export const useSupplierWiseAllocation =()=>{
         isRemarkHistoryToolTipOpen,
         setIsRemarkHistoryToolTipOpen,
         remarkHistory,
-        onCloseRemarkHistory
+        onCloseRemarkHistory,
+        savePageSize,
+        userPageSize
     }
 }

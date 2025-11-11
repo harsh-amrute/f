@@ -27,29 +27,46 @@ const AvailabilityTrend = ({
     "#a6a6a6",
     "#cccccc",
     "#d8d8d8",
+    "#4d4d4d",
+    "#e0e0e0",
+    "#f2f2f2",
+    "#1a1a1a",
   ];
 
   const [options, setOptions] = useState({});
-
+  const [locationTypeOrder, setLocationTypeOrder] = useState<string[]>([]);
   useEffect(() => {
     OnHorizonChange(horizon);
   }, [filter]);
 
   const OnHorizonChange = async (hvalue: any) => {
     setHorizon(hvalue);
-    const param = { horison: horizon, filters: filter };
+    const param = { horison: hvalue, filters: filter };
     const AvailabilityTrend = await GetAvailabilityTrend(param);
     const data = AvailabilityTrend?.data?.data;
-
-
 
     if (!data || data.length === 0) {
       setOptions({});
       return;
     }
-    const locationTypes = Array.from(
-      new Set(data.map((d: any) => d.locationtype))
-    );
+    let locationTypes: string[] = Array.from(
+      new Set<string>(data.map((d: any) => String(d.locationtype)))
+    ).sort();
+
+    if (locationTypeOrder.length > 0) {
+      const newTypes = locationTypes.filter(
+        (type: string) => !locationTypeOrder.includes(type)
+      );
+      locationTypes = [
+        ...locationTypeOrder.filter((type: string) =>
+          locationTypes.includes(type)
+        ),
+        ...newTypes,
+      ];
+    } else {
+      setLocationTypeOrder(locationTypes);
+    }
+
     const series = locationTypes.map((locationType, index) => {
       const seriesData = data
         .filter((d: any) => d.locationtype === locationType)
@@ -68,12 +85,10 @@ const AvailabilityTrend = ({
       };
     });
 
-
     const chartProps = { ...chartParams1, series: series };
     const customizedChartProps = generateChartOptions(data, chartProps);
     customizedChartProps.data = data;
     setOptions(customizedChartProps);
-
   };
 
   if (isLoading) {
@@ -86,7 +101,7 @@ const AvailabilityTrend = ({
         setHorizon={setHorizon}
         OnHorizonChange={OnHorizonChange}
         horizon={horizon}
-        styles={{width:'500px'}}
+        styles={{ width: "500px" }}
       />
       <div
         className="Title"
@@ -105,7 +120,7 @@ const AvailabilityTrend = ({
           <VFInfoToolTip infoList={chartParams1.graphInfo} />
         </div>
       </div>
-      <div style={{ height: "85%" , padding:'30px 0px' }}>
+      <div style={{ height: "85%", padding: "30px 0px" }}>
         <AgCharts options={{ ...options, padding: { right: 20, left: 20 } }} />
       </div>
     </div>

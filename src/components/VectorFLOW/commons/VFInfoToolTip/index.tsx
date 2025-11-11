@@ -13,7 +13,7 @@ interface ToolTipPositionType {
 
 const VFInfoToolTip = (props: VFInfoToolTipProps) => {
   const { infoList } = props;
-
+  console.log(infoList, "infoList");
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [tooltipPosition, setTooltipPosition] = useState<ToolTipPositionType>({
     top: 0,
@@ -29,6 +29,7 @@ const VFInfoToolTip = (props: VFInfoToolTipProps) => {
 
     setIsOpen(true);
   };
+  console.log(isOpen, "isOpen");
 
   return (
     <div className={Wrapper}>

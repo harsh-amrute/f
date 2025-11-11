@@ -129,6 +129,8 @@ const ResearchInsights = () => {
     generalFilterOptions,
     onResetCallback,
     lastRunDate,
+        savePageSize,
+        userPageSize,
   } = useResearchInsights();
 
   const { user } = useUserData();
@@ -232,15 +234,21 @@ const ResearchInsights = () => {
                 }
               }}
             />
+                    {
+                    ResearchInsightsData?.length &&
             <VFPagination
               selectedRows={0}
               totalRows={recordCount || 0}
               currentPage={currGridPage}
-              rowsPerPage={rowsPerPage}
+              rowsPerPage={userPageSize}
               handleChangePage={handlePageChange}
               resetGridRef={ref}
               isDisabled={isDisabled}
+                            customPageSizeEnabled={true}
+                            userPageSize={userPageSize}
+                            savePageSize={savePageSize}
             />
+                }
           </React.Fragment>
 
           {/* <ResearchInsightsTableTaskBar>

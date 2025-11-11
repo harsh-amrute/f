@@ -10,7 +10,6 @@ import { handleDownload } from "../../../helpers/utils";
 import { useTranslation } from "react-i18next";
 import { useUserData } from "../../../context";
 import * as globalStyles from "../../../styles/global"; // if you have it
-import './styles.css';
 declare global {
   interface Navigator {
     msSaveBlob: (blob: Blob, fileName: string) => boolean;
@@ -140,8 +139,7 @@ const ManualUpload = () => {
         <div className={ManualStyle.SCManualDrag}>
           <FileUploader
             id="fileInput"
-            classes="drop_area"
-            className={ManualStyle.fileuploader_input}
+            classes={ManualStyle.drop_area}
             type="file"
             name="file"
             multiple
@@ -216,15 +214,15 @@ const ManualUpload = () => {
           </div>
         </div>
         {(() => {
-          const regal =
-            globalStyles?.chooseThemeColor?.["REGALBLAZE"]?.color5 ?? "#FCA311";
-          const altGradient =
-            "linear-gradient(180deg, #bc3d81 0%, #820f4c 100%)";
+          // const regal =
+          //   globalStyles?.chooseThemeColor?.["REGALBLAZE"]?.color5 ?? "#FCA311";
+          // const altGradient =
+          //   "linear-gradient(180deg, #bc3d81 0%, #820f4c 100%)";
           const bg =
             fileUpload && isLoading
               ? themeUi === "REGALBLAZE"
-                ? regal
-                : altGradient
+                ? globalStyles?.chooseThemeColor?.["REGALBLAZE"]?.color5
+                : "linear-gradient(180deg, #bc3d81 0%, #820f4c 100%)"
               : "gray";
 
           return (
@@ -232,7 +230,7 @@ const ManualUpload = () => {
               className={ManualStyle.SCManualUploadBtn}
               onClick={(e) => handleSubmit(e)}
               disabled={!(fileUpload && isLoading)}
-              style={assignInlineVars({ [manualBtnBgVar]: bg })}
+              style={{cursor: `${fileUpload && isLoading ? "" : "not-allowed"}` , ...assignInlineVars({ [manualBtnBgVar]: bg })}}
             >
               <img
                 className={ManualStyle.SCManualImgUpload}

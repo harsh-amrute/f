@@ -37,8 +37,8 @@ const CustomVFTable = forwardRef((props: VFTableProps, ref: any) => {
         return "ag-theme-btr-noir-fusion";
     }
   };
-  const h =
-    typeof props.height === "number" ? `${props.height}px` : props.height;
+  // const h =
+  //   typeof props.height === "number" ? `${props.height}px` : props.height;
 
   // const zoomVars = props.disableZoomScaling
   //   ? { [vZoomBase]: "1", [vZoomLaptop]: "1", [vZoomDesktop]: "1" }
@@ -46,12 +46,12 @@ const CustomVFTable = forwardRef((props: VFTableProps, ref: any) => {
   const className = getClassName();
   return (
     <div
-      className={`${VFTableWrapper} ${className ?? ""} ag-theme-alpine`}
+      className={`${VFTableWrapper} ${className} ag-theme-alpine`}
       role={"table"}
       style={{
         margin: "0px 0px 0px 0px",
         ...assignInlineVars({
-          [vHeight]: h,
+          [vHeight]: props.height,
           // ...zoomVars,
         }),
       }}

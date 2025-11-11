@@ -722,7 +722,6 @@ const MTOViewModify = () => {
         </VFOverlay>
       )}
       {!isSelectMasterOpen && (
-        <div style={{ zoom: 0.8 }}>
           <VFTaskBar
             showSubmittedExportError={errorCount > 0}
             // masterProgress={(!bufferModifyData)?"initial":(bufferModifyData?"editOnline":"editOnlineSubmitted")}
@@ -776,7 +775,6 @@ const MTOViewModify = () => {
             }
             onMTOSaveAsDraft={onMTOSaveAsDraft}
           />
-        </div>
       )}
 
     <VFModalCard key={"key2"} openModal={showModal} closeModal={() => { setShowModal(false) }} headerText={'Warning'} headerIcon={'/assets/img/ist/warning.svg'} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"} paddingLeftAndRight={0} headerTextColor={'black'} backgroundColor={'f4f4f4'} data-testid="vfmultifilter-img" >

@@ -15,19 +15,22 @@ import {
 import { CSSProperties } from "react";
 import { useUserData } from "../../../../context";
 
-export interface VFPaginationProps {
-  selectedRows: number;
-  totalRows: number;
-  currentPage: number;
-  rowsPerPage: number;
-  handleChangePage: (e: any) => void;
-  handleChangePerPage?: (e: any) => void;
-  showTotalItems?: boolean;
-  showPagination?: boolean;
-  style?: CSSProperties;
-  resetGridRef?: any;
-  isDisabled?: any;
-  isClearGridFilter?: boolean;
+export interface VFPaginationProps{
+    selectedRows:number
+    totalRows:number
+    currentPage:number
+    rowsPerPage:number
+    handleChangePage:(e:any)=>void
+    handleChangePerPage?:(e:any)=>void
+    showTotalItems?:boolean,
+    showPagination?:boolean,
+    style?:CSSProperties,
+    resetGridRef?: any,
+    isDisabled?:any,
+    isClearGridFilter?:boolean,
+    customPageSizeEnabled?:any,
+    userPageSize?:number,
+    savePageSize?:(pageSize:number)=>void
 }
 
 const VFPagination = (props: VFPaginationProps) => {

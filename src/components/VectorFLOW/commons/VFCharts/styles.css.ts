@@ -1,4 +1,4 @@
-import { style, createVar } from "@vanilla-extract/css";
+import { style, createVar, globalStyle } from "@vanilla-extract/css";
 import * as gridSystem from "../../../../styles/gridSystem.css";
 
 // runtime var for SCChartContainer height
@@ -24,7 +24,6 @@ export const SCChartContainer = style({
   marginBottom: "10px",
   marginLeft: "5px",
   // default + runtime override
-  vars: { [chartHeightVar]: "auto" },
   height: chartHeightVar,
 });
 
@@ -63,3 +62,14 @@ export const SCHorizontalDivider = style({
   border: "none",
   borderTop: "1px solid #B2B2B2",
 });
+
+// globalStyle('.ag-charts-tooltip', {
+//   background: 'rgba(34, 34, 34, 0.9)',
+//   color: '#fff',
+//   padding: '8px 10px',
+//   borderRadius: 4,
+//   fontSize: '12px',
+//   lineHeight: 1.4,
+//   pointerEvents: 'none',
+//   boxShadow: '0 2px 8px rgba(0,0,0,.25)',
+// });

@@ -15,42 +15,46 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/store/store";
 
-const BuyerOrderReportColorBandwise = () => {
-  const {
-    isLoading,
-    BORCBColumns,
-    agGridProps,
-    rowData,
-    currentPage,
-    recordCount,
-    ref,
-    isSavedDataLoading,
-    handleChangePage,
-    tempRef,
-    tempDownloadData,
-    setTempDownloadData,
-    tempAgGridProps,
-    exportExcelRowData,
-    setExportExcelRowData,
-    exportExcelColumns,
-    setExportExcelColumns,
-    onExportToExcelCallBack,
-    showDailyDataGraphModal,
-    showNormChangeHistoryTable,
-    dailyData,
-    currFilter,
-    setCurrFilter,
-    onDeleteFilter,
-    onApplyFilter,
-    generalFilterOptions,
-    onSubmitRemarks,
-    editedRows,
-    onResetCallback,
-    lastRunDate,
-    isRemarkHistoryToolTipOpen,
-    remarkHistory,
-    onCloseRemarkHistory,
-  } = useBORColorBandwise();
+
+const BuyerOrderReportColorBandwise = ()=>{
+
+    const {     
+     isLoading,      
+        BORCBColumns,
+        agGridProps,
+        rowData,       
+        currentPage,
+        recordCount,
+        ref,
+        isSavedDataLoading,
+        handleChangePage,
+        tempRef,
+        tempDownloadData,
+        setTempDownloadData,
+        tempAgGridProps,
+        exportExcelRowData,
+        setExportExcelRowData,
+        exportExcelColumns,
+        setExportExcelColumns,
+        onExportToExcelCallBack,
+        showDailyDataGraphModal,
+        showNormChangeHistoryTable,
+        dailyData,
+        currFilter,
+        setCurrFilter,
+        onDeleteFilter, 
+        onApplyFilter ,
+        generalFilterOptions,
+        onSubmitRemarks,
+        editedRows,
+        onResetCallback,
+        lastRunDate,
+        isRemarkHistoryToolTipOpen,
+        remarkHistory,
+        onCloseRemarkHistory,
+        savePageSize,
+        userPageSize
+    } = useBORColorBandwise()
 
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
 
@@ -163,10 +167,14 @@ const BuyerOrderReportColorBandwise = () => {
                   selectedRows={0}
                   totalRows={recordCount}
                   currentPage={currentPage}
-                  rowsPerPage={parseInt(BOR_COLORBANDWISE_ROWS_PER_PAGE || '100')}
+                  rowsPerPage={userPageSize || parseInt(BOR_COLORBANDWISE_ROWS_PER_PAGE || '100')}
                   handleChangePage={handleChangePage}
                   resetGridRef={ref} 
-                  isDisabled={isDisabled}/>           
+                  isDisabled={isDisabled}  
+                  customPageSizeEnabled={true}
+                    userPageSize={userPageSize}
+                    savePageSize={savePageSize}  
+                    />       
                 <VFSaveRemark onSubmitRemarks={onSubmitRemarks} />
                 </>
              }

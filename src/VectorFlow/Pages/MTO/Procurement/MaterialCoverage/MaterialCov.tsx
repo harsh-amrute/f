@@ -404,7 +404,7 @@ const MaterialCov = () => {
                 </div>
             <div style={{ display: 'flex', justifyContent: "center", width: "100%" }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: "center", width: "max-content", position: "relative" }}>
-                <div className={textXAxis} style={{ height: 'max-content', position: "absolute", right: "100%" }}>
+                <h3 className={textXAxis} style={{ height: 'max-content', position: "absolute", right: "100%" }}>
                   {MaterialCoverageString.orderPriority}
                   <div style={{
                     width: "85%",
@@ -414,7 +414,7 @@ const MaterialCov = () => {
                     marginLeft: '5px'
                   }}>
                   </div>
-                </div>
+                </h3>
 
                 {/**code goes here */}
                 {

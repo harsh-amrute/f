@@ -10,7 +10,7 @@ import {
   BPRDailyAnalyticsTableRowContainer,
   BPRDailyAnalyticsWrapper,
   BPRDailyAnalyticsTableCellHeader,
-} from "./FullKitAssignment.styled.css";
+} from "./FullKitAssignment.css";
 // import { useSelector } from 'react-redux';
 // import { RootState } from '../../../../../../redux/store/store';
 import { formatNumber } from "../../Procurement/MaterialCoverage/CommonFunc";

@@ -49,7 +49,7 @@ export interface BPRViewTableColDef {
 
 interface BPRViewTableProps {
   colDefs: BPRViewTableColDef[];
-  rowData: any[];
+  rowData: any;
   tablePrefixSrc: string;
   tableHeader: string;
   onRequestExpediting?: () => void;
@@ -80,30 +80,32 @@ const BPRViewTable = (props: BPRViewTableProps) => {
   };
 
   const filteredRows = useMemo((): Array<any> => {
-    if (Array.isArray(rowData)) {
-      return rowData.filter((r) => {
-        return filters.every((f) => {
-          if (f.filterValue === "") {
-            return true;
-          }
+    if (rowData) {
+      if (Array.isArray(rowData)) {
+        return rowData.filter((r: any) => {
+          return filters.every((f) => {
+            if (f.filterValue === "") {
+              return true;
+            }
 
-          if (f.dataType === "number") {
-            return performNumericalOpertionsForBPRViewTableFilter(
-              parseFloat(r[f.colId]),
-              parseFloat(f.filterValue),
+            if (f.dataType === "number") {
+              return performNumericalOpertionsForBPRViewTableFilter(
+                parseFloat(r[f.colId]),
+                parseFloat(f.filterValue),
+                f.query
+              );
+            }
+
+            if (!r[f.colId]) return false;
+
+            return performStringOpertionsForBPRViewTableFilter(
+              String(r[f.colId]).toUpperCase(),
+              f.filterValue.toUpperCase(),
               f.query
             );
-          }
-
-          if (!r[f.colId]) return false;
-
-          return performStringOpertionsForBPRViewTableFilter(
-            String(r[f.colId]).toUpperCase(),
-            f.filterValue.toUpperCase(),
-            f.query
-          );
+          });
         });
-      });
+      }
     }
     return [];
   }, [filters, rowData]);

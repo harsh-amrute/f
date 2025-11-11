@@ -15,7 +15,7 @@ import { useUserData } from "../../../../../context";
 import Select from "react-select";
 import useDataModificationHistory from "./useDataModificationHistory";
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
-import './react-select.css'; // your external sheet (bundled by webpack/MiniCssExtract)
+// import './react-select.css'; // your external sheet (bundled by webpack/MiniCssExtract)
 
 
 const DataModificationHistory = () => {

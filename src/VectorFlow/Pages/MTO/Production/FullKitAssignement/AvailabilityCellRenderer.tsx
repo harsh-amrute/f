@@ -4,7 +4,7 @@ import {
   BTRAvailabiltyCellRenderer,
   progressVar,
 } from "../../../MTA/InsightsAndTrends/BTR/styles.css";
-import { BTRAvailabiltyCellRendererWrapper } from "./FullKitAssignment.styled.css";
+import { BTRAvailabiltyCellRendererWrapper } from "./FullKitAssignment.css";
 import { useUserData } from "../../../../../context";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
 

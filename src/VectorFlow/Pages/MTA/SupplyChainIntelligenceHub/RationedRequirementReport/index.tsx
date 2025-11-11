@@ -40,7 +40,9 @@ const RRR = () => {
   ref,
   generalFilterOptions,
   onResetCallback,
-  lastRunDate
+  lastRunDate,
+  userPageSize,
+  savePageSize
 } = useRRR();
 
   const [isDisabled, setIsDisabled]= useState<boolean>(true)
@@ -134,6 +136,8 @@ const RRR = () => {
                     setIsDisabled(true);
                   }
                 }}
+                onColumnVisible={(params) => params.api.sizeColumnsToFit()}
+                onGridSizeChanged={(params) => params.api.sizeColumnsToFit()}
               />  
             {
             RRRRowData?.length &&  
@@ -141,10 +145,13 @@ const RRR = () => {
                 selectedRows={0} 
                 totalRows={RRRDataCount} 
                 currentPage={currentPage} 
-                rowsPerPage={parseInt(RRR_ROWS_PER_PAGE || '100')}
-                handleChangePage={(e)=>getRRRRowData(e)} 
+                rowsPerPage={userPageSize}
+                handleChangePage={(e)=>getRRRRowData(e , userPageSize)} 
                 resetGridRef={ref} 
                 isDisabled={isDisabled}
+                customPageSizeEnabled={true}
+                    userPageSize={userPageSize}
+                    savePageSize={savePageSize}
               />  
               }
         </div>
