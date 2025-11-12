@@ -25,7 +25,7 @@ function UploadLeftSection({setNoData,setErrorCount, setErrorData, setValidData,
  
   const onDownloadClick = () => {
     downloadGridRef &&  downloadGridRef.current && downloadGridRef.current.api.exportDataAsExcel(
-      {fileName:"User-Data.xlsx", sheetName: "User Data"}
+      {fileName:"User-Data.xlsx", sheetName: "User-Data.xlsx"}
     );
   }
 

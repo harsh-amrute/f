@@ -934,7 +934,8 @@ const useProcPlanning = ( appliedFilters: any) => {
         setShowExcelModal,
         showExcelModal,
         isPivot,
-        getTempGridData
+        getTempGridData,
+        gridRef
     }
 }
 

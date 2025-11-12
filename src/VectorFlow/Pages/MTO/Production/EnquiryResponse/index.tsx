@@ -715,7 +715,8 @@ const EnquiryResponse = () => {
  
     
   const ExcelExport =()=>{
-    gridRef.current?.api?.exportDataAsExcel({ fileName: `Enquiry_Response_${format(Date.now(), "dd/MM/yyyy")}` })
+    const exportName = `Enquiry_Response_${format(Date.now(), "dd-MM-yyyy")}`;
+    gridRef.current?.api?.exportDataAsExcel({ fileName: exportName,sheetName: exportName })
   }
   return (
     <EnquiryWrapper>

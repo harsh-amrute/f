@@ -15,6 +15,7 @@ const DetailCellRenderer = (params: any, childColDef:any) => {
         <div style={{ backgroundColor: 'white' }}>
             <h3 style={{ marginLeft: 20, fontSize: 17 }}>Raw Material Details</h3>
             <VFTable
+                sideBar={false}
                 className='child-grid'
                 columnDefs={columnDef}
                 defaultColDef={{

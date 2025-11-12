@@ -24,7 +24,7 @@ function UploadRightSection({
     if (errorGridRef && errorGridRef.current) {
       errorGridRef.current.api.exportDataAsExcel({
         fileName: "Error-Data.xlsx",
-        sheetName: "User Data",
+        sheetName: "Error-Data.xlsx",
       });
     }
   };

@@ -20,6 +20,7 @@ import useFilter from '../../../../../../hooks/useFilter';
 import { notifyError } from "../../../../../../helpers/notify";
 import useColDef from "../../../../../../hooks/useColDef";
 import BPPRenderer from "../../../Common/BPRRenderer/BPPRenderer";
+import moment from "moment";
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -363,15 +364,32 @@ const OrderAtRisk = () => {
       const getData = async (isExcelExport = false,pageSize?:any) => {
         if(isExcelExport) {
             try {
-              const headersdata = currentGridRef?.current?.api.getColumnState();
-              const formattedFilters = formatFilterJSON(appliedFilters)
-              const body = getBodyForExcelExport({headersdata, filterData : formattedFilters,colDefMap})
-              const response = await getOrderAtRiskDataExcelExport({body , isExcelExport : 1,report_name : FilterPageName.Prod_Order_At_Risk,page_size: pageSize || userPageSize })
+
+              const gridAPi = currentGridRef?.current?.api;
+              if (!gridAPi) {
+                notifyError("Grid is not ready for export");
+                return;
+              }
+              const isPivotMode = gridAPi.isPivotMode();
+              const isRowGroupingActive = gridAPi.getRowGroupColumns().length > 0;
+              const isValueActive =  gridAPi.getValueColumns().length > 0;
+               if (isPivotMode || isRowGroupingActive || isValueActive) {                 
+                               const exportName = `${FilterPageName.Prod_Order_At_Risk}_${moment().format("DD-MM-YYYY")}`;
+                               gridAPi.exportDataAsExcel({
+                               fileName: exportName,
+                               sheetName: exportName
+                               });
+                }else{ 
+                  const headersdata = currentGridRef?.current?.api.getColumnState();
+                  const formattedFilters = formatFilterJSON(appliedFilters)
+                  const body = getBodyForExcelExport({headersdata, filterData : formattedFilters,colDefMap})
+                  const response = await getOrderAtRiskDataExcelExport({body , isExcelExport : 1,report_name : FilterPageName.Prod_Order_At_Risk,page_size: pageSize || userPageSize })
               if(response.status === 200) {
                 DownloadExcel(response,FilterPageName.Prod_Order_At_Risk)
               }else{
                 notifyError("Failed to export data to Excel")
               }
+            }
             } catch (error) {
               notifyError("An error occurred")
               console.log(error)

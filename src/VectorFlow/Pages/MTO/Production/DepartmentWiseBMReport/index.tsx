@@ -1027,11 +1027,14 @@ const DptWiseBMReport = () => {
             if(isPivotMode){
               refGraph1.current?.api?.exportDataAsExcel({
                 fileName: "DepartmentWiseBMReport",
+                sheetName: "DepartmentWiseBMReport",
               });
             }
             else{
               tempGraph.current?.api?.exportDataAsExcel({
                 fileName: "DepartmentWiseBMReport",
+                sheetName: "DepartmentWiseBMReport",
+
               });
             }
         }

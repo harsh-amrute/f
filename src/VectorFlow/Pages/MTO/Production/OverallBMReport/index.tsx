@@ -824,6 +824,9 @@ const handleActionChange = (option: any) => {
       notifyLoader("Preparing data for export...");
       const headersdata = refGraph2?.current?.api?.getColumnState();
       const formatedFilters = formatFilterJSON(appliedFilters);
+
+      const sheetAndFileName = `${FilterPageName.Prod_OverAll_BMReport}__${moment().format("DD_MM_YYYY")}`;
+
       const body = getBodyForExcelExport({headersdata,filterData: formatedFilters,groupedColDefsRef})
           try{
               const response = await getOverallBMReportData({body,isExcelExport : 1,page:currentPage,report_name : FilterPageName.Prod_OverAll_BMReport, page_size: pageSize || userPageSize,isBomExplosion})
@@ -1169,7 +1172,23 @@ const onPivotModeChanged = (event: any) => {
   };
 
   const onExcelExport = () => {
-    if (isPivot) {
+
+    const gridApi = refGraph2.current?.api;
+    console.log("gridApi:", gridApi);
+
+    if (!gridApi) {
+      // Grid might not be ready, notify the user
+      notifyError("Grid is not ready, please wait.");
+      return;
+    }
+
+    const isRowGroupingActive = gridApi.getRowGroupColumns().length > 0;
+    const isValueActive = gridApi.getValueColumns().length > 0;
+
+    console.log("isRowGroupingActive:", isRowGroupingActive);
+    console.log("isValueActive:", isValueActive);
+
+    if (isPivot || isRowGroupingActive || isValueActive) {
       getTempGridData();
     } else {
       if (bomActive) {
@@ -1191,10 +1210,12 @@ const onPivotModeChanged = (event: any) => {
       if (isPivotMode) {
         refGraph2.current?.api?.exportDataAsExcel({
           fileName: "OverallBMReport",
+          sheetName: "OverallBMReport",
         });
       } else {
         tempGridRef.current?.api?.exportDataAsExcel({
           fileName: "OverallBMReport",
+          sheetName: "OverallBMReport",
         });
       }
     }

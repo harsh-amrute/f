@@ -630,8 +630,12 @@ const FOLSummary = () => {
     }
   }, [HeaderData])
 
-  const onExcelExport = ()=>{
-    gridRef.current?.api?.exportDataAsExcel({ fileName: `FOL_Summary_${format(Date.now(), "dd/MM/yyyy")}` })
+  const onExcelExport = () => {
+    const exportName = `FOL_Summary_${format(Date.now(), "dd-MM-yyyy")}`;
+    gridRef.current?.api?.exportDataAsExcel({
+      fileName: exportName,
+      sheetName: exportName 
+    });
   }
 
   return (

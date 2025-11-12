@@ -704,7 +704,7 @@ const PermissionSelectionPage = ({
                   onClick={() => {
                     gridRef.current?.api.exportDataAsExcel({
                       fileName: "UserData.xlsx",
-                      sheetName: "User Data",
+                      sheetName: "UserData.xlsx",
                       columnKeys: ["id", "username", "email", "pwd"],
                     });
                   }}

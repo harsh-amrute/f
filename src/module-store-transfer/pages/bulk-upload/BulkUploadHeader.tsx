@@ -169,7 +169,7 @@ const BulkUploadHeader = ({
           {"Bulk Action"}
         </VFButton>
 
-        {/* Export Button */}
+        {/*Export Button*/}
         <VFButton
           disabled={false}
           style={{ width: "100px", height: "35px", fontSize: "1rem" }}
@@ -177,7 +177,7 @@ const BulkUploadHeader = ({
           onClick={() => {
             gridRef.current.api.exportDataAsExcel({
               fileName: "UserData.xlsx",
-              sheetName: "User Data",
+              sheetName: "UserData.xlsx",
               columnKeys: ["id", "username", "email", "pwd"],
             });
           }}
