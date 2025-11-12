@@ -601,6 +601,8 @@ const useBTR = () => {
     }, [ecoRowData, dateLabels, verticalView, currentTab]);
 
     useEffect(() => {
+        console.log("WEEEE");
+        
     if (initialColumnState) {
         getUserColumnConfig();  
         if(currentTab.id === "1" && techColDefs?.length)     getDataTech(currFilter , 1);
@@ -616,7 +618,7 @@ const useBTR = () => {
         if(currentTab.id === "2"  )     getDataEco(currFilter , 1);
         if(currentTab.id === "3" )     getData(currFilter , 1)
         } 
-    },[currentTab, currFilter]);
+    },[currentTab]);
 
     useEffect(() => {
     if (initialColumnState) {
