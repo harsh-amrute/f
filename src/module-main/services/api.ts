@@ -118,7 +118,7 @@ export namespace MainService {
           await encryptStorageData(resp?.data?.data?.user?.name)
         );
         
-        if (process.env.REACT_APP_VTM_ENABLED ) {
+        if (process.env.REACT_APP_VTM_ENABLED==='True' ) {
           try {
             const user = {...resp.data?.data?.user,roles: resp.data?.data?.roles, app_name: "VFlow 2.0" };
             
