@@ -167,7 +167,6 @@ const LeadTime = () => {
                   const isPivot = gridApi.isPivotMode(); 
                   const isValue = gridApi.getValueColumns().length > 0;
                   const isRowGroup = gridApi.getRowGroupColumns().length > 0;
-                  console.log("isPivot:, isValue:, isRowGroup:", isPivot, isValue, isRowGroup);  
       
                   if(isPivot || isValue || isRowGroup){
                       const exportName = `${FilterPageName.Poogi_Lead_Time}_${moment().format("DD-MM-YYYY")}`;

@@ -1174,7 +1174,6 @@ const onPivotModeChanged = (event: any) => {
   const onExcelExport = () => {
 
     const gridApi = refGraph2.current?.api;
-    console.log("gridApi:", gridApi);
 
     if (!gridApi) {
       // Grid might not be ready, notify the user
@@ -1185,8 +1184,6 @@ const onPivotModeChanged = (event: any) => {
     const isRowGroupingActive = gridApi.getRowGroupColumns().length > 0;
     const isValueActive = gridApi.getValueColumns().length > 0;
 
-    console.log("isRowGroupingActive:", isRowGroupingActive);
-    console.log("isValueActive:", isValueActive);
 
     if (isPivot || isRowGroupingActive || isValueActive) {
       getTempGridData();
