@@ -600,6 +600,16 @@ const useBTR = () => {
         } else return [];
     }, [ecoRowData, dateLabels, verticalView, currentTab]);
 
+
+  useEffect(() => {
+    if (initialColumnState) {
+        getUserColumnConfig();  
+        if(currentTab.id === "1" && techColDefs?.length)     getDataTech(currFilter , 1);
+        if(currentTab.id === "2"  )     getDataEco(currFilter , 1);
+        if(currentTab.id === "3" )     getData(currFilter , 1)
+        } 
+    },[]);
+    
     useEffect(() => {
     if (initialColumnState) {
         getUserColumnConfig();  
@@ -607,7 +617,7 @@ const useBTR = () => {
         if(currentTab.id === "2"  )     getDataEco(currFilter , 1);
         if(currentTab.id === "3" )     getData(currFilter , 1)
         } 
-    },[currentTab, initialColumnState, currFilter]);
+    },[currentTab]);
 
     useEffect(() => {
     if (initialColumnState) {
