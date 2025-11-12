@@ -600,9 +600,7 @@ const useBTR = () => {
         } else return [];
     }, [ecoRowData, dateLabels, verticalView, currentTab]);
 
-    useEffect(() => {
-        console.log("WEEEE");
-        
+    useEffect(() => {  
     if (initialColumnState) {
         getUserColumnConfig();  
         if(currentTab.id === "1" && techColDefs?.length)     getDataTech(currFilter , 1);
