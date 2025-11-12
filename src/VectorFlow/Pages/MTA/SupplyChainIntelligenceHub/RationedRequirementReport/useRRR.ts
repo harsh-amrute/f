@@ -316,9 +316,9 @@ const useRRR =()=>{
             pagination:false,
             sideBar:defaultAgGridSideBarForBPR,      
             defaultColDef:defaultColDefObject,
-            onGridReady,
-            onFirstDataRendered,
-            onGridSizeChanged,    
+            // onGridReady,
+            // onFirstDataRendered,
+            // onGridSizeChanged,    
         }
    
     },[])
