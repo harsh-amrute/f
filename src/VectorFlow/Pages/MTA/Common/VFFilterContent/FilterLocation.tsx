@@ -13,7 +13,12 @@ import {
   useColorThemeStyles,
   useThemeStyles,
 } from "../../../../../hooks/useVFFilterContent";
-import { useFilterRows, stringOpertors } from "./useVFFilterContent";
+import {
+  useFilterRows,
+  stringOpertors,
+  useRowCompletion,
+  useMultiFilterChange,
+} from "./useVFFilterContent";
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import { useUserData } from "../../../../../context";
 import { useSelector } from "react-redux";
@@ -83,10 +88,7 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
     [rowId: number]: { column?: any; operation?: any; value?: any };
   }>({});
 
-  const isRowComplete = (rowId: number) => {
-    const row = rowSelections[rowId];
-    return row && row.operation && row.value && row.value.trim() !== "";
-  };
+  const { isRowComplete } = useRowCompletion(rowSelections);
 
   const [rowFilterIndexMap, setRowFilterIndexMap] = useState<
     Record<number, number>
@@ -262,71 +264,17 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
     setIsInitialized(true);
   }, [multiFilter?.locationFilter?.filters, setFilterRows, resetFilterRows]);
 
-  const onFilterChange = (
-    rowId: number,
-    field: "column" | "operation" | "value",
-    selected: any
-  ) => {
-    const updatedSelections = {
-      ...rowSelections,
-      [rowId]: { ...rowSelections[rowId], [field]: selected },
-    };
-    setRowSelections(updatedSelections);
-
-    const parentId = "locationFilter";
-    const current = updatedSelections[rowId];
-
-    if (
-      current?.column &&
-      current?.operation &&
-      (current?.operation?.value === "hasvalue" ||
-        current?.operation?.value === "hasnovalue" ||
-        (current?.value !== undefined && current?.value !== ""))
-    ) {
-      const newFilter: BPRFilter = {
-        attributeName: current.column.value,
-        value:
-          current?.operation?.value === "hasvalue"
-            ? "hasvalue"
-            : current?.operation?.value === "hasnovalue"
-            ? "hasnovalue"
-            : current.value,
-        operator: current.operation.value,
-        label: current.column.label,
-        name: current.column.name,
-      };
-
-      const existingFilters = (multiFilter[parentId]?.filters ||
-        []) as BPRFilter[];
-      const operationFilters = existingFilters.filter(
-        (f) => !f.name.startsWith("LF6")
-      );
-      const locationFilters = existingFilters.filter((f) => f.name === "LF6");
-
-      const nextFilters = operationFilters.slice();
-      const idx = rowFilterIndexMap[rowId];
-
-      const newIndexMap = { ...rowFilterIndexMap };
-
-      if (typeof idx === "number" && idx >= 0 && idx < nextFilters.length) {
-        nextFilters[idx] = newFilter;
-      } else {
-        nextFilters.push(newFilter);
-        newIndexMap[rowId] = nextFilters.length - 1;
-      }
-
-      isUpdatingFromInternal.current = true;
-      onMultiFilterChange({
-        ...multiFilter,
-        [parentId]: {
-          ...multiFilter[parentId],
-          filters: [...nextFilters, ...locationFilters],
-        },
-      });
-
-      setRowFilterIndexMap(newIndexMap);
-    }
-  };
+  const { onFilterChange } = useMultiFilterChange({
+    parentId: "locationFilter",
+    prefix: "LF",
+    rowSelections,
+    setRowSelections,
+    multiFilter,
+    onMultiFilterChange,
+    rowFilterIndexMap,
+    setRowFilterIndexMap,
+    isUpdatingFromInternal,
+  });
 
   const handleRemoveRowWithFilter = (rowId: number) => {
     if (isMinRows) return;
@@ -499,7 +447,7 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
 
   if (!isInitialized) return null;
 
-  if (isLocationDataLoading) {
+  if (!isInitialized) {
     return <VFLoader />;
   }
 
@@ -569,6 +517,11 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
                   <img
                     src={"/assets/img/MTAVFMultiFilter/Error.svg"}
                     alt="error"
+                    title={
+                      isRowComplete(row.id)
+                        ? "All fields are filled"
+                        : "Must select a column."
+                    }
                   />
                 </IconWrapper>
                 <IconWrapper
