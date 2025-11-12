@@ -177,6 +177,7 @@ export const ColorFilters: React.FC<FilterSectionProps> = ({
       
       isUpdatingFromInternal.current = true;
       onMultiFilterChange(updatedMultiFilter);
+      dispatch(UPDATE_MTA_VF_MULTI_FILTER(updatedMultiFilter))
     }
   };
 
