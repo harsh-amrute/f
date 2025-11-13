@@ -10,6 +10,9 @@ import * as gridSystem from "../../../../../styles/gridSystem.css";
 // const mqLaptopToDesktop = `@media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem.size.desktop})`;
 const mqLaptopToDesktop = `(min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem.size.desktop})`;
 const mqDesktopAndAbove = `(min-width: ${gridSystem.size.desktop})`;
+export const checkboxBgVar = createVar();
+export const sliderHeightVar = createVar();
+export const accentColorVar = createVar();
 
 /* =========================
    Toolbar / containers
@@ -309,3 +312,60 @@ export const DateValue = style({
   borderRadius: "4px",
   minWidth: "180px",
 });
+
+
+// ---- CheckBoxDiv
+export const checkBoxDiv = style({
+  width: "max-content",
+  // styled-components used `text-wrap: nowrap`; the cross-browser equivalent is:
+  whiteSpace: "nowrap",
+  backgroundColor: checkboxBgVar,
+});
+
+// ---- InputCheckBoxTitle
+export const inputCheckBoxTitle = style({
+  fontSize: 16,
+  color: "#000000",
+  fontFamily: "Roboto",
+  fontWeight: "bold",
+  display: "inline",
+  paddingLeft: 2,
+});
+
+// ---- SCChartSliderContainer
+export const scChartSliderContainer = style({
+  display: "flex",
+  // original had both space-between and center; the latter wins
+  justifyContent: "center",
+  gap: 13,
+  alignItems: "center",
+  height: sliderHeightVar,
+});
+
+// ---- RadioGroup
+export const radioGroup = style({
+  display: "flex",
+  minWidth: 200,
+});
+
+// ---- SelectGroup
+export const selectGroup = style({
+  display: "flex",
+  gap: 20,
+});
+
+// ---- ChartHeaderRadioGroup (theme-driven accent-color)
+export const chartHeaderRadioGroup = style({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  // runtime-controlled
+  accentColor: accentColorVar,
+  fontStyle: "normal",
+  fontVariant: "normal",
+  fontWeight: 300,
+  fontSize: 14,
+  lineHeight: "19px",
+  fontFamily: "Roboto",
+});
+

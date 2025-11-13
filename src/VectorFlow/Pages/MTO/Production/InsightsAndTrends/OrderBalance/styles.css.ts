@@ -32,7 +32,7 @@ export const HorizontalViewWrapper = style({
   // },
 });
 /* descendants of HorizontalViewWrapper */
-globalStyle(`${HorizontalViewWrapper} :global(.ag-theme-alpine)`, {
+globalStyle(`${HorizontalViewWrapper} .ag-theme-alpine`, {
   height: "100%",
 });
 globalStyle(`${HorizontalViewWrapper} div[data-testid="vf_pagination"]`, {

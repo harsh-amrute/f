@@ -31,19 +31,23 @@ export interface VFPaginationProps{
     customPageSizeEnabled?:any,
     userPageSize?:number,
     savePageSize?:(pageSize:number)=>void
+    
 }
 
-const VFPagination = (props: VFPaginationProps) => {
-  const {
-    totalRows,
-    currentPage,
-    rowsPerPage,
-    style,
-    handleChangePage,
-    resetGridRef,
-    isDisabled,
-    isClearGridFilter = true,
-  } = props;
+
+const VFPagination  = (props:VFPaginationProps)=>{
+
+    const{
+        totalRows,
+        currentPage,
+        rowsPerPage,
+        style,
+        handleChangePage,
+        resetGridRef,
+        isDisabled,
+        isClearGridFilter = true
+    } = props
+
 
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;

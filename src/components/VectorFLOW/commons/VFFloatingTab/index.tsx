@@ -12,10 +12,10 @@ import {
 import * as globalStyles from '../../../../styles/global'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
 
-export interface VFFloatingTabItemProps {
-  label: string
-  value: string
-  id: string
+export interface VFFloatingTabItemProps{
+    label:string
+    value:string
+    id: string
 }
 
 export interface VFFloatingTabProps {

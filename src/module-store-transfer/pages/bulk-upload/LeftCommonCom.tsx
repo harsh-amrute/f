@@ -1,16 +1,16 @@
 import React from "react";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
 import {
-  HeaderSection,
-  HeaderText,
-  LeftCommonComUploadWrapper,
-  LeftCommonComWrapper,
-  LeftStep,
-  SubText,
-  headerFontSizeVar,
-  headerFontWeightVar,
-  subFontSizeVar,
-  subFontWeightVar,
+  headerSection,
+  headerText,
+  leftCommonComUploadWrapper,
+  leftCommonComWrapper,
+  leftStep,
+  subText,
+  headerTextFontSizeVar,
+  headerTextFontWeightVar,
+  subTextFontSizeVar,
+  subTextFontWeightVar,
 } from "./style.css";
 import ButtonFloat from "../../../../src/components/commons/ButtonFloat";
 
@@ -23,7 +23,7 @@ interface LeftCommonComProps {
   btnImg: string;
   btnStyles?: React.CSSProperties;
   imgStyles?: React.CSSProperties;
-  setNoData?: React.Dispatch<React.SetStateAction<boolean>>;
+  handleClick: (e:any)=>void;
 }
 
 function LeftCommonCom({
@@ -35,19 +35,15 @@ function LeftCommonCom({
   btnImg,
   btnStyles,
   imgStyles,
-  setNoData,
+  handleClick
 }: LeftCommonComProps) {
-  const handleUpload = () => {
-    if (setNoData) {
-      setNoData(false);
-    }
-  };
 
+  
   return (
-    <div className={LeftCommonComWrapper}>
-      <div className={LeftStep}>Step {step}</div>
+    <div className={leftCommonComWrapper}>
+      <div className={leftStep}>Step {step}</div>
 
-      <div className={LeftCommonComUploadWrapper}>
+      <div className={leftCommonComUploadWrapper}>
         <div
           style={{
             display: "flex",
@@ -57,21 +53,21 @@ function LeftCommonCom({
           }}
         >
           <img src={img} alt="" style={imgStyles} />
-          <div className={HeaderSection}>
+          <div className={headerSection}>
             <div
-              className={HeaderText}
+              className={headerText}
               style={assignInlineVars({
-                [headerFontSizeVar]: "1.9rem",
-                [headerFontWeightVar]: "600",
+                [headerTextFontSizeVar]: "1.9rem",
+                [headerTextFontWeightVar]: "600",
               })}
             >
               {headerText}
             </div>
             <div
-              className={SubText}
+              className={subText}
               style={assignInlineVars({
-                [subFontSizeVar]: "1.4rem",
-                [subFontWeightVar]: "300",
+                [subTextFontSizeVar]: "1.15rem",
+                [subTextFontWeightVar]: "300",
               })}
             >
               {subText}
@@ -80,7 +76,7 @@ function LeftCommonCom({
         </div>
 
         <ButtonFloat
-          onClick={handleUpload}
+          onClick={(e:any)=>{handleClick(e)}}
           text={btnText}
           icon={btnImg}
           styles={btnStyles}

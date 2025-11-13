@@ -12,17 +12,16 @@ import {
   noArrows,
 } from './styles.css';
 
-interface Props {
-  savePageSize?: (n: number) => void; // make optional to match parent usage
-  userPageSize?: number;
+interface props {
+  savePageSize?: any;
+  userPageSize: any;
 }
-
 const brandColors = {
   REGALBLAZE: '#CB830E',
   DEFAULT: '#BC3D81',
 } as const;
 
-const CustomPageSizeInput = ({ savePageSize, userPageSize }: Props) => {
+const CustomPageSizeInput = ({ savePageSize, userPageSize }: props) => {
   const { user } = useUserData();
   const themeUi = (user?.user?.theme_ui as keyof typeof brandColors) ?? 'DEFAULT';
 

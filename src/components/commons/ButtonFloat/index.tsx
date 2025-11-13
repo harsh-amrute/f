@@ -4,11 +4,11 @@ import { assignInlineVars } from "@vanilla-extract/dynamic";
 import * as globalStyles from '../../../styles/global'; // keep import
 
 interface ButtonFloatProps {
-  onClick: () => void;
-  text: string;
-  icon: string;
-  styles?: React.CSSProperties;
-  iconStyles?: React.CSSProperties;
+  onClick: any
+  text: string
+  icon: string
+  styles?: React.CSSProperties
+  iconStyles?: React.CSSProperties
 }
 
 const ButtonFloat = ({

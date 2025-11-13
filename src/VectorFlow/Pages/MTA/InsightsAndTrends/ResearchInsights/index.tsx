@@ -72,70 +72,74 @@ import LastRunDateComponent from "../../../../../components/commons/lastRundate"
 import OverlayLoader from "../../../../../VectorFlow/Pages/MTO/Common/Loader";
 import SafeLottie from "../../../../../components/commons/SafeLottie";
 
-const ResearchInsights = () => {
-  const {
-    ref,
-    agGridProps,
-    ResearchInsightsColumns,
-    ResearchInsightsData,
-    isLoading,
-    isUpdatedGraphDataLoading,
-    horizon,
-    graphState,
-    setHorizon,
-    getColor,
-    setCalenderType,
-    handleOnUpdateGraph,
-    redCount,
-    blackCount,
-    whiteCount,
-    expandedGraphId,
-    isGraphOneOpen,
-    selfGraphData,
-    locationGraphData,
-    graphs,
-    setGraphs,
-    calenderType,
-    expandedGraphAllFilterValues,
-    toggleGraphModal,
-    setIsGraphOneOpen,
-    updateGraphState,
-    recordCount,
-    rowsPerPage,
-    currGridPage,
-    isSavedDataLoading,
-    tempRef,
-    tempDownloadData,
-    setTempDownloadData,
-    tempAgGridProps,
-    exportExcelRowData,
-    setExportExcelRowData,
-    exportExcelColumns,
-    setExportExcelColumns,
-    onExportToExcelCallBack,
-    showDailyDataGraphModal,
-    showNormChangeHistoryTable,
-    dailyData,
-    handlePageChange,
-    onApplyFilter,
-    onDeleteFilter,
-    currentFilter,
-    setCurrentFilter,
-    historicalAvailabilityData,
-    isHistoricalAvailabilityLoading,
-    continuousBlack,
-    continuousBlackAndRed,
-    continuousWhite,
-    generalFilterOptions,
-    onResetCallback,
-    lastRunDate,
-        savePageSize,
-        userPageSize,
-  } = useResearchInsights();
 
-  const { user } = useUserData();
-  const themeUi = user.user.theme_ui;
-  const [isDisabled, setIsDisabled] = useState<boolean>(true);
+const ResearchInsights = ()=>{
+
+    const {
+        ref,
+        agGridProps,
+        ResearchInsightsColumns,
+        ResearchInsightsData,
+        isLoading,
+        isUpdatedGraphDataLoading,
+        horizon,
+        graphState,
+        setHorizon,
+        getColor,
+        setCalenderType,
+        handleOnUpdateGraph,
+        redCount,
+        blackCount,
+        whiteCount,
+        expandedGraphId,
+        isGraphOneOpen,
+        selfGraphData,
+        locationGraphData,
+        graphs,
+        setGraphs,
+        calenderType,
+        expandedGraphAllFilterValues,
+        toggleGraphModal,
+        setIsGraphOneOpen,
+        updateGraphState,
+        recordCount,
+        rowsPerPage,
+        currGridPage,
+        isSavedDataLoading,
+        tempRef,
+        tempDownloadData,
+        setTempDownloadData,
+        tempAgGridProps,
+        exportExcelRowData,
+        setExportExcelRowData,
+        exportExcelColumns,
+        setExportExcelColumns,
+        onExportToExcelCallBack,
+        showDailyDataGraphModal,
+        showNormChangeHistoryTable,
+        dailyData,
+        handlePageChange,
+        onApplyFilter,
+        onDeleteFilter,
+        currentFilter,
+        setCurrentFilter,
+        historicalAvailabilityData,
+        isHistoricalAvailabilityLoading,
+        continuousBlack,
+        continuousBlackAndRed,
+        continuousWhite,
+        generalFilterOptions,
+        onResetCallback,
+        lastRunDate,
+        savePageSize,
+        userPageSize
+    } = useResearchInsights()
+
+    const {user} = useUserData()
+    const themeUi = user.user.theme_ui   
+    const [isDisabled, setIsDisabled]= useState<boolean>(true)
+    
+
 
   const getFormattedPercentage = useCallback((number: number) => {
     if (number === 0) return "0";
@@ -178,80 +182,71 @@ const ResearchInsights = () => {
           onUpdateInsight={handleOnUpdateGraph}
           hideUpdateInsightsBtn={graphState === "default"}
         />
-      </div>
-      {lastRunDate && <LastRunDateComponent lastRunDate={lastRunDate} />}
-
-      <div className={ResearchInsightsLayout}>
-        {showDailyDataGraphModal && (
-          <DailyDataGraphModal
-            rowData={dailyData.rowData}
-            chartData={dailyData.chartData}
-            normChangeData={dailyData.normChangeData}
-            masterData={dailyData.masterData}
-            isModalOpen={showDailyDataGraphModal}
-            suggestionData={dailyData.suggestionData}
-            monitoringData={dailyData.monitoringData}
-            skuKey={"SKUCode"}
-            whKey={"WHName"}
-          />
-        )}
-        {showNormChangeHistoryTable && (
-          <NormChangeHistoryTable data={dailyData.normChangeData} />
-        )}
+        </div>
+        {lastRunDate && (
+        <LastRunDateComponent lastRunDate={lastRunDate} />
+      )}
+        
+        
+        <div className={ResearchInsightsLayout}>
+        {
+                showDailyDataGraphModal && <DailyDataGraphModal rowData={dailyData.rowData} chartData={dailyData.chartData} normChangeData={dailyData.normChangeData} masterData={dailyData.masterData} isModalOpen={showDailyDataGraphModal} suggestionData={dailyData.suggestionData} monitoringData={dailyData.monitoringData} skuKey={'SKUCode'} whKey={'WHName'} />
+            }
+            {
+                showNormChangeHistoryTable && <NormChangeHistoryTable data={dailyData.normChangeData} />
+            }
         <div
           className={ResearchInsightsTableWrapper}
           style={{ marginRight: "15px" }}
         >
-          {(isLoading || isSavedDataLoading) && <OverlayLoader />}
-          <React.Fragment>
-            <VFTable
-              height={"100%"}
-              {...agGridProps}
-              ref={ref}
-              columnDefs={ResearchInsightsColumns}
-              rowData={ResearchInsightsData}
-              enableRangeSelection={true} // Added property
-              rowSelection="multiple"
-              statusBar={{
-                statusPanels: [
-                  {
-                    statusPanel: "agTotalAndFilteredRowCountComponent",
-                    align: "left",
-                  },
-                  { statusPanel: "agTotalRowCountComponent", align: "left" },
-                  { statusPanel: "agFilteredRowCountComponent", align: "left" },
-                  { statusPanel: "agSelectedRowCountComponent", align: "left" },
-                  { statusPanel: "agAggregationComponent", align: "left" },
-                ],
-              }}
-              maintainColumnOrder
-              onFilterChanged={() => {
-                const filterModel = ref?.current?.api?.getFilterModel();
-                if (filterModel && Object.keys(filterModel).length > 0) {
-                  setIsDisabled(false);
-                } else {
-                  setIsDisabled(true);
-                }
-              }}
-            />
+                {(isLoading || isSavedDataLoading) && <OverlayLoader/>}
+                    <React.Fragment>
+                        <VFTable
+                            height={"100%"}
+                            {...agGridProps}
+                            ref={ref}
+                            columnDefs={ResearchInsightsColumns}
+                            rowData={ResearchInsightsData}
+                            enableRangeSelection={true} // Added property
+                            rowSelection="multiple"
+                            statusBar = {{
+                                statusPanels: [
+                                { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                                { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                                { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                                { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                                { statusPanel: 'agAggregationComponent', align:'left' },
+                                ],
+                            }}
+                            maintainColumnOrder
+                            onFilterChanged={() => {
+                                const filterModel = ref?.current?.api?.getFilterModel();
+                                if (filterModel && Object.keys(filterModel).length > 0) {
+                                  setIsDisabled(false);
+                                } else {
+                                  setIsDisabled(true);
+                                }
+                            }}
+                            
+                        />
                     {
                     ResearchInsightsData?.length &&
-            <VFPagination
-              selectedRows={0}
-              totalRows={recordCount || 0}
-              currentPage={currGridPage}
-              rowsPerPage={userPageSize}
-              handleChangePage={handlePageChange}
-              resetGridRef={ref}
-              isDisabled={isDisabled}
+                        <VFPagination
+                            selectedRows={0}
+                            totalRows={recordCount || 0}
+                            currentPage={currGridPage}
+                            rowsPerPage={userPageSize}
+                            handleChangePage={handlePageChange}
+                            resetGridRef={ref} 
+                            isDisabled={isDisabled}
                             customPageSizeEnabled={true}
                             userPageSize={userPageSize}
                             savePageSize={savePageSize}
-            />
+                        />
                 }
-          </React.Fragment>
-
-          {/* <ResearchInsightsTableTaskBar>
+                    </React.Fragment>
+                
+                {/* <ResearchInsightsTableTaskBar>
                     <VFButton
                         themeUi={themeUi}
                         onClick={handleOnUpdateGraph}

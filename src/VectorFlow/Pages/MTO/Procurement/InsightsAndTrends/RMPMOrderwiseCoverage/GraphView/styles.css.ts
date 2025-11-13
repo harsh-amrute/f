@@ -32,25 +32,23 @@ export const chartWrapper = style({
 });
 
 /* Descendant rules must use globalStyle, and global classes use :global(...) */
-globalStyle(`${chartWrapper} :global(.chart-wrapper) > div`, {
+globalStyle(`${chartWrapper} .chart-wrapper > div`, {
   height: '100% !important',
 });
 
-globalStyle(
-  `${chartWrapper} :global(.chart-wrapper) > div :global(.ag-charts-wrapper)`,
-  { maxHeight: '100% !important' }
-);
+globalStyle(`${chartWrapper} .chart-wrapper > div .ag-charts-wrapper`, {
+  maxHeight: '100% !important',
+});
 
 globalStyle(
-  `${chartWrapper} :global(.chart-wrapper) > div :global(.ag-charts-wrapper) :global(.ag-charts-canvas)`,
+  `${chartWrapper} .chart-wrapper > div .ag-charts-wrapper .ag-charts-canvas`,
   { height: '100%' }
 );
 
 globalStyle(
-  `${chartWrapper} :global(.chart-wrapper) > div :global(.ag-charts-wrapper) :global(.ag-charts-canvas) > canvas`,
+  `${chartWrapper} .chart-wrapper > div .ag-charts-wrapper .ag-charts-canvas > canvas`,
   { height: '100% !important' }
 );
-
 
 export const graphViewWrapper = style({
   width: '100%',

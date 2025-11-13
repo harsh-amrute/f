@@ -53,13 +53,12 @@ export const TableWrapper = style({
   //   },
   // },
 });
-// child: AG Grid theme (global class)
-globalStyle(`${TableWrapper} > :global(.ag-theme-alpine)`, {
+// ✅ Global descendant rules (no :global() needed)
+globalStyle(`${TableWrapper} > .ag-theme-alpine`, {
   margin: 0,
   height: '100%',
 });
 
-// child: your pagination div (attribute selector is fine)
 globalStyle(`${TableWrapper} > div[data-testid="vf_pagination"]`, {
   marginTop: '0 !important',
 });

@@ -47,95 +47,88 @@ export interface BPRViewTableColDef {
   onCellClicked?: () => void;
 }
 
-interface BPRViewTableProps {
-  colDefs: BPRViewTableColDef[];
-  rowData: any;
-  tablePrefixSrc: string;
-  tableHeader: string;
-  onRequestExpediting?: () => void;
+interface BPRViewTableProps{
+    colDefs:BPRViewTableColDef[]
+    rowData:any
+    tablePrefixSrc:string
+    tableHeader:string
+    onRequestExpediting?:()=>void
 }
 
-const BPRViewTable = (props: BPRViewTableProps) => {
-  const { colDefs, rowData, tablePrefixSrc, tableHeader, onRequestExpediting } =
-    props;
+const BPRViewTable = (props:BPRViewTableProps)=>{
 
-  const onReq = () => {
-    if (onRequestExpediting) {
-      onRequestExpediting();
+    const {
+        colDefs,
+        rowData,
+        tablePrefixSrc,
+        tableHeader,
+        onRequestExpediting
+    } = props
+
+    const onReq = ()=>{
+        if(onRequestExpediting){
+            onRequestExpediting()
+        }
     }
-  };
 
-  const { user } = useUserData();
-  const { theme_ui } = user.user;
+    const {user} = useUserData()
+    const {theme_ui} = user.user
 
-  const [filters, setFilters] = useState<Array<any>>(
-    getFiltersArrayFromColDefs(colDefs)
-  );
-  const onApplyFilter = (key: string, value: string, query: string) => {
-    setFilters((prev) =>
-      prev.map((f) =>
-        f.colId === key ? { ...f, filterValue: value, query: query } : f
-      )
-    );
-  };
-
-  const filteredRows = useMemo((): Array<any> => {
-    if (rowData) {
-      if (Array.isArray(rowData)) {
-        return rowData.filter((r: any) => {
-          return filters.every((f) => {
-            if (f.filterValue === "") {
-              return true;
-            }
-
-            if (f.dataType === "number") {
-              return performNumericalOpertionsForBPRViewTableFilter(
-                parseFloat(r[f.colId]),
-                parseFloat(f.filterValue),
-                f.query
-              );
-            }
-
-            if (!r[f.colId]) return false;
-
-            return performStringOpertionsForBPRViewTableFilter(
-              String(r[f.colId]).toUpperCase(),
-              f.filterValue.toUpperCase(),
-              f.query
-            );
-          });
-        });
-      }
+    const [filters,setFilters] = useState<Array<any>>(getFiltersArrayFromColDefs(colDefs))
+    const onApplyFilter = (key:string,value:string,query:string)=>{
+       setFilters((prev)=>prev.map((f)=>f.colId===key?{...f,filterValue:value,query:query}:f))
     }
-    return [];
-  }, [filters, rowData]);
 
-  const renderRows = () => {
-    if (!filteredRows || filteredRows.length === 0) {
-      return (
-        <div className={BPRViewTableNoDataContainer}>
-          <p className={BPRViewTableNoDataHeader}>No Data To Show</p>
-          <p className={BPRViewTableNoDataText}>
-            Please select a row from above table to view data
-          </p>
-        </div>
-      );
+    const filteredRows = useMemo(():Array<any>=>{
+        if(rowData){
+        if(Array.isArray(rowData)){
+            return rowData.filter((r:any)=>{
+                return filters.every((f)=>{
+                    
+
+                    if(f.filterValue===""){
+                        return true
+                    }
+                    
+                    if(f.dataType==='number'){ 
+                        return performNumericalOpertionsForBPRViewTableFilter(parseFloat(r[f.colId]),parseFloat(f.filterValue),f.query)
+                    }
+
+                    if(!r[f.colId])return false
+
+                    return performStringOpertionsForBPRViewTableFilter(String(r[f.colId]).toUpperCase(),f.filterValue.toUpperCase(),f.query)
+                })
+            })
+        }
     }
-    return (
-      filteredRows &&
-      filteredRows.map((row: any, index: number) => {
-        return (
-          <div className={BPRViewTableRow} key={index}>
-            {colDefs.map((colDef: ColDef, index: number) => {
-              if (colDef.colId) {
-                if (
-                  row[colDef.colId] ||
-                  colDef.colId === "whereabouts" ||
-                  colDef.colId === "request"
-                ) {
-                  if (colDef.colId === "whereabouts") {
-                    return <WhereAboutsCellRenderer value={row} />;
-                  }
+        return []
+    },[filters,rowData])
+
+    const renderRows = ()=>{
+        
+
+        if(!filteredRows || filteredRows.length===0){
+            return(
+              <div className={BPRViewTableNoDataContainer}>
+              <p className={BPRViewTableNoDataHeader}>No Data To Show</p>
+              <p className={BPRViewTableNoDataText}>
+                            Please select a row from above table to view data
+                        </p>
+                    </div>
+            )
+        }
+        return(
+            filteredRows && filteredRows.map((row:any,index:number)=>{
+                return(
+                  <div className={BPRViewTableRow} key={index}>
+                        {
+                            colDefs.map((colDef:ColDef,index:number)=>{
+                                if(colDef.colId){
+                                   if(row[colDef.colId] || colDef.colId==='whereabouts' || colDef.colId==="request"){
+
+                                        if(colDef.colId==='whereabouts'){
+                                            return <WhereAboutsCellRenderer value={row}/>
+                                        }
 
                   if (colDef.colId === "ag") {
                     return <AgeingCellRenderer value={row} />;

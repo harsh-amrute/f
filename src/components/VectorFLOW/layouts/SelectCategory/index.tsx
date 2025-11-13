@@ -76,22 +76,22 @@ const SelectCategory = (props: CountProp) => {
 
   const [isFilterOpen, toggleFilter] = useState<boolean>(false);
 
-  const { user } = useUserData();
-  // const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
-  const themeUi = user.user.theme_ui;
+    const { user } = useUserData()
+    // const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
+    const themeUi = user.user.theme_ui
 
-  const currentTheme = globalStyles.chooseThemeColor[themeUi];
-  const handleResetFilters = () => {
-    console.log("Filters reset");
-    // Handle reset logic if needed beyond the modal
-  };
-  const handleApplyFilter = (state: any) => {
-    setMultiFilter(state);
-    onApplyFilter(state);
-    toggleFilter(false);
-  };
+    const currentTheme = globalStyles.chooseThemeColor[themeUi]
+    const handleResetFilters = () => {
+        console.log('Filters reset');
+        // Handle reset logic if needed beyond the modal
+    };
+    const handleApplyFilter = (state: any) => {
+        setMultiFilter(state)
+        onApplyFilter(state)
+        toggleFilter(false)
+    }
 
-  const { locations } = useGetLocation();
+    const {locations} = useGetLocation()
 
   const getTotalFilterCount = (multiFilter: any) => {
     let total = 0;

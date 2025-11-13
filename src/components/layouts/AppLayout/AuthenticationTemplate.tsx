@@ -1,5 +1,5 @@
 import React, { type PropsWithChildren, useEffect, useRef, useState } from 'react'
-import { getRedirecting, loginRedirect } from '../../../helpers/utils'
+import {getRedirecting, loginRedirect } from '../../../helpers/utils'
 import { MainService } from '../../../module-main/services/api'
 import { useNavigate } from 'react-router'
 import { useUserData } from '../../../context';
@@ -73,12 +73,9 @@ const AuthenticatedTemplate = (
           setLoading(false);
         }
       };
-  
-      if (!user && !getRedirecting()) {
-        verifyUserSession();
-      } else {
-        setLoading(false);
-      }
+      
+      verifyUserSession();
+      
     }, []);
 
 

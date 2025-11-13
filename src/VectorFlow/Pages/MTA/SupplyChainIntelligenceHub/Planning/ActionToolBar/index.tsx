@@ -58,9 +58,9 @@ interface ActionToolBarProps {
   hideUpdateInsightsBtn?: boolean;
   onSubmitEditedRows?: () => void;
   disableSubmitEditedRowsBtn?: boolean;
-  lastRunDate?: string;
-  isPlanning?: boolean;
-  generalFilterOptions?: any;
+  lastRunDate?:string 
+  isPlanning?:boolean,
+  generalFilterOptions?:any
   
 }
 

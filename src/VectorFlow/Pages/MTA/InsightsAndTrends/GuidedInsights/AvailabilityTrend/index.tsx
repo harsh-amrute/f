@@ -31,6 +31,10 @@ const AvailabilityTrend = ({
     "#e0e0e0",
     "#f2f2f2",
     "#1a1a1a",
+    "#4d4d4d",
+    "#e0e0e0",
+    "#f2f2f2",
+    "#1a1a1a",
   ];
 
   const [options, setOptions] = useState({});
@@ -54,19 +58,12 @@ const AvailabilityTrend = ({
     ).sort();
 
     if (locationTypeOrder.length > 0) {
-      const newTypes = locationTypes.filter(
-        (type: string) => !locationTypeOrder.includes(type)
-      );
-      locationTypes = [
-        ...locationTypeOrder.filter((type: string) =>
-          locationTypes.includes(type)
-        ),
-        ...newTypes,
-      ];
+      const newTypes = locationTypes.filter((type: string) => !locationTypeOrder.includes(type));
+      locationTypes = [...locationTypeOrder.filter((type: string) => locationTypes.includes(type)), ...newTypes];
     } else {
       setLocationTypeOrder(locationTypes);
     }
-
+    
     const series = locationTypes.map((locationType, index) => {
       const seriesData = data
         .filter((d: any) => d.locationtype === locationType)
@@ -120,8 +117,8 @@ const AvailabilityTrend = ({
           <VFInfoToolTip infoList={chartParams1.graphInfo} />
         </div>
       </div>
-      <div style={{ height: "85%", padding: "30px 0px" }}>
-        <AgCharts options={{ ...options, padding: { right: 20, left: 20 } }} />
+      <div style={{ height: "85%" , padding:'30px 0px' }}>
+        <AgCharts options={{...options, padding: { right: 20, left: 20 }}} />
       </div>
     </div>
   );

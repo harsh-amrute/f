@@ -17,7 +17,7 @@ export const horizontalViewWrapper = style({
   // },
 });
 // descendants of horizontalViewWrapper
-globalStyle(`${horizontalViewWrapper} :global(.ag-theme-alpine)`, {
+globalStyle(`${horizontalViewWrapper} .ag-theme-alpine`, {
   height: "100%",
   marginTop: "0",
 });
@@ -85,17 +85,17 @@ export const vfTableWrapper = style({
   },
 });
 /* descendants of vfTableWrapper */
-globalStyle(`${vfTableWrapper} :global(.ag-theme-alpine)`, { flex: 1 });
+globalStyle(`${vfTableWrapper} .ag-theme-alpine`, { flex: 1 });
 
-/* bump specificity by repeating the parent if needed instead of "&&" */
-globalStyle(`${vfTableWrapper}${vfTableWrapper} :global(.ag-paging-panel)`, {
+/* bump specificity by repeating the parent instead of "&&" */
+globalStyle(`${vfTableWrapper}${vfTableWrapper} .ag-paging-panel`, {
   zIndex: 1,
   fontSize: "11px",
   fontFamily: "Roboto",
   position: "relative",
 });
 
-globalStyle(`${vfTableWrapper}${vfTableWrapper} :global(.ag-status-bar)`, {
+globalStyle(`${vfTableWrapper}${vfTableWrapper} .ag-status-bar`, {
   zIndex: 2,
   display: "flex",
   justifyContent: "space-between",
@@ -106,4 +106,3 @@ globalStyle(`${vfTableWrapper}${vfTableWrapper} :global(.ag-status-bar)`, {
   backgroundColor: "white",
   width: "100%",
 });
-

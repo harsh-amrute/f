@@ -1,45 +1,101 @@
 import {
-  HeaderText,
-  RightSectionWrapper,
-  headerFontSizeVar,
-  headerFontWeightVar,
+  headerText,
+  rightSectionWrapper,
+  headerTextFontSizeVar,
+  headerTextFontWeightVar,
 } from "./style.css";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
 import ProgressBox from "./ProgressBox";
 import RightSectionFilePanel from "./RightSectionFilePanel";
+import VFTable from "../../../VectorFlow/Pages/MTO/Common/VFTable";
+import { GridRef } from "../../../VectorFlow/types/MDM";
+import { useRef } from "react";
 
 interface UploadRightSectionProps {
-  message: string;
+  errorCount?: number;
+  errorData?: any[];
+  validData?: any[];
+  setIsAssignPageOpen: (e: boolean) => void;
+  progress: number;
 }
 
-function UploadRightSection({ message }: UploadRightSectionProps) {
-  return (
-    <div className={RightSectionWrapper}>
-      <ProgressBox label={"Uploaded Succesfully"} />
-      <div
-        className={HeaderText}
-        style={assignInlineVars({
-          [headerFontSizeVar]: "1.9rem",
-          [headerFontWeightVar]: "600",
-        })}
-      >
-        {message}
-      </div>
+function UploadRightSection({
+  errorData,
+  validData,
+  setIsAssignPageOpen,
+  progress
+}: UploadRightSectionProps) {
+  const errorGridRef = useRef<GridRef>(null);
+  const onErrorFileDownload = () => {
+    if (errorGridRef && errorGridRef.current) {
+      errorGridRef.current.api.exportDataAsExcel({
+        fileName: "Error-Data.xlsx",
+        sheetName: "User Data",
+      });
+    }
+  };
 
+  const onValidDataClick = () => {
+    if (validData) {
+      setIsAssignPageOpen(true);
+    }
+  };
+  return (
+    <div className={rightSectionWrapper}>
+      <ProgressBox label={progress===100?"Uploaded Succesfully":"Uploading file..."}  progress={progress}/>
+      {(progress===100) &&
+      <div
+      className={headerText}
+      style={assignInlineVars({
+        [headerTextFontSizeVar]: "1.9rem",
+        [headerTextFontWeightVar]: "600",
+      })}
+    >
+      {(errorData?.length && errorData.length>0) ? `${errorData.length} rows contain errors` : "No errors found"}
+      </div>
+      }
       <div style={{ display: "flex", flexDirection: "column", gap: "3rem" }}>
-        <RightSectionFilePanel
+        {
+          !!(errorData?.length && (errorData?.length>0) && (progress===100)) &&
+          <RightSectionFilePanel
+          onClick={onErrorFileDownload}
           text={"Error File"}
           img="/assets/img/excel.svg"
-          iconStyles={{ width: "2rem", padding: "0px" }}
-          imgStyles={{ width: "3.5rem" }}
+          iconStyles={{ width: "1.6rem", padding: "0px" }}
+          imgStyles={{ width: "2.5rem", height: "2.5rem"}}
+          disabled = {!(progress==100) && !errorData?.length}
           btnIcon="/assets/img/VectorFLOW/NMS/download.svg"
-        />
-        <RightSectionFilePanel
+          />
+        }
+        {
+          !!(validData && validData.length && (validData?.length>0) && (progress===100)) &&
+          <RightSectionFilePanel
+          onClick={onValidDataClick}
           text={"Assign Roles & Permission"}
           img="/assets/img/excel.svg"
-          iconStyles={{ width: "1.7rem", padding: "0px" }}
-          imgStyles={{ width: "3.5rem" }}
+          iconStyles={{ width: "1.6rem", padding: "0px" }}
+          disabled={!(progress===100) && !validData?.length}
+          imgStyles={{width: "2.5rem", height: "2.5rem" }}
           btnIcon="/assets/img/Open new link icon.svg"
+          />
+        }
+      </div>
+      <div style={{ display: "none" }}>
+        <VFTable
+          ref={errorGridRef}
+          columnDefs={[
+            {
+              headerName: "Error",
+              field: "error",
+              valueFormatter: (params: any) => {
+                return (params?.value || []).map((e: any) => `${e}`).join('\n');
+              }
+            },
+            { headerName: "Username", field: "username" },
+            { headerName: "Email ID", field: "email" },
+            { headerName: "Password", field: "pwd" },
+          ]}
+          rowData={errorData}
         />
       </div>
     </div>

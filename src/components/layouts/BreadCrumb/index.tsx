@@ -119,6 +119,7 @@ const BreadCrumb = () => {
   if (location.pathname === '/mto/manufacturing-intelligence-hub/congestion-analysis/order-balance') return <span>Manufacturing Intelligence Hub <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><span className={boldSpan}>Congestion Analysis / Order Balance</span></span>
 
 
+  if (location.pathname === '/mto/manufacturing-intelligence-hub/future-order-load-chart') return <span>Manufacturing Intelligence Hub <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><span className={boldSpan}>Future Order Load Chart</span></span>
 
 
 
@@ -193,8 +194,8 @@ const BreadCrumb = () => {
   if( location.pathname==='/mto/production/scheduling' && location.search==='?page=GridViewR') return <span>Production Planning & Scheduling<img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><span className={boldSpan}>Scheduling / GridView - Resource List</span></span>
   if( location.pathname==='/mto/production/scheduling' && location.search==='?page=GridViewJ') return <span>Production Planning & Scheduling<img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><span className={boldSpan}>Scheduling / GridView - Job List</span></span>
   if( location.pathname==='/mto/production/scheduling') return <span>Production Planning & Scheduling<img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><span className={boldSpan}>Scheduling / Download-Upload Template</span></span>
-
-
+  
+  if(location.pathname==='/login-audit-report') return <span> {t("breadCrumb.um")} <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> {t("Login Audit Report")}</span>;
 
 
 

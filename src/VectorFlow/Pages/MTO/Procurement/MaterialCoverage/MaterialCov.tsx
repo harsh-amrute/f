@@ -427,7 +427,7 @@ const MaterialCov = () => {
             </div>
 
             <div style={{ display: "flex", justifyContent: "center" }}>
-              <div className={textYAxis} style={{ width: "max-content" }}>
+              <h3 className={textYAxis} style={{ width: "max-content" }}>
                 {MaterialCoverageString.statusKits}
                 <div style={{
                   width: "85%",
@@ -437,7 +437,7 @@ const MaterialCov = () => {
                   marginLeft: '5px'
                 }}>
                 </div>
-              </div>
+              </h3>
             </div>
           </div>
 

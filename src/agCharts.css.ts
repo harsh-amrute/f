@@ -1,6 +1,12 @@
 // agCharts.css.ts
-import { globalStyle } from "@vanilla-extract/css";
+import { globalStyle, createVar } from "@vanilla-extract/css";
 
+/* --- optional custom props you want to reuse in code --- */
+export const tooltipArrowSizeVar = createVar();
+export const tooltipRowSpacingVar = createVar();
+export const tooltipColSpacingVar = createVar();
+
+/* Canvas */
 globalStyle(".ag-charts-canvas-overlay", {
   inset: 0,
   pointerEvents: "none",
@@ -9,6 +15,8 @@ globalStyle(".ag-charts-canvas-overlay", {
 });
 
 globalStyle(".ag-charts-canvas-center", {
+  width: "100%",
+  height: "100%",
   position: "absolute",
   touchAction: "auto",
   pointerEvents: "auto",
@@ -17,48 +25,62 @@ globalStyle(".ag-charts-canvas-center", {
   justifyContent: "center",
 });
 
-/** Tooltip wrapper (singular + fallback plural) */
+/* Tooltip wrapper (legacy + v11) */
 globalStyle(".ag-chart-tooltip, .ag-charts-tooltip", {
-  margin: '0',
-  padding: '0',
-  overflow: 'visible',
-  maxWidth: '100%',
-  zIndex: 99999,
+  position: "fixed",
+  zIndex: 10000,
   width: "max-content",
-  top: "0px",
-  // position: "fixed",
-  fontFamily: 'var(--ag-charts-chrome-font-family)',
-  fontSize: 'var(--ag-charts-chrome-font-size)',
-  fontWeight: 'var(--ag-charts-chrome-font-weight)',
-  color: 'var(--ag-charts-tooltip-text-color)',
-  background: 'var(--ag-charts-tooltip-background-color)',
-  border: 'var(--ag-charts-tooltip-border)',
-  borderRadius: 'var(--ag-charts-tooltip-border-radius)',
-  boxShadow: 'var(--ag-charts-popup-shadow)',
+  maxWidth: "100%",
+  margin: 0,
+  padding: 0,
+  color: "#222",
+  background: "transparent",
+  border: "none",
+  borderRadius: "4px",
+  boxShadow: "none",
+  fontFamily:
+    "system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
+  fontSize: "12px",
+  lineHeight: "1.4",
+  pointerEvents: "none",
 
-  vars: {
-    '--tooltip-arrow-size': '8px',
-    '--tooltip-row-spacing': '8px',
-    '--tooltip-column-spacing': '16px',
-  },
+  // margin: "0",
+  // padding: "0",
+  // overflow: "visible",
+  // maxWidth: "100%",
+  // zIndex: 99999,
+  // width: "max-content",
+  // top: "0px",
+  // position: "fixed", // <— uncommented
+  // fontFamily: "var(--ag-charts-chrome-font-family)",
+  // fontSize: "var(--ag-charts-chrome-font-size)",
+  // fontWeight: "var(--ag-charts-chrome-font-weight)",
+  // color: "var(--ag-charts-tooltip-text-color)",
+  // background: "var(--ag-charts-tooltip-background-color)",
+  // border: "var(--ag-charts-tooltip-border)",
+  // borderRadius: "var(--ag-charts-tooltip-border-radius)",
+  // boxShadow: "var(--ag-charts-popup-shadow)",
+  // vars: {
+  //   [tooltipArrowSizeVar]: "8px",
+  //   [tooltipRowSpacingVar]: "8px",
+  //   [tooltipColSpacingVar]: "16px",
+  // },
 });
 
-/* Title strip */
+/* Title */
 globalStyle(".ag-chart-tooltip-title, .ag-charts-tooltip-title", {
   padding: "6px 12px",
   color: "white",
-  fontWeight: "600",
+  fontWeight: 600,
   fontSize: "13px",
   borderTopLeftRadius: "4px",
   borderTopRightRadius: "4px",
-  backgroundColor: "#355FD3", // AG sets inline sometimes; this is fallback
-    /* 👇 Force consistent width */
-    minWidth: "120px",
-    boxSizing: "border-box",
-  
+  backgroundColor: "#355FD3",
+  minWidth: "120px",
+  boxSizing: "border-box",
 });
 
-/* Content panel */
+/* Content */
 globalStyle(".ag-chart-tooltip-content, .ag-charts-tooltip-content", {
   padding: "8px 12px",
   background: "white",
@@ -68,35 +90,27 @@ globalStyle(".ag-chart-tooltip-content, .ag-charts-tooltip-content", {
   borderBottomLeftRadius: "4px",
   borderBottomRightRadius: "4px",
   border: "1px solid rgba(0,0,0,0.15)",
-    /* 👇 Force consistent width */
-    minWidth: "120px",
-    boxSizing: "border-box",
-  
-});
-/** Optional: guard against resets */
-globalStyle(".ag-chart-tooltip *, .ag-charts-tooltip *", {
+  minWidth: "120px",
   boxSizing: "border-box",
 });
 
-globalStyle(".ag-chart-tooltip-hidden", { visibility: "hidden" });
-globalStyle(".ag-chart-tooltip-title", {
-  padding: "6px 12px",
-  color: "white",
-  fontWeight: 600,
-  fontSize: "13px",
+globalStyle(".ag-chart-tooltip *, .ag-charts-tooltip *", {
+  boxSizing: "border-box",
 });
-// globalStyle(".ag-chart-tooltip-content", {
-//   padding: "8px 12px",
-//   background: "white",
-//   borderRadius: "0 0 4px 4px",
-//   color: "#333",
-//   fontSize: "13px",
-// });
+globalStyle(
+  ".ag-chart-tooltip--hidden, .ag-charts-tooltip--hidden, .ag-chart-tooltip-hidden",
+  { visibility: "hidden", opacity: 0 }
+);
 
+/* Tooltip visible by default (no “hidden” class) */
+globalStyle(".ag-charts-tooltip:not(.ag-charts-tooltip--hidden)", {
+  opacity: 1,
+  visibility: "visible",
+});
 
-/* Optional: arrow like before (for current class that adds `ag-chart-tooltip-arrow`) */
+/* Arrow (legacy class name) */
 globalStyle(".ag-chart-tooltip.ag-chart-tooltip-arrow::before", {
-  content: "",
+  content: '""',
   position: "absolute",
   top: "100%",
   left: "50%",
@@ -110,7 +124,7 @@ globalStyle(".ag-chart-tooltip.ag-chart-tooltip-arrow::before", {
   margin: "0 auto",
 });
 globalStyle(".ag-chart-tooltip.ag-chart-tooltip-arrow::after", {
-  content: "",
+  content: '""',
   position: "absolute",
   top: "calc(100% - 1px)",
   left: "50%",
@@ -123,13 +137,97 @@ globalStyle(".ag-chart-tooltip.ag-chart-tooltip-arrow::after", {
   height: 0,
   margin: "0 auto",
 });
-/* Optional: wrapping behaviour classes (current & previous) */
-globalStyle(".ag-chart-tooltip-wrap-hyphenate, .ag-charts-tooltip--wrap-hyphenate", {
-  overflowWrap: "break-word",
-  wordBreak: "break-word",
-  hyphens: "auto",
-});
-globalStyle(".ag-chart-tooltip-no-interaction, .ag-charts-tooltip--no-interaction", {
+
+/* Behaviour helpers (legacy + v11) */
+globalStyle(
+  ".ag-chart-tooltip-wrap-hyphenate, .ag-charts-tooltip--wrap-hyphenate",
+  {
+    overflowWrap: "break-word",
+    wordBreak: "break-word",
+    hyphens: "auto",
+  }
+);
+globalStyle(
+  ".ag-chart-tooltip-no-interaction, .ag-charts-tooltip--no-interaction",
+  {
+    pointerEvents: "none",
+    userSelect: "none",
+  }
+);
+
+globalStyle(".ag-charts-canvas-proxy, .ag-charts-canvas-overlay", {
+  inset: 0,
   pointerEvents: "none",
+  position: "absolute",
   userSelect: "none",
+});
+
+globalStyle(".ag-charts-toolbar--hidden", {
+  opacity: 0,
+  visibility: "hidden",
+  display: "none",
+  pointerEvents: "none",
+  transform: "translateY(-4px)",
+  transition:
+    "opacity 0.2s ease, transform 0.2s ease, visibility 0s linear 0.2s",
+});
+
+globalStyle(".ag-charts-aria-announcer", {
+  position: "absolute",
+  width: "1px",
+  height: "1px",
+  margin: "-1px",
+  padding: 0,
+  overflow: "hidden",
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
+  border: 0,
+  whiteSpace: "nowrap",
+});
+
+globalStyle(".-hidden", {
+  visibility: "hidden",
+});
+
+globalStyle(
+  ".ag-charts-tooltip--arrow::after, .ag-chart-tooltip--arrow::after",
+  {
+    content: "",
+    position: "absolute",
+    bottom: "-5px",
+    left: "calc(50% - 5px)",
+    borderWidth: "5px",
+    borderStyle: "solid",
+    borderColor: "rgba(33, 33, 33, 0.9) transparent transparent transparent",
+  }
+);
+
+globalStyle(".ag-charts-canvas-overlay>*", {
+  position: "absolute",
+  pointerEvents: "auto",
+});
+
+globalStyle(".ag-charts-proxy-container, .ag-chart-proxy-container", {
+  position: "absolute",
+  pointerEvents: "auto",
+});
+
+globalStyle(".ag-charts-overlay, .ag-chart-overlay", {
+  color: "#181d1f",
+  pointerEvents: "none",
+});
+
+globalStyle(".ag-charts-canvas-container, .ag-charts-canvas", {
+  position: "relative",
+});
+
+globalStyle(".ag-charts-wrapper .ag-charts-canvas > canvas", {
+  height: "100% !important",
+});
+
+globalStyle(".ag-charts-tab-guard", {
+  width: "0%",
+  height: "0%",
+  position: "absolute",
+  pointerEvents: "none",
 });

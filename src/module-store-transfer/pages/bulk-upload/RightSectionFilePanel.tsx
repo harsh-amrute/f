@@ -1,11 +1,11 @@
 import { ButtonFloat } from "../../../components";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
 import {
-  FileName,
-  FilePanel,
-  HeaderText,
-  headerFontSizeVar,
-  headerFontWeightVar,
+  fileName,
+  filePanel,
+  headerText,
+  headerTextFontSizeVar,
+  headerTextFontWeightVar,
 } from "./style.css";
 
 interface RightSectionFilePanelProps {
@@ -14,6 +14,8 @@ interface RightSectionFilePanelProps {
   btnIcon: string;
   iconStyles: React.CSSProperties;
   text: string;
+  onClick: () => void;
+  disabled?: boolean;
 }
 
 function RightSectionFilePanel({
@@ -22,16 +24,17 @@ function RightSectionFilePanel({
   btnIcon,
   iconStyles,
   text,
+  onClick
 }: RightSectionFilePanelProps) {
   return (
-    <div className={FilePanel}>
-      <div className={FileName}>
+    <div className={filePanel} onClick={onClick}>
+      <div className={fileName}>
         <img src={img} alt="file" style={imgStyles} />
         <div
-          className={HeaderText}
+          className={headerText}
           style={assignInlineVars({
-            [headerFontSizeVar]: "1.6rem",
-            [headerFontWeightVar]: "500",
+            [headerTextFontSizeVar]: "1.6rem",
+            [headerTextFontWeightVar]: "500",
           })}
         >
           {text}
@@ -41,10 +44,10 @@ function RightSectionFilePanel({
       <ButtonFloat
         icon={btnIcon}
         text=""
-        onClick={() => console.log("click")}
+        onClick={onClick}
         styles={{
-          width: "6rem",
-          padding: "0.5rem 1rem",
+          width: "5rem",
+          padding: "0.4rem 0.8rem",
           display: "grid",
           placeItems: "center",
         }}

@@ -34,26 +34,24 @@ export const Wrapper = style({
 });
 
 // children/descendants of Wrapper
-globalStyle(`${Wrapper} > :global(.ag-theme-alpine)`, {
+globalStyle(`${Wrapper} > .ag-theme-alpine`, {
   flex: 1,
-  height: "100%",
+  height: '100%',
 });
 
 globalStyle(
-  `${Wrapper} > :global(.toolbar-container), ${Wrapper} > :global(.ag-theme-alpine)`,
-  {
-    margin: "10px",
-  }
+  `${Wrapper} > .toolbar-container, ${Wrapper} > .ag-theme-alpine`,
+  { margin: '10px' }
 );
 
-globalStyle(`${Wrapper} > :global(.toolbar-container)`, {
+globalStyle(`${Wrapper} > .toolbar-container`, {
   margin: 0,
-  marginTop: "20px",
+  marginTop: '20px',
 });
 
 globalStyle(`${Wrapper} > div[data-testid="vf_pagination"]`, {
   padding: 0,
-  margin: "-10px 10px 20px",
+  margin: '-10px 10px 20px',
 });
 
 export const Footer = style({
@@ -342,14 +340,13 @@ export const ProcurementLayout = style({
   //   },
   // },
 });
-// descendants of ProcurementLayout
 globalStyle(`${ProcurementLayout} div[data-testid="vf_pagination"]`, {
-  margin: "-20px -15px !important",
-  marginBottom: "0px !important",
+  margin: '-20px -15px !important',
+  marginBottom: '0px !important',
 });
 
-globalStyle(`${ProcurementLayout} > :global(.ag-theme-alpine)`, {
-  flex: "1 !important",
+globalStyle(`${ProcurementLayout} > .ag-theme-alpine`, {
+  flex: '1 !important',
 });
 
 /* ===== Analytical screen ===== */
@@ -514,17 +511,14 @@ export const SCDynamicContainer = style({
   //   },
   // },
 });
-// descendants of SCDynamicContainer
-globalStyle(`${SCDynamicContainer} :global(.ag-header-cell-text)`, {
-  fontSize: "10px !important",
-  fontWeight: "bold",
+// Grid overrides
+globalStyle(`${SCDynamicContainer} .ag-header-cell-text`, {
+  fontSize: '10px !important',
+  fontWeight: 'bold',
 });
 
-globalStyle(
-  `${SCDynamicContainer} > :global(.ag-theme-alpine) :global(.ag-cell)`,
-  {
-    border: "none",
-    height: "100% !important",
-    borderTop: "0.1px solid #cecece !important",
-  }
-);
+globalStyle(`${SCDynamicContainer} > .ag-theme-alpine .ag-cell`, {
+  border: 'none',
+  height: '100% !important',
+  borderTop: '0.1px solid #cecece !important',
+});

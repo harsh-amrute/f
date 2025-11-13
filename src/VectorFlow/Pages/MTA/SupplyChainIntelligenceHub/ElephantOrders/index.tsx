@@ -37,8 +37,8 @@ const ElephantOrder = () => {
     generalFilterOptions,
     onResetCallback,
     onSubmitDueDate,
-    savePageSize,
-    userPageSize,
+     savePageSize,
+        userPageSize
   } = useElephantOrders();
 
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
@@ -111,24 +111,23 @@ const ElephantOrder = () => {
           />
 
           <div>
-            {RowData?.length > 0 ? (
-              <VFPagination
-                selectedRows={0}
-                totalRows={EOCount}
-                currentPage={currentPage}
-                rowsPerPage={
-                  userPageSize ||
-                  parseInt(ELEPHANT_ORDER_ROWS_PER_PAGE || "100", 10)
-                }
-                handleChangePage={(e) => GetEOData(e)}
-                resetGridRef={ref}
-                isDisabled={isDisabled}
-                customPageSizeEnabled={true}
-                userPageSize={userPageSize}
-                savePageSize={savePageSize}
-              />
-            ) : null}
-
+            {
+              RowData?.length &&
+            <VFPagination
+              selectedRows={0}
+              totalRows={EOCount}
+              currentPage={currentPage}
+              rowsPerPage={userPageSize || parseInt(
+                ELEPHANT_ORDER_ROWS_PER_PAGE || "100"
+              )}
+              handleChangePage={(e) => GetEOData(e)}
+              resetGridRef={ref}
+              isDisabled={isDisabled}
+              customPageSizeEnabled={true}
+              userPageSize={userPageSize}
+              savePageSize={savePageSize}  
+            />
+        }
             <VFSave onSubmitDueDate={onSubmitDueDate} />
           </div>
         </div>

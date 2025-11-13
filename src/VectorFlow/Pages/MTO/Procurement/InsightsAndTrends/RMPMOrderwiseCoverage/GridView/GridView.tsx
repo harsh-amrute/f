@@ -29,17 +29,18 @@ const GridView = ({
 
   const gridRef = useRef<any>(null);
 
-  useEffect(() => {
-    if (currentGridRef?.current && columnState?.length && colDef.length > 0) {
-      const result = currentGridRef.current.api.applyColumnState({
-        state: columnState,
-        applyOrder: true,
-      });
-      if (!result) {
-        console.error("Failed to apply column state");
-      }
-    }
-  });
+    useEffect(() => {
+        if (currentGridRef?.current && columnState?.length && colDef.length > 0) {
+            const result = currentGridRef.current.api.applyColumnState({
+                state: columnState,
+                applyOrder: true
+            });
+            if (!result) {
+                console.error('Failed to apply column state');
+            }
+        }
+    });
+
 
   return (
     <div className={TableWrapper}>

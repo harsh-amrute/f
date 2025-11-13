@@ -2573,29 +2573,86 @@ export const generateAndMapColumns = (reportName:string,fields:any ,includeRemar
   return Columns
 }
 
-
-const commonTooltip= {
-  enabled:true,
-  renderer:(params:any)=>{
-      const datum = params.datum
-      return {
-      title: `${params.yName}`,
-      content: `${datum[params.xKey]}: ${datum[params.yKey]}`,
-      }
+const createCommonTooltip = (seriesColor: string) => ({
+  enabled: true,
+  renderer: (params: any) => {
+    const { datum, xKey, yKey, yName } = params;
+    
+    return `
+      <div style="padding: 0; background: ${seriesColor}; border-radius: 4px; min-width: 120px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+        <div style="padding: 6px 12px; color: white; font-weight: 600; font-size: 13px;">
+          ${yName}
+        </div>
+        <div style="padding: 8px 12px; background: white; border-radius: 0 0 4px 4px; color: #333; font-size: 13px;">
+          ${datum[xKey]}: ${datum[yKey]}
+        </div>
+      </div>
+    `;
   },
-}
+});
 
-const pieTooltip={
-  enabled:true,
-  renderer:(params:any)=>{
-      const datum = params.datum
-      return {
-      title: `${datum.color}`,
-      content: `${datum[params.angleKey]}%`,
-      }
+const colorNameMap: Record<string, string> = {
+  "#fff": "White",
+  "#000000": "Black",
+  "#ED1C24": "Red",
+  "#FFCB05": "Yellow",
+  "#418D18": "Green",
+  "#BCBCBC": "Gray",
+  "#355FD3": "Blue",
+};
+
+const pieTooltip = {
+  enabled: true,
+  renderer: (params: any) => {
+    const { datum, angleKey, fill, color } = params;
+    const sliceColor = fill || color || datum.color || "#666666";
+    const colorName = colorNameMap[sliceColor] || "Unknown";
+
+    return `
+      <div style="background: #6C696A; border-radius: 6px; overflow: hidden; text-align: center; min-width: 140px;">
+        <div style="color: white; padding: 6px 10px; background-color: ${sliceColor}; font-weight: bold;">
+          ${colorName}
+        </div>
+        <div style="color: black; padding: 8px 10px; background-color: #ede7e9ff;">
+          ${datum[angleKey]}%
+        </div>
+      </div>
+    `;
   },
-}
+};
 
+export const generateChartOptions = (data: any, chartParams: any, isCategoryData?: string) => {
+  const { series, palette, chartKey: keys, Labels, chartType, legend } = chartParams;
+
+  const seriesMapped = series.map((obj: any, index: number) => {
+    if (chartType === 'pie') {
+      return { ...obj, tooltip: pieTooltip };
+    }
+    const seriesColor = palette?.fills?.[index] || '#666666';
+    
+    return { 
+      ...obj, 
+      tooltip: createCommonTooltip(seriesColor)
+    };
+  });
+
+  if (data == null) return {};
+  
+  const options: AgChartOptions = {
+    data: chartType === 'pie' ? addExtraColumnForLabels(data) : data.slice(0, 10),
+    theme: { palette },
+    tooltip: { /* enabled by default; no mode in this version */ },
+    series: seriesMapped,
+    ...(chartType === 'pie'
+      ? { legend: addLabelsToPieChart }
+      : legend !== undefined
+      ? { legend }
+      : {}),
+    ...(chartType !== 'pie' ? createAxesForBarCharts(keys, Labels) : {}),
+  };
+    
+  return options;
+};
 
 export const createAxesForBarCharts = (keys:any,Labels:any)=>{
   return {
@@ -2663,28 +2720,6 @@ export const addLabelsToPieChart = {
     }
   }
 }
-
-export const generateChartOptions = (data:any,chartParams:any,isCategoryData?:string) =>{
-  
-  const { series , palette , chartKey:keys, Labels, chartType, legend} = chartParams
-
-  const seriesMapped = series.map((obj:any,index:number)=>{
-    return {...obj,tooltip: chartType==='pie' ? pieTooltip : commonTooltip}
-  })
-
-  if(data == null ) return {};
-  const options:AgChartOptions = {
-    data: chartType==='pie' ? addExtraColumnForLabels(data) : data.slice(0,10),
-    theme:{
-      palette
-    },
-    series:seriesMapped,
-    ...(chartType === 'pie' ? { legend: addLabelsToPieChart }  : legend !== undefined ? { legend }  : {}),
-    ...(chartType!='pie' ? createAxesForBarCharts(keys,Labels) : {}),
-  }
-  return options;
-}
-
 
 export const createTotalLegendForLineCharts = (data:any,key:string)=>{
   const totalSeriesData = data.reduce((acc: any, current: any) => {

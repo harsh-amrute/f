@@ -3,14 +3,14 @@ import { scButton, tooltipText } from "./styles.css";
 import React, { CSSProperties, ReactNode } from "react";
 
 interface VFButtonProps {
-  onClick: () => void;
-  themeUi: string;
-  disabled?: boolean;
-  width?: number;
-  children: React.ReactNode;
-  style?: CSSProperties;
-  onHoverChild?: ReactNode;
-  currentStep?: number;
+    onClick: any ,
+    themeUi: string,
+    disabled?: boolean,
+    width?: number,
+    children: React.ReactNode,
+    style?: CSSProperties,
+    onHoverChild?: ReactNode,
+    currentStep?: number
 }
 
 const VFButton = (props: VFButtonProps) => {

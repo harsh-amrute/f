@@ -24,45 +24,46 @@ import VFPagination from "../../../../../VectorFlow/Pages/MTO/Common/VFPaginatio
 
 const BPR = () => {
   const {
-    isSubGridOpen,
-    isLoading,
-    activeRow,
-    BPRColumns,
-    BPRRowData,
-    agGridProps,
-    isRemarkHistoryToolTipOpen,
-    remarkHistory,
-    onSubmitRemarks,
-    onCloseRemarkHistory,
-    dailyData,
-    showDailyDataGraphModal,
-    showNormChangeHistoryTable,
-    handleOnPageChange,
-    recordCount,
-    currGridPage,
-    rowsPerPage,
-    ref,
-    isSavedDataLoading,
-    tempRef,
-    tempDownloadData,
-    setTempDownloadData,
-    tempAgGridProps,
-    exportExcelRowData,
-    setExportExcelRowData,
-    exportExcelColumns,
-    setExportExcelColumns,
-    onExportToExcelCallBack,
-    currFilter,
-    setCurrFilter,
-    onApplyFilter,
-    editedRows,
-    onDeleteFilter,
-    lastRunDate,
-    generalFilterOptions,
-    onResetCallback,
-    savePageSize,
-    userPageSize,
-  } = useBPR();
+        // isSideBarOpen,
+        isSubGridOpen,
+        isLoading ,
+        activeRow,
+        BPRColumns,
+        BPRRowData,
+        agGridProps,
+        isRemarkHistoryToolTipOpen,
+        remarkHistory,
+        onSubmitRemarks,
+        onCloseRemarkHistory,
+        dailyData,
+        showDailyDataGraphModal,
+        showNormChangeHistoryTable,
+        handleOnPageChange,
+        recordCount,
+        currGridPage,
+        rowsPerPage,
+        ref,
+        isSavedDataLoading,
+        tempRef,
+        tempDownloadData,
+        setTempDownloadData,
+        tempAgGridProps,
+        exportExcelRowData,
+        setExportExcelRowData,
+        exportExcelColumns,
+        setExportExcelColumns,
+        onExportToExcelCallBack,
+        currFilter,
+        setCurrFilter,
+        onApplyFilter,
+        editedRows,
+        onDeleteFilter,
+        lastRunDate,
+        generalFilterOptions,
+      onResetCallback,
+      savePageSize,
+      userPageSize,
+    } = useBPR();
 
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
 
@@ -194,8 +195,8 @@ const BPR = () => {
                     customPageSizeEnabled={true}
                     userPageSize={userPageSize}
                     savePageSize={savePageSize}
-                  />
-                  <VFSaveRemark onSubmitRemarks={onSubmitRemarks} />
+                />
+                <VFSaveRemark onSubmitRemarks={onSubmitRemarks} />
                 </>
               )}
               {/* {onSubmitRemarks && (

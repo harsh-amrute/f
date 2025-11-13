@@ -17,8 +17,8 @@ export const Wrapper = style({
   //   },
   // },
 });
-// descendants of Wrapper
-globalStyle(`${Wrapper} :global(.ag-theme-alpine)`, { height: "100%" });
+// ✅ descendants of Wrapper (plain selectors, no :global)
+globalStyle(`${Wrapper} .ag-theme-alpine`, { height: "100%" });
 globalStyle(`${Wrapper} div[data-testid="vf_pagination"]`, { padding: "0" });
 
 
@@ -76,13 +76,13 @@ export const VFChilWrapper = style({
   //   } as any,
   // },
 });
-// AG Grid theme tweaks under VFChilWrapper (custom properties)
-globalStyle(`${VFChilWrapper} :global(.ag-theme-alpine)`, {
+// ✅ Global AG Grid theme overrides under VFChilWrapper
+globalStyle(`${VFChilWrapper} .ag-theme-alpine`, {
   "--ag-header-background-color": "rgb(255, 255, 255)",
   "--ag-header-foreground-color": "rgb(0, 0, 0)",
-} as React.CSSProperties);
+}as React.CSSProperties);
 
-globalStyle(`${VFChilWrapper} :global(.ag-theme-noir-fusion)`, {
+globalStyle(`${VFChilWrapper} .ag-theme-noir-fusion`, {
   "--ag-header-background-color": "rgb(255, 255, 255)",
   "--ag-header-foreground-color": "rgb(0, 0, 0)",
-} as React.CSSProperties);
+}as React.CSSProperties);

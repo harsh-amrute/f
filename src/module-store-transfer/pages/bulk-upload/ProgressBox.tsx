@@ -1,16 +1,17 @@
 import React from "react";
-import { LabelText, ProgressBoxWrapper } from "./style.css";
+import { labelText, progressBoxWrapper } from "./style.css";
 import CircularProgress from "./CircularProgress";
 
 interface ProgressBoxProps {
-  label: string;
+    label : string;
+    progress: number;
 }
 
-function ProgressBox({ label }: ProgressBoxProps) {
+function ProgressBox({label, progress} : ProgressBoxProps) {
   return (
-    <div className={ProgressBoxWrapper}>
-      <CircularProgress size={130} progress={75} />
-      <div className={LabelText}>{label}</div>
+    <div className={progressBoxWrapper}>
+      <CircularProgress size={120} progress={progress} />
+      <div className={labelText}>{label}</div>
     </div>
   );
 }

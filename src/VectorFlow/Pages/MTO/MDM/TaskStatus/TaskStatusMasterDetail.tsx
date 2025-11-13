@@ -219,76 +219,65 @@ const getStepperState = (data: any): StepItem[] => {
   }
 };
 
-const TaskStatusMasterDetail = (props: TaskStatusMasterDetailProps) => {
-  const { data, onDownload } = props;
-  const approvedStatuses = [
-    "Approved",
-    "Partially Approved - DB update Pending",
-    "Approved - DB update Pending",
-    "Approved - DB Updated",
-  ];
-  const { user } = useUserData();
-  const { Approvers } = data;
+const TaskStatusMasterDetail = (props:TaskStatusMasterDetailProps)=>{
+    const{
+        data,
+        onDownload
+    } = props
+    const approvedStatuses = ["Approved","Partially Approved - DB update Pending","Approved - DB update Pending","Approved - DB Updated"]
+    const {user} = useUserData()
+    const {Approvers} = data;
 
-  const showDisplayDownloadButton = (status: string): boolean => {
-    return approvedStatuses.includes(status);
-  };
-  const gridFraction = "5fr 1fr";
+    const showDisplayDownloadButton = (status:string):boolean=>{
+        return approvedStatuses.includes(status)
+    }
+    const gridFraction ="5fr 1fr"
 
-  console.log("A[[rodf", Approvers, Approvers?.length);
-  return (
-    <div
+    console.log("A[[rodf", Approvers, Approvers?.length);
+    return (
+      <div
       className={VFTaskStatusWrapper}
       data-testid="task-status-master-detail"
     >
-      {Approvers && Approvers.length > 0 ? (
-        Approvers?.map((approver: any, index: number) => {
-          return (
-            <div className={VFTaskStatusContentWrapper} key={index}>
-              <div
+            {(Approvers && Approvers.length>0)?Approvers?.map((approver:any,index:number)=>{
+                
+                return(
+                  <div className={VFTaskStatusContentWrapper} key={index}>
+                        <div
                 className={VFTaskStatusStepperWrapper}
                 style={assignInlineVars({
                   [gridFractionVar]: gridFraction, // e.g. "1fr 200px 1fr"
                 })}
               >
-                {/* <VFTaskStatusStepperLabel></VFTaskStatusStepperLabel> */}
-                <VFStepper
-                  items={getStepperState({
-                    ...approver,
-                    Requester: props.data.Requester,
-                    Approver: props.data.Approver[index],
-                    TaskStatus: props.data.TaskStatus,
-                  })}
-                  dashWidth="500px"
-                  zoom={0.7}
-                />
-                {showDisplayDownloadButton(approver.TaskStatus) && (
-                  <VFButton
-                    onClick={() => onDownload(approver)}
-                    themeUi={user.user.theme_ui}
-                    width={167}
-                  >
-                    <div className={VFTastStatusDownloadWrapper}>
-                      <img
-                        src="/assets/img/VectorFLOW/NMS/download-task-status.svg"
-                        height={25}
-                      />
-                      <p style={{ marginLeft: 10, fontWeight: 500 }}>
-                        {" "}
-                        Download
-                      </p>
+                        {/* <VFTaskStatusStepperLabel></VFTaskStatusStepperLabel> */}
+                            <VFStepper
+                                items={getStepperState({...approver, Requester: props.data.Requester, Approver: props.data.Approvers[index], TaskStatus: props.data.TaskStatus})}
+                                dashWidth="500px"
+                                zoom={0.7}
+                            />
+                            {showDisplayDownloadButton(approver.TaskStatus) && (
+                                <VFButton 
+                                    onClick={()=>onDownload(approver)} 
+                                    themeUi={user.user.theme_ui}
+                                    width={167}
+                                >
+                                    <div className={VFTastStatusDownloadWrapper}>
+                                        <img src="/assets/img/VectorFLOW/NMS/download-task-status.svg" height={25}/>
+                                        <p style={{marginLeft:10,fontWeight:500}}> Download</p>
+                                    </div>
+                                </VFButton>
+                            )}
+                        </div>
                     </div>
-                  </VFButton>
-                )}
-              </div>
+                )
+            })
+            :
+            <div className={VFTaskStatusNoData}>
+                No data to show
             </div>
-          );
-        })
-      ) : (
-        <div className={VFTaskStatusNoData}>No data to show</div>
-      )}
-    </div>
-  );
-};
+        }
+        </div>
+    )
+}   
 
 export default TaskStatusMasterDetail;

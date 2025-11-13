@@ -19,13 +19,13 @@ export const procurementLayout = style({
   // },
 });
 
-// descendants of procurementLayout → use globalStyle
+// Descendants of procurementLayout (plain selectors; no :global)
 globalStyle(`${procurementLayout} div[data-testid="vf_pagination"]`, {
   margin: '-20px -15px !important',
   marginBottom: '0px !important',
 });
 
-globalStyle(`${procurementLayout} > :global(.ag-theme-alpine)`, {
+globalStyle(`${procurementLayout} > .ag-theme-alpine`, {
   flex: '1 !important',
 });
 

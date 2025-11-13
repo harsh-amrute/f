@@ -26,16 +26,16 @@ import { useTranslation } from "react-i18next";
 // import { dataListRoles } from "./listRoles";
 import { generateRolesObject } from '../../../helpers/utils';
 import _ from 'lodash'
-import VFModalCard from "../../../components/VectorFLOW/commons/VFModalCard";
-import PermissionHeirarchyCanvas from "./ModalBulkUpload";
 import { useNavigate } from "react-router";
 import { notifyError } from "../../../helpers/notify";
 import { APPLICATION_NAMES } from "../../../helpers/constants";
+import { useUserData } from "../../../context";
 
-interface ManageUsersProps {
-  is_admin: boolean;
-  permission: Array<any>;
-  themeUi: string;
+
+interface ManageUsersProps{
+  is_admin:boolean
+  permission:Array<any>
+  themeUi:string
   // isRolesDrawerOpen:boolean
   // isURLsDrawerOpen:boolean
   // toggleRolesDrawer:(v:boolean)=>void
@@ -71,13 +71,12 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
 
   const { mutateAsync: getUserPermissions,isLoading:edit } = useGetUserPermissions();
   
-  
   useGetAllRoles((data:any)=>{
     const dataAllRoles = data.data ? generateRolesObject(data.data) : [];
     setListRoles(dataAllRoles);
   });
-
-  const getHeaderDatafunct = async () => {
+  
+  const getHeaderDatafunct = async() =>{
     const reponse = await usegetHeaderData();
     setHeaders(reponse.data);
   };
@@ -88,12 +87,16 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
 
   const dataAllUsers = dataFetch?.data;
 
-  const [stepperDetails, setStepperDetails] = useState();
-  const [activeApplication, setActiveApplication] = useState<number>(0);
-  const [allPermissions, setAllPermissions] = useState<any>([]);
-  const [storePermission, setStorePermission] = useState([]);
-  const [currentItem, setCurrentItem] = useState();
-  const [isEditUser, setIsEditUser] = useState<boolean | undefined>();
+  const [stepperDetails,setStepperDetails] = useState();
+  const [activeApplication,setActiveApplication] = useState<number>(0);
+  const [allPermissions,setAllPermissions] = useState<any>([]);
+  const [storePermission,setStorePermission] = useState([]);
+  const [currentItem,setCurrentItem] = useState();
+  const [isEditUser,setIsEditUser] = useState<boolean | undefined>()
+
+  const {user} = useUserData()
+  const feature_permission = user?.feature_permission || [];
+  const bulkUploadEnabled = feature_permission.includes("Bulk_upload");
 
   const isCheckBoxRef = useRef<any>({
     isPrdCheck: {},
@@ -458,12 +461,11 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     setIsOpenUser(true);
   };
 
-  const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
-  const navigate = useNavigate();
-  const handleClickBulkUpload = () => {
-    // setIsBulkModalOpen(true);
-    navigate("/profile/bulk-upload");
-  };
+  const navigate = useNavigate()
+  const handleClickBulkUpload = ()=>{
+    navigate("/profile/bulk-upload")
+  }
+  
 
   return (
     <>
@@ -502,18 +504,24 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
                 />
               </div>
 
-              <div className={itemBtn}>
-                <ButtonOutlineIcon
-                  text={t("profile.tabContent.manageUsers.button.bulkUpload")}
-                  icon={`/assets/img/profile/${
-                    themeUi === "REGALBLAZE"
-                      ? "icon_upload_yellow"
-                      : "icon_upload"
-                  }.svg`}
-                  disabled={true}
-                  onClick={handleClickBulkUpload}
-                />
-              </div>
+             
+             {
+              bulkUploadEnabled &&
+
+                <div className={itemBtn}>
+                  <ButtonOutlineIcon
+                    text={t("profile.tabContent.manageUsers.button.bulkUpload")}
+                    icon={`/assets/img/profile/${
+                      themeUi === "REGALBLAZE"
+                        ? "icon_upload_yellow"
+                        : "icon_upload"
+                        }.svg`}
+                        disabled={false}
+                        onClick={handleClickBulkUpload}
+                        />
+                </div>
+                      }
+            
             </div>
           </div>
         </div>
@@ -582,15 +590,8 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
         isCheckBoxRef={isCheckBoxRef}
       />
 
-      <VFModalCard
-        openModal={isBulkModalOpen}
-        headerIcon={"/assets/img/profile/icon_upload.svg"}
-        closeModal={() => {
-          setIsBulkModalOpen(false);
-        }}
-      >
-        <PermissionHeirarchyCanvas allPermissions={dataAllPermissions} />
-      </VFModalCard>
+        
+      
     </>
   );
 };

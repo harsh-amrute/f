@@ -131,7 +131,7 @@ const useRRR =()=>{
     useEffect(() => {
         if (internalRef && gridState && gridState.columns) {
             const result = internalRef?.api.applyColumnState({ state: gridState.columns, applyOrder: true });
-            internalRef?.api.sizeColumnsToFit();
+            // internalRef?.api.sizeColumnsToFit();
             if (!result) {
                 console.error("Failed to apply column state", result);
             }
@@ -276,11 +276,30 @@ const useRRR =()=>{
   },[])
   
 
+  const onGridReady = (params: any) => {
+    setInternalRef(params);
+    setTimeout(() => params.api.sizeColumnsToFit(), 100);
+    };
+ 
+    const onFirstDataRendered = (params: any) => {
+    params.api.sizeColumnsToFit();
+    };
+ 
+    const onGridSizeChanged = (params: any) => {
+    params.api.sizeColumnsToFit();
+    };
+   
     const agGridProps:AgGridReactProps = useMemo(()=>{
         return{
             tooltipShowDelay:0,
             tooltipTrigger:"focus",
             readOnlyEdit:true,
+            suppressRowClickSelection:true,
+            components:customCellRenderers,
+            enableBrowserTooltips:true,
+            enableFillHandle: true,
+            getMainMenuItems: MainMenuItemsCustomization,
+            paginationPageSize:parseInt(RRR_ROWS_PER_PAGE|| '200'),
             gridOptions:{
                 rowHeight:50,
                 getRowStyle: (params: any) => {
@@ -289,19 +308,19 @@ const useRRR =()=>{
                 }
                 return { background: "#F7F7F7" };
                 },
+                getRowId: (params) => {
+                    return `${params.data.SKUCode}-${params.data.WhCode}`
+                },
             },
             // onColumnVisible: onColumnVisible,
             pagination:false,
-            sideBar:defaultAgGridSideBarForBPR,       
-            getMainMenuItems: MainMenuItemsCustomization,
-            paginationPageSize:parseInt(RRR_ROWS_PER_PAGE|| '200'),
-            suppressRowClickSelection:true,
-            components:customCellRenderers,
-            enableBrowserTooltips:true,
+            sideBar:defaultAgGridSideBarForBPR,      
             defaultColDef:defaultColDefObject,
-            onGridReady:(params)=>setInternalRef(params)      
+            onGridReady,
+            onFirstDataRendered,
+            onGridSizeChanged,    
         }
-    
+   
     },[])
     // const getRRRrowData=async(filter:BPRFilterState)=>{
     //     setActiveRow({})

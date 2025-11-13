@@ -1,5 +1,5 @@
 import React from "react";
-import { Svg, Circle, Text } from "./style.css";
+import { svg, circle, text } from "./style.css";
 
 type CircularProgressProps = {
   size: number;
@@ -12,7 +12,7 @@ type CircularProgressProps = {
 const CircularProgress: React.FC<CircularProgressProps> = ({
   size,
   progress,
-  strokeWidth = 15,
+  strokeWidth = 10,
   color = "#bd2c84",
   bgColor = "#eee",
 }) => {
@@ -22,9 +22,9 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
   const offset = circumference - (progress / 100) * circumference;
 
   return (
-    <svg className={Svg} width={size} height={size}>
+    <svg className={svg} width={size} height={size}>
       <circle
-        className={Circle}
+        className={circle}
         cx={center}
         cy={center}
         r={radius}
@@ -33,7 +33,7 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
         fill="none"
       />
       <circle
-        className={Circle}
+        className={circle}
         cx={center}
         cy={center}
         r={radius}
@@ -45,7 +45,7 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
         strokeLinecap="round"
         transform={`rotate(-90 ${center} ${center})`}
       />
-      <text className={Text} x="50%" y="50%" dy=".3em">{`${progress}%`}</text>
+      <text className={text} x="50%" y="50%" dy=".3em">{`${progress}%`}</text>
     </svg>
   );
 };

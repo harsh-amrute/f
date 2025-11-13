@@ -53,41 +53,46 @@ export const Wrapper = style({
   //   },
   // },
 });
-/* descendants of Wrapper */
-globalStyle(`${Wrapper} :global(.sc-gazJty)`, {
-  padding: "0 !important",
-  marginTop: "-22px !important",
-  fontSize: "10px !important",
+// descendants of Wrapper
+globalStyle(`${Wrapper} .sc-gazJty`, {
+  padding: '0 !important',
+  marginTop: '-22px !important',
+  fontSize: '10px !important',
 });
-globalStyle(`${Wrapper} > :global(.ag-theme-alpine)`, {
-  margin: "0 !important",
-  width: "100%",
+
+globalStyle(`${Wrapper} > .ag-theme-alpine`, {
+  margin: '0 !important',
+  width: '100%',
   flex: 1,
 });
-globalStyle(`${Wrapper} > button`, { width: "max-content" });
-globalStyle(`${Wrapper} > *:not(button, :global(.toolbar-container))`, {
-  transition: "flex 0.2s ease-in-out !important",
+
+globalStyle(`${Wrapper} > button`, { width: 'max-content' });
+
+globalStyle(`${Wrapper} > *:not(button, .toolbar-container)`, {
+  transition: 'flex 0.2s ease-in-out !important',
 });
-globalStyle(`${Wrapper} :global(.toolbar-container)`, {
-  width: "100%",
+
+globalStyle(`${Wrapper} .toolbar-container`, {
+  width: '100%',
   marginBottom: 0,
   marginTop: 20,
 });
-globalStyle(`${Wrapper} :global(.ag-header-cell-text)`, { fontSize: 12 });
-globalStyle(`${Wrapper} div[data-testid="vf_pagination"]`, { margin: "0 !important" });
 
-/* charts */
-globalStyle(`${Wrapper} :global(.chart-wrapper) > div`, { height: "100% !important" });
-globalStyle(`${Wrapper} :global(.chart-wrapper) > div :global(.ag-charts-wrapper)`, {
-  maxHeight: "100% !important",
+globalStyle(`${Wrapper} .ag-header-cell-text`, { fontSize: 12 });
+
+globalStyle(`${Wrapper} div[data-testid="vf_pagination"]`, { margin: '0 !important' });
+
+// charts
+globalStyle(`${Wrapper} .chart-wrapper > div`, { height: '100% !important' });
+globalStyle(`${Wrapper} .chart-wrapper > div .ag-charts-wrapper`, {
+  maxHeight: '100% !important',
+});
+globalStyle(`${Wrapper} .chart-wrapper > div .ag-charts-wrapper .ag-charts-canvas`, {
+  height: '100%',
 });
 globalStyle(
-  `${Wrapper} :global(.chart-wrapper) > div :global(.ag-charts-wrapper) :global(.ag-charts-canvas)`,
-  { height: "100%" }
-);
-globalStyle(
-  `${Wrapper} :global(.chart-wrapper) > div :global(.ag-charts-wrapper) :global(.ag-charts-canvas) > canvas`,
-  { height: "100% !important" }
+  `${Wrapper} .chart-wrapper > div .ag-charts-wrapper .ag-charts-canvas > canvas`,
+  { height: '100% !important' }
 );
 
 export const Button = style({
@@ -261,62 +266,52 @@ export const SCDynamicContainer = style({
   //   },
   // },
 });
-/* descendants of SCDynamicContainer */
-globalStyle(`${SCDynamicContainer} :global(.ag-header-cell-text)`, { fontSize: 12 });
+// SCDynamicContainer descendants
+globalStyle(`${SCDynamicContainer} .ag-header-cell-text`, { fontSize: 12 });
 
-globalStyle(`${SCDynamicContainer} > :global(.ag-theme-alpine)`, {
-  margin: "0 !important",
+globalStyle(`${SCDynamicContainer} > .ag-theme-alpine`, {
+  margin: '0 !important',
   flex: 1,
-  height: "100%",
-  ...cssVars({
-    "--ag-grid-size": "3px",
-    "--ag-list-item-height": "20px",
-    "--ag-font-size": "10px",
-    "--ag-row-hover-color": "rgba(188, 61, 129, 0.3)",
-  }),
+  height: '100%',
+  // custom props are fine here
+  ['--ag-grid-size' as any]: '3px',
+  ['--ag-list-item-height' as any]: '20px',
+  ['--ag-font-size' as any]: '10px',
+  ['--ag-row-hover-color' as any]: 'rgba(188, 61, 129, 0.3)',
 });
 
-globalStyle(`${SCDynamicContainer} > :global(.ag-theme-alpine) :global(.ag-cell)`, {
-  height: "100% !important",
+globalStyle(`${SCDynamicContainer} > .ag-theme-alpine .ag-cell`, { height: '100% !important' });
+globalStyle(`${SCDynamicContainer} > .ag-theme-alpine .ag-paging-panel`, { height: '24px !important' });
+globalStyle(`${SCDynamicContainer} > .ag-theme-alpine .ag-side-buttons`, { fontSize: 10 });
+globalStyle(`${SCDynamicContainer} > .ag-theme-alpine .ag-header`, { borderRadius: 0 });
+globalStyle(`${SCDynamicContainer} > .ag-theme-alpine .ag-pivot-off`, {
+  height: '47px !important',
+  minHeight: '47px !important',
 });
-globalStyle(`${SCDynamicContainer} > :global(.ag-theme-alpine) :global(.ag-paging-panel)`, {
-  height: "24px !important",
+globalStyle(`${SCDynamicContainer} > .ag-theme-alpine .ag-header-cell`, {
+  minHeight: '24px !important',
+  height: '24px !important',
 });
-globalStyle(`${SCDynamicContainer} > :global(.ag-theme-alpine) :global(.ag-side-buttons)`, {
-  fontSize: 10,
+globalStyle(`${SCDynamicContainer} > .ag-theme-alpine .ag-header-row`, {
+  minHeight: '20px !important',
+  height: '20px !important',
 });
-globalStyle(`${SCDynamicContainer} > :global(.ag-theme-alpine) :global(.ag-header)`, {
-  borderRadius: 0,
+globalStyle(`${SCDynamicContainer} > .ag-theme-alpine .ag-header-container`, {
+  minHeight: '20px !important',
+  height: '20px !important',
 });
-globalStyle(`${SCDynamicContainer} > :global(.ag-theme-alpine) :global(.ag-pivot-off)`, {
-  height: "47px !important",
-  minHeight: "47px !important",
+globalStyle(`${SCDynamicContainer} > .ag-theme-alpine .ag-header-row-column-filter`, {
+  top: '23px !important',
+  height: '24px !important',
 });
-globalStyle(`${SCDynamicContainer} > :global(.ag-theme-alpine) :global(.ag-header-cell)`, {
-  minHeight: "24px !important",
-  height: "24px !important",
+globalStyle(`${SCDynamicContainer} > .ag-theme-alpine .ag-input-field-input`, {
+  height: '14px !important',
+  minHeight: '10px !important',
+  fontSize: 12,
 });
-globalStyle(`${SCDynamicContainer} > :global(.ag-theme-alpine) :global(.ag-header-row)`, {
-  minHeight: "20px !important",
-  height: "20px !important",
-});
-globalStyle(`${SCDynamicContainer} > :global(.ag-theme-alpine) :global(.ag-header-container)`, {
-  minHeight: "20px !important",
-  height: "20px !important",
-});
-globalStyle(
-  `${SCDynamicContainer} > :global(.ag-theme-alpine) :global(.ag-header-row-column-filter)`,
-  { top: "23px !important", height: "24px !important" }
-);
-globalStyle(
-  `${SCDynamicContainer} > :global(.ag-theme-alpine) :global(.ag-input-field-input)`,
-  { height: "14px !important", minHeight: "10px !important", fontSize: 12 }
-);
-globalStyle(`${SCDynamicContainer} > :global(.ag-theme-alpine) :global(.ag-column-drop)`, {
-  background: "#D2CECE",
-});
-globalStyle(`${SCDynamicContainer} > :global(.ag-theme-alpine) :global(.ag-status-bar)`, {
-  height: "24px !important",
+globalStyle(`${SCDynamicContainer} > .ag-theme-alpine .ag-column-drop`, { background: '#D2CECE' });
+globalStyle(`${SCDynamicContainer} > .ag-theme-alpine .ag-status-bar`, {
+  height: '24px !important',
   fontSize: 10,
 });
 
@@ -496,14 +491,13 @@ export const ProcurementLayout = style({
   //   "& > .ag-theme-alpine": { flex: "1 !important" },
   // },
 });
-/* descendants of ProcurementLayout */
+// ProcurementLayout descendants
 globalStyle(`${ProcurementLayout} div[data-testid="vf_pagination"]`, {
-  margin: "-20px -15px !important",
-  marginBottom: "0px !important",
+  margin: '-20px -15px !important',
+  marginBottom: '0px !important',
 });
-globalStyle(`${ProcurementLayout} > :global(.ag-theme-alpine)`, {
-  flex: "1 !important",
-});
+globalStyle(`${ProcurementLayout} > .ag-theme-alpine`, { flex: '1 !important' });
+
 
 /*** Analytical screen */
 export const BPRDailyAnalyticsWrapper = style({

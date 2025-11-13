@@ -50,18 +50,20 @@ const EconomicalWise = ({
     // Parse the string to a floating-point number
   }));
 
-  const colors = [
-    { label: "Black", value: "black" },
-    { label: "Red", value: "Red" },
-    { label: "Yellow", value: "#FFBF00" },
-    { label: "Green", value: "Green" },
-    { label: "Blue", value: "Blue" },
-    { label: "White", value: "grey" },
-  ];
-
-  function TooltipRenderer({ datum }: any) {
-    return `
-            <div style="background:#6C696A; color:white; padding:10px;transform: translateY(-200px)">
+    const colors = [
+        { label: 'Black', value: 'black' },
+        { label: 'Red', value: 'Red' },
+        { label: 'Yellow', value: '#FFBF00' },
+        { label: 'Green', value: 'Green' },
+        { label: 'Blue', value: 'Blue' },
+        { label: 'White', value: 'grey' },
+        
+    ];
+    
+    function TooltipRenderer({ datum }: any) {
+    
+        return `
+            <div style="background:#6C696A; color:white; padding:10px;">
                 <div style="color: white; padding: 5px; text-align: center;">
                     <b>${datum.dt || "No Date"}</b>
                 </div>
@@ -166,6 +168,13 @@ const EconomicalWise = ({
   }
 
   const options: AgChartOptions = {
+        tooltip: {
+            position: {
+            xOffset: -50,
+            yOffset: -10,
+        },
+        range: "nearest",
+    },
     axes: [
       {
         type: "category",

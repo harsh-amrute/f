@@ -66,9 +66,9 @@ const VFSelect = ({ options, themeUi, icon, placeholder,disabled, ...rest }: any
                 borderRadius: 0,
                 colors: {
                     ...theme.colors,
-                    primary50: chooseThemeColor[themeUi].color4,
-                    primary25: chooseThemeColor[themeUi].color4 + "4A",
-                    primary: chooseThemeColor[themeUi].color4,
+                    primary50: chooseThemeColor[themeUi]?.color4,
+                    primary25: chooseThemeColor[themeUi]?.color4 + "4A",
+                    primary: chooseThemeColor[themeUi]?.color4,
                 },
             })}
             // menuIsOpen

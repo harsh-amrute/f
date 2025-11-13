@@ -152,7 +152,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
 
     const currentReportType = reportType?.toUpperCase() || upperReportCode;
     const coverageReports = ["ORDERFULFILLMENT"];
-
+    
     if (coverageReports.includes(currentReportType)) {
       return sections.filter((s) => {
         if (s.key === "FILTER_COVERAGE") return true;
@@ -162,8 +162,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
     }
     return sections.filter((s) => {
       if (s.key === "FILTER_COVERAGE") return false;
-      if (s.key === "FILTER_AVAILABILITY")
-        return s.values.includes(upperReportCode);
+      if (s.key === "FILTER_AVAILABILITY") return s.values.includes(upperReportCode);
       return s.values.includes(upperReportCode);
     });
   }, [EnvConfig, reportCode, reportType]);

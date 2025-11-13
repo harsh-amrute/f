@@ -19,14 +19,17 @@ import {
 import { assignInlineVars } from "@vanilla-extract/dynamic";
 
 interface CustomDatePickerProps {
-  date: any;
-  onDateChange: any;
-  themeUi?: string;
-  minDate?: any;
-  disabled?: boolean;
-  dateInputStyle?: React.CSSProperties;
-  imgStyle?: React.CSSProperties;
+    date: any;
+    onDateChange: any;
+    themeUi?: string;
+    minDate?: any;
+    disabled?: boolean;
+    dateInputStyle?: React.CSSProperties;
+    imgStyle?: React.CSSProperties;
   showCalendarIcon?: boolean;
+  disabledFOLHorizonDate?: any;
+  maxDate?: any;
+
 }
 
 type Value = CalendarProps["value"];
@@ -38,7 +41,9 @@ const VFDatePicker = ({
   dateInputStyle,
   imgStyle,
   showCalendarIcon,
+  disabledFOLHorizonDate,
   minDate,
+  maxDate
 }: CustomDatePickerProps) => {
   const [showCalendar, setShowCalendar] = useState(false);
   const [calendarPosition, setCalendarPosition] = useState({ top: 0, left: 0 });

@@ -40,9 +40,10 @@ export const TableWrapper = style({
   // },
 });
 // descendants of TableWrapper
-globalStyle(`${TableWrapper} :global(.ag-theme-alpine)`, {
+globalStyle(`${TableWrapper} .ag-theme-alpine`, {
   margin: '20px 0',
 });
+
 export const CellWithBar = style({
   fontWeight: 400,
   fontSize: '18px',
@@ -123,19 +124,19 @@ export const VFTableWrapper = style({
   //   },
   // },
 });
-// descendants of VFTableWrapper
-globalStyle(`${VFTableWrapper} :global(.ag-theme-alpine)`, {
+// ✅ global descendant rules (no :global)
+globalStyle(`${VFTableWrapper} .ag-theme-alpine`, {
   flex: '1 !important',
 });
 
-globalStyle(`${VFTableWrapper} :global(.ag-paging-panel)`, {
+globalStyle(`${VFTableWrapper} .ag-paging-panel`, {
   zIndex: 1,
   fontSize: '11px !important',
   fontFamily: 'Roboto !important',
   position: 'relative',
 });
 
-globalStyle(`${VFTableWrapper} :global(.ag-status-bar)`, {
+globalStyle(`${VFTableWrapper} .ag-status-bar`, {
   zIndex: 2,
   display: 'flex !important',
   justifyContent: 'space-between !important',

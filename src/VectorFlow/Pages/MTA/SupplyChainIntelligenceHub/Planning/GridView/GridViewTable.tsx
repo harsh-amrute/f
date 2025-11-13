@@ -123,189 +123,163 @@ const GridViewTable = ({
     );
   };
 
-  const renderSubGrid = () => {
-    if (showStockGrid) {
-      return (
-        <Allotment>
-          <Allotment.Pane className="sub-grid-allotment">
-            <BPRViewTable
-              tableHeader={tableHeader || "In Transit/WIP"}
-              tablePrefixSrc={
-                tablePrefixSrc
-                  ? tablePrefixSrc
-                  : "/assets/img/VectorFLOW/BPR/in-transit.svg"
-              }
-              rowData={customGridRowData}
-              colDefs={customGridColDef}
-            />
-          </Allotment.Pane>
-          <Allotment.Pane className="sub-grid-allotment">
-            {showStockGrid && (
-              <BPRViewTable
-                onRequestExpediting={onRequestExpediting}
-                tableHeader="Stocks (Detail Of Parent)"
-                tablePrefixSrc="/assets/img/VectorFLOW/BPR/stock.svg"
-                rowData={stockGridData ? stockGridData : []}
-                colDefs={[
-                  {
-                    headerName: "Stock at Parent",
-                    colId: "slt",
-                    field: "sap",
-                  },
-                  {
-                    headerName: "ETA from parent ",
-                    colId: "eta",
-                    field: "eta",
-                  },
-                  // {
-                  //     headerName:"Eco Color",
-                  //     colId:'ec',
-                  //     field:'ec'
-                  // },
-                  {
-                    headerName: "Remarks",
-                    colId: "remark",
-                    field: "remark",
-                  },
-                  {
-                    headerName: "Request Expediting",
-                    colId: "request",
-                    field: "request",
-                    onCellClicked: onRequestExpediting,
-                  },
-                ]}
-              />
-            )}
-          </Allotment.Pane>
-        </Allotment>
-      );
-    }
-    return (
-      <BPRViewTable
-        tableHeader={tableHeader || "In Transit/WIP"}
-        tablePrefixSrc={
-          tablePrefixSrc
-            ? tablePrefixSrc
-            : "/assets/img/VectorFLOW/BPR/in-transit.svg"
+   
+
+    const renderSubGrid = ()=>{
+        if(showStockGrid){
+            return(
+                <Allotment>
+                    <Allotment.Pane className="sub-grid-allotment">
+                        <BPRViewTable
+                            tableHeader={tableHeader ||'In Transit/WIP'}
+                            tablePrefixSrc={tablePrefixSrc ? tablePrefixSrc : "/assets/img/VectorFLOW/BPR/in-transit.svg"}
+                            rowData={customGridRowData}
+                            colDefs={customGridColDef}
+                        />
+                    </Allotment.Pane>
+                    <Allotment.Pane className="sub-grid-allotment">
+                        {showStockGrid && (
+                            <BPRViewTable
+                                onRequestExpediting={onRequestExpediting}
+                                tableHeader="Stocks (Detail Of Parent)"
+                                tablePrefixSrc="/assets/img/VectorFLOW/BPR/stock.svg"
+                                rowData={stockGridData?stockGridData:[]}
+                                colDefs={[
+                                    {
+                                        headerName:"Stock at Parent",
+                                        colId:'slt',
+                                        field:'sap'
+                                    },
+                                    {
+                                        headerName:"ETA from parent ",
+                                        colId:'eta',
+                                        field:'eta'
+                                    },
+                                    // {
+                                    //     headerName:"Eco Color",
+                                    //     colId:'ec',
+                                    //     field:'ec'
+                                    // },
+                                    {
+                                        headerName:"Remarks",
+                                        colId:'remark',
+                                        field:'remark'
+                                    },
+                                    {
+                                        headerName:"Request Expediting",
+                                        colId:'request',
+                                        field:'request',
+                                        onCellClicked:onRequestExpediting
+                                    },
+                                ]}
+                            />
+                        )}
+                    </Allotment.Pane>
+                </Allotment>
+            )
         }
-        rowData={customGridRowData}
-        colDefs={customGridColDef}
-      />
-    );
-  };
+        return(
+            <BPRViewTable
+                tableHeader={tableHeader ||'In Transit/WIP'}
+                tablePrefixSrc={tablePrefixSrc ? tablePrefixSrc : "/assets/img/VectorFLOW/BPR/in-transit.svg"}
+                rowData={customGridRowData}
+                colDefs={customGridColDef}
+            />
+        )
+    }
 
-  return (
-    <div className={GridViewLayout}>
-      <div style={{ height: "90vh" }}>
-        <Allotment defaultSizes={[350, 150]} vertical>
-          {(isSubGridOpen || showStockGrid) && (
-            <Allotment.Pane className="planning-grid-allotment">
-              <VFTable
-                ref={ref}
-                {...agGridProps}
-                columnDefs={agGridColDefs}
-                rowData={agGridRowData}
-                maintainColumnOrder={true}
-                height={gridHeight ? gridHeight : "380px"}
-                statusBar={{
-                  statusPanels: [
-                    {
-                      statusPanel: "agTotalAndFilteredRowCountComponent",
-                      align: "left",
-                    },
-                    { statusPanel: "agTotalRowCountComponent", align: "left" },
-                    {
-                      statusPanel: "agFilteredRowCountComponent",
-                      align: "left",
-                    },
-                    {
-                      statusPanel: "agSelectedRowCountComponent",
-                      align: "left",
-                    },
-                    { statusPanel: "agAggregationComponent", align: "left" },
-                  ],
-                }}
-                onFilterChanged={() => {
-                  const filterModel = ref?.current?.api?.getFilterModel();
-                  if (filterModel && Object.keys(filterModel).length > 0) {
-                    setIsDisabled(false);
-                  } else {
-                    setIsDisabled(true);
-                  }
-                }}
-              />
-              {paginationProps && (
-                <VFPagination
-                  {...paginationProps}
-                  resetGridRef={ref}
-                  isDisabled={isDisabled}
-                />
-              )}
-            </Allotment.Pane>
-          )}
-
-          {!(isSubGridOpen || showStockGrid) && (
-            <Allotment.Pane>
-              <VFTable
-                ref={ref}
-                {...agGridProps}
-                columnDefs={agGridColDefs}
-                maintainColumnOrder={true}
-                rowData={agGridRowData}
-                height={gridHeight ? gridHeight : "380px"}
-                statusBar={{
-                  statusPanels: [
-                    {
-                      statusPanel: "agTotalAndFilteredRowCountComponent",
-                      align: "left",
-                    },
-                    { statusPanel: "agTotalRowCountComponent", align: "left" },
-                    {
-                      statusPanel: "agFilteredRowCountComponent",
-                      align: "left",
-                    },
-                    {
-                      statusPanel: "agSelectedRowCountComponent",
-                      align: "left",
-                    },
-                    { statusPanel: "agAggregationComponent", align: "left" },
-                  ],
-                }}
-                onFilterChanged={() => {
-                  const filterModel = ref?.current?.api?.getFilterModel();
-                  if (filterModel && Object.keys(filterModel).length > 0) {
-                    setIsDisabled(false);
-                  } else {
-                    setIsDisabled(true);
-                  }
-                }}
-              />
-              {paginationProps && (
-                <VFPagination
-                  {...paginationProps}
-                  resetGridRef={ref}
-                  isDisabled={isDisabled}
-                />
-              )}
-            </Allotment.Pane>
-          )}
-          {isSubGridOpen && (
-            <Allotment.Pane minSize={180} maxSize={350}>
-              <div
-                style={{
-                  marginTop: "20px",
-                  height: "100%",
-                  zoom: "var(--default-zoom)",
-                }}
-              >
-                {renderSubGrid()}
-              </div>
-            </Allotment.Pane>
-          )}
-        </Allotment>
-      </div>
-    </div>
-  );
-};
-
+    return(
+      <div className={GridViewLayout}>
+            <div style={{height:'90vh'}}>
+                <Allotment defaultSizes={[350,150]} vertical>
+                {
+                    (isSubGridOpen || showStockGrid ) && (
+                        <Allotment.Pane className="planning-grid-allotment">
+                    
+                        <VFTable                 
+                            ref={ref}
+                            {...agGridProps}
+                            columnDefs={agGridColDefs}
+                            rowData={agGridRowData}
+                            maintainColumnOrder={true}
+                            height={gridHeight ? gridHeight : '380px'}
+                            statusBar={{
+                                statusPanels: [
+                                    { statusPanel: "agTotalAndFilteredRowCountComponent", align: "left" },
+                                    { statusPanel: "agTotalRowCountComponent", align: "left" },
+                                    { statusPanel: "agFilteredRowCountComponent", align: "left" },
+                                    { statusPanel: "agSelectedRowCountComponent", align: "left" },
+                                    { statusPanel: "agAggregationComponent", align: "left" },
+                                ],
+                            }}
+                            onFilterChanged={() => {
+                                const filterModel = ref?.current?.api?.getFilterModel();
+                                if (filterModel && Object.keys(filterModel).length > 0) {
+                                  setIsDisabled(false);
+                                } else {
+                                  setIsDisabled(true);
+                                }
+                            }}
+                        />
+                        {paginationProps && <VFPagination {...paginationProps}
+                         resetGridRef={ref} 
+                         isDisabled={isDisabled}
+                         />}
+    
+                        </Allotment.Pane>
+                    ) 
+                }    
+                
+                {
+                    !(isSubGridOpen || showStockGrid ) && (
+                        <Allotment.Pane >
+                    
+                            <VFTable
+                                ref={ref}
+                                {...agGridProps}
+                                columnDefs={agGridColDefs}
+                                maintainColumnOrder={true}
+                                rowData={agGridRowData}
+                                height={gridHeight ? gridHeight : '380px'}
+                                statusBar={{
+                                    statusPanels: [
+                                        { statusPanel: "agTotalAndFilteredRowCountComponent", align: "left" },
+                                        { statusPanel: "agTotalRowCountComponent", align: "left" },
+                                        { statusPanel: "agFilteredRowCountComponent", align: "left" },
+                                        { statusPanel: "agSelectedRowCountComponent", align: "left" },
+                                        { statusPanel: "agAggregationComponent", align: "left" },
+                                    ],
+                                }}
+                                onFilterChanged={() => {
+                                    const filterModel = ref?.current?.api?.getFilterModel();
+                                    if (filterModel && Object.keys(filterModel).length > 0) {
+                                      setIsDisabled(false);
+                                    } else {
+                                      setIsDisabled(true);
+                                    }
+                                }}
+                                
+                            />
+                            {paginationProps &&
+                            <VFPagination {...paginationProps}
+                            resetGridRef={ref} 
+                            isDisabled={isDisabled}/>
+                            }
+    
+                        </Allotment.Pane>
+                    ) 
+                }
+                {isSubGridOpen && (
+                    <Allotment.Pane minSize={180} maxSize={350}>
+                        <div style={{marginTop:'20px',height:'100%',zoom:'var(--default-zoom)'}}>
+                            {renderSubGrid()}
+                        </div>
+                    </Allotment.Pane>
+                )}
+                </Allotment>
+            </div>
+            
+        </div>
+    )
+}   
 export default GridViewTable;

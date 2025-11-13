@@ -78,13 +78,13 @@ export const scDynamicContainer = style({
   //   '& div[data-testid="vf_pagination"]': { marginTop: '0px' },
   // },
 });
-// ── Descendants of scDynamicContainer (must use globalStyle) ──
-globalStyle(`${scDynamicContainer} :global(.ag-header-cell-text)`, {
+/* ── Descendants of scDynamicContainer (plain selectors; no :global) ── */
+globalStyle(`${scDynamicContainer} .ag-header-cell-text`, {
   fontSize: '12px',
 });
 
 // Direct child theme container
-globalStyle(`${scDynamicContainer} > :global(.ag-theme-alpine)`, {
+globalStyle(`${scDynamicContainer} > .ag-theme-alpine`, {
   flex: 1,
   height: '100%',
   ...cssVars({
@@ -96,46 +96,47 @@ globalStyle(`${scDynamicContainer} > :global(.ag-theme-alpine)`, {
 });
 
 // Descendants of the child theme container
-globalStyle(`${scDynamicContainer} > :global(.ag-theme-alpine) :global(.ag-cell)`, {
+globalStyle(`${scDynamicContainer} > .ag-theme-alpine .ag-cell`, {
   height: '100% !important',
 });
-globalStyle(`${scDynamicContainer} > :global(.ag-theme-alpine) :global(.ag-paging-panel)`, {
+globalStyle(`${scDynamicContainer} > .ag-theme-alpine .ag-paging-panel`, {
   height: '24px !important',
 });
-globalStyle(`${scDynamicContainer} > :global(.ag-theme-alpine) :global(.ag-side-buttons)`, {
+globalStyle(`${scDynamicContainer} > .ag-theme-alpine .ag-side-buttons`, {
   fontSize: '10px',
 });
-globalStyle(`${scDynamicContainer} > :global(.ag-theme-alpine) :global(.ag-header)`, {
+globalStyle(`${scDynamicContainer} > .ag-theme-alpine .ag-header`, {
   borderRadius: 0,
 });
-globalStyle(`${scDynamicContainer} > :global(.ag-theme-alpine) :global(.ag-pivot-off)`, {
+globalStyle(`${scDynamicContainer} > .ag-theme-alpine .ag-pivot-off`, {
   height: '47px !important',
   minHeight: '47px !important',
 });
-globalStyle(`${scDynamicContainer} > :global(.ag-theme-alpine) :global(.ag-header-cell)`, {
+globalStyle(`${scDynamicContainer} > .ag-theme-alpine .ag-header-cell`, {
   minHeight: '24px !important',
   height: '24px !important',
 });
-globalStyle(`${scDynamicContainer} > :global(.ag-theme-alpine) :global(.ag-header-row)`, {
+globalStyle(`${scDynamicContainer} > .ag-theme-alpine .ag-header-row`, {
   minHeight: '20px !important',
   height: '20px !important',
 });
-globalStyle(`${scDynamicContainer} > :global(.ag-theme-alpine) :global(.ag-header-container)`, {
+globalStyle(`${scDynamicContainer} > .ag-theme-alpine .ag-header-container`, {
   minHeight: '20px !important',
   height: '20px !important',
 });
-globalStyle(
-  `${scDynamicContainer} > :global(.ag-theme-alpine) :global(.ag-header-row-column-filter)`,
-  { top: '23px !important', height: '24px !important' }
-);
-globalStyle(
-  `${scDynamicContainer} > :global(.ag-theme-alpine) :global(.ag-input-field-input)`,
-  { height: '14px !important', minHeight: '10px !important', fontSize: '12px' }
-);
-globalStyle(`${scDynamicContainer} > :global(.ag-theme-alpine) :global(.ag-column-drop)`, {
+globalStyle(`${scDynamicContainer} > .ag-theme-alpine .ag-header-row-column-filter`, {
+  top: '23px !important',
+  height: '24px !important',
+});
+globalStyle(`${scDynamicContainer} > .ag-theme-alpine .ag-input-field-input`, {
+  height: '14px !important',
+  minHeight: '10px !important',
+  fontSize: '12px',
+});
+globalStyle(`${scDynamicContainer} > .ag-theme-alpine .ag-column-drop`, {
   background: '#D2CECE',
 });
-globalStyle(`${scDynamicContainer} > :global(.ag-theme-alpine) :global(.ag-status-bar)`, {
+globalStyle(`${scDynamicContainer} > .ag-theme-alpine .ag-status-bar`, {
   height: '24px !important',
   fontSize: '10px',
 });
