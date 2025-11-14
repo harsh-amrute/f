@@ -29,6 +29,8 @@ interface CustomDatePickerProps {
   }
   
 
+
+
 type Value = CalendarProps['value'];
 
 
@@ -105,6 +107,9 @@ const VFDatePicker = ({
     }
   }, [forceOpenCalendar]);
   
+
+
+  
   return (
     <DatePickerWrapper>
       <TextInputWrapper
@@ -118,7 +123,7 @@ const VFDatePicker = ({
         style={dateInputStyle}
       />
 
-{showCalendarIcon &&
+      {showCalendarIcon &&
         <>
         <ButtonWrapper type="button"
          onClick={(e) => {
