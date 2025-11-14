@@ -395,15 +395,18 @@ const useOpenExpeditingRequests = () => {
       notifyLoader("Loading Grid Data")
       try{
         const data = await getData(filter)
-        setRowData(data.data.data.datamap((r:any,index:number)=>({...r,id:index,action:''})))
+        setRowData(data.data.data.data.map((r:any,index:number)=>({...r,id:index,action:''})))
         toast.dismiss()
         notifySuccess("Data Loaded Successfully")
       }catch(err:any){
         notifyError(err)
       }
-      
     }
 
+    const onDeleteFilter = async(parentId:any, filterId:any, value:any)=>{
+      const updatedFilter = onDelete(parentId,filterId,value)
+      onApplyFilter(updatedFilter)
+    }
 
     const onSubmitEditedRows = async()=>{
       try {
@@ -448,11 +451,22 @@ const useOpenExpeditingRequests = () => {
       floatingFilter: false,
       editable: true,
       cellDataType: 'date',
+      cellClass: 'eta-no-outline',
+      // suppressCellFocus: true,
+      cellStyle: {
+        outline: 'none',
+        border: 'none'
+      }
     },
     action: {
       cellRenderer: 'submitRemarkCellRenderer',
       floatingFilter: false,
-      editable: true
+      editable: true,
+      cellClass: 'eta-no-outline',
+      cellStyle: {
+        outline: 'none',
+        border: 'none'
+      }
     },
     remarks: {
       cellStyle: {
@@ -471,7 +485,7 @@ const useOpenExpeditingRequests = () => {
       resizable: false,
       floatingFilter: false,
     },
-    rh: {
+    rk: {
       cellRenderer: 'remarksCellRenderer',
       cellRendererParams: {
         onClick: onOpenRemarkHistory
@@ -531,6 +545,7 @@ const useOpenExpeditingRequests = () => {
         setCurrentFilter,
         onDelete,
         onApplyFilter,
+        onDeleteFilter,
         onSubmitEditedRows,
         editedRows,
         themeUi,

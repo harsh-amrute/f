@@ -131,6 +131,7 @@ const useSaveAllState = (isPlanning?:boolean) => {
         charts:chartsState,
         columns:columnState
       }
+
       await saveState({
         reportname: name,
         state: JSON.stringify(gridState),
@@ -150,13 +151,19 @@ const useSaveAllState = (isPlanning?:boolean) => {
     try {
       
       let tempCurrentGridState = ref.current?.api.getColumnState()
-      if(!tempCurrentGridState?.length)
-        {
-          notifyError("Cannot reset layout: The table is empty.");
-          return;
-        }
+      
+      if(!tempCurrentGridState?.length) {
+        notifyError("Cannot reset layout: The table is empty.");
+        return;
+      }
+
       await resetState({"reportname":name});
+      if (onResetCallback) {
+        await onResetCallback();
+      }
+
       tempCurrentGridState = tempCurrentGridState.map((t:any) => {
+        
         return {
           ...t,
           hide: false,

@@ -45,7 +45,7 @@ const OpenExpeditingRequests = () => {
     setExportExcelColumns,
     currentFilter,
     setCurrentFilter,
-    onDelete,
+    onDeleteFilter,
     onApplyFilter,
     editedRows,
     onSubmitEditedRows,
@@ -102,7 +102,7 @@ const OpenExpeditingRequests = () => {
           multiFilter={currentFilter}
           lastRunDate={lastRunDate}
           setMultiFilter={setCurrentFilter}
-          onDelete={onDelete}
+          onDelete={onDeleteFilter}
           onApplyFilter={onApplyFilter}
           onSubmitEditedRows={onSubmitEditedRows}
           disableSubmitEditedRowsBtn={editedRows.length === 0}
