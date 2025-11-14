@@ -36,8 +36,8 @@ export const ButtonWrapper = styled.button`
 
 export const ImageWrapper = styled.img`
   cursor: pointer;
-  height: 20px;
-  width:20px;
+  height: 15px;
+  width:15px;
 `;
 
 // Extended CalendarProps with themeUi for custom propss

@@ -163,6 +163,7 @@ const VFDatePicker = ({
                   onChange={handleCalendarChange}
                   value={date ? new Date(date) : new Date()}
                   minDate={minDate}
+                  maxDate={maxDate}
                   tileDisabled={tileDisabled} 
                 />
               </div>,

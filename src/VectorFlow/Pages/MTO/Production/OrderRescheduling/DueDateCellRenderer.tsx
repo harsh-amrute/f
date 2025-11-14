@@ -83,15 +83,20 @@ const DueDateCellRenderer = (params: any) => {
       setHolidayDates(data.data.data.holidays || []);
   
       if (data.status == 200) {
+        setTimeout(() => {
           setIsLoading(false)
           setForceOpenCalendar(true);
+        },500)
+
       }
       else {
         setIsLoading(false)
+        setForceOpenCalendar(false);
         notifyError("Failed to fetch holidays")
       } 
   
     } catch (error) {
+      setForceOpenCalendar(false);
       notifyError("Failed to fetch holidays");
     }
   };
