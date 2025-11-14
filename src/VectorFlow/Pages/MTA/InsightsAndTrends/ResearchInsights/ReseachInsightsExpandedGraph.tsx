@@ -89,6 +89,34 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
         ? (Object.keys(data[0]).filter(key => key in colorMap) as ColorKey[])
         : [];
 
+    const createCommonTooltip = (seriesColor: string) => ({
+        enabled: true,
+        renderer: (params: any) => {
+            const { datum, xKey } = params;
+            
+            const colorRows = yKeys.map(key => {
+                const value = datum[key] !== undefined ? datum[key] : 0;
+                return `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 4px 0;">
+                        <span style="color: ${colorMap[key]}; font-weight: 550;">${key}:</span>
+                        <span style="margin-left: 12px; font-weight: 550;">${value}</span>
+                    </div>
+                `;
+            }).join('');
+            
+            return `
+                <div style="padding: 0; background: ${seriesColor}; border-radius: 4px; min-width: 100px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+                    <div style="padding: 6px 12px; margin-left: 10px; color: white; font-weight: 550; font-size: 12px;">
+                        ${datum[xKey]}
+                    </div>
+                    <div style="padding: 8px 12px; background: white; border-radius: 0 0 4px 4px; color: #333; font-size: 12px;">
+                        ${colorRows}
+                    </div>
+                </div>
+            `;
+        },
+    });
+
     const series = yKeys.map(key => ({
         type: "line",
         xKey: "date",
@@ -101,41 +129,8 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
             stroke: colorMap[key]
         },
         stroke: colorMap[key],
-        tooltip: {
-            renderer: (params: any) => {
-                const { datum } = params;
-                const tooltipItems = Object.entries(datum)
-                    .filter(([k]) => k in colorMap) 
-                    .map(([k, v]) => {
-                        const color = colorMap[k as ColorKey];
-                        return `<div style="color:${color};">${k}: ${v}</div>`;
-                    });
-                
-                return {
-                    title: datum.date,
-                    content: tooltipItems.join('')
-                };
-            }
-        }
+        tooltip: createCommonTooltip(colorMap[key])
     }));
-    
-
-    const whiteSeriesConfig = series.find(s => s.yKey === 'White');
-    if (whiteSeriesConfig) {
-        whiteSeriesConfig.tooltip.renderer = (params: any) => {
-            const { datum } = params;
-            const tooltipItems = Object.entries(datum)
-                .filter(([k]) => k in colorMap)
-                .map(([k, v]) => {
-                    const color = k === 'White' ? 'gray' : colorMap[k as ColorKey];
-                    return `<div style="color:${color};">${k}: ${v}</div>`;
-                });
-            return {
-                title: datum.date,
-                content: tooltipItems.join('')
-            };
-        };
-    }
 
     const chartOptions: AgCartesianChartOptions = {
         height: 400,

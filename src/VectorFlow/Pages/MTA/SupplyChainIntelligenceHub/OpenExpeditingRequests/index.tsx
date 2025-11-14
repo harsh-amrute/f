@@ -147,7 +147,7 @@ const OpenExpeditingRequests = () => {
             }}
             
             height={"95%"}
-            maintainColumnOrder
+            maintainColumnOrder={true}
           />
           
           <VFSaveRemark onSubmitRemarks={onSubmitEditedRows} isDisabled={editedRows.length === 0}/>
