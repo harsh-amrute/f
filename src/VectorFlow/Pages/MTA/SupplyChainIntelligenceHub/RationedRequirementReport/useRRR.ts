@@ -274,30 +274,18 @@ const useRRR =()=>{
         },
     }
   },[])
-  
-
-  const onGridReady = (params: any) => {
-    setInternalRef(params);
-    setTimeout(() => params.api.sizeColumnsToFit(), 100);
-    };
- 
-    const onFirstDataRendered = (params: any) => {
-    params.api.sizeColumnsToFit();
-    };
- 
-    const onGridSizeChanged = (params: any) => {
-    params.api.sizeColumnsToFit();
-    };
-   
+     
     const agGridProps:AgGridReactProps = useMemo(()=>{
         return{
             tooltipShowDelay:0,
             tooltipTrigger:"focus",
             readOnlyEdit:true,
             suppressRowClickSelection:true,
+            suppressRowTransform:true,
             components:customCellRenderers,
             enableBrowserTooltips:true,
             enableFillHandle: true,
+            enableColResize:true,
             getMainMenuItems: MainMenuItemsCustomization,
             paginationPageSize:parseInt(RRR_ROWS_PER_PAGE|| '200'),
             gridOptions:{
@@ -316,9 +304,7 @@ const useRRR =()=>{
             pagination:false,
             sideBar:defaultAgGridSideBarForBPR,      
             defaultColDef:defaultColDefObject,
-            // onGridReady,
-            // onFirstDataRendered,
-            // onGridSizeChanged,    
+            onGridReady: (params)=>setInternalRef(params),   
         }
    
     },[])
