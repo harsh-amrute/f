@@ -96,9 +96,6 @@ const OrderRescheduling = () => {
 
   const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
 
-  const [showCalendarFor, setShowCalendarFor] = useState<string | null>(null);
-
-
   const {
     state: currFilter,
     setState: setCurrFilter,
