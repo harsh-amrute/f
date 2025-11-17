@@ -52,6 +52,7 @@ const useRRR =()=>{
 
     const [initialColumnState, setInitialColumnState] = useState<any>(undefined);
     const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
+    const [hasSavedConfig, setHasSavedConfig] = useState<boolean>(false);
 
           
     const getRRRUiConfig = async () => {
@@ -96,7 +97,7 @@ const useRRR =()=>{
                 getUserColumnConfig();
             } catch (err: any) {
                 console.log(err)
-                
+
             }
         }
         if (initialColumnState !== undefined) {
@@ -116,27 +117,38 @@ const useRRR =()=>{
         const stateData = await getState({ "reportname": UserUIColumnConfigName.RRR })
         if (stateData.data.data.length !== 0) {
             const parsedContent = JSON.parse(stateData.data.data)
-                
             setGridState({
                 charts: parsedContent.charts,
                 columns: parsedContent.columns,
                 pivot: parsedContent.pivot,
             })
+            setHasSavedConfig(true);
           
         } else {
+            setHasSavedConfig(false);
             console.log("Data not available");
         }
     }
-  
+
     useEffect(() => {
-        if (internalRef && gridState && gridState.columns) {
-            const result = internalRef?.api.applyColumnState({ state: gridState.columns, applyOrder: true });
-            // internalRef?.api.sizeColumnsToFit();
-            if (!result) {
-                console.error("Failed to apply column state", result);
-            }
+    if (internalRef && gridState && gridState.columns) {
+        const result = internalRef?.api.applyColumnState({ 
+            state: gridState.columns, 
+            applyOrder: true 
+        });
+        internalRef?.api.sizeColumnsToFit();
+        
+        if (hasSavedConfig && result) {
+            setTimeout(() => {
+                internalRef?.api.applyColumnState({ 
+                    state: gridState.columns, 
+                    applyOrder: true 
+                });
+            }, 0);
         }
-    }, [internalRef, gridState]);
+    }
+}, [internalRef, gridState, hasSavedConfig]);
+
     
     // const getRecordsCount=async(filter?:any)=>{
     //     const payload={
@@ -192,8 +204,7 @@ const useRRR =()=>{
                     pageNumber:pageNo,
                     recordsPerPage:pageSize ||parseInt(RRR_ROWS_PER_PAGE || '100')
                 }
-            })
-            
+            }) 
         
         // setRecordCount(rowData.data.recordCount)
             setCurrentPage(pageNo)
@@ -274,7 +285,7 @@ const useRRR =()=>{
         },
     }
   },[])
-     
+    
     const agGridProps:AgGridReactProps = useMemo(()=>{
         return{
             tooltipShowDelay:0,
@@ -296,15 +307,12 @@ const useRRR =()=>{
                 }
                 return { background: "#F7F7F7" };
                 },
-                getRowId: (params) => {
-                    return `${params.data.SKUCode}-${params.data.WhCode}`
-                },
             },
             // onColumnVisible: onColumnVisible,
             pagination:false,
             sideBar:defaultAgGridSideBarForBPR,      
             defaultColDef:defaultColDefObject,
-            onGridReady: (params)=>setInternalRef(params),   
+            onGridReady:(params)=>setInternalRef(params),
         }
    
     },[])
