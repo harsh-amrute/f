@@ -250,9 +250,9 @@ const NavbarItem = ({
           />
         )}
 
-        {isHide && pathname === '/mta/logistics/intransit-whereabouts' && menuItem.id === 9 && (
+        {/* {isHide && pathname === '/mta/logistics/intransit-whereabouts' && menuItem.id === 9 && (
           <InTransitAnalytics />
-        )}
+        )} */}
 
         {isHide && pathname === '/mto/procurement/material-coverage-open-sales' && menuItem.id === 19 && (
           <AnalyticalScreen pageName="MaterialSO" />
@@ -291,7 +291,7 @@ const NavbarItem = ({
           <DaywiseCoverageAnalytics />
         )}
 
-        {isHide && pathname === '/mta/supply-chain-intelligence-hub/rrr' && menuItem.id === 9 && (
+        {/* {isHide && pathname === '/mta/supply-chain-intelligence-hub/rrr' && menuItem.id === 9 && (
           <RRRAnalytics />
         )}
 
@@ -305,7 +305,7 @@ const NavbarItem = ({
 
         {isHide && pathname === '/mta/supply-chain-intelligence-hub/open-expediting-requests' && menuItem.id === 9 && (
           <OpenExpediteAnalytics />
-        )}
+        )} */}
 
         {isHide && pathname === "/ist-forced-closure" && menuItem.id === 6 && (
           <ParticularForced themeUi={themeUi} />
