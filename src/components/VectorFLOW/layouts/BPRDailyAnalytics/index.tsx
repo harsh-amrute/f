@@ -42,10 +42,8 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
     } =props
     const [rowData,setRowData] = useState<Array<any>>([])
 
-    // const activeReportData = useSelector((state: RootState) => state.mta.activeReportData);
-    // const { date: lastRunDate } = useGetlastRunData()
     const {mutateAsync:getAnalyticsData,isLoading} = useGetAnalyticsData()
-    const {currentCategory,currentTab,currentView} = useSelector((state:RootState)=>state.mta.planning)
+    const {currentCategory,currentTab} = useSelector((state:RootState)=>state.mta.planning)
     const MTAVFMultiFilter = useSelector((state: RootState) => state.mta.mtaVFMultiFilter);
 
     const {user} = useUserData()
@@ -166,7 +164,7 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
         )
     }
     
-    if(!rowData || !Array.isArray(rowData) || rowData.length===0){
+    if(!rowData || !Array.isArray(rowData) || rowData?.length===0){
         return(
             <BPRDailyAnalyticsWrapper>
                 <BPRDailyAnalyticsContainer theme={themeUi} style={{aspectRatio:'0.9',width:'90%'}}>
