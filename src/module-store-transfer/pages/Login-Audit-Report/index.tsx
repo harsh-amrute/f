@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import  { useEffect, useRef, useState } from "react";
 import VFTable from "../../../VectorFlow/Pages/MTO/Common/VFTable";
 import MTOActionToolBar from "../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
 import { GridFilterWrapper, TextBtn } from "../../../VectorFlow/Pages/MTO/Common/VFPagination/styles";
@@ -6,7 +6,11 @@ import { useUserData } from "../../../context";
 import { useLoginAuditReport } from "../../../VectorFlow/Services/MTO/Login-Audit-Report";
 import OverlayLoader from "../../../VectorFlow/Pages/MTO/Common/Loader";
 import { TableWrapper } from "./styles";
+<<<<<<< Updated upstream
 import CustomPageSizeInput from "../../../VectorFlow/Pages/MTO/Common/VFPagination/CustomPageSizeInput"; // Assuming this path
+=======
+import { FilterPageName } from "../../../VectorFlow/Pages/MTO/Common/Enum";
+>>>>>>> Stashed changes
 
 const AuditReport = () => {
   const { mutateAsync: getLoginAuditReport, isLoading } = useLoginAuditReport();
@@ -114,11 +118,14 @@ const AuditReport = () => {
   
 
   const ExcelExport = () => {
-    const today = new Date();
-    const formattedDate = today.toLocaleDateString('en-GB').replace(/\//g, '-');
     gridRef.current?.api?.exportDataAsExcel({
+<<<<<<< Updated upstream
       fileName: `Login_Audit_Report_${formattedDate}.xlsx`,
       sheetName:'Login_Audit_Report'
+=======
+      FileName: FilterPageName.Login_Audit_Report,
+      sheetName: FilterPageName.Login_Audit_Report
+>>>>>>> Stashed changes
     });
   };
 
