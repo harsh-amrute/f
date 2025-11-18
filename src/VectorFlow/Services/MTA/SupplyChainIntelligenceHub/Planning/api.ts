@@ -28,7 +28,7 @@ export namespace PlanningService {
     }
 
     export const submitOpenExpediteRequest = async (body:any) => {
-        return axios.post(process.env.REACT_APP_API_HOST + `api/mta/SubmitOpenExpediteRequest`,body,{
+        return axios.post(process.env.REACT_APP_API_HOST + `api/mta/SubmitOpenExpediteRequest`,{...body, "forwardUsers":true},{
             headers: { 'Content-Type': 'application/json' }
             })
     }

@@ -275,7 +275,7 @@ export const ColorFilters: React.FC<FilterSectionProps> = ({
                   <img 
                     src={"/assets/img/MTAVFMultiFilter/Error.svg"}
                     alt="error"
-                    title={isComplete ? "All fields are filled" : "Some fields are empty"}
+                    title={isComplete ? "All fields are filled" : "Must select a column."}
                   />
                 </IconWrapper>
 

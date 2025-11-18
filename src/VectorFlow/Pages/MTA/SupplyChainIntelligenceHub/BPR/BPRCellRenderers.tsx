@@ -7,6 +7,7 @@ import { BPRColorCellRendererWrapper,
     BPRColorCellRendererIcon,
     BPRSubmitRemarkInput
 } from "./styles"
+import { useUserData } from "../../../../../context";
 
 
 // interface BPRSubmitRemarkCellRendererProps extends ICellRendererParams{
@@ -114,7 +115,6 @@ const colorMapper =(color:string)=> {
 }
 
 export const BPRTechColorCellRenderer = (params:any)=>{
-    
     const techColor = params?.data?.TechColor;
     // console.log("techColor", params.data)
     const cellColor = colorMapper(params?.data?.TechColor)
@@ -189,11 +189,13 @@ export const BPREcoColorCellRenderer = (params:any)=>{
 }
 
 export const BPRTagsCellRenderer = (params:any)=>{
+    const { user } = useUserData();
+
     if(!params.value ||  params.value.length===0){
         return null
     }
     return(
-        <BPRTagsCellRendererWrapper>
+        <BPRTagsCellRendererWrapper theme={user.user.theme_ui} style={{height:18,padding:"0px 3px",fontSize:9,width:55}}>
             {params.value}
         </BPRTagsCellRendererWrapper>
     )
