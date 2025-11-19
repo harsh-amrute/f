@@ -20,7 +20,12 @@ export const SCButton = styled.button<{ themeUi: string, isDisabled:boolean | un
   border: none;
   box-shadow: -5px 4px 10px #919191B3;
   opacity:${(props)=>props.isDisabled ? 0.2 : 1};
-  pointer-events:${(props)=>props.isDisabled ? 'none' : 'all'};
+  pointer-events:${(props) => props.isDisabled ? 'none' : 'all'};
+  
+  &:hover {
+    transform: scale(1.01);
+    transition: all 0.2s ease-in-out;
+  }
 `;
 
 export const TooltipText = styled.div`

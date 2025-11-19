@@ -48,6 +48,12 @@ export const SCViewContainer = styled.div`
   cursor: pointer;
   overflow: hidden;
   gap:2px;
+
+   &:hover {
+    transform: scale(1.05);
+    transition: all 0.3s ease-in-out;
+  }
+
 `;
 export const SCHorizontalDivison = styled.div`
   height: 40px;
@@ -62,7 +68,8 @@ export const SCViewContainerWithBg = styled.div<{styles?:any}>`
   background: ${ColorsMTO.White} 0% 0% no-repeat padding-box;
   box-shadow: -5px 4px 10px #8584843f;
   border-radius: ${(props)=> props.styles?.borderRadius || "5px"};
-  padding: ${(props)=> props.styles?.padding || "5px"};
+  padding: ${(props) => props.styles?.padding || "1px"};
+  padding-top:5px;
   justify-content: center;
   align-items: center;
   width:fit-content;
@@ -70,7 +77,13 @@ export const SCViewContainerWithBg = styled.div<{styles?:any}>`
   min-width:  ${(props)=> props.styles?.width || "82px"};
   min-height: ${(props) => props.styles?.height || "58px"};
   cursor: pointer;
-  // font-size: ${(props)=> props.styles?.fontSize || "16px"};
+
+  // font-size: ${(props) => props.styles?.fontSize || "16px"};
+  
+  &:hover {
+    transform: scale(1.05);
+    transition: all 0.3s ease-in-out;
+  }
 `;
 
 export const SCViewContainerWithBgToggle = styled.div`
@@ -86,6 +99,8 @@ export const SCViewContainerWithBgToggle = styled.div`
   min-width: 164px;
   min-height: 58px;
   cursor: pointer;
+
+   
 `;
 export const SCViewBackground = styled.div`
   display: flex;
@@ -171,7 +186,19 @@ export const SCButton = styled.button`
   box-shadow: -5px 4px 10px ${ColorsMTO.LightGrey.code};
   border: 1px solid ${ColorsMTO.Pink.code};
   opacity: 1;
+
+    &:hover {
+    transform: scale(1.05);
+    transition: all 0.3s ease-in-out;
+  }
 `;
+
+export const AddFilterWrapper = styled.div`
+&:hover {
+    transform: scale(1.05);
+    transition: all 0.3s ease-in-out;
+  }
+`
 
 /**for Search filter */
 export const VFSelectedFiltersWrapper = styled.div`
@@ -332,9 +359,12 @@ export const DateTitle = styled.div`
 export const DateValue = styled.div`
   padding: 15px 40px;
   background: rgb(242, 242, 242);
-  border-radius: 4px;
+  border-radius: 8px;
   min-width: 180px;
-`;
+  border: 1px solid rgb(206, 206, 206);
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 6px;
+
+    `;
 export const CheckBoxDiv = styled.div`
     width: max-content;
     text-wrap: nowrap;

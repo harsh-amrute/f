@@ -6,5 +6,6 @@ export const FieldSearchWrapper = styled.div`
     height: 48px;
     border-radius: 6px;
     opacity: 1;
+
 `
 

@@ -5,7 +5,7 @@ export const FilterBody = styled.div`
     // margin:0px 47px 0px 47px;
     display:flex;
     justify-content:center;
-    gap:10px;  //25px
+    gap:20px;  //25px
     height: max-content;
     max-height: 95vh;
     padding: 0 47px;
@@ -20,8 +20,17 @@ export const FilterCardWrapper = styled.div`
     width:400px;
     margin:47px 0px 47px 0px;
     background-color:white;
-    box-shadow: 0px 6px 12px #95959529;
-    border-radius: 6px;
+    // box-shadow: 0px 6px 12px #95959529;
+    // border-radius: 6px;
+
+      border: 1px solid #ccc;
+      border-radius:8px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px;
+
+   &:hover {
+    transform: scale(1.01);
+    transition: all 0.2s ease-in-out;
+  }
 `
 
 export const FilterWrapper = styled.div`
@@ -105,12 +114,14 @@ justify-content:flex-end;
 flex-direction:row;
 align-items:center;
 background-color:#F4F4F4;
+border-radius:0px 0px 12px 12px;
 `
 export const DropdownGroupWrapper = styled.div`
 margin:3px 9px;
 display:flex;
 justify-content:center;
 gap:5px;
+
 `
 
 export const SelectDropdownComponent = styled.div`
@@ -173,6 +184,11 @@ color:${(props)=>props.theme==="REGALBLAZE"?"#C7810E":"#82104C"};
 display: flex;
 align-items: center;
 cursor: pointer;
+
+&:hover {
+    transform: scale(1.01);
+    transition: all 0.2s ease-in-out;
+  }
 `
 
 export const ConfirmationText=styled.div`

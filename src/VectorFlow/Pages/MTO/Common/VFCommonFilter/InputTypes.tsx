@@ -219,10 +219,13 @@ const FilterSelectDropdown = ({
       height: "39px",
       borderRadius: " 20px 20px 20px 20px",
       background: "#F2F2F2 0% 0% no-repeat padding-box",
-      border: "none",
+      // border: "none",
       cursor: "pointer",
       display: "flex",
       justifyContent: "center",
+
+      border: '1px solid rgb(204, 204, 204)'
+
     }),
     indicatorsContainer: () => ({
       paddingRight: "10px",
@@ -357,8 +360,10 @@ const FilterTextInput = ({
         fontWeight: "400",
         fontSize: "14px",
         textAlign: "center",
-        border: "none",
+        // border: "none",
+        border: '1px solid rgb(204, 204, 204)',
         cursor: 'text',
+
       }}
       placeholder={placeholder}
       onChange={onChange}

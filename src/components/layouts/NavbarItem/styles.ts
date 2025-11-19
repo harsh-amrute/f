@@ -587,6 +587,12 @@ export const SCItemChild = styled.div<{
   display: flex;
   align-items: center;
 
+
+ &:hover {
+    transform: scale(1.05);
+    transition: all 0.2s ease-in-out;
+  }
+
   @media (min-width: ${gridSystem.size.laptopL}) and (max-width: ${gridSystem
     .size.desktop}) {
     margin: ${(props) => (props.status ? "5px 0px 5px 15px" : "0px")};
