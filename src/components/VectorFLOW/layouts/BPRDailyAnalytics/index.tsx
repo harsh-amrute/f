@@ -29,7 +29,6 @@ import {
     BPRDailyAnalyticsTableCellIcon
 } from './styles'
 import { useUserData } from '../../../../context'
-import useGetlastRunData from '../../../../hooks/useGetLastRunData'
 
 interface BPRDailyAnalyticsProps{
     colDefs:ColDef[]
