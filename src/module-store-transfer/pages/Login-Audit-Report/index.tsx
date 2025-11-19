@@ -117,7 +117,7 @@ const AuditReport = () => {
 
   const ExcelExport = () => {
     gridRef.current?.api?.exportDataAsExcel({
-      FileName: FilterPageName.Login_Audit_Report,
+      fileName: FilterPageName.Login_Audit_Report,
       sheetName: FilterPageName.Login_Audit_Report
     });
   };
