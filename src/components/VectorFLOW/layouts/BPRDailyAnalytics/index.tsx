@@ -7,9 +7,6 @@ import { RootState } from '../../../../redux/store/store'
 import { routerToAnalyticsStringMap } from '../../../../helpers/BPRConstants'
 import { useGetAnalyticsData } from '../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR'
 import { toast } from "react-toastify";
-import { notifyLoader, notifySuccess } from '../../../../helpers/notify'
-
-import {isBefore} from 'date-fns'
 import {
     BPRDailyAnalyticsHeader,
     BPRDailyAnalyticsContainer,
