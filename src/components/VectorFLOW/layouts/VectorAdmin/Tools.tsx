@@ -2,11 +2,17 @@ import { useNavigate } from "react-router"
 import IconCard from "../../commons/VFCard/IconCard"
 import { PanelGrid } from "../SelectMaster/styles"
 import {  ToolsWrapper } from "./styles"
+import { useAuth } from "./useAuth"
+import Spinner from "../../../../components/commons/Spinner"
+import { useUserData } from "../../../../context"
 
 
 const Tools = ()=>{
 
     const navigate = useNavigate()
+    const { user } = useUserData();
+    const isAdmin = user?.user?.is_admin;
+    const isPermissionsManager  = user?.roles?.permission.includes("PermissionsManager");
     
     return(
         <ToolsWrapper>
@@ -16,7 +22,10 @@ const Tools = ()=>{
                 gap: '20px', 
                 maxWidth: 900 
             }}>
-                <div>
+            { 
+             isAdmin &&   
+             <>
+             <div>
                     <IconCard
                         text="Manage Roles"
                         iconOnMouseIn="/assets/img/VectorFLOW/NMS/edit.svg"
@@ -45,15 +54,6 @@ const Tools = ()=>{
                 </div>
                 <div>
                     <IconCard
-                        text="Manage Permissions"
-                        iconOnMouseIn="/assets/img/VectorFLOW/NMS/edit.svg"
-                        iconOnMouseOut="/assets/img/VectorFLOW/NMS/edit.svg"
-                        onClick={()=>navigate('/vector-admin/manage-permissions')}
-                        themeUi="NOIRFUSION"
-                    />
-                </div>
-                <div>
-                    <IconCard
                         text="Manage UI Report Configuration"
                         iconOnMouseIn="/assets/img/VectorFLOW/NMS/edit.svg"
                         iconOnMouseOut="/assets/img/VectorFLOW/NMS/edit.svg"
@@ -70,6 +70,20 @@ const Tools = ()=>{
                         themeUi="NOIRFUSION"
                     />
                 </div>
+                </>
+                }
+            { 
+             isPermissionsManager  &&   
+             <div>
+                    <IconCard
+                        text="Manage Permissions"
+                        iconOnMouseIn="/assets/img/VectorFLOW/NMS/edit.svg"
+                        iconOnMouseOut="/assets/img/VectorFLOW/NMS/edit.svg"
+                        onClick={()=>navigate('/vector-admin/manage-permissions')}
+                        themeUi="NOIRFUSION"
+                    />
+                </div>
+            }
             </PanelGrid>
         </ToolsWrapper>
     )
