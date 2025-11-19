@@ -1,5 +1,4 @@
 import React, { CSSProperties, useEffect, useRef, useState } from "react";
-import styled from "styled-components";
 import VFButtonOutline from "../../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import { useUserData } from "../../../../../../context";
 import Portal from "../../../../../../components/VectorFLOW/layouts/Portal";
@@ -19,126 +18,26 @@ import _ from "lodash";
 import { format } from "date-fns";
 import { start } from "repl";
 
-const ToolbarWrapper = styled.div`
-  width: calc(100% + 24px);
-  position: sticky;
-  top: 61px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 6px 20px;
-  background: #ffffff;
-  z-index: 2;
-  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1);
-`;
-
-const ToolbarLeftSection = styled.span`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  font-size: 1.2rem;
-`;
-
-const ToolbarRightSection = styled.span`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 11px;
-  font-size: 1.2rem;
-`;
-const GoBackButton = styled.button`
-  display: flex;
-  background: transparent;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 6px 12px;
-  cursor: pointer;
-
-  &:hover {
-    transform: scale(1.05);
-    transition: all 0.3s ease-in-out;
-  }
-`;
-
-const ToggleButtonWrapper = styled.div`
-  display: flex;
-  position: relative;
-  width: fit-content;
-  padding: 4px;
-  border: 0.5px solid #e0e0e0;
-  border-radius: 8px;
-  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1);
-  background: #ffffff;
-`;
-
-const ToggleButton = styled.button`
-  background: transparent;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  &:hover {
-    transform: scale(1.05);
-    transition: all 0.3s ease-in-out;
-  }
-`;
-
-const ButtonLabel = styled.span<{ isSelected: boolean }>`
-  font-size: 0.8rem;
-  color: ${(props) => (props.isSelected ? "rgb(188, 61, 129)" : "#3e3e3e")};
-  font-weight: ${(props) => (props.isSelected ? "600" : "400")};
-  user-select: none;
-`;
-
-const ToggleDivider = styled.div`
-  width: 1px;
-  height: 35px;
-  background: #e0e0e0;
-  margin: 0 6px;
-`;
-
-const DropdownWrapper = styled.div<{ topPos: any; leftPos: any }>`
-  position: absolute;
-  top: ${(props) => props.topPos};
-  left: ${(props) => props.leftPos};
-  background-color: transparent;
-  z-index: 9999;
-  max-height: 300px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-`;
-
-const DropDownArrow = styled.span`
-  width: 0;
-  height: 0;
-  margin-right: 20px;
-  border-left: 8px solid transparent;
-  border-right: 8px solid transparent;
-  border-bottom: 8px solid rgba(229, 228, 228, 0.55);
-  filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.1));
-`;
-
-// Small bulge container for date filter
-const DateBulge = styled.div`
-  background: white;
-  border: 1px solid rgb(188, 61, 129);
-  height: 30px;
-  border-radius: 8px;
-  padding: 4px 8px;
-  z-index: 4;
-  width: 150px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 2px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-  font-size: 0.9rem;
-`;
-
+import {
+  ToolbarWrapper,
+  ToolbarLeftSection,
+  ToolbarRightSection,
+  GoBackButton,
+  ToggleButtonWrapper,
+  ToggleButton,
+  ButtonLabel,
+  ToggleDivider,
+  DropdownWrapper,
+  DropDownArrow,
+  dateBulge,
+  dateBulgeBorderVar,
+  dateBulgeBgVar,
+  ButtonLabelSelected,
+  dropdownTopVar,
+  dropdownLeftVar,
+} from "./styles.css";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
+import clsx from "clsx";
 const gridViewIcon = (isSelected: boolean) => {
   const activeColor = "rgb(188, 61, 129)";
   const inactiveColor = "#3e3e3e";
@@ -398,11 +297,16 @@ const SchedulingActionToolbar = ({
       },
     });
   };
+  const hasDateFilter = !!(
+    appliedFilters?.timePreference?.startDate ||
+    appliedFilters?.timePreference?.endDate
+  );
 
   return (
-    <ToolbarWrapper>
-      <ToolbarLeftSection>
-        <GoBackButton
+    <div className={ToolbarWrapper}>
+      <span className={ToolbarLeftSection}>
+        <button
+          className={GoBackButton}
           onClick={() => {
             onGoBack();
             setSearchParams(undefined);
@@ -416,20 +320,17 @@ const SchedulingActionToolbar = ({
             height={16}
           />
           <p style={{ fontSize: "1.2rem" }}>Go Back</p>
-        </GoBackButton>
-        <DateBulge
-          style={{
-            border:
-              appliedFilters?.timePreference?.startDate ||
-              appliedFilters?.timePreference?.endDate
-                ? "1px solid #bc3d81"
-                : "1px solid #cecece",
-            background:
-              appliedFilters?.timePreference?.startDate ||
-              appliedFilters?.timePreference?.endDate
-                ? "rgba(240, 159, 202, 0.1)"
-                : "#f5f5f5",
-          }}
+        </button>
+        <div
+          className={dateBulge}
+          style={assignInlineVars({
+            [dateBulgeBorderVar]: hasDateFilter
+              ? "1px solid #bc3d81"
+              : "1px solid #cecece",
+            [dateBulgeBgVar]: hasDateFilter
+              ? "rgba(240, 159, 202, 0.1)"
+              : "#f5f5f5",
+          })}
         >
           <img
             style={{ marginBottom: "3.2px" }}
@@ -453,10 +354,10 @@ const SchedulingActionToolbar = ({
               )}
             </p>
           )}
-        </DateBulge>
-      </ToolbarLeftSection>
+        </div>
+      </span>
 
-      <ToolbarRightSection>
+      <span className={ToolbarRightSection}>
         {isAnyFilterApplied(appliedFilters) && (
           <div
             className={VFSelectedFiltersWrapper}
@@ -668,59 +569,77 @@ const SchedulingActionToolbar = ({
         >
           {isAnyFilterApplied(appliedFilters) ? "Edit Filter" : "+ Add Filter"}
         </VFButtonOutline>
-        <ToggleButtonWrapper>
-          <ToggleButton
+        <div className={ToggleButtonWrapper}>
+          <button
+            className={ToggleButton}
             onClick={() => {
               setCurrentView("ResourceView");
               setSearchParams({ page: "ResourceView" });
             }}
           >
             {resourceViewIcon(currentView === "ResourceView")}
-            <ButtonLabel isSelected={currentView === "ResourceView"}>
+            <span
+              className={clsx(
+                ButtonLabel,
+                currentView === "ResourceView" && ButtonLabelSelected
+              )}
+            >
               Resource View
-            </ButtonLabel>
-          </ToggleButton>
+            </span>
+          </button>
 
           <ToggleDivider />
 
-          <ToggleButton
+          <button
+            className={ToggleButton}
             onClick={() => {
               setCurrentView("JobView");
               setSearchParams({ page: "JobView" });
             }}
           >
             {JobViewIcon(currentView === "JobView")}
-            <ButtonLabel isSelected={currentView === "JobView"}>
+            <span
+              className={clsx(
+                ButtonLabel,
+                currentView === "JobView" && ButtonLabelSelected
+              )}
+            >
               Job View
-            </ButtonLabel>
-          </ToggleButton>
+            </span>
+          </button>
           <ToggleDivider />
 
-          <ToggleButton onClick={onSelectClick}>
+          <button className={ToggleButton} onClick={onSelectClick}>
             {gridViewIcon(
               currentView === "GridViewR" || currentView === "GridViewJ"
             )}
-            <ButtonLabel
-              isSelected={
-                currentView === "GridViewR" || currentView === "GridViewJ"
-              }
+            <span
+              className={clsx(
+                ButtonLabel,
+                (currentView === "GridViewR" || currentView === "GridViewJ") &&
+                  ButtonLabelSelected
+              )}
             >
               Grid View
-            </ButtonLabel>
-          </ToggleButton>
-        </ToggleButtonWrapper>
-      </ToolbarRightSection>
+            </span>
+          </button>
+        </div>
+      </span>
 
       {open && (
         <Portal wrapperId="checkbox-dropdown">
-          <DropdownWrapper
+          <div
+            className={DropdownWrapper}
             ref={dropdownRef}
-            topPos={dropdownPosition.top + "px"}
-            leftPos={dropdownPosition.left + "px"}
+            style={assignInlineVars({
+              [dropdownTopVar]: dropdownPosition.top + "px",
+              [dropdownLeftVar]: dropdownPosition.left + "px",
+            })}
           >
             <DropDownArrow></DropDownArrow>
-            <ToggleButtonWrapper>
-              <ToggleButton
+            <div className={ToggleButtonWrapper}>
+              <button
+                className={ToggleButton}
                 onClick={() => {
                   setCurrentView("GridViewR");
                   setSearchParams({ page: "GridViewR" });
@@ -728,12 +647,18 @@ const SchedulingActionToolbar = ({
                 }}
               >
                 {gridViewResourceIcon(currentView === "GridViewR")}
-                <ButtonLabel isSelected={currentView === "GridViewR"}>
+                <span
+                  className={clsx(
+                    ButtonLabel,
+                    currentView === "GridViewR" && ButtonLabelSelected
+                  )}
+                >
                   Resource List
-                </ButtonLabel>
-              </ToggleButton>
+                </span>
+              </button>
               <ToggleDivider />
-              <ToggleButton
+              <button
+                className={ToggleButton}
                 onClick={() => {
                   setCurrentView("GridViewJ");
                   setSearchParams({ page: "GridViewJ" });
@@ -741,15 +666,20 @@ const SchedulingActionToolbar = ({
                 }}
               >
                 {gridViewJobIcon(currentView === "GridViewJ")}
-                <ButtonLabel isSelected={currentView === "GridViewJ"}>
+                <span
+                  className={clsx(
+                    ButtonLabel,
+                    currentView === "GridViewJ" && ButtonLabelSelected
+                  )}
+                >
                   Job List
-                </ButtonLabel>
-              </ToggleButton>
-            </ToggleButtonWrapper>
-          </DropdownWrapper>
+                </span>
+              </button>
+            </div>
+          </div>
         </Portal>
       )}
-    </ToolbarWrapper>
+    </div>
   );
 };
 

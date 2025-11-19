@@ -14,6 +14,7 @@ import Select from "react-select";
 import AddLocationPermission from "./AddLocationPermission";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
 import * as globalStyles from "../../../styles/global";
+import { useCombobox } from "downshift";
 
 interface PermissionsDrawerProps {
   onClose: () => void;
@@ -94,12 +95,29 @@ const Header = (props: {
     permissionOptions[0]
   );
 
-  const handlePermissionChange = (selectedOption: any) => {
-    setSelectedPermission(selectedOption);
-    setPermissionType(selectedOption.value);
-  };
-  const focusColor =
-    globalStyles.chooseThemeColor[themeUi]?.color4 ?? "transparent";
+  const {
+    isOpen,
+    getToggleButtonProps,
+    getMenuProps,
+    getItemProps,
+    highlightedIndex,
+  } = useCombobox({
+    items: permissionOptions,
+    selectedItem: selectedPermission,
+    onSelectedItemChange: ({ selectedItem }) => {
+      if (selectedItem) {
+        setSelectedPermission(selectedItem);
+        setPermissionType(selectedItem.value);
+      }
+    },
+  });
+
+  const getThemeColor = () =>
+    themeUi === "REGALBLAZE" ? "#FCA311" : "#BC3D80";
+  const getHoverColor = () =>
+    themeUi === "REGALBLAZE"
+      ? "rgba(252, 163, 17, 0.3)"
+      : "rgba(188, 61, 129, 0.3)";
 
   return (
     <div
@@ -108,48 +126,75 @@ const Header = (props: {
         display: "flex",
         alignItems: "center",
         padding: "10px 15px",
-        ...assignInlineVars({
-          [focusOutlineVar]: focusColor,
-        }),
+        borderBottom: "1px solid #ddd",
       }}
     >
-      <Select
-        options={permissionOptions}
-        placeholder={"Select Application"}
-        onChange={handlePermissionChange}
-        styles={{
-          option: (baseStyles, { isSelected }) => ({
-            ...baseStyles,
-            fontSize: 11,
-            backgroundColor: isSelected
-              ? themeUi === "REGALBLAZE"
-                ? "#FCA311"
-                : "#BC3D80"
-              : "white",
-
-            "&:hover": {
-              backgroundColor:
-                themeUi === "REGALBLAZE"
-                  ? "rgb(252, 163, 17,0.3) "
-                  : "#bc3d814d",
-              color: "black",
-            },
-          }),
-          control: (baseStyles, { isFocused }) => ({
-            ...baseStyles,
-            fontSize: 12,
-            borderColor: !isFocused ? "transparent" : "#BC3D80",
-            borderWidth: 2,
-            boxShadow: "none",
+      {/* Downshift Dropdown */}
+      <div style={{ position: "relative", width: "180px" }}>
+        <button
+          type="button"
+          {...getToggleButtonProps()}
+          style={{
+            width: "100%",
             backgroundColor: "rgb(247, 247, 247)",
-            "&:hover": {
-              borderColor: "#BC3D80",
-            },
-          }),
-        }}
-        defaultValue={permissionOptions[0]}
-        value={selectedPermission}
-      />
+            border: "2px solid transparent",
+            padding: "6px 8px",
+            fontSize: "12px",
+            textAlign: "left",
+            cursor: "pointer",
+            borderRadius: "4px",
+          }}
+        >
+          {selectedPermission.label}
+        </button>
+        <ul
+          {...getMenuProps()}
+          style={{
+            position: "absolute",
+            top: "100%",
+            left: 0,
+            right: 0,
+            backgroundColor: "white",
+            listStyle: "none",
+            margin: 0,
+            padding: 0,
+            boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+            zIndex: 5,
+            borderRadius: "4px",
+            border: "1px solid #eee",
+            display: isOpen ? "block" : "none",
+            maxHeight: "150px",
+            overflowY: "auto",
+          }}
+        >
+          {isOpen &&
+            permissionOptions.map((item, index) => (
+              <li
+                key={item.value}
+                {...getItemProps({ item, index })}
+                style={{
+                  padding: "6px 10px",
+                  fontSize: "11px",
+                  backgroundColor:
+                    highlightedIndex === index
+                      ? getHoverColor()
+                      : item.value === selectedPermission.value
+                      ? getThemeColor()
+                      : "white",
+                  color:
+                    highlightedIndex === index ||
+                    item.value === selectedPermission.value
+                      ? "black"
+                      : "#333",
+                  cursor: "pointer",
+                }}
+              >
+                {item.label}
+              </li>
+            ))}
+        </ul>
+      </div>
+
       <div style={{ flex: 4, marginLeft: "15px" }}>
         <NavigationTab
           listTabs={["View", "Add"]}
@@ -158,6 +203,7 @@ const Header = (props: {
           setActiveTab={setActiveTab}
         />
       </div>
+
       <img
         style={{ cursor: "pointer", marginRight: "5px" }}
         onClick={handleClose}

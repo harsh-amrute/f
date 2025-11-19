@@ -213,31 +213,24 @@ const MenuToolTip = ({
 
   return (
     <div ref={tooltipRef}>
-      <div
-        className={WrapToolTip}
-        // style={assignInlineVars({ [tooltipLeftVar]: `${left ?? 0}px` })}
-      >
+      <div className={WrapToolTip}>
         <Tooltip
-          disableStyleInjection="core"
+          disableStyleInjection={true}
           id={item.name}
-          // anchorId={anchorId}        // ✅ anchor to the wrapper
-          place="right"
-          // className="tooltip_list"
+          place="right-start"
           noArrow
           isOpen
-          positionStrategy="fixed" // 👈 helps with overflow/portals
-          offset={8} // 👈 must be a number (gap in px)
+          positionStrategy="fixed"
+          offset={8}
         >
           <div
             className={TooltipContainer}
-            // style={{
-            //   maxHeight: tooltipMaxHeight,
-            //   top: tooltipPosition === "down" ? "0" : "auto",
-            //   bottom: tooltipPosition === "up" ? "-30px" : "auto",
-            //   background: "white",
-            //   minWidth: "230px",
-            //   width: "fit-content",
-            // }}
+            style={{
+              maxHeight: tooltipMaxHeight,
+              background: "white",
+              minWidth: "230px",
+              width: "fit-content",
+            }}
           >
             <div className={TooltipTitle}>{t(item.name)}</div>
             <div

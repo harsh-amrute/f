@@ -1,5 +1,4 @@
 import { style, createVar } from '@vanilla-extract/css';
-// import checkedUrl from '../../../assets/img/mto/dueDateQuotation/checked.svg';
 
 /** runtime var for the themed accent color (color4) */
 export const accentVar = createVar();

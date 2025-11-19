@@ -1,86 +1,187 @@
-import Select from 'react-select';
-import { chooseThemeColor } from '../../../../../styles/global';
+import React, { useRef, useState } from "react";
+import { useSelect } from "downshift";
+import { chooseThemeColor } from "../../../../../styles/global";
 
+const ArrowIcon = ({ icon }: { icon?: any }) =>
+  icon ? (
+    <span style={{ display: "flex", alignItems: "center", padding: 0 }}>
+      {icon}
+    </span>
+  ) : (
+    <svg
+      width="16"
+      height="16"
+      style={{ color: "grey" }}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <polyline points="6 9 12 15 18 9"></polyline>
+    </svg>
+  );
 
-const VFSelect = ({ options, themeUi, icon, placeholder, ...rest }: any) => {
+const VFSelect = ({
+  options = [],
+  themeUi,
+  icon,
+  placeholder,
+  disabled = false,
+  ...rest
+}: any) => {
+  const items = options || [];
+  const [selectedItem, setSelectedItem] = useState(rest.value ?? null);
+  const buttonRef = useRef<HTMLDivElement>(null);
+  console.log("disabled", disabled);
+  const {
+    isOpen,
+    getToggleButtonProps,
+    getMenuProps,
+    highlightedIndex,
+    getItemProps,
+    selectedItem: dsSelectedItem,
+  } = useSelect({
+    items,
+    itemToString: (item) => (item ? item.label : ""),
+    selectedItem,
+    onSelectedItemChange: ({ selectedItem }) => {
+      setSelectedItem(selectedItem);
+      if (rest.onChange) rest.onChange(selectedItem || null);
+    },
+  });
 
-    const SearchIcon = () => {
-        return (
-            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 20 20.002" data-testid='vfmaster-search-icon'>
-                <g id="Group_3376" data-name="Group 3376" transform="translate(-905.1 -140.058)">
-                    <g id="b995a33f0790c855384b59de531e8fe3" transform="translate(905.1 140.058)">
-                        <path id="Path_90" data-name="Path 90" d="M16.352,24.4A8.152,8.152,0,1,1,24.5,16.252,8.163,8.163,0,0,1,16.352,24.4Zm0-15.093a6.982,6.982,0,1,0,6.982,6.982A6.994,6.994,0,0,0,16.352,9.312Z" transform="translate(-8.2 -8.1)" fill="#313131" />
-                        <path id="Path_91" data-name="Path 91" d="M45.786,46.664,40.1,41.02l.92-.92,5.644,5.686-.878.878" transform="translate(-26.664 -26.662)" fill="#313131" />
-                    </g>
-                </g>
-            </svg>
-        )
-    }
-    return (
-        <Select
-            isSearchable={false}
-            components={{
-                IndicatorSeparator: () => null,
-                DropdownIndicator: icon ? SearchIcon : null
+  const themeColors = chooseThemeColor[themeUi];
+  const primaryColor = themeColors.color4;
+  const primary25 = primaryColor + "4A";
+
+  return (
+    <div
+      style={{
+        position: "relative",
+        width: placeholder === "Select Order Type" ? 170 : "100%",
+        minWidth: "80px",
+        ...rest.style,
+      }}
+    >
+      <div
+        ref={buttonRef}
+        {...getToggleButtonProps({
+          disabled,
+          "aria-label": placeholder,
+          tabIndex: 0,
+        })}
+        style={{
+          minHeight: 25,
+          border: "1px solid hsl(0, 0%, 80%)",
+          borderRadius: 0,
+          backgroundColor: disabled ? "#F2F2F2" : "#fff",
+          boxShadow: "none",
+          display: "flex",
+          alignItems: "center",
+          minWidth: "80px",
+          cursor: disabled ? "not-allowed" : "pointer",
+          padding: "4px 8px",
+          color: "inherit",
+          fontSize: 14,
+          opacity: disabled ? 0.65 : 1,
+        }}
+      >
+        <div
+          style={{
+            flex: 1,
+            color: !selectedItem ? "#888" : "#222",
+            fontWeight: 400,
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+            textOverflow: "ellipsis",
+          }}
+        >
+          {selectedItem ? selectedItem.label : placeholder}
+        </div>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            color: "grey",
+            marginLeft: 4,
+            padding: 0,
+          }}
+        >
+          {icon ? <ArrowIcon icon={icon} /> : <ArrowIcon />}
+        </div>
+      </div>
+      <ul
+        {...getMenuProps()}
+        style={{
+          zIndex: 100000000,
+          minWidth: "100%",
+          width: "max-content",
+          position: "absolute",
+          left: 0,
+          right: 0,
+          marginTop: 2,
+          backgroundColor: "#fff",
+          boxShadow: "0 2px 10px #ddd",
+          border: "1px solid hsl(0, 0%, 80%)",
+          borderRadius: "0 0 4px 4px",
+          maxHeight: 120,
+          overflowY: "auto",
+          padding: 0,
+          display: isOpen ? "block" : "none",
+          boxSizing: "border-box",
+          listStyle: "none",
+          margin: 0,
+        }}
+      >
+        {isOpen && items.length === 0 && (
+          <li
+            style={{
+              padding: "8px 10px",
+              fontStyle: "italic",
+              color: "#999",
+              backgroundColor: "#fff",
+              fontSize: 13,
             }}
-            menuPlacement={"auto"}
-            // menuIsOpen={true}
-            styles={{
-                container: (base) => ({
-                    ...base,
-                    width: placeholder == "Select Order Type" ? 170 : "100%"
-                }),
-                control: (base: any, state: any) => ({
-                    ...base,
-                    minHeight: "25px",
-                    minWidth: "80px",
-                    boxShadow: state.isFocused ? 0 : 0,
-                    border: "1px solid hsl(0, 0%, 80%) !important",
-                    '&:hover': {
-                        border: "1px solid hsl(0, 0%, 80%)"
-                    }
-                }),
-                menu: (base) => ({
-                    ...base,
-                    zIndex: "100000000",
-                    minWidth: "100%",
-                    width: "max-content"
-                }),
-                menuList: (base) => ({
-                    ...base,
-                    maxHeight: "120px"
-                }),
-                dropdownIndicator: (base) => ({
-                    ...base,
-                    color: "grey",
-                    padding: "0"
-                }),
-                clearIndicator: (base) => ({
-                    ...base,
-                    color: "grey",
-                    padding: "0"
-                }),
-                indicatorsContainer: (base) => ({
-                    ...base,
-                    padding: "0 8px"
-                })
-            }}
-            theme={(theme) => ({
-                ...theme,
-                borderRadius: 0,
-                colors: {
-                    ...theme.colors,
-                    primary50: chooseThemeColor[themeUi].color4,
-                    primary25: chooseThemeColor[themeUi].color4 + "4A",
-                    primary: chooseThemeColor[themeUi].color4,
-                },
-            })}
-            // menuIsOpen
-            options={options}
-            {...rest}
+          >
+            No options
+          </li>
+        )}
+        {isOpen &&
+          items.map((item: any, index: number) => {
+            const isSelected =
+              selectedItem && item.value === selectedItem.value;
+            const isHighlighted = highlightedIndex === index;
+            return (
+              <li
+                key={item.value}
+                {...getItemProps({ item, index, disabled })}
+                aria-selected={isSelected}
+                style={{
+                  fontSize: 14,
+                  padding: "7px 12px",
+                  backgroundColor: isHighlighted
+                    ? primary25
+                    : isSelected
+                    ? primaryColor
+                    : "#fff",
+                  color: isHighlighted || isSelected ? "#222" : "#444",
+                  cursor: disabled ? "not-allowed" : "pointer",
+                  borderBottom: "1px solid #eee",
+                  fontWeight: isSelected ? 500 : 400,
+                  fontStyle: isSelected ? "italic" : "normal",
+                }}
+              >
+                {item.label}
+              </li>
+            );
+          })}
+      </ul>
+    </div>
+  );
+};
 
-        />
-    )
-}
-
-export default VFSelect
+export default VFSelect;

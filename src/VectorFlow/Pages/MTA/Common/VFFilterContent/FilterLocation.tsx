@@ -9,7 +9,7 @@ import {
   accentColorVar,
   disabledVar,
 } from "./style.css";
-import Select, { components } from "react-select";
+// import Select, { components } from "react-select";
 import {
   useColorOptionStyles,
   useColorThemeStyles,
@@ -25,8 +25,11 @@ import {
   useGetAllLocations,
   useSearchWHDescription,
 } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
-import { MultiValue, ActionMeta } from "react-select";
+// import { MultiValue, ActionMeta } from "react-select";
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
+import DownshiftSelect from "./DownshiftSelect/DownshiftSelect";
+import DownshiftMultiSelect from "./DownshiftSelect/DownshiftMultiSelect";
+import { COptCheckboxWithBorder } from "./DownshiftSelect/utils/custom-options";
 
 interface FilterSectionProps {
   multiFilter: BPRFilterState;
@@ -186,22 +189,53 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
     ? isLocationDataLoading
     : isSearchLoading || isSearchFetching;
 
-  const CustomOption = (props: any) => {
-    const optionStyles = useColorOptionStyles();
-    return (
-      <components.Option {...props}>
-        <div style={optionStyles.optionContainer}>
-          <input
-            type="checkbox"
-            checked={props.isSelected}
-            style={optionStyles.checkbox}
-            readOnly
-          />
-          <span style={optionStyles.colorName}>{props.data.label}</span>
-        </div>
-      </components.Option>
-    );
-  };
+  // const CustomOption = (props: any) => {
+  //   const optionStyles = useColorOptionStyles();
+  //   return (
+  //     <components.Option {...props}>
+  //       <div style={optionStyles.optionContainer}>
+  //         <input
+  //           type="checkbox"
+  //           checked={props.isSelected}
+  //           style={optionStyles.checkbox}
+  //           readOnly
+  //         />
+  //         <span style={optionStyles.colorName}>{props.data.label}</span>
+  //       </div>
+  //     </components.Option>
+  //   );
+  // };
+
+  // interface CategoryOptionProps {
+  //   item: { label: string; value: string };
+  //   isSelected: boolean;
+  //   isHighlighted: boolean;
+  //   getItemProps?: (options: any) => any;
+  // }
+  // const CustomOption = ({
+  //   item,
+  //   isSelected,
+  //   isHighlighted,
+  // }: CategoryOptionProps) => {
+  //   const optionStyles = useColorOptionStyles();
+
+  //   return (
+  //     <div
+  //       style={{
+  //         ...optionStyles.optionContainer,
+  //       }}
+  //     >
+  //       <input
+  //         type="checkbox"
+  //         checked={isSelected}
+  //         readOnly
+  //         // style={{ ...optionStyles.checkbox, accentColor: null }}
+  //       />
+
+  //       <span>{item.label}</span>
+  //     </div>
+  //   );
+  // };
 
   const isUpdatingFromInternal = useRef(false);
 
@@ -390,10 +424,46 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
     });
   };
 
-  const handleLocationSelectChange = (
-    newValue: MultiValue<any>,
-    actionMeta: ActionMeta<any>
-  ) => {
+  // const handleLocationSelectChange = (
+  //   newValue: MultiValue<any>,
+  //   actionMeta: ActionMeta<any>
+  // ) => {
+  //   const selected = Array.isArray(newValue) ? [...newValue] : [];
+  //   setSelectedLocations(selected);
+
+  //   setSearchQuery("");
+  //   setHasSearched(false);
+  //   setManualSearchQuery("");
+
+  //   const parentId = "locationFilter";
+  //   const existingFilters = (multiFilter[parentId]?.filters ||
+  //     []) as BPRFilter[];
+  //   const operationFilters = existingFilters.filter(
+  //     (f) => !f.name.startsWith("LF6")
+  //   );
+
+  //   const newFilters = selected.map((loc) => ({
+  //     attributeName: "Location",
+  //     value: loc.value,
+  //     operator: "=",
+  //     label: "LocationCode",
+  //     name: "LF6",
+  //   }));
+
+  //   isUpdatingFromInternal.current = true;
+  //   const updatedMultiFilter: BPRFilterState = {
+  //     ...multiFilter,
+  //     [parentId]: {
+  //       ...multiFilter[parentId],
+  //       filters: [...operationFilters, ...newFilters],
+  //     },
+  //   };
+
+  //   onMultiFilterChange(updatedMultiFilter);
+  // };
+
+  const handleLocationSelectChange = (newValue: any[]) => {
+    // newValue is always an array of items selected from Downshift
     const selected = Array.isArray(newValue) ? [...newValue] : [];
     setSelectedLocations(selected);
 
@@ -404,10 +474,13 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
     const parentId = "locationFilter";
     const existingFilters = (multiFilter[parentId]?.filters ||
       []) as BPRFilter[];
+
+    // remove old LF6 filters
     const operationFilters = existingFilters.filter(
       (f) => !f.name.startsWith("LF6")
     );
 
+    // create new LF6 filters from selection
     const newFilters = selected.map((loc) => ({
       attributeName: "Location",
       value: loc.value,
@@ -417,6 +490,7 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
     }));
 
     isUpdatingFromInternal.current = true;
+
     const updatedMultiFilter: BPRFilterState = {
       ...multiFilter,
       [parentId]: {
@@ -473,13 +547,11 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
     onMultiFilterChange(updatedMultiFilter);
   };
 
-  const handleInputChange = (inputValue: string, { action }: any) => {
-    if (action === "input-change") {
-      setSearchQuery(inputValue);
-      if (hasSearched && inputValue.length < 2) {
-        setManualSearchQuery("");
-        setHasSearched(false);
-      }
+  const handleInputChange = (inputValue: string) => {
+    setSearchQuery(inputValue);
+    if (hasSearched && inputValue.length < 2) {
+      setManualSearchQuery("");
+      setHasSearched(false);
     }
   };
 
@@ -522,7 +594,7 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
               style={{ alignItems: "center" }}
             >
               <div className={dropDownWrapper}>
-                <Select
+                {/* <Select
                   classNamePrefix="rs"
                   options={filterLocationOptions}
                   placeholder="Select Column"
@@ -532,21 +604,27 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
                   onChange={(selected) =>
                     onFilterChange(row.id, "column", selected)
                   }
+                /> */}
+                <DownshiftSelect
+                  options={filterLocationOptions}
+                  placeholder="Select Column"
+                  value={rowSelections[row.id]?.column || null}
+                  onChange={(selected) =>
+                    onFilterChange(row.id, "column", selected)
+                  }
+                  isSearchable={false}
+                  disabled={false}
                 />
               </div>
               <div className={dropDownWrapper}>
-                <Select
-                  // classNamePrefix="rs"
+                <DownshiftSelect
                   options={stringOpertors}
-                  classNamePrefix="rs"
                   placeholder="Select Operation"
-                  styles={styles}
-                  isSearchable={false}
-                  components={{ IndicatorSeparator: () => null }}
                   value={rowSelections[row.id]?.operation || null}
                   onChange={(selected) =>
                     onFilterChange(row.id, "operation", selected)
                   }
+                  isSearchable={false}
                 />
               </div>
               <div className={dropDownWrapper}>
@@ -622,81 +700,28 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
         <div className={filterColumn}>
           <div className={textWrapper}>Select Location</div>
           <div className={dropDownRow}>
-            <div className={dropDownWrapper} style={{ flex: 1 }}>
-              <Select
-                classNamePrefix="rs"
-                placeholder={
-                  shouldUseLocalData
-                    ? "Type location code to search..."
-                    : "Type to search locations and click Search button"
-                }
-                options={shouldUseLocalData ? filteredOptions : locationOptions}
-                styles={{
-                  ...colorStyles,
-                  menu: (base) => ({
-                    ...base,
-                    minWidth: "620px",
-                  }),
-                  input: (base) => ({
-                    ...base,
-                    color: "#333",
-                  }),
+            <div
+              className={dropDownWrapper}
+              style={{
+                position: "relative",
+                display: "flex",
+                flexWrap: "nowrap",
+                justifyContent: "start",
+                alignItems: "center",
+                height: "40px",
+                width: "100%",
+                gap: 4,
+              }}
+            >
+              <div
+                style={{
+                  width: "fit-content",
+                  maxWidth: "25rem",
+                  minWidth: "15rem",
+                  height: "100%",
                 }}
-                components={{
-                  Option: CustomOption,
-                  IndicatorSeparator: () => null,
-                  DropdownIndicator: () => null,
-                }}
-                isMulti
-                isSearchable
-                closeMenuOnSelect={false}
-                hideSelectedOptions={false}
-                value={selectedLocations}
-                onChange={handleLocationSelectChange}
-                onInputChange={handleInputChange}
-                inputValue={searchQuery}
-                onKeyDown={handleKeyPress}
-                isLoading={isLoading}
-                filterOption={
-                  shouldUseLocalData ? customFilterOption : undefined
-                }
-                noOptionsMessage={({ inputValue }) =>
-                  shouldUseLocalData
-                    ? inputValue
-                      ? "No locations found"
-                      : "Start typing to search locations"
-                    : "No locations found. Try searching with the Search button."
-                }
-              />
-
-              <div style={{ width: 165, marginTop: -44, marginLeft: 4.5 }}>
-                <Select
-                  // classNamePrefix="rs"
-                  placeholder="Location Code"
-                  classNamePrefix="rs"
-                  styles={{
-                    ...styles,
-                    control: (base: any, state: any) => ({
-                      ...base,
-                      minHeight: "39px",
-                      border: state.isFocused
-                        ? user.user.theme_ui === "REGALBLAZE"
-                          ? "2px solid #FCA311"
-                          : "2px solid #BC3D80"
-                        : "1px solid #c7c0c0ff",
-                      borderRadius: "7px",
-                      boxShadow: "none",
-                      outline: "none",
-                      "&:hover": {
-                        border: state.isFocused
-                          ? user.user.theme_ui === "REGALBLAZE"
-                            ? "2px solid #FCA311"
-                            : "2px solid #BC3D80"
-                          : "1px solid #c7c0c0ff",
-                      },
-                    }),
-                  }}
-                  components={{ IndicatorSeparator: () => null }}
+              >
+                <DownshiftSelect
                   options={[
                     { value: "Location Code", label: "Location Code" },
                     {
@@ -704,11 +729,61 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
                       label: "Location Description",
                     },
                   ]}
-                  value={{
-                    value: filterType,
-                    label: filterType,
-                  }}
+                  value={
+                    filterType ? { value: filterType, label: filterType } : null
+                  }
                   onChange={handleFilterTypeChange}
+                  placeholder="Location Code"
+                  isSearchable={false}
+                  disabled={false} // change if needed
+                />
+              </div>
+              <div
+                style={{
+                  flex: 1,
+                  height: "100%",
+                  maxWidth: "600px",
+                }}
+              >
+                <DownshiftMultiSelect
+                  options={
+                    shouldUseLocalData ? filteredOptions : locationOptions
+                  }
+                  OptionComponent={COptCheckboxWithBorder}
+                  MenuWrapperComponent={({ children }) => (
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "1fr 1fr",
+                        gap: "12px",
+                        width: "750px",
+                        padding: "8px",
+                      }}
+                    >
+                      {children}
+                    </div>
+                  )}
+                  value={selectedLocations}
+                  onChange={handleLocationSelectChange}
+                  placeholder={
+                    shouldUseLocalData
+                      ? "Type location code to search..."
+                      : "Type to search locations and click Search button"
+                  }
+                  hideSelectedOptions={false}
+                  inputValue={searchQuery}
+                  onInputChange={handleInputChange}
+                  isLoading={isLoading}
+                  filterOption={
+                    shouldUseLocalData ? customFilterOption : undefined
+                  }
+                  noOptionsMessage={(inputValue) =>
+                    shouldUseLocalData
+                      ? inputValue
+                        ? "No locations found"
+                        : "Start typing to search locations"
+                      : "No locations found. Try searching with the Search button."
+                  }
                 />
               </div>
             </div>

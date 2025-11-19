@@ -25,7 +25,6 @@ import {
 import { useEffect, useState } from "react";
 
 import VFRangeSlider from "../VFRangeSlider";
-import Select from "react-select";
 import { AgCharts } from "ag-charts-react";
 import { getFormattedDate } from "../../../../helpers/utils";
 import { suspensionMessages } from "../../../../helpers/BPRConstants";
@@ -38,6 +37,7 @@ import { addDays, eachDayOfInterval, format, subDays } from "date-fns";
 import { useUserData } from "../../../../context";
 import useGetLastRunData from "../../../../hooks/useGetLastRunData";
 import Tooltip from "../../../../../src/VectorFlow/Pages/MTO/Common/Tooltip";
+import DownshiftSelectSuspension from "./DownShiftSelectSuspension";
 interface DailyDataGraphModalProps {
   rowData: any;
   chartData: any[];
@@ -383,7 +383,7 @@ const DailyDataGraphModal = ({
               </div>`
                   : ""
               }
-              
+
             </div>
             <div style="display:flex;gap:5px;">
               <div style="display:flex;align-items:center;gap:5px;">
@@ -868,7 +868,7 @@ const DailyDataGraphModal = ({
             <hr className={SCHorizontalDivider} />
 
             {/* Suspension Type */}
-            <div
+            {/* <div
               style={{
                 display: "flex",
                 flexDirection: "column",
@@ -916,7 +916,16 @@ const DailyDataGraphModal = ({
                   }),
                 }}
               />
-            </div>
+            </div> */}
+            <DownshiftSelectSuspension
+              suspensionOptions={suspensionOptions}
+              setSuspensionType={setSuspensionType}
+              themeUi={themeUi}
+              SCText={SCText}
+              assignInlineVars={assignInlineVars}
+              textFontWeightVar={textFontWeightVar}
+              textFontSizeVar={textFontSizeVar}
+            />
 
             <hr className={SCHorizontalDivider} />
 
@@ -962,8 +971,8 @@ const DailyDataGraphModal = ({
                 >
                   Location :
                   <Tooltip
-
-disableStyleInjection={true}                    content={
+                    disableStyleInjection={true}
+                    content={
                       <div style={{ padding: "0.5rem 1rem", fontSize: "12px" }}>
                         {rowData[whKey]}
                       </div>

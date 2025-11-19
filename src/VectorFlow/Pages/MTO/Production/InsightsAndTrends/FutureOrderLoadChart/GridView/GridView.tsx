@@ -11,7 +11,7 @@ import {
   textBtn,
 } from "../../../../../../../VectorFlow/Pages/MTO/Common/VFPagination/styles.css";
 import { useUserData } from "../../../../../../../context/index";
-import { VFTableWrapper } from "./style";
+import { vfTableWrapper } from "./style.css";
 import LoadTagTooltip from "../LoadTagToolTip";
 
 const GridView = ({
@@ -136,7 +136,7 @@ const GridView = ({
         </div>
       </div>
 
-      <VFTableWrapper
+      <div className={vfTableWrapper}
         style={{ height: "72vh", marginTop: "20px", paddingLeft: "25px" }}
       >
         <VFTable
@@ -186,7 +186,7 @@ const GridView = ({
               : setIsDisabled(true);
           }}
         />
-      </VFTableWrapper>
+      </div>
     </>
   );
 };

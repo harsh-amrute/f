@@ -13,11 +13,16 @@ import {
   notifyLoader,
   notifySuccess,
 } from "../../../../../helpers/notify";
-import { CheckUpdatesWrapper, FileUploadSkeletonTile, GridContainer, LastUpdateStatus, SideTab, Wrapper } from "./FileUploadSectionStyles";
+import {
+  checkUpdatesWrapper,
+  fileUploadSkeletonTile,
+  gridContainer,
+  lastUpdateStatus,
+  sideTab,
+  wrapper,
+} from "./FileUploadSectionStyles.css";
 
-
-
-const FileUploadSection = ({setIsRunEnabled}:any) => {
+const FileUploadSection = ({ setIsRunEnabled }: any) => {
   const [fileObjects, setFileObjects] = useState<any>([]);
   const themeUi = useUserData().user.user.themeUi;
 
@@ -34,29 +39,28 @@ const FileUploadSection = ({setIsRunEnabled}:any) => {
   );
 
   const GetFileConfiguration = async () => {
-    try{
-
+    try {
       const result = await getFileConfiguration();
-      if(result.status !== 200){
-        notifyError("Failed to fetch file configuration")
-      }
-      else{
+      if (result.status !== 200) {
+        notifyError("Failed to fetch file configuration");
+      } else {
         setFileObjects(result.data.data);
         setLastRefreshTime(new Date().toString());
       }
-    }
-    catch(e){
+    } catch (e) {
       notifyError("Failed to fetch file configuration");
       console.log(e);
     }
   };
 
-  useEffect(()=>{
-    if(fileObjects && fileObjects.length>0){
-      const allUploaded = fileObjects.every((file: any) => file.last_updated !== null);
+  useEffect(() => {
+    if (fileObjects && fileObjects.length > 0) {
+      const allUploaded = fileObjects.every(
+        (file: any) => file.last_updated !== null
+      );
       setIsRunEnabled(allUploaded);
     }
-  },[fileObjects])
+  }, [fileObjects]);
 
   const user = useUserData().user.user;
 
@@ -68,8 +72,7 @@ const FileUploadSection = ({setIsRunEnabled}:any) => {
     file_type: string;
     file_name: string;
   }) => {
-
-    if (file.name.split('.')[0] !== file_name) {
+    if (file.name.split(".")[0] !== file_name) {
       notifyError(
         `Please upload a file with the correct name and extension: ${file_name}`
       );
@@ -102,15 +105,19 @@ const FileUploadSection = ({setIsRunEnabled}:any) => {
     }
   };
 
-  const DownloadExcel = async (filename: string, expected_extension: string) => {
+  const DownloadExcel = async (
+    filename: string,
+    expected_extension: string
+  ) => {
     try {
       notifyLoader("Downloading file...");
-  
+
       // Ensure the filename has the correct extension
-      const fileWithExtension = filename.endsWith(".csv") || filename.endsWith(".xlsx")
-        ? filename
-        : `${filename}${expected_extension}`;
-  
+      const fileWithExtension =
+        filename.endsWith(".csv") || filename.endsWith(".xlsx")
+          ? filename
+          : `${filename}${expected_extension}`;
+
       const response = await getFileDownload(filename);
       const blob = new Blob([response.data], {
         type: response.headers["content-type"],
@@ -147,7 +154,7 @@ const FileUploadSection = ({setIsRunEnabled}:any) => {
   useEffect(() => {
     const updateTime = () => setTimeAgo(getTimeAgo(lastRefreshTime));
 
-    updateTime(); 
+    updateTime();
     const interval = setInterval(updateTime, 1000); // update every sec
 
     return () => clearInterval(interval);
@@ -158,7 +165,7 @@ const FileUploadSection = ({setIsRunEnabled}:any) => {
   }, []);
 
   return (
-    <Wrapper>
+    <div className={wrapper}>
       {isLoading ? (
         <div
           style={{
@@ -169,13 +176,13 @@ const FileUploadSection = ({setIsRunEnabled}:any) => {
             flexDirection: "column",
           }}
         >
-          <FileUploadSkeletonTile />
-          <FileUploadSkeletonTile />
+          <div className={fileUploadSkeletonTile} />
+          <div className={fileUploadSkeletonTile} />
         </div>
       ) : (
         <>
-          <CheckUpdatesWrapper>
-            <LastUpdateStatus>Last Updated: {timeAgo}</LastUpdateStatus>
+          <div className={checkUpdatesWrapper}>
+            <span className={lastUpdateStatus}>Last Updated: {timeAgo}</span>
             <VFButton
               style={{
                 fontSize: "1rem",
@@ -196,80 +203,82 @@ const FileUploadSection = ({setIsRunEnabled}:any) => {
               />
               <p>Check for Updates</p>
             </VFButton>
-          </CheckUpdatesWrapper>
+          </div>
 
-{
-  fileObjects.some((file: any) => file.file_from === "UI") && (
+          {fileObjects.some((file: any) => file.file_from === "UI") && (
+            <div className={gridContainer}>
+              <div className={sideTab}>UI Generated Files</div>
 
-          <GridContainer>
-            <SideTab>UI Generated Files</SideTab>
-
-            {fileObjects.map(
-              (file: any, index: number) =>
-                file.file_from === "UI" && (
-                  <FileUploadTile
-                    key={index}
-                    expected_extension={file.expected_extension}
-                    fileUploadType={file.file_from}
-                    lastUpdateStatus={
-                      file.last_updated
-                        ? format(
-                          new Date(file.last_updated),
-                            "dd MMM yyyy, hh:mm a"
-                          ) +
-                          " " +
-                          "by " +
-                          file.uploaded_by
+              {fileObjects.map(
+                (file: any, index: number) =>
+                  file.file_from === "UI" && (
+                    <FileUploadTile
+                      key={index}
+                      expected_extension={file.expected_extension}
+                      fileUploadType={file.file_from}
+                      lastUpdateStatus={
+                        file.last_updated
+                          ? format(
+                              new Date(file.last_updated),
+                              "dd MMM yyyy, hh:mm a"
+                            ) +
+                            " " +
+                            "by " +
+                            file.uploaded_by
                           : null
-                    }
-                    title={file.file_name}
-                    onDownload={DownloadExcel}
-                    onUpload={UploadFile}
-                  />
-                )
-            )}
-          </GridContainer>
-  )
+                      }
+                      title={file.file_name}
+                      onDownload={DownloadExcel}
+                      onUpload={UploadFile}
+                    />
+                  )
+              )}
+            </div>
+          )}
 
-          }
+          {fileObjects.some((file: any) => file.file_from === "FTP") && (
+            <div className={gridContainer}>
+              <div className={sideTab}>Automated Files</div>
 
-{
-  fileObjects.some((file: any) => file.file_from === "FTP") && (
+              {fileObjects.map(
+                (file: any, index: number) =>
+                  file.file_from === "FTP" && (
+                    <FileUploadTile
+                      key={index}
+                      expected_extension={file.expected_extension}
+                      fileUploadType={file.file_from}
+                      lastUpdateStatus={
+                        file.last_updated
+                          ? format(
+                              new Date(file.last_updated),
+                              "dd MMM yyyy, hh:mm a"
+                            )
+                          : null
+                      }
+                      title={file.file_name}
+                      onDownload={DownloadExcel}
+                      onUpload={UploadFile}
+                    />
+                  )
+              )}
+            </div>
+          )}
 
-          <GridContainer>
-            <SideTab>Automated Files</SideTab>
-
-            {fileObjects.map(
-              (file: any, index: number) =>
-                file.file_from === "FTP" && (
-                  <FileUploadTile
-                    key={index}
-                    expected_extension={file.expected_extension}
-                    fileUploadType={file.file_from}
-                    lastUpdateStatus={
-                      file.last_updated
-                        ? format(
-                            new Date(file.last_updated),
-                            "dd MMM yyyy, hh:mm a"
-                          )
-                        : null
-                    }
-                    title={file.file_name}
-                    onDownload={DownloadExcel}
-                    onUpload={UploadFile}
-                  />
-                )
-            )}
-          </GridContainer>
-)}
-
-{fileObjects.length === 0 && (
-  <div style={{fontSize: "1.2rem", color: "rgb(96, 93, 93)", marginTop: "80px", textAlign: "center"}}>
-            No files configured. Please contact administrator.
-  </div>)}
+          {fileObjects.length === 0 && (
+            <div
+              style={{
+                fontSize: "1.2rem",
+                color: "rgb(96, 93, 93)",
+                marginTop: "80px",
+                textAlign: "center",
+              }}
+            >
+              No files configured. Please contact administrator.
+            </div>
+          )}
         </>
       )}
-    </Wrapper>
+    </div>
   );
 };
 

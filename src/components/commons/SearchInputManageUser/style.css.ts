@@ -1,5 +1,5 @@
 // style.css.ts
-import { style } from '@vanilla-extract/css';
+import { globalStyle, style } from '@vanilla-extract/css';
 
 export const searchWrapper = style({
   position: 'relative',
@@ -25,11 +25,18 @@ export const searchIcon = style({
   width: '20px',
   height: '20px',
   pointerEvents: 'none',
-  selectors: {
-    '& svg': {
-      width: '100%',
-      height: '100%',
-      fill: '#313131',
-    },
-  },
+  // selectors: {
+  //   '& svg': {
+  //     width: '100%',
+  //     height: '100%',
+  //     fill: '#313131',
+  //   },
+  // },
+});
+
+/* Apply styles to descendant <svg> using globalStyle */
+globalStyle(`${searchIcon} svg`, {
+  width: '100%',
+  height: '100%',
+  fill: '#313131',
 });

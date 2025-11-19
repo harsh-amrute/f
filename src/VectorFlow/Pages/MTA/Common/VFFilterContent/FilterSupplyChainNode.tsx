@@ -5,7 +5,7 @@ import {
   textWrapper,
   dropDownWrapper,
 } from "./style.css";
-import Select, { components } from "react-select";
+// import Select, { components } from "react-select";
 import { useColorThemeStyles } from "../../../../../hooks/useVFFilterContent";
 import useGetLocation from "../../../../../hooks/useGetLocation";
 import { useUserData } from "../../../../../context";
@@ -13,6 +13,11 @@ import { useGetAllLocations } from "../../../../../VectorFlow/Services/MTA/Suppl
 import { BPRFilter, BPRFilterState } from "../../../../../VectorFlow/types/BPR";
 import { useVFMultiFilter } from "./useVFFilterContent";
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
+import DownshiftMultiSelect from "./DownshiftSelect/DownshiftMultiSelect";
+import {
+  COptCheckboxNoBorder,
+  COptCheckboxWithBorder,
+} from "./DownshiftSelect/utils/custom-options";
 
 interface FilterSectionProps {
   filters: any;
@@ -20,23 +25,49 @@ interface FilterSectionProps {
   onMultiFilterChange: (newMultiFilter: BPRFilterState) => void;
 }
 
-const CustomOption = (props: any) => {
-  const optionStyles = useColorOptionStyles();
+// interface CustomOptionProps {
+//   item: { value: string; label: string };
+//   isSelected: boolean;
+//   isHighlighted: boolean;
+// }
 
-  return (
-    <components.Option {...props}>
-      <div style={optionStyles.optionContainer}>
-        <input
-          type="checkbox"
-          checked={props.isSelected}
-          style={optionStyles.checkbox}
-          readOnly
-        />
-        <span style={optionStyles.colorName}>{props.data.label}</span>
-      </div>
-    </components.Option>
-  );
-};
+// const CustomOption = ({
+//   item,
+//   isSelected,
+//   isHighlighted,
+// }: CustomOptionProps) => {
+//   const optionStyles = useColorOptionStyles();
+
+//   return (
+//     <div
+//       style={{
+//         ...optionStyles.optionContainer,
+//         cursor: "pointer",
+//         display: "flex",
+//         alignItems: "center",
+//         gap: "6px",
+//         padding: "6px 8px",
+//         border: isHighlighted
+//           ? "2px solid #BC3D80"
+//           : isSelected
+//           ? "2px solid #BC3D80"
+//           : "",
+//       }}
+//     >
+//       <input
+//         type="checkbox"
+//         style={{
+//           width: 18,
+//           height: 18,
+//           accentColor: "#BC3D80",
+//         }}
+//         checked={isSelected}
+//         readOnly
+//       />
+//       <span>{item.label}</span>
+//     </div>
+//   );
+// };
 
 export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
   multiFilter,
@@ -111,36 +142,27 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
       <div className={filterGroup}>
         <div className={filterColumn}>
           <div className={textWrapper}>For Location</div>
-          <div className={dropDownWrapper} style={{ gap: "20px" }}>
-            <Select
+          <div
+            className={dropDownWrapper}
+            style={{ gap: "20px", maxWidth: "360px" }}
+          >
+            <DownshiftMultiSelect
               options={locationOptionsWithValue}
-              isMulti
-              closeMenuOnSelect={false}
               hideSelectedOptions={false}
-              classNamePrefix="rs"
-              components={{
-                Option: CustomOption,
-                IndicatorSeparator: () => null,
-                ClearIndicator: () => null,
-              }}
-              styles={{
-                ...colorStyles,
-                input: (base) => ({
-                  ...base,
-                  color: "#333",
-                }),
-                placeholder: (base) => ({
-                  ...base,
-                  color: "#999",
-                  display: "block",
-                }),
-                menuList: (base) => ({
-                  ...base,
-                  maxHeight: 500,
-                  overflowY: "auto",
-                  scrollbarWidth: "none",
-                }),
-              }}
+              OptionComponent={COptCheckboxNoBorder}
+              MenuWrapperComponent={({ children }) => (
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr",
+                    gap: "4px",
+                    width: "750px",
+                    padding: "6px 0px",
+                  }}
+                >
+                  {children}
+                </div>
+              )}
               placeholder="Location Type"
               value={selectedOptions.ForLocation.map((option) => ({
                 label: option,
@@ -160,36 +182,27 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
 
         <div className={filterColumn}>
           <div className={textWrapper}>For Children</div>
-          <div className={dropDownWrapper} style={{ gap: "20px" }}>
-            <Select
+          <div
+            className={dropDownWrapper}
+            style={{ gap: "20px", maxWidth: "360px" }}
+          >
+            <DownshiftMultiSelect
               options={locationOptionsWithValue}
-              classNamePrefix="rs"
-              isMulti
-              closeMenuOnSelect={false}
               hideSelectedOptions={false}
-              components={{
-                Option: CustomOption,
-                IndicatorSeparator: () => null,
-                ClearIndicator: () => null,
-              }}
-              styles={{
-                ...colorStyles,
-                input: (base) => ({
-                  ...base,
-                  color: "#333",
-                }),
-                placeholder: (base) => ({
-                  ...base,
-                  color: "#999",
-                  display: "block",
-                }),
-                menuList: (base) => ({
-                  ...base,
-                  maxHeight: 500,
-                  overflowY: "auto",
-                  scrollbarWidth: "none",
-                }),
-              }}
+              OptionComponent={COptCheckboxNoBorder}
+              MenuWrapperComponent={({ children }) => (
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr",
+                    gap: "4px",
+                    width: "750px",
+                    padding: "6px 0px",
+                  }}
+                >
+                  {children}
+                </div>
+              )}
               placeholder="Location Type"
               value={selectedOptions.ForChildren.map((option) => ({
                 label: option,
@@ -208,57 +221,20 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
         </div>
       </div>
 
-      <div className={filterGroup} style={{ paddingTop: "10px" }}>
+      <div
+        className={filterGroup}
+        style={{ paddingTop: "10px", maxWidth: "746px" }}
+      >
         <div
           className={filterColumn}
           style={{ maxWidth: "100%", flex: 1, width: "100%" }}
         >
           <div className={textWrapper}>Select Location</div>
           <div className={dropDownWrapper} style={{ gap: "20px" }}>
-            <Select
+            <DownshiftMultiSelect
               options={locationCheckboxOptions}
-              classNamePrefix="rs"
-              isMulti
-              menuIsOpen
-              closeMenuOnSelect={false}
               hideSelectedOptions={false}
-              components={{
-                Option: CustomOption,
-                IndicatorSeparator: () => null,
-                ClearIndicator: () => null,
-                DropdownIndicator: () => (
-                  <img
-                    src={"/assets/img/VectorFLOW/NMS/search.svg"}
-                    style={{
-                      marginRight: "8px",
-                      width: "14px",
-                      height: "14px",
-                    }}
-                    alt="search"
-                  />
-                ),
-              }}
-              styles={{
-                ...useColorThemeStyles({
-                  minWidth: "750px",
-                  inputColor: "#333",
-                  placeholderColor: "#999",
-                  menuListMaxHeight: 450,
-                  gridColumns: 2,
-                  menuWidth: "750px",
-                  gridGap: "12px",
-                  optionPadding: "8px 16px",
-                }),
-                input: (base) => ({
-                  ...base,
-                  color: "#333",
-                }),
-                placeholder: (base) => ({
-                  ...base,
-                  color: "#999",
-                  display: "block",
-                }),
-              }}
+              OptionComponent={COptCheckboxWithBorder}
               placeholder="Search By Locations"
               value={selectedOptions.ForChildrenLocationCode.map((option) => ({
                 label: option,
@@ -272,6 +248,30 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
                   parentId: "supplyChainFilter",
                 })
               }
+              MenuWrapperComponent={({ children }) => (
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr",
+                    gap: "12px",
+                    width: "750px",
+                    padding: "8px",
+                  }}
+                >
+                  {children}
+                </div>
+              )}
+              DropdownIndicatorComponent={() => (
+                <img
+                  src="/assets/img/VectorFLOW/NMS/search.svg"
+                  alt="search"
+                  style={{
+                    marginRight: "8px",
+                    width: "14px",
+                    height: "14px",
+                  }}
+                />
+              )}
             />
           </div>
         </div>

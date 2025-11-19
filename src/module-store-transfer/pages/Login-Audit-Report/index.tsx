@@ -8,7 +8,7 @@ import {
 import { useUserData } from "../../../context";
 import { useLoginAuditReport } from "../../../VectorFlow/Services/MTO/Login-Audit-Report";
 import OverlayLoader from "../../../VectorFlow/Pages/MTO/Common/Loader";
-import { TableWrapper } from "./styles";
+import { TableWrapper } from "./styles.css";
 
 const AuditReport = () => {
   const { mutateAsync: getLoginAuditReport, isLoading } = useLoginAuditReport();
@@ -115,7 +115,7 @@ const AuditReport = () => {
   return (
     <>
       {isLoading && <OverlayLoader />}
-      <TableWrapper>
+      <div className={TableWrapper}>
         <MTOActionToolBar isExcelExport onExcelExportClick={ExcelExport} />
         <VFTable
           ref={gridRef}
@@ -145,7 +145,7 @@ const AuditReport = () => {
             });
           }}
         />
-      </TableWrapper>
+      </div>
     </>
   );
 };

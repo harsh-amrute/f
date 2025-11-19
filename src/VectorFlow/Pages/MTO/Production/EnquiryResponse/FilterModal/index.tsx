@@ -2,7 +2,10 @@ import { useState } from "react";
 import VFButtonOutline from "../../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import VFButton from "../../../../../../components/VectorFLOW/commons/VFButton";
 import VFModalCard from "../../../../../../components/VectorFLOW/commons/VFModalCard";
-
+import {
+  type Option as MDMOption,
+  type Filter,
+} from "../../../../../types/MDM";
 import {
   AccordianContainer,
   ButtonContainer,
@@ -122,7 +125,12 @@ const FilterModal = (props: IFilterModalProps) => {
                   }
                 }
               }}
-              options={filters[0].options}
+              options={(filters[0]?.options ?? []).map(
+                (opt: string): MDMOption => ({
+                  label: opt,
+                  value: opt,
+                })
+              )}
               placeholder={"Plant"}
               handleListChild={() => {
                 console.log("child change");

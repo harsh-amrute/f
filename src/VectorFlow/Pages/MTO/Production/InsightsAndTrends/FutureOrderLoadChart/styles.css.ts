@@ -88,3 +88,84 @@ globalStyle(`${myFutureOrderTabsFix} .cqHMwT`, {
   paddingRight: 10,
   width: "auto",
 });
+
+
+
+/* ---------- Tooltip wrapper ---------- */
+
+export const tooltipWrapper = style({
+  color: "white",
+  backgroundColor: "transparent",
+  padding: "8px 10px",
+  borderRadius: 6,
+  fontSize: 12,
+  display: "flex",
+  flexDirection: "column",
+  gap: 6,
+});
+
+/* ---------- Tag wrapper ---------- */
+
+export const tagWrapper = style({
+  display: "flex",
+  alignItems: "center",
+});
+
+/* ---------- Tag arrow (dynamic colors / border) ---------- */
+
+// arrowcolor → border-right-color
+export const tagArrowRightColorVar = createVar();
+
+// bordercolor controls top/bottom border width & color
+export const tagArrowBorderWidthVar = createVar();
+export const tagArrowBorderColorVar = createVar();
+
+export const tagArrow = style({
+  width: 0,
+  height: 0,
+
+  // base triangle
+  borderTop: "11px solid transparent",
+  borderBottom: "11px solid transparent",
+  borderRight: `15px solid ${tagArrowRightColorVar}`,
+
+  // conditional border (top/bottom)
+  borderTopWidth: tagArrowBorderWidthVar,
+  borderTopStyle: "solid",
+  borderTopColor: tagArrowBorderColorVar,
+
+  borderBottomWidth: tagArrowBorderWidthVar,
+  borderBottomStyle: "solid",
+  borderBottomColor: tagArrowBorderColorVar,
+
+  // defaults
+  vars: {
+    [tagArrowRightColorVar]: "transparent",
+    [tagArrowBorderWidthVar]: "0px",
+    [tagArrowBorderColorVar]: "transparent",
+  },
+});
+
+/* ---------- Tag label (dynamic bg/text/border) ---------- */
+
+export const tagLabelBgVar = createVar();
+export const tagLabelTextColorVar = createVar();
+export const tagLabelBorderVar = createVar();
+
+export const tagLabel = style({
+  padding: "5px 12px",
+  lineHeight: 1,
+  minWidth: 120,
+  borderRadius: "0 4px 4px 0",
+  fontWeight: 500,
+
+  background: tagLabelBgVar,
+  color: tagLabelTextColorVar,
+  border: tagLabelBorderVar,
+
+  vars: {
+    [tagLabelBgVar]: "transparent",
+    [tagLabelTextColorVar]: "white",
+    [tagLabelBorderVar]: "none",
+  },
+});

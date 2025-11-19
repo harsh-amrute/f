@@ -27,9 +27,10 @@ import VFButtonOutline from "../VFButtonOutline";
 import React, { useEffect, useState } from "react";
 import VFMasterFieldSearch from "../../commons/VFMasterFieldSearch";
 import { useSpring, animated } from "react-spring";
-import Select, { components, StylesConfig } from "react-select";
+// import Select, { components, StylesConfig } from "react-select";
 import "./styles.css";
-// import "./react-select.css";
+import "./react-select.css";
+import { useCombobox } from "downshift";
 
 import { notifyError, notifySuccess } from "../../../../helpers/notify";
 
@@ -206,146 +207,346 @@ const FilterMultiSelectCheckbox = ({
   );
 };
 
-function FilterSelectDropdown({
+// function FilterSelectDropdown({
+//   placeholder,
+//   options,
+//   hideDropdownArrow,
+//   onChange,
+//   filterId,
+//   value,
+// }: any) {
+//   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+
+//   const styles: StylesConfig = {
+//     control: (base) => ({
+//       ...base,
+//       display: "flex",
+//       alignItems: "center",
+//       justifyContent: "center",
+//       minHeight: "39px",
+//       height: "39px",
+//       paddingLeft: hideDropdownArrow ? "10px" : "16px",
+//       paddingRight: hideDropdownArrow ? "10px" : "8px",
+//       border: "none",
+//       boxShadow: "none",
+//       backgroundColor: "#F2F2F2",
+//       borderRadius: isMenuOpen ? "20px 20px 0 0" : "20px",
+//       cursor: "pointer",
+//       fontFamily: "Roboto",
+//       fontWeight: 300,
+//       fontSize: "12px",
+//       color: "#313131",
+//       lineHeight: "16px",
+//     }),
+
+//     valueContainer: (base) => ({
+//       ...base,
+//       padding: 0,
+//     }),
+
+//     singleValue: (base) => ({
+//       ...base,
+//       color: "#313131",
+//       fontFamily: "Roboto",
+//       fontWeight: 300,
+//       fontSize: "12px",
+//       lineHeight: "16px",
+//       padding: "0 5px",
+//       boxSizing: "border-box",
+//     }),
+
+//     placeholder: (base) => ({
+//       ...base,
+//       color: "#313131",
+//       fontFamily: "Roboto",
+//       fontWeight: 300,
+//       fontSize: "12px",
+//       lineHeight: "16px",
+//       padding: "0 5px",
+//       boxSizing: "border-box",
+//       textAlign: hideDropdownArrow ? "center" : undefined,
+//     }),
+
+//     menu: (base) => ({
+//       ...base,
+//       marginTop: 0,
+//       boxShadow: "none",
+//       backgroundColor: "#F2F2F2",
+//       borderRadius: "0 0 20px 20px",
+//       border: "none",
+//       zIndex: 9999,
+//     }),
+
+//     menuList: (base) => ({
+//       ...base,
+//       maxHeight: "140px",
+//       overflowY: "auto",
+//       overflowX: "hidden",
+//       paddingLeft: "5px",
+//       paddingRight: 0,
+//       paddingTop: 0,
+//       paddingBottom: 0,
+//     }),
+
+//     option: (base, state) => ({
+//       ...base,
+//       cursor: "pointer",
+//       borderTop: "1px solid #B7B7B7",
+//       backgroundColor: state.isFocused ? "#E2EFFF" : "transparent",
+//       color: "#313131",
+//       fontFamily: "Roboto",
+//       fontWeight: 300,
+//       fontSize: "12px",
+//       lineHeight: "16px",
+//       paddingTop: "3px",
+//       paddingBottom: "3px",
+//     }),
+
+//     indicatorsContainer: (base) => ({
+//       ...base,
+//       display: hideDropdownArrow ? "none" : "flex",
+//       paddingRight: "10px",
+//       alignItems: "center",
+//     }),
+
+//     indicatorSeparator: () => ({
+//       display: "none",
+//     }),
+//   };
+
+//   const DropdownIndicator = (props: any) =>
+//     hideDropdownArrow ? null : (
+//       <components.DropdownIndicator {...props}>
+//         <img
+//           src="/assets/img/VectorFLOW/BPR/down-arrow.svg"
+//           alt=""
+//           style={{ width: 12, height: 12 }}
+//         />
+//       </components.DropdownIndicator>
+//     );
+
+//   return (
+//     <Select
+//       classNamePrefix="rs"         // stable class names like rs__dummyInput
+//       unstyled={true}              // don't inject emotion styles
+//       styles={styles}              // our full visual spec inline
+//       options={options}
+//       isClearable={false}
+//       isSearchable={false}
+//       placeholder={placeholder}
+//       aria-label={filterId}
+//       value={value}
+//       inputId="lf1-input"
+//       onChange={onChange}
+//       onMenuOpen={() => setIsMenuOpen(true)}
+//       onMenuClose={() => setIsMenuOpen(false)}
+//       components={{
+//         DropdownIndicator,
+//         IndicatorSeparator: () => null,
+//       }}
+//     />
+//   );
+// }
+
+interface Option {
+  value: string;
+  label: string;
+}
+
+interface FilterSelectDropdownProps {
+  placeholder: string;
+  options: Option[];
+  hideDropdownArrow?: boolean;
+  onChange: (selected: Option | null) => void;
+  filterId: string;
+  value?: Option | null;
+  className?: string;
+}
+
+export function FilterSelectDropdown({
   placeholder,
   options,
   hideDropdownArrow,
   onChange,
   filterId,
   value,
-}: any) {
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+}: FilterSelectDropdownProps) {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const styles: StylesConfig = {
-    control: (base) => ({
-      ...base,
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      minHeight: "39px",
-      height: "39px",
-      paddingLeft: hideDropdownArrow ? "10px" : "16px",
-      paddingRight: hideDropdownArrow ? "10px" : "8px",
-      border: "none",
-      boxShadow: "none",
-      backgroundColor: "#F2F2F2",
-      borderRadius: isMenuOpen ? "20px 20px 0 0" : "20px",
-      cursor: "pointer",
-      fontFamily: "Roboto",
-      fontWeight: 300,
-      fontSize: "12px",
-      color: "#313131",
-      lineHeight: "16px",
-    }),
-
-    valueContainer: (base) => ({
-      ...base,
-      padding: 0,
-    }),
-
-    singleValue: (base) => ({
-      ...base,
-      color: "#313131",
-      fontFamily: "Roboto",
-      fontWeight: 300,
-      fontSize: "12px",
-      lineHeight: "16px",
-      padding: "0 5px",
-      boxSizing: "border-box",
-    }),
-
-    placeholder: (base) => ({
-      ...base,
-      color: "#313131",
-      fontFamily: "Roboto",
-      fontWeight: 300,
-      fontSize: "12px",
-      lineHeight: "16px",
-      padding: "0 5px",
-      boxSizing: "border-box",
-      textAlign: hideDropdownArrow ? "center" : undefined,
-    }),
-
-    menu: (base) => ({
-      ...base,
-      marginTop: 0,
-      boxShadow: "none",
-      backgroundColor: "#F2F2F2",
-      borderRadius: "0 0 20px 20px",
-      border: "none",
-      zIndex: 9999,
-    }),
-
-    menuList: (base) => ({
-      ...base,
-      maxHeight: "140px",
-      overflowY: "auto",
-      overflowX: "hidden",
-      paddingLeft: "5px",
-      paddingRight: 0,
-      paddingTop: 0,
-      paddingBottom: 0,
-    }),
-
-    option: (base, state) => ({
-      ...base,
-      cursor: "pointer",
-      borderTop: "1px solid #B7B7B7",
-      backgroundColor: state.isFocused ? "#E2EFFF" : "transparent",
-      color: "#313131",
-      fontFamily: "Roboto",
-      fontWeight: 300,
-      fontSize: "12px",
-      lineHeight: "16px",
-      paddingTop: "3px",
-      paddingBottom: "3px",
-    }),
-
-    indicatorsContainer: (base) => ({
-      ...base,
-      display: hideDropdownArrow ? "none" : "flex",
-      paddingRight: "10px",
-      alignItems: "center",
-    }),
-
-    indicatorSeparator: () => ({
-      display: "none",
-    }),
-  };
-
-  const DropdownIndicator = (props: any) =>
-    hideDropdownArrow ? null : (
-      <components.DropdownIndicator {...props}>
-        <img
-          src="/assets/img/VectorFLOW/BPR/down-arrow.svg"
-          alt=""
-          style={{ width: 12, height: 12 }}
-        />
-      </components.DropdownIndicator>
-    );
+  const {
+    isOpen,
+    getInputProps,
+    getToggleButtonProps,
+    getMenuProps,
+    getItemProps,
+    highlightedIndex,
+  } = useCombobox<Option>({
+    items: options,
+    itemToString: (item) => (item ? item.label : ""),
+    selectedItem: value || null,
+    onSelectedItemChange: ({ selectedItem }) => {
+      onChange(selectedItem || null);
+    },
+    onStateChange: ({ isOpen: open }) => {
+      setIsMenuOpen(!!open);
+    },
+  });
 
   return (
-    <Select
-      classNamePrefix="rs"         // stable class names like rs__dummyInput
-      unstyled={true}              // don't inject emotion styles
-      styles={styles}              // our full visual spec inline
-      options={options}
-      isClearable={false}
-      isSearchable={false}
-      placeholder={placeholder}
-      aria-label={filterId}
-      value={value}
-      inputId="lf1-input"
-      onChange={onChange}
-      onMenuOpen={() => setIsMenuOpen(true)}
-      onMenuClose={() => setIsMenuOpen(false)}
-      components={{
-        DropdownIndicator,
-        IndicatorSeparator: () => null,
-      }}
-    />
+    <div style={{ position: "relative", width: "100%" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          minHeight: 39,
+          height: 39,
+          // paddingLeft: hideDropdownArrow ? 10 : 16,
+          // paddingRight: hideDropdownArrow ? 10 : 8,
+          border: "none",
+          boxShadow: "none",
+          backgroundColor: "#F2F2F2",
+          borderRadius: isMenuOpen ? "20px 20px 0 0" : 20,
+          cursor: "pointer",
+          fontFamily: "Roboto",
+          fontWeight: 300,
+          fontSize: 12,
+          color: "#313131",
+          lineHeight: "16px",
+        }}
+        {...getToggleButtonProps()}
+        aria-label={filterId}
+      >
+        <div
+          style={{
+            padding: 0,
+            flexGrow: 1,
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+            textOverflow: "ellipsis",
+            userSelect: "none",
+          }}
+        >
+          {value ? (
+            <div
+              title={value.label}
+              style={{
+                color: "#313131",
+                fontFamily: "Roboto",
+                fontWeight: 300,
+                fontSize: 12,
+                lineHeight: "16px",
+                padding: "0 5px",
+                boxSizing: "border-box",
+              }}
+            >
+              {value.label}
+            </div>
+          ) : (
+            <div
+              style={{
+                color: "#313131",
+                fontFamily: "Roboto",
+                fontWeight: 300,
+                fontSize: 12,
+                lineHeight: "16px",
+                padding: "0 5px",
+                boxSizing: "border-box",
+                textAlign: hideDropdownArrow ? "center" : undefined,
+                userSelect: "none",
+              }}
+            >
+              {placeholder}
+            </div>
+          )}
+        </div>
+        {!hideDropdownArrow && (
+          <div
+            style={{
+              display: "flex",
+              paddingRight: 10,
+              alignItems: "center",
+            }}
+          >
+            <img
+              src="/assets/img/VectorFLOW/BPR/down-arrow.svg"
+              alt="dropdown arrow"
+              style={{ width: 12, height: 12 }}
+              aria-hidden="true"
+            />
+          </div>
+        )}
+      </div>
+      {/* Add input required by Downshift here */}
+      <input
+        {...getInputProps()}
+        style={{
+          position: "absolute",
+          opacity: 0,
+          pointerEvents: "none",
+          height: 0,
+          width: 0,
+        }}
+        aria-label={filterId}
+      />
+      <ul
+        {...getMenuProps()}
+        style={{
+          marginTop: 0,
+          boxShadow: "none",
+          backgroundColor: "#F2F2F2",
+          borderRadius: "0 0 20px 20px",
+          border: "none",
+          zIndex: 9999,
+          maxHeight: 140,
+          overflowY: "auto",
+          overflowX: "hidden",
+          paddingLeft: 5,
+          paddingRight: 0,
+          paddingTop: 0,
+          paddingBottom: 0,
+          position: "absolute",
+          width: "100%",
+          display: isOpen ? "block" : "none",
+          boxSizing: "border-box",
+          userSelect: "none",
+          listStyle: "none",
+        }}
+      >
+        {isOpen &&
+          options.map((item, index) => {
+            const isHighlighted = highlightedIndex === index;
+            return (
+              <li
+                key={`${item.value}${index}`}
+                {...getItemProps({ item, index })}
+                style={{
+                  cursor: "pointer",
+                  borderTop: "1px solid #B7B7B7",
+                  backgroundColor: isHighlighted ? "#E2EFFF" : "transparent",
+                  color: "#313131",
+                  fontFamily: "Roboto",
+                  fontWeight: 300,
+                  fontSize: 12,
+                  lineHeight: "16px",
+                  paddingTop: 3,
+                  paddingBottom: 3,
+                  userSelect: "none",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  textAlign: "start",
+                }}
+              >
+                {item.label}
+              </li>
+            );
+          })}
+      </ul>
+    </div>
   );
 }
+
 const FilterTextInput = ({
   placeholder,
   onChange,
@@ -470,32 +671,60 @@ const AvailabilityFilter = ({
     return "";
   };
 
-  const getDropDownValue = (options: any) => {
+  const getDropDownValue = (
+    optionsKey:
+      | "colorFilterOptions"
+      | "filterLocationOptions"
+      | "filterProductOptions"
+      | "colorTypeFilterOptions"
+      | "generalFilterOptions"
+  ): Option | null => {
     const doesFilterExist = filterState.find((m: any) => m.name == filterId);
-    if (doesFilterExist) {
-      if (options === "colorFilterOptions")
-        return colorFilterOptions.find(
-          (n: any) => n.value == doesFilterExist.attributeName
-        );
-      if (options === "filterLocationOptions") {
-        return filterLocationOptions.find(
-          (n: any) => n.value == doesFilterExist.attributeName
-        );
-      }
-      if (options === "filterProductOptions") {
-        return filterProductOptions.find(
-          (n: any) => n.value == doesFilterExist.attributeName
-        );
-      }
-      if (options === "colorTypeFilterOptions") {
-        return colorTypeFilterOptions.find(
-          (n: any) => n.value == doesFilterExist.type
-        );
-      }
-    }
-    return "";
-  };
+    if (!doesFilterExist) return null;
 
+    if (optionsKey === "colorFilterOptions") {
+      return (
+        colorFilterOptions.find(
+          (n: Option) => n.value === doesFilterExist.attributeName
+        ) ?? null
+      );
+    }
+
+    if (optionsKey === "filterLocationOptions") {
+      return (
+        filterLocationOptions.find(
+          (n: Option) => n.value === doesFilterExist.attributeName
+        ) ?? null
+      );
+    }
+
+    if (optionsKey === "filterProductOptions") {
+      return (
+        filterProductOptions.find(
+          (n: Option) => n.value === doesFilterExist.attributeName
+        ) ?? null
+      );
+    }
+
+    if (optionsKey === "colorTypeFilterOptions") {
+      return (
+        colorTypeFilterOptions.find(
+          (n: Option) => n.value === doesFilterExist.type
+        ) ?? null
+      );
+    }
+
+    // handle generalFilterOptions if provided
+    if (optionsKey === "generalFilterOptions" && generalFilterOptions) {
+      return (
+        (generalFilterOptions as Option[]).find(
+          (n: Option) => n.value === doesFilterExist.attributeName
+        ) ?? null
+      );
+    }
+
+    return null;
+  };
   return (
     <>
       <div className={DropdownGroupWrapper}>

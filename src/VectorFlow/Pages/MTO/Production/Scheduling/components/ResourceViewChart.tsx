@@ -1,26 +1,47 @@
 import React, { Suspense, lazy, useEffect, useState } from "react";
-import { ChartWrapper, ResourceSectionWrapper, SkeletonBlock } from "./ResourceViewStyles";
+import {
+  chartWrapper,
+  resourceSectionWrapper,
+  skeletonBlock,
+} from "./ResourceViewStyles.css";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
+import { skeletonHeightVar, skeletonWidthVar } from "../SchedulingStyles.css";
 
 const MyChart = lazy(() => import("./MyChart")); // still code-split
 
 const GanttSkeleton = () => {
   return (
     <div>
-      <SkeletonBlock height="30px" width="40%" />
-      <SkeletonBlock height="30px" width="60%" />
+      <div
+        className={skeletonBlock}
+        style={assignInlineVars({
+          [skeletonWidthVar]: "40%",
+          [skeletonHeightVar]: "30px",
+        })}
+      />
+      <div
+        className={skeletonBlock}
+        style={assignInlineVars({
+          [skeletonWidthVar]: "60%",
+          [skeletonHeightVar]: "30px",
+        })}
+      />
 
       {[...Array(6)].map((_, i) => (
-        <SkeletonBlock
+        <div
+          className={skeletonBlock}
           key={i}
-          height="20px"
-          width={`${50 + Math.random() * 40}%`}
+          style={assignInlineVars({
+            [skeletonWidthVar]: `${50 + Math.random() * 40}%`,
+            [skeletonHeightVar]: "20px",
+          })}
         />
       ))}
     </div>
   );
 };
 
-const ResourceViewChart = ({ResourceData}:any) => {
+const ResourceViewChart = ({ ResourceData }: any) => {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -30,13 +51,16 @@ const ResourceViewChart = ({ResourceData}:any) => {
 
   const data: any = ResourceData.Resource_Data;
 
+  const allResources: { id: string; stage: string; work_station: string }[] =
+    [];
 
-  const allResources: { id: string; stage: string, work_station: string }[] = [];
-
-
-  const allResourceIds= Object.keys(data);
-  allResourceIds.forEach((key:string, index)=>{
-    const val = {id: key, stage: data[key]?.stage, work_station: data[key]?.work_station};
+  const allResourceIds = Object.keys(data);
+  allResourceIds.forEach((key: string, index) => {
+    const val = {
+      id: key,
+      stage: data[key]?.stage,
+      work_station: data[key]?.work_station,
+    };
     allResources.push(val);
   });
 
@@ -45,15 +69,20 @@ const ResourceViewChart = ({ResourceData}:any) => {
     { title: "Work Station", key: "work_station", width: 150 },
   ];
 
-
   const RowData = allResources;
 
-  const TaskData: {jobId: any, task_type: string, work_station: string, start: EpochTimeStamp, end:EpochTimeStamp }[] = [];
+  const TaskData: {
+    jobId: any;
+    task_type: string;
+    work_station: string;
+    start: EpochTimeStamp;
+    end: EpochTimeStamp;
+  }[] = [];
 
-  allResourceIds.forEach((resId:string)=>{
+  allResourceIds.forEach((resId: string) => {
     const tasks = data[resId]?.task_list || [];
     const work_st = data[resId]?.work_station || "";
-    tasks.forEach((task:any)=>{
+    tasks.forEach((task: any) => {
       const taskEntry = {
         jobId: task.Job_id || null,
         task_type: task.task_type,
@@ -65,28 +94,28 @@ const ResourceViewChart = ({ResourceData}:any) => {
     });
   });
 
-
   const colors = ResourceData.Task_master;
-  
-
-
 
   return (
-    <ResourceSectionWrapper>
-      <ChartWrapper>
-        {
-        ready ? (
+    <div className={resourceSectionWrapper}>
+      <div className={chartWrapper}>
+        {ready ? (
           <Suspense fallback={<GanttSkeleton />}>
-            <MyChart RowData={RowData} ColDef={ColDef} TaskData={TaskData} primary_key={"work_station"} colors={colors} 
-             Slot={ResourceData?.Slot }
-            Attributes={ResourceData?.Attribute_Master || {}}
+            <MyChart
+              RowData={RowData}
+              ColDef={ColDef}
+              TaskData={TaskData}
+              primary_key={"work_station"}
+              colors={colors}
+              Slot={ResourceData?.Slot}
+              Attributes={ResourceData?.Attribute_Master || {}}
             />
           </Suspense>
         ) : (
-        <GanttSkeleton />
+          <GanttSkeleton />
         )}
-      </ChartWrapper>
-    </ResourceSectionWrapper>
+      </div>
+    </div>
   );
 };
 

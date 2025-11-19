@@ -6,6 +6,8 @@ export const buttonLabelColorVar = createVar();
 export const buttonLabelWeightVar = createVar();
 export const dropdownTopVar = createVar();
 export const dropdownLeftVar = createVar();
+export const dateBulgeBorderVar = createVar();
+export const dateBulgeBgVar = createVar();
 
 export const Container = style({
   vars: { [containerBorderColorVar]: "#d17ca0" },
@@ -237,6 +239,13 @@ export const ButtonLabel = style({
   userSelect: "none",
 });
 
+export const ButtonLabelSelected = style({
+  vars: {
+    [buttonLabelColorVar]: "rgb(188, 61, 129)",
+  },
+});
+
+
 export const ToggleDivider = style({
   width: "1px",
   height: "35px",
@@ -467,5 +476,32 @@ export const filterWrapper = style({
     overflowY: "auto",
     marginTop: "8px",
     padding: "0 8px",
+  });
+  
+
+
+  // Small bulge container for date filter
+  export const dateBulge = style({
+    height: 30,
+    width: 150,
+    borderRadius: 8,
+    padding: "4px 8px",
+    zIndex: 4,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 2,
+    boxShadow: "0 2px 6px rgba(0, 0, 0, 0.15)",
+    fontSize: "0.9rem",
+  
+    // hook vars into real CSS props
+    border: dateBulgeBorderVar,
+    background: dateBulgeBgVar,
+  
+    // default values (no dates selected)
+    vars: {
+      [dateBulgeBorderVar]: "1px solid #cecece",
+      [dateBulgeBgVar]: "#f5f5f5",
+    },
   });
   

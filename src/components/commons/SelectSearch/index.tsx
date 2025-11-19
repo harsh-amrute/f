@@ -1,148 +1,174 @@
-import { useState } from 'react'
-import './styles.css'
-import Select, { defaultTheme } from 'react-select'
-
-const { colors } = defaultTheme
-
-const selectStyles = {
-  control: (provided: any, state: any) => ({
-    ...provided,
-    minWidth: 240,
-    maxWidth: 300,
-    margin: 8,
-    background: '#F2F2F2',
-    fontSize: 16,
-    outline: 'none',
-    borderRadius: 6,
-    border: state.isFocused ? 0 : 0,
-    // This line disable the blue border
-    boxShadow: state.isFocused ? 0 : 0,
-    '&:hover': {
-      border: state.isFocused ? 0 : 0
-    }
-  }),
-  menu: () => ({
-    boxShadow: 'inset 0 1px 0 rgba(0, 0, 0, 0.1)',
-    maxWidth: 300,
-    fontSize: 14
-  })
-}
+import { useState } from "react";
+import { useCombobox } from "downshift";
+import "./styles.css";
 
 interface SelectSearchProps {
-  placeholder: string
-  options: any
-  onChange: (value: any) => void
+  placeholder: string;
+  options: { label: string; value: string }[];
+  onChange: (value: any) => void;
 }
 
 const SelectSearch = ({
   options,
   placeholder,
-  onChange
+  onChange,
 }: SelectSearchProps) => {
-  const [isOpen, setIsOpen] = useState(false)
-  const [value, setValue] = useState<any>()
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<any>(null);
 
-  const toggleOpen = () => {
-    setIsOpen(!isOpen)
-  }
-  const onSelectChange = (value: any) => {
-    toggleOpen()
-    setValue(value)
-    onChange(value.value)
-  }
+  const {
+    getMenuProps,
+    getInputProps,
+    getItemProps,
+    highlightedIndex,
+    inputValue,
+    selectItem,
+    isOpen: comboOpen,
+    openMenu,
+  } = useCombobox({
+    items: options,
+    itemToString: (item) => (item ? item.label : ""),
+    onSelectedItemChange: ({ selectedItem }) => {
+      if (selectedItem) {
+        setSelectedItem(selectedItem);
+        onChange(selectedItem.value);
+        setIsOpen(false);
+      }
+    },
+  });
+
+  const toggleOpen = () => setIsOpen(!isOpen);
+
+  const filteredItems = options.filter((item) =>
+    item.label.toLowerCase().includes(inputValue.toLowerCase())
+  );
+
   return (
-    <div style={{ margin: 3 }}>
-      <Dropdown
-        isOpen={isOpen}
-        onClose={toggleOpen}
-        target={
-          <button className="select-search-input" onClick={toggleOpen}>
-            <div className="select-Button">
-              {' '}
-              {value ? `${value.label}` : placeholder}
-            </div>
-          </button>
-        }
+    <div style={{ position: "relative", margin: 3 }}>
+      <button
+        type="button"
+        onClick={() => {
+          toggleOpen();
+          if (!isOpen) openMenu();
+        }}
+        style={{
+          background: "#F2F2F2",
+          border: "none",
+          borderRadius: 6,
+          fontSize: 16,
+          padding: "8px 12px",
+          minWidth: 240,
+          maxWidth: 300,
+          textAlign: "left",
+          cursor: "pointer",
+        }}
+        className="select-search-input"
       >
-        <Select
-          autoFocus
-          backspaceRemovesValue={false}
-          components={{ DropdownIndicator, IndicatorSeparator: null }}
-          className="react-select-container"
-          controlShouldRenderValue={false}
-          hideSelectedOptions={false}
-          isClearable={false}
-          menuIsOpen
-          onChange={onSelectChange}
-          options={options}
-          placeholder={`Search ${placeholder}`}
-          styles={selectStyles}
-          tabSelectsValue={false}
-          value={value}
-          onBlur={toggleOpen}
-          theme={(theme) => ({
-            ...theme,
-            borderRadius: 0,
-            colors: {
-              ...theme.colors,
-              primary25: '#F2F2F2',
-              primary: '#820F4C'
-            }
-          })}
-        />
-      </Dropdown>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <span>{selectedItem ? selectedItem.label : placeholder}</span>
+          <span style={{ color: "#999", fontSize: 14 }}>▼</span>
+        </div>
+      </button>
+
+      {isOpen ? (
+        <>
+          <div
+            style={{
+              position: "absolute",
+              top: "100%",
+              left: 0,
+              right: 0,
+              backgroundColor: "white",
+              borderRadius: 4,
+              boxShadow:
+                "0 0 0 1px rgba(0,0,0,0.1), 0 4px 11px rgba(0,0,0,0.1)",
+              marginTop: 8,
+              maxWidth: 300,
+              zIndex: 2,
+            }}
+          >
+            <input
+              {...getInputProps({
+                placeholder: `Search ${placeholder}`,
+                onFocus: openMenu,
+              })}
+              style={{
+                width: "100%",
+                border: "none",
+                borderBottom: "1px solid #ccc",
+                padding: "8px 10px",
+                fontSize: 14,
+                outline: "none",
+                background: "#F2F2F2",
+                borderRadius: "6px 6px 0 0",
+              }}
+            />
+
+            <ul
+              {...getMenuProps()}
+              style={{
+                listStyle: "none",
+                margin: 0,
+                padding: 0,
+                maxHeight: 200,
+                overflowY: "auto",
+              }}
+            >
+              {comboOpen &&
+                filteredItems.map((item, index) => (
+                  <li
+                    key={item.value}
+                    {...getItemProps({ item, index })}
+                    style={{
+                      padding: "8px 10px",
+                      backgroundColor:
+                        highlightedIndex === index ? "#F2F2F2" : "white",
+                      cursor: "pointer",
+                      fontSize: 14,
+                    }}
+                    onClick={() => {
+                      selectItem(item);
+                      setIsOpen(false);
+                    }}
+                  >
+                    {item.label}
+                  </li>
+                ))}
+              {filteredItems.length === 0 && (
+                <li
+                  style={{
+                    padding: "8px 10px",
+                    fontSize: 14,
+                    color: "#666",
+                  }}
+                >
+                  No results found
+                </li>
+              )}
+            </ul>
+          </div>
+
+          <div
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 1,
+            }}
+            onClick={() => setIsOpen(false)}
+          />
+        </>
+      ) : null}
     </div>
-  )
-}
+  );
+};
 
-// styled components
-
-const Menu = (props: any) => {
-  const shadow = 'hsla(218, 50%, 10%, 0.1)'
-  return (
-    <div
-      css={{
-        backgroundColor: 'white',
-        borderRadius: 4,
-        boxShadow: `0 0 0 1px ${shadow}, 0 4px 11px ${shadow}`,
-        marginTop: 8,
-        position: 'absolute',
-        zIndex: 2
-      }}
-      {...props}
-    />
-  )
-}
-const Blanket = (props: any) => (
-  <div
-    css={{
-      bottom: 0,
-      left: 0,
-      top: 0,
-      right: 0,
-      position: 'fixed',
-      zIndex: 1
-    }}
-    {...props}
-  />
-)
-const Dropdown = ({ children, isOpen, target, onClose }: any) => (
-  <div style={{ position: 'relative' }}>
-    {target}
-    {isOpen ? <Menu>{children}</Menu> : null}
-    {isOpen ? <Blanket onClick={onClose} /> : null}
-  </div>
-)
-const DropdownIndicator = () => (
-  <div style={{ color: colors.neutral20, height: 24, width: 32 }}>
-    {/* <Svg>
-      <path
-        d="M16.436 15.085l3.94 4.01a1 1 0 0 1-1.425 1.402l-3.938-4.006a7.5 7.5 0 1 1 1.423-1.406zM10.5 16a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11z"
-        fill="currentColor"
-        fillRule="evenodd"
-      />
-    </Svg> */}
-  </div>
-)
-
-export default SelectSearch
+export default SelectSearch;

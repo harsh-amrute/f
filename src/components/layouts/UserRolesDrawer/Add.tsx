@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-
-import Select from "react-select";
-
+import { useCombobox } from "downshift";
 import {
   inputWrapper,
   urlsForm,
@@ -215,6 +213,30 @@ const AddRole = (props: { cb: () => void }) => {
     );
   }, [urlSearchQuery, allUrls]);
 
+  const focusColor =
+    globalStyles.chooseThemeColor[themeUi]?.color4 ?? "transparent";
+
+  // --- Downshift for Application Select ---
+  const {
+    isOpen,
+    getLabelProps,
+    getMenuProps,
+    getInputProps,
+    getItemProps,
+    highlightedIndex,
+    selectItem,
+  } = useCombobox({
+    items: applicationsFormattedData,
+    itemToString: (item) => (item ? item.label : ""),
+    onSelectedItemChange: ({ selectedItem }) => {
+      if (selectedItem) handleSelectChange(selectedItem.value);
+    },
+  });
+
+  const selectedAppLabel =
+    applicationsFormattedData.find((a) => a.value === formData.application_id)
+      ?.label || "Select Application";
+
   if (isLoading) {
     return (
       <form className={urlsForm}>
@@ -254,10 +276,6 @@ const AddRole = (props: { cb: () => void }) => {
       </form>
     );
   }
-
-  const focusColor =
-    globalStyles.chooseThemeColor[themeUi]?.color4 ?? "transparent";
-
   return (
     <form className={urlsForm} onSubmit={handleSubmit}>
       <div style={{ display: "flex" }}>
@@ -296,46 +314,69 @@ const AddRole = (props: { cb: () => void }) => {
           />
         </div>
       </div>
-      <div className={inputWrapper}>
-        <label className={label} htmlFor="application">
-          Applications{" "}
-        </label>
-        <Select
-          options={applicationsFormattedData}
-          placeholder={"Select Application"}
-          onChange={(data: any) => handleSelectChange(data.value)}
-          styles={{
-            option: (baseStyles, { isSelected }) => ({
-              ...baseStyles,
-              fontSize: 11,
-              backgroundColor: isSelected
-                ? themeUi === "REGALBLAZE"
-                  ? "#FCA311"
-                  : "#BC3D80"
-                : "white",
 
-              "&:hover": {
-                backgroundColor:
-                  themeUi === "REGALBLAZE"
-                    ? "rgb(252, 163, 17,0.3) "
-                    : "#bc3d814d",
-                color: "black",
-              },
-            }),
-            control: (baseStyles, { isFocused }) => ({
-              ...baseStyles,
+      {/* Application Downshift Dropdown */}
+      <div className={inputWrapper}>
+        <label {...getLabelProps()} className={label}>
+          Applications
+        </label>
+        <div style={{ position: "relative" }}>
+          <input
+            {...getInputProps({
+              placeholder: selectedAppLabel,
+              onClick: () => selectItem(null),
+            })}
+            readOnly
+            style={{
+              width: "100%",
               fontSize: 12,
-              borderColor: !isFocused ? "transparent" : "#BC3D80",
-              borderWidth: 2,
-              boxShadow: "none",
-              backgroundColor: "rgb(247, 247, 247)",
-              "&:hover": {
-                borderColor: "#BC3D80",
-              },
-            }),
-          }}
-        />
+              border: "2px solid transparent",
+              outline: "none",
+              padding: "5px 8px",
+              borderRadius: "5px",
+              backgroundColor: "rgb(247,247,247)",
+              cursor: "pointer",
+            }}
+          />
+          <div
+            {...getMenuProps()}
+            style={{
+              position: "absolute",
+              width: "100%",
+              backgroundColor: "white",
+              boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+              maxHeight: isOpen ? "150px" : "0px",
+              overflowY: "auto",
+              borderRadius: "5px",
+              transition: "max-height 0.15s ease",
+              zIndex: 10,
+            }}
+          >
+            {isOpen &&
+              applicationsFormattedData.map((item, index) => (
+                <div
+                  key={item.value}
+                  {...getItemProps({ item, index })}
+                  style={{
+                    fontSize: 12,
+                    padding: "5px 8px",
+                    backgroundColor:
+                      highlightedIndex === index
+                        ? themeUi === "REGALBLAZE"
+                          ? "rgb(252,163,17,0.3)"
+                          : "#bc3d814d"
+                        : "white",
+                    cursor: "pointer",
+                  }}
+                >
+                  {item.label}
+                </div>
+              ))}
+          </div>
+        </div>
       </div>
+
+      {/* Description */}
       <div className={inputWrapper}>
         <label className={label} htmlFor="description">
           {" "}

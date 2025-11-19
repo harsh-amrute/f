@@ -9,8 +9,8 @@ import {
   accentColorVar,
   disabledVar,
 } from "./style.css";
-import Select, { components } from "react-select";
-import type { MultiValue, ActionMeta } from "react-select";
+// import Select, { components } from "react-select";
+// import type { MultiValue, ActionMeta } from "react-select";
 import {
   useThemeStyles,
   useColorOptionStyles,
@@ -27,6 +27,9 @@ import {
   useSearchSKUDescription,
 } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
+import DownshiftSelect from "./DownshiftSelect/DownshiftSelect";
+import DownshiftMultiSelect from "./DownshiftSelect/DownshiftMultiSelect";
+import { COptCheckboxWithBorder } from "./DownshiftSelect/utils/custom-options";
 
 interface ProductFilterProps {
   multiFilter: BPRFilterState;
@@ -173,22 +176,60 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
     ? isSkuDataLoading
     : isSearchLoading || isSearchFetching;
 
-  const CustomOption = (props: any) => {
-    const optionStyles = useColorOptionStyles();
-    return (
-      <components.Option {...props}>
-        <div style={optionStyles.optionContainer}>
-          <input
-            type="checkbox"
-            checked={props.isSelected}
-            style={optionStyles.checkbox}
-            readOnly
-          />
-          <span style={optionStyles.colorName}>{props.data.label}</span>
-        </div>
-      </components.Option>
-    );
-  };
+  // const CustomOption = (props: any) => {
+  //   const optionStyles = useColorOptionStyles();
+  //   return (
+  //     <components.Option {...props}>
+  //       <div style={optionStyles.optionContainer}>
+  //         <input
+  //           type="checkbox"
+  //           checked={props.isSelected}
+  //           style={optionStyles.checkbox}
+  //           readOnly
+  //         />
+  //         <span style={optionStyles.colorName}>{props.data.label}</span>
+  //       </div>
+  //     </components.Option>
+  //   );
+  // };
+  // const CustomOption = ({
+  //   item,
+  //   isSelected,
+  //   isHighlighted,
+  // }: {
+  //   item: any;
+  //   isSelected: boolean;
+  //   isHighlighted: boolean;
+  // }) => {
+  //   const optionStyles = useColorOptionStyles();
+
+  //   return (
+  //     <div
+  //       style={{
+  //         ...optionStyles.optionContainer,
+  //         backgroundColor: isHighlighted
+  //           ? "#f0f0f0"
+  //           : isSelected
+  //           ? "#e2e2e2"
+  //           : "#fff",
+  //         cursor: "pointer",
+  //         padding: "6px 8px",
+  //         display: "flex",
+  //         alignItems: "center",
+  //         gap: "6px",
+  //       }}
+  //     >
+  //       <input
+  //         type="checkbox"
+  //         checked={isSelected}
+  //         readOnly
+  //         style={optionStyles.checkbox}
+  //       />
+
+  //       <span style={optionStyles.colorName}>{item.label}</span>
+  //     </div>
+  //   );
+  // };
 
   const isUpdatingFromInternal = useRef(false);
 
@@ -391,10 +432,45 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
     });
   };
 
-  const handleSKUSelectChange = (
-    newValue: MultiValue<any>,
-    actionMeta: ActionMeta<any>
-  ) => {
+  // const handleSKUSelectChange = (
+  //   newValue: MultiValue<any>,
+  //   actionMeta: ActionMeta<any>
+  // ) => {
+  //   const selected = Array.isArray(newValue) ? [...newValue] : [];
+  //   setSelectedSKUs(selected);
+
+  //   setSearchQuery("");
+  //   setHasSearched(false);
+  //   setManualSearchQuery("");
+
+  //   const parentId = "productFilter";
+  //   const existingFilters = (multiFilter[parentId]?.filters ||
+  //     []) as BPRFilter[];
+  //   const operationFilters = existingFilters.filter(
+  //     (f) => !f.name.startsWith("PF6")
+  //   );
+
+  //   const newFilters = selected.map((sku) => ({
+  //     attributeName: "SKU",
+  //     value: sku.value,
+  //     operator: "=",
+  //     label: "SKU",
+  //     name: "PF6",
+  //   }));
+
+  //   isUpdatingFromInternal.current = true;
+  //   const updatedMultiFilter: BPRFilterState = {
+  //     ...multiFilter,
+  //     [parentId]: {
+  //       ...multiFilter[parentId],
+  //       filters: [...operationFilters, ...newFilters],
+  //     },
+  //   };
+
+  //   onMultiFilterChange(updatedMultiFilter);
+  // };
+
+  const handleSKUSelectChange = (newValue: any[]) => {
     const selected = Array.isArray(newValue) ? [...newValue] : [];
     setSelectedSKUs(selected);
 
@@ -474,13 +550,12 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
     onMultiFilterChange(updatedMultiFilter);
   };
 
-  const handleInputChange = (inputValue: string, { action }: any) => {
-    if (action === "input-change") {
-      setSearchQuery(inputValue);
-      if (hasSearched && inputValue.length < 2) {
-        setManualSearchQuery("");
-        setHasSearched(false);
-      }
+  const handleInputChange = (inputValue: string) => {
+    // if (action === "input-change") {
+    setSearchQuery(inputValue);
+    if (hasSearched && inputValue.length < 2) {
+      setManualSearchQuery("");
+      setHasSearched(false);
     }
   };
 
@@ -524,7 +599,7 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
               key={row.id}
             >
               <div className={dropDownWrapper}>
-                <Select
+                {/* <Select
                   options={filterProductOptions}
                   classNamePrefix="rs"
                   placeholder="Select Column"
@@ -534,10 +609,22 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
                   onChange={(selected) =>
                     onFilterChange(row.id, "column", selected)
                   }
+                /> */}
+
+                <DownshiftSelect
+                  options={filterProductOptions}
+                  placeholder="Select Column"
+                  styles={styles} // kept for compatibility (your component ignores it safely)
+                  components={{ IndicatorSeparator: () => null }} // also ignored safely
+                  value={rowSelections[row.id]?.column || null}
+                  onChange={(selected) =>
+                    onFilterChange(row.id, "column", selected)
+                  }
+                  disabled={false}
                 />
               </div>
               <div className={dropDownWrapper}>
-                <Select
+                {/* <Select
                   options={stringOpertors}
                   classNamePrefix="rs"
                   placeholder="Select Operation"
@@ -548,6 +635,19 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
                   onChange={(selected) =>
                     onFilterChange(row.id, "operation", selected)
                   }
+                /> */}
+
+                <DownshiftSelect
+                  options={stringOpertors}
+                  placeholder="Select Operation"
+                  styles={styles} // ignored but safe
+                  isSearchable={false}
+                  components={{ IndicatorSeparator: () => null }} // ignored but safe
+                  value={rowSelections[row.id]?.operation || null}
+                  onChange={(selected) =>
+                    onFilterChange(row.id, "operation", selected)
+                  }
+                  disabled={false}
                 />
               </div>
               <div className={dropDownWrapper}>
@@ -625,12 +725,12 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
         </div>
       </div>
 
-      <div className={filterGroup} style={{ paddingTop: "10px" }}>
+      {/* <div className={filterGroup} style={{ paddingTop: "10px" }}>
         <div className={filterColumn}>
           <div className={textWrapper}> Select SKU</div>
           <div className={dropDownRow}>
             <div className={dropDownWrapper} style={{ flex: 1 }}>
-              <Select
+              <DownshiftMultiSelect
                 placeholder={
                   shouldUseLocalData
                     ? "Type SKU code to search..."
@@ -654,14 +754,20 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
                 hideSelectedOptions={false}
                 value={selectedSKUs}
                 onChange={handleSKUSelectChange}
-                onInputChange={handleInputChange}
+                isMulti={true}
+                hideSelectedOptions={false}
+                closeMenuOnSelect={false}
+                OptionComponent={CustomOption}
+                MultiValueComponent={null} // use default pills OR add your own
+                disabled={false}
                 inputValue={searchQuery}
+                onInputChange={handleInputChange}
                 onKeyDown={handleKeyPress}
                 isLoading={isLoading}
                 filterOption={
                   shouldUseLocalData ? customFilterOption : undefined
                 }
-                noOptionsMessage={({ inputValue }) =>
+                noOptionsMessage={(inputValue) =>
                   shouldUseLocalData
                     ? inputValue
                       ? "No SKUs found"
@@ -671,7 +777,7 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
               />
 
               <div style={{ width: 165, marginTop: -44, marginLeft: 4.5 }}>
-                <Select
+                <DownshiftSelect
                   placeholder="SKU Code"
                   styles={{
                     ...styles,
@@ -728,6 +834,125 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
                 >
                   <img
                     src="/assets/img/MTAVFMultiFilter/Search-white.svg"
+                    alt="search"
+                    style={{ width: 16, height: 16 }}
+                  />
+                  <span>{isLoading ? "Searching..." : "Search"}</span>
+                </div>
+              </VFButton>
+            )}
+          </div>
+        </div>
+      </div> */}
+
+      <div className={filterGroup} style={{ paddingTop: "10px" }}>
+        <div className={filterColumn}>
+          <div className={textWrapper}>Select SKU</div>
+          <div className={dropDownRow}>
+            <div
+              className={dropDownWrapper}
+              style={{
+                position: "relative",
+                display: "flex",
+                flexWrap: "nowrap",
+                justifyContent: "start",
+                alignItems: "center",
+                height: "40px",
+                width: "100%",
+                gap: 4,
+              }}
+            >
+              <div
+                style={{
+                  width: "fit-content",
+                  maxWidth: "25rem",
+                  minWidth: "15rem",
+                  height: "100%",
+                }}
+              >
+                <DownshiftSelect
+                  placeholder="SKU Code"
+                  options={[
+                    { value: "SKU Code", label: "SKU Code" },
+                    { value: "SKU Description", label: "SKU Description" },
+                  ]}
+                  value={
+                    filterType ? { value: filterType, label: filterType } : null
+                  }
+                  onChange={handleFilterTypeChange}
+                />
+              </div>
+
+              <div
+                style={{
+                  flex: 1,
+                  height: "100%",
+                  maxWidth: "600px",
+                }}
+              >
+                <DownshiftMultiSelect
+                  placeholder={
+                    shouldUseLocalData
+                      ? "Type SKU code to search..."
+                      : "Type to search SKUs and click Search button"
+                  }
+                  options={shouldUseLocalData ? filteredOptions : skuOptions}
+                  value={selectedSKUs}
+                  onChange={handleSKUSelectChange}
+                  hideSelectedOptions={false}
+                  OptionComponent={COptCheckboxWithBorder}
+                  MenuWrapperComponent={({ children }) => (
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "1fr 1fr",
+                        gap: "12px",
+                        width: "750px",
+                        padding: "8px",
+                      }}
+                    >
+                      {children}
+                    </div>
+                  )}
+                  disabled={false}
+                  inputValue={searchQuery}
+                  onInputChange={handleInputChange}
+                  isLoading={isLoading}
+                  filterOption={
+                    shouldUseLocalData ? customFilterOption : undefined
+                  }
+                  noOptionsMessage={(inputValue) =>
+                    shouldUseLocalData
+                      ? inputValue
+                        ? "No SKUs found"
+                        : "Start typing to search SKUs"
+                      : "No SKUs found. Try searching with the Search button."
+                  }
+                />
+              </div>
+            </div>
+
+            {shouldShowSearchButton && (
+              <VFButton
+                themeUi={user.user.theme_ui}
+                onClick={handleSearchApply}
+                width={120}
+                style={{
+                  fontSize: 15,
+                  fontWeight: 350,
+                  height: 44,
+                  marginBottom: 4,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+                disabled={!searchQuery || searchQuery.length < 2 || isLoading}
+              >
+                <div
+                  style={{ display: "flex", alignItems: "center", gap: "6px" }}
+                >
+                  <img
+                    src={"/assets/img/MTAVFMultiFilter/Search-white.svg"}
                     alt="search"
                     style={{ width: 16, height: 16 }}
                   />

@@ -5,7 +5,7 @@ import {
   VFFilterWrapper,
 } from "./styles.css";
 import Select from "react-select";
-import { type Option, type Filter } from "../../../../VectorFlow/types/MDM";
+import { type Option as MDMOption, type Filter } from "../../../../VectorFlow/types/MDM";
 import { useDispatch, useSelector } from "react-redux";
 import { UPDATE_FILTER_VALUE } from "../../../../redux/actions/MDM";
 import { useUserData } from "../../../../context";
@@ -13,6 +13,13 @@ import { useCallback, useMemo, useState } from "react";
 import type { RootState } from "../../../../redux/store/store";
 import { operatorDataTypeMapper } from "../../../../helpers/MtoMDMConstants";
 import { Field } from "../../../../VectorFlow/types/MDM";
+import { useRef } from "react";
+import { useSelect } from "downshift";
+
+interface Option {
+  label: string;
+  value: any;
+}
 export interface VFFilterProps {
   onDelete: () => void;
   fields: Option[];
@@ -37,6 +44,130 @@ export interface CustomInputProps {
   disabled?: boolean;
   type?: string;
 }
+
+const CustomSelect = ({
+  placeholder,
+  onChange,
+  options,
+  value,
+  isDisabled = false,
+}: CustomSelectProps) => {
+  const { user } = useUserData();
+  const themeUi = user?.user?.theme_ui;
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const {
+    isOpen,
+    getToggleButtonProps,
+    getMenuProps,
+    getItemProps,
+    highlightedIndex,
+  } = useSelect<Option>({
+    items: options,
+    selectedItem: value,
+    itemToString: (item) => (item ? item.label : ""),
+    onSelectedItemChange: ({ selectedItem }) => {
+      onChange(selectedItem || null);
+    },
+  });
+
+  return (
+    <div style={{ position: "relative", width: "100%" }}>
+      <div
+        {...getToggleButtonProps({
+          disabled: isDisabled,
+          onClick: () => {
+            if (isDisabled) return;
+            if (inputRef.current) inputRef.current.focus();
+          },
+        })}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          height: 37,
+          width: "100%",
+          background: "#FFFFFF",
+          fontSize: 13,
+          borderRadius: 6,
+          paddingLeft: 8,
+          border: "none",
+          boxShadow: "none",
+          cursor: isDisabled ? "not-allowed" : "pointer",
+          userSelect: "none",
+        }}
+      >
+        <input
+          ref={inputRef}
+          placeholder={placeholder}
+          value={value ? value.label : ""}
+          readOnly
+          disabled={isDisabled}
+          style={{
+            border: "none",
+            outline: "none",
+            width: "100%",
+            cursor: isDisabled ? "not-allowed" : "pointer",
+            fontSize: 13,
+            background: "transparent",
+          }}
+          tabIndex={-1}
+          aria-readonly
+        />
+      </div>
+
+      <ul
+        {...getMenuProps()}
+        style={{
+          listStyle: "none",
+          margin: 0,
+          padding: 0,
+          position: "absolute",
+          width: "100%",
+          maxHeight: 150,
+          overflowY: "auto",
+          backgroundColor: "white",
+          borderTop: "none",
+          borderRadius: "0 0 6px 6px",
+          zIndex: 1000,
+          boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
+          display: isOpen ? "block" : "none",
+        }}
+      >
+        {isOpen &&
+          options.map((item, index) => {
+            const isSelected = value?.value === item.value;
+            return (
+              <li
+                key={item.value}
+                {...getItemProps({ item, index })}
+                style={{
+                  backgroundColor: isSelected
+                    ? themeUi === "REGALBLAZE"
+                      ? "#FCA311"
+                      : "#BC3D80"
+                    : highlightedIndex === index
+                    ? themeUi === "REGALBLAZE"
+                      ? "rgba(252, 163, 17, 0.3)"
+                      : "rgba(188, 61, 129, 0.3)"
+                    : "white",
+                  padding: 8,
+                  cursor: isDisabled ? "not-allowed" : "pointer",
+                  color: isSelected ? "white" : "black",
+                  borderBottom:
+                    index < options.length - 1 ? "1px solid #eee" : "none",
+                  userSelect: "none",
+                }}
+                aria-selected={highlightedIndex === index}
+              >
+                {item.label}
+              </li>
+            );
+          })}
+      </ul>
+    </div>
+  );
+};
 
 const VFFilter = (props: VFFilterProps) => {
   const dispatch = useDispatch();
@@ -97,7 +228,10 @@ const VFFilter = (props: VFFilterProps) => {
         placeholder="Select"
         onChange={(e: any) => handleOnChange(e.value, "operator")}
         options={validOperators}
-        value={validOperators.find((field) => field.value === currFilter.operator) ?? ""}
+        value={
+          validOperators.find((field) => field.value === currFilter.operator) ??
+          ""
+        }
         isDisabled={isDisabled}
       />
       <div className={VFFilterSeperator} />
@@ -105,7 +239,7 @@ const VFFilter = (props: VFFilterProps) => {
         value={currFilter.text}
         onChange={(e: any) => handleOnChange(e.target.value, "text")}
         disabled={isDisabled || fieldDataType === ""}
-        />
+      />
       <div className={VFFilterSeperator} />
       <img
         className={VFFilterDustbinIcon}
@@ -114,66 +248,6 @@ const VFFilter = (props: VFFilterProps) => {
         data-testid="delete-icon"
       />
     </div>
-  );
-};
-
-const CustomSelect = (props: CustomSelectProps) => {
-  const { placeholder, onChange, options, value, isDisabled } = props;
-
-  const { user } = useUserData();
-
-  const themeUi = user.user.theme_ui;
-
-  return (
-    <Select
-      styles={{
-        option: (baseStyles, { isSelected }) => ({
-          ...baseStyles,
-          backgroundColor: isSelected
-            ? themeUi === "REGALBLAZE"
-              ? "#FCA311"
-              : "#BC3D80"
-            : "white",
-
-          "&:hover": {
-            backgroundColor:
-              themeUi === "REGALBLAZE" ? "rgb(252, 163, 17,0.3)" : "#bc3d814d",
-            color: "black",
-          },
-        }),
-        container: (styles) => ({
-          ...styles,
-          width: "100%",
-        }),
-        control: (styles, { isFocused }) => ({
-          ...styles,
-          // borderColor: isFocused ? "none": "hsl(0, 0%, 80%);",
-
-          height: "37px",
-          width: "100%",
-          background: " #FFFFFF ",
-          fontSize: "13px",
-          border: "none",
-          borderRadius: "6px",
-          paddingLeft: "8px",
-          borderColor: isFocused ? "none" : "hsl(0, 0%, 80%);",
-          // border: "none",
-          // borderBottom: error ? "3px solid #D03E3E;" : menuIsOpen || isFocused ? '3px solid #820F4C' : '3px solid #A1A1A1',
-          boxShadow: "none",
-          "&:hover": {
-            borderColor: isFocused ? "none" : "hsl(0, 0%, 80%);",
-          },
-        }),
-      }}
-      placeholder={placeholder}
-      components={{
-        IndicatorSeparator: null,
-      }}
-      value={value}
-      onChange={onChange}
-      options={options}
-      isDisabled={isDisabled}
-    />
   );
 };
 

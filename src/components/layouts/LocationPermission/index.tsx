@@ -48,7 +48,7 @@ const LocationPermission = ({ ...props }: any) => {
                 <div className={SCItemMulSelect}>
                   <SearchInputMultiple
                     placeholder={item.placeholder}
-                    options={item.options}
+                    options={item.options || []}
                     value={item.value}
                     setValue={item.setValue}
                     handleListChild={item.handleAction}

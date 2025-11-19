@@ -16,6 +16,7 @@ import { Provider } from "react-redux";
 import { AG_GRID_KEY } from "./helpers/constants";
 import { ErrorBoundary } from "react-error-boundary";
 import VFErrorFallBack from "./components/layouts/VFErrorFallBack";
+// import { StyleSheetManager } from "styled-components";
 // import '../node_modules/react-select/dist/re'
 
 LicenseManager.setLicenseKey(AG_GRID_KEY);
@@ -46,7 +47,7 @@ root.render(
     <QueryClientProvider client={queryClient}>
       <Router>
         <Provider store={store}>
-          {/* <StyleSheetManager {...({ nonce } as any)}> */}
+          {/* <StyleSheetManager> */}
             <App />
           {/* </StyleSheetManager> */}
           <ToastContainer />

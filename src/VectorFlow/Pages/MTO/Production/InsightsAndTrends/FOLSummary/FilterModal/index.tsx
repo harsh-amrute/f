@@ -22,9 +22,15 @@ import {
   SelectDropdownComponent,
 } from "../../../../../../../components/VectorFLOW/commons/VFMultiFilter/style.css";
 import VFMasterFieldSearch from "../../../../../../../components/VectorFLOW/commons/VFMasterFieldSearch";
-import Select from "react-select";
+// import Select from "react-select";
 import Radio from "../../../../../../../components/VectorFLOW/commons/MTO/Radio";
+// import DownshiftSelect from "~/VectorFlow/Pages/MTO/Common/DownshiftSelects/DownshiftSelect";
+import DownshiftSelect from "../../../../Common/DownshiftSelects/DownshiftSelect";
 // import VFMasterFieldSearch from '../../../../../../components/VectorFLOW/commons/VFMasterFieldSearch';
+import {
+  type Option as MDMOption,
+  type Filter,
+} from "../../../../../../types/MDM";
 
 const FilterSelectDropdown = ({
   placeholder,
@@ -132,19 +138,34 @@ const FilterSelectDropdown = ({
   };
 
   return (
-    <Select
+    // <Select
+    //   options={options}
+    //   isClearable={false}
+    //   unstyled={true}
+    //   styles={customStyles}
+    //   placeholder={placeholder}
+    //   isSearchable={false}
+    //   onMenuOpen={handleMenuOpen}
+    //   onMenuClose={handleMenuClose}
+    //   onChange={onChange}
+    //   aria-label={filterId}
+    //   value={value}
+    //   // menuIsOpen={true}
+    // />
+    <DownshiftSelect
       options={options}
-      isClearable={false}
-      unstyled={true}
-      styles={customStyles}
+      value={value}
+      onChange={onChange}
       placeholder={placeholder}
       isSearchable={false}
+      disabled={false}
+      /** NEW: react-select compatibility */
       onMenuOpen={handleMenuOpen}
       onMenuClose={handleMenuClose}
-      onChange={onChange}
+      /** For compatibility — not used internally but won't break */
+      styles={customStyles}
+      components={{}}
       aria-label={filterId}
-      value={value}
-      // menuIsOpen={true}
     />
   );
 };
@@ -313,6 +334,10 @@ const FilterModal = (props: IFilterModalProps) => {
       setActiveAccordian(key);
     }
   };
+  // interface Option {
+  //   label: string;
+  //   value: string | number;
+  // }
 
   return (
     <VFModalCard
@@ -332,11 +357,25 @@ const FilterModal = (props: IFilterModalProps) => {
 
           <div className={FilterAccordianWrapper}>
             <VFMasterFieldSearch
-              value={selectedOptions?.plantName}
-              setValue={(e: any) => {
-                if (e && e.length >= 0) handleChange(e);
+              value={(selectedOptions?.plantName ?? []).map(
+                (name: string): MDMOption => ({
+                  label: name,
+                  value: name,
+                })
+              )}
+              setValue={(opts: MDMOption[]) => {
+                // Option[] -> string[]
+                const names = opts.map((o) => String(o.value)); // or o.label
+                // You already have handleNameChange passed in props,
+                // but you're using handleChange wrapper; pick one.
+                handleChange(names); // or handleNameChange(names)
               }}
-              options={filters[0].options}
+              options={(filters[0]?.options ?? []).map(
+                (opt: string): MDMOption => ({
+                  label: opt,
+                  value: opt,
+                })
+              )}
               placeholder="Plant"
               handleListChild={() => null}
               maxToShow={3}

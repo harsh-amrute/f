@@ -1,74 +1,117 @@
-import React from 'react'
-import Select, { components, OptionProps } from 'react-select'
-import { Checkbox } from '../../../../../components';
+import { useSelect } from "downshift";
 
-const CustomSelect = ({ selected, placeholder, options, width, optionsWidth }: any) => {
-    const Option = (props: OptionProps<any>) => {
-        return (
-            <components.Option {...props}>
-                <div style={{ display: "flex", justifyContent: "start", alignItems: "center" }}>
-                    <Checkbox name="Select" defaultChecked={props.isSelected} value="1" onChange={() => { console.log("") }} />
-                    {props.data.label}
-                </div>
-            </components.Option>
-        );
-    };
-    return (
-        <Select
-            isSearchable={false}
-            components={{ Option, IndicatorSeparator: () => null }}
-            value={selected}
-            styles={{
-                placeholder: (provided) => ({
-                    ...provided,
-                    color: 'black',
-                    fontWeight: 500,
-                    fontSize: '14px', 
-                }),
-                container: (base) => ({
-                    ...base,
-                    width: width || "max-content"
-                }),
-                control: (base: any, state: any) => ({
-                    ...base,
-                    border: "1px solid hsl(0, 0%, 80%)",
-                    // This line disable the blue border
-                    boxShadow: state.isFocused ? 0 : 0,
-                    '&:hover': {
-                        border: "1px solid hsl(0, 0%, 80%)"
-                    }
-                }),
-                menu: (base) => ({
-                    ...base,
-                    width: "max-content",
-                    minWidth: optionsWidth || "150px",
-                    right: 0,
-                }),
-                option: (base) => ({
-                    ...base,
-                    background: "white",
-                    color: "black",
-                    "&:hover": {
-                        background: "white"
-                    }
-                })
-            }}
-            placeholder={placeholder || ''}
-            options={options || [
-                { label: "M1", value: "M1" },
-                { label: "M2", value: "M2" },
-                { label: "M3", value: "M3" },
-                { label: "M4", value: "M4" },
-                { label: "M5", value: "M5" },
-                { label: "M6", value: "M6" },
-                { label: "M7", value: "M7" },
-                { label: "M8", value: "M8" },
-                { label: "M9", value: "M9" },
-                { label: "M10", value: "M10" },
-            ]}
-
-        />
-    )
+interface Option {
+  label: string;
+  value: string;
 }
 
-export default CustomSelect
+interface CustomSelectProps {
+  selected: Option | null;
+  placeholder?: string;
+  options: Option[];
+  width?: string | number;
+  optionsWidth?: string | number;
+}
+
+const CustomSelect = ({
+  selected,
+  placeholder = "",
+  options,
+  width,
+  optionsWidth,
+}: CustomSelectProps) => {
+  const {
+    isOpen,
+    getToggleButtonProps,
+    getMenuProps,
+    getItemProps,
+    highlightedIndex,
+    selectedItem,
+  } = useSelect<Option>({
+    items: options,
+    selectedItem: selected,
+    itemToString: (item) => (item ? item.label : ""),
+    onSelectedItemChange: ({ selectedItem }) => {
+      // trigger parent onChange manually if needed, implement as per your context
+    },
+  });
+
+  return (
+    <div style={{ width: width || "max-content", position: "relative" }}>
+      <div
+        {...getToggleButtonProps()}
+        style={{
+          border: "1px solid hsl(0, 0%, 80%)",
+          boxShadow: "none",
+          padding: "6px 12px",
+          borderRadius: 4,
+          cursor: "pointer",
+          userSelect: "none",
+          fontSize: 14,
+          backgroundColor: "white",
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <div>{selected ? selected.label : placeholder}</div>
+        <div style={{ pointerEvents: "none" }}>
+          {/* Add dropdown arrow if desired */}▼
+        </div>
+      </div>
+
+      <ul
+        {...getMenuProps()}
+        style={{
+          listStyle: "none",
+          margin: 0,
+          padding: 0,
+          maxHeight: 150,
+          overflowY: "auto",
+          width: optionsWidth || "150px",
+          borderTop: "none",
+          borderRadius: "0 0 6px 6px",
+          boxShadow: isOpen ? "0 2px 6px rgba(0, 0, 0, 0.15)" : "none",
+          position: "absolute",
+          backgroundColor: "white",
+          zIndex: 1000,
+          display: isOpen ? "block" : "none",
+        }}
+      >
+        {isOpen &&
+          options.map((item, index) => {
+            const isSelected = selectedItem?.value === item.value;
+            const isHighlighted = highlightedIndex === index;
+            return (
+              <li
+                key={item.value}
+                {...getItemProps({ item, index })}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  padding: "8px",
+                  backgroundColor: isHighlighted ? "#eee" : "white",
+                  cursor: "pointer",
+                  borderBottom:
+                    index < options.length - 1 ? "1px solid #eee" : "none",
+                }}
+                aria-selected={isHighlighted}
+              >
+                <input
+                  type="checkbox"
+                  checked={isSelected}
+                  readOnly
+                  tabIndex={-1}
+                  style={{ marginRight: 8 }}
+                />
+                {item.label}
+              </li>
+            );
+          })}
+      </ul>
+    </div>
+  );
+};
+
+export default CustomSelect;

@@ -2,22 +2,26 @@ import React, { CSSProperties, ReactNode } from "react";
 import { SearchInputMultiple } from "../../..";
 import { FieldSearchWrapper } from "./styles.css";
 import { type Option } from "../../../../VectorFlow/types/MDM";
+import { SelectSearchMultipleProps } from "../../../../components/commons/SearchInputMultiple";
+// import { searchIcon } from "../../../../components/commons/SearchInputManageUser/style.css";
 
-interface VFMasterFieldSearchProps {
-  options: any[];
-  value: any;
-  setValue: (option: Option) => void;
-  placeholder: string;
-  handleListChild: () => void;
-  maxToShow: number;
-  backgroundColor: string;
-  disabled: boolean;
-  width?: string;
-  borderRadius?: number;
-  boxShadow?: string;
-  children?: ReactNode; // if SearchInputMultiple expects it via spread
-  style?: CSSProperties; // if you pass extra inline styles down
-}
+// interface VFMasterFieldSearchProps{
+//   options: any[];
+//   value: Option | null;                         
+//   setValue: (option: Option | null) => void;
+//   placeholder: string;
+//   handleListChild?: (items: Option[]) => void; 
+//   maxToShow: number;
+//   backgroundColor: string;
+//   disabled: boolean;
+//   width?: string;
+//   borderRadius?: number;
+//   boxShadow?: string;
+//   children?: ReactNode; // if SearchInputMultiple expects it via spread
+//   style?: CSSProperties; // if you pass extra inline styles down
+// }
+
+type VFMasterFieldSearchProps = SelectSearchMultipleProps;
 
 const VFMasterFieldSearch = (props: VFMasterFieldSearchProps) => {
   return (

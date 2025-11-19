@@ -41,7 +41,7 @@ export interface Master {
 
 export interface Option {
     label: string,
-    value: string
+    value: string | number
 }
 
 export interface Field {

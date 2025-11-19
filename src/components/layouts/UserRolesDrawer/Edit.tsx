@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-
-import Select from "react-select";
-
+import { useCombobox } from "downshift";
 import {
   inputWrapper,
   urlsForm,
@@ -219,20 +217,30 @@ const EditRole = (props: { data: any; cb: () => void }) => {
   // const highlightText = (text: string, query: string) => {
   //   if (!query) return text
 
-  //   const parts = text.split(new RegExp(`(${urlSearchQuery})`, 'gi'))
-  //   return parts.map((part, index) =>
-  //     part.toLowerCase() === query.toLowerCase()
-  //       ? <span style={{backgroundColor:"#BC3D81",color:'white',borderRadius:'4px',padding:'0px 2px'}}>{part}</span>
-  //       : <span style={{padding:'0px 2px'}}>{part}</span>
-  //   )
-  // }
+  // Downshift combobox for Application
+  const {
+    isOpen,
+    highlightedIndex,
+    getMenuProps,
+    getItemProps,
+    getInputProps,
+    getToggleButtonProps,
+  } = useCombobox({
+    items: applicationsFormattedData,
+    itemToString: (item) => (item ? item.label : ""),
+    selectedItem: applicationsFormattedData.find(
+      (a) => a.value === formData.application_id
+    ),
+    onSelectedItemChange: ({ selectedItem }) => {
+      if (selectedItem)
+        handleSelectChange(selectedItem.value, selectedItem.label);
+    },
+  });
 
-  const queriedURLs = useMemo(() => {
-    if (!urlSearchQuery || urlSearchQuery.length === 0) return allUrls;
-    return allUrls.filter((url) =>
-      url.name.toLowerCase().includes(urlSearchQuery)
-    );
-  }, [urlSearchQuery, allUrls]);
+  const queriedURLs = useMemo(()=>{
+    if(!urlSearchQuery || urlSearchQuery.length === 0)return allUrls
+    return allUrls.filter((url)=>url.name.toLowerCase().includes(urlSearchQuery))
+  },[urlSearchQuery,allUrls])
 
   if (isLoading) {
     return (
@@ -317,49 +325,84 @@ const EditRole = (props: { data: any; cb: () => void }) => {
         </div>
       </div>
       <div className={inputWrapper}>
-        <label className={label} htmlFor="application_name">
-          Applications{" "}
-        </label>
-        <Select
-          // defaultValue={{value:data.application_id,label:data.application_name}}
-          options={applicationsFormattedData}
-          value={{
-            value: formData.application_id,
-            label: formData.application_name,
-          }}
-          placeholder={"Select Application"}
-          onChange={(data: any) => handleSelectChange(data.value, data.label)}
-          styles={{
-            option: (baseStyles, { isSelected }) => ({
-              ...baseStyles,
-              fontSize: 11,
-              backgroundColor: isSelected
-                ? themeUi === "REGALBLAZE"
-                  ? "#FCA311"
-                  : "#BC3D80"
-                : "white",
-
-              "&:hover": {
-                backgroundColor:
-                  themeUi === "REGALBLAZE"
-                    ? "rgb(252, 163, 17,0.3) "
-                    : "#bc3d814d",
-                color: "black",
-              },
-            }),
-            control: (baseStyles, { isFocused }) => ({
-              ...baseStyles,
+        <label className={label}>Applications</label>
+        <div style={{ position: "relative" }}>
+          <div
+            {...getToggleButtonProps()}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "6px 10px",
+              backgroundColor: "rgb(247,247,247)",
+              border: "2px solid transparent",
               fontSize: 12,
-              borderColor: !isFocused ? "transparent" : "#BC3D80",
-              borderWidth: 2,
-              boxShadow: "none",
-              backgroundColor: "rgb(247, 247, 247)",
-              "&:hover": {
-                borderColor: "#BC3D80",
-              },
-            }),
-          }}
-        />
+              cursor: "pointer",
+              borderRadius: 6,
+            }}
+          >
+            <input
+              {...getInputProps({
+                readOnly: true,
+                placeholder: "Select Application",
+              })}
+              style={{
+                border: "none",
+                background: "transparent",
+                outline: "none",
+                flex: 1,
+                fontSize: 12,
+              }}
+              value={formData.application_name || ""}
+            />
+            <span style={{ fontSize: 10 }}>▼</span>
+          </div>
+
+          <ul
+            {...getMenuProps()}
+            style={{
+              position: "absolute",
+              zIndex: 1000,
+              listStyle: "none",
+              margin: 0,
+              padding: 0,
+              width: "100%",
+              maxHeight: 150,
+              overflowY: "auto",
+              background: "white",
+              border:
+                isOpen && applicationsFormattedData.length > 0
+                  ? "1px solid #BC3D80"
+                  : "none",
+              boxShadow: isOpen ? "0 2px 6px rgba(0,0,0,0.1)" : "none",
+            }}
+          >
+            {isOpen &&
+              applicationsFormattedData.map((item, index) => (
+                <li
+                  key={item.value ?? index}
+                  {...getItemProps({ item, index })}
+                  style={{
+                    padding: "6px 10px",
+                    fontSize: 11,
+                    backgroundColor:
+                      highlightedIndex === index
+                        ? "#bc3d814d"
+                        : item.value === formData.application_id
+                        ? "#BC3D80"
+                        : "white",
+                    color:
+                      item.value === formData.application_id
+                        ? "white"
+                        : "black",
+                    cursor: "pointer",
+                  }}
+                >
+                  {item.label}
+                </li>
+              ))}
+          </ul>
+        </div>
       </div>
       <div className={inputWrapper}>
         <label className={label} htmlFor="description">

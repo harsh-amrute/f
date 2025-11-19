@@ -1,101 +1,192 @@
+// SchedulingChart.css.ts
 import { style, createVar } from "@vanilla-extract/css";
 
-/* ------- dynamic vars ------- */
-export const headerWidthVar = createVar();
+/* ---------- Vars ---------- */
+
+// ChartWrapper height
+export const chartHeightVar = createVar();
+
+// Column / content cell width
 export const cellWidthVar = createVar();
 
-export const taskLeftVar = createVar();
-export const taskWidthVar = createVar();
-export const taskBgVar = createVar();
+// Task bar positioning / color
+export const taskBarLeftVar = createVar();
+export const taskBarWidthVar = createVar();
+export const taskBarBgVar = createVar();
 
-export const paletteColorVar = createVar();
+// Zoom button vars
+export const zoomBtnBgVar = createVar();
+export const zoomBtnColorVar = createVar();
+export const zoomBtnBorderVar = createVar();
+export const zoomBtnHoverBgVar = createVar();
+export const zoomBtnHoverColorVar = createVar();
 
-/* ------- layout ------- */
-export const sectionWrapper = style({});
+// Color palette var
+export const colorPaletteBgVar = createVar();
+
+/* ---------- Layout / sections ---------- */
 
 export const chartWrapper = style({
   width: "100%",
-  height: "100%",
-  borderRadius: "8px",
+  height: chartHeightVar,
+  borderRadius: 8,
   overflow: "hidden",
   display: "flex",
+  position: "relative",
+  vars: {
+    [chartHeightVar]: "400px", // default
+  },
 });
 
 export const columnSection = style({
   display: "flex",
   flexDirection: "column",
-  borderCollapse: "collapse",
-  minWidth: "20px",
+  minWidth: 20,
+  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+  borderRight: "1px solid #ccc",
+  background: "white",
+  zIndex: 0,
+});
+
+export const columnHeaderWrapper = style({
+  position: "sticky",
+  top: 0,
+  zIndex: 0,
+  background: "black",
+  borderBottom: "1px solid #ccc",
+});
+
+export const columnBodyWrapper = style({
+  flex: 1,
+  overflowY: "hidden",
+  overflowX: "hidden",
+  selectors: {
+    "&::-webkit-scrollbar": {
+      width: 8,
+    },
+    "&::-webkit-scrollbar-track": {
+      background: "transparent",
+    },
+    "&::-webkit-scrollbar-thumb": {
+      background: "transparent",
+    },
+  },
 });
 
 export const calendarSection = style({
   border: "1px solid #ccc",
   borderRadius: "0 8px 0 0",
-  background: "black",
-  flex: "1 1 0",
-  overflowX: "auto",
+  background: "white",
+  flex: 1,
+  display: "flex",
+  flexDirection: "column",
+  overflow: "hidden",
 });
 
-/* ------- table bits ------- */
-export const columnHeaderRow = style({
-  height: "50px",
+export const calendarHeaderWrapper = style({
+  position: "sticky",
+  top: 0,
+  zIndex: 0,
   background: "black",
-  border: "1px solid #ccc",
+  overflowX: "auto",
+  overflowY: "hidden",
+  borderBottom: "1px solid #ccc",
+  selectors: {
+    "&::-webkit-scrollbar": {
+      height: 0,
+    },
+  },
+});
+
+export const calendarBodyWrapper = style({
+  flex: 1,
+  overflow: "auto",
+});
+
+/* ---------- Tables / rows / cells ---------- */
+
+export const columnTable = style({
+  borderCollapse: "collapse",
+  width: "100%",
+});
+
+export const calendarTable = style({
+  borderCollapse: "collapse",
+  width: "max-content",
+  minWidth: "100%",
+});
+
+export const columnHeaderRow = style({
+  height: 50,
+  background: "black",
+});
+
+export const columnHeaderRowTop = style({
+  height: 50,
+  background: "black",
 });
 
 export const contentRow = style({
-  height: "30px",
+  height: 30,
   position: "relative",
-  border: "1px solid #ccc",
+  borderBottom: "1px solid #ccc",
   selectors: {
-    "&:nth-child(odd)": { background: "#f5f5f5" },
-    "&:nth-child(even)": { background: "#ffffff" },
+    "&:nth-child(odd)": {
+      background: "#f5f5f5",
+    },
+    "&:nth-child(even)": {
+      background: "#ffffff",
+    },
   },
 });
 
 export const headerCell = style({
   position: "relative",
-  padding: "8px",
-  height: "100%",
+  padding: 8,
+  height: 56,
   borderRight: "1px solid #ccc",
   color: "white",
   textAlign: "center",
-  width: headerWidthVar,
-  minWidth: "30px",
+  background: "black",
+  width: cellWidthVar,
+  minWidth: cellWidthVar,
+  vars: {
+    [cellWidthVar]: "120px",
+  },
 });
 
 export const resizeHandle = style({
   position: "absolute",
   right: 0,
   top: 0,
-  width: "5px",
+  width: 5,
   height: "100%",
   cursor: "col-resize",
   userSelect: "none",
 });
 
 export const contentCell = style({
-  borderLeft: "1px solid #ccc",
+  borderRight: "1px solid #ccc",
   textAlign: "center",
   fontSize: "0.9rem",
   fontWeight: 300,
+  padding: 4,
   width: cellWidthVar,
-  minWidth: "30px",
-});
-
-export const calendarTable = style({
-  borderCollapse: "collapse",
-  width: "100%",
-  height: "100%",
+  minWidth: cellWidthVar,
 });
 
 export const calendarHeaderRow = style({
-  height: "20px",
+  height: 25,
   background: "black",
-  border: "1px solid #ccc",
   color: "white",
   textAlign: "center",
-  flex: "0 0 auto",
+});
+
+export const calendarHeaderRowTop = style({
+  height: 25,
+  background: "black",
+  color: "white",
+  textAlign: "center",
 });
 
 export const calendarCell = style({
@@ -105,94 +196,174 @@ export const calendarCell = style({
   fontWeight: 500,
   color: "white",
   background: "black",
-  minWidth: "60px",
-  height: "20px",
-  lineHeight: "22px",
+  minWidth: 100,
+  width: 100,
+  height: 25,
+  lineHeight: "25px",
   whiteSpace: "nowrap",
 });
 
-/* ------- task bar ------- */
+export const calendarCellTop = style({
+  border: "1px solid #ccc",
+  textAlign: "center",
+  fontSize: "0.9rem",
+  fontWeight: 500,
+  color: "white",
+  background: "black",
+  minWidth: 100,
+  width: 100,
+  height: 25,
+  lineHeight: "25px",
+  whiteSpace: "nowrap",
+});
+
+export const taskContainer = style({
+  position: "relative",
+  height: 30,
+  padding: 0,
+  borderLeft: "1px solid #ccc",
+  minWidth: 100,
+  width: 100,
+});
+
+/* ---------- TaskBar ---------- */
+
 export const taskBar = style({
   position: "absolute",
-  background: taskBgVar,
-  height: "20px",
-  borderRadius: "2px",
-  top: "4px",
+  background: taskBarBgVar,
+  height: 20,
+  borderRadius: 2,
+  top: 4,
   border: "0.5px solid #333",
   textAlign: "center",
   color: "white",
-  left: taskLeftVar,
-  width: taskWidthVar,
+  left: taskBarLeftVar,
+  width: taskBarWidthVar,
   cursor: "pointer",
-  transition: "transform 80ms ease, opacity 80ms ease",
+  wordWrap: "break-word",
+  fontSize: "0.8rem",
+  overflow: "hidden",
+  whiteSpace: "nowrap",
+  textOverflow: "ellipsis",
+  padding: "0 2px",
+  lineHeight: "20px",
+  vars: {
+    [taskBarLeftVar]: "0px",
+    [taskBarWidthVar]: "50px",
+    [taskBarBgVar]: "green",
+  },
   selectors: {
     "&:hover": {
       opacity: 0.8,
-      transform: "scale(1.01)",
+      transform: "scaleY(1.18)",
+      zIndex: 10,
     },
   },
 });
 
-/* ------- legend & zoom ------- */
+/* ---------- Legend / zoom / misc ---------- */
+
 export const legendWrapper = style({
   display: "flex",
   alignItems: "center",
-  height: "20px",
+  height: 30,
   width: "100%",
   justifyContent: "center",
+  padding: "5px 0",
+  background: "white",
+  borderTop: "1px solid #ccc",
+});
+
+export const sectionWrapper = style({
+  display: "flex",
+  flexDirection: "column",
+  height: "100%",
+  width: "100%",
 });
 
 export const zoomSection = style({
   display: "flex",
   alignItems: "center",
   justifyContent: "flex-end",
+  padding: 5,
+  background: "white",
 });
 
 export const zoomButtonWrapper = style({
   display: "flex",
   alignItems: "center",
   border: "1px solid #ccc",
-  borderRadius: "0 0 4px 4px",
+  borderRadius: 4,
   overflow: "hidden",
-  gap: "4px",
-  padding: "2px",
+  gap: 4,
+  padding: 2,
 });
 
-export const zoomButtonBase = style({
-  background: "white",
-  color: "#333",
-  border: "1px solid #333",
-  borderRadius: "4px",
+export const zoomButton = style({
+  background: zoomBtnBgVar,
+  color: zoomBtnColorVar,
+  border: zoomBtnBorderVar,
+  borderRadius: 4,
   padding: "3px 6px",
   cursor: "pointer",
   fontSize: "0.9rem",
+  outline: "none",
+  boxShadow: "none",
+  vars: {
+    [zoomBtnBgVar]: "white",
+    [zoomBtnColorVar]: "#333",
+    [zoomBtnBorderVar]: "1px solid #333",
+    [zoomBtnHoverBgVar]: "#555",
+    [zoomBtnHoverColorVar]: "white",
+  },
   selectors: {
-    "&:hover": { background: "#555", color: "white" },
-    "&:focus": { outline: "none", boxShadow: "0 0 0 2px #333" },
-    "&:disabled": { cursor: "not-allowed", opacity: 0.6 },
+    "&:hover": {
+      background: zoomBtnHoverBgVar,
+      color: zoomBtnHoverColorVar,
+    },
+    "&:focus": {
+      outline: "none",
+      boxShadow: "0 0 0 2px #333",
+    },
   },
 });
 
-export const zoomButtonActive = style({
-  background: "#cecece",
-  color: "#333",
-  border: "none",
-  selectors: {
-    "&:hover": { background: "#cecece", color: "#8A8686" },
-  },
-});
-
-export const colorPallete = style({
-  width: "15px",
-  height: "15px",
-  background: paletteColorVar,
-  borderRadius: "3px",
-  marginRight: "6px",
+export const colorPalette = style({
+  width: 15,
+  height: 15,
+  background: colorPaletteBgVar,
+  borderRadius: 3,
+  marginRight: 6,
   border: "0.4px solid #333",
+  vars: {
+    [colorPaletteBgVar]: "grey",
+  },
 });
 
 export const label = style({
   fontSize: "0.9rem",
   color: "#333",
-  marginRight: "16px",
+  marginRight: 16,
+});
+
+export const tooltipWrapper = style({
+  padding: 8,
+  background: "rgba(60, 59, 59, 0.88)",
+  border: "0.7px solid #ccc",
+  borderRadius: 4,
+  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
+  fontSize: "0.9rem",
+  color: "rgba(197, 195, 195, 0.88)",
+  width: "fit-content",
+  height: "fit-content",
+  display: "flex",
+  flexDirection: "column",
+  gap: 4,
+});
+
+export const tooltipRow = style({
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  gap: 8,
 });

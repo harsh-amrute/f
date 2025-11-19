@@ -1,142 +1,182 @@
-import { useState } from 'react'
-import './styles.css'
-import Select, { defaultTheme } from 'react-select'
-
-const { colors } = defaultTheme
-
-const selectStyles = {
-  control: (provided: any, state: any) => ({
-    ...provided,
-    minWidth: 240,
-    maxWidth: 300,
-    margin: 8,
-    background: '#F2F2F2',
-    fontSize: 16,
-    outline: 'none',
-    borderRadius: 6,
-    border: state.isFocused ? 0 : 0,
-    // This line disable the blue border
-    boxShadow: state.isFocused ? 0 : 0,
-    '&:hover': {
-      border: state.isFocused ? 0 : 0
-    }
-  }),
-  menu: () => ({
-    boxShadow: 'inset 0 1px 0 rgba(0, 0, 0, 0.1)',
-    maxWidth: 300,
-    fontSize: 14
-  })
-}
+import { useState } from "react";
+import { useCombobox } from "downshift";
+import "./styles.css";
 
 interface SelectSearchProps {
-  placeholder: string
-  options: any
-  valueFilter: any
-  setValueFilter: any
+  placeholder: string;
+  options: { label: string; value: string }[];
+  valueFilter: any;
+  setValueFilter: any;
 }
 
 const SelectSearchResetFilter = ({
   options,
   placeholder,
   valueFilter,
-  setValueFilter
+  setValueFilter,
 }: SelectSearchProps) => {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
 
-  const toggleOpen = () => {
-    setIsOpen(!isOpen)
-  }
-  const onSelectChange = (value: any) => {
-    toggleOpen()
-    setValueFilter(value)
-  }
+  const toggleOpen = () => setIsOpen(!isOpen);
+
+  const {
+    getMenuProps,
+    getInputProps,
+    getItemProps,
+    highlightedIndex,
+    inputValue,
+    selectItem,
+    isOpen: comboOpen,
+    openMenu,
+  } = useCombobox({
+    items: options,
+    itemToString: (item) => (item ? item.label : ""),
+    onSelectedItemChange: ({ selectedItem }) => {
+      if (selectedItem) {
+        setValueFilter(selectedItem);
+        setIsOpen(false);
+      }
+    },
+  });
+
+  const filteredItems = options.filter((item) =>
+    item.label.toLowerCase().includes(inputValue.toLowerCase())
+  );
 
   return (
-    <div style={{ margin: 3 }}>
+    <div style={{ margin: 3, position: "relative" }}>
       <Dropdown
         isOpen={isOpen}
-        onClose={toggleOpen}
+        onClose={() => setIsOpen(false)}
         target={
-          <button className="select-search-input" onClick={toggleOpen}>
-            <div className="select-Button">
-              {' '}
-              {valueFilter ? `${valueFilter.label}` : placeholder}
+          <button
+            className="select-search-input"
+            onClick={() => {
+              toggleOpen();
+              if (!isOpen) openMenu();
+            }}
+            style={{
+              background: "#F2F2F2",
+              border: "none",
+              borderRadius: 6,
+              fontSize: 16,
+              padding: "8px 12px",
+              minWidth: 240,
+              maxWidth: 300,
+              textAlign: "left",
+              cursor: "pointer",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <span>{valueFilter ? valueFilter.label : placeholder}</span>
+              <span style={{ color: "#999", fontSize: 14 }}>▼</span>
             </div>
           </button>
         }
       >
-        <Select
-          autoFocus
-          backspaceRemovesValue={false}
-          components={{ DropdownIndicator, IndicatorSeparator: null }}
-          className="react-select-container"
-          controlShouldRenderValue={false}
-          hideSelectedOptions={false}
-          isClearable={false}
-          menuIsOpen
-          onChange={onSelectChange}
-          options={options}
-          placeholder={`Search ${placeholder}`}
-          styles={selectStyles}
-          tabSelectsValue={false}
-          value={valueFilter}
-          onBlur={toggleOpen}
-          theme={(theme) => ({
-            ...theme,
-            borderRadius: 0,
-            colors: {
-              ...theme.colors,
-              primary25: '#F2F2F2',
-              primary: '#820F4C'
-            }
-          })}
-        />
+        <div
+          style={{
+            backgroundColor: "white",
+            borderRadius: 4,
+            boxShadow: "0 0 0 1px rgba(0,0,0,0.1), 0 4px 11px rgba(0,0,0,0.1)",
+            marginTop: 8,
+            position: "absolute",
+            zIndex: 2,
+            maxWidth: 300,
+          }}
+        >
+          <input
+            {...getInputProps({
+              placeholder: `Search ${placeholder}`,
+              onFocus: openMenu,
+            })}
+            style={{
+              width: "100%",
+              border: "none",
+              borderBottom: "1px solid #ccc",
+              padding: "8px 10px",
+              fontSize: 14,
+              outline: "none",
+              background: "#F2F2F2",
+              borderRadius: "6px 6px 0 0",
+            }}
+          />
+
+          <ul
+            {...getMenuProps()}
+            style={{
+              listStyle: "none",
+              margin: 0,
+              padding: 0,
+              maxHeight: 200,
+              overflowY: "auto",
+              fontSize: 14,
+            }}
+          >
+            {comboOpen &&
+              filteredItems.map((item, index) => (
+                <li
+                  key={item.value}
+                  {...getItemProps({ item, index })}
+                  style={{
+                    padding: "8px 10px",
+                    backgroundColor:
+                      highlightedIndex === index ? "#F2F2F2" : "white",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    selectItem(item);
+                    setIsOpen(false);
+                  }}
+                >
+                  {item.label}
+                </li>
+              ))}
+
+            {filteredItems.length === 0 && (
+              <li
+                style={{
+                  padding: "8px 10px",
+                  fontSize: 14,
+                  color: "#666",
+                }}
+              >
+                No results found
+              </li>
+            )}
+          </ul>
+        </div>
       </Dropdown>
     </div>
-  )
-}
+  );
+};
 
-// styled components
+// --- Components reused from original code but CSP-safe ---
 
-const Menu = (props: any) => {
-  const shadow = 'hsla(218, 50%, 10%, 0.1)'
-  return (
-    <div
-      css={{
-        backgroundColor: 'white',
-        borderRadius: 4,
-        boxShadow: `0 0 0 1px ${shadow}, 0 4px 11px ${shadow}`,
-        marginTop: 8,
-        position: 'absolute',
-        zIndex: 2
-      }}
-      {...props}
-    />
-  )
-}
-const Blanket = (props: any) => (
-  <div
-    css={{
-      bottom: 0,
-      left: 0,
-      top: 0,
-      right: 0,
-      position: 'fixed',
-      zIndex: 1
-    }}
-    {...props}
-  />
-)
 const Dropdown = ({ children, isOpen, target, onClose }: any) => (
-  <div style={{ position: 'relative' }}>
+  <div style={{ position: "relative" }}>
     {target}
-    {isOpen ? <Menu>{children}</Menu> : null}
-    {isOpen ? <Blanket onClick={onClose} /> : null}
+    {isOpen ? children : null}
+    {isOpen ? (
+      <div
+        onClick={onClose}
+        style={{
+          bottom: 0,
+          left: 0,
+          top: 0,
+          right: 0,
+          position: "fixed",
+          zIndex: 1,
+        }}
+      />
+    ) : null}
   </div>
-)
+);
 
-const DropdownIndicator = () => (
-  <div style={{ color: colors.neutral20, height: 24, width: 32 }}></div>
-)
-
-export default SelectSearchResetFilter
+export default SelectSearchResetFilter;
