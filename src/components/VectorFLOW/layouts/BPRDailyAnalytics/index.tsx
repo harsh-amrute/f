@@ -6,8 +6,7 @@ import { useLocation } from 'react-router'
 import { RootState } from '../../../../redux/store/store'
 import { routerToAnalyticsStringMap } from '../../../../helpers/BPRConstants'
 import { useGetAnalyticsData } from '../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR'
-
-import {isBefore} from 'date-fns'
+import { toast } from "react-toastify";
 import {
     BPRDailyAnalyticsHeader,
     BPRDailyAnalyticsContainer,
@@ -39,10 +38,9 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
     } =props
     const [rowData,setRowData] = useState<Array<any>>([])
 
-    const location = useLocation()
-    const {currentCategory,currentTab,currentView} = useSelector((state:RootState)=>state.mta.planning)
     const {mutateAsync:getAnalyticsData,isLoading} = useGetAnalyticsData()
-
+    const {currentCategory,currentTab} = useSelector((state:RootState)=>state.mta.planning)
+    const MTAVFMultiFilter = useSelector((state: RootState) => state.mta.mtaVFMultiFilter);
 
     const {user} = useUserData()
 
@@ -57,50 +55,37 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
         return temp
     },[rowData])
 
-    function calculatePercentIncrease(data:Array<any>) {
-        //if (data.length < 2) {
-        //  notifyError("Insufficient data to calculate percent increase")
-        //}
+    function transformAnalyticsData(data: Array<any>): Array<any> {
+        if (!data || data.length === 0 || !data[0]) {
+            return [];
+        }
+        const analyticsData = data[0];
+        const colors = ['Black', 'Red', 'Yellow', 'Green', 'White', 'Blue', 'Grey'];
         
-        const todaysDateIndex = isBefore(data[0].ReportDate,data[1].ReportDate)?1:0
-        const yesterdayDateIndex = (todaysDateIndex - 1 + data.length) % data.length;
+        const result = colors.map(color => ({
+            color: color,
+            techCount: analyticsData[`OnHand${color}`] || 0,
+            ecoCount: analyticsData[`Pipeline${color}`] || 0,
+        }));
 
-        const today = data[todaysDateIndex];
-        const yesterday = data[yesterdayDateIndex];
-
-        const percentIncrease:any = {};
-
-        const colors = ["Black", "Red", "Yellow", "Green", "White","Blue"]
-
-        for (const color of colors) {
-            const onHandToday = today[`OnHand${color}`];
-            const onHandYesterday = yesterday[`OnHand${color}`];
-            const pipelineToday = today[`Pipeline${color}`];
-            const pipelineYesterday = yesterday[`Pipeline${color}`];
-        
-            percentIncrease[`OnHand${color}`] = (onHandYesterday-onHandToday!==0)?(onHandYesterday !== undefined && onHandYesterday !== 0) ? parseFloat((((onHandToday - onHandYesterday) / onHandYesterday) * 100).toFixed(2)) : null:0
-            percentIncrease[`Pipeline${color}`] = (pipelineYesterday-pipelineToday!==0)?(pipelineYesterday !== undefined && pipelineYesterday !== 0) ? parseFloat((((pipelineToday - pipelineYesterday) / pipelineYesterday) * 100).toFixed(2)) : null:0
-          }
-          const result = []
-          for (const color of colors) {
-            
-            const obj ={
-                color:color,
-                techCount:today[`OnHand${color}`],
-                techChange:percentIncrease[`OnHand${color}`],
-                ecoCount:today[`Pipeline${color}`],
-                ecoChange:percentIncrease[`Pipeline${color}`]
-            }
-            result.push(obj)
-          }
         return result;
-      }
+    }
       
 
 
-    const onGetAnalyticsData = async()=>{
-        const pathname:string = location.pathname
-        let payloadString = ""
+    // const onGetAnalyticsData = async()=>{
+    //     try{
+    //         // const data = await getAnalyticsData({reportname :payloadString})
+    //         // setRowData(aggregateAnalyticsData(activeReportData , lastRunDate))
+    //     }catch(err:any){
+    //         setRowData([])
+    //     }
+
+    // }
+
+    const onGetAnalyticsData = async(filter:any)=>{
+        const pathname:string = location.pathname;
+        let payloadString = "";
         if(location.pathname==='/mta/supply-chain-intelligence-hub/planning'){
             if(currentCategory!==""){
                 switch(currentCategory){
@@ -123,90 +108,40 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
                         payloadString = "orderfulfillment"
                         break
                     default:
-                        return 
+                        return
                 }
             }
             else{
                 payloadString = "planning"
             }
-            
         }
         else payloadString = routerToAnalyticsStringMap[pathname]
         try{
-            const data = await getAnalyticsData({reportname :payloadString})
-            setRowData(calculatePercentIncrease(data.data.data))
-            // setRowData(calculatePercentIncrease([
-            //     {
-            //       "ReportDate": "2024-05-29",
-            //       "OnHandBlack": 10,
-            //       "OnHandRed": 1297,
-            //       "OnHandYellow": 597,
-            //       "OnHandGreen": 546,
-            //       "OnHandWhite": 138,
-            //       "OnHandBlue": 21,
-            //       "PipelineBlack": 2077,
-            //       "PipelineRed": 1284,
-            //       "PipelineYellow": 672,
-            //       "PipelineGreen": 629,
-            //       "PipelineWhite": 159,
-            //       "PipelineBlue": 35
-            //     },
-            //     {
-            //       "ReportDate": "2024-05-30",
-            //       "OnHandBlack": 0,
-            //       "OnHandRed": 1337,
-            //       "OnHandYellow": 587,
-            //       "OnHandGreen": 537,
-            //       "OnHandWhite": 40,
-            //       "OnHandBlue": 25,
-            //       "PipelineBlack": 2189,
-            //       "PipelineRed": 1323,
-            //       "PipelineYellow": 646,
-            //       "PipelineGreen": 619,
-            //       "PipelineWhite": 44,
-            //       "PipelineBlue": 35
-            //     }
-            //   ]))
-        }catch(err:any){
+            const rowData =await  getAnalyticsData({
+                id: 1,
+                name: payloadString,
+                fields: [],
+                filters:filter,
+            })
+            
+            if(rowData.data.data) {
+                setRowData(transformAnalyticsData(rowData.data.data));
+            }
+            else setRowData([])
+        }
+        catch (Exception:any){
+            toast.dismiss()
+            toast.error("Error in loading Analytics Data")
             setRowData([])
         }
-
     }
-
     useEffect(()=>{
-        onGetAnalyticsData()
-    },[location.pathname,currentCategory,currentView,currentTab])
+        onGetAnalyticsData(MTAVFMultiFilter)
+    },[MTAVFMultiFilter])
 
-    const getCellText = (text:any,colKey:string)=>{
-        if(colKey==='techChange' || colKey==='ecoChange'){
-            if(text===0)return '0%'
-            if(!text)return <BPRDailyAnalyticsTableCellIcon src='/assets/img/VectorFLOW/BPR/infinity.svg'/>
-            text = String(text)
-            if(text.startsWith('-')){
-                return `${text.slice(1)}%`
-            }
-            return `${text}%`
-            
-        }
-        return text
 
-    }
 
-    const getCellIcons = (value:number)=>{
-            if(value>0){
-                return <BPRDailyAnalyticsTableChangeIcon src='/assets/img/VectorFLOW/BPR/analytics-increase.svg'/>
-            }
-            if(value<0){
-                return <BPRDailyAnalyticsTableChangeIcon src='/assets/img/VectorFLOW/BPR/analytics-decrease.svg' style={{transform:'rotate(90deg)'}}/>
-            }
-            return (
-                <BPRDailyAnalyticsTableNoChangeWrapper>
-                    <BPRDailyAnalyticsTableChangeIcon src='/assets/img/VectorFLOW/BPR/analytics-increase.svg'/>
-                    <BPRDailyAnalyticsTableChangeIcon src='/assets/img/VectorFLOW/BPR/analytics-decrease.svg' style={{transform:'rotate(90deg)'}}/>
-                </BPRDailyAnalyticsTableNoChangeWrapper>
-            )
-        
-    }
+
 
     
     
@@ -218,14 +153,14 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
                         Analytics (SKU Locations)
                     </BPRDailyAnalyticsHeader>
                     <div style={{width:'100%',height:'100%',display:'grid',placeItems:'center'}}>
-                    <p style={{color:'white'}}>________</p>
+                    <p style={{color:'white'}}>Loading ...</p>
                     </div>
                 </BPRDailyAnalyticsContainer>
             </BPRDailyAnalyticsWrapper>
         )
     }
     
-    if(!rowData || !Array.isArray(rowData) || rowData.length===0){
+    if(!rowData || !Array.isArray(rowData) || rowData?.length===0){
         return(
             <BPRDailyAnalyticsWrapper>
                 <BPRDailyAnalyticsContainer theme={themeUi} style={{aspectRatio:'0.9',width:'90%'}}>
@@ -254,7 +189,7 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
                         colDefs.map((colDef:ColDef)=>{
                             if(colDef.colId==='color'){
                                 return(
-                                    <BPRDailyAnalyticsTableHeader style={{width:25}}/>
+                                    <BPRDailyAnalyticsTableHeader style={{width:110}}/>
                                 )
                             }
                             return(
@@ -279,12 +214,12 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
                                     return(
                                         <React.Fragment>
                                             <BPRDailyAnalyticsTableCell>
-                                                <BPRDailyAnalyticsTableCellHeader>{getCellText(row[key],key)}</BPRDailyAnalyticsTableCellHeader>
-                                                <BPRDailyAnalyticsTableCellText>{getCellText(row.techChange,'techChange')}</BPRDailyAnalyticsTableCellText>
+                                                <BPRDailyAnalyticsTableCellHeader>{row[key]}</BPRDailyAnalyticsTableCellHeader>
+                                                {/* <BPRDailyAnalyticsTableCellText>{getCellText(row.techChange,'techChange')}</BPRDailyAnalyticsTableCellText> */}
                                             </BPRDailyAnalyticsTableCell>
-                                            <BPRDailyAnalyticsTableCell>
+                                            {/* <BPRDailyAnalyticsTableCell>
                                                 {getCellIcons(row.techChange)}
-                                            </BPRDailyAnalyticsTableCell>
+                                            </BPRDailyAnalyticsTableCell> */}
                                         </React.Fragment>
                                     )
                                   }
@@ -292,12 +227,12 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
                                     return(
                                         <React.Fragment>
                                             <BPRDailyAnalyticsTableCell>
-                                                <BPRDailyAnalyticsTableCellHeader>{getCellText(row[key],key)}</BPRDailyAnalyticsTableCellHeader>
-                                                <BPRDailyAnalyticsTableCellText>{getCellText(row.ecoChange,'ecoChange')}</BPRDailyAnalyticsTableCellText>
+                                                <BPRDailyAnalyticsTableCellHeader>{row[key]}</BPRDailyAnalyticsTableCellHeader>
+                                                {/* <BPRDailyAnalyticsTableCellText>{getCellText(row.ecoChange,'ecoChange')}</BPRDailyAnalyticsTableCellText> */}
                                             </BPRDailyAnalyticsTableCell>
-                                           <BPRDailyAnalyticsTableCell>
+                                           {/* <BPRDailyAnalyticsTableCell>
                                                 {getCellIcons(row.ecoChange)}
-                                           </BPRDailyAnalyticsTableCell>
+                                           </BPRDailyAnalyticsTableCell> */}
                                         </React.Fragment>
                                     )
                                   }

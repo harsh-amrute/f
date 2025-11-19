@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import  { useEffect, useRef, useState } from "react";
 import VFTable from "../../../VectorFlow/Pages/MTO/Common/VFTable";
 import MTOActionToolBar from "../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
 import { GridFilterWrapper, TextBtn } from "../../../VectorFlow/Pages/MTO/Common/VFPagination/styles";
@@ -6,6 +6,9 @@ import { useUserData } from "../../../context";
 import { useLoginAuditReport } from "../../../VectorFlow/Services/MTO/Login-Audit-Report";
 import OverlayLoader from "../../../VectorFlow/Pages/MTO/Common/Loader";
 import { TableWrapper } from "./styles";
+import CustomPageSizeInput from "../../../VectorFlow/Pages/MTO/Common/VFPagination/CustomPageSizeInput"; // Assuming this path
+import { FilterPageName } from "../../../VectorFlow/Pages/MTO/Common/Enum";
+
 
 const AuditReport = () => {
   const { mutateAsync: getLoginAuditReport, isLoading } = useLoginAuditReport();
@@ -15,18 +18,36 @@ const AuditReport = () => {
   const theme_ui = user.user.theme_ui;
 
   const [rowData, setRowData] = useState([]);
+  const [userPageSize, setUserPageSize] = useState<number>(50);
+
+
+  const savePageSize = (pageSize: any) => {
+     const newSize = Number(pageSize);
+     if (newSize > 0) {
+     setUserPageSize(newSize);
+     } else {
+     // Optionally, show an error for invalid input
+     console.error("Invalid page size");
+     }
+     }
+
+    const customPage = () => (
+       <div>
+       <CustomPageSizeInput 
+       savePageSize={savePageSize}
+       userPageSize={userPageSize}
+       />
+       </div>
+     );
 
   const getLoginDetails = async () => {
     try {
       const response = await getLoginAuditReport();
-      
-   
       setRowData(response.data.data); 
     } catch (error) {
       console.error("Failed to fetch audit report:", error);
     }
   };
-
   useEffect(() => {
     getLoginDetails();
   }, []); 
@@ -37,12 +58,14 @@ const AuditReport = () => {
       field: "username", // Matches API
       sortable: true,
       flex: 1,
+      suppressMenu:true
     },
     {
       headerName: "Status",
       field: "status", 
       sortable: true,
       flex: 1,
+      suppressMenu:true
     },
     {
         headerName: "Last Login Date",
@@ -50,6 +73,7 @@ const AuditReport = () => {
         sortable: true,
         flex: 1,
         filter: "agDateColumnFilter",
+        suppressMenu:true,
         
         filterParams: {
             comparator: function(filterDate:any, cellValue:any) {
@@ -79,16 +103,22 @@ const AuditReport = () => {
       sortable: true,
       flex: 1,
       filter: "agNumberColumnFilter",
+      suppressMenu:true
     },
   ]);
 
+  const getRowStyle = (params: any) => {
+    if (params.node.rowIndex % 2 === 0) {
+      return { background: "white" };
+    }
+    return { background: "#F4F4F4" };
+  };
   
 
   const ExcelExport = () => {
-    const today = new Date();
-    const formattedDate = today.toLocaleDateString('en-GB').replace(/\//g, '-');
     gridRef.current?.api?.exportDataAsExcel({
-      fileName: `Login_Audit_Report_${formattedDate}.xlsx`,
+      fileName: FilterPageName.Login_Audit_Report,
+      sheetName: FilterPageName.Login_Audit_Report
     });
   };
 
@@ -99,7 +129,7 @@ const AuditReport = () => {
 
   const CustomStatusPanel = () => {
     return (
-      <GridFilterWrapper style={{ marginTop: '15px' }}>
+      <GridFilterWrapper style={{ marginTop: '15px', }}>
         <TextBtn onClick={clearGridFilter} disabled={isDisabled} themeUi={theme_ui}>
           Clear All Grid Filters
         </TextBtn>
@@ -120,13 +150,17 @@ const AuditReport = () => {
         columnDefs={columnDefs}
         rowData={rowData}
         pagination={true}
-        paginationPageSize={10}
+        getRowStyle={getRowStyle}
+        paginationPageSize={userPageSize}
+        paginationPageSizeSelector={false}
         sideBar={false}
         height="100%"
         statusBar={{
           statusPanels: [
             { statusPanel: CustomStatusPanel, align: "left" },
-            { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'right' },
+            { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
+            { statusPanel: customPage, align: 'right' }
+
           ],
         }}
         onGridReady={(params: any) => {

@@ -27,6 +27,6 @@ export const useAuth = () => {
     }, []); 
 
     const isAdmin = !!userData?.user?.is_admin;
-
-    return {  userData, isAdmin, loading, setUserData };
+    const isPermissionsManager  = userData?.roles?.permission.includes("PermissionsManager");
+    return {  userData, isAdmin, loading, setUserData , isPermissionsManager };
 };

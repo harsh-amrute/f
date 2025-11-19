@@ -110,7 +110,9 @@ export enum FilterPageName {
     Poogi_Lead_Time="Poogi_Lead_Time",
     Poogi_Top_Failure_Reasons="Poogi_Top_Failure_Reasons",
     Poogi_Trend_Of_Failure_Reasons="Poogi_Trend_Of_Failure_Reasons",
-    Poogi_Elapsed_Time="Poogi_Elapsed_Time"
+    Poogi_Elapsed_Time="Poogi_Elapsed_Time",
+
+    Login_Audit_Report="Login_Audit_Report" 
 }
 
 export enum ApplicationName {
