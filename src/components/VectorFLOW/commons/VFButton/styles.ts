@@ -26,6 +26,10 @@ export const SCButton = styled.button<{ themeUi: string, isDisabled:boolean | un
     transform: scale(1.01);
     transition: all 0.2s ease-in-out;
   }
+
+   &:active {
+    transform: scale(1.04) translateY(0.1px);
+  }
 `;
 
 export const TooltipText = styled.div`

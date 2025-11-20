@@ -56,6 +56,9 @@ export const SCButtonOutline = styled.button<{themeUi: string, isDisabled:boolea
     transform: scale(1.01);
     transition: all 0.2s ease-in-out;
   }
+   &:active {
+    transform: scale(1.04) translateY(0.1px);
+  }
 `
 
 
