@@ -13,13 +13,12 @@ export const selectStyles =(backgroundColor:string,borderRadius:number, boxShado
     cursor: 'pointer',
       // border: state.isFocused ? 0 : 0,
       border: '1px solid rgb(204, 204, 204)',
-      padding: '4px 12px',
+      // padding: '0px 12px',
     // This line disable the blue border
     // boxShadow: state.isFocused ? 0 : backgroundColor ?  '0px 6px 12px #95959529' : boxShadow,
      boxShadow: state.isFocused ? 0 : boxShadow ?  boxShadow : '0px 6px 12px #95959529' ,
       paddingRight: '13px',
-  
-  }),
+    }),
   multiValue: () => ({
     display: 'flex',
     backgroundColor: '#313131',
@@ -54,7 +53,8 @@ export const selectStyles =(backgroundColor:string,borderRadius:number, boxShado
     return (
     {
     ...provided,
-    cursor: 'pointer',
+        cursor: 'pointer',
+
         backgroundColor: isSelected ? themeUi==="REGALBLAZE"?"#FCA311":"#BC3D81": "white",
         // cursor: 'pointer',
         "&:hover": {
@@ -62,7 +62,8 @@ export const selectStyles =(backgroundColor:string,borderRadius:number, boxShado
           color:"black",
       },
       // backgroundColor: isSelected ? "pink" : "blue",
-      color:isFocused?'black':'black',
+        // color: isFocused ? 'black' : 'black',
+      color:isSelected?'white':'black'
   })},
   menuList: (provided: any) => ({
     ...provided,
@@ -119,7 +120,8 @@ export const selectStyles =(backgroundColor:string,borderRadius:number, boxShado
       borderRadius: '30px',
       opacity: 1,
     },
-  }),
+    }),
+  
 }
 }
 

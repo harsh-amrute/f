@@ -195,6 +195,7 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
         paddingLeftAndRight={0}
         backgroundColor={"#f4f4f4"}
         data-testid="vfmultifilter-img"
+        height={'800px'}
       >
         {filterKeys.length === 0 ? 
           <div data-testid="filter-loader" className="loading" style={{ height: '300px' }}>

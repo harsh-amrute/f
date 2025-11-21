@@ -9,7 +9,7 @@ export const FilterBody = styled.div`
     height: max-content;
     max-height: 95vh;
     padding: 0 47px;
-    overflow: auto;
+    // overflow: auto;
 
     input {
         padding: 9px;

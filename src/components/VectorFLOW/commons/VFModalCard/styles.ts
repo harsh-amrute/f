@@ -33,7 +33,6 @@ export const SCModalContent = styled.div`
 
 export const SCTextTitle = styled.span<{headerTextColor:string | undefined}>`
   display: flex;
-  padding-top:3px;
   justify-content: center;
   width: 100%;
   flex-direction:row;
@@ -59,10 +58,11 @@ export const SCCloseModal = styled.span`
 export const SCWrapperContent = styled.div<{paddingLeftAndRight:number | undefined, backgroundColor:string | undefined}> `
   padding: 0 ${props => props.paddingLeftAndRight ? props.paddingLeftAndRight : props.paddingLeftAndRight===0 ? 0 : 74}px;
   text-align: left;
-  height:auto;
+  height:'auto';
   background-color:${props => props.backgroundColor ? props.backgroundColor :'white'};
   // border-radius:inherit;
   border-radius: 0px 0px 12px 12px;
+
 `;
 
 export const SCHeader = styled.div`

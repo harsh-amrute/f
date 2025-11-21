@@ -12,6 +12,8 @@ export const VFFloatingTabWrapper = styled.div`
     align-items:center;
     padding-right:10px;
     // min-width:270px
+
+   
 `
 
 export const VFFloatingTabButton = styled.button<{ isActive: boolean }>`
@@ -28,6 +30,14 @@ export const VFFloatingTabButton = styled.button<{ isActive: boolean }>`
     margin-left:10px;
     transition:color 0.3s ease;
     z-index:10;
+    
+
+     ${(props) => !props.isActive && `
+        &:hover {
+            background-color:#F5F5F5;
+            cursor:pointer;
+        }
+    `}
 `
 export const VFFloatingTabButtonActiveShadow = styled.button<{ theme: string }>`
     position:absolute;
