@@ -230,8 +230,8 @@ const AddRecord = () => {
                 ref.current?.api.exportDataAsExcel({fileName:downloadFileName ==='' ? currentMaster.name : downloadFileName,columnKeys:downloadableColumnKeys});
               }
             }}
-            onUpload={()=>{
-              onUploadMaster(RECORD_UPLOAD_LIMIT)
+            onUpload={async ()=>{
+              await onUploadMaster(RECORD_UPLOAD_LIMIT)
             }}
             inputText={downloadFileName}
             setInputText={setDownloadFileName}
