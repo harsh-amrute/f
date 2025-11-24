@@ -194,7 +194,7 @@ import { RootState } from "../../../../../redux/store/store";
               newTabIcon={"/assets/img/VectorFLOW/NMS/add-circle.svg"}
               newTabHandler={addNewMaster}
               >
-                { (activeMaster.progress ==='default' || activeMaster.progress ==='view') 
+                { (activeMaster.progress ==='default' || activeMaster.progress ==='view' || activeMaster.progress ==='phaseInPhaseOut' || activeMaster.progress ==='seasonality') 
                     &&
                   <SCFilterContainer style={{zoom:'var(--nms-filter-zoom)'}}>
                     <SCFilterControls>
