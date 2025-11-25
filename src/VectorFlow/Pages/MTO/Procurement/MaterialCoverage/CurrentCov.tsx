@@ -450,7 +450,7 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
                         orderCount={egthBlockOrdCnt}
                         cutCount={egthBlockCustCnt}
                         orderValue={egthdOrderVal}
-                        percent={egthBlockCustCnt / totalBlueOrdCount}
+                        percent={egthBlockOrdCnt / totalBlueOrdCount} 
                         ToolTipdata={{ 'c3': colorOrderCount?.Blpk, 'c2': colorOrderCount?.Wpk, 'p3': colorOrderCount?.Blpkp, 'p2': colorOrderCount?.Wpkp }}
                     />
 

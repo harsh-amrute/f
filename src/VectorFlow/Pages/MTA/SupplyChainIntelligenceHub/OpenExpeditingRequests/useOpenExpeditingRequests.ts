@@ -89,7 +89,7 @@ const useOpenExpeditingRequests = () => {
   
     // const {currentGridState} = useSelector((state:RootState)=>state.mta)
 
-    const columnsNotToBeIncluded = ['remarks','rh','dailydatagraph']
+    const columnsNotToBeIncluded = ['remarks','rk','dailydatagraph']
 
   useEffect(() => {
     const getTableState = async () => {
@@ -340,10 +340,8 @@ const useOpenExpeditingRequests = () => {
             setIsRemarkHistoryToolTipOpen(false)
             const toastId = notifyLoader("Getting remark history")
             const { top, left } = e.currentTarget.getBoundingClientRect()
-            const remarkData = await getRemark({
-              whcode:data.wc,
-              skucode:data.sc
-            })
+            const remarkData = await getRemark({ whcode: data.wc, skucode: data.sc})
+           
             setRemarkHistoryToolipPosition({
                 top: top * gridZoom * screenZoom,
                 left: left * gridZoom * screenZoom,
@@ -351,7 +349,7 @@ const useOpenExpeditingRequests = () => {
                 width: 350
             })
             toast.dismiss(toastId)
-            setRemarkHistory(remarkData.data.data)
+            setRemarkHistory(remarkData.data)
             setIsRemarkHistoryToolTipOpen(true)
         } catch (err: any) {
             notifyError(err.message)
@@ -395,41 +393,62 @@ const useOpenExpeditingRequests = () => {
       notifyLoader("Loading Grid Data")
       try{
         const data = await getData(filter)
-        setRowData(data.data.data.datamap((r:any,index:number)=>({...r,id:index,action:''})))
+        setRowData(data.data.data.data.map((r:any,index:number)=>({...r,id:index,action:''})))
         toast.dismiss()
         notifySuccess("Data Loaded Successfully")
       }catch(err:any){
         notifyError(err)
       }
-      
     }
 
+    const onDeleteFilter = async(parentId:any, filterId:any, value:any)=>{
+      const updatedFilter = onDelete(parentId,filterId,value)
+      onApplyFilter(updatedFilter)
+    }
 
-    const onSubmitEditedRows = async()=>{
-      try {
-        if(editedRows.length===0){
-          notifyError('Please add remarks/remark to save')
-          return
+  const onSubmitEditedRows = async () => {
+    try {
+      if (editedRows.length === 0) {
+        notifyError("Please add remarks/remark to save");
+        return;
+      }
+
+      const toastId = notifyLoader("Submitting Remark");
+
+      const payload = editedRows.map((r) => ({
+        SKUCode: r.sc,
+        WHCode: r.wc,
+        Remark: r.action || "",
+        ETA: r.eta,
+      }));
+
+      await addRemark({ data: payload });
+      toast.dismiss(toastId);
+      notifySuccess("Remark saved successfully");
+
+      const editedIds = new Set(editedRows.map((r) => `${r.sc}-${r.wc}`));
+      const updatedRowDataForState: any[] = [];
+      ref.current?.api.forEachNode((node: any) => {
+        if (editedIds.has(node.id)) {
+          const newData = { ...node.data, action: "" };
+          node.setData(newData);             
+          updatedRowDataForState.push(newData);
         }
-      notifyLoader('Submitting Remark')
-      const payload = editedRows.map((r)=>{
-        return{
-          SKUCode:r.sc,
-          WHCode:r.wc,
-          Remark:r.action || "",
-          ETA:r.eta
-        
-      
+      });
+      setRowData((prev) => prev.map((r) =>
+        editedIds.has(`${r.sc}-${r.wc}`) ? { ...r, action: "" } : r
+      ));
+
+      setEditedRows([]);
+
+    } catch (err: any) {
+      console.error(err);
+      notifyError(err?.message || "Something went wrong");
     }
-      })
-      await addRemark({data:payload})
-      toast.dismiss()
-      setEditedRows([])
-     }catch(err){
-      console.log(err)
-      notifyError("Something went wrong")
-     }
-    }
+  };
+
+
+
     
   const onResetCallback = async () => {
     setGridState({
@@ -446,13 +465,30 @@ const useOpenExpeditingRequests = () => {
     eta: {
       cellRenderer: 'etaCellRenderer',
       floatingFilter: false,
-      editable: true,
-      cellDataType: 'date',
+      editable: false,
+      // cellDataType: 'date',
+      // minWidth: 160,
+      // maxWidth: 190,
+      resizable: false,
     },
     action: {
-      cellRenderer: 'submitRemarkCellRenderer',
+      cellStyle: {
+        backgroundColor: 'white',
+        border: '1px solid #b9bdba',
+        color: 'black',
+        padding: '1px'
+      },
+      // cellRenderer: 'submitRemarkCellRenderer',
       floatingFilter: false,
-      editable: true
+      editable: true,
+      pinned: 'right',
+      minWidth: 100,
+      maxWidth: 130,
+      lockPosition: 'right',
+      menuTabs: [],
+      suppressMenu: true,
+      resizable: false,
+      headerTooltip: "Enter New Remark",
     },
     remarks: {
       cellStyle: {
@@ -471,7 +507,7 @@ const useOpenExpeditingRequests = () => {
       resizable: false,
       floatingFilter: false,
     },
-    rh: {
+    rk: {
       cellRenderer: 'remarksCellRenderer',
       cellRendererParams: {
         onClick: onOpenRemarkHistory
@@ -531,6 +567,7 @@ const useOpenExpeditingRequests = () => {
         setCurrentFilter,
         onDelete,
         onApplyFilter,
+        onDeleteFilter,
         onSubmitEditedRows,
         editedRows,
         themeUi,

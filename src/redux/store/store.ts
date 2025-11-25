@@ -75,6 +75,7 @@ const mtaState: MTAStore = {
     },
     lastRunDate: '',
     EnvConfig:[],
+    mtaVFMultiFilter:[]
 
 }
 

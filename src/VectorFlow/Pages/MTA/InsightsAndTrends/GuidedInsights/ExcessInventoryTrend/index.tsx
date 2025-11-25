@@ -80,7 +80,10 @@ const ExcessInventoryTrend = ({
       };
     });
     series.push(createTotalLegendForLineCharts(data, "countSku"));
-    const chartProps = { ...chartParams1, series: series };
+    const chartProps = { 
+    ...JSON.parse(JSON.stringify(chartParams1)), // Deep copy to break all references
+    series: series 
+};
     const customizedChartProps = generateChartOptions(data, chartProps);
     setOptions1(customizedChartProps);
   };
@@ -112,7 +115,10 @@ const ExcessInventoryTrend = ({
       };
     });
     series.push(createTotalLegendForLineCharts(data, "value"));
-    const chartProps = { ...chartParams2, series: series };
+    const chartProps = { 
+    ...JSON.parse(JSON.stringify(chartParams2)), // Deep copy
+    series: series 
+};
     const customizedChartProps = generateChartOptions(data, chartProps);
     setOptions2(customizedChartProps);
   };
@@ -172,6 +178,9 @@ const ExcessInventoryTrend = ({
 export default ExcessInventoryTrend;
 
 export const CustomizedChartComponent = ({chartOptions,chartParams}:any) => {
+  const chartKey = chartOptions?.series?.length 
+    ? `chart-series-${chartOptions.series.length}` 
+    : 'chart-default';
   return (
     <SCChartContainer>
       <div
@@ -199,7 +208,7 @@ export const CustomizedChartComponent = ({chartOptions,chartParams}:any) => {
             <VFInfoToolTip infoList={chartParams.graphInfo} />
           </div>
         </div>
-        <AgCharts options={chartOptions} />
+        <AgCharts key={chartKey} options={chartOptions} />
       </div>
     </SCChartContainer>
   );

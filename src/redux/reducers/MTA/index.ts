@@ -2,8 +2,9 @@
 
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createReducer } from '@reduxjs/toolkit';
+import { BPRFilterState } from '../../../VectorFlow/types/BPR';
 import { DailyDataGraph, MTAStore } from '../../../VectorFlow/types/MTA';
-import {TOGGLE_GRAPH_MODAL,TOGGLE_NORM_CHANGE_HISTORY_TABLE,UPDATE_PLANNING_DATA,UPDATE_DAILY_DATA, UPDATE_GRID_STATE,UPDATE_LAST_RUN_DATE , UPDATE_ENV_CONFIG} from '../../actions/MTA';
+import {TOGGLE_GRAPH_MODAL,TOGGLE_NORM_CHANGE_HISTORY_TABLE,UPDATE_PLANNING_DATA,UPDATE_DAILY_DATA, UPDATE_GRID_STATE,UPDATE_LAST_RUN_DATE , UPDATE_ENV_CONFIG , UPDATE_MTA_VF_MULTI_FILTER} from '../../actions/MTA';
 
 
 const toggleDailyDataGraphModal=(state:any,action:PayloadAction<boolean>)=>{
@@ -34,6 +35,10 @@ const updateEnvConfig = (state:any,action:PayloadAction<string>)=>{
     state.EnvConfig = action.payload
 }
 
+const updateMTAVFMultiFilter = (state:any,action:PayloadAction<BPRFilterState>)=>{
+    state.mtaVFMultiFilter = action.payload
+}
+
 // const resetState = (state:any) => {
 //     state.align = [];
 //     state.masters=[];
@@ -58,6 +63,7 @@ const mtaReducer = (initialState:MTAStore) => createReducer(initialState, (build
       .addCase(UPDATE_PLANNING_DATA,updatePlanningdata)
       .addCase(UPDATE_LAST_RUN_DATE,updateLastRunDate)
       .addCase(UPDATE_ENV_CONFIG,updateEnvConfig)
+      .addCase(UPDATE_MTA_VF_MULTI_FILTER,updateMTAVFMultiFilter)
   })
 
 export default mtaReducer;

@@ -22,6 +22,12 @@ export interface BPRDataPayload{
     }
 }
 
+export interface AnalyticsDataPayload{
+    id: number,
+  name: string,
+  fields: Array<any>,
+    filters:any
+}
 
 export interface BORDataPayload{
     id: number,

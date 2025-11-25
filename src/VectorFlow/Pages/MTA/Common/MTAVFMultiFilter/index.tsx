@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard";
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
@@ -25,6 +25,7 @@ import {
 } from "./style";
 import { RootState } from "../../../../../redux/store/store";
 import { BPRFilterState } from "../../../../../VectorFlow/types/BPR";
+import { UPDATE_MTA_VF_MULTI_FILTER } from "../../../../../redux/actions/MTA";
 
 interface FilterModalProps {
   isOpen: boolean;
@@ -110,7 +111,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
   const { user } = useUserData();
   const EnvConfig = useSelector((state: RootState) => state.mta.EnvConfig);
   const reportCode = useReportCode();
-
+  const dispatch = useDispatch();
   const availableSections = useMemo<SectionType[]>(() => {
     if (!EnvConfig) {
       return Object.entries(filterConfigMap).map(
@@ -205,6 +206,8 @@ const FilterModal: React.FC<FilterModalProps> = ({
   useEffect(() => {
     if (initialMultiFilter) {
       setMultiFilter(initialMultiFilter);
+      dispatch(UPDATE_MTA_VF_MULTI_FILTER(initialMultiFilter))
+
     }
   }, [initialMultiFilter]);
 
@@ -226,6 +229,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
     };
 
     setMultiFilter(resetMultiFilter);
+    dispatch(UPDATE_MTA_VF_MULTI_FILTER(resetMultiFilter))
     setFilters(
       Object.keys(filters).reduce((acc, k) => ({ ...acc, [k]: "" }), {})
     );
@@ -234,6 +238,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
 
   const handleMultiFilterChange = (newMultiFilter: BPRFilterState) => {
     setMultiFilter(newMultiFilter);
+    dispatch(UPDATE_MTA_VF_MULTI_FILTER(newMultiFilter))
   };
 
   const currentActiveFilters =
