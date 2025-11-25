@@ -220,87 +220,6 @@ const FilterSelectDropdown = ({
 
   const { user } = useUserData();
   const themeUi = user.user.theme_ui;
-  console.log(themeUi)
-
- 
-
-  // const customStylesClose = {
-  //   control: (baseStyles: any) => ({
-  //     ...baseStyles,
-  //     height: "39px",
-  //     borderRadius: " 20px 20px 20px 20px",
-  //     background: "#F2F2F2 0% 0% no-repeat padding-box",
-  //     // border: "none",
-  //     cursor: "pointer",
-  //     display: "flex",
-  //     justifyContent: "center",
-
-  //     border: '1px solid rgb(204, 204, 204)'
-
-  //   }),
-  //   indicatorsContainer: () => ({
-  //     paddingRight: "10px",
-  //   }),
-  //   option: (baseStyles: any) => ({
-  //     ...baseStyles,
-  //     color: "#313131",
-  //     fontFamily: "Roboto",
-  //     fontWeight: "300",
-  //     fontSize: "12px",
-  //     paddingTop: "3px",
-  //     paddingBottom: "3px",
-  //     cursor: "pointer",
-  //     borderTop: "1px solid #B7B7B7",
-  //   }),
-  //   menuList: (baseStyles: any) => ({
-  //     ...baseStyles,
-  //     borderRadius: "0px 0px 20px 20px",
-  //     background: "#F2F2F2 0% 0% no-repeat padding-box",
-  //     paddingLeft: "5px",
-  //     marginTop: "0px",
-  //     overflowY: "overlay",
-  //     overflowX: "hidden",
-
-  //     "&::-webkit-scrollbar": {
-  //       width: "7px",
-  //     },
-  //     "&::-webkit-scrollbar-track": {
-  //       borderRadius: "30px",
-  //       opacity: 1,
-  //     },
-  //     "&::-webkit-scrollbar-thumb": {
-  //       width: "7px",
-  //       background: "#D1D1D1 0% 0% no-repeat padding-box",
-  //       boxShadow: "0px 6px 9px #F8F8F8",
-  //       borderRadius: "30px",
-  //       opacity: 1,
-  //     },
-  //   }),
-  //   placeholder: (baseStyles: any) => ({
-  //     ...baseStyles,
-  //     // marginLeft:hideDropdownArrow ? '' : '23px',
-  //     color: "#313131",
-  //     fontFamily: "Roboto",
-  //     fontWeight: "300",
-  //     fontSize: "12px",
-  //     textAlign: hideDropdownArrow ? "center" : "",
-  //     padding: "0 5px",
-  //     boxSizing: "border-box",
-  //   }),
-  //   singleValue: (baseStyles: any) => ({
-  //     ...baseStyles,
-  //     // marginLeft:'23px',
-  //     // marginRight:hideDropdownArrow ? '23px' : '23px',
-  //     color: "#313131",
-  //     fontFamily: "Roboto",
-  //     fontWeight: "300",
-  //     fontSize: "12px",
-  //     textAlign: hideDropdownArrow ? "center" : "",
-  //     padding: "0 5px",
-  //     boxSizing: "border-box",
-  //   }),
-  // };
-
   const customStylesClose = {
     control: (baseStyles:any) => ({
       ...baseStyles,
@@ -323,16 +242,14 @@ const FilterSelectDropdown = ({
       paddingTop: "6px",
       paddingBottom: "6px",
       cursor: "pointer",
-      // background: state.isSelected ? "#EDEDED" : "#FFFFFF", //rgb(188, 61, 129);
       background: state.isSelected
       ? themeUi === "REGEALBLAZE"
         ? "rgb(252, 163, 17)"
         : "rgb(188, 61, 129)"
         : undefined,
       color:state.isSelected?'white':'black',
-      // borderRadius: state.isSelected ? '10px' : '0px',
       borderBottom: "1px solid #F1F1F1",
-  padding:'8px',
+      padding:'8px',
       ":hover": {
         background:themeUi==='REGALBLAZE' ? '#fee3b7': '#ebc4d9',
       },
@@ -357,7 +274,6 @@ const FilterSelectDropdown = ({
       },
       "&::-webkit-scrollbar-thumb": {
         background: "#D1D1D1",
-        // borderRadius: "30px",
       },
     }),
     indicatorsContainer: () => ({

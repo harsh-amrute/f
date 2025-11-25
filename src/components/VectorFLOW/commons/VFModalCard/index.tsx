@@ -25,7 +25,6 @@ interface VFModalProps {
   backgroundColor?:string;
   zoom?:string;
   absolute?: boolean;
-  height?:any
 }
 
 
@@ -41,7 +40,6 @@ const VFModalCard = ({
   headerTextColor,
   backgroundColor,
   zoom = '1',
-  height,
   absolute
 }: VFModalProps) => {
 

@@ -11,11 +11,8 @@ export const selectStyles =(backgroundColor:string,borderRadius:number, boxShado
     outline: 'none',
     borderRadius: borderRadius ? borderRadius : 6,
     cursor: 'pointer',
-      // border: state.isFocused ? 0 : 0,
-      border: '1px solid rgb(204, 204, 204)',
-      // padding: '0px 12px',
+    border: '1px solid rgb(204, 204, 204)',
     // This line disable the blue border
-    // boxShadow: state.isFocused ? 0 : backgroundColor ?  '0px 6px 12px #95959529' : boxShadow,
      boxShadow: state.isFocused ? 0 : boxShadow ?  boxShadow : '0px 6px 12px #95959529' ,
       paddingRight: '13px',
     }),
