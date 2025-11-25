@@ -33,7 +33,6 @@ export const SCModalContent = styled.div`
 
 export const SCTextTitle = styled.span<{headerTextColor:string | undefined}>`
   display: flex;
-  padding-top:3px;
   justify-content: center;
   width: 100%;
   flex-direction:row;
@@ -41,7 +40,7 @@ export const SCTextTitle = styled.span<{headerTextColor:string | undefined}>`
   font-style:normal;
   font-variant:normal;
   font-weight:500;
-  font-size:14px;
+  // font-size:14px;
   line-height:21px;
   font-family:Roboto;
   letter-spacing: 0px;
@@ -63,6 +62,7 @@ export const SCWrapperContent = styled.div<{paddingLeftAndRight:number | undefin
   background-color:${props => props.backgroundColor ? props.backgroundColor :'white'};
   // border-radius:inherit;
   border-radius: 0px 0px 12px 12px;
+
 `;
 
 export const SCHeader = styled.div`
