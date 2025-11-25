@@ -301,8 +301,8 @@ const DeleteRecord = () => {
             openModal={isUploadModalOpen} 
             onCloseModal={()=>{setFile(undefined);toggleUploadModal(false)}} 
             onDownload={() => exportToExcel(true)} 
-            onUpload={()=>{
-              onUploadMaster(RECORD_UPLOAD_LIMIT)
+            onUpload={async ()=>{
+              await onUploadMaster(RECORD_UPLOAD_LIMIT)
             }}
             inputText={downloadFileName}
             setInputText={setDownloadFileName}
