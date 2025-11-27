@@ -80,7 +80,7 @@ const AppLayout = () => {
         </GridSystem.SCFullScreen>
         <GridSystem.SCRow>
           <GridSystem.SCCol1 colorTheme={colorTheme}>
-            <NavbarMenu setMenuItem={setMenuItem} isHide={isHide} setIsHide={setIsHide} setWidthResponsive={setWidthResponsive} />
+            <NavbarMenu setMenuItem={setMenuItem} isHide={isHide} setIsHide={setIsHide} setWidthResponsive={setWidthResponsive} menuItem={menuItem}/>
           </GridSystem.SCCol1>
           <GridSystem.SCCol2 width={widthResponsive} colorTheme={colorTheme}>
             <NavbarItem
