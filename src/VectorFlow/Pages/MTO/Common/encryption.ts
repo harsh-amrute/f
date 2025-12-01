@@ -29,7 +29,7 @@ export function decryptStorageData(encryptedData: string | null): any | null {
     const decrypted = CryptoJS.AES.decrypt(encryptedData, SECRET_PHRASE);
     const originalText = decrypted.toString(CryptoJS.enc.Utf8);
  
-    if (!originalText || originalText.trim() === "" || originalText === "[object Object]") {
+    if (!originalText || originalText.trim() === "" || typeof originalText === "object") {
       return null;
     }
  
