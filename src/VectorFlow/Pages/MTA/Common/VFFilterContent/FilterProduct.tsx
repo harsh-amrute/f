@@ -88,15 +88,12 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [manualSearchQuery, setManualSearchQuery] = useState("");
   const [hasSearched, setHasSearched] = useState(false);
-
+  const [isSearching, setIsSearching] = useState(false);
+  const selectRef = useRef<any>(null);
   const { data: skuData, isLoading: isSkuDataLoading } = useGetAllSKUs();
 
-  const {
-    data: searchData,
-    isLoading: isSearchLoading,
-    refetch: triggerSearch,
-    isFetching: isSearchFetching,
-  } = useSearchSKUDescription(manualSearchQuery);
+  const { data: searchData, refetch: triggerSearch } =
+    useSearchSKUDescription(manualSearchQuery);
 
   const colorStyles = useColorThemeStyles({
     minWidth: "620px",
@@ -169,9 +166,8 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
   }, [searchData, filterType, shouldUseLocalData]);
 
   const skuOptions = shouldUseLocalData ? localSKUOptions : searchSKUOptions;
-  const isLoading = shouldUseLocalData
-    ? isSkuDataLoading
-    : isSearchLoading || isSearchFetching;
+
+  const isLoading = shouldUseLocalData ? isSkuDataLoading : isSearching;
 
   const CustomOption = (props: any) => {
     const optionStyles = useColorOptionStyles();
@@ -377,13 +373,24 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
 
   const handleSearchApply = async () => {
     if (searchQuery && searchQuery.length >= 2) {
+      setIsSearching(true);
       setHasSearched(true);
       setManualSearchQuery(searchQuery);
 
       try {
         await triggerSearch();
+        setTimeout(() => {
+          if (selectRef.current) {
+            selectRef.current.focus();
+            if (selectRef.current.openMenu) {
+              selectRef.current.openMenu();
+            }
+          }
+        }, 100);
       } catch (error) {
         console.error("Search failed:", error);
+      } finally {
+        setIsSearching(false);
       }
     }
   };
@@ -400,6 +407,7 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
     setSearchQuery("");
     setManualSearchQuery("");
     setHasSearched(false);
+    setIsSearching(false);
 
     const parentId = "productFilter";
     const existingFilters = (multiFilter[parentId]?.filters ||
@@ -426,6 +434,7 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
       if (hasSearched && inputValue.length < 2) {
         setManualSearchQuery("");
         setHasSearched(false);
+        setIsSearching(false);
       }
     }
   };
@@ -447,11 +456,9 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
   const filteredOptions = getFilteredOptions();
 
   if (!isInitialized) {
-    return null;
-  }
-  if (!isInitialized) {
     return <VFLoader />;
   }
+
   return (
     <>
       <FilterGroup>
@@ -563,6 +570,7 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
           <DropDownRow>
             <DropDownWrapper style={{ flex: 1 }}>
               <Select
+                ref={selectRef}
                 placeholder={
                   shouldUseLocalData
                     ? "Type SKU code to search..."
@@ -597,7 +605,9 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
                     ? inputValue
                       ? "No SKUs found"
                       : "Start typing to search SKUs"
-                    : "No SKUs found. Try searching with the Search button."
+                    : inputValue && hasSearched
+                    ? "No SKUs found. Try a different search term."
+                    : "Type to search and click Search button"
                 }
               />
 

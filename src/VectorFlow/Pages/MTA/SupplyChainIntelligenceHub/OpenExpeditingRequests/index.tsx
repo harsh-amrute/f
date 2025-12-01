@@ -136,6 +136,7 @@ const OpenExpeditingRequests = () => {
             {...agGridProps}
             ref={ref}
             onGridReady={(params) => {
+              agGridProps.onGridReady?.(params);
               params.api.addEventListener('filterChanged', () => {
                   const filterModel = params.api.getFilterModel();
                   if (Object.keys(filterModel).length > 0) {
