@@ -18,6 +18,7 @@ import {
   manualBtnBgVar,
   SCManualUploadButton,
   SCManualUploadInput,
+  scManualUploadBtnBgVar
 } from "../../../../../module-store-transfer/pages/manual-upload/styles.css";
 import { useUserData } from "../../../../../context";
 import * as ManualStyle from "../../../../../module-store-transfer/pages/manual-upload/styles.css";
@@ -178,7 +179,7 @@ const UploadModal = (props: UploadModalProps) => {
                     fontSize: "12px",
                     lineHeight: "14px",
                     fontFamily: "Roboto",
-                    ...assignInlineVars({ [manualBtnBgVar]: bg }),
+                    ...assignInlineVars({ [scManualUploadBtnBgVar]: bg }),
                   }}
                 >
                   <img
@@ -262,7 +263,7 @@ const UploadModal = (props: UploadModalProps) => {
                     lineHeight: "14px",
                     fontFamily: "Roboto",
                     ...assignInlineVars({
-                      [manualBtnBgVar]: bg,
+                      [scManualUploadBtnBgVar]: bg,
                     }),
                   }}
                 >
