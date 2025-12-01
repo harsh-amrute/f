@@ -1,35 +1,43 @@
-import CryptoJS from 'crypto-js';
-
-// The SECRET_KEY is used as the passphrase for AES key derivation.
-const SECRET_PHRASE = process.env.REACT_APP_SECRET_KEY || 'mykey123';
-
-export function encryptStorageData(data: any): string {
-  const dataString = typeof data === 'object' ? JSON.stringify(data) : String(data);
-  
-  const encrypted = CryptoJS.AES.encrypt(dataString, SECRET_PHRASE);
-  
-  return encrypted.toString();
-}
-
-
-export function decryptStorageData(encryptedData: string | null): any | null {
-  if (!encryptedData) return null;
-  
+import CryptoJS from "crypto-js";
+ 
+const SECRET_PHRASE = process.env.REACT_APP_SECRET_KEY || "mykey123";
+ 
+function stringifyData(value: any): string {
   try {
-    const decrypted = CryptoJS.AES.decrypt(encryptedData, SECRET_PHRASE);
-    
-    const originalText = decrypted.toString(CryptoJS.enc.Utf8);
-    
-    if (!originalText) {
-        return null; 
+    return JSON.stringify(value);
+  } catch {
+    return String(value);
+  }
+}
+ 
+export function encryptStorageData(data: any): string {
+  try {
+    const dataString = stringifyData(data);
+ 
+    const encrypted = CryptoJS.AES.encrypt(dataString, SECRET_PHRASE);
+    return encrypted.toString();
+  } catch (err) {
+    console.error("Encryption failed:", err);
+    return "";
+  }
+}
+ 
+export function decryptStorageData(encryptedData: string | null): any | null {
+  if (!encryptedData || typeof encryptedData !== "string") return null;
+ 
+  try {
+    const bytes = CryptoJS.AES.decrypt(encryptedData, SECRET_PHRASE);
+    const text = bytes.toString(CryptoJS.enc.Utf8);
+ 
+    if (!text || text.trim() === "" || text === "[object Object]") {
+      return null;
     }
-
+ 
     try {
-      return JSON.parse(originalText);
-    } catch (e) {
-      return originalText;
+      return JSON.parse(text);
+    } catch {
+      return text;
     }
-
   } catch (error) {
     console.error("Decryption failed:", error);
     return null;
