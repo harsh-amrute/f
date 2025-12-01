@@ -7,6 +7,8 @@ import {
   ExpandedChartSelectLabel,
   ExpandedChartCapsuleWrapper,
 } from "./styles.css";
+import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
+import Select, { CSSObjectWithLabel } from "react-select";
 import VFCapsule from "../../../../../components/VectorFLOW/commons/VFCapsule";
 import { ReseachInsightsGraphState } from "../../../../../VectorFlow/types/BPR";
 import { useUserData } from "../../../../../context";
@@ -15,8 +17,6 @@ import {
   SCViewImage,
   SCViewContainerWithBg,
 } from "../../SupplyChainIntelligenceHub/Planning/ActionToolBar/styles.css";
-
-import Downshift from "downshift";
 
 interface ExpandedGraphProps {
   id: number;
@@ -39,124 +39,6 @@ const colorMap: Record<ColorKey, string> = {
   Blue: "blue",
   White: "gray",
 };
-type Option = { label: string; value: string };
-
-const Dropdown = ({
-  options,
-  selectedItem,
-  onChange,
-  placeholder,
-}: {
-  options: any[];
-  selectedItem: any;
-  onChange: (selected: any) => void;
-  placeholder?: string;
-}) => (
-  <Downshift<Option>
-    selectedItem={selectedItem}
-    onChange={(item, _helpers) => {
-      if (item) {
-        onChange(item); // <-- your external onChange
-      }
-    }}
-    itemToString={(item) => (item ? item.label : "")}
-  >
-    {({
-      getToggleButtonProps,
-      getMenuProps,
-      getItemProps,
-      isOpen,
-      highlightedIndex,
-      selectedItem,
-    }) => (
-      <div style={{ width: 250, position: "relative", fontSize: 12 }}>
-        <button
-          type="button"
-          {...getToggleButtonProps()}
-          style={{
-            width: "100%",
-            border: "1px solid hsl(0, 0%, 80%)",
-            padding: "6px 8px",
-            backgroundColor: "white",
-            textAlign: "left",
-            cursor: "pointer",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            outline: "none",
-            borderRadius: 0,
-          }}
-        >
-          <span
-            style={{
-              overflow: "hidden",
-              whiteSpace: "nowrap",
-              textOverflow: "ellipsis",
-              flexGrow: 1,
-            }}
-          >
-            {selectedItem ? selectedItem.label : placeholder || ""}
-          </span>
-          <svg
-            style={{
-              transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
-              transition: "transform 0.3s ease",
-              width: "14px",
-              height: "14px",
-              flexShrink: 0,
-              fill: "grey",
-            }}
-            viewBox="0 0 20 20"
-          >
-            <path d="M5 8l5 5 5-5H5z" />
-          </svg>
-        </button>
-        <ul
-          {...getMenuProps()}
-          style={{
-            listStyle: "none",
-            margin: 0,
-            padding: 0,
-            maxHeight: 150,
-            overflowY: "auto",
-            border: isOpen ? "1px solid hsl(0, 0%, 80%)" : "none",
-            backgroundColor: "white",
-            position: "absolute",
-            width: "100%",
-            zIndex: 1000,
-            display: isOpen ? "block" : "none",
-            borderRadius: 0,
-          }}
-        >
-          {isOpen &&
-            options.map((item, index) => {
-              const isSelected =
-                selectedItem && selectedItem.value === item.value;
-              const isHighlighted = highlightedIndex === index;
-              return (
-                <li
-                  key={item.value}
-                  {...getItemProps({ item, index })}
-                  style={{
-                    padding: "6px 8px",
-                    backgroundColor: isHighlighted ? "#bc3d814d" : "white",
-                    color: isHighlighted ? "black" : "inherit",
-                    cursor: "pointer",
-                    fontWeight: isSelected ? "bold" : "normal",
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                  }}
-                >
-                  {item.label}
-                </li>
-              );
-            })}
-        </ul>
-      </div>
-    )}
-  </Downshift>
-);
 
 const ExpandedGraph = (props: ExpandedGraphProps) => {
   const {
@@ -236,7 +118,7 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
           .filter(([k]) => k in colorMap)
           .map(([k, v]) => {
             const color = colorMap[k as ColorKey];
-            return `<div style="color:${color};">${k}: ${v}</div>`;
+            return `<div class="color-${color}">${k}: ${v}</div>`;
           });
 
         return {
@@ -255,7 +137,7 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
         .filter(([k]) => k in colorMap)
         .map(([k, v]) => {
           const color = k === "White" ? "gray" : colorMap[k as ColorKey];
-          return `<div style="color:${color};">${k}: ${v}</div>`;
+          return `<div class="color-${color}">${k}: ${v}</div>`;
         });
       return {
         title: datum.date,
@@ -287,7 +169,7 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
               .filter(([key]) => key !== xKey && key !== "undefined")
               .map(
                 ([key, value]) =>
-                  `<div style="color:${key.toLowerCase()};">${key}: ${value}</div>`
+                  `<div class="color-${key.toLowerCase()}">${key}: ${value}</div>`
               );
 
             return `
@@ -315,7 +197,7 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
               .filter(([key]) => key !== xKey && key !== "undefined")
               .map(
                 ([key, value]) =>
-                  `<div style="color:${key.toLowerCase()};">${key}: ${value}</div>`
+                  `<div class="color-${key.toLowerCase()}">${key}: ${value}</div>`
               );
 
             return `
@@ -343,7 +225,7 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
               .filter(([key]) => key !== xKey && key !== "undefined")
               .map(
                 ([key, value]) =>
-                  `<div style="color:${key.toLowerCase()};">${key}: ${value}</div>`
+                  `<div class="color-${key.toLowerCase()}">${key}: ${value}</div>`
               );
 
             return `
@@ -371,7 +253,7 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
               .filter(([key]) => key !== xKey && key !== "undefined")
               .map(
                 ([key, value]) =>
-                  `<div style="color:${key.toLowerCase()};">${key}: ${value}</div>`
+                  `<div class="color-${key.toLowerCase()}">${key}: ${value}</div>`
               );
 
             return `
@@ -399,7 +281,7 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
               .filter(([key]) => key !== xKey && key !== "undefined")
               .map(
                 ([key, value]) =>
-                  `<div style="color:${key.toLowerCase()};">${key}: ${value}</div>`
+                  `<div class="color-${key.toLowerCase()}">${key}: ${value}</div>`
               );
 
             return `
@@ -427,7 +309,7 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
               .filter(([key]) => key !== xKey && key !== "undefined")
               .map(
                 ([key, value]) =>
-                  `<div style="color:${key.toLowerCase()};">${key}: ${value}</div>`
+                  `<div class="color-${key.toLowerCase()}">${key}: ${value}</div>`
               );
 
             return `
@@ -482,29 +364,80 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
       <div className={ExpandedChartFilterWrapper}>
         <div className={ExpandedChartSelectWrapper}>
           <p className={ExpandedChartSelectLabel}>Search By Location</p>
-          <Dropdown
-            options={options.whcodes}
-            selectedItem={selectedLocation}
-            onChange={(selected) => {
-              setSelectedLocation(selected);
-              onChange(selected, "Whcode");
+          <Select
+            styles={{
+              container: (baseStyles: any) => ({
+                ...baseStyles,
+                width: 250,
+                // border:'1px solid red',
+              }),
+              option: (baseStyles, { isSelected }) => ({
+                ...baseStyles,
+                backgroundColor: isSelected ? "#BC3D80" : "white",
+
+                "&:hover": {
+                  backgroundColor: "#bc3d814d",
+                  color: "black",
+                },
+              }as CSSObjectWithLabel),
+              control: (baseStyles, { isFocused }) => ({
+                ...baseStyles,
+                borderColor: isFocused ? "none" : "hsl(0, 0%, 80%);",
+                // border: "none",
+                // borderBottom: error ? "3px solid #D03E3E;" : menuIsOpen || isFocused ? '3px solid #820F4C' : '3px solid #A1A1A1',
+                boxShadow: "none",
+                "&:hover": {
+                  borderColor: isFocused ? "none" : "hsl(0, 0%, 80%);",
+                },
+              }as CSSObjectWithLabel),
             }}
-            placeholder=""
+            options={options.whcodes}
+            onChange={(e) => {
+              setSelectedLocation(e);
+              onChange(e, "Whcode");
+            }}
+            value={selectedLocation}
           />
         </div>
         <div className={ExpandedChartSelectWrapper}>
           <p className={ExpandedChartSelectLabel}>Search By Product</p>
-          <Dropdown
-            options={options.skus}
-            selectedItem={selectedProduct}
-            onChange={(selected) => {
-              setSelectedProduct(selected);
-              onChange(selected, "SKUCode");
+          <Select
+            styles={{
+              container: (baseStyles: any) => ({
+                ...baseStyles,
+                width: 250,
+              }),
+              option: (baseStyles, { isSelected }) => ({
+                ...baseStyles,
+                backgroundColor: isSelected ? "#BC3D80" : "white",
+
+                "&:hover": {
+                  backgroundColor: "#bc3d814d",
+                  color: "black",
+                },
+              }as CSSObjectWithLabel),
+              control: (baseStyles, { isFocused }) => ({
+                ...baseStyles,
+                borderColor: isFocused ? "none" : "hsl(0, 0%, 80%);",
+                // border: "none",
+                // borderBottom: error ? "3px solid #D03E3E;" : menuIsOpen || isFocused ? '3px solid #820F4C' : '3px solid #A1A1A1',
+                boxShadow: "none",
+                "&:hover": {
+                  borderColor: isFocused ? "none" : "hsl(0, 0%, 80%);",
+                },
+              }as CSSObjectWithLabel),
             }}
-            placeholder=""
+            options={options.skus}
+            onChange={(e) => {
+              setSelectedProduct(e);
+              onChange(e, "SKUCode");
+            }}
+            value={selectedProduct}
           />
         </div>
-
+        {/* <RIButtonOutline themeUi={user.user.theme_ui} onClick={onreset}>
+                         Reset Filters
+                      </RIButtonOutline> */}
         <div className={ExpandedChartCapsuleWrapper}>
           <div
             className={SCViewContainerWithBg}

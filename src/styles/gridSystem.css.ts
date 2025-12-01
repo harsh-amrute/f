@@ -119,7 +119,7 @@ export const SCCol8 = style({
   "@media": {
     [mqLaptopToDesktop]: {
       paddingLeft: vPadLeft,
-      zoom: 0.75 as unknown as string | number,
+      zoom: 1 as unknown as string | number,
     },
     [mqDesktopUp]: {
       paddingLeft: vPadLeft,

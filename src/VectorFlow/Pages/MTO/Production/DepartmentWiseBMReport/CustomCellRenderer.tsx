@@ -12,7 +12,7 @@ const { mutateAsync: getBombLevelData, /*isLoading :BombDataLoading*/ } = useGet
 
 
     useEffect(() => {
-        const expandListener = (event: RowEvent) => setExpanded(event.node.expanded);
+        const expandListener = (event: any) => setExpanded(event.node.expanded);
         node.addEventListener('expandedChanged', expandListener);
         return () => {
             node.removeEventListener('expandedChanged', expandListener);

@@ -514,7 +514,7 @@ const EditRouteModal = ({
       flex: 1,
       initialFlex: 1,
       autoHeaderHeight: true,
-      suppressMenu: true,
+      suppressHeaderMenuButton: true,
       filter: false,
       floatingFilter: false,
       enableRowGroup: false,

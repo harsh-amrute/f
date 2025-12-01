@@ -21,7 +21,7 @@ export const VFHeaderWrapper = style({
   height: heightVar,
   borderRadius: headerBorderRadius,
   // dynamic color via CSS var; default to white if not provided at runtime
-  backgroundColor: `var(${headerBgVar}, #FFFFFF)`,
+  backgroundColor: headerBgVar,
   padding: headerPadding
 });
 
@@ -56,7 +56,7 @@ export const SCTextTitle = style({
   lineHeight: '21px',
   fontFamily: 'Roboto',
   letterSpacing: '0px',
-  color: `var(${headerTextVar}, #000000)`,
+  color: headerTextVar,
 });
 
 export const SCCloseModal = style({

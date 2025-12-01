@@ -48,7 +48,7 @@ const VFButton = (props: VFButtonProps) => {
   if (disabled && currentStep === 2) {
     return (
       <Tooltip
-        disableStyleInjection={true}
+        disableStyleInjection="core"
         content={
           <div className={tooltipText}>
             Assign a route and apply the production buffer to all the orders!

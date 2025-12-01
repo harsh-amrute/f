@@ -15,7 +15,7 @@ const CustomGroupCellRenderer = (props: CustomCellRendererProps) => {
 
   //if you want to have rows expanded initially
   useEffect(() => {
-    const expandListener = (event: RowEvent) =>
+    const expandListener = (event: any) =>
       setExpanded(event.node.expanded);
 
     node.addEventListener("expandedChanged", expandListener);

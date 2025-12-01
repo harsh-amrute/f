@@ -268,7 +268,7 @@ const MaterialCov = () => {
           resizable: true,
           position: 0,
           suppressHeaderFilterButton: true,
-          suppressMenu: true,
+          suppressHeaderMenuButton: true,
           filter: false,
           width: 50,
           maxWidth: 50,

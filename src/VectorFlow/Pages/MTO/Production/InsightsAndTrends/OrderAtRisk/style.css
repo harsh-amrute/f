@@ -1,0 +1,52 @@
+.tooltip-title {
+    background-color: #2e2e2e;
+    color: lightgray;
+    display: flex;
+    justify-content: center;
+    padding: 8px 0;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 600;
+  }
+
+  .tooltip-content {
+    background-color: #2e2e2e;
+    color: white;
+    font-family: 'Roboto', sans-serif;
+    padding: 8px 12px;
+  }
+
+  .tooltip-divider {
+    border-top: 1px dashed lightgray;
+    margin: 6px 0;
+  }
+
+  .tooltip-row {
+    display: flex;
+    width: 100%;
+    color: lightgray;
+  }
+
+  .header-row {
+    justify-content: space-between;
+  }
+
+  .value-row {
+    justify-content: space-around;
+  }
+
+  .tooltip-cell {
+    padding: 5px 10px;
+  }
+
+  .total-order {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .black {
+    /* additional styles if needed */
+  }
+
+  .red {
+    /* additional styles if needed */
+  }

@@ -212,7 +212,7 @@ const useDBM =()=>{
             headerCheckboxSelection: true,
             headerCheckboxSelectionCurrentPageOnly: true,
             resizable: false,
-            suppressMenu: true,
+            suppressHeaderMenuButton: true,
             maxWidth: 45,
             pinned: 'left',
             lockPosition: 'left',
@@ -235,7 +235,7 @@ const useDBM =()=>{
             floatingFilter: false,
             suppressColumnsToolPanel: false,
             tooltipField: "DailyDataGraph",
-            suppressMenu: true,
+            suppressHeaderMenuButton: true,
             headerTooltip: "Daily Data Graph",
 
         },

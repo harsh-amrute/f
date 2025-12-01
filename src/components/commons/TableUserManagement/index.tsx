@@ -1,22 +1,17 @@
-import {
-  tableTdCenter,
-  tableTd,
-  iconWrapper,
-  icon,
-} from './style.css';
-import {  Modal } from "../../index";
-import {
-  UsePutDeleteUser,
-  useResetPwd,
-} from "../../../services/profile";
+import { tableTdCenter, tableTd, iconWrapper, icon } from "./style.css";
+import { Modal } from "../../index";
+import { UsePutDeleteUser, useResetPwd } from "../../../services/profile";
 import { notifyError, notifySuccess } from "../../../helpers/notify";
 import { useTranslation } from "react-i18next";
-import {  useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import VFTable from "../../../VectorFlow/Pages/MTO/Common/VFTable";
 import LoadingSpinner from "../LoadingSpinner";
-import { gridFilterWrapper, textBtn } from "../../../VectorFlow/Pages/MTO/Common/VFPagination/styles.css";
+import {
+  gridFilterWrapper,
+  textBtn,
+} from "../../../VectorFlow/Pages/MTO/Common/VFPagination/styles.css";
 import { useUserData } from "../../../context";
-import ToggleCell from "./ToggleCell"; 
+import ToggleCell from "./ToggleCell";
 import Tooltip from "../../../VectorFlow/Pages/MTO/Common/Tooltip";
 
 interface TableUser {
@@ -42,8 +37,10 @@ const TableUserManagement = ({
   const { user } = useUserData();
   const theme_ui = user.user.theme_ui;
 
-  const { mutateAsync: usePutDeleteUser, isLoading: isDeleting } = UsePutDeleteUser();
-  const { mutateAsync: mutateResetPwd, isLoading: isResettingPwd } = useResetPwd();
+  const { mutateAsync: usePutDeleteUser, isLoading: isDeleting } =
+    UsePutDeleteUser();
+  const { mutateAsync: mutateResetPwd, isLoading: isResettingPwd } =
+    useResetPwd();
 
   const isLoading = isDeleting || isResettingPwd;
 
@@ -77,7 +74,7 @@ const TableUserManagement = ({
         }
       },
       onError: (error: any) => {
-        console.log('error', error);
+        console.log("error", error);
         notifyError(error.msg);
       },
     });
@@ -97,14 +94,17 @@ const TableUserManagement = ({
 
   const CustomStatusPanel = () => {
     return (
-      <div className={gridFilterWrapper} style={{ marginTop: '15px' }}>
-        <button onClick={clearGridFilter} disabled={isDisabled} className={textBtn[brand]}>
+      <div className={gridFilterWrapper} style={{ marginTop: "15px" }}>
+        <button
+          onClick={clearGridFilter}
+          disabled={isDisabled}
+          className={textBtn[brand]}
+        >
           Clear All Grid Filters
         </button>
       </div>
     );
   };
-
 
   const ListAction = ({ item }: any) => (
     <div className={tableTd}>
@@ -146,11 +146,18 @@ const TableUserManagement = ({
     const permissionUser = item.role_id.map((r: any) => r.name);
 
     if (is_admin_flag) {
-      return item.is_admin ? <NoAction rolesMap={permissionUser} /> : <>{action({ item, permissionUser })}</>;
+      return item.is_admin ? (
+        <NoAction rolesMap={permissionUser} />
+      ) : (
+        <>{action({ item, permissionUser })}</>
+      );
     } else {
-      if (permission?.includes('IST Admin') || permission?.includes('Admin')) {
+      if (permission?.includes("IST Admin") || permission?.includes("Admin")) {
         if (item.is_admin) return <NoAction rolesMap={permissionUser} />;
-        if (permissionUser?.includes('IST Admin') || permissionUser?.includes('Admin'))
+        if (
+          permissionUser?.includes("IST Admin") ||
+          permissionUser?.includes("Admin")
+        )
           return <NoAction rolesMap={permissionUser} />;
         return <>{action({ item, permissionUser })}</>;
       }
@@ -160,8 +167,8 @@ const TableUserManagement = ({
 
   const columnDefs = useMemo(
     () => [
-      { headerName: 'User ID', field: 'name', flex: 1 },
-      { headerName: 'Email ID', field: 'email', flex: 1 },
+      { headerName: "User ID", field: "name", flex: 1 },
+      { headerName: "Email ID", field: "email", flex: 1 },
       {
         headerName: "User ID",
         field: "name",
@@ -197,8 +204,8 @@ const TableUserManagement = ({
                 {value}
               </span>
               <Tooltip
-
-disableStyleInjection={true}                id={tooltipId}
+                disableStyleInjection="core"
+                id={tooltipId}
                 content={value}
                 place="top"
                 delayShow={0}
@@ -210,31 +217,35 @@ disableStyleInjection={true}                id={tooltipId}
         },
       },
       {
-        headerName: 'Actions',
-        field: 'actions',
+        headerName: "Actions",
+        field: "actions",
         flex: 1,
         filter: false,
         suppressTooltips: true,
-        tooltipValueGetter: () => '',
+        tooltipValueGetter: () => "",
         cellRenderer: (params: any) => {
           return renderAction(params.data, is_admin);
         },
       },
       {
-        headerName: 'Active',
-        field: 'active',
+        headerName: "Active",
+        field: "active",
         flex: 1,
         filter: false,
         suppressTooltips: true,
         cellRenderer: (params: any) => {
-          return <ToggleCell data={params.data} permission={permission} is_admin={is_admin} />;
+          return (
+            <ToggleCell
+              data={params.data}
+              permission={permission}
+              is_admin={is_admin}
+            />
+          );
         },
       },
     ],
     [is_admin, permission]
   );
-
- 
 
   return (
     <>
@@ -257,15 +268,18 @@ disableStyleInjection={true}                id={tooltipId}
         statusBar={{
           statusPanels: [
             { statusPanel: CustomStatusPanel, align: "left" },
-            { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'right' },
-            { statusPanel: 'agTotalRowCountComponent', align: 'right' },
-            { statusPanel: 'agFilteredRowCountComponent', align: 'right' },
-            { statusPanel: 'agSelectedRowCountComponent', align: 'right' },
-            { statusPanel: 'agAggregationComponent', align: 'right' },
+            {
+              statusPanel: "agTotalAndFilteredRowCountComponent",
+              align: "right",
+            },
+            { statusPanel: "agTotalRowCountComponent", align: "right" },
+            { statusPanel: "agFilteredRowCountComponent", align: "right" },
+            { statusPanel: "agSelectedRowCountComponent", align: "right" },
+            { statusPanel: "agAggregationComponent", align: "right" },
           ],
         }}
         onGridReady={(params: any) => {
-          params.api.addEventListener('filterChanged', () => {
+          params.api.addEventListener("filterChanged", () => {
             const filterModel = params.api.getFilterModel();
             if (Object.keys(filterModel).length > 0) {
               setIsDisabled(false);

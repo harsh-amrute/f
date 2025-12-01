@@ -25,7 +25,7 @@ const GridView = forwardRef(({ colDef, setCurrentGridRef, currentGridRef, column
     }))
 
     const defaultColDef = {
-        // suppressMenu: true,
+        // suppressHeaderMenuButton: true,
         autoHeaderHeight: true,
         filter: "agTextColumnFilter",
         floatingFilter: true,

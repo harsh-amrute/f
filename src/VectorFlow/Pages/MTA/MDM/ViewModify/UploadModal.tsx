@@ -164,7 +164,22 @@ const UploadModal = (props: UploadModalProps) => {
                 <button
                   className={SCManualUploadBtn}
                   onClick={onDownload}
-                  style={assignInlineVars({ [manualBtnBgVar]: bg })}
+                  style={{
+                    height: "30px",
+                    width: "91px",
+                    borderRadius: "0",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderBottomRightRadius: "6px",
+                    fontStyle: "normal",
+                    fontVariant: "normal",
+                    fontWeight: "400",
+                    fontSize: "12px",
+                    lineHeight: "14px",
+                    fontFamily: "Roboto",
+                    ...assignInlineVars({ [manualBtnBgVar]: bg }),
+                  }}
                 >
                   <img
                     src="/assets/img/VectorFLOW/NMS/download.svg"
@@ -232,9 +247,24 @@ const UploadModal = (props: UploadModalProps) => {
                   className={SCManualUploadBtn}
                   onClick={onUpload}
                   disabled={uploadButtonStatus}
-                  style={assignInlineVars({
-                    [manualBtnBgVar]: bg,
-                  })}
+                  style={{
+                    height: "30px",
+                    borderRadius: "0",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: "82px",
+                    borderBottomRightRadius: "6px",
+                    fontStyle: "normal",
+                    fontVariant: "normal",
+                    fontWeight: "400",
+                    fontSize: "12px",
+                    lineHeight: "14px",
+                    fontFamily: "Roboto",
+                    ...assignInlineVars({
+                      [manualBtnBgVar]: bg,
+                    }),
+                  }}
                 >
                   <img
                     src="/assets/img/VectorFLOW/NMS/upload.svg"

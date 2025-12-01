@@ -46,7 +46,7 @@ const ChildrenColor = (props: ICellRendererParams) => {
   }
   return str !== "" ? (
     <Tooltip
-      disableStyleInjection={true}
+      disableStyleInjection="core"
       tooltipZoom="1"
       style={{
         display: "flex",

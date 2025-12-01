@@ -93,7 +93,7 @@ const DayWiseCoverageCalender = ({
 
                       return content ? (
                         <Tooltip
-                          disableStyleInjection={true}
+                          disableStyleInjection="core"
                           key={di}
                           content={content}
                         >

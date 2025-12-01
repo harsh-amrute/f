@@ -259,7 +259,7 @@ const DeptWiseAnalytics = () => {
                           </div>
                           <div className={BPRDailyAnalyticsTableCell}>
                             <Tooltip
-                              disableStyleInjection={true}
+                              disableStyleInjection="core"
                               content={
                                 <div
                                   style={{
@@ -291,7 +291,7 @@ const DeptWiseAnalytics = () => {
                           </div>
                           <div className={BPRDailyAnalyticsTableCell}>
                             <Tooltip
-                              disableStyleInjection={true}
+                              disableStyleInjection="core"
                               content={
                                 <div
                                   style={{

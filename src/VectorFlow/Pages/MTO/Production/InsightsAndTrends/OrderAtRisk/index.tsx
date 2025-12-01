@@ -31,7 +31,7 @@ import useFilter from "../../../../../../hooks/useFilter";
 import { notifyError } from "../../../../../../helpers/notify";
 import useColDef from "../../../../../../hooks/useColDef";
 import BPPRenderer from "../../../Common/BPRRenderer/BPPRenderer";
-
+import "./style.css";
 const APIFilterConfig = {
   filSecVisConfig: {
     Prod_Order_At_Risk: {
@@ -265,28 +265,26 @@ const OrderAtRisk = () => {
 
   function TooltipRenderer({ datum }: any) {
     return `
-           <div class="ag-chart-tooltip-title" style="background-color: #2E2E2E; display: flex; justify-content: center; color: lightgray;">
-              Major Reason
-           </div>
-           <div class="ag-chart-tooltip-content" style="color: white; background-color: #2E2E2E">
-           <div style="border-top: 1px dashed lightgray"></div>
-            <div style="display:flex;width: 100%; justify-content: space-between; color: lightgray;">
-              <span style="padding: 5px 20px">Total Order</span>
-              <span style="padding: 5px 18px">Black</span>
-              <span style="padding: 5px 20px">Red</span>
-            </div>
-            <div style="border-top: 1px dashed lightgray"></div>
-            <div style="display:flex ;width: 100%; justify-content: space-around; color: lightgray">
-              <span style="padding: 5px ">${
-                (datum?.bo || 0) + (datum?.ro || 0)
-              }</span>
-              <span style="padding: 5px; margin-left: 30px; ">${
-                datum?.bo || 0
-              }</span>
-              <span style="padding: 5px ">${datum?.ro || 0}</span>
-            </div>
-           <div>
-            </div>`;
+      <div class="tooltip-title">
+        Major Reason
+      </div>
+      <div class="tooltip-content">
+        <div class="tooltip-divider"></div>
+        <div class="tooltip-row header-row">
+          <span class="tooltip-cell total-order">Total Order</span>
+          <span class="tooltip-cell black">Black</span>
+          <span class="tooltip-cell red">Red</span>
+        </div>
+        <div class="tooltip-divider"></div>
+        <div class="tooltip-row value-row">
+          <span class="tooltip-cell total-order">${
+            (datum?.bo || 0) + (datum?.ro || 0)
+          }</span>
+          <span class="tooltip-cell black">${datum?.bo || 0}</span>
+          <span class="tooltip-cell red">${datum?.ro || 0}</span>
+        </div>
+      </div>
+    `;
   }
 
   // const options: AgChartOptions =

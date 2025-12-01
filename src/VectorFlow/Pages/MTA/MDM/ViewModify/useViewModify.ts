@@ -517,7 +517,7 @@ const useViewModify = (pageType:string) => {
           headerCheckboxSelection:true,
           headerCheckboxSelectionCurrentPageOnly:true,
           resizable:false,
-          suppressMenu: true,
+          suppressHeaderMenuButton: true,
           maxWidth: 40,
           pinned: 'left',
           filter: false

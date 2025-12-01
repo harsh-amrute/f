@@ -1,35 +1,80 @@
-:root{
-    --separator-border: transparent;
+:root {
+  --separator-border: transparent;
 }
-.sash-horizontal::after{
-    content: url(../../../../../../public/assets/img/mto/dueDateQuotation/draggable.svg);
-    width: 12px;
-    display: block;
-    /* z-index: 100000; */
-    /* background: black; */
-    position: absolute;
-    height: 12px;
-    left: 50%;
-    top: 50%;
-    display: flex;
-    transform: translate(-50%, -50%);
-    justify-content: center;
+.sash-horizontal::after {
+  content: url(../../../../../../public/assets/img/mto/dueDateQuotation/draggable.svg);
+  width: 12px;
+  display: block;
+  /* z-index: 100000; */
+  /* background: black; */
+  position: absolute;
+  height: 12px;
+  left: 50%;
+  top: 50%;
+  display: flex;
+  transform: translate(-50%, -50%);
+  justify-content: center;
 }
 
-.sash-horizontal{
-    border: 8px solid lightgrey;
-    border-radius: 4px;
-    z-index: 1 !important;
+.sash-horizontal {
+  border: 8px solid lightgrey;
+  border-radius: 4px;
+  z-index: 1 !important;
 }
 
 /* .split-view-view{
     overflow: visible !important;
 } */
- 
-.vfwrap .ag-icon-filter{
-    color:white;
-  zoom:1.0;
-  pointer-events: none; 
-   
+
+.vfwrap .ag-icon-filter {
+  color: white;
+  zoom: 1;
+  pointer-events: none;
 }
 
+.tooltip-container {
+  background-color: #6c696a;
+  color: white;
+  padding: 10px;
+  border-radius: 3px;
+  font-family: "Roboto", sans-serif;
+  width: max-content;
+}
+
+.transform-translate-x {
+  transform: translateX(120px);
+}
+
+.tooltip-header {
+  background-color: #6c696a;
+  padding: 10px 10px 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px dashed white;
+  font-weight: 600;
+}
+
+.tooltip-body {
+  background-color: #6c696a;
+  padding: 10px;
+}
+
+.tooltip-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.color-box {
+  margin-right: 10px;
+  height: 3px;
+  width: 15px;
+  flex-shrink: 0;
+}
+.barcolor-ccrFolWithHoliday {
+  background-color: "black";
+}
+.barcolor-orderLoad {
+  background-color: "#3874FF";
+}

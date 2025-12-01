@@ -405,7 +405,7 @@ const MTOActionToolBar = ({
           {isExcelExport && (
             <>
               <div className={SCVerticalDivider} />
-              <div className={SCViewContainerWithBg}>
+              <div className={SCViewContainerWithBg} onClick={onExcelExportClick}>
                 <ExportExcelSVG theme={themeUi} />
                 <p style={{ padding: "5px" }}>Excel Export</p>
               </div>
@@ -415,11 +415,11 @@ const MTOActionToolBar = ({
           {isGridView && handleSaveClick && handleResetClick && (
             <>
               <div className={SCVerticalDividerGray} />
-              <div className={SCViewContainerWithBg}>
+              <div className={SCViewContainerWithBg} onClick={() => handleSaveClick()}>
                 <SaveSVG theme={themeUi} />
                 <p style={{ padding: "5px" }}>Save Layout</p>
               </div>
-              <div className={SCViewContainerWithBg}>
+              <div className={SCViewContainerWithBg} onClick={() => handleResetClick()}>
                 <ResetSVG theme={themeUi} />
                 <p style={{ padding: "5px" }}>Reset Layout</p>
               </div>

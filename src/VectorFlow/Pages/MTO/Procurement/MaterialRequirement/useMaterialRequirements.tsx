@@ -491,7 +491,7 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
         pagination: true,
         defaultColDef: {
           floatingFilter: true,
-          suppressMenu: true,
+          suppressHeaderMenuButton: true,
           filter: "agMultiColumnFilter",
           cellDataType: false,
           resizable: true,

@@ -50,122 +50,100 @@ const EconomicalWise = ({
     // Parse the string to a floating-point number
   }));
 
-    const colors = [
-        { label: 'Black', value: 'black' },
-        { label: 'Red', value: 'Red' },
-        { label: 'Yellow', value: '#FFBF00' },
-        { label: 'Green', value: 'Green' },
-        { label: 'Blue', value: 'Blue' },
-        { label: 'White', value: 'grey' },
-        
-    ];
-    
-    function TooltipRenderer({ datum }: any) {
-    
-        return `
-            <div style="background:#6C696A; color:white; padding:10px;">
-                <div style="color: white; padding: 5px; text-align: center;">
-                    <b>${datum.dt || "No Date"}</b>
-                </div>
-                <table style="width: 100%; color: white; border-collapse: collapse;">
-                    <thead>
-                        <tr>
-                            <th style=" text-align: left;">Category</th>
-                            <th style=" text-align: right;">
-                                ${
-                                  graphs[0].pen.label === "Percentage"
-                                    ? "Percentage"
-                                    : "Count"
-                                }
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody styles="text-align:left;">
-                        ${colors
-                          .map((color) => {
-                            const key =
-                              color.value === "black"
-                                ? "b"
-                                : color.value === "Red"
-                                ? "r"
-                                : color.value === "#FFBF00"
-                                ? "y"
-                                : color.value === "Green"
-                                ? "g"
-                                : color.value === "Blue"
-                                ? "bu"
-                                : color.value === "grey"
-                                ? "w"
-                                : null;
+  const colors = [
+    { label: "Black", value: "black" },
+    { label: "Red", value: "Red" },
+    { label: "Yellow", value: "#FFBF00" },
+    { label: "Green", value: "Green" },
+    { label: "Blue", value: "Blue" },
+    { label: "White", value: "grey" },
+  ];
 
-                            if (!key) return "";
+  function TooltipRenderer({ datum }: any) {
+    return `
+      <div class="tooltip-wrapper">
+        <div class="tooltip-header">
+          <b>${datum.dt || "No Date"}</b>
+        </div>
+        <table class="tooltip-table">
+          <thead>
+            <tr>
+              <th class="tooltip-th-left">Category</th>
+              <th class="tooltip-th-right">${
+                graphs[0].pen.label === "Percentage" ? "Percentage" : "Count"
+              }</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${colors
+              .map((color) => {
+                const key =
+                  color.value === "black"
+                    ? "b"
+                    : color.value === "Red"
+                    ? "r"
+                    : color.value === "#FFBF00"
+                    ? "y"
+                    : color.value === "Green"
+                    ? "g"
+                    : color.value === "Blue"
+                    ? "bu"
+                    : color.value === "grey"
+                    ? "w"
+                    : null;
 
-                            return `
-                                <tr>
-                                    <td style="padding: 5px; background-color: #6C696A;">
-                                        <div style="display: flex; align-items: center;">
-                                            <div style="margin-right: 10px; height: 10px; width: 15px; background-color: ${
-                                              color.value
-                                            } ;"></div>
-                                            ${color.label}
-                                        </div>
-                                    </td>
-                                    <td style="padding: 5px; background-color: #6C696A; text-align: right;">
-                                        ${
-                                          graphs[0].pen.label === "Percentage"
-                                            ? (() => {
-                                                const value = parseFloat(
-                                                  datum[key]
-                                                );
-                                                const total = parseFloat(
-                                                  datum.total
-                                                );
-                                                return !isNaN(value) &&
-                                                  !isNaN(total) &&
-                                                  total > 0
-                                                  ? Math.round(
-                                                      (value / total) * 100
-                                                    ) + "%"
-                                                  : "0%";
-                                              })()
-                                            : (() => {
-                                                const val = parseFloat(
-                                                  datum[key]
-                                                );
-                                                if (isNaN(val)) return "0";
-                                                return Number.isInteger(val)
-                                                  ? val
-                                                  : val.toFixed(2);
-                                              })()
-                                        }
-                                    </td>
-                                </tr>
-                            `;
-                          })
-                          .join("")}
-                        
-                        ${
-                          graphs[0].pen.label !== "Percentage"
-                            ? `
-                                <tr>
-                                    <td style="padding: 5px; background-color:  #6C696A; font-weight: bold;">
-                                        <div style="display: flex; align-items: center;">
-                                            Total
-                                        </div>
-                                    </td>
-                                    <td style="padding: 5px; text-align: right; font-weight: bold;">
-                                        ${datum.total.toFixed(2)}
-                                    </td>
-                                </tr>
-                            `
-                            : ""
-                        }
-                        
-                    </tbody>
-                </table>
-            </div>
-        `;
+                if (!key) return "";
+                // <div class="color-box" style="background-color: ${color.value};"></div>
+
+                return `
+                  <tr>
+                    <td class="tooltip-td color-label color-value-${key}">
+                      <div class="color-box""></div>
+                      ${color.label}
+                    </td>
+                    <td class="tooltip-td tooltip-td-right">
+                      ${
+                        graphs[0].pen.label === "Percentage"
+                          ? (() => {
+                              const value = parseFloat(datum[key]);
+                              const total = parseFloat(datum.total);
+                              return !isNaN(value) &&
+                                !isNaN(total) &&
+                                total > 0
+                                ? Math.round((value / total) * 100) + "%"
+                                : "0%";
+                            })()
+                          : (() => {
+                              const val = parseFloat(datum[key]);
+                              if (isNaN(val)) return "0";
+                              return Number.isInteger(val)
+                                ? val
+                                : val.toFixed(2);
+                            })()
+                      }
+                    </td>
+                  </tr>
+                `;
+              })
+              .join("")}
+            ${
+              graphs[0].pen.label !== "Percentage"
+                ? `
+                  <tr>
+                    <td class="tooltip-td font-bold">Total</td>
+                    <td class="tooltip-td tooltip-td-right font-bold">${datum.total.toFixed(
+                      2
+                    )}</td>
+                  </tr>
+                `
+                : ""
+            }
+          </tbody>
+        </table>
+      </div>
+    `;
   }
+
 
   const options: AgChartOptions = {
         tooltip: {

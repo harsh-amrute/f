@@ -17,7 +17,7 @@ export const vZoomDesktop = createVar();
 
 export const VFTableWrapper = style({
   height: vHeight, // set via inline vars
-  width: 'min(1200px, 100%)',     // replaces the broken width
+  width: '100%',     // replaces the broken width
   maxWidth: '100%',
   boxSizing: 'border-box',
   overflow: 'hidden',

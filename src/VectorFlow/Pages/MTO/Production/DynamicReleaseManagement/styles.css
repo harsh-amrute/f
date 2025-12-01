@@ -2,4 +2,53 @@
     width: 2em;
     height: 2rem;
     accent-color: #820F4C;
-} */
+} */.tooltip-container {
+  background-color: #6c696a;
+  color: white;
+  padding: 0 10px 10px 10px;
+  border-radius: 4px;
+  font-family: 'Roboto', sans-serif;
+  width: max-content;
+}
+
+.transform-translate-x {
+  transform: translateX(120px);
+}
+
+.tooltip-header {
+  background-color: #6c696a;
+  color: white;
+  padding: 10px 10px 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px dashed white;
+  font-weight: 600;
+}
+
+.tooltip-body {
+  background-color: #6c696a;
+  padding: 10px 0 0 0;
+}
+
+.tooltip-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.color-box {
+  margin-right: 10px;
+  height: 3px;
+  width: 15px;
+  flex-shrink: 0;
+}
+.barcolor-Released_WIP {
+  background-color: "#191919";
+}
+.barcolor-Incremental_WIP {
+  background-color: "#4BAAF7";
+}
+.barcolor-Limit {
+  background-color: "#E53F3F";
+}

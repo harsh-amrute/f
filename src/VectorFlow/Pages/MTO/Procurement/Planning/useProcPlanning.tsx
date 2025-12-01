@@ -440,7 +440,7 @@ const useProcPlanning = ( appliedFilters: any) => {
             field: "",
             position: 0,
             suppressHeaderFilterButton: true,
-            suppressMenu: true,
+            suppressHeaderMenuButton: true,
             filter: false,
             maxWidth: 35,
             minWidth: 35,
@@ -479,8 +479,8 @@ const useProcPlanning = ( appliedFilters: any) => {
 
     const icons = useMemo(() => {
         return {
-            groupExpanded: `<img src="${'/assets/img/mto/dayWiseCoverage/collapse.svg'}" style="height: 100%; width: 80%;"/>`,
-            groupContracted: `<img src="${'/assets/img/mto/dayWiseCoverage/expand.svg'}" style="height: 100%; width: 80%;"/>`,
+            groupExpanded: `<img src="${'/assets/img/mto/dayWiseCoverage/collapse.svg'}" height="100%" width= "80%"/>`,
+            groupContracted: `<img src="${'/assets/img/mto/dayWiseCoverage/expand.svg'}" height="100%" width= "80%"/>`,
         };
     }, []);
     const autoGroupColumnDef = useMemo(() => {

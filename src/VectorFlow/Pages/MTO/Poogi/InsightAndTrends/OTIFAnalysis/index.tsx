@@ -263,6 +263,7 @@ const OTIFAnalysis = () => {
       />
       <div className={HorizontalViewWrapper} style={{ flex: 1 }}>
         {isGridView ? (
+          // <></>
           <GridView
           getData={(params:any) => getOTIFAnalysisData({
             ...params

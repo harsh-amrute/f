@@ -276,7 +276,7 @@ const OrderRescheduling = () => {
       flex: 1,
       initialHide: false,
       pinned: "left",
-      suppressMenu: true,
+      suppressHeaderMenuButton: true,
       floatingFilter: false,
       filterParams: {
         buttons: ["reset"], // Adds Apply and Clear buttons

@@ -1,9 +1,8 @@
 import { useSpring, animated } from "react-spring";
 import { MultiSelectCheckBoxComponent } from "../../../../../components/VectorFLOW/commons/VFMultiFilter/style.css";
 import { useUserData } from "../../../../../context";
-import Downshift from "downshift";
-
-import { CSSProperties, useEffect, useState } from "react";
+import Select from "react-select";
+import { useEffect, useState } from "react";
 import {
   DropdownGroupWrapper,
   SelectDropdownComponent,
@@ -229,131 +228,6 @@ const Checkbox = ({
   );
 };
 
-// const FilterSelectDropdown = ({
-//   placeholder,
-//   options,
-//   hideDropdownArrow,
-//   onChange,
-//   filterId,
-//   value,
-//   resetKey,
-//   disabled = false,
-// }: any) => {
-//   const customStylesClose = {
-//     control: (baseStyles: any) => ({
-//       ...baseStyles,
-//       height: "39px",
-//       borderRadius: " 20px 20px 20px 20px",
-//       background: "#F2F2F2 0% 0% no-repeat padding-box",
-//       border: "none",
-//       cursor: "pointer",
-//       display: "flex",
-//       justifyContent: "center",
-//     }),
-//     indicatorsContainer: () => ({
-//       paddingRight: "10px",
-//     }),
-//     option: (baseStyles: any) => ({
-//       ...baseStyles,
-//       color: "#313131",
-//       fontFamily: "Roboto",
-//       fontWeight: "300",
-//       fontSize: "12px",
-//       paddingTop: "3px",
-//       paddingBottom: "3px",
-//       cursor: "pointer",
-//       borderTop: "1px solid #B7B7B7",
-//     }),
-//     menuList: (baseStyles: any) => ({
-//       ...baseStyles,
-//       borderRadius: "0px 0px 20px 20px",
-//       background: "#F2F2F2 0% 0% no-repeat padding-box",
-//       paddingLeft: "5px",
-//       marginTop: "0px",
-//       overflowY: "overlay",
-//       overflowX: "hidden",
-
-//       "&::-webkit-scrollbar": {
-//         width: "7px",
-//       },
-//       "&::-webkit-scrollbar-track": {
-//         borderRadius: "30px",
-//         opacity: 1,
-//       },
-//       "&::-webkit-scrollbar-thumb": {
-//         width: "7px",
-//         background: "#D1D1D1 0% 0% no-repeat padding-box",
-//         boxShadow: "0px 6px 9px #F8F8F8",
-//         borderRadius: "30px",
-//         opacity: 1,
-//       },
-//     }),
-//     placeholder: (baseStyles: any) => ({
-//       ...baseStyles,
-//       // marginLeft:hideDropdownArrow ? '' : '23px',
-//       color: "#313131",
-//       fontFamily: "Roboto",
-//       fontWeight: "300",
-//       fontSize: "12px",
-//       textAlign: hideDropdownArrow ? "center" : "",
-//       padding: "0 5px",
-//       boxSizing: "border-box",
-//     }),
-//     singleValue: (baseStyles: any) => ({
-//       ...baseStyles,
-//       // marginLeft:'23px',
-//       // marginRight:hideDropdownArrow ? '23px' : '23px',
-//       color: "#313131",
-//       fontFamily: "Roboto",
-//       fontWeight: "300",
-//       fontSize: "12px",
-//       textAlign: hideDropdownArrow ? "center" : "",
-//       padding: "0 5px",
-//       boxSizing: "border-box",
-//     }),
-//   };
-
-//   const customStylesOpen = {
-//     ...customStylesClose,
-//     control: (baseStyles: any) => ({
-//       ...baseStyles,
-//       height: "39px",
-//       borderRadius: " 20px 20px 0px 0px",
-//       background: "#F2F2F2 0% 0% no-repeat padding-box",
-//     }),
-//   };
-
-//   const [customStyles, setCustomStyles] = useState(customStylesClose);
-
-//   const handleMenuOpen = () => {
-//     setCustomStyles(customStylesOpen);
-//   };
-
-//   const handleMenuClose = () => {
-//     setCustomStyles(customStylesClose);
-//   };
-
-//   return (
-//     <Select
-//       options={options}
-//       isClearable={false}
-//       unstyled={true}
-//       styles={customStyles}
-//       placeholder={placeholder}
-//       isSearchable={false}
-//       onMenuOpen={handleMenuOpen}
-//       onMenuClose={handleMenuClose}
-//       onChange={onChange}
-//       aria-label={filterId}
-//       value={value}
-//       isDisabled={disabled}
-//       key={resetKey}
-
-//       // menuIsOpen={true}
-//     />
-//   );
-// };
-
 const FilterSelectDropdown = ({
   placeholder,
   options,
@@ -364,174 +238,118 @@ const FilterSelectDropdown = ({
   resetKey,
   disabled = false,
 }: any) => {
-  // Style objects mimicking your react-select customStyles closely
+  const customStylesClose = {
+    control: (baseStyles: any) => ({
+      ...baseStyles,
+      height: "39px",
+      borderRadius: " 20px 20px 20px 20px",
+      background: "#F2F2F2 0% 0% no-repeat padding-box",
+      border: "none",
+      cursor: "pointer",
+      display: "flex",
+      justifyContent: "center",
+    }),
+    indicatorsContainer: () => ({
+      paddingRight: "10px",
+    }),
+    option: (baseStyles: any) => ({
+      ...baseStyles,
+      color: "#313131",
+      fontFamily: "Roboto",
+      fontWeight: "300",
+      fontSize: "12px",
+      paddingTop: "3px",
+      paddingBottom: "3px",
+      cursor: "pointer",
+      borderTop: "1px solid #B7B7B7",
+    }),
+    menuList: (baseStyles: any) => ({
+      ...baseStyles,
+      borderRadius: "0px 0px 20px 20px",
+      background: "#F2F2F2 0% 0% no-repeat padding-box",
+      paddingLeft: "5px",
+      marginTop: "0px",
+      overflowY: "overlay",
+      overflowX: "hidden",
 
-  const commonControlStyle: CSSProperties = {
-    height: "39px",
-    borderRadius: "20px 20px 20px 20px",
-    background: "#F2F2F2",
-    border: "none",
-    cursor: disabled ? "not-allowed" : "pointer",
-    display: "flex",
-    justifyContent: "center",
-    padding: "0 10px",
-    alignItems: "center",
-    fontFamily: "Roboto",
-    fontWeight: 300,
-    fontSize: 12,
-    color: "#313131",
-    boxSizing: "border-box" as const,
-    textAlign: hideDropdownArrow ? "center" : "left",
-    outline: "none",
+      "&::-webkit-scrollbar": {
+        width: "7px",
+      },
+      "&::-webkit-scrollbar-track": {
+        borderRadius: "30px",
+        opacity: 1,
+      },
+      "&::-webkit-scrollbar-thumb": {
+        width: "7px",
+        background: "#D1D1D1 0% 0% no-repeat padding-box",
+        boxShadow: "0px 6px 9px #F8F8F8",
+        borderRadius: "30px",
+        opacity: 1,
+      },
+    }),
+    placeholder: (baseStyles: any) => ({
+      ...baseStyles,
+      // marginLeft:hideDropdownArrow ? '' : '23px',
+      color: "#313131",
+      fontFamily: "Roboto",
+      fontWeight: "300",
+      fontSize: "12px",
+      textAlign: hideDropdownArrow ? "center" : "",
+      padding: "0 5px",
+      boxSizing: "border-box",
+    }),
+    singleValue: (baseStyles: any) => ({
+      ...baseStyles,
+      // marginLeft:'23px',
+      // marginRight:hideDropdownArrow ? '23px' : '23px',
+      color: "#313131",
+      fontFamily: "Roboto",
+      fontWeight: "300",
+      fontSize: "12px",
+      textAlign: hideDropdownArrow ? "center" : "",
+      padding: "0 5px",
+      boxSizing: "border-box",
+    }),
   };
 
-  const controlStyleOpen: CSSProperties = {
-    ...commonControlStyle,
-    borderRadius: "20px 20px 0 0",
+  const customStylesOpen = {
+    ...customStylesClose,
+    control: (baseStyles: any) => ({
+      ...baseStyles,
+      height: "39px",
+      borderRadius: " 20px 20px 0px 0px",
+      background: "#F2F2F2 0% 0% no-repeat padding-box",
+    }),
   };
 
-  const menuStyle: CSSProperties = {
-    borderRadius: "0 0 20px 20px",
-    background: "#F2F2F2",
-    marginTop: 0,
-    paddingLeft: 5,
-    maxHeight: 150,
-    overflowY: "auto" as const,
-    overflowX: "hidden" as const,
-    boxShadow: "none",
-    position: "absolute" as const,
-    width: "100%",
-    zIndex: 1000,
+  const [customStyles, setCustomStyles] = useState(customStylesClose);
+
+  const handleMenuOpen = () => {
+    setCustomStyles(customStylesOpen);
   };
 
-  const optionStyle = (isSelected: boolean, isHighlighted: boolean) => ({
-    color: "#313131",
-    fontFamily: "Roboto",
-    fontWeight: 300,
-    fontSize: 12,
-    paddingTop: 3,
-    paddingBottom: 3,
-    cursor: "pointer",
-    borderTop: "1px solid #B7B7B7",
-    backgroundColor: isSelected
-      ? "#BC3D80"
-      : isHighlighted
-      ? "#bc3d814d"
-      : "transparent",
-    userSelect: "none" as const,
-    whiteSpace: "nowrap" as const,
-    overflow: "hidden" as const,
-    textOverflow: "ellipsis" as const,
-  });
-
-  const [isOpen, setIsOpen] = useState(false);
-
-  // Selected item object from options matching value prop
-  const selectedItem = options.find((opt: any) => opt.value === value) || null;
-
-  // Close dropdown on resetKey change
-  useEffect(() => {
-    setIsOpen(false);
-  }, [resetKey]);
-  type ItemType = { label: string; value: string }; // or whatever your item is
+  const handleMenuClose = () => {
+    setCustomStyles(customStylesClose);
+  };
 
   return (
-    <Downshift<ItemType>
-      selectedItem={selectedItem}
-      onChange={(item, _helpers) => {
-        if (!disabled && item) {
-          onChange(item);
-        }
-      }}
-      itemToString={(item) => (item ? item.label : "")}
-      onStateChange={(changes) => {
-        if (Object.prototype.hasOwnProperty.call(changes, "isOpen")) {
-          setIsOpen(!!changes.isOpen);
-        }
-      }}
-    >
-      {({
-        getToggleButtonProps,
-        getMenuProps,
-        getItemProps,
-        isOpen: dsIsOpen,
-        highlightedIndex,
-        selectedItem: dsSelectedItem,
-      }) => (
-        <div style={{ position: "relative", width: "100%" }} id={filterId}>
-          <button
-            type="button"
-            disabled={disabled}
-            {...getToggleButtonProps()}
-            style={isOpen ? controlStyleOpen : commonControlStyle}
-            aria-haspopup="listbox"
-            aria-expanded={dsIsOpen}
-            aria-label={filterId}
-          >
-            <span
-              style={{
-                flexGrow: 1,
-                overflow: "hidden",
-                whiteSpace: "nowrap",
-                textOverflow: "ellipsis",
-              }}
-            >
-              {dsSelectedItem ? dsSelectedItem.label : placeholder}
-            </span>
-            {!hideDropdownArrow && (
-              <img
-                src="/assets/img/down-arrow.svg"
-                alt="dropdown arrow"
-                style={{
-                  transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
-                  transition: "transform 0.3s ease",
-                  width: 12,
-                  height: 12,
-                  marginLeft: 8,
-                  pointerEvents: "none",
-                  userSelect: "none",
-                }}
-                aria-hidden="true"
-              />
-            )}
-          </button>
-          <ul
-            {...getMenuProps()}
-            style={{
-              ...menuStyle,
-              display: dsIsOpen ? "block" : "none",
-              userSelect: "none",
-              listStyle: "none",
-              margin: 0,
-              paddingTop: 0,
-              paddingBottom: 0,
-              border: "none",
-              boxSizing: "border-box",
-            }}
-            role="listbox"
-          >
-            {dsIsOpen &&
-              options.map((item: ItemType, index: number) => {
-                const isSelected =
-                  !!dsSelectedItem && dsSelectedItem.value === item.value; // ✅ always boolean
-                const isHighlighted = highlightedIndex === index;
+    <Select
+      options={options}
+      isClearable={false}
+      unstyled={true}
+      styles={customStyles}
+      placeholder={placeholder}
+      isSearchable={false}
+      onMenuOpen={handleMenuOpen}
+      onMenuClose={handleMenuClose}
+      onChange={onChange}
+      aria-label={filterId}
+      value={value}
+      isDisabled={disabled}
+      key={resetKey}
 
-                return (
-                  <li
-                    key={`${item.value}${index}`}
-                    {...getItemProps({ item, index })}
-                    style={optionStyle(isSelected, isHighlighted)}
-                    role="option"
-                    aria-selected={isSelected} // now boolean, OK for Booleanish
-                  >
-                    {item.label}
-                  </li>
-                );
-              })}
-          </ul>
-        </div>
-      )}
-    </Downshift>
+      // menuIsOpen={true}
+    />
   );
 };
 

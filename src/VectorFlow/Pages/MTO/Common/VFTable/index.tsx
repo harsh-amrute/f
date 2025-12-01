@@ -6,12 +6,13 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import "./styles.css";
 import { useUserData } from "../../../../../context";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
-import { FillOperationParams } from "ag-grid-enterprise";
+import { FillOperationParams, GridOptions } from "ag-grid-enterprise";
+// import type { GridOptions } from "ag-grid-community";
 
 interface VFTableProps extends AgGridReactProps {
   height?: string;
   disableZoomScaling?: boolean;
-  hideStatusBar?: boolean; 
+  hideStatusBar?: boolean;
   cellSelection?: {
     handle: {
       mode: string;
@@ -62,14 +63,23 @@ const VFTable = forwardRef((props: VFTableProps, ref: any) => {
       minWidth: 250,
     },
   };
+  const nonce =
+  (window as any).__nonce__ ??
+  document.querySelector<HTMLMetaElement>('meta[name="csp-nonce"]')?.content?.trim();
 
-  const gridOptions = {
+
+  const gridOptions: GridOptions = {
+    // theme: "legacy",
     ...defaultGridOptions,
     ...props.gridOptions,
+    // styleNonce: nonce,
     defaultColDef: {
       ...defaultGridOptions.defaultColDef,
       ...props.gridOptions?.defaultColDef,
     },
+    // context: {
+    //   styleNonce: nonce,
+    // },
   };
 
   const defaultStatusBar = {

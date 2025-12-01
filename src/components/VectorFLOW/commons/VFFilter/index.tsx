@@ -4,7 +4,7 @@ import {
   VFFilterSeperator,
   VFFilterWrapper,
 } from "./styles.css";
-// import Select from "react-select";
+import Select, { CSSObjectWithLabel } from "react-select";
 import { type Option as MDMOption, type Filter } from "../../../../VectorFlow/types/MDM";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -16,12 +16,16 @@ import { useState } from "react";
 import type { RootState } from "../../../../redux/store/store";
 import { operatorDataTypeMapper } from "../../../../helpers/MDMConstants";
 import { Field } from "../../../../VectorFlow/types/MDM";
-import { useRef } from "react";
-import { useSelect } from "downshift";
+
+// type Option = {
+//   value: string;
+//   label: string | null;
+// };
+
 export interface VFFilterProps {
   onDelete: () => void;
-  fields: Option[];
-  operators: Option[];
+  fields: any[];
+  operators: any[];
   currFilter: Filter;
   filters: Filter[];
   isDisabled: boolean;
@@ -41,157 +45,6 @@ export interface CustomInputProps {
   onChange: (e: any) => void;
   disabled?: boolean;
 }
-
-interface Option {
-  label: string;
-  value: any;
-}
-
-const CustomSelect = ({
-  placeholder,
-  onChange,
-  options,
-  value,
-  isDisabled = false,
-}: CustomSelectProps) => {
-  const { user } = useUserData();
-  const themeUi = user?.user?.theme_ui;
-
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const {
-    isOpen,
-    getToggleButtonProps,
-    getMenuProps,
-    getItemProps,
-    highlightedIndex,
-  } = useSelect<Option>({
-    items: options,
-    selectedItem: value,
-    itemToString: (item) => (item ? item.label : ""),
-    onSelectedItemChange: ({ selectedItem }) => {
-      onChange(selectedItem || null);
-    },
-  });
-
-  return (
-    <div style={{ position: "relative", width: "100%" }}>
-      <div
-        {...getToggleButtonProps({
-          disabled: isDisabled,
-          onClick: () => {
-            if (isDisabled) return;
-            if (inputRef.current) inputRef.current.focus();
-          },
-        })}
-        style={{
-          display: "flex",
-          alignItems: "center",
-          height: 37,
-          width: "100%",
-          background: "#FFFFFF",
-          fontSize: 13,
-          borderRadius: 6,
-          paddingLeft: 8,
-          border: "none",
-          boxShadow: "none",
-          cursor: isDisabled ? "not-allowed" : "pointer",
-          userSelect: "none",
-        }}
-      >
-        <input
-          ref={inputRef}
-          placeholder={placeholder}
-          value={value ? value.label : ""}
-          readOnly
-          disabled={isDisabled}
-          style={{
-            border: "none",
-            outline: "none",
-            width: "100%",
-            cursor: isDisabled ? "not-allowed" : "pointer",
-            fontSize: 13,
-            background: "transparent",
-          }}
-          tabIndex={-1}
-          aria-readonly
-        />
-        {/* Indicator could be added here if needed */}
-        <svg
-          style={{
-            width: 20,
-            height: 20,
-            transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
-            transition: "transform 0.2s ease",
-            pointerEvents: "none",
-            color: "darkgrey",
-            flexShrink: 0, // prevent shrinking
-            margin: "0 6px",
-          }}
-          viewBox="0 0 20 20"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <polyline points="6 8 10 12 14 8" />
-        </svg>
-      </div>
-
-      <ul
-        {...getMenuProps()}
-        style={{
-          listStyle: "none",
-          margin: 0,
-          padding: 0,
-          position: "absolute",
-          width: "100%",
-          maxHeight: 150,
-          overflowY: "auto",
-          backgroundColor: "white",
-          borderTop: "none",
-          borderRadius: "0 0 6px 6px",
-          zIndex: 1000,
-          boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
-          display: isOpen ? "block" : "none",
-          scrollbarWidth: "thin",
-        }}
-      >
-        {isOpen &&
-          options.map((item, index) => {
-            const isSelected = value?.value === item.value;
-            return (
-              <li
-                key={item.value}
-                {...getItemProps({ item, index })}
-                style={{
-                  backgroundColor: isSelected
-                    ? themeUi === "REGALBLAZE"
-                      ? "#FCA311"
-                      : "#BC3D80"
-                    : highlightedIndex === index
-                    ? themeUi === "REGALBLAZE"
-                      ? "rgba(252, 163, 17, 0.3)"
-                      : "rgba(188, 61, 129, 0.3)"
-                    : "white",
-                  padding: 8,
-                  cursor: isDisabled ? "not-allowed" : "pointer",
-                  color: isSelected ? "white" : "black",
-                  borderBottom:
-                    index < options.length - 1 ? "1px solid #eee" : "none",
-                  userSelect: "none",
-                }}
-                aria-selected={highlightedIndex === index}
-              >
-                {item.label}
-              </li>
-            );
-          })}
-      </ul>
-    </div>
-  );
-};
 
 const VFFilter = (props: VFFilterProps) => {
   const dispatch = useDispatch();
@@ -265,6 +118,66 @@ const VFFilter = (props: VFFilterProps) => {
         alt="Delete"
       />
     </div>
+  );
+};
+
+const CustomSelect = (props: CustomSelectProps) => {
+  const { placeholder, onChange, options, value, isDisabled } = props;
+
+  const { user } = useUserData();
+
+  const themeUi = user.user.theme_ui;
+
+  return (
+    <Select
+      styles={{
+        option: (baseStyles, { isSelected }) => ({
+          ...baseStyles,
+          backgroundColor: isSelected
+            ? themeUi === "REGALBLAZE"
+              ? "#FCA311"
+              : "#BC3D80"
+            : "white",
+
+          "&:hover": {
+            backgroundColor:
+              themeUi === "REGALBLAZE" ? "rgb(252, 163, 17,0.3)" : "#bc3d814d",
+            color: "black",
+          },
+        }as CSSObjectWithLabel),
+        container: (styles) => ({
+          ...styles,
+          width: "100%",
+        }as CSSObjectWithLabel),
+        control: (styles, { isFocused }) => ({
+          ...styles,
+          // borderColor: isFocused ? "none": "hsl(0, 0%, 80%);",
+
+          height: "37px",
+          width: "100%",
+          background: " #FFFFFF ",
+          fontSize: "13px",
+          border: "none",
+          borderRadius: "6px",
+          paddingLeft: "8px",
+          borderColor: isFocused ? "none" : "hsl(0, 0%, 80%);",
+          // border: "none",
+          // borderBottom: error ? "3px solid #D03E3E;" : menuIsOpen || isFocused ? '3px solid #820F4C' : '3px solid #A1A1A1',
+          boxShadow: "none",
+          "&:hover": {
+            borderColor: isFocused ? "none" : "hsl(0, 0%, 80%);",
+          },
+        }as CSSObjectWithLabel),
+      }}
+      placeholder={placeholder}
+      components={{
+        IndicatorSeparator: null,
+      }}
+      value={value}
+      onChange={onChange}
+      options={options}
+      isDisabled={isDisabled}
+    />
   );
 };
 

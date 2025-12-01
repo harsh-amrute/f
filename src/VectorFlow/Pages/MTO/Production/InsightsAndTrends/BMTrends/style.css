@@ -1,0 +1,91 @@
+.bmtrends-tooltip-container {
+  background-color: #6c696a;
+  color: white;
+  font-family: Roboto, sans-serif;
+}
+
+.bmtrends-tooltip-header {
+  padding-top: 10px;
+  padding-bottom: 4px;
+  background-color: #6c696a;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 700;
+}
+
+.bmtrends-tooltip-body {
+  color: white;
+  background-color: #6c696a;
+  padding: 10px;
+}
+
+.bmtrends-tooltip-table {
+  width: 100%;
+  color: white;
+  border-collapse: collapse;
+}
+
+.bmtrends-tooltip-thead {
+  border-bottom: 1px dashed white;
+  border-top: 1px dashed white;
+  font-size: 8px;
+}
+
+.tooltip-th-label {
+  padding: 5px;
+  background-color: #6c696a;
+  text-align: left;
+  width: 120px;
+}
+
+.tooltip-th-value {
+  padding: 5px;
+  background-color: #6c696a;
+  text-align: left;
+}
+
+.bmtrends-tooltip-row {
+  /* Optionally style rows if needed */
+}
+
+.bmtrends-tooltip-cell {
+  padding: 5px;
+  background-color: #6c696a;
+  font-size: 14px;
+}
+
+.bmtrends-tooltip-label-cell {
+  /* Optional additional styling */
+}
+
+.bmtrends-tooltip-label-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.bmtrends-tooltip-color-box {
+  margin-right: 10px;
+  height: 3px;
+  width: 15px;
+  flex-shrink: 0;
+}
+
+.tooltip-color-b {
+  background-color: black;
+}
+.tooltip-color-r {
+  background-color: red;
+}
+.tooltip-color-y {
+  background-color: yellow;
+}
+.tooltip-color-g {
+  background-color: green;
+}
+.tooltip-color-bl {
+  background-color: blue;
+}
+.tooltip-color-w {
+  background-color: gray;
+}

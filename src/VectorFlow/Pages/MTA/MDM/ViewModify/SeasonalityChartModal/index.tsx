@@ -119,34 +119,33 @@ const SeasonalityChartModal = ({
     }
 
     const toolTipHTML = `
-      <h3 style="text-decoration:underline;text-align:center;">${getCurrentDate()}</h3>
-      <div style="display:flex;justify-content:space-between;">
-        <p>Start Date</p>
-        <p style="font-weight:600;">${rowData.sd}</p>
-      </div>
-      <div style="display:flex;justify-content:space-between;">
-        <p>Norm</p>
-        <p style="font-weight:600;">${tooltip.dataPoints[0].raw}</p>
-      </div>
-      <div style="display:flex;justify-content:space-between;">
-        <p>Original Norm</p>
-        <p style="font-weight:600;">${rowData.onm}</p>
-      </div>
-      <hr style="width:100%;border:none;border-top:1px dashed #B2B2B2;"/>
-      <div style="display:flex;justify-content:space-between;">
-        <p>Stock</p>
-        <p style="font-weight:500;">${getCurrentStock()}</p>
-      </div>
-      <div style="display:flex;justify-content:space-between;">
-        <p>GIT</p>
-        <p style="font-weight:600;">${getCurrentGIT()}</p>
-      </div>
-      <div style="display:flex;justify-content:space-between;">
-        <p>Reason</p>
-        <p style="font-weight:600;">${getNormChangeReason()}</p>
-      </div>
-  
-    `;
+    <h3 class="tooltip-title">${getCurrentDate()}</h3>
+    <div class="tooltip-row">
+      <p>Start Date</p>
+      <p class="font-bold">${rowData.sd}</p>
+    </div>
+    <div class="tooltip-row">
+      <p>Norm</p>
+      <p class="font-bold">${tooltip.dataPoints[0].raw}</p>
+    </div>
+    <div class="tooltip-row">
+      <p>Original Norm</p>
+      <p class="font-bold">${rowData.onm}</p>
+    </div>
+    <hr class="tooltip-divider"/>
+    <div class="tooltip-row">
+      <p>Stock</p>
+      <p class="font-medium">${getCurrentStock()}</p>
+    </div>
+    <div class="tooltip-row">
+      <p>GIT</p>
+      <p class="font-bold">${getCurrentGIT()}</p>
+    </div>
+    <div class="tooltip-row">
+      <p>Reason</p>
+      <p class="font-bold">${getNormChangeReason()}</p>
+    </div>
+  `;
 
     tooltipEl.appendChild(document.createElement("p"));
     // console.log(tooltipEl);

@@ -25,7 +25,7 @@ const AvlCellRenderer = (props: ICellRendererParams) => {
 
   // width percentage for the bar, clamped to [0, 100]
   const raw = Number(props?.data?.fkapr ?? 0);
-  const safeWidth = Math.max(0, Math.min(100, raw));
+  // const safeWidth = Math.max(0, Math.min(100, raw));
 
   const gradient =
     themeUi === "REGALBLAZE"
@@ -41,7 +41,7 @@ const AvlCellRenderer = (props: ICellRendererParams) => {
       <div
         className={availabiltyCellRenderer}
         style={assignInlineVars({
-          [fillWidthVar]: `${safeWidth}%`,
+          [fillWidthVar]: `${raw}%`,
           [gradientVar]: gradient,
         })}
       />

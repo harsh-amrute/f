@@ -43,7 +43,7 @@ export const TableWrapper = style({
   // },
 });
 // descendant rules → globalStyle
-globalStyle(`${TableWrapper} :global(.ag-theme-alpine)`, { margin: "20px 0" });
+globalStyle(`${TableWrapper} .ag-theme-alpine`, { margin: "20px 0" });
 
 
 export const CellWithBar = style({
@@ -141,16 +141,16 @@ export const VFTableWrapper = style({
 });
 
 /* All AG Grid descendants of VFTableWrapper → globalStyle */
-globalStyle(`${VFTableWrapper} :global(.ag-theme-alpine)`, { flex: 1 });
+globalStyle(`${VFTableWrapper} .ag-theme-alpine`, { flex: 1 });
 
-globalStyle(`${VFTableWrapper} :global(.ag-paging-panel)`, {
+globalStyle(`${VFTableWrapper} .ag-paging-panel`, {
   zIndex: 1,
   fontSize: "11px",
   fontFamily: "Roboto",
   position: "relative",
 });
 
-globalStyle(`${VFTableWrapper} :global(.ag-status-bar)`, {
+globalStyle(`${VFTableWrapper} .ag-status-bar`, {
   zIndex: '2 !important',
   display: "flex !important",
   justifyContent: 'space-between !important',

@@ -22,10 +22,8 @@ import {
   SelectDropdownComponent,
 } from "../../../../../../../components/VectorFLOW/commons/VFMultiFilter/style.css";
 import VFMasterFieldSearch from "../../../../../../../components/VectorFLOW/commons/VFMasterFieldSearch";
-// import Select from "react-select";
+import Select from "react-select";
 import Radio from "../../../../../../../components/VectorFLOW/commons/MTO/Radio";
-// import DownshiftSelect from "~/VectorFlow/Pages/MTO/Common/DownshiftSelects/DownshiftSelect";
-import DownshiftSelect from "../../../../Common/DownshiftSelects/DownshiftSelect";
 // import VFMasterFieldSearch from '../../../../../../components/VectorFLOW/commons/VFMasterFieldSearch';
 import {
   type Option as MDMOption,
@@ -138,34 +136,19 @@ const FilterSelectDropdown = ({
   };
 
   return (
-    // <Select
-    //   options={options}
-    //   isClearable={false}
-    //   unstyled={true}
-    //   styles={customStyles}
-    //   placeholder={placeholder}
-    //   isSearchable={false}
-    //   onMenuOpen={handleMenuOpen}
-    //   onMenuClose={handleMenuClose}
-    //   onChange={onChange}
-    //   aria-label={filterId}
-    //   value={value}
-    //   // menuIsOpen={true}
-    // />
-    <DownshiftSelect
+    <Select
       options={options}
-      value={value}
-      onChange={onChange}
+      isClearable={false}
+      unstyled={true}
+      styles={customStyles}
       placeholder={placeholder}
       isSearchable={false}
-      disabled={false}
-      /** NEW: react-select compatibility */
       onMenuOpen={handleMenuOpen}
       onMenuClose={handleMenuClose}
-      /** For compatibility — not used internally but won't break */
-      styles={customStyles}
-      components={{}}
+      onChange={onChange}
       aria-label={filterId}
+      value={value}
+      // menuIsOpen={true}
     />
   );
 };
@@ -334,10 +317,6 @@ const FilterModal = (props: IFilterModalProps) => {
       setActiveAccordian(key);
     }
   };
-  // interface Option {
-  //   label: string;
-  //   value: string | number;
-  // }
 
   return (
     <VFModalCard
@@ -355,20 +334,29 @@ const FilterModal = (props: IFilterModalProps) => {
           <div className={FilterHeading}>Resource Filters</div>
           <div className={HorizontalLine} />
 
+          {/* <SearchBar>
+                        <PlantInput
+                            id={'plntNmInput'}
+                            data-testid="plntNmInput"
+                            name='plantName'
+                            placeholder='Plant'
+                            value={selectedOptions?.plantName}
+                            onChange={(e) => handleChange(e)}
+                        />
+                        <img
+                            src="/assets/img/search-icon.svg"
+                            alt="search-icon"
+                        />
+                    </SearchBar> */}
           <div className={FilterAccordianWrapper}>
             <VFMasterFieldSearch
-              value={(selectedOptions?.plantName ?? []).map(
-                (name: string): MDMOption => ({
-                  label: name,
-                  value: name,
-                })
-              )}
-              setValue={(opts: MDMOption[]) => {
-                // Option[] -> string[]
-                const names = opts.map((o) => String(o.value)); // or o.label
-                // You already have handleNameChange passed in props,
-                // but you're using handleChange wrapper; pick one.
-                handleChange(names); // or handleNameChange(names)
+              value={selectedOptions?.plantName}
+              setValue={(e: any) => {
+                if (e) {
+                  if (e.length >= 0) {
+                    handleChange(e);
+                  }
+                }
               }}
               options={(filters[0]?.options ?? []).map(
                 (opt: string): MDMOption => ({
@@ -376,65 +364,73 @@ const FilterModal = (props: IFilterModalProps) => {
                   value: opt,
                 })
               )}
-              placeholder="Plant"
+              placeholder={"Plant"}
               handleListChild={() => null}
               maxToShow={3}
-              backgroundColor="#F2F2F2"
+              backgroundColor={"#F2F2F2"}
               borderRadius={40}
               disabled={false}
-              boxShadow="0"
+              boxShadow={"0"}
             />
           </div>
-
           <div className={FilterAccordianWrapper}>
-            {filters?.map((filter) => {
-              if (
-                filter.key === "plnm" ||
-                filter.key === "FOL" ||
-                filter.key === "prdGrp"
-              )
-                return null;
-              return (
-                <div className={AccordianContainer} key={filter.key}>
-                  <FilterCheckboxAccordian
-                    filterType={filter.heading}
-                    filterKey={filter.key}
-                    isOpen={activeAccordian === filter.key}
-                    handleToggleAccordian={handleToggleAccordian}
-                  >
-                    <div className={OptionsWrapper}>
-                      {filter.options?.map((option, idx) => (
-                        <div className={Option} key={option}>
-                          <label
-                            style={{
-                              alignItems: "center",
-                              display: "flex",
-                              cursor: "pointer",
-                              gap: "8px",
-                            }}
-                          >
-                            <Radio
-                              key={option}
-                              name={option}
-                              theme={themeUi || ""}
-                              checked={getChecked(filter.heading, option)}
-                              onChange={(e) =>
-                                handleOptionChange(e, filter.heading, idx)
-                              }
-                              type={
-                                filter.key === "prdGrp" ? "radio" : "checkbox"
-                              }
-                            />
-                            {option}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-                  </FilterCheckboxAccordian>
-                </div>
-              );
-            })}
-
+            {filters?.map(
+              (filter: { key: string; heading: string; options: string[] }) => {
+                if (
+                  filter.key === "plnm" ||
+                  filter.key === "FOL" ||
+                  filter.key === "prdGrp"
+                )
+                  return null;
+                return (
+                  <div className={AccordianContainer} key={filter.key}>
+                    <FilterCheckboxAccordian
+                      filterType={filter?.heading}
+                      filterKey={filter?.key}
+                      isOpen={activeAccordian === filter?.key}
+                      handleToggleAccordian={handleToggleAccordian}
+                    >
+                      <div className={OptionsWrapper}>
+                        {filter?.options?.map((option: string, idx: number) => (
+                          <div className={Option} key={option}>
+                            <label
+                              style={{
+                                alignItems: "center",
+                                display: "flex",
+                                cursor: "pointer",
+                                gap: "8px",
+                              }}
+                            >
+                              <Radio
+                                key={option}
+                                name={option}
+                                theme={themeUi ? themeUi : ""}
+                                checked={getChecked(filter?.heading, option)}
+                                onChange={(e) => {
+                                  handleOptionChange(e, filter?.heading, idx);
+                                }}
+                                type={`${
+                                  filter.key === "prdGrp" ? "radio" : "checkbox"
+                                }`}
+                              />
+                              {option}
+                            </label>
+                            {/* <input
+                                                            key={option}
+                                                            name={option}
+                                                            checked={getChecked(filter?.heading, option)}
+                                                            onChange={(e) => { handleOptionChange(e, filter?.heading, idx) }}
+                                                            type='checkbox'
+                                                        />
+                                                        <label>{option}</label> */}
+                          </div>
+                        ))}
+                      </div>
+                    </FilterCheckboxAccordian>
+                  </div>
+                );
+              }
+            )}
             <div
               className={FilterComponent}
               style={{ borderTop: "0.5px solid #E1E2E8", padding: "15px" }}
@@ -442,7 +438,7 @@ const FilterModal = (props: IFilterModalProps) => {
               <AvailabilityFilter
                 handleFolChange={handleFolChange}
                 header="Location Filter"
-                filterId="LF1"
+                filterId={"LF1"}
                 filterState={filters}
                 selectedOptions={selectedOptions}
               />
@@ -450,8 +446,6 @@ const FilterModal = (props: IFilterModalProps) => {
           </div>
         </div>
       </div>
-
-      {/* footer */}
       <div className={ButtonFilterWrapper}>
         <div className={ButtonContainer}>
           <VFButtonOutline themeUi={themeUi || ""} onClick={handleClose}>

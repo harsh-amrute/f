@@ -15,7 +15,7 @@ const SuggestionCategoryCellRenderer = (params: any) => {
 
   return (
     <Tooltip
-      disableStyleInjection={true}
+      disableStyleInjection="core"
       content={
         <p style={{ textAlign: "center", fontSize: "10px", padding: "12px" }}>
           {Comment}

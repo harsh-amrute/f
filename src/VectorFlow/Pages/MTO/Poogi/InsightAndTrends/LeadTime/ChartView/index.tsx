@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VFInfoToolTip'
 import { scChartMainContainer } from '../../../../Common/SplitGraphContainer/styles.css'
 import { useGetDate } from '../../../../../../Services/MTO/Production/InsightsAndTrends/RMPMExpediting'
@@ -49,9 +49,10 @@ const ChartView = ({ chartData, chartTableData }: any) => {
         )
     }
 
-
-
-
+    const nonce =
+    (window as any).__nonce__ ??
+    document.querySelector<HTMLMetaElement>('meta[name="csp-nonce"]')?.content?.trim();
+  
     const boxChartOptions: any =
     {
         theme: {
@@ -64,7 +65,7 @@ const ChartView = ({ chartData, chartTableData }: any) => {
         },
         chart: {
             type: 'boxPlot',
-
+            nonce: nonce,
             zoom: {
                 enabled: false,
             },

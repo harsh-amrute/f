@@ -162,11 +162,11 @@ const PieChartandGrid = (props: any) => {
           renderer: (params: any) => {
             const color = params.fill || "#666666";
             return `
-                <div style="background: #6C696A; border-radius: 6px; overflow: hidden; text-align: center; min-width: 140px;">
-                  <div style="color: white; padding: 6px 10px; background-color: ${color}; font-weight: bold;">
+                <div class="tooltip-wrapper" >
+                  <div class="tooltip-header">
                     ${params.datum.suggestion || "Unknown"}
                   </div>
-                  <div style="color: black; padding: 8px 10px; background-color: #ede7e9ff;">
+                  <div class="tooltip-body">
                     ${params.datum.count}
                   </div>
                 </div>

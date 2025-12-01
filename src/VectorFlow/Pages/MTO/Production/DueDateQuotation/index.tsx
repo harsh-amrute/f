@@ -122,7 +122,7 @@ const DueDateQuotation = () => {
       showDisabledCheckboxes: true,
       flex: 1,
       initialHide: false,
-      suppressMenu: true,
+      suppressHeaderMenuButton: true,
       maxWidth: 30,
       pinned: 'left',
       position: 0,
@@ -190,7 +190,7 @@ const DueDateQuotation = () => {
       masterDetail:bomActive?true:false,
       detailRowHeight: 320,  
       detailCellRendererParams:{
-      suppressMenu: true,
+      suppressHeaderMenuButton: true,
       detailGridOptions: {
         rowHeight: 28,
         headerHeight:30,
@@ -206,7 +206,7 @@ const DueDateQuotation = () => {
         columnDefs: columnBomDefs.filter((col: any) => col.colId !== "ItemName"),
         defaultColDef: {
           flex: 1,
-          suppressMenu: true,
+          suppressHeaderMenuButton: true,
           cellStyle: {
             fontSize: "16px",
             display: "flex",
@@ -246,7 +246,7 @@ const DueDateQuotation = () => {
       // flex: 1,
       suppressSizeToFit: false,
       filter: "agTextColumnFilter",
-      suppressMenu: true,
+      suppressHeaderMenuButton: true,
       floatingFilter: true,
       resizable: true,
       cellStyle: {

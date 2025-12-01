@@ -130,6 +130,40 @@ const VFCharts = (props: any) => {
       );
     }
   }, [chartProps]);
+  const nonce =
+    (window as any).__nonce__ ??
+    document
+      .querySelector<HTMLMetaElement>('meta[name="csp-nonce"]')
+      ?.content?.trim();
+
+  console.log(chartProps, "chartProps");
+
+  const chartOptions = (() => {
+    const opts: any = {
+      ...(chartProps || {}), // <= avoid spreading undefined
+    };
+
+    if (nonce) {
+      opts.styleNonce = nonce;
+      // also via theme if you want
+      const baseTheme = chartProps?.theme ?? {};
+      opts.theme = {
+        ...baseTheme,
+        overrides: {
+          ...(baseTheme as any).overrides,
+          common: {
+            ...((baseTheme as any).overrides?.common ?? {}),
+            styleNonce: nonce,
+          },
+        },
+      };
+    }
+
+    console.log("FINAL AG CHART OPTIONS:", opts);
+    return opts;
+  })();
+
+  console.log("Final chartOptions:", chartOptions);
 
   return (
     <div
@@ -176,7 +210,7 @@ const VFCharts = (props: any) => {
       <AgCharts
         ref={chartRef}
         style={{ minHeight: "80%", height: customizedStyles.agChartHeight }}
-        options={chartProps}
+        options={chartOptions}
       />
 
       <VFChartTable

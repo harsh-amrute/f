@@ -7,6 +7,7 @@ import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Commo
 import { getColumnDefinations } from "../../../../../../../helpers/utils";
 import { columnConfigData } from "../ColumnData";
 import { format } from "date-fns";
+import "./style.css";
 
 const STPLGraph = (props: any) => {
     const { graphData } = props;
@@ -66,26 +67,19 @@ const STPLGraph = (props: any) => {
 
   function TooltipRenderer({ datum, xKey }: any) {
     return `
-       <div class="ag-chart-tooltip-title" style="background-color: #6C696A; display: flex; justify-content: center; align-items: center">
-           ${datum[xKey]}
-       </div>
-       <div class="ag-chart-tooltip-content" style="color: white; background-color: #6C696A">
-       
-       <div>
-           <div style="display: flex;">
-               <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #AD5000">
-               </div>
-               <div style="display:flex ; width: 100%; justify-content: space-between">
-                   <div>Released WIP (In Days) Exceeding Limit
-                   </div>
-                   <div style="margin-left: 20px"> ${datum["exceedDays"]}
-                   </div>
-               </div>
-           </div> 
-        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: gray"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>Released WIP (In Days)</div><div>${datum["days"]}</div></div></div>
-        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: green"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>Limit</div><div>${datum["limit"]}</div></div></div>
-
-        </div>`;
+      <div class="tooltip-title">
+        ${datum[xKey]}
+      </div>
+      <div class="tooltip-content">
+        <div class="tooltip-row">
+          <div class="color-box color-gray"></div>
+          <div class="label-value">
+            <div>${ProductionInsightsAndTrendsString.fullKitInDays}</div>
+            <div>${datum["days"]}</div>
+          </div>
+        </div>
+      </div>
+    `;
   }
 
   function createSeriesData(val: number) {

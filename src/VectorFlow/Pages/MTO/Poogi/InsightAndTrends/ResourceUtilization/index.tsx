@@ -47,6 +47,7 @@ import { useDispatch } from "react-redux";
 import { RESOURCE_UTIL_ANALYTICS } from "../../../../../../redux/actions/MTO";
 import VFButton from "../../../../../../components/VectorFLOW/commons/VFButton";
 import { Rectangle } from "../../../Common/Rectangle/RectangleMarker";
+import "./styles.css";
 
 const SearchIcon = () => {
   return (
@@ -366,52 +367,42 @@ const ResourceUtilization = () => {
 
   function TooltipRenderer({ datum }: any) {
     return `
-      <div class="ag-chart-tooltip-title" style="background-color: #2E2E2E; display: flex; justify-content: flex-start; align-items: center; min-width: 200px">
-          Details
+      <div class="tooltip-title">
+        Details
       </div>
-      <div class="ag-chart-tooltip-content" style="color: white; background-color: #2E2E2E; padding: 0px 20px;">
-      <div style="border-top: 1px dashed lightgray"></div>
-      <div style="width: 100%; padding: 10px 5px;">
-          <div style="display: flex; width: 100%;">
-              
+      <div class="tooltip-content">
+        <div class="tooltip-divider"></div>
+        <div class="tooltip-inner-wrapper">
           ${
             selectedGraphState === "wipLimit"
-              ? `<div style="display: flex; flex-direction: column ;flexwidth: 100%;">
-          <div style="display: flex; align-items: center">
-              <div style="margin-right: 10px;  margin-top: 5px; height: 4px; width: 10px; background-color: #de6057"></div>
-              <div style="display:flex; justify-content: space-between; width: 100%;">
-                  <div style="padding-right: 80px">Limit</div>
-                  <span>${
-                    actBtn?.label === "Over Limit" ? datum?.limit : datum?.limit
-                  }</span>
-              </div>
-            </div>
-          <div style="display: flex">
-              <div style="margin-right: 10px;  margin-top: 5px; height: 10px; width: 10px; background-color: #000000"></div>
-              <div style="display:flex; justify-content: space-between; width: 100%;">
-                  <div>Usage (days)</div>
-                  <div>${
-                    actBtn?.label === "Over Limit"
-                      ? datum?.overLimit
-                      : datum?.underLimit
-                  }</div>
-              </div>
-            </div>
-          <div style="display: flex">
-              <div style="margin-right: 10px;  margin-top: 5px; height: 10px; width: 10px; background-color: #000000"></div>
-              <div style="display:flex; justify-content: space-between; width: 100%;">
-                  <div>Usage %</div>
-                  <div>${
-                    actBtn?.label === "Over Limit" ? datum?.us : datum?.us
-                  }</div>
-              </div>
-            </div>
-          
-           
-          </div>`
+              ? `<div class="limit-container">
+                   <div class="limit-row">
+                     <div class="limit-color-bar limit-limit-color"></div>
+                     <div class="limit-text-row">
+                       <div class="limit-label">Limit</div>
+                       <span>${actBtn?.label === "Over Limit" ? datum?.limit : datum?.limit}</span>
+                     </div>
+                   </div>
+                   <div class="limit-row">
+                     <div class="limit-color-bar limit-usage-color"></div>
+                     <div class="limit-text-row">
+                       <div>Usage (days)</div>
+                       <div>${actBtn?.label === "Over Limit" ? datum?.overLimit : datum?.underLimit}</div>
+                     </div>
+                   </div>
+                   <div class="limit-row">
+                     <div class="limit-color-bar limit-usage-color"></div>
+                     <div class="limit-text-row">
+                       <div>Usage %</div>
+                       <div>${actBtn?.label === "Over Limit" ? datum?.us : datum?.us}</div>
+                     </div>
+                   </div>
+                 </div>`
               : ""
           }
-      </div>`;
+        </div>
+      </div>
+    `;
   }
 
   const getUtilizationColor = (date: any) => {
@@ -530,23 +521,22 @@ const ResourceUtilization = () => {
         tooltip: {
           renderer: (datum: any) => {
             return `
-      <div class="ag-chart-tooltip-title" style="background-color: #2E2E2E; display: flex; justify-content: flex-start; align-items: center; min-width: 200px">
-          Details
-      </div>
-      <div class="ag-chart-tooltip-content" style="color: white; background-color: #2E2E2E; padding: 0px 20px;">
-      <div style="border-top: 1px dashed lightgray"></div>
-      <div style="width: 100%; padding: 10px 5px;">
-          <div style="display: flex; width: 100%;">
-              
-         
-                 <div style="display: flex; width: 100%;">
-              <div style="margin-right: 10px; display: flex; flex-direction: column; margin-top: 5px; height: 10px; width: 10px; background-color: #000000"></div>
-              <div style="display:flex; justify-content: space-between; width: 100%;">
-                  <div>Usage</div>
-                  <div>${datum.datum?.limit} %</div>
+              <div class="tooltip-title">
+                Details
               </div>
-          </div>
-      </div>`;
+              <div class="tooltip-content">
+                <div class="tooltip-divider"></div>
+                <div class="tooltip-padding">
+                  <div class="tooltip-row">
+                    <div class="color-box black-box"></div>
+                    <div class="tooltip-label-value">
+                      <div>Usage</div>
+                      <div>${datum.datum?.limit} %</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `;
           },
         },
       },

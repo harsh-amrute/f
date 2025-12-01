@@ -10,11 +10,17 @@ import VFHorizon from "../../../../../../components/VectorFLOW/commons/VFHorizon
 
 
 const AvailabilityAgeingTrend = ({themeUi,filter, horizon, setHorizon}:{themeUi:string,filter:any, ageing:number, setAgeing:any, horizon:number, setHorizon:any}) => {
- 
+  const nonce =
+  (window as any).__nonce__ ??
+  document
+    .querySelector<HTMLMetaElement>('meta[name="csp-nonce"]')
+    ?.content?.trim();
+
 
   const { mutateAsync: GetAvailabilityAgeing, isLoading } =useGetAvailabilityAgeing();
   const [options, setOptions] = useState({})
   const [age,setAgeing]=useState(1);
+
   
   const OnHorizonChange = async (hvalue: any) => {
     setHorizon(hvalue);
@@ -23,7 +29,7 @@ const AvailabilityAgeingTrend = ({themeUi,filter, horizon, setHorizon}:{themeUi:
     const data = AvailabilityAgeing?.data?.data;
     // const customizedChartProps = generateChartOptions(data, chartParams1);
     // setOptions(customizedChartProps);
-    const customizedChartProps = generateChartOptions(data, chartParams1);
+    const customizedChartProps = generateChartOptions(data, chartParams1, nonce);
     customizedChartProps.data = data; 
     setOptions(customizedChartProps);
   };

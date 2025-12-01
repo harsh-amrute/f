@@ -16,6 +16,7 @@ import { useUserData } from "../../../../../../../../src/context";
 import VFButton from "../../../../../../../components/VectorFLOW/commons/VFButton";
 import { notifyError } from "../../../../../../../helpers/notify";
 import OverlayLoader from "../../../../../../../VectorFlow/Pages/MTO/Common/Loader";
+import "./style.css";
 
 const ExpeditingMTO = (props: {
   isMTO: boolean;
@@ -39,16 +40,16 @@ const ExpeditingMTO = (props: {
   }, [appliedFilters]);
 
   function TooltipRenderer({ datum }: any) {
-    return ` 
-        <div style="background:#000; border-radius:3px; color:#fff ;padding:8px">
-            <div style="width: 100%; display: flex; justify-content: center">
-              ${datum.rn}
-            </div>
-            <hr style="border: 1px dashed"/>
-            <div>RM Desc : ${datum.rd}</div>
-            <div>No. Of Orders : ${datum.rc}</div>
+    return `
+      <div class="tooltip-container">
+        <div class="tooltip-title">
+          ${datum.rn}
         </div>
-        `;
+        <hr class="tooltip-divider"/>
+        <div class="tooltip-text">RM Desc : ${datum.rd}</div>
+        <div class="tooltip-text">No. Of Orders : ${datum.rc}</div>
+      </div>
+    `;
   }
 
   const { user } = useUserData();

@@ -22,6 +22,7 @@ import moment from "moment";
 import _ from "lodash";
 import { chartWrapper, graphViewWrapper } from "./styles.css";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
+import "./style.css";
 
 const GraphView = ({ shortageData }: any) => {
   const { data: apiResponseData, isSuccess } = useGetDate();
@@ -85,40 +86,52 @@ const GraphView = ({ shortageData }: any) => {
   }, [apiDate, isSuccess]);
 
   function TooltipRenderer({ datum, xKey }: any) {
-    return `
-    <div class="ag-chart-tooltip-title" style="background-color: #6C696A; display: flex; justify-content: center; align-items: center">
-        ${
-          isNaN(datum[xKey])
-            ? `${datum[xKey]} Days`
-            : datum[xKey] === 1
-            ? "0-7 Days"
-            : datum[xKey] === 85
-            ? "85-90 Days"
-            : datum[xKey] + "-" + Number(datum[xKey] + 6) + " Days"
-        }
-    </div>
-    <div class="ag-chart-tooltip-content" style="color: white; background-color: #6C696A">
-    
-    <div>
-        <div style="display: flex;">
-            <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #F4BD8E">
-            </div>
-            <div style="display:flex ; width: 100%; justify-content: space-between">
-                <div>${InsightsAndTrendsString.ordersWithFullkitOHS}
-                </div>
-                <div> ${datum["total_soh"]}
-                </div>
-            </div>
+    const label = isNaN(datum[xKey])
+      ? `${datum[xKey]} Days`
+      : datum[xKey] === 1
+      ? "0-7 Days"
+      : datum[xKey] === 85
+      ? "85-90 Days"
+      : datum[xKey] + "-" + Number(datum[xKey] + 6) + " Days";
+
+    return `<div class="ag-custom-tooltip ">
+
+<div class="tooltip-container">
+      <div class="tooltip-title">
+        ${label}
+      </div>
+      <div class="tooltip-content">
+        <div class="tooltip-row">
+          <div class="color-box color-bg1"></div>
+          <div class="label-value">
+            <div>${InsightsAndTrendsString.ordersWithFullkitOHS}</div>
+            <div>${datum["total_soh"]}</div>
+          </div>
         </div>
-        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color:#F09241"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>${
-          InsightsAndTrendsString.ordersWithFullkitSIT
-        }</div><div>${datum["total_sit"]}</div></div></div>
-        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color:  #AD5000"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>${
-          InsightsAndTrendsString.ordersWithFullkitOPO
-        }</div><div>${datum["total_po"]}</div></div></div>
-        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #6A3001"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>${
-          InsightsAndTrendsString.ordersWithRMPM
-        }</div><div> ${datum["shortage"]}</div></div></div>
+        <div class="tooltip-row">
+          <div class="color-box color-bg2"></div>
+          <div class="label-value">
+            <div>${InsightsAndTrendsString.ordersWithFullkitSIT}</div>
+            <div>${datum["total_sit"]}</div>
+          </div>
+        </div>
+        <div class="tooltip-row">
+          <div class="color-box color-bg3"></div>
+          <div class="label-value">
+            <div>${InsightsAndTrendsString.ordersWithFullkitOPO}</div>
+            <div>${datum["total_po"]}</div>
+          </div>
+        </div>
+        <div class="tooltip-row">
+          <div class="color-box color-bg4"></div>
+          <div class="label-value">
+            <div>${InsightsAndTrendsString.ordersWithRMPM}</div>
+            <div>${datum["shortage"]}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     </div>`;
   }
 

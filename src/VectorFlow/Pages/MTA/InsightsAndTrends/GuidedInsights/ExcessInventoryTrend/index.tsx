@@ -27,12 +27,21 @@ const ExcessInventoryTrend = ({
   horizon: number;
   setHorizon: any;
 }) => {
+  const nonce =
+    (window as any).__nonce__ ??
+    document
+      .querySelector<HTMLMetaElement>('meta[name="csp-nonce"]')
+      ?.content?.trim();
+
   const [options1, setOptions1] = useState({});
   const [options2, setOptions2] = useState({});
-  const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
-  const CURRENCY = EnvConfig?.CURRENCY; 
-  const chartParams1 = useMemo(() => createChartParams('skuCount'), []);
-    const chartParams2 = useMemo(() => createChartParams('value', CURRENCY), [CURRENCY]);
+  const EnvConfig = useSelector((state: RootState) => state.mta.EnvConfig);
+  const CURRENCY = EnvConfig?.CURRENCY;
+  const chartParams1 = useMemo(() => createChartParams("skuCount"), []);
+  const chartParams2 = useMemo(
+    () => createChartParams("value", CURRENCY),
+    [CURRENCY]
+  );
 
   const greyShades = [
     "#333333",
@@ -81,7 +90,7 @@ const ExcessInventoryTrend = ({
     });
     series.push(createTotalLegendForLineCharts(data, "countSku"));
     const chartProps = { ...chartParams1, series: series };
-    const customizedChartProps = generateChartOptions(data, chartProps);
+    const customizedChartProps = generateChartOptions(data, chartProps, nonce);
     setOptions1(customizedChartProps);
   };
 
@@ -123,7 +132,6 @@ const ExcessInventoryTrend = ({
   return (
     <div className={SCDynamicContainer}>
       <Allotment minSize={0} maxSize={590}>
-
         <Allotment.Pane preferredSize={"50%"}>
           <div
             className="main"
@@ -139,11 +147,13 @@ const ExcessInventoryTrend = ({
               setHorizon={setHorizon}
               OnHorizonChange={OnHorizonChange}
               horizon={horizon}
-              styles={{width:'100%'}}
+              styles={{ width: "100%" }}
             />
-            <CustomizedChartComponent chartOptions={options1} chartParams={chartParams1}/>
+            <CustomizedChartComponent
+              chartOptions={options1}
+              chartParams={chartParams1}
+            />
           </div>
-
         </Allotment.Pane>
         <div
           className="main"
@@ -159,19 +169,24 @@ const ExcessInventoryTrend = ({
             setHorizon={setHorizon}
             OnHorizonChange={OnHorizon2Change}
             horizon={horizon}
-            styles={{width:'100%'}}
+            styles={{ width: "100%" }}
           />
-          <CustomizedChartComponent chartOptions={options2} chartParams={chartParams2}/>
+          <CustomizedChartComponent
+            chartOptions={options2}
+            chartParams={chartParams2}
+          />
         </div>
       </Allotment>
-
     </div>
   );
 };
 
 export default ExcessInventoryTrend;
 
-export const CustomizedChartComponent = ({chartOptions,chartParams}:any) => {
+export const CustomizedChartComponent = ({
+  chartOptions,
+  chartParams,
+}: any) => {
   return (
     <div className={SCChartContainer}>
       <div

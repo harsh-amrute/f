@@ -19,7 +19,7 @@ export const ProcurementLayout = style({
   // },
 });
 // descendants of ProcurementLayout
-globalStyle(`${ProcurementLayout} :global(.ag-theme-alpine)`, {
+globalStyle(`${ProcurementLayout} .ag-theme-alpine`, {
   flex: 1,
   marginLeft: "2rem",
 });
@@ -39,7 +39,7 @@ export const ChildTableWrapper = style({
   // },
 });
 // descendant: AG Grid header text
-globalStyle(`${ChildTableWrapper} :global(.ag-header-cell-text)`, {
+globalStyle(`${ChildTableWrapper} .ag-header-cell-text`, {
   fontSize: "12px !important",
 });
 

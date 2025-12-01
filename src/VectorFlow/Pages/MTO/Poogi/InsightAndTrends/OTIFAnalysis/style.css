@@ -1,0 +1,18 @@
+.tooltip-content {
+    color: white;
+    background-color: #6c696a;
+    padding: 8px;
+    font-family: 'Roboto', sans-serif;
+  }
+
+  .tooltip-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .tooltip-value {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+  }

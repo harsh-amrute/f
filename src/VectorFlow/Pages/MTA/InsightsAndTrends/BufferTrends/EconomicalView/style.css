@@ -1,0 +1,71 @@
+.tooltip-wrapper {
+  background: #6c696a;
+  color: white;
+  /* padding: 10px; */
+  font-family: "Roboto", sans-serif;
+}
+
+.tooltip-header {
+  color: white;
+  padding: 5px;
+  text-align: center;
+}
+
+.tooltip-table {
+  width: 100%;
+  color: white;
+  border-collapse: collapse;
+}
+
+.tooltip-th-left {
+  text-align: left;
+}
+
+.tooltip-th-right {
+  text-align: right;
+}
+
+.tooltip-td {
+  padding: 5px;
+  background-color: #6c696a;
+}
+
+.tooltip-td-right {
+  text-align: right;
+}
+
+.color-label {
+  display: flex;
+  align-items: center;
+}
+
+.color-box {
+  margin-right: 10px;
+  height: 10px;
+  width: 15px;
+  /* background-color will still be inline due to dynamic nature,
+       but you can set dynamically with JS as well if necessary */
+}
+
+.font-bold {
+  font-weight: bold;
+}
+
+.color-value-b {
+  background-color: "Black";
+}
+.color-value-r {
+  background-color: "Red";
+}
+.color-value-y {
+  background-color: "#FFBF00";
+}
+.color-value-g {
+  background-color: "Green";
+}
+.color-value-bu {
+  background-color: "Blue";
+}
+.color-value-w {
+  background-color: "grey";
+}

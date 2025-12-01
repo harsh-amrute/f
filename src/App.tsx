@@ -3,8 +3,8 @@ import { initRoutes } from './app-routes'
 import { AutoLogoutTimer } from './VectorFlow/Pages/MTO/Common/AutoLogout/AutoLogoutTimer';
 import { UserDataContext } from './context';
 import { useState } from 'react';
-import "./react-select.css";
-import "./agCharts.css";
+//import "./react-select.css";
+// import "./agCharts.css";
 
 function App() {
   const [isSideBarOpen, toggleSidebar] = useState<boolean>(false)

@@ -660,7 +660,7 @@ const useResearchInsights = () => {
             headerCheckboxSelection: true,
             headerCheckboxSelectionCurrentPageOnly: true,
             resizable: false,
-            suppressMenu: true,
+            suppressHeaderMenuButton: true,
             maxWidth: 50,
             pinned: 'left',
             filter: false,

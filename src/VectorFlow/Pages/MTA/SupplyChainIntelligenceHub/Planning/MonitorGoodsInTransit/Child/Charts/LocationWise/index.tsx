@@ -261,6 +261,10 @@ const MonitorGITChildLocationWiseCharts = ({
     // should be added in chartParams2
     "This box plot graph displays the statistical distribution of delay days in transport for various locations. Each box represents the range of delay days as on today",
   ];
+  const nonce =
+  (window as any).__nonce__ ??
+  document.querySelector<HTMLMetaElement>('meta[name="csp-nonce"]')?.content?.trim();
+
 
   return (
     <>
@@ -326,11 +330,12 @@ const MonitorGITChildLocationWiseCharts = ({
               </div>
               <hr className={SCHorizontalDivider} />
               <div className="boxplot-chart">
-                {/* <GlobalStyle /> */}
+                {/* <GlobalStyle /> */} 
                 <Chart
                   options={{
                     chart: {
                       type: "boxPlot",
+                      nonce: nonce,
                       animations: {
                         enabled: false,
                         easing: "easeinout",
@@ -354,7 +359,7 @@ const MonitorGITChildLocationWiseCharts = ({
                             '<img src ="/assets/img/downlod-icon.svg" width=16 height=16 class="download-icon" />',
                         },
                       },
-                    },
+                    }as any,
                     grid: {
                       show: true,
                       strokeDashArray: 4, // Length of dashes

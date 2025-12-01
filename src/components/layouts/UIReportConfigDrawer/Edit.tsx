@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { useCombobox } from "downshift";
+
 import {
   inputWrapper,
   urlsForm,
@@ -15,6 +15,7 @@ import {
 import { useUserData } from "../../../context";
 import { notifyError, notifySuccess } from "../../../helpers/notify";
 import { useEditReportConfiguration } from "../../../VectorFlow/Services/MTA/MDM/index";
+import Select, { CSSObjectWithLabel } from "react-select";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
 import * as globalStyles from "../../../styles/global"; // keep import unchanged
 
@@ -30,116 +31,15 @@ interface FormDataType {
   TagID: string;
 }
 
-interface DropdownProps {
-  options: any[];
-  selectedValue: any;
-  onChange: (value: any) => void;
-  placeholder?: string;
-  themeUi: string;
-  width?: string;
-}
-
-// ✅ Reusable CSP-safe Downshift dropdown
-const Dropdown: React.FC<DropdownProps> = ({
-  options,
-  selectedValue,
-  onChange,
-  placeholder,
-  themeUi,
-  width = "180px",
-}) => {
-  const selectedItem = options.find((opt) => opt.value === selectedValue);
-
-  const {
-    isOpen,
-    getToggleButtonProps,
-    getMenuProps,
-    getItemProps,
-    highlightedIndex,
-    selectItem,
-  } = useCombobox({
-    items: options,
-    selectedItem,
-    onSelectedItemChange: ({ selectedItem }) => {
-      if (selectedItem) onChange(selectedItem.value);
-    },
-  });
-
-  const themeColor = themeUi === "REGALBLAZE" ? "#FCA311" : "#BC3D80";
-
-  return (
-    <div style={{ position: "relative", width }}>
-      <button
-        type="button"
-        {...getToggleButtonProps()}
-        style={{
-          width: "100%",
-          backgroundColor: "rgb(247,247,247)",
-          border: `2px solid transparent`,
-          borderRadius: 6,
-          fontSize: 12,
-          padding: "6px 8px",
-          textAlign: "left",
-          cursor: "pointer",
-        }}
-      >
-        {selectedItem ? selectedItem.label : placeholder}
-      </button>
-      <ul
-        {...getMenuProps()}
-        style={{
-          position: "absolute",
-          top: "100%",
-          left: 0,
-          width: "100%",
-          maxHeight: "140px",
-          overflowY: "auto",
-          backgroundColor: "white",
-          border: isOpen ? `1px solid ${themeColor}` : "none",
-          borderRadius: 6,
-          marginTop: 2,
-          padding: 0,
-          listStyle: "none",
-          zIndex: 999,
-        }}
-      >
-        {isOpen &&
-          options.map((item, index) => (
-            <li
-              key={item.value}
-              {...getItemProps({ item, index })}
-              style={{
-                fontSize: 11,
-                padding: "5px 8px",
-                backgroundColor:
-                  highlightedIndex === index
-                    ? themeUi === "REGALBLAZE"
-                      ? "rgba(252, 163, 17, 0.3)"
-                      : "#bc3d814d"
-                    : item.value === selectedValue
-                    ? themeColor
-                    : "white",
-                color:
-                  highlightedIndex === index || item.value === selectedValue
-                    ? "black"
-                    : "inherit",
-                cursor: "pointer",
-              }}
-              onMouseEnter={() => selectItem(item)}
-            >
-              {item.label}
-            </li>
-          ))}
-      </ul>
-    </div>
-  );
-};
-
 const EditReportConfig = (props: { data: any; cb: () => void }) => {
   const { data, cb } = props;
+
   const { user } = useUserData();
+
   const themeUi = user.user.theme_ui;
+
   const [formData, setFormData] = useState<FormDataType>({ ...data });
+
   const { mutateAsync: editReportConfiguration } = useEditReportConfiguration();
 
   const handleSelectChange = (name: any, value: any) => {
@@ -275,23 +175,94 @@ const EditReportConfig = (props: { data: any; cb: () => void }) => {
       </div>
       <div style={{ display: "flex" }}>
         <div className={inputWrapper} style={{ marginLeft: "10px" }}>
-          <label className={label}>Cell Alignment</label>
-          <Dropdown
+          <label className={label} htmlFor="CellAlignment">
+            {" "}
+            Cell Alignment
+          </label>
+          <Select
             options={alignmentOptions}
-            selectedValue={formData.CellAlignment}
-            onChange={(v) => handleSelectChange("CellAlignment", v)}
-            placeholder="Select Cell Alignment"
-            themeUi={themeUi}
+            placeholder={"Select Cell Alignment"}
+            onChange={(data: any) =>
+              handleSelectChange("CellAlignment", data.value)
+            }
+            styles={{
+              option: (baseStyles, { isSelected }) => ({
+                ...baseStyles,
+                fontSize: 11,
+                backgroundColor: isSelected
+                  ? themeUi === "REGALBLAZE"
+                    ? "#FCA311"
+                    : "#BC3D80"
+                  : "white",
+
+                "&:hover": {
+                  backgroundColor:
+                    themeUi === "REGALBLAZE"
+                      ? "rgb(252, 163, 17,0.3) "
+                      : "#bc3d814d",
+                  color: "black",
+                },
+              }as CSSObjectWithLabel),
+              control: (baseStyles, { isFocused }) => ({
+                ...baseStyles,
+                fontSize: 12,
+                borderColor: !isFocused ? "transparent" : "#BC3D80",
+                borderWidth: 2,
+                boxShadow: "none",
+                backgroundColor: "rgb(247, 247, 247)",
+                "&:hover": {
+                  borderColor: "#BC3D80",
+                },
+              }as CSSObjectWithLabel),
+            }}
+            value={alignmentOptions.find(
+              (option: any) =>
+                option.value.trim() === formData.CellAlignment.trim()
+            )}
           />
         </div>
         <div className={inputWrapper}>
-          <label className={label}>Visible</label>
-          <Dropdown
+          <label className={label} htmlFor="Visible">
+            {" "}
+            Visible
+          </label>
+          <Select
             options={flagOptions}
-            selectedValue={formData.Visible}
-            onChange={(v) => handleSelectChange("Visible", v)}
-            placeholder="Select Visible"
-            themeUi={themeUi}
+            placeholder={"Select Visible"}
+            onChange={(data: any) => handleSelectChange("Visible", data.value)}
+            styles={{
+              option: (baseStyles, { isSelected }) => ({
+                ...baseStyles,
+                fontSize: 11,
+                backgroundColor: isSelected
+                  ? themeUi === "REGALBLAZE"
+                    ? "#FCA311"
+                    : "#BC3D80"
+                  : "white",
+
+                "&:hover": {
+                  backgroundColor:
+                    themeUi === "REGALBLAZE"
+                      ? "rgb(252, 163, 17,0.3) "
+                      : "#bc3d814d",
+                  color: "black",
+                },
+              }as CSSObjectWithLabel),
+              control: (baseStyles, { isFocused }) => ({
+                ...baseStyles,
+                fontSize: 12,
+                borderColor: !isFocused ? "transparent" : "#BC3D80",
+                borderWidth: 2,
+                boxShadow: "none",
+                backgroundColor: "rgb(247, 247, 247)",
+                "&:hover": {
+                  borderColor: "#BC3D80",
+                },
+              }as CSSObjectWithLabel),
+            }}
+            value={flagOptions.find(
+              (option: any) => option.value === formData.Visible
+            )}
           />
         </div>
       </div>

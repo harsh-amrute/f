@@ -82,7 +82,7 @@ const MTOMaterialSO = ({
       colors.c2 === "#E53F40" ||
       colors.c3 === "#EBBF2B" ? (
         <Tooltip
-          disableStyleInjection={true}
+          disableStyleInjection="core"
           tooltipZoom={1}
           zoom="1"
           content={getToolTipContent("Red", ToolTipdata)}
@@ -113,7 +113,7 @@ const MTOMaterialSO = ({
         </Tooltip>
       ) : colors.c1 === "#418D18" ? (
         <Tooltip
-          disableStyleInjection={true}
+          disableStyleInjection="core"
           tooltipZoom={1}
           content={getToolTipContent("Green", ToolTipdata)}
         >
@@ -129,7 +129,7 @@ const MTOMaterialSO = ({
         </Tooltip>
       ) : (
         <Tooltip
-          disableStyleInjection={true}
+          disableStyleInjection="core"
           tooltipZoom="1"
           content={getToolTipContent("Blue", ToolTipdata)}
         >
@@ -211,7 +211,7 @@ const MTOMaterialSO = ({
       <div className={BtnGroup}>
         <button className={Btns}>
           <Tooltip
-            disableStyleInjection={true}
+            disableStyleInjection="core"
             tooltipZoom="1"
             content={
               <div style={{ fontSize: "10px", padding: "10px 5px 10px 5px" }}>
@@ -236,7 +236,7 @@ const MTOMaterialSO = ({
 
         <button className={Btns}>
           <Tooltip
-            disableStyleInjection={true}
+            disableStyleInjection="core"
             tooltipZoom="1"
             content={
               <div style={{ fontSize: "10px", padding: "10px 5px 10px 5px" }}>
@@ -261,7 +261,7 @@ const MTOMaterialSO = ({
 
         <button className={Btns}>
           <Tooltip
-            disableStyleInjection={true}
+            disableStyleInjection="core"
             tooltipZoom="1"
             content={
               <div style={{ fontSize: "10px", padding: "10px 5px 10px 5px" }}>

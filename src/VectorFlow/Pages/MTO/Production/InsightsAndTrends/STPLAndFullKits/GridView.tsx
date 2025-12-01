@@ -77,7 +77,7 @@ const GridView = ({
       masterDetail: true,
       detailRowAutoHeight: true,
       detailCellRendererParams: {
-        suppressMenu: true,
+        suppressHeaderMenuButton: true,
         detailGridOptions: {
           rowHeight: 30,
           domLayout: "autoHeight",
@@ -95,7 +95,7 @@ const GridView = ({
           ],
           defaultColDef: {
             flex: 1,
-            suppressMenu: true,
+            suppressHeaderMenuButton: true,
             cellStyle: {
               fontSize: "14px",
               display: "flex",

@@ -103,7 +103,7 @@ const DayWiseCoverageTable = ({
     autoGroupColumnDef: {
       headerName: "Group",
       cellRenderer: CustomGroupCellRenderer,
-      suppressMenu: true,
+      suppressHeaderMenuButton: true,
       initialWidth: 260,
     },
     masterDetail: true,

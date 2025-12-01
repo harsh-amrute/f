@@ -7,6 +7,7 @@ import VFFloatingTab from "../../../../../../../components/VectorFLOW/commons/VF
 import { myFutureOrderTabsFix } from "../styles.css";
 import CustomLegend from "../../../../../../../VectorFlow/Pages/MTO/Common/CustomLegend/index";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
+import "./style.css";
 
 const GraphView = ({ Viewtabs, currView, setCurrView, selectedCCR, horizonData, graphData, cwl, selectedAction, currTab }: any) => {
   
@@ -169,22 +170,12 @@ const GraphView = ({ Viewtabs, currView, setCurrView, selectedCCR, horizonData, 
     renderer: ({ datum }: any) => {
       const label = currTab === "Load Wise" ? "Load" : "Pending CCR Quantity";
       return `
-        <div style="
-          background: white;
-          color: #000;
-          padding: 12px 16px;
-          min-width: 120px;
-          text-align: center;
-          border-radius: 6px;
-          box-shadow: 0 0 6px rgba(0,0,0,0.15);
-        ">
-          <div style="color:#555; font-weight:600; font-size:12px; margin-bottom:4px;">
-            ${label}
-          </div>
-          <div style="font-size:12px;">${datum.load}</div>
-        </div>
-      `;
-    }
+      <div class="tooltip-box">
+        <div class="tooltip-label">${label}</div>
+        <div class="tooltip-load">${datum.load}</div>
+      </div>
+    `;
+    },
   });
 
   const [chartoptions, setChartOptions] = useState<any>({
@@ -248,21 +239,11 @@ const GraphView = ({ Viewtabs, currView, setCurrView, selectedCCR, horizonData, 
         },
         tooltip: {
           renderer: ({ datum }: any) => `
-            <div style="
-              background: white;
-              color: #000;
-              padding: 12px 16px;
-              min-width: 100px;
-              text-align: center;
-              border-radius: 6px;
-              box-shadow: 0 0 6px rgba(0,0,0,0.15);
-            ">
-              <div style="color:#FF5959; font-weight:600; font-size:12px; margin-bottom:4px;">
-                Past
-              </div>
-              <div style="font-size:12px;">${datum.past}</div>
+            <div class="tooltip-box">
+              <div class="tooltip-label past-label">Past</div>
+              <div class="tooltip-value">${datum.past}</div>
             </div>
-          `
+          `,
         },
         itemStyler: ({ datum }: any) =>
           datum.past ? {} : { fillOpacity: 0, strokeOpacity: 0 }
@@ -285,23 +266,13 @@ const GraphView = ({ Viewtabs, currView, setCurrView, selectedCCR, horizonData, 
         },
         tooltip: {
           renderer: ({ datum }: any) => `
-            <div style="
-              background: white;
-              color: #000;
-              padding: 12px 16px;
-              min-width: 120px;
-              text-align: center;
-              border-radius: 6px;
-              box-shadow: 0 0 6px rgba(0,0,0,0.15);
-            ">
-              <div style="color:#820f4c; font-weight:600; font-size:12px; margin-bottom:4px;">
-                Limit
-              </div>
-              <div style="font-size:12px;">${datum.limit}</div>
+            <div class="tooltip-box">
+              <div class="tooltip-label limit-label">Limit</div>
+              <div class="tooltip-value">${datum.limit}</div>
             </div>
-          `
-        }
-      }
+          `,
+        },
+      },
     ],
     axes: [
       {

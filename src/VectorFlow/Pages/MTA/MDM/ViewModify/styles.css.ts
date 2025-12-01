@@ -270,7 +270,7 @@ export const SeasonalityQuickFilter = style({
       top: 0,
       height: 30,
       width: 8,
-      backgroundColor: `var(${quickFilterStateColorVar})`,
+      backgroundColor: quickFilterStateColorVar,
       transition: '0.3s ease-out',
     },
     '&[data-active="true"]': { color: 'white' },

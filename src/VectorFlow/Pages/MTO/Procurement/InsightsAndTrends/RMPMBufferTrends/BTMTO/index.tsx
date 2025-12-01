@@ -13,6 +13,7 @@ import moment from "moment";
 import { useGetDate } from "../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting";
 import { useUserData } from "../../../../../../../context";
 import VFButton from "../../../../../../../components/VectorFLOW/commons/VFButton";
+import "./style.css"
 
 const BTMTO = ({ isMTO, data }: { isMTO: boolean; data: any }) => {
   const { user } = useUserData();
@@ -136,95 +137,61 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean; data: any }) => {
     }
 
     return `
-        <div style="background:#6C696A" >
-        <div  style=" color: white; padding-top: 10px; padding-bottom:4px;background-color: #6C696A; display: flex; justify-content: center; align-items: center">
-            ${datum[xKey]}
-        </div>
-        <div style="color: white; background-color: #6C696A; padding: 10px">
-            <table style="width: 100%; color: white; border-collapse: collapse;">
-            <thead style="border-bottom: 1px dashed white; border-top: 1px dashed white">
-                <tr>
-                    <th style="padding: 5px;  background-color: #6C696A; text-align: left; width: 120px"></th>
-                    <th style="font-size: 8px; padding: 5px;  background-color: #6C696A; text-align: right;">Percentage</th>
-                    <th style="font-size: 8px; padding: 5px;  background-color: #6C696A; text-align: right;">Count</th>
-                </tr>
-            </thead>
-            <tbody>
+  <div class="tooltip-container">
+    <div class="tooltip-header">
+      ${datum[xKey]}
+    </div>
+    <div class="tooltip-body">
+      <table class="tooltip-table">
+        <thead>
+          <tr>
+            <th class="empty-cell"></th>
+            <th class="header-cell">Percentage</th>
+            <th class="header-cell">Count</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="color-label">
+              <div class="color-box black"></div>Black
+            </td>
+            <td class="percentage-cell">${Math.round(perArr[0])}%</td>
+            <td class="count-cell">${countArr[0]}</td>
+          </tr>
+          <tr>
+            <td class="color-label">
+              <div class="color-box red"></div>Red
+            </td>
+            <td class="percentage-cell">${Math.round(perArr[1])}%</td>
+            <td class="count-cell">${countArr[1]}</td>
+          </tr>
+          <tr>
+            <td class="color-label">
+              <div class="color-box yellow"></div>Yellow
+            </td>
+            <td class="percentage-cell">${Math.round(perArr[2])}%</td>
+            <td class="count-cell">${countArr[2]}</td>
+          </tr>
+          <tr>
+            <td class="color-label">
+              <div class="color-box green"></div>Green
+            </td>
+            <td class="percentage-cell">${Math.round(perArr[3])}%</td>
+            <td class="count-cell">${countArr[3]}</td>
+          </tr>
+          <tr>
+            <td class="color-label">
+              <div class="color-box grey"></div>White
+            </td>
+            <td class="percentage-cell">${Math.round(perArr[4])}%</td>
+            <td class="count-cell">${countArr[4]}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+`;
 
-                <tr>
-                    <td style="padding: 5px; background-color: #6C696A;">
-                        <div style="display: flex; align-items: center;">
-                            <div style="margin-right: 10px; height: 3px; width: 15px; background-color: black"></div>
-                            Black
-                        </div>
-                    </td>
-                    <td style="padding: 5px; background-color: #6C696A;">${Math.round(
-                      perArr[0]
-                    )}%</td>
-                    <td style="padding: 5px; background-color: #6C696A;">${
-                      countArr[0]
-                    }</td>
-                </tr>
-                <tr>
-                    <td style="padding: 5px; background-color: #6C696A;">
-                        <div style="display: flex; align-items: center;">
-                            <div style="margin-right: 10px; height: 3px; width: 15px; background-color: red"></div>
-                            Red
-                        </div>
-                    </td>
-                    <td style="padding: 5px; background-color: #6C696A;">${Math.round(
-                      perArr[1]
-                    )}%</td>
-                    <td style="padding: 5px; background-color: #6C696A;">${
-                      countArr[1]
-                    }</td>
-                </tr>
-                <tr>
-                    <td style="padding: 5px; background-color: #6C696A;">
-                        <div style="display: flex; align-items: center;">
-                            <div style="margin-right: 10px; height: 3px; width: 15px; background-color: yellow"></div>
-                            Yellow
-                        </div>
-                    </td>
-                    <td style="padding: 5px; background-color: #6C696A;">${Math.round(
-                      perArr[2]
-                    )}%</td>
-                    <td style="padding: 5px; background-color: #6C696A;">${
-                      countArr[2]
-                    }</td>
-                </tr>
-                <tr>
-                    <td style="padding: 5px; background-color: #6C696A;">
-                        <div style="display: flex; align-items: center;">
-                            <div style="margin-right: 10px; height: 3px; width: 15px; background-color: green"></div>
-                            Green
-                        </div>
-                    </td>
-                    <td style="padding: 5px; background-color: #6C696A;">${Math.round(
-                      perArr[3]
-                    )}%</td>
-                    <td style="padding: 5px; background-color: #6C696A;">${
-                      countArr[3]
-                    }</td>
-                </tr>
-                <tr>
-                    <td style="padding: 5px; background-color: #6C696A;">
-                        <div style="display: flex; align-items: center;">
-                            <div style="margin-right: 10px; height: 3px; width: 15px; background-color: grey"></div>
-                            White
-                        </div>
-                    </td>
-                    <td style="padding: 5px; background-color: #6C696A;">${Math.round(
-                      perArr[4]
-                    )}%</td>
-                    <td style="padding: 5px; background-color: #6C696A;">${
-                      countArr[4]
-                    }</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        </div>`;
   }
 
   function convertDate(dateStr: string): string {

@@ -215,7 +215,7 @@ const Step2 = forwardRef(
         field: "",
         headerCheckboxSelection: true,
         checkboxSelection: true,
-        suppressMenu: true,
+        suppressHeaderMenuButton: true,
         maxWidth: 35,
         position: 0,
         filter: false,
@@ -235,7 +235,7 @@ const Step2 = forwardRef(
               style={{ height: "100%", display: "flex", alignItems: "center" }}
             >
               <Tooltip
-                disableStyleInjection={true}
+                disableStyleInjection="core"
                 content={
                   <div
                     style={{
@@ -317,7 +317,7 @@ const Step2 = forwardRef(
             </div>
           );
         },
-        suppressMenu: true,
+        suppressHeaderMenuButton: true,
         position: 1,
         filter: false,
       },
@@ -354,41 +354,28 @@ const Step2 = forwardRef(
     const tooltipValues = (value: any) => {
       return `${value} ${value == 1 ? " day" : " days"}`;
     };
-
     function TooltipRenderer({ datum, xKey }: any) {
       return `
-        <div style="background:#6C696A; style="transform: translateX(120px)" >
-        <div  style=" color: white; padding: 10px 10px 4px;background-color: #6C696A; display: flex; justify-content: center; align-items: center; border-bottom: 1px dashed white">
+        <div class="tooltip-container transform-translate-x">
+          <div class="tooltip-header">
             ${datum[xKey]}
-        </div>
-        <div style="color: white; background-color: #6C696A; padding: 10px;">
-          <div style="display: flex; align-items: center;">
-            <div style="margin-right: 10px; height: 3px; width: 15px; background-color: ${
-              barColors["ccrFolWithHoliday"]
-            }"></div>
-            FOL with holidays: ${tooltipValues(
-              datum["ccrFolWithHoliday"]
-            )} (FOL- ${tooltipValues(datum["FOL"])}, Holidays- ${tooltipValues(
-        datum["holidays"]
-      )} )
           </div>
-          <div style="display: flex; align-items: center;">
-            <div style="margin-right: 10px; height: 3px; width: 15px; background-color: ${
-              barColors["orderLoad"]
-            }"></div>
-            SOL: ${tooltipValues(datum["orderLoad"])}
+          <div class="tooltip-body">
+            <div class="tooltip-row">
+              <div class="color-box barcolor-${barColors["ccrFolWithHoliday"]}"></div>
+              <div>
+                FOL with holidays: ${tooltipValues(datum["ccrFolWithHoliday"])} (FOL- ${tooltipValues(datum["FOL"])}, Holidays- ${tooltipValues(datum["holidays"])})
+              </div>
+            </div>
+            <div class="tooltip-row">
+              <div class="color-box barcolor-${barColors["orderLoad"]}"></div>
+              <div>SOL: ${tooltipValues(datum["orderLoad"])}</div>
+            </div>
           </div>
         </div>
-        </div>`;
-
-      // dont remove below code require for fol gap phase 2
-      {
-        /*<div style="display: flex; align-items: center;">
-            <div style="margin-right: 10px; height: 3px; width: 15px; background-color: ${barColors["fol_gap"]}"></div>
-            FOL Gap: ${tooltipValues(datum["fol_gap"])}
-          </div>*/
-      }
+      `;
     }
+
 
     const chartOptions: any = {
       data: chartData,

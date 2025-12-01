@@ -6,7 +6,7 @@ describe("Tooltip", () => {
   afterAll(() => jest.useRealTimers());
   it("renders without crashing", () => {
     const { container } = render(
-      <Tooltip disableStyleInjection={true} content="Tooltip content">
+      <Tooltip disableStyleInjection="core" content="Tooltip content">
         Hover me
       </Tooltip>
     );
@@ -19,7 +19,7 @@ describe("Tooltip", () => {
 
   it("shows tooltip on mouse enter", () => {
     const { getByText, queryByText } = render(
-      <Tooltip disableStyleInjection={true} content="Tooltip content">
+      <Tooltip disableStyleInjection="core" content="Tooltip content">
         Hover me
       </Tooltip>
     );
@@ -34,7 +34,7 @@ describe("Tooltip", () => {
 
   it("hides tooltip on mouse leave", () => {
     const { getByText, queryByText } = render(
-      <Tooltip disableStyleInjection={true} content="Tooltip content">
+      <Tooltip disableStyleInjection="core" content="Tooltip content">
         Hover me
       </Tooltip>
     );
@@ -58,7 +58,7 @@ describe("Tooltip", () => {
     const { getByText, queryByText } = render(
       <div style={{ width: "100%", display: "flex", justifyContent: "end" }}>
         <Tooltip
-          disableStyleInjection={true}
+          disableStyleInjection="core"
           content="Tooltip content Tooltip contentTooltip contentTooltip contentTooltip contentTooltip contentTooltip contentTooltip contentTooltip content"
         >
           Hover me

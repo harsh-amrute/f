@@ -8,7 +8,7 @@ import {
   iconWrapper,
   checkboxWrapper,
 } from "./style.css";
-// import Select, { components } from "react-select";
+import Select, { components, CSSObjectWithLabel } from "react-select";
 import {
   useThemeStyles,
   useColorThemeStyles,
@@ -24,9 +24,6 @@ import {
 import { useUserData } from "../../../../../context";
 import { BPRFilter, BPRFilterState } from "../../../../../VectorFlow/types/BPR";
 import "./styles.css";
-import DownshiftSelect from "./DownshiftSelect/DownshiftSelect";
-import DownshiftMultiSelect from "./DownshiftSelect/DownshiftMultiSelect";
-import { COptColorCheckbox } from "./DownshiftSelect/utils/custom-options";
 
 interface AvailabilityFilterProps {
   filters: any;
@@ -41,92 +38,64 @@ interface TagsFilterProps {
   onChange: (name: string, checked: boolean) => void;
 }
 
-interface CategoryOptionProps {
-  item: { label: string; value: string };
-  isSelected: boolean;
-  isHighlighted: boolean;
-  getItemProps?: (options: any) => any;
-}
+const CustomCategoryOption = (props: any) => {
+  const optionStyles = useColorOptionStyles();
 
-export const CustomCategoryOption = ({
-  item,
-  isSelected,
-  isHighlighted,
-}: CategoryOptionProps): JSX.Element => {
   return (
-    <div
-      className={`flex items-center gap-2 px-3 py-1 cursor-pointer ${
-        isHighlighted ? "bg-gray-100" : ""
-      } ${isSelected ? "bg-gray-200 font-semibold" : ""}`}
-    >
-      <input
-        type="checkbox"
-        checked={isSelected}
-        readOnly
-        className="w-4 h-4"
-      />
-      <span>{item.label}</span>
-    </div>
+    <components.Option {...props}>
+      <div style={optionStyles.optionContainer}>
+        <input
+          type="checkbox"
+          checked={props.isSelected}
+          style={optionStyles.checkbox}
+          readOnly
+        />
+        <span style={optionStyles.colorName}>{props.data.label}</span>
+      </div>
+    </components.Option>
   );
 };
 
-// interface ColorOptionProps {
-//   item: { label: string; value: string; color?: string };
-//   isSelected: boolean;
-//   isHighlighted: boolean;
-// }
+const CustomOption = (props: any) => {
+  const optionStyles = useColorOptionStyles();
+  return (
+    <components.Option {...props}>
+      <div style={optionStyles.optionContainer}>
+        <input
+          type="checkbox"
+          checked={props.isSelected}
+          style={optionStyles.checkbox}
+          readOnly
+        />
+        <div
+          style={{
+            ...optionStyles.colorPanel,
+            backgroundColor: props.data.color || "#ccc",
+          }}
+        />
+        <span style={optionStyles.colorName}>{props.data.label}</span>
+      </div>
+    </components.Option>
+  );
+};
 
-// export const CustomOption = ({
-//   item,
-//   isSelected,
-//   isHighlighted,
-// }: CategoryOptionProps) => {
-//   return (
-//     <div
-//       className={`flex items-center gap-2 px-3 py-1 cursor-pointer ${
-//         isHighlighted ? "bg-gray-100" : ""
-//       } ${isSelected ? "bg-gray-200 font-semibold" : ""}`}
-//     >
-//       <input
-//         type="checkbox"
-//         checked={isSelected}
-//         readOnly
-//         className="w-4 h-4"
-//       />
-//       <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: "#ccc" }} />
-//       <span>{item.label}</span>
-//     </div>
-//   );
-// };
-
-// interface MultiValueProps {
-//   item: { label: string; value: string; color?: string };
-//   onRemove: () => void;
-// }
-
-// export const CustomMultiValue: React.FC<MultiValueProps> = ({
-//   item,
-//   onRemove,
-// }) => {
-//   return (
-//     <span className="flex items-center gap-1 bg-gray-200 px-2 py-1 rounded-full text-sm">
-//       {item.color && (
-//         <span
-//           className="w-3 h-3 rounded-sm inline-block"
-//           style={{ backgroundColor: item.color }}
-//         />
-//       )}
-//       {item.label}
-//       <button
-//         type="button"
-//         onClick={onRemove}
-//         className="ml-1 text-gray-500 hover:text-gray-800"
-//       >
-//         ×
-//       </button>
-//     </span>
-//   );
-// };
+const CustomMultiValue = (props: any) => {
+  return (
+    <components.MultiValue {...props}>
+      <span
+        style={{
+          backgroundColor: props.data.color,
+          width: "12px",
+          height: "12px",
+          borderRadius: "3px",
+          display: "inline-block",
+          marginRight: "5px",
+        }}
+      />
+      {props.children}
+    </components.MultiValue>
+  );
+};
 
 const TagsFilter: React.FC<TagsFilterProps> = ({ name, checked, onChange }) => {
   const { user } = useUserData();
@@ -391,7 +360,7 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
           {availabilityFilterOptions.map((column) => (
             <div className={dropDownRow} key={column.value}>
               <div className={dropDownWrapper}>
-                {/* <Select
+                <Select
                   placeholder={column.label}
                   classNamePrefix="rs"
                   styles={styles}
@@ -402,33 +371,10 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
                   }}
                   isDisabled={true}
                   value={{ label: column.label, value: column.value }}
-                />  */}
-                <DownshiftSelect
-                  options={[]}
-                  placeholder={column.label}
-                  styles={styles}
-                  components={{
-                    IndicatorSeparator: () => null,
-                    DropdownIndicator: () => null,
-                    Menu: () => null,
-                  }}
-                  disabled={true} // 🔸 use 'disabled' instead of 'isDisabled'
-                  value={{ label: column.label, value: column.value }}
                 />
               </div>
               <div className={dropDownWrapper}>
-                <DownshiftSelect
-                  options={numericOperators}
-                  placeholder="Select an Operation"
-                  styles={styles} // optional, for compatibility only
-                  isSearchable={false}
-                  components={{ IndicatorSeparator: () => null }} // still accepted
-                  value={rowSelections[column.value]?.operation || null}
-                  onChange={(selected) =>
-                    onFilterChange(column.value, "operation", selected)
-                  }
-                />
-                {/* <Select
+                <Select
                   options={numericOperators}
                   classNamePrefix="rs"
                   placeholder="Select an Operation"
@@ -439,7 +385,7 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
                   onChange={(selected) =>
                     onFilterChange(column.value, "operation", selected)
                   }
-                /> */}
+                />
               </div>
               <div className={dropDownWrapper}>
                 <input
@@ -503,17 +449,19 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
                   maxWidth: (currentTab === 'both') ? "calc(50% - 10px)" : "100%"
                 }}>
                   <div className={textWrapper}>On Hand Inventory Color</div>
-                  <div
-                    className={dropDownWrapper}
-                    style={{ gap: "20px", maxWidth: "360px" }}
-                  >
-                    <DownshiftMultiSelect
+                  <div className={dropDownWrapper}>
+                    <Select
                       options={colorOptions}
-                      // classNamePrefix="rs"
-                      // isMulti
-                      // closeMenuOnSelect={false}
+                      isMulti
+                      closeMenuOnSelect={false}
                       hideSelectedOptions={false}
-                      OptionComponent={COptColorCheckbox}
+                      components={{
+                        Option: CustomOption,
+                        MultiValue: CustomMultiValue,
+                        IndicatorSeparator: () => null,
+                        ClearIndicator: () => null,
+                      }}
+                      styles={colorStyles}
                       placeholder="Select Color"
                       value={colorOptions.filter((opt) =>
                         selectedOptions.onHandInventoryColor.includes(opt.value)
@@ -538,7 +486,8 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
                   maxWidth: (currentTab === 'both') ? "calc(50% - 10px)" : "100%"
                 }}>
                   <div className={textWrapper}>Pipeline Inventory Color</div>
-                  {/* <Select
+                  <div className={dropDownWrapper}>
+                    <Select
                       options={colorOptions}
                       classNamePrefix="rs"
                       isMulti
@@ -553,9 +502,7 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
                       styles={colorStyles}
                       placeholder="Select Color"
                       value={colorOptions.filter((opt) =>
-                        selectedOptions.pipelineInventoryColor.includes(
-                          opt.value
-                        )
+                        selectedOptions.pipelineInventoryColor.includes(opt.value)
                       )}
                       onChange={(newValue) =>
                         handleSelectChange({
@@ -565,25 +512,8 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
                           parentId: "availabilityFilter",
                         })
                       }
-                    /> */}
-                  <DownshiftMultiSelect
-                    options={colorOptions}
-                    value={colorOptions.filter((opt) =>
-                      selectedOptions.pipelineInventoryColor.includes(opt.value)
-                    )}
-                    onChange={(newValue) =>
-                      handleSelectChange({
-                        newValue,
-                        header: "PIC",
-                        filterId: "AF6",
-                        parentId: "availabilityFilter",
-                      })
-                    }
-                    placeholder="Select Color"
-                    hideSelectedOptions={false}
-                    OptionComponent={COptColorCheckbox}
-                    // MultiValueComponent={CustomMultiValue}
-                  />
+                    />
+                  </div>
                 </div>
               )}
             </div>
@@ -614,7 +544,7 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
           <div className={filterColumn}>
             <div className={textWrapper}>Category</div>
             <div className={dropDownWrapper} style={{ gap: "20px" }}>
-              {/* <Select
+              <Select
                 options={categoryOptions}
                 classNamePrefix="rs"
                 isMulti
@@ -631,7 +561,7 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
                     ...base,
                     maxHeight: 150,
                     overflowY: "auto",
-                  }),
+                  }as CSSObjectWithLabel),
                 }}
                 placeholder="Select Category"
                 value={categoryOptions.filter((opt) =>
@@ -645,29 +575,7 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
                     parentId: "availabilityFilter",
                   })
                 }
-              /> */}
-              <div
-                className={dropDownWrapper}
-                style={{ gap: "20px", maxWidth: "360px" }}
-              >
-                <DownshiftMultiSelect
-                  options={categoryOptions}
-                  value={categoryOptions.filter((opt) =>
-                    selectedOptions.category.includes(opt.value)
-                  )}
-                  onChange={(newValue) =>
-                    handleSelectChange({
-                      newValue,
-                      header: "Category",
-                      filterId: "AF8",
-                      parentId: "availabilityFilter",
-                    })
-                  }
-                  placeholder="Select Category"
-                  hideSelectedOptions={false}
-                  OptionComponent={CustomCategoryOption}
-                />
-              </div>
+              />
             </div>
           </div>
         </div>

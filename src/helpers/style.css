@@ -1,0 +1,132 @@
+.tooltip-wrapper {
+  border-radius: 4px;
+  min-width: 120px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  padding: 0;
+}
+
+.tooltip-header {
+  padding: 6px 12px;
+  color: white;
+  font-weight: 600;
+  font-size: 13px;
+  border-radius: 4px 4px 0 0;
+}
+
+.tooltip-body {
+  padding: 8px 12px !important;
+  background: white !important;
+  border-radius: 0 0 4px 4px !important;
+  color: #333 !important;
+
+  font-size: 13px !important;
+}
+
+.tooltip-container {
+  /* background: #6c696a; */
+  border-radius: 6px;
+  overflow: hidden;
+  text-align: center;
+  min-width: 140px;
+}
+
+.pie-tooltip-container {
+  background: #6c696a;
+  border-radius: 6px;
+  overflow: hidden;
+  text-align: center;
+  min-width: 140px;
+}
+
+.pie-tooltip-header {
+  color: white;
+  padding: 6px 10px;
+  font-weight: bold;
+  background-color: var(--slice-color, #666666); /* Uses CSS variable */
+}
+
+.pie-tooltip-body {
+  color: black;
+  padding: 8px 10px;
+  background-color: #ede7e9ff;
+}
+
+.slice-b {
+  background-color: #000000 !important;
+}
+.slice-r {
+  background-color: #ed1c24 !important;
+}
+.slice-y {
+  background-color: #ffcb05 !important;
+  color: black !important;
+}
+.slice-g {
+  background-color: #418d18 !important;
+}
+.slice-bl {
+  background-color: #355fd3 !important;
+}
+.slice-w {
+  background-color: #bcbcbc !important;
+  color: black;
+}
+
+
+.tooltip-color-DA3535{
+ background-color: #DA3535 !important;
+}
+.tooltip-color-000000{
+  background-color: #000000 !important;
+ }
+ .tooltip-color-BFBFBF{
+  background-color: #BFBFBF !important;
+ }
+ .tooltip-color-333333{
+  background-color: #333333 !important;
+ }
+ .tooltip-color-666666{
+  background-color: #666666 !important;
+ }
+ .tooltip-color-808080{
+  background-color: #808080 !important;
+ }
+ .tooltip-color-A6A6A6{
+  background-color: #A6A6A6 !important;
+ }
+ .tooltip-color-CCCCCC{
+  background-color: #CCCCCC !important;
+ }
+ .tooltip-color-D8D8D8{
+  background-color: #D8D8D8 !important;
+ }
+ .tooltip-color-4D4D4D{
+  background-color: #4D4D4D !important;
+ }
+ .tooltip-color-E0E0E0{
+  background-color: #E0E0E0 !important;
+ }
+ .tooltip-color-F2F2F2{
+  background-color: #F2F2F2 !important;
+ }
+ .tooltip-color-1A1A1A{
+  background-color: #1A1A1A !important;
+ }
+ .tooltip-color-0A0A0A{
+  background-color: #0A0A0A !important;
+ }
+ .tooltip-color-F02424{
+  background-color: #F02424 !important;
+ }
+ .tooltip-color-355FD3{
+  background-color: #355FD3 !important;
+ }
+ .tooltip-color-D0A928{
+  background-color: #D0A928 !important;
+ }
+ .tooltip-color-403F3F{
+  background-color: #403F3F !important;
+ }
+ .tooltip-color-00000026{
+  background-color: #00000026 !important;
+ }

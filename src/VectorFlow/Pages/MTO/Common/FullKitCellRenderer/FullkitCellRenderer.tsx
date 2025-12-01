@@ -7,6 +7,7 @@ import {
 } from "./styles.css";
 import { useUserData } from "../../../../../context";
 import _ from "lodash";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 const FullkitCellRenderer = (props: ICellRendererParams) => {
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
@@ -44,14 +45,14 @@ const FullkitCellRenderer = (props: ICellRendererParams) => {
       {(() => {
         const brand = themeUi === "REGALBLAZE" ? "REGALBLAZE" : "DEFAULT";
         const pct = Math.max(0, Math.min(100, Number(FOLValue) || 0));
-        const styleVars = {
-          [fillPercentVar as unknown as string]: `${pct}%`,
-        } as React.CSSProperties;
+        // const styleVars = {
+        //   [fillPercentVar as unknown as string]: `${pct}%`,
+        // } as React.CSSProperties;
 
         return (
           <div
             className={`${availabilityCellRenderer} ${barTheme[brand]}`}
-            style={styleVars}
+            style={assignInlineVars({[fillPercentVar]: `${pct}%`})}
           />
         );
       })()}

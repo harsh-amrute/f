@@ -16,7 +16,7 @@ import {
   SCManualUploadBtn,
   SCManualUploadButton,
   SCManualUploadInput,
-  scManualUploadBtnBgVar
+  manualBtnBgVar,
 } from "../../../../../module-store-transfer/pages/manual-upload/styles.css";
 import { useUserData } from "../../../../../context";
 import * as ManualStyle from "../../../../../module-store-transfer/pages/manual-upload/styles.css";
@@ -144,7 +144,7 @@ const UploadModal = (props: UploadModalProps) => {
                   className={SCManualUploadBtn}
                   onClick={onDownload}
                   style={assignInlineVars({
-                    [scManualUploadBtnBgVar]:
+                    [manualBtnBgVar]:
                       user.user.theme_ui === "REGALBLAZE"
                         ? "linear-gradient(180deg, #FCA311 0%, #CB830E 100%)"
                         : "linear-gradient(180deg, #BC3D81 0%, #820F4C 100%)",
@@ -212,7 +212,7 @@ const UploadModal = (props: UploadModalProps) => {
                   onClick={onUpload}
                   disabled={uploadButtonStatus}
                   style={assignInlineVars({
-                    [scManualUploadBtnBgVar]:
+                    [manualBtnBgVar]:
                       user.user.theme_ui === "REGALBLAZE"
                         ? "linear-gradient(180deg, #FCA311 0%, #CB830E 100%)"
                         : "linear-gradient(180deg, #BC3D81 0%, #820F4C 100%)",

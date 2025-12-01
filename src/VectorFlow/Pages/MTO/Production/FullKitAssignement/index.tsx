@@ -49,6 +49,7 @@ import {
 import useColDef from "../../../../../hooks/useColDef";
 import CustomLegend from "../../Common/CustomLegend";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
+import "./style.css"
 
 interface GraphDataRow {
   ccr_name: string;
@@ -656,7 +657,7 @@ const FullKitAssignment = () => {
             field: "",
             headerCheckboxSelection: true,
             checkboxSelection: true,
-            suppressMenu: true,
+            suppressHeaderMenuButton: true,
             maxWidth: 50,
             position: 0,
             filter: false,
@@ -744,7 +745,7 @@ const FullKitAssignment = () => {
     columnDefs: colDef,
     defaultColDef: {
       resizable: true,
-      suppressMenu: true,
+      suppressHeaderMenuButton: true,
       initialFlex: 1,
       wrapHeaderText: true,
       autoHeaderHeight: true,
@@ -761,39 +762,35 @@ const FullKitAssignment = () => {
   };
 
   const barColors = {
-    "Released WIP": "#191919",
-    "Allocated Full Kits": "#EBBF2C",
+    "Released_WIP": "#191919",
+    "Allocated_Full_Kits": "#EBBF2C",
     Limit: "#E53F3F",
   };
 
   function TooltipRenderer({ datum, xKey }: any) {
     return `
-    <div style="background:#6C696A; style="transform: translateX(120px)" >
-    <div  style=" color: white; padding: 10px 10px 4px;background-color: #6C696A; display: flex; justify-content: center; align-items: center; border-bottom: 1px dashed white">
-        ${datum[xKey]}
-    </div>
-    <div style="color: white; background-color: #6C696A; padding: 10px;">
-      <div style="display: flex; align-items: center;">
-        <div style="margin-right: 10px; height: 3px; width: 15px; background-color: ${barColors["Released WIP"]}"></div>
-        Released WIP:  ${datum["Released WIP"]}
+      <div class="tooltip-container transform-translate-x">
+        <div class="tooltip-header">
+          ${datum[xKey]}
+        </div>
+        <div class="tooltip-body">
+          <div class="tooltip-row">
+            <div class="color-box barcolor-${barColors["Released_WIP"]}"></div>
+            Released WIP: ${datum["Released WIP"]}
+          </div>
+          <div class="tooltip-row">
+            <div class="color-box barcolor-${barColors["Allocated_Full_Kits"]}"></div>
+            Allocated Full Kits: ${datum["Allocated Full Kits"]}
+          </div>
+          <div class="tooltip-row">
+            <div class="color-box barcolor-${barColors["Limit"]}"></div>
+            Limit: ${datum["Limit"]}
+          </div>
+        </div>
       </div>
-      <div style="display: flex; align-items: center;">
-        <div style="margin-right: 10px; height: 3px; width: 15px; background-color: ${barColors["Allocated Full Kits"]}"></div>
-        Allocated Full Kits:  ${datum["Allocated Full Kits"]}
-      </div>
-      <div style="display: flex; align-items: center;">
-        <div style="margin-right: 10px; height: 3px; width: 15px; background-color: ${barColors["Limit"]}"></div>
-        Limit:  ${datum["Limit"]}
-      </div>
-      
-    </div>
-    </div>`;
-
-    // dont remove below code require for fol gap phase 2
-    // <div style="display: flex; align-items: center;">
-    //   FOL Gap:  ${datum["FOL Gap"]}
-    // </div>
+    `;
   }
+
 
   const [chartoptions, setChartOptions] = useState<any>({
     // data: graphData,
@@ -805,7 +802,7 @@ const FullKitAssignment = () => {
         stacked: true,
         strokeWidth: 0,
         visible: true,
-        fill: barColors["Released WIP"],
+        fill: barColors["Released_WIP"],
         tooltip: {
           position: { placement: "right" }, // anchor to bar
           renderer: TooltipRenderer,
@@ -818,7 +815,7 @@ const FullKitAssignment = () => {
         stacked: true,
         strokeWidth: 0,
         visible: true,
-        fill: barColors["Allocated Full Kits"],
+        fill: barColors["Allocated_Full_Kits"],
         tooltip: {
           position: { placement: "right" }, // anchor to bar
           renderer: TooltipRenderer,

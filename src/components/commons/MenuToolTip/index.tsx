@@ -215,7 +215,7 @@ const MenuToolTip = ({
     <div ref={tooltipRef}>
       <div className={WrapToolTip}>
         <Tooltip
-          disableStyleInjection={true}
+          disableStyleInjection="core"
           id={item.name}
           place="right-start"
           noArrow
@@ -227,6 +227,8 @@ const MenuToolTip = ({
             className={TooltipContainer}
             style={{
               maxHeight: tooltipMaxHeight,
+              top: tooltipPosition === "down" ? "0" : "auto",
+              bottom: tooltipPosition === "up" ? '-30px': "auto",
               background: "white",
               minWidth: "230px",
               width: "fit-content",
@@ -248,7 +250,7 @@ const MenuToolTip = ({
         {/* 
       <Tooltip
 
-disableStyleInjection={true}        id={item.name}
+disableStyleInjection="core"        id={item.name}
         place="right"
         className="tooltip_list"
         noArrow

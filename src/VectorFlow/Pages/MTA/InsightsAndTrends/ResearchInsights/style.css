@@ -2,3 +2,27 @@
     height:100% !important; 
     max-height: 100% !important;
 } */
+
+.color-red {
+  color: red;
+}
+
+.color-green {
+  color: green;
+}
+
+.color-yellow {
+  color: #ffbf00;
+}
+
+.color-black {
+  color: black;
+}
+
+.color-blue {
+  color: blue;
+}
+
+.color-white {
+  color: gray;
+}

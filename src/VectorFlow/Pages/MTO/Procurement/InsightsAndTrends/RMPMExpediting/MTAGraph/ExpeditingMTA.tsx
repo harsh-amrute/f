@@ -94,22 +94,23 @@ const ExpeditingMTA = (props: {
 
   const TooltipRenderer = ({ datum }: any) => {
     return `
-        <div style="background:#000; border-radius:3px; color:#fff; padding:8px">
-            ${datum.tt
-              .map(
-                (item: { rn: string; c: number }) => `
-                <div style="width: 100%; display: flex; justify-content: space-between; padding: 5px 0;">
-                    <div style="text-align: left;">${item.rn} :</div>
-                    <div style="text-align: right;">${item.c}</div>
-                </div>
+      <div class="tooltip-container">
+        ${datum.tt
+          .map(
+            (item: { rn: string; c: number }) => `
+              <div class="tooltip-row">
+                <div class="tooltip-label">${item.rn} :</div>
+                <div class="tooltip-value">${item.c}</div>
+              </div>
             `
-              )
-              .join("")}
-            <hr style="border: 1px dashed"/>
-            <div>No. Of Orders : ${datum.rc}</div>
-        </div>
+          )
+          .join("")}
+        <hr class="tooltip-divider"/>
+        <div class="tooltip-footer">No. Of Orders : ${datum.rc}</div>
+      </div>
     `;
   };
+
 
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;

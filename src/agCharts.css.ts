@@ -231,3 +231,12 @@ globalStyle(".ag-charts-tab-guard", {
   position: "absolute",
   pointerEvents: "none",
 });
+globalStyle(".ag-charts-proxy-elem", {
+  appearance: "none",
+  background: "none",
+  border: "none",
+  color: "#0000",
+  overflow: "hidden",
+  pointerEvents: "auto",
+  position: "absolute",
+});

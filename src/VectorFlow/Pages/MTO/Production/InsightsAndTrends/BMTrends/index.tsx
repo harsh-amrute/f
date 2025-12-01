@@ -31,6 +31,7 @@ import { useUserData } from "../../../../../../context";
 import RadioSelect from "../../../../../../components/VectorFLOW/commons/MTO/RadioSelect";
 import OverlayLoader from "../../../Common/Loader";
 import VFButton from "../../../../../../components/VectorFLOW/commons/VFButton";
+import "./style.css";
 
 export const APIFilterConfig = {
   filSecVisConfig: {
@@ -149,47 +150,47 @@ const BMTrends = () => {
     }: TooltipValuesProps) => {
       let values = "";
       for (let i = 0; i < colors?.length; i++) {
-        values += `<tr key=${i}>
-                <tr><td style="padding: 5px; background-color: #6C696A;"><div style="display: flex; align-items: center;"><div style="margin-right: 10px; height: 3px; width: 15px; background-color: ${
-                  colors[i]?.value
-                }"></div>${colors[i]?.label}</div></td>
-                    ${
-                      actBtn.label === "Percentage"
-                        ? `<td style={{ padding: '5px', backgroundColor: '#6C696A' }}>
-                            &nbsp; ${Math.round(perArr[i])}%
-                        </td>`
-                        : `<td style={{ padding: '5px', backgroundColor: '#6C696A' }}>
-                            &nbsp;  ${countArr[i]}
-                        </td>`
-                    }
-                </tr>`;
+        values += `<tr class="bmtrends-tooltip-row" key=${i}>
+            <td class="bmtrends-tooltip-cell bmtrends-tooltip-label-cell">
+              <div class="bmtrends-tooltip-label-wrapper">
+                <div class="bmtrends-tooltip-color-box tooltip-color-${
+                  colors[i].key
+                }" ></div>
+                ${colors[i]?.label}
+              </div>
+            </td>
+            ${
+              actBtn.label === "Percentage"
+                ? `<td class="bmtrends-tooltip-cell">&nbsp; ${Math.round(
+                    perArr[i]
+                  )}%</td>`
+                : `<td class="bmtrends-tooltip-cell">&nbsp; ${countArr[i]}</td>`
+            }
+          </tr>`;
       }
       return values;
     };
 
     return `
-        <div style="background:#6C696A" >
-        <div  style=" color: white; padding-top: 10px; padding-bottom:4px;background-color: #6C696A; display: flex; justify-content: center; align-items: center">
-            ${datum[xKey]}
+      <div class="bmtrends-tooltip-container">
+        <div class="bmtrends-tooltip-header">${datum[xKey]}</div>
+        <div class="bmtrends-tooltip-body">
+          <table class="bmtrends-tooltip-table">
+            <thead class="bmtrends-tooltip-thead">
+              <tr>
+                <th class="tooltip-th-label"></th>
+                <th class="tooltip-th-value">${
+                  actBtn?.label === "Percentage" ? "Percentage" : "Count"
+                }</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${getToolTipValues({ countArr, perArr, actBtn })}
+            </tbody>
+          </table>
         </div>
-        <div style="color: white; background-color: #6C696A; padding: 10px">
-            <table style="width: 100%; color: white; border-collapse: collapse;">
-                <thead style="border-bottom: 1px dashed white; border-top: 1px dashed white">
-                    <tr>
-                        <th style="padding: 5px;  background-color: #6C696A; text-align: left; width: 120px"></th>
-                        <th style="font-size: 8px; padding: 5px;  background-color: #6C696A; text-align: left;">${
-                          actBtn?.label === "Percentage"
-                            ? "Percentage"
-                            : "Count"
-                        }</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${getToolTipValues({ countArr, perArr, actBtn })}
-                </tbody>
-            </table>
-        </div>
-        </div>`;
+      </div>
+    `;
   }
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;

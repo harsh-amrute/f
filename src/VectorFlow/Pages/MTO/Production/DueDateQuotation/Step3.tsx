@@ -87,7 +87,7 @@ const Step3 = forwardRef(
         field: "",
         headerCheckboxSelection: true,
         checkboxSelection: true,
-        suppressMenu: true,
+        suppressHeaderMenuButton: true,
         maxWidth: 50,
         position: 0,
         filter: false,

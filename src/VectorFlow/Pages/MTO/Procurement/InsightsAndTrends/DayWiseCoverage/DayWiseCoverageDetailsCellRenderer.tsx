@@ -29,7 +29,7 @@ const DayWiseCoverageDetailsCellRenderer = (params: any) => {
             { headerName: "RM Allocated", field: "rmal" },
         ],
         defaultColDef: {
-            suppressMenu: true,
+            suppressHeaderMenuButton: true,
             cellStyle: {
                 textAlign: "center"
             }

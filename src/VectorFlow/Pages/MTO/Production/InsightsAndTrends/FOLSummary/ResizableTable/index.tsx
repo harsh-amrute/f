@@ -48,7 +48,7 @@ const ResizableTable = (props: IResizeTableProps) => {
     filter: "agTextColumnFilter",
     floatingFilter: true,
     floatingFilterComponentParams: { suppressFilterButton: true },
-    suppressMenu: true,
+    suppressHeaderMenuButton: true,
     resizable: true,
     cellStyle: {
       textAlign: "center",

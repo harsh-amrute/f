@@ -1,4 +1,4 @@
-import { GridOptions } from "ag-grid-enterprise";
+import { FillOperationParams, GridOptions } from "ag-grid-community";
 import React, { useEffect, useRef, useState } from "react";
 import VFTable from "../../Common/VFTable";
 // import "./style.css";
@@ -71,7 +71,14 @@ const GridView = (props: IGridViewProps) => {
     },
   };
 
+  const nonce =
+    (window as any).__nonce__ ??
+    document
+      .querySelector<HTMLMetaElement>('meta[name="csp-nonce"]')
+      ?.content?.trim();
+
   const gridOptions: GridOptions = {
+    // theme: "legacy",
     groupDefaultExpanded: 0,
     detailRowHeight: 500,
     rowHeight: 26,
@@ -81,6 +88,10 @@ const GridView = (props: IGridViewProps) => {
         background: params.node.rowIndex % 2 === 0 ? "#F4F4F4" : "#FFFFFF",
       };
     },
+
+    // context: {
+    //   styleNonce: nonce,
+    // },
   };
 
   const getGridData = async (params: any, page_Size?: any) => {
@@ -147,7 +158,7 @@ const GridView = (props: IGridViewProps) => {
 
   return (
     <div
-      className={`${SCDynamicContainer} ag-theme-planning-custom`}
+      className={`${SCDynamicContainer} ag-theme-planning-custom otif`}
       style={agPlanningCustomVars}
     >
       {isLoading && <OverlayLoader />}

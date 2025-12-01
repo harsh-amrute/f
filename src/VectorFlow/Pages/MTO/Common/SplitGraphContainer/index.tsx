@@ -104,6 +104,9 @@ const SplitGraphContainer = ({
       link.click();
     }
   };
+  const nonce =
+  (window as any).__nonce__ ??
+  document.querySelector<HTMLMetaElement>('meta[name="csp-nonce"]')?.content?.trim();
 
   const myCustomTheme = () => {
     switch (graphType) {
@@ -113,14 +116,24 @@ const SplitGraphContainer = ({
             fills: ["black", "red", "yellow", "green", "grey"],
             strokes: ["black", "red", "yellow", "green", "grey"],
           },
-        };
+          overrides: {
+            common: {
+              styleNonce: nonce      // 👈 this is the important bit
+            },
+          },  
+        }as any;
       case 12:
         return {
           palette: {
             fills: columnsData?.map((column: any) => column?.color),
             strokes: columnsData?.map((column: any) => column?.color),
           },
-        };
+          overrides: {
+            common: {
+              styleNonce: nonce     // 👈 this is the important bit
+            },
+          },
+        }as any;
 
       case 4:
         return {
@@ -128,7 +141,12 @@ const SplitGraphContainer = ({
             fills: ["#AD5000", "gray", "#459D55"],
             strokes: ["#AD5000", "gray", "#459D55"],
           },
-        };
+          overrides: {
+            common: {
+              styleNonce: nonce    // 👈 this is the important bit
+            },
+          },
+        }as any;
 
       case 5:
         return {
@@ -136,7 +154,12 @@ const SplitGraphContainer = ({
             fills: ["gray"],
             strokes: ["gray"],
           },
-        };
+          overrides: {
+            common: {
+              styleNonce: nonce      // 👈 this is the important bit
+            },
+          },
+        }as any;
 
       case 6:
         return {
@@ -144,42 +167,72 @@ const SplitGraphContainer = ({
             fills: ["black", "red"],
             strokes: ["black", "red"],
           },
-        };
+          overrides: {
+            common: {
+              styleNonce: nonce      // 👈 this is the important bit
+            },
+          },
+        }as any;
       case 7:
         return {
           palette: {
             fills: ["black", "red", "yellow", "green", "blue", "#E8E8E8"],
             strokes: ["black", "red", "yellow", "green", "blue", "#E8E8E8"],
           },
-        };
+          overrides: {
+            common: {
+              styleNonce: nonce      // 👈 this is the important bit
+            },
+          },
+        }as any;
       case 8:
         return {
           palette: {
             fills: ["#BC3D81", "#FCADD7"],
             strokes: ["#BC3D81", "#FCADD7"],
           },
-        };
+          overrides: {
+            common: {
+              styleNonce: nonce      // 👈 this is the important bit
+            },
+          },
+        }as any;
       case 9:
         return {
           palette: {
             fills: ["#838282", "#CBCBCB"],
             strokes: ["#838282", "#CBCBCB"],
           },
-        };
+          overrides: {
+            common: {
+              styleNonce: nonce      // 👈 this is the important bit
+            },
+          },
+        }as any;
       case 10:
         return {
           palette: {
             fills: ["#F5B279", "#F09241", "#E36A00", "#AD5000", "#6A3000"],
             strokes: ["#F5B279", "#F09241", "#E36A00", "#AD5000", "#6A3000"],
           },
-        };
+          overrides: {
+            common: {
+              styleNonce: nonce    // 👈 this is the important bit
+            },
+          },
+        }as any;
       case 3: {
         return {
           palette: {
             fills: ["Grey"],
             strokes: ["Grey"],
           },
-        };
+          overrides: {
+            common: {
+              styleNonce: nonce      // 👈 this is the important bit
+            },
+          },
+        }as any;
       }
       case 2: {
         return {
@@ -187,7 +240,12 @@ const SplitGraphContainer = ({
             fills: ["Grey"],
             strokes: ["Grey"],
           },
-        };
+          overrides: {
+            common: {
+              styleNonce: nonce      // 👈 this is the important bit
+            },
+          },
+        }as any;
       }
       case 11:
         return {
@@ -195,14 +253,24 @@ const SplitGraphContainer = ({
             fills: ["#F5B279", "#F09241", "#E36A00", "#AD5000", "#6A3000"],
             strokes: ["#F5B279", "#F09241", "#E36A00", "#AD5000", "#6A3000"],
           },
-        };
+          overrides: {
+            common: {
+              styleNonce: nonce      // 👈 this is the important bit
+            },
+          },
+        }as any;
       case 14:
         return {
           palette: {
             fills: ["#AD5000"],
             strokes: ["#AD5000"],
           },
-        };
+          overrides: {
+            common: {
+              styleNonce: nonce      // 👈 this is the important bit
+            },
+          },
+        }as any;
 
       default:
         return {
@@ -210,10 +278,14 @@ const SplitGraphContainer = ({
             fills: ["black", "red", "green", "yellow", "grey"],
             strokes: ["black", "red", "green", "yellow", "grey"],
           },
-        };
+          overrides: {
+            common: {
+              styleNonce: nonce      // 👈 this is the important bit
+            },
+          },
+        }as any;
     }
   };
-
   const generateChart = (graphNo: number) => {
     switch (graphNo) {
       case 1:
@@ -240,7 +312,7 @@ const SplitGraphContainer = ({
               },
             },
           },
-        });
+        }as any);
         break;
       case 12:
         refGraph1.current?.api.createRangeChart({
@@ -284,7 +356,7 @@ const SplitGraphContainer = ({
               },
             },
           },
-        });
+        }as any);
         break;
       case 2:
         refGraph1.current?.api.createRangeChart({
@@ -310,7 +382,7 @@ const SplitGraphContainer = ({
               },
             },
           },
-        });
+        }as any);
         break;
       case 3:
         refGraph1.current?.api.createRangeChart({
@@ -336,7 +408,7 @@ const SplitGraphContainer = ({
               },
             },
           },
-        });
+        }as any);
         break;
       case 4:
         refGraph1.current?.api.createRangeChart({
@@ -397,7 +469,7 @@ const SplitGraphContainer = ({
               },
             },
           },
-        });
+        }as any);
         break;
       case 5:
         refGraph1.current?.api.createRangeChart({
@@ -444,7 +516,7 @@ const SplitGraphContainer = ({
               },
             },
           },
-        });
+        }as any);
         break;
       case 6:
         refGraph1.current?.api.createRangeChart({
@@ -504,7 +576,7 @@ const SplitGraphContainer = ({
               },
             },
           },
-        });
+        }as any);
         break;
       case 7:
         refGraph1.current?.api.createRangeChart({
@@ -551,7 +623,7 @@ const SplitGraphContainer = ({
               },
             },
           },
-        });
+        }as any);
         break;
       case 10:
         refGraph1.current?.api.createRangeChart({
@@ -605,7 +677,7 @@ const SplitGraphContainer = ({
               },
             },
           },
-        });
+        }as any);
         break;
 
       case 11:
@@ -653,7 +725,7 @@ const SplitGraphContainer = ({
               },
             },
           },
-        });
+        }as any);
         break;
       case 8:
         refGraph1.current?.api.createRangeChart({
@@ -677,7 +749,7 @@ const SplitGraphContainer = ({
                   gridLine: { enabled: false },
                   label: {
                     fontSize: 10,
-                    formatter: (params) => `${params.value}%`, // Format as percentage
+                    formatter: (params:any) => `${params.value}%`, // Format as percentage
                   },
                   min: 0, // Ensure Y-axis starts from 0
                 },
@@ -711,7 +783,7 @@ const SplitGraphContainer = ({
               },
             },
           },
-        });
+        }as any);
         break;
       case 9:
         refGraph1.current?.api.createRangeChart({
@@ -735,7 +807,7 @@ const SplitGraphContainer = ({
                   gridLine: { enabled: false },
                   label: {
                     fontSize: 10,
-                    formatter: (params) => `${params.value}%`, // Format as percentage
+                    formatter: (params:any) => `${params.value}%`, // Format as percentage
                   },
                   min: 0, // Ensure Y-axis starts from 0
                 },
@@ -769,7 +841,7 @@ const SplitGraphContainer = ({
               },
             },
           },
-        });
+        }as any);
         break;
       case 14:
         refGraph1.current?.api.createRangeChart({
@@ -827,7 +899,7 @@ const SplitGraphContainer = ({
               },
             },
           },
-        });
+        }as any);
         break;
       default:
         <></>;
@@ -887,7 +959,11 @@ const SplitGraphContainer = ({
               </div>
             </div>
             <div className="chart-wrapper" style={{ flex: 1, height: "90%" }}>
-              <AgCharts ref={chartRef} options={{ ...options, data: data }} />
+              <AgCharts
+                // key={nonce}
+                ref={chartRef}
+                options={{ ...options, data: data, styleNonce: nonce }}
+              />
             </div>
           </div>
         </div>

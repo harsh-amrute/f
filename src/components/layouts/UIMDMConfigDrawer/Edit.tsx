@@ -15,9 +15,10 @@ import {
 import { useUserData } from "../../../context";
 import { notifyError, notifySuccess } from "../../../helpers/notify";
 import { useEditMDMConfiguration } from "../../../VectorFlow/Services/MTA/MDM/index";
+
+import Select, { CSSObjectWithLabel } from "react-select";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
-import * as globalStyles from "../../../styles/global";
-import { useSelect } from "downshift";
+import * as globalStyles from "../../../styles/global"; // keep import unchanged
 
 interface FormDataType {
   MasterId: string;
@@ -37,129 +38,6 @@ interface FormDataType {
   IsDelete: string;
 }
 
-interface OptionType {
-  label: string;
-  value: any;
-}
-
-const Dropdown = ({
-  labelText,
-  name,
-  options,
-  value,
-  onChange,
-  disabled,
-  themeColor,
-  themeUi,
-}: {
-  labelText: string;
-  name: string;
-  options: OptionType[];
-  value: any;
-  onChange: (val: any) => void;
-  disabled?: boolean;
-  themeColor: string;
-  themeUi: string;
-}) => {
-  const selectedItem = options.find((opt) => opt.value === value);
-  const {
-    isOpen,
-    getToggleButtonProps,
-    getMenuProps,
-    highlightedIndex,
-    getItemProps,
-  } = useSelect({
-    items: options,
-    selectedItem,
-    onSelectedItemChange: ({ selectedItem }) => {
-      if (selectedItem) onChange(selectedItem.value);
-    },
-  });
-
-  return (
-    <div style={{ position: "relative", width: "100%" }}>
-      <label
-        htmlFor={name}
-        style={{
-          fontSize: 12,
-          fontWeight: 500,
-          display: "block",
-          marginBottom: 4,
-        }}
-      >
-        {labelText}
-      </label>
-      <div
-        {...getToggleButtonProps()}
-        style={{
-          fontSize: 12,
-          border: "2px solid transparent",
-          boxShadow: "none",
-          borderRadius: 4,
-          padding: "6px 8px",
-          backgroundColor: disabled ? "#f3f3f3" : "rgb(247,247,247)",
-          cursor: disabled ? "not-allowed" : "pointer",
-          userSelect: "none",
-          outline: "none",
-          ...(isOpen
-            ? { borderColor: themeUi === "REGALBLAZE" ? "#FCA311" : "#BC3D80" }
-            : {}),
-        }}
-      >
-        {selectedItem ? selectedItem.label : "Select..."}
-      </div>
-
-      <ul
-        {...getMenuProps()}
-        style={{
-          listStyle: "none",
-          margin: 0,
-          padding: 0,
-          position: "absolute",
-          width: "100%",
-          background: "#fff",
-          zIndex: 10,
-          maxHeight: isOpen ? 150 : 0,
-          overflowY: "auto",
-          transition: "max-height 0.2s ease-in-out",
-          border: isOpen ? "1px solid #ccc" : "none",
-          borderRadius: 4,
-        }}
-      >
-        {isOpen &&
-          options.map((item, index) => (
-            <li
-              key={item.value}
-              {...getItemProps({ item, index })}
-              style={{
-                padding: "6px 8px",
-                fontSize: 12,
-                backgroundColor:
-                  highlightedIndex === index
-                    ? themeUi === "REGALBLAZE"
-                      ? "rgba(252,163,17,0.3)"
-                      : "#bc3d814d"
-                    : selectedItem?.value === item.value
-                    ? themeUi === "REGALBLAZE"
-                      ? "#FCA311"
-                      : "#BC3D80"
-                    : "#fff",
-                color:
-                  highlightedIndex === index ||
-                  selectedItem?.value === item.value
-                    ? "black"
-                    : "inherit",
-                cursor: "pointer",
-              }}
-            >
-              {item.label}
-            </li>
-          ))}
-      </ul>
-    </div>
-  );
-};
-
 const EditUIMDMConfig = (props: { data: any; cb: () => void }) => {
   const { data, cb } = props;
 
@@ -170,7 +48,8 @@ const EditUIMDMConfig = (props: { data: any; cb: () => void }) => {
   const [formData, setFormData] = useState<FormDataType>({ ...data });
 
   const { mutateAsync: editEnvConfiguration } = useEditMDMConfiguration();
-  const [isDisableOptions] = useState(true);
+
+  const [isDisableOptions, setIsDisabledOptions] = useState(true);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -179,17 +58,20 @@ const EditUIMDMConfig = (props: { data: any; cb: () => void }) => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const isChanged = useMemo(
-    () => JSON.stringify(formData) !== JSON.stringify(data),
-    [formData, data]
-  );
+  const isChanged = useMemo((): boolean => {
+    return JSON.stringify(formData) !== JSON.stringify(data);
+  }, [formData, data]);
 
   const formatData = (data: any) => {
     const formatted: any = {};
     for (const key in data) {
       if (Object.prototype.hasOwnProperty.call(data, key)) {
         const value = data[key];
-        formatted[key] = typeof value === "boolean" ? (value ? 1 : 0) : value;
+        if (typeof value === "boolean") {
+          formatted[key] = value ? 1 : 0;
+        } else {
+          formatted[key] = value;
+        }
       }
     }
     return formatted;
@@ -360,106 +242,383 @@ const EditUIMDMConfig = (props: { data: any; cb: () => void }) => {
 
       <div style={{ display: "flex" }}>
         <div className={inputWrapper}>
-          <Dropdown
-            labelText="Is Edit"
-            name="IsEdit"
+          <label className={label} htmlFor="IsEdit">
+            {" "}
+            Is Edit
+          </label>
+          <Select
             options={flagOptions}
-            value={formData.IsEdit}
-            onChange={(val) => handleSelectChange("IsEdit", val)}
-            disabled={isDisableOptions}
-            themeColor={themeColor}
-            themeUi={themeUi}
+            placeholder={"Select Edit"}
+            onChange={(data: any) => handleSelectChange("IsEdit", data.value)}
+            styles={{
+              option: (baseStyles, { isSelected }) => ({
+                ...baseStyles,
+                fontSize: 11,
+                backgroundColor: isSelected
+                  ? themeUi === "REGALBLAZE"
+                    ? "#FCA311"
+                    : "#BC3D80"
+                  : "white",
+
+                "&:hover": {
+                  backgroundColor:
+                    themeUi === "REGALBLAZE"
+                      ? "rgb(252, 163, 17,0.3) "
+                      : "#bc3d814d",
+                  color: "black",
+                },
+              }as CSSObjectWithLabel),
+              control: (baseStyles, { isFocused }) => ({
+                ...baseStyles,
+                fontSize: 12,
+                borderColor: !isFocused ? "transparent" : "#BC3D80",
+                borderWidth: 2,
+                boxShadow: "none",
+                backgroundColor: "rgb(247, 247, 247)",
+                "&:hover": {
+                  borderColor: "#BC3D80",
+                },
+              }as CSSObjectWithLabel),
+            }}
+            isDisabled={isDisableOptions}
+            value={flagOptions.find(
+              (option: any) => option.value === formData.IsEdit
+            )}
           />
         </div>
         <div className={inputWrapper} style={{ marginLeft: "10px" }}>
-          <Dropdown
-            labelText="Is Add"
-            name="IsAdd"
+          <label className={label} htmlFor="IsAdd">
+            {" "}
+            Is Add
+          </label>
+
+          <Select
             options={flagOptions}
-            value={formData.IsAdd}
-            onChange={(val) => handleSelectChange("IsAdd", val)}
-            disabled={isDisableOptions}
-            themeColor={themeColor}
-            themeUi={themeUi}
+            placeholder={"Select Add"}
+            onChange={(data: any) => handleSelectChange("IsAdd", data.value)}
+            styles={{
+              option: (baseStyles, { isSelected }) => ({
+                ...baseStyles,
+                fontSize: 11,
+                backgroundColor: isSelected
+                  ? themeUi === "REGALBLAZE"
+                    ? "#FCA311"
+                    : "#BC3D80"
+                  : "white",
+
+                "&:hover": {
+                  backgroundColor:
+                    themeUi === "REGALBLAZE"
+                      ? "rgb(252, 163, 17,0.3) "
+                      : "#bc3d814d",
+                  color: "black",
+                },
+              }as CSSObjectWithLabel),
+              control: (baseStyles, { isFocused }) => ({
+                ...baseStyles,
+                fontSize: 12,
+                borderColor: !isFocused ? "transparent" : "#BC3D80",
+                borderWidth: 2,
+                boxShadow: "none",
+                backgroundColor: "rgb(247, 247, 247)",
+                "&:hover": {
+                  borderColor: "#BC3D80",
+                },
+              }as CSSObjectWithLabel),
+            }}
+            value={flagOptions.find(
+              (option: any) => option.value === formData.IsAdd
+            )}
+            isDisabled={isDisableOptions}
           />
         </div>
       </div>
 
       <div style={{ display: "flex" }}>
         <div className={inputWrapper}>
-          <Dropdown
-            labelText=" Is Download"
-            name="IsDownload"
+          <label className={label} htmlFor="IsDownload">
+            {" "}
+            Is Download
+          </label>
+          <Select
             options={flagOptions}
-            value={formData.IsAdd}
-            onChange={(val) => handleSelectChange("IsDownload", val)}
-            disabled={isDisableOptions}
-            themeColor={themeColor}
-            themeUi={themeUi}
+            placeholder={"Select Download"}
+            onChange={(data: any) =>
+              handleSelectChange("IsDownload", data.value)
+            }
+            styles={{
+              option: (baseStyles, { isSelected }) => ({
+                ...baseStyles,
+                fontSize: 11,
+                backgroundColor: isSelected
+                  ? themeUi === "REGALBLAZE"
+                    ? "#FCA311"
+                    : "#BC3D80"
+                  : "white",
+
+                "&:hover": {
+                  backgroundColor:
+                    themeUi === "REGALBLAZE"
+                      ? "rgb(252, 163, 17,0.3) "
+                      : "#bc3d814d",
+                  color: "black",
+                },
+              }as CSSObjectWithLabel),
+              control: (baseStyles, { isFocused }) => ({
+                ...baseStyles,
+                fontSize: 12,
+                borderColor: !isFocused ? "transparent" : "#BC3D80",
+                borderWidth: 2,
+                boxShadow: "none",
+                backgroundColor: "rgb(247, 247, 247)",
+                "&:hover": {
+                  borderColor: "#BC3D80",
+                },
+              }as CSSObjectWithLabel),
+            }}
+            value={flagOptions.find(
+              (option: any) => option.value === formData.IsDownload
+            )}
+            isDisabled={isDisableOptions}
           />
         </div>
         <div className={inputWrapper} style={{ marginLeft: "10px" }}>
-          <Dropdown
-            labelText=" Is Filter"
-            name="IsFilter"
+          <label className={label} htmlFor="IsFilter">
+            {" "}
+            Is Filter
+          </label>
+          <Select
             options={flagOptions}
-            value={formData.IsAdd}
-            onChange={(val) => handleSelectChange("IsFilter", val)}
-            disabled={isDisableOptions}
-            themeColor={themeColor}
-            themeUi={themeUi}
+            placeholder={"Select Filter"}
+            onChange={(data: any) => handleSelectChange("IsFilter", data.value)}
+            styles={{
+              option: (baseStyles, { isSelected }) => ({
+                ...baseStyles,
+                fontSize: 11,
+                backgroundColor: isSelected
+                  ? themeUi === "REGALBLAZE"
+                    ? "#FCA311"
+                    : "#BC3D80"
+                  : "white",
+
+                "&:hover": {
+                  backgroundColor:
+                    themeUi === "REGALBLAZE"
+                      ? "rgb(252, 163, 17,0.3) "
+                      : "#bc3d814d",
+                  color: "black",
+                },
+              }as CSSObjectWithLabel),
+              control: (baseStyles, { isFocused }) => ({
+                ...baseStyles,
+                fontSize: 12,
+                borderColor: !isFocused ? "transparent" : "#BC3D80",
+                borderWidth: 2,
+                boxShadow: "none",
+                backgroundColor: "rgb(247, 247, 247)",
+                "&:hover": {
+                  borderColor: "#BC3D80",
+                },
+              }as CSSObjectWithLabel),
+            }}
+            value={flagOptions.find(
+              (option: any) => option.value === formData.IsFilter
+            )}
+            isDisabled={isDisableOptions}
           />
         </div>
       </div>
       <div style={{ display: "flex" }}>
         <div className={inputWrapper}>
-          <Dropdown
-            labelText=" Is Applicable"
-            name="IsApplicable"
+          <label className={label} htmlFor="IsApplicable">
+            {" "}
+            Is Applicable
+          </label>
+
+          <Select
             options={flagOptions}
-            value={formData.IsAdd}
-            onChange={(val) => handleSelectChange("IsApplicable", val)}
-            disabled={isDisableOptions}
-            themeColor={themeColor}
-            themeUi={themeUi}
+            placeholder={"Select Applicable"}
+            onChange={(data: any) =>
+              handleSelectChange("IsApplicable", data.value)
+            }
+            styles={{
+              option: (baseStyles, { isSelected }) => ({
+                ...baseStyles,
+                fontSize: 11,
+                backgroundColor: isSelected
+                  ? themeUi === "REGALBLAZE"
+                    ? "#FCA311"
+                    : "#BC3D80"
+                  : "white",
+
+                "&:hover": {
+                  backgroundColor:
+                    themeUi === "REGALBLAZE"
+                      ? "rgb(252, 163, 17,0.3) "
+                      : "#bc3d814d",
+                  color: "black",
+                },
+              }as CSSObjectWithLabel),
+              control: (baseStyles, { isFocused }) => ({
+                ...baseStyles,
+                fontSize: 12,
+                borderColor: !isFocused ? "transparent" : "#BC3D80",
+                borderWidth: 2,
+                boxShadow: "none",
+                backgroundColor: "rgb(247, 247, 247)",
+                "&:hover": {
+                  borderColor: "#BC3D80",
+                },
+              }as CSSObjectWithLabel),
+            }}
+            value={flagOptions.find(
+              (option: any) => option.value === formData.IsApplicable
+            )}
+            isDisabled={isDisableOptions}
           />
         </div>
         <div className={inputWrapper} style={{ marginLeft: "10px" }}>
-          <Dropdown
-            labelText=" Is Delete"
-            name="IsDelete"
+          <label className={label} htmlFor="IsDelete">
+            {" "}
+            Is Delete
+          </label>
+
+          <Select
             options={flagOptions}
-            value={formData.IsAdd}
-            onChange={(val) => handleSelectChange("IsDelete", val)}
-            disabled={isDisableOptions}
-            themeColor={themeColor}
-            themeUi={themeUi}
+            placeholder={"Select Delete"}
+            onChange={(data: any) => handleSelectChange("IsDelete", data.value)}
+            styles={{
+              option: (baseStyles, { isSelected }) => ({
+                ...baseStyles,
+                fontSize: 11,
+                backgroundColor: isSelected
+                  ? themeUi === "REGALBLAZE"
+                    ? "#FCA311"
+                    : "#BC3D80"
+                  : "white",
+
+                "&:hover": {
+                  backgroundColor:
+                    themeUi === "REGALBLAZE"
+                      ? "rgb(252, 163, 17,0.3) "
+                      : "#bc3d814d",
+                  color: "black",
+                },
+              }as CSSObjectWithLabel),
+              control: (baseStyles, { isFocused }) => ({
+                ...baseStyles,
+                fontSize: 12,
+                borderColor: !isFocused ? "transparent" : "#BC3D80",
+                borderWidth: 2,
+                boxShadow: "none",
+                backgroundColor: "rgb(247, 247, 247)",
+                "&:hover": {
+                  borderColor: "#BC3D80",
+                },
+              }as CSSObjectWithLabel),
+            }}
+            value={flagOptions.find(
+              (option: any) => option.value === formData.IsDelete
+            )}
+            isDisabled={isDisableOptions}
           />
         </div>
       </div>
       <div style={{ display: "flex" }}>
         <div className={inputWrapper}>
-          <Dropdown
-            labelText="Visible"
-            name="Visible"
+          <label className={label} htmlFor="Visible">
+            {" "}
+            Visible
+          </label>
+
+          <Select
             options={flagOptions}
-            value={formData.IsAdd}
-            onChange={(val) => handleSelectChange("Visible", val)}
-            disabled={isDisableOptions}
-            themeColor={themeColor}
-            themeUi={themeUi}
+            placeholder={"Select Visible"}
+            onChange={(data: any) => handleSelectChange("Visible", data.value)}
+            styles={{
+              option: (baseStyles, { isSelected }) => ({
+                ...baseStyles,
+                fontSize: 11,
+                backgroundColor: isSelected
+                  ? themeUi === "REGALBLAZE"
+                    ? "#FCA311"
+                    : "#BC3D80"
+                  : "white",
+
+                "&:hover": {
+                  backgroundColor:
+                    themeUi === "REGALBLAZE"
+                      ? "rgb(252, 163, 17,0.3) "
+                      : "#bc3d814d",
+                  color: "black",
+                },
+              }as CSSObjectWithLabel),
+              control: (baseStyles, { isFocused }) => ({
+                ...baseStyles,
+                fontSize: 12,
+                borderColor: !isFocused ? "transparent" : "#BC3D80",
+                borderWidth: 2,
+                boxShadow: "none",
+                backgroundColor: "rgb(247, 247, 247)",
+                "&:hover": {
+                  borderColor: "#BC3D80",
+                },
+              }as CSSObjectWithLabel),
+            }}
+            value={flagOptions.find(
+              (option: any) => option.value === formData.Visible
+            )}
+            isDisabled={isDisableOptions}
           />
         </div>
         <div className={inputWrapper} style={{ marginLeft: "10px" }}>
-          <Dropdown
-            labelText="Cell Alignment"
-            name="CellAlignment"
-            options={flagOptions}
-            value={formData.IsAdd}
-            onChange={(val) => handleSelectChange("CellAlignment", val)}
-            disabled={isDisableOptions}
-            themeColor={themeColor}
-            themeUi={themeUi}
+          <label className={label} htmlFor="CellAlignment">
+            {" "}
+            Cell Alignment
+          </label>
+
+          <Select
+            options={alignmentOptions}
+            placeholder={"Select Cell Alignment"}
+            onChange={(data: any) =>
+              handleSelectChange("CellAlignment", data.value)
+            }
+            styles={{
+              option: (baseStyles, { isSelected }) => ({
+                ...baseStyles,
+                fontSize: 11,
+                backgroundColor: isSelected
+                  ? themeUi === "REGALBLAZE"
+                    ? "#FCA311"
+                    : "#BC3D80"
+                  : "white",
+
+                "&:hover": {
+                  backgroundColor:
+                    themeUi === "REGALBLAZE"
+                      ? "rgb(252, 163, 17,0.3) "
+                      : "#bc3d814d",
+                  color: "black",
+                },
+              }as CSSObjectWithLabel),
+              control: (baseStyles, { isFocused }) => ({
+                ...baseStyles,
+                fontSize: 12,
+                borderColor: !isFocused ? "transparent" : "#BC3D80",
+                borderWidth: 2,
+                boxShadow: "none",
+                backgroundColor: "rgb(247, 247, 247)",
+                "&:hover": {
+                  borderColor: "#BC3D80",
+                },
+              }as CSSObjectWithLabel),
+            }}
+            value={alignmentOptions.find(
+              (option: any) =>
+                String(formData.CellAlignment || "").trim() ===
+                option.value?.trim()
+            )}
+            isDisabled={isDisableOptions}
           />
         </div>
       </div>

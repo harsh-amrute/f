@@ -808,7 +808,7 @@ const DptWiseBMReport = () => {
     const config = {
         masterDetail: bomActive ? true : false,
         detailCellRendererParams: {
-        suppressMenu: true,
+        suppressHeaderMenuButton: true,
         detailGridOptions: {
             rowHeight: 28,
             headerHeight:30,
@@ -822,7 +822,7 @@ const DptWiseBMReport = () => {
             columnDefs: columnBomDefs.filter((col: any) => col.colId !== "ItemName"),
             defaultColDef: {
             flex: 1,
-            suppressMenu: true,
+            suppressHeaderMenuButton: true,
             cellStyle: {
                 fontSize: "16px",
                 display: "flex",

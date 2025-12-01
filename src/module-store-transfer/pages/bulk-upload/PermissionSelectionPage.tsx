@@ -637,7 +637,7 @@ const PermissionSelectionPage = ({
         sortable: true,
         filter: true,
         floatingFilter: true,
-        suppressMenu: true,
+        suppressHeaderMenuButton: true,
         cellRendererParams: {
           roles: [],
         },

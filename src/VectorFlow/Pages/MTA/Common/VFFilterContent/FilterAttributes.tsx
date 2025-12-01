@@ -9,7 +9,7 @@ import {
   accentColorVar,
   disabledVar,
 } from "./style.css";
-// import Select from "react-select";
+import Select from "react-select";
 import { useThemeStyles } from "../../../../../hooks/useVFFilterContent";
 import { useFilterRows, stringOpertors } from "./useVFFilterContent";
 import { useUserData } from "../../../../../context";
@@ -18,7 +18,6 @@ import { UIColumnConfigName } from "../../../../../helpers/Enum";
 import { BPRFilter, BPRFilterState } from "../../../../../VectorFlow/types/BPR";
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
 import NoAttributesFilters from "./NoAttributesData";
-import DownshiftSelect from "./DownshiftSelect/DownshiftSelect";
 
 interface FilterSectionProps {
   multiFilter: BPRFilterState;
@@ -32,7 +31,7 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
   reportName,
 }) => {
   const { user } = useUserData();
-  // const styles = useThemeStyles();
+  const styles = useThemeStyles();
   const { mutateAsync: getUiConfig } = useGetUIConfigData();
 
   const {
@@ -283,10 +282,10 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
             style={{ alignItems: "center" }}
           >
             <div className={dropDownWrapper}>
-              <DownshiftSelect
+              <Select
                 options={attributeOptions}
                 placeholder="Select Column"
-                // styles={styles}
+                styles={styles}
                 components={{ IndicatorSeparator: () => null }}
                 value={rowSelections[row.id]?.column || null}
                 onChange={(selected) =>
@@ -296,10 +295,10 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
             </div>
 
             <div className={dropDownWrapper}>
-              <DownshiftSelect
+              <Select
                 options={stringOpertors}
                 placeholder="Select Operation"
-                // styles={styles}
+                styles={styles}
                 isSearchable={false}
                 components={{ IndicatorSeparator: () => null }}
                 value={rowSelections[row.id]?.operation || null}

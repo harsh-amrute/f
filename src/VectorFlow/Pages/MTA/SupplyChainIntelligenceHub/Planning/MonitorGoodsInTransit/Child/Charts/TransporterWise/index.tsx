@@ -286,6 +286,9 @@ const MonitorGITChildTransporterWiseCharts = ({
   const graph2 = [
     "This box plot graph displays the statistical distribution of delay days in transport for various transporters. Each box represents the range of delayed LRs as on today",
   ];
+  const nonce =
+  (window as any).__nonce__ ??
+  document.querySelector<HTMLMetaElement>('meta[name="csp-nonce"]')?.content?.trim();
 
   return (
     <>
@@ -356,6 +359,7 @@ const MonitorGITChildTransporterWiseCharts = ({
                   options={{
                     chart: {
                       type: "boxPlot",
+                      nonce: nonce,
                       animations: {
                         enabled: false,
                         easing: "easeinout",
@@ -379,7 +383,7 @@ const MonitorGITChildTransporterWiseCharts = ({
                             '<img src ="/assets/img/downlod-icon.svg" width=16 height=16/>',
                         },
                       },
-                    },
+                    }as any,
                     grid: {
                       show: true,
                       strokeDashArray: 4, // Length of dashes

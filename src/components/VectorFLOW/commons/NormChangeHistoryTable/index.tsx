@@ -6,7 +6,6 @@ import {
   buttonWrapper,
   agGridWrapper,
   agContainer,
-  agGridBox,
 } from "./style.css";
 import { useDispatch } from "react-redux";
 import { TOGGLE_NORM_CHANGE_HISTORY_TABLE } from "../../../../redux/actions/MTA";
@@ -15,6 +14,7 @@ interface NormChangeHistoryTableProps {
   data: any;
   onGoBack?: () => void;
 }
+import "./styles.css";
 
 const NormChangeHistoryTable = (props: NormChangeHistoryTableProps) => {
   const { user } = useUserData();
@@ -124,7 +124,7 @@ const NormChangeHistoryTable = (props: NormChangeHistoryTableProps) => {
         <div className={agContainer}>
           <div className={agGridWrapper}>
             <div
-              className={`ag-theme-alpine ${agGridBox}`}
+              className={`ag-theme-alpine`}
               style={{ height: "200px", width: "700px", textAlign: "center" }}
             >
               <AgGridReact

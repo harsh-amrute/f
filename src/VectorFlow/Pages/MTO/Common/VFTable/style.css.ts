@@ -6,10 +6,10 @@ export const VFTableWrapper = style({
   height: vHeight,
   // max-height: 90%; // (kept commented like original)
   // margin: 20px 0;  // (kept commented like original)
-  zoom: '1 !important',
-  width: 'min(1200px, 100%)',     // replaces the broken width
+  width: '100%',     // replaces the broken width
   minWidth: 0,
   overflow: 'hidden',
+  zoom: '1 !important',
 
   // selectors: {
   //   // cover both: wrapper IS the theme element, or contains it

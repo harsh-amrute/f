@@ -23,7 +23,7 @@ import {
 } from "../../../../VectorFlow/types/BPR";
 //  import {enIN} from 'date-fns/locale';
 import { useEffect, useState } from "react";
-
+import Select, { CSSObjectWithLabel } from 'react-select'
 import VFRangeSlider from "../VFRangeSlider";
 import { AgCharts } from "ag-charts-react";
 import { getFormattedDate } from "../../../../helpers/utils";
@@ -37,7 +37,9 @@ import { addDays, eachDayOfInterval, format, subDays } from "date-fns";
 import { useUserData } from "../../../../context";
 import useGetLastRunData from "../../../../hooks/useGetLastRunData";
 import Tooltip from "../../../../../src/VectorFlow/Pages/MTO/Common/Tooltip";
-import DownshiftSelectSuspension from "./DownShiftSelectSuspension";
+// import DownshiftSelectSuspension from "./DownShiftSelectSuspension";
+import "./style.css";
+
 interface DailyDataGraphModalProps {
   rowData: any;
   chartData: any[];
@@ -314,26 +316,26 @@ const DailyDataGraphModal = ({
       newNorm: number,
       reason: string
     ) => `
-            <div style="padding:5px;">
-              <span style="font-family:Roboto;font-weight:700;">Revision Suggested :</span>
-              <span>Old Norm - ${oldNorm} </span>
-              <span>New Norm - ${newNorm} </span>
-              <br>
-              <span style="font-family:Roboto;font-weight:700;">Reason : </span>
-              <span>${reason}</span>
-              <div style="width:100%;height:1px;background-color:#777777;margin-top:2px;"></div>
-            </div>
-          `;
+      <div class="revision-container">
+        <span class="revision-title">Revision Suggested :</span>
+        <span>Old Norm - ${oldNorm} </span>
+        <span>New Norm - ${newNorm} </span>
+        <br>
+        <span class="revision-title">Reason : </span>
+        <span>${reason}</span>
+        <div class="divider"></div>
+      </div>
+    `;
 
     const generateSuspensionReasonsBlock = (reasons: string) => `
-          <div style="padding:5px;">
-            <p style="font-family:Roboto;font-weight:700;">Suspension Reasons :</p>
-            <ol>
-              ${reasons}
-            </ol>
-            <div style="width:100%;height:1px;background-color:#777777;margin-top:2px;"></div>
-          </div>
-        `;
+      <div class="suspension-container">
+        <p class="suspension-title">Suspension Reasons :</p>
+        <ol>
+          ${reasons}
+        </ol>
+        <div class="divider"></div>
+      </div>
+    `;
 
     const generateDailyDataBlock = (
       stock: number,
@@ -345,66 +347,65 @@ const DailyDataGraphModal = ({
       greenNorm: number,
       blueNorm: number
     ) => `
-          <div style="padding:5px;">
-            <div style="display:flex;justify-content:flex-start;flex-wrap:wrap;gap:5px;margin-bottom:5px;">
-              ${
-                stock != null || stock != undefined
-                  ? `<div style="display:flex;align-items:center;gap:5px;">
-                <div style="width:10px;height:10px;background-color:#5D148B;"></div>
-                <span style="font-family:Roboto;font-weight:700;">Stock :</span>
-                <span>${stock}</span>
-              </div>`
-                  : ""
-              }
-              ${
-                git != null || git != undefined
-                  ? `<div style="display:flex;align-items:center;gap:5px;">
-                <div style="width:10px;height:10px;background-color:#8137BC;"></div>
-                <span style="font-family:Roboto;font-weight:700;">GIT :</span>
-                <span>${git}</span>
-              </div>`
-                  : ""
-              }
-              ${
-                receipt != null || receipt != undefined
-                  ? `<div style="display:flex;align-items:center;gap:5px;">
-                <div style="width:10px;height:10px;background-color:#67B6E8;"></div>
-                <span style="font-family:Roboto;font-weight:700;">Receipt :</span>
-                <span>${receipt}</span>
-              </div>`
-                  : ""
-              }
-              ${
-                consumption != null || consumption != undefined
-                  ? `<div style="display:flex;align-items:center;gap:5px;">
-                <div style="width:10px;height:10px;background-color:#EDB04D;"></div>
-                <span style="font-family:Roboto;font-weight:700;">Consumption :</span>
-                <span>${consumption}</span>
-              </div>`
-                  : ""
-              }
-
-            </div>
-            <div style="display:flex;gap:5px;">
-              <div style="display:flex;align-items:center;gap:5px;">
-                <div style="width:10px;height:10px;background-color:#ED4A4A;"></div>
-                <span>${redNorm}</span>
-              </div>
-              <div style="display:flex;align-items:center;gap:5px;">
-                <div style="width:10px;height:10px;background-color:#F5EE4E;"></div>
-                <span>${yellowNorm}</span>
-              </div>
-              <div style="display:flex;align-items:center;gap:5px;">
-                <div style="width:10px;height:10px;background-color:#418D18;"></div>
-                <span>${greenNorm}</span>
-              </div>
-              <div style="display:flex;align-items:center;gap:5px;">
-                <div style="width:10px;height:10px;background-color:#355FD3;"></div>
-                <span>${blueNorm}</span>
-              </div>
-            </div>
-          <div>
-        `;
+      <div class="dailydata-container">
+        <div class="dailydata-top-row">
+          ${
+            stock != null && stock != undefined
+              ? `<div class="dailydata-item">
+                  <div class="color-box stock-color"></div>
+                  <span class="label">Stock :</span>
+                  <span>${stock}</span>
+                </div>`
+              : ""
+          }
+          ${
+            git != null && git != undefined
+              ? `<div class="dailydata-item">
+                  <div class="color-box git-color"></div>
+                  <span class="label">GIT :</span>
+                  <span>${git}</span>
+                </div>`
+              : ""
+          }
+          ${
+            receipt != null && receipt != undefined
+              ? `<div class="dailydata-item">
+                  <div class="color-box receipt-color"></div>
+                  <span class="label">Receipt :</span>
+                  <span>${receipt}</span>
+                </div>`
+              : ""
+          }
+          ${
+            consumption != null && consumption != undefined
+              ? `<div class="dailydata-item">
+                  <div class="color-box consumption-color"></div>
+                  <span class="label">Consumption :</span>
+                  <span>${consumption}</span>
+                </div>`
+              : ""
+          }
+        </div>
+        <div class="dailydata-bottom-row">
+          <div class="dailydata-item">
+            <div class="color-box red-norm-color"></div>
+            <span>${redNorm}</span>
+          </div>
+          <div class="dailydata-item">
+            <div class="color-box yellow-norm-color"></div>
+            <span>${yellowNorm}</span>
+          </div>
+          <div class="dailydata-item">
+            <div class="color-box green-norm-color"></div>
+            <span>${greenNorm}</span>
+          </div>
+          <div class="dailydata-item">
+            <div class="color-box blue-norm-color"></div>
+            <span>${blueNorm}</span>
+          </div>
+        </div>
+      </div>
+    `;
 
     function renderer(params: any) {
       const suggestionObject = suggestionData.find(
@@ -443,10 +444,10 @@ const DailyDataGraphModal = ({
       );
 
       let tooltip = `
-            <div style="text-align:center;font-family:Roboto;font-weight:700;padding:5px;border-bottom:1px dashed #777777;">
-              ${getFormattedDate(new Date(params.datum.date))}
-            </div>
-          `;
+          <div class="dailygraph-tooltip-header">
+            ${getFormattedDate(new Date(params.datum.date))}
+          </div>
+      `;
 
       if (suggestionObject)
         tooltip += generateRevisionSuggestedBlock(
@@ -476,10 +477,10 @@ const DailyDataGraphModal = ({
       }
 
       const finalTooltipHTML = `
-            <div style="background-color:white;border:1px solid #777777;border-radius:5px;max-width:400px;">
-              ${tooltip}
-            </div>
-          `;
+        <div class="dailygraph-tooltip-container">
+          ${tooltip}
+        </div>
+      `;
 
       return finalTooltipHTML;
     }
@@ -868,7 +869,7 @@ const DailyDataGraphModal = ({
             <hr className={SCHorizontalDivider} />
 
             {/* Suspension Type */}
-            {/* <div
+            <div
               style={{
                 display: "flex",
                 flexDirection: "column",
@@ -905,7 +906,7 @@ const DailyDataGraphModal = ({
                           : "#bc3d814d",
                       color: "black",
                     },
-                  }),
+                  }as CSSObjectWithLabel),
                   control: (baseStyles, { isFocused }) => ({
                     ...baseStyles,
                     borderColor: isFocused ? "none" : "hsl(0, 0%, 80%);",
@@ -913,11 +914,11 @@ const DailyDataGraphModal = ({
                     "&:hover": {
                       borderColor: isFocused ? "none" : "hsl(0, 0%, 80%);",
                     },
-                  }),
+                  }as CSSObjectWithLabel),
                 }}
               />
-            </div> */}
-            <DownshiftSelectSuspension
+            </div>
+            {/* <DownshiftSelectSuspension
               suspensionOptions={suspensionOptions}
               setSuspensionType={setSuspensionType}
               themeUi={themeUi}
@@ -925,7 +926,7 @@ const DailyDataGraphModal = ({
               assignInlineVars={assignInlineVars}
               textFontWeightVar={textFontWeightVar}
               textFontSizeVar={textFontSizeVar}
-            />
+            /> */}
 
             <hr className={SCHorizontalDivider} />
 
@@ -971,7 +972,7 @@ const DailyDataGraphModal = ({
                 >
                   Location :
                   <Tooltip
-                    disableStyleInjection={true}
+                    disableStyleInjection="core"
                     content={
                       <div style={{ padding: "0.5rem 1rem", fontSize: "12px" }}>
                         {rowData[whKey]}

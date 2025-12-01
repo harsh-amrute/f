@@ -8,7 +8,7 @@ import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Commo
 import { columnConfigData } from "../ColumnData";
 import { getColumnDefinations } from "../../../../../../../helpers/utils";
 import { format } from "date-fns";
-
+import "./style.css";
 
 const FullKitGraph = (props: any) => {
   const { graphData } = props;
@@ -21,23 +21,19 @@ const FullKitGraph = (props: any) => {
 
   function TooltipRenderer({ datum, xKey }: any) {
     return `
-    <div class="ag-chart-tooltip-title" style="background-color: #6C696A; display: flex; justify-content: center; align-items: center">
+      <div class="tooltip-title">
         ${datum[xKey]}
-    </div>
-    <div class="ag-chart-tooltip-content" style="color: white; background-color: #6C696A">
-    
-    <div>
-        <div style="display: flex;">
-            <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: gray">
-            </div>
-            <div style="display:flex ; width: 100%; justify-content: space-between">
-                <div>${ProductionInsightsAndTrendsString.fullKitInDays}
-                </div>
-                <div> ${datum["days"]}
-                </div>
-            </div>
+      </div>
+      <div class="tooltip-content">
+        <div class="tooltip-row">
+          <div class="color-box color-gray"></div>
+          <div class="label-value">
+            <div>${ProductionInsightsAndTrendsString.fullKitInDays}</div>
+            <div>${datum["days"]}</div>
+          </div>
         </div>
-    </div>`;
+      </div>
+    `;
   }
 
   const options: AgChartOptions = {

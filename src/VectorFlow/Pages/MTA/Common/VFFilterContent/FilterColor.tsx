@@ -7,12 +7,11 @@ import {
   dropDownRow,
   iconWrapper,
 } from "./style.css";
-// import Select from "react-select";
+import Select from "react-select";
 import { useThemeStyles } from "../../../../../hooks/useVFFilterContent";
 import { colorFilterOptions, numericOperators } from "./useVFFilterContent";
 import { useUserData } from "../../../../../context";
 import { BPRFilter, BPRFilterState } from "../../../../../VectorFlow/types/BPR";
-import DownshiftSelect from "./DownshiftSelect/DownshiftSelect";
 
 interface FilterSectionProps {
   filters: any;
@@ -50,13 +49,7 @@ export const ColorFilters: React.FC<FilterSectionProps> = ({
   ];
 
   const isRowComplete = (row: FilterRowState) => {
-    return (
-      row.type &&
-      row.attributeName &&
-      row.operator &&
-      row.value &&
-      row.value.trim() !== ""
-    );
+    return row.type && row.attributeName && row.operator && row.value && row.value.trim() !== "";
   };
 
   useEffect(() => {
@@ -106,8 +99,8 @@ export const ColorFilters: React.FC<FilterSectionProps> = ({
 
     setFilterRows(updatedRows);
 
-    const updatedRow = updatedRows.find((r) => r.id === rowId);
-
+    const updatedRow = updatedRows.find(r => r.id === rowId);
+    
     if (updatedRow) {
       const updatedMultiFilter = { ...multiFilter };
 
@@ -193,7 +186,7 @@ export const ColorFilters: React.FC<FilterSectionProps> = ({
             return (
               <div className={dropDownRow} key={row.id} style={{ alignItems: "center" }}>
                 <div className={dropDownWrapper}>
-                  {/* <Select
+                  <Select
                     placeholder={"Select Type"}
                     styles={styles}
                     isSearchable={false}
@@ -207,24 +200,11 @@ export const ColorFilters: React.FC<FilterSectionProps> = ({
                     onChange={(selectedOption) =>
                       handleSelectChange(row.id, "type", selectedOption)
                     }
-                  /> */}
-                  <DownshiftSelect
-                    placeholder="Select Type"
-                    options={colorTypeFilterOptions}
-                    value={
-                      colorTypeFilterOptions.find(
-                        (opt) => opt.value === row.type
-                      ) || null
-                    }
-                    onChange={(selectedOption) =>
-                      handleSelectChange(row.id, "type", selectedOption)
-                    }
-                    isSearchable={false} // disables typing/filtering
                   />
                 </div>
 
                 <div className={dropDownWrapper}>
-                  {/* <Select
+                  <Select
                     options={colorFilterOptions}
                     placeholder={"Select Color"}
                     styles={styles}
@@ -242,28 +222,11 @@ export const ColorFilters: React.FC<FilterSectionProps> = ({
                         selectedOption
                       )
                     }
-                  /> */}
-                  <DownshiftSelect
-                    options={colorFilterOptions}
-                    placeholder="Select Color"
-                    value={
-                      colorFilterOptions.find(
-                        (opt) => opt.value === row.attributeName
-                      ) || null
-                    }
-                    onChange={(selectedOption) =>
-                      handleSelectChange(
-                        row.id,
-                        "attributeName",
-                        selectedOption
-                      )
-                    }
-                    isSearchable={false} // disables typing/filtering
                   />
                 </div>
 
                 <div className={dropDownWrapper}>
-                  {/* <Select
+                  <Select
                     options={numericOperators}
                     placeholder={"Select OP"}
                     styles={styles}
@@ -277,19 +240,6 @@ export const ColorFilters: React.FC<FilterSectionProps> = ({
                     onChange={(selectedOption) =>
                       handleSelectChange(row.id, "operator", selectedOption)
                     }
-                  /> */}
-                  <DownshiftSelect
-                    options={numericOperators}
-                    placeholder="Select OP"
-                    value={
-                      numericOperators.find(
-                        (opt) => opt.value === row.operator
-                      ) || null
-                    }
-                    onChange={(selectedOption) =>
-                      handleSelectChange(row.id, "operator", selectedOption)
-                    }
-                    isSearchable={false} // disables typing/filtering
                   />
                 </div>
 

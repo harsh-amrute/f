@@ -38,6 +38,10 @@ const DeptWiseGraph = ({chartTableData, chartData, alertData}: any) => {
     const [chartLoading, setChartLoading] = useState(false);
     const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
     const date = apiResponseData?.data?.data;
+    const nonce =
+    (window as any).__nonce__ ??
+    document.querySelector<HTMLMetaElement>('meta[name="csp-nonce"]')?.content?.trim();
+  
     const boxChartOptions: any = {
         theme: {
             monochrome: {
@@ -49,7 +53,7 @@ const DeptWiseGraph = ({chartTableData, chartData, alertData}: any) => {
         },
         chart: {
             type: 'boxPlot',
-
+            nonce: nonce,
             zoom: {
                 enabled: false,
             },

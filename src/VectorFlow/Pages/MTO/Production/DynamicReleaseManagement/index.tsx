@@ -60,6 +60,7 @@ import VFWarningModal from "../../../../../components/VectorFLOW/commons/MTO/VFW
 import _ from "lodash";
 import CustomLegend from "../../Common/CustomLegend";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
+import "./style.css";
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -485,7 +486,7 @@ const DynamicReleaseManagement = () => {
     Action: {
       floatingFilter: false,
       resizable: false,
-      suppressMenu: true,
+      suppressHeaderMenuButton: true,
       cellRenderer: (params: any) => {
         if (!_.isEmpty(params.data)) {
           return (
@@ -596,7 +597,7 @@ const DynamicReleaseManagement = () => {
         return params.node && !params.node.group;
       },
       maxWidth: 50,
-      suppressMenu: true,
+      suppressHeaderMenuButton: true,
       floatingFilter: false,
     },
   };
@@ -729,7 +730,7 @@ const DynamicReleaseManagement = () => {
     columnDefs: colDef,
     defaultColDef: {
       resizable: true,
-      suppressMenu: true,
+      suppressHeaderMenuButton: true,
       initialFlex: 1,
       autoHeaderHeight: true,
       floatingFilter: true,
@@ -802,35 +803,31 @@ const DynamicReleaseManagement = () => {
 
   function TooltipRenderer({ datum, xKey }: any) {
     return `
-    <div style="background:#6C696A; style="transform: translateX(120px)" >
-    <div  style=" color: white; padding: 10px 10px 4px;background-color: #6C696A; display: flex; justify-content: center; align-items: center; border-bottom: 1px dashed white">
-        ${datum[xKey]}
-    </div>
-    <div style="color: white; background-color: #6C696A; padding: 10px;">
-      <div style="display: flex; align-items: center;">
-        <div style="margin-right: 10px; height: 3px; width: 15px; background-color: ${barColors["Released WIP"]}"></div>
-        Released WIP:  ${datum["Released WIP"]}
+      <div class="tooltip-container transform-translate-x">
+        <div class="tooltip-header">
+          ${datum[xKey]}
+        </div>
+        <div class="tooltip-body">
+          <div class="tooltip-row">
+            <div class="color-box barcolor-${barColors["Released_WIP"]}"></div>
+            <div>Released WIP: ${datum["Released WIP"]}</div>
+          </div>
+          <div class="tooltip-row">
+            <div class="color-box barcolor-${barColors["Incremental_WIP"]}"></div>
+            <div>Incremental WIP: ${datum["Incremental WIP"]}</div>
+          </div>
+          <div class="tooltip-row">
+            <div class="color-box barcolor-${barColors["Limit"]}"></div>
+            <div>Limit: ${datum["Limit"]}</div>
+          </div>
+        </div>
       </div>
-      <div style="display: flex; align-items: center;">
-        <div style="margin-right: 10px; height: 3px; width: 15px; background-color: ${barColors["Incremental WIP"]}"></div>
-        Incremental WIP:  ${datum["Incremental WIP"]}
-      </div>
-      <div style="display: flex; align-items: center;">
-        <div style="margin-right: 10px; height: 3px; width: 15px; background-color: ${barColors["Limit"]}"></div>
-        Limit:  ${datum["Limit"]}
-      </div>
-      
-    </div>
-    </div>`;
-    // dont remove below code require for fol gap phase 2
-    // <div style="display: flex; align-items: center;">
-    //     FOL Gap:  ${datum["FOL Gap"]}
-    //   </div>
+    `;
   }
 
   const barColors = {
-    "Released WIP": "#191919",
-    "Incremental WIP": "#4BAAF7",
+    "Released_WIP": "#191919",
+    "Incremental_WIP": "#4BAAF7",
     Limit: "#E53F3F",
   };
 
@@ -844,7 +841,7 @@ const DynamicReleaseManagement = () => {
         stacked: true,
         strokeWidth: 0,
         visible: true,
-        fill: barColors["Released WIP"],
+        fill: barColors["Released_WIP"],
         itemStyler: ({ datum }: any) => {
           return {
             fillOpacity: datum.selected == true ? 1 : 0.5,
@@ -862,7 +859,7 @@ const DynamicReleaseManagement = () => {
         stacked: true,
         strokeWidth: 0,
         visible: true,
-        fill: barColors["Incremental WIP"],
+        fill: barColors["Incremental_WIP"],
         tooltip: {
           position: { placement: "right" }, // anchor to bar
           renderer: TooltipRenderer,

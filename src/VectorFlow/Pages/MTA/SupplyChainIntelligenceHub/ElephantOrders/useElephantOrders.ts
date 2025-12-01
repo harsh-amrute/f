@@ -227,7 +227,7 @@ const useElephantOrders= ()=>{
                             cellRenderer: DateCellRenderer ,
                             editable: false,
                             width: 200,
-                            suppressMenu: true,
+                            suppressHeaderMenuButton: true,
                             cellRendererParams: {
                                 onDateChange: (newDate: string, rowData: any) => {
                                   handleDueDateChange(newDate, rowData, 'SKUCode', 'WhCode', 'CustomerOrderID');

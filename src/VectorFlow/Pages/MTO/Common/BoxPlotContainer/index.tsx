@@ -1,17 +1,17 @@
 import { AgChartOptions } from "ag-charts-community";
-import { Dispatch, SetStateAction, useRef } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import {
   SCChartContainer,
   SCChartMainContainer,
   SCHorizontalDivider,
   ChartWrapper,
-  vChartHeight
+  vChartHeight,
 } from "./styles.css";
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard";
 import VFTable from "../../Common/VFTable";
 import { GridRef } from "../../../../../VectorFlow/types/MDM";
 import Chart from "react-apexcharts";
-import { assignInlineVars } from '@vanilla-extract/dynamic';
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 
 interface BoxPlotContainerProps {
   colDef: any;
@@ -63,9 +63,8 @@ const BoxPlotContainer = ({
           flexDirection: "column",
           paddingBottom: "20px",
           ...assignInlineVars({
-            [vChartHeight]: '100%',
+            [vChartHeight]: "100%",
           }),
-          // ...scChartVars("100%"), // sets the CSS var that SCChartContainer uses for height
         }}
       >
         <div className={SCChartMainContainer} style={{ zoom: 1 }}>
@@ -148,10 +147,10 @@ const BoxPlotContainer = ({
             />
           </div>
         </VFModalCard>
+
         <div style={{ flex: 1, width: "100%" }}>
           <Chart
             options={boxChartOptions}
-            // series={series} // Make sure you have defined the series data
             type="boxPlot"
             height={"100%"}
             series={boxChartSeries}

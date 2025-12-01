@@ -388,3 +388,7 @@
 .ag-overlay-no-rows-center {
   padding-top: 100px;
 }
+
+.ag-charts-toolbar__button--hidden-value{
+  display: none;
+}
