@@ -26,17 +26,17 @@ export function decryptStorageData(encryptedData: string | null): any | null {
   if (!encryptedData || typeof encryptedData !== "string") return null;
  
   try {
-    const bytes = CryptoJS.AES.decrypt(encryptedData, SECRET_PHRASE);
-    const text = bytes.toString(CryptoJS.enc.Utf8);
+    const decrypted = CryptoJS.AES.decrypt(encryptedData, SECRET_PHRASE);
+    const originalText = decrypted.toString(CryptoJS.enc.Utf8);
  
-    if (!text || text.trim() === "" || text === "[object Object]") {
+    if (!originalText || originalText.trim() === "" || originalText === "[object Object]") {
       return null;
     }
  
     try {
-      return JSON.parse(text);
+      return JSON.parse(originalText);
     } catch {
-      return text;
+      return originalText;
     }
   } catch (error) {
     console.error("Decryption failed:", error);
