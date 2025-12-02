@@ -176,8 +176,8 @@ const BulkUploadHeader = ({
           themeUi={themeUi}
           onClick={() => {
             gridRef.current.api.exportDataAsExcel({
-              fileName: "UserData.xlsx",
-              sheetName: "UserData.xlsx",
+              fileName: "UserData",
+              sheetName: "UserData",
               columnKeys: ["id", "username", "email", "pwd"],
             });
           }}

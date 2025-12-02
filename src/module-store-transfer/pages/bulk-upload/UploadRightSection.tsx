@@ -23,8 +23,8 @@ function UploadRightSection({
   const onErrorFileDownload = () => {
     if (errorGridRef && errorGridRef.current) {
       errorGridRef.current.api.exportDataAsExcel({
-        fileName: "Error-Data.xlsx",
-        sheetName: "Error-Data.xlsx",
+        fileName: "Error-Data",
+        sheetName: "Error-Data",
       });
     }
   };
