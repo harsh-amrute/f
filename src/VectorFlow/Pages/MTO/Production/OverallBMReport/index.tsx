@@ -825,7 +825,6 @@ const handleActionChange = (option: any) => {
       const headersdata = refGraph2?.current?.api?.getColumnState();
       const formatedFilters = formatFilterJSON(appliedFilters);
 
-      const sheetAndFileName = `${FilterPageName.Prod_OverAll_BMReport}__${moment().format("DD_MM_YYYY")}`;
 
       const body = getBodyForExcelExport({headersdata,filterData: formatedFilters,groupedColDefsRef})
           try{
