@@ -968,19 +968,7 @@ const DptWiseBMReport = () => {
     
     
     
-    const getTempUpdatedFilteredData = async () => {
-            try {
-                const formatedFilters = formatFilterJSON(appliedFilters);
-                const gridData = await getFilteredDeptWiseBMReportData({ 'wip': isWIPChecked ? 1 : 0, 'curr': 1, appliedFilters: formatedFilters, page_size: gridDataCount });
-                setTempGridData(gridData?.data?.data?.results);
-            }
-            catch (e) {
-                console.log(e);
-            }
-            finally {
-                setIsExcelLoading(false);
-            }
-        }
+
         
         
 
@@ -1003,8 +991,21 @@ const DptWiseBMReport = () => {
 
 
     const onExcelExport = () => {
-        if (isPivot) {
-            getTempUpdatedFilteredData(); 
+        
+      const gridApi = refGraph1?.current?.api;
+
+      if(!gridApi){
+        notifyError("Grid API not available for export.");
+      }
+      
+        const isValue = gridApi.getValueColumns().length > 0;
+        const isRowGroup = gridApi.getRowGroupColumns().length > 0;
+        if (isPivot|| isValue || isRowGroup) {
+             refGraph1.current?.api?.exportDataAsExcel({
+                fileName: "DepartmentWiseBMReport",
+                sheetName: "DepartmentWiseBMReport",
+              });
+
         } else {
           if (bomActive) {
             setShowExcelModal(true)
@@ -1013,32 +1014,6 @@ const DptWiseBMReport = () => {
           }
         }
       }
-
-    useEffect(() => {
-
-        if (tempGridData) {
-            const colState = refGraph1.current?.api?.getColumnState();
-            tempGraph.current?.api?.applyColumnState({
-                state: colState,
-                applyOrder: true
-            });
-
-            const isPivotMode = refGraph1.current?.api?.isPivotMode()
-            if(isPivotMode){
-              refGraph1.current?.api?.exportDataAsExcel({
-                fileName: "DepartmentWiseBMReport",
-                sheetName: "DepartmentWiseBMReport",
-              });
-            }
-            else{
-              tempGraph.current?.api?.exportDataAsExcel({
-                fileName: "DepartmentWiseBMReport",
-                sheetName: "DepartmentWiseBMReport",
-
-              });
-            }
-        }
-    }, [tempGridData])
 
 
     useEffect(() => {

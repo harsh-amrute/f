@@ -12,7 +12,7 @@ import { ReasonOrderAtRiskType } from "../../../../../../../src/types/MTO/types"
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import OverlayLoader from "../../../Common/Loader";
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
-import { FilterPageName, UIGridCode } from "../../../Common/Enum";
+import { ExcelExportName, FilterPageName, UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 import GridView from "./GridView";
 import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
@@ -374,7 +374,8 @@ const OrderAtRisk = () => {
               const isRowGroupingActive = gridAPi.getRowGroupColumns().length > 0;
               const isValueActive =  gridAPi.getValueColumns().length > 0;
                if (isPivotMode || isRowGroupingActive || isValueActive) {                 
-                               const exportName = `${FilterPageName.Prod_Order_At_Risk}_${moment().format("DD-MM-YYYY")}`;
+                              //  const exportName = `${FilterPageName.Prod_Order_At_Risk}_${moment().format("DD-MM-YYYY")}`;
+                               const exportName = ExcelExportName.Order_At_Risk
                                gridAPi.exportDataAsExcel({
                                fileName: exportName,
                                sheetName: exportName

@@ -17,7 +17,7 @@ import FullkitCellRenderer from "../../../Common/FullKitCellRenderer/FullkitCell
 // import { valueContainerCSS } from "react-select/dist/declarations/src/components/containers";
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import OverlayLoader from "../../../Common/Loader";
-import { UIGridCode } from "../../../Common/Enum";
+import { ExcelExportName, UIGridCode } from "../../../Common/Enum";
 import { format } from "date-fns";
 
 
@@ -631,7 +631,8 @@ const FOLSummary = () => {
   }, [HeaderData])
 
   const onExcelExport = () => {
-    const exportName = `FOL_Summary_${format(Date.now(), "dd-MM-yyyy")}`;
+    // const exportName = `FOL_Summary_${format(Date.now(), "dd-MM-yyyy")}`;
+    const exportName = ExcelExportName.FOL_Summary
     gridRef.current?.api?.exportDataAsExcel({
       fileName: exportName,
       sheetName: exportName 

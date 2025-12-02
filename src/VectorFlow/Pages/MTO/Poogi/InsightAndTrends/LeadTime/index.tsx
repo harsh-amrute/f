@@ -162,6 +162,7 @@ const LeadTime = () => {
 
       if(!gridApi){
         notifyError("Grid API not available for export.");
+        return
       }
       
                   const isPivot = gridApi.isPivotMode(); 

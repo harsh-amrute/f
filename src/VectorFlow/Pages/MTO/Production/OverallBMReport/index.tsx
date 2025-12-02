@@ -50,7 +50,7 @@ import { useGetFilterData } from "../../../../../VectorFlow/Services/MTO/Common/
 import useFilter from "../../../../../hooks/useFilter";
 import { formatFilterJSON, getColumnDefinations,DownloadExcel, getBodyForExcelExport } from "../../../../../helpers/utils";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
-import { FilterPageName, UIGridCode } from "../../Common/Enum";
+import { ExcelExportName, FilterPageName, UIGridCode } from "../../Common/Enum";
 import { useDispatch } from "react-redux";
 import { BM_REPORT_ANALYTICS } from "../../../../../redux/actions/MTO";
 import { modifyAnalyticsData } from "../DepartmentWiseBMReport/helper";
@@ -1153,23 +1153,7 @@ const onPivotModeChanged = (event: any) => {
   const [tempGridData, setTempGridData] = useState<any>(undefined);
   const [isExcelLoading, setIsExcelLoading] = useState<boolean>(false);
 
-  const getTempGridData = async () => {
-    
-    setIsExcelLoading(true);
-    try {
-      const formatedFilters = formatFilterJSON(appliedFilters);
-      const gridData = await getOverallBMReportData({
-        page: 1,
-        appliedFilters: formatedFilters,
-        page_size: gridDataCount,
-      });
-      setTempGridData(gridData?.data?.data?.results || []);
-    } catch (e) {
-      console.log(e);
-    } finally {
-      setIsExcelLoading(false);
-    }
-  };
+
 
   const onExcelExport = () => {
 
@@ -1186,7 +1170,10 @@ const onPivotModeChanged = (event: any) => {
 
 
     if (isPivot || isRowGroupingActive || isValueActive) {
-      getTempGridData();
+     refGraph2.current?.api?.exportDataAsExcel({
+          fileName: ExcelExportName.OverallBMReport ,
+          sheetName: ExcelExportName.OverallBMReport,
+        });
     } else {
       if (bomActive) {
         setShowExcelModal(true)
@@ -1195,28 +1182,6 @@ const onPivotModeChanged = (event: any) => {
       }
     }
   };
-  useEffect(() => {
-    if (tempGridData) {
-      const colState = refGraph2.current?.api?.getColumnState();
-      tempGridRef.current?.api?.applyColumnState({
-        state: colState,
-        applyOrder: true,
-      });
-
-      const isPivotMode = refGraph2.current?.api?.isPivotMode();
-      if (isPivotMode) {
-        refGraph2.current?.api?.exportDataAsExcel({
-          fileName: "OverallBMReport",
-          sheetName: "OverallBMReport",
-        });
-      } else {
-        tempGridRef.current?.api?.exportDataAsExcel({
-          fileName: "OverallBMReport",
-          sheetName: "OverallBMReport",
-        });
-      }
-    }
-  }, [tempGridData]);
 
   const getUserColumnConfig = async () => {
     try {

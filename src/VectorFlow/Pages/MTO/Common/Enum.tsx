@@ -85,7 +85,7 @@ export enum UIGridCode {
 export enum FilterPageName {
     Proc_Material_Coverage_For_OpenSO= "Material_Coverage_For_OpenSO",
     Proc_Procurement_Planning= "Procurement_Planning",
-    Proc_Material_Requirement="Material_Requirement",
+    Proc_Material_Requirement="Proc_Material_Requirement",
     Proc_Day_Wise_Coverage= "Day_Wise_Coverage",
     Proc_RM_PM_OrderWise="RM_PM_OrderWise",
     Proc_RM_PM_BufferTrend= "RM_PM_BufferTrend",
@@ -110,7 +110,22 @@ export enum FilterPageName {
     Poogi_Lead_Time="Lead_Time",
     Poogi_Top_Failure_Reasons="Top_Failure_Reasons",
     Poogi_Trend_Of_Failure_Reasons="Trend_Of_Failure_Reasons",
-    Poogi_Elapsed_Time="Elapsed_Time"
+    Poogi_Elapsed_Time="Elapsed_Time",
+
+   
+
+}
+
+export enum ExcelExportName{
+    Login_Audit_Report = "Login_Audit_Report",
+    UserData ="UserData",
+    ErrorData = "ErrorData",
+    Enquiry_Response="Enquiry_Response",
+    FOL_Summary="FOL_Summary",
+    Order_At_Risk="Order_At_Risk",
+    Order_Balance="Order_Balance",
+    OverallBMReport="OverallBMReport"
+    
 }
 
 export enum ApplicationName {

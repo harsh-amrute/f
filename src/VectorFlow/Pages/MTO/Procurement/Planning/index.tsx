@@ -51,7 +51,6 @@ const ProcurementPlanning = () => {
     currentTab,
     handleResetClick,
     handleSaveClick,
-    getTempGridData,
     selectedDate,
     setSelectedDate,
     isPivot,

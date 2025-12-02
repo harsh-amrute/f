@@ -22,7 +22,7 @@ import {
 import OverlayLoader from '../../../Common/Loader';
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
-import { FilterPageName, pagination, UIGridCode } from "../../../Common/Enum";
+import { ExcelExportName, FilterPageName, pagination, UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 import useColDef from "../../../../../../hooks/useColDef";
 import BPPRenderer from "../../../Common/BPRRenderer/BPPRenderer";
@@ -120,8 +120,9 @@ const OrderBalance = () => {
         const isValueActive =  gridAPi.getValueColumns().length > 0;
 
           if (isPivotMode || isRowGroupingActive || isValueActive) {                 
-                                         const exportName = `${FilterPageName.Prod_Order_Balance}_${moment().format("DD-MM-YYYY")}`;
-                                         gridAPi.exportDataAsExcel({
+                                        //  const exportName = `${FilterPageName.Prod_Order_Balance}_${moment().format("DD-MM-YYYY")}`;
+                                        const exportName = ExcelExportName.Order_Balance
+                                        gridAPi.exportDataAsExcel({
                                          fileName: exportName,
                                          sheetName: exportName
                                          });

@@ -4,6 +4,7 @@ import LeftCommonCom from "./LeftCommonCom";
 import VFTable from "../../../VectorFlow/Pages/MTO/Common/VFTable";
 import { AgGridReact } from "ag-grid-react";
 import FileUploadTile from "./FileUploadTile";
+import { ExcelExportName } from "../../../VectorFlow/Pages/MTO/Common/Enum";
 
 
 interface LeftCommonComProps {
@@ -25,7 +26,7 @@ function UploadLeftSection({setNoData,setErrorCount, setErrorData, setValidData,
  
   const onDownloadClick = () => {
     downloadGridRef &&  downloadGridRef.current && downloadGridRef.current.api.exportDataAsExcel(
-      {fileName:"User-Data", sheetName: "User-Data"}
+      {fileName:ExcelExportName.UserData, sheetName: ExcelExportName.UserData}
     );
   }
 
