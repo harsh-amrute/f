@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import axios from 'axios'
-import { BPRDataPayload, SubmitBPRRemarkPayload } from '../../../../../VectorFlow/types/BPR';
+import { AnalyticsDataPayload, BPRDataPayload, SubmitBPRRemarkPayload } from '../../../../../VectorFlow/types/BPR';
 
 
 export namespace BPRService {
@@ -74,7 +74,7 @@ export namespace BPRService {
     }); 
   }
 
-  export const getAnalyticsData = async (payload:object) => {
+  export const getAnalyticsData = async (payload:AnalyticsDataPayload) => {
     return await axios.post(process.env.REACT_APP_API_HOST + `api/mta/GetAnalyticsData`,payload,{
       headers:{ 'Content-Type': 'application/json' }
     }); 

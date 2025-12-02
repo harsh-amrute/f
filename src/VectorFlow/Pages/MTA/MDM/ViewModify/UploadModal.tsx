@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction,useEffect,useRef } from 'react'
+import React, { Dispatch, SetStateAction,useEffect,useRef, useState } from 'react'
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard"
 import { UploadModalWrapper, UploadModalSection, UploadBorderContainer, UploadModalContent, TextContent, InputWrapper, UploadModalInput, UploadModalText, UploadFileText, UploadModalRadioWrapper } from "./styles"
 import { SCManualUploadBtn, SCManualUploadButton } from "../../../../../module-store-transfer/pages/manual-upload/styles"
@@ -10,7 +10,7 @@ interface UploadModalProps{
    header?:string
    onCloseModal:()=>void
    onDownload:()=>void
-   onUpload:()=>void
+   onUpload:()=>Promise<any>
    inputText:string,
    setInputText:Dispatch<SetStateAction<string>>,
    file:File | undefined,
@@ -42,6 +42,7 @@ const UploadModal = (props:UploadModalProps)=>{
 
    const {user} = useUserData()
    const inputRef = useRef<HTMLInputElement>(null);
+   const [isUploading, setIsUploading] = useState(false);
 
    const handleClick = (): void => {
       if (inputRef.current != null) {
@@ -79,6 +80,16 @@ const UploadModal = (props:UploadModalProps)=>{
          }
       }
     }, []);
+
+    const handleUpload = async () => {
+        if (isUploading) return;
+        setIsUploading(true);
+        try {
+            await onUpload();
+        } finally {
+            setIsUploading(false);
+        }
+    };
  
 
    return(
@@ -166,8 +177,8 @@ const UploadModal = (props:UploadModalProps)=>{
                </SCManualUploadButton>
                   <UploadModalInput placeholder="Click here to upload new file" value={file?.name}/>
                      <SCManualUploadBtn themeUi={user.user.theme_ui} 
-                        onClick={onUpload}
-                        disabled={uploadButtonStatus}
+                        onClick={handleUpload}
+                        disabled={uploadButtonStatus || isUploading}
                         style={{
                            height:'30px',
                            borderRadius:'0',

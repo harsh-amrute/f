@@ -101,8 +101,8 @@ const AddProductPermission = (props: { cb: () => void }) => {
     }
   };
 
-  const handleUpload = () => {  
-    onUpload(RECORD_UPLOAD_LIMIT);
+  const handleUpload = async () => {  
+   await onUpload(RECORD_UPLOAD_LIMIT);
     setUploadCallback(cb);
   }
 
@@ -214,7 +214,9 @@ const AddProductPermission = (props: { cb: () => void }) => {
         openModal={isUploadModalOpen} 
         onCloseModal={()=>{setFile(undefined);toggleUploadModal(false)}} 
         onDownload={()=>exportToExcel(true)} 
-        onUpload={handleUpload}
+        onUpload={async ()=>{
+              await handleUpload();
+            }}
         inputText={downloadFileName}
         setInputText={setDownloadFileName}
         file={file}
