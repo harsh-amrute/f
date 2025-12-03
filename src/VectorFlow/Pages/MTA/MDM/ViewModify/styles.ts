@@ -36,6 +36,7 @@ export const SCFilterControls = styled.div`
     padding-left:9px;
     padding-right:9px;
     border-radius: 6px;
+    z-index: 9999;
 `
 
 export const SCFilterAddControls = styled.div`
