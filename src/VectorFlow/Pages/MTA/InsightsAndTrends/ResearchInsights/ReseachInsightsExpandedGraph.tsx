@@ -1,5 +1,5 @@
 import { AgCharts } from "ag-charts-react";
-import { AgCartesianChartOptions } from "ag-charts-community";
+import type { AgCartesianChartOptions } from "ag-charts-community";
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard";
 import {
   ExpandedChartFilterWrapper,
@@ -12,7 +12,7 @@ import Select, { CSSObjectWithLabel } from "react-select";
 import VFCapsule from "../../../../../components/VectorFLOW/commons/VFCapsule";
 import { ReseachInsightsGraphState } from "../../../../../VectorFlow/types/BPR";
 import { useUserData } from "../../../../../context";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   SCViewImage,
   SCViewContainerWithBg,
@@ -94,6 +94,18 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
 
+  // --------- CSP NONCE (IMPORTANT PART) ----------
+  const nonce = useMemo(() => {
+    if (typeof window === "undefined") return undefined;
+    const winNonce = (window as any).__nonce__;
+    if (winNonce) return String(winNonce);
+    const meta = document.querySelector<HTMLMetaElement>(
+      'meta[name="csp-nonce"]'
+    );
+    return meta?.content?.trim();
+  }, []);
+  // ----------------------------------------------
+
   const yKeys =
     data && data.length > 0
       ? (Object.keys(data[0]).filter((key) => key in colorMap) as ColorKey[])
@@ -146,210 +158,225 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
     };
   }
 
-  const chartOptions: AgCartesianChartOptions = {
-    height: 400,
-    width: 1000,
-    data: data,
-    series: [
-      {
-        type: "line",
-        xKey: "date",
-        yKey: "Red",
-        marker: {
-          fill: "red",
-          size: 2,
-          shape: "square",
+  const chartOptions: AgCartesianChartOptions = useMemo(
+    () => ({
+      height: 400,
+      width: 1000,
+      data: data,
+      series: [
+        {
+          type: "line",
+          xKey: "date",
+          yKey: "Red",
+          marker: {
+            fill: "red",
+            size: 2,
+            shape: "square",
+            stroke: "red",
+          },
           stroke: "red",
-        },
-        stroke: "red",
-        tooltip: {
-          renderer: (params: any) => {
-            const { datum, xKey } = params;
-            const tooltipItems = Object.entries(datum)
-              .filter(([key]) => key !== xKey && key !== "undefined")
-              .map(
-                ([key, value]) =>
-                  `<div class="color-${key.toLowerCase()}">${key}: ${value}</div>`
-              );
+          tooltip: {
+            renderer: (params: any) => {
+              const { datum, xKey } = params;
+              const tooltipItems = Object.entries(datum)
+                .filter(([key]) => key !== xKey && key !== "undefined")
+                .map(
+                  ([key, value]) =>
+                    `<div class="color-${key.toLowerCase()}">${key}: ${value}</div>`
+                );
 
-            return `
+              return `
               <div><strong>${datum[xKey]}</strong></div>
               ${tooltipItems.join("")}
             `;
+            },
           },
         },
-      },
-      {
-        type: "line",
-        xKey: "date",
-        yKey: "Green",
-        marker: {
-          fill: "green",
-          size: 2,
-          shape: "square",
+        {
+          type: "line",
+          xKey: "date",
+          yKey: "Green",
+          marker: {
+            fill: "green",
+            size: 2,
+            shape: "square",
+            stroke: "green",
+          },
           stroke: "green",
-        },
-        stroke: "green",
-        tooltip: {
-          renderer: (params: any) => {
-            const { datum, xKey } = params;
-            const tooltipItems = Object.entries(datum)
-              .filter(([key]) => key !== xKey && key !== "undefined")
-              .map(
-                ([key, value]) =>
-                  `<div class="color-${key.toLowerCase()}">${key}: ${value}</div>`
-              );
+          tooltip: {
+            renderer: (params: any) => {
+              const { datum, xKey } = params;
+              const tooltipItems = Object.entries(datum)
+                .filter(([key]) => key !== xKey && key !== "undefined")
+                .map(
+                  ([key, value]) =>
+                    `<div class="color-${key.toLowerCase()}">${key}: ${value}</div>`
+                );
 
-            return `
+              return `
               <div><strong>${datum[xKey]}</strong></div>
               ${tooltipItems.join("")}
             `;
+            },
           },
         },
-      },
-      {
-        type: "line",
-        xKey: "date",
-        yKey: "Yellow",
-        marker: {
-          fill: "#FFBF00",
-          size: 2,
-          shape: "square",
+        {
+          type: "line",
+          xKey: "date",
+          yKey: "Yellow",
+          marker: {
+            fill: "#FFBF00",
+            size: 2,
+            shape: "square",
+            stroke: "#FFBF00",
+          },
           stroke: "#FFBF00",
-        },
-        stroke: "#FFBF00",
-        tooltip: {
-          renderer: (params: any) => {
-            const { datum, xKey } = params;
-            const tooltipItems = Object.entries(datum)
-              .filter(([key]) => key !== xKey && key !== "undefined")
-              .map(
-                ([key, value]) =>
-                  `<div class="color-${key.toLowerCase()}">${key}: ${value}</div>`
-              );
+          tooltip: {
+            renderer: (params: any) => {
+              const { datum, xKey } = params;
+              const tooltipItems = Object.entries(datum)
+                .filter(([key]) => key !== xKey && key !== "undefined")
+                .map(
+                  ([key, value]) =>
+                    `<div class="color-${key.toLowerCase()}">${key}: ${value}</div>`
+                );
 
-            return `
+              return `
               <div><strong>${datum[xKey]}</strong></div>
               ${tooltipItems.join("")}
             `;
+            },
           },
         },
-      },
-      {
-        type: "line",
-        xKey: "date",
-        yKey: "Black",
-        marker: {
-          fill: "black",
-          size: 2,
-          shape: "square",
+        {
+          type: "line",
+          xKey: "date",
+          yKey: "Black",
+          marker: {
+            fill: "black",
+            size: 2,
+            shape: "square",
+            stroke: "black",
+          },
           stroke: "black",
-        },
-        stroke: "black",
-        tooltip: {
-          renderer: (params: any) => {
-            const { datum, xKey } = params;
-            const tooltipItems = Object.entries(datum)
-              .filter(([key]) => key !== xKey && key !== "undefined")
-              .map(
-                ([key, value]) =>
-                  `<div class="color-${key.toLowerCase()}">${key}: ${value}</div>`
-              );
+          tooltip: {
+            renderer: (params: any) => {
+              const { datum, xKey } = params;
+              const tooltipItems = Object.entries(datum)
+                .filter(([key]) => key !== xKey && key !== "undefined")
+                .map(
+                  ([key, value]) =>
+                    `<div class="color-${key.toLowerCase()}">${key}: ${value}</div>`
+                );
 
-            return `
+              return `
               <div><strong>${datum[xKey]}</strong></div>
               ${tooltipItems.join("")}
             `;
+            },
           },
         },
-      },
-      {
-        type: "line",
-        xKey: "date",
-        yKey: "Blue",
-        marker: {
-          fill: "blue",
-          size: 2,
-          shape: "square",
-          stroke: "date",
-        },
-        stroke: "blue",
-        tooltip: {
-          renderer: (params: any) => {
-            const { datum, xKey } = params;
-            const tooltipItems = Object.entries(datum)
-              .filter(([key]) => key !== xKey && key !== "undefined")
-              .map(
-                ([key, value]) =>
-                  `<div class="color-${key.toLowerCase()}">${key}: ${value}</div>`
-              );
+        {
+          type: "line",
+          xKey: "date",
+          yKey: "Blue",
+          marker: {
+            fill: "blue",
+            size: 2,
+            shape: "square",
+            stroke: "blue",
+          },
+          stroke: "blue",
+          tooltip: {
+            renderer: (params: any) => {
+              const { datum, xKey } = params;
+              const tooltipItems = Object.entries(datum)
+                .filter(([key]) => key !== xKey && key !== "undefined")
+                .map(
+                  ([key, value]) =>
+                    `<div class="color-${key.toLowerCase()}">${key}: ${value}</div>`
+                );
 
-            return `
+              return `
               <div><strong>${datum[xKey]}</strong></div>
               ${tooltipItems.join("")}
             `;
+            },
           },
         },
-      },
-      {
-        type: "line",
-        xKey: "date",
-        yKey: "White",
-        marker: {
-          fill: "gray",
-          size: 2,
-          shape: "square",
+        {
+          type: "line",
+          xKey: "date",
+          yKey: "White",
+          marker: {
+            fill: "gray",
+            size: 2,
+            shape: "square",
+            stroke: "gray",
+          },
           stroke: "gray",
-        },
-        stroke: "gray",
-        tooltip: {
-          renderer: (params: any) => {
-            const { datum, xKey } = params;
-            const tooltipItems = Object.entries(datum)
-              .filter(([key]) => key !== xKey && key !== "undefined")
-              .map(
-                ([key, value]) =>
-                  `<div class="color-${key.toLowerCase()}">${key}: ${value}</div>`
-              );
+          tooltip: {
+            renderer: (params: any) => {
+              const { datum, xKey } = params;
+              const tooltipItems = Object.entries(datum)
+                .filter(([key]) => key !== xKey && key !== "undefined")
+                .map(
+                  ([key, value]) =>
+                    `<div class="color-${key.toLowerCase()}">${key}: ${value}</div>`
+                );
 
-            return `
+              return `
               <div><strong>${datum[xKey]}</strong></div>
               ${tooltipItems.join("")}
             `;
+            },
+          },
+        },
+      ],
+      axes: [
+        {
+          type: "category",
+          position: "bottom",
+          label: {
+            fontSize: 8,
+          },
+        },
+        {
+          type: "number",
+          position: "left",
+          label: {
+            fontSize: 8,
+          },
+        },
+        {
+          type: "number",
+          position: "left",
+          label: {
+            fontSize: 8,
+          },
+          title: {
+            text: "Count of Item",
+            enabled: true,
+            fontSize: 10,
+            fontFamily: "Roboto",
+          },
+        },
+      ],
+
+      // -------------- CRITICAL: pass nonce to AG Charts --------------
+      ...(nonce ? { styleNonce: nonce } : {}),
+      theme: {
+        overrides: {
+          common: {
+            ...(nonce ? { styleNonce: nonce } : {}),
           },
         },
       },
-    ],
-    axes: [
-      {
-        type: "category",
-        position: "bottom",
-        label: {
-          fontSize: 8,
-        },
-      },
-      {
-        type: "number",
-        position: "left",
-        label: {
-          fontSize: 8,
-        },
-      },
-      {
-        type: "number",
-        position: "left",
-        label: {
-          fontSize: 8,
-        },
-        title: {
-          text: "Count of Item",
-          enabled: true,
-          fontSize: 10,
-          fontFamily: "Roboto",
-        },
-      },
-    ],
-  };
+      // ----------------------------------------------------------------
+    }),
+
+    [data, nonce]
+  );
 
   return (
     <VFModalCard
@@ -371,25 +398,27 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
                 width: 250,
                 // border:'1px solid red',
               }),
-              option: (baseStyles, { isSelected }) => ({
-                ...baseStyles,
-                backgroundColor: isSelected ? "#BC3D80" : "white",
+              option: (baseStyles, { isSelected }) =>
+                ({
+                  ...baseStyles,
+                  backgroundColor: isSelected ? "#BC3D80" : "white",
 
-                "&:hover": {
-                  backgroundColor: "#bc3d814d",
-                  color: "black",
-                },
-              }as CSSObjectWithLabel),
-              control: (baseStyles, { isFocused }) => ({
-                ...baseStyles,
-                borderColor: isFocused ? "none" : "hsl(0, 0%, 80%);",
-                // border: "none",
-                // borderBottom: error ? "3px solid #D03E3E;" : menuIsOpen || isFocused ? '3px solid #820F4C' : '3px solid #A1A1A1',
-                boxShadow: "none",
-                "&:hover": {
+                  "&:hover": {
+                    backgroundColor: "#bc3d814d",
+                    color: "black",
+                  },
+                } as CSSObjectWithLabel),
+              control: (baseStyles, { isFocused }) =>
+                ({
+                  ...baseStyles,
                   borderColor: isFocused ? "none" : "hsl(0, 0%, 80%);",
-                },
-              }as CSSObjectWithLabel),
+                  // border: "none",
+                  // borderBottom: error ? "3px solid #D03E3E;" : menuIsOpen || isFocused ? '3px solid #820F4C' : '3px solid #A1A1A1',
+                  boxShadow: "none",
+                  "&:hover": {
+                    borderColor: isFocused ? "none" : "hsl(0, 0%, 80%);",
+                  },
+                } as CSSObjectWithLabel),
             }}
             options={options.whcodes}
             onChange={(e) => {
@@ -407,25 +436,27 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
                 ...baseStyles,
                 width: 250,
               }),
-              option: (baseStyles, { isSelected }) => ({
-                ...baseStyles,
-                backgroundColor: isSelected ? "#BC3D80" : "white",
+              option: (baseStyles, { isSelected }) =>
+                ({
+                  ...baseStyles,
+                  backgroundColor: isSelected ? "#BC3D80" : "white",
 
-                "&:hover": {
-                  backgroundColor: "#bc3d814d",
-                  color: "black",
-                },
-              }as CSSObjectWithLabel),
-              control: (baseStyles, { isFocused }) => ({
-                ...baseStyles,
-                borderColor: isFocused ? "none" : "hsl(0, 0%, 80%);",
-                // border: "none",
-                // borderBottom: error ? "3px solid #D03E3E;" : menuIsOpen || isFocused ? '3px solid #820F4C' : '3px solid #A1A1A1',
-                boxShadow: "none",
-                "&:hover": {
+                  "&:hover": {
+                    backgroundColor: "#bc3d814d",
+                    color: "black",
+                  },
+                } as CSSObjectWithLabel),
+              control: (baseStyles, { isFocused }) =>
+                ({
+                  ...baseStyles,
                   borderColor: isFocused ? "none" : "hsl(0, 0%, 80%);",
-                },
-              }as CSSObjectWithLabel),
+                  // border: "none",
+                  // borderBottom: error ? "3px solid #D03E3E;" : menuIsOpen || isFocused ? '3px solid #820F4C' : '3px solid #A1A1A1',
+                  boxShadow: "none",
+                  "&:hover": {
+                    borderColor: isFocused ? "none" : "hsl(0, 0%, 80%);",
+                  },
+                } as CSSObjectWithLabel),
             }}
             options={options.skus}
             onChange={(e) => {

@@ -238,7 +238,9 @@ const ViewModify = () => {
               newTabHandler={addNewMaster}
             >
               {(activeMaster.progress === "default" ||
-                activeMaster.progress === "view") && (
+                activeMaster.progress === "view" ||
+                activeMaster.progress === "phaseInPhaseOut" ||
+                activeMaster.progress === "seasonality") && (
                 <div
                   className={SCFilterContainer}
                   style={{ zoom: "var(--nms-filter-zoom)" }}

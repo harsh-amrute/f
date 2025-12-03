@@ -12,6 +12,7 @@ import React, { CSSProperties, useState, useEffect } from "react";
 import Portal from "../../layouts/Portal";
 import useViewPort from "../../../../hooks/useViewPort";
 import { useUserData } from "../../../../context";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 
 const ErrorCell = (props: ICellRendererParams) => {
   const { user } = useUserData();
@@ -151,7 +152,7 @@ const ErrorCell = (props: ICellRendererParams) => {
         style={
           {
             overflow: "visible",
-            [containerBgVar]: themedBg,
+            ...assignInlineVars({[containerBgVar]: themedBg})
           } as React.CSSProperties
         }
       >

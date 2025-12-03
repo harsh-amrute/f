@@ -18,12 +18,44 @@ import {
 import { assignInlineVars } from "@vanilla-extract/dynamic";
 import * as globalStyles from "../../../styles/global";
 
+import { AgCharts } from "ag-charts-react";
+import type { AgCartesianChartOptions } from "ag-charts-community";
+const createTinyChartOptions = (nonce?: string): AgCartesianChartOptions => ({
+  width: 5,
+  height: 5,
+  data: [
+    { x: 0, y: 1 },
+    { x: 1, y: 2 },
+  ],
+  series: [
+    {
+      type: "line",
+      xKey: "x",
+      yKey: "y",
+      stroke: "red",
+      marker: { enabled: false },
+    },
+  ],
+  // 👇 this makes AG Charts inject <style nonce="..."> (CSP-friendly)
+  ...(nonce ? { styleNonce: nonce } : {}),
+});
+
 const NavbarMenu = ({
   setMenuItem,
   isHide,
   setIsHide,
   setWidthResponsive,
 }: any) => {
+  const nonce =
+    (window as any).__nonce__ ??
+    document
+      .querySelector<HTMLMetaElement>('meta[name="csp-nonce"]')
+      ?.content?.trim();
+
+  const [tinyChartOptions] = useState<AgCartesianChartOptions>(() =>
+    createTinyChartOptions(nonce)
+  );
+
   const { mutateAsync: getAllReports } = useGetAllReports();
   const { mutateAsync: getAllMTOReports } = useGetAllMTOReports();
   const [listMenu, setListMenu] = useState(listMenuParent);
@@ -276,7 +308,7 @@ const NavbarMenu = ({
   };
 
   const navigateTo = useNavigate();
-  
+
   const handleLogout = async () => {
     const response = await MainService.logout(false, queryClient);
     if (response?.status == 200) {
@@ -329,6 +361,10 @@ const NavbarMenu = ({
       id="vector_nav"
       className={`${NavStyle.scGridNav} navmenu list-roles-per--content`}
     >
+      <div style={{ width: 0, height: 0, opacity: 0, position:"absolute" }}>
+        <AgCharts options={tinyChartOptions} />
+      </div>
+
       <div className={NavStyle.scNavBox}>
         {listMenu.map((item: any, index: number) => {
           const childMenu = getChild(item);

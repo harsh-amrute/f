@@ -16,12 +16,12 @@ import {
   SCManualUploadBtn,
   SCManualUploadButton,
   SCManualUploadInput,
-  manualBtnBgVar,
+  scManualUploadBtnBgVar,
 } from "../../../../../module-store-transfer/pages/manual-upload/styles.css";
 import { useUserData } from "../../../../../context";
 import * as ManualStyle from "../../../../../module-store-transfer/pages/manual-upload/styles.css";
 import { notifyError } from "../../../../../helpers/notify";
-import { assignInlineVars } from '@vanilla-extract/dynamic';
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 
 interface UploadModalProps {
   openModal: boolean;
@@ -143,12 +143,27 @@ const UploadModal = (props: UploadModalProps) => {
                 <button
                   className={SCManualUploadBtn}
                   onClick={onDownload}
-                  style={assignInlineVars({
-                    [manualBtnBgVar]:
-                      user.user.theme_ui === "REGALBLAZE"
-                        ? "linear-gradient(180deg, #FCA311 0%, #CB830E 100%)"
-                        : "linear-gradient(180deg, #BC3D81 0%, #820F4C 100%)",
-                  })}
+                  style={{
+                    height: "30px",
+                    width: "91px",
+                    borderRadius: "0",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderBottomRightRadius: "6px",
+                    fontStyle: "normal",
+                    fontVariant: "normal",
+                    fontWeight: "400",
+                    fontSize: "12px",
+                    lineHeight: "14px",
+                    fontFamily: "Roboto",
+                    ...assignInlineVars({
+                      [scManualUploadBtnBgVar]:
+                        user.user.theme_ui === "REGALBLAZE"
+                          ? "linear-gradient(180deg, #FCA311 0%, #CB830E 100%)"
+                          : "linear-gradient(180deg, #BC3D81 0%, #820F4C 100%)",
+                    }),
+                  }}
                 >
                   <img
                     src="/assets/img/VectorFLOW/NMS/download.svg"
@@ -211,12 +226,27 @@ const UploadModal = (props: UploadModalProps) => {
                   className={SCManualUploadBtn}
                   onClick={onUpload}
                   disabled={uploadButtonStatus}
-                  style={assignInlineVars({
-                    [manualBtnBgVar]:
-                      user.user.theme_ui === "REGALBLAZE"
-                        ? "linear-gradient(180deg, #FCA311 0%, #CB830E 100%)"
-                        : "linear-gradient(180deg, #BC3D81 0%, #820F4C 100%)",
-                  })}
+                  style={{
+                    height: "30px",
+                    borderRadius: "0",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: "82px",
+                    borderBottomRightRadius: "6px",
+                    fontStyle: "normal",
+                    fontVariant: "normal",
+                    fontWeight: "400",
+                    fontSize: "12px",
+                    lineHeight: "14px",
+                    fontFamily: "Roboto",
+                    ...assignInlineVars({
+                      [scManualUploadBtnBgVar]:
+                        user.user.theme_ui === "REGALBLAZE"
+                          ? "linear-gradient(180deg, #FCA311 0%, #CB830E 100%)"
+                          : "linear-gradient(180deg, #BC3D81 0%, #820F4C 100%)",
+                    }),
+                  }}
                 >
                   <img
                     src="/assets/img/VectorFLOW/NMS/upload.svg"
