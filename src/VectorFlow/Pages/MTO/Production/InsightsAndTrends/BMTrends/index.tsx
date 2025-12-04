@@ -441,11 +441,14 @@ const BMTrends = () => {
     }, [numericData]);
     
     useEffect(() => {
-        if (BMTrendsData?.data?.data) {
-            const updatedData = convertToGraphData(apiResponseData?.data?.data);
+        const trendDate = BMTrendsData?.data?.data
+        const lastRunDate = apiResponseData?.data?.data
+        
+        if (trendDate && lastRunDate) {
+            const updatedData = convertToGraphData(lastRunDate,trendDate );
             setBMTrendData(updatedData);
             setNumericData(filterDataByDaysGap(updatedData, 0, horizonDays, false));
-            setPlantData(BMTrendsData?.data?.data?.plants  || {});
+            setPlantData(trendDate?.plants  || {});
         }
     }, [BMTrendsData]);
 

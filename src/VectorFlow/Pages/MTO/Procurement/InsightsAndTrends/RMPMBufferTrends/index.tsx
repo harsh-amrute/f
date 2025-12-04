@@ -59,9 +59,9 @@ const RMPMBufferTrends = () => {
 
     const lastRunDate = apiResponseData?.data?.data;
 
-    const convertToGraphData = (apiData: any) => {
+    const convertToGraphData = (apiData: any, lastRunDate?:Date,) => {
         try {
-            const startDate = formatDate(new Date(apiData));
+            const startDate = formatDate(new Date(lastRunDate ?? Date.now()));
             const numDays = 90;
             const updatedData: BufferTrendData[] = [];
             const dateParts = startDate?.split('-');
@@ -129,7 +129,7 @@ const RMPMBufferTrends = () => {
             notifyLoader("Loading Graph Data ...")
             const formatedFilters = formatFilterJSON(appliedFilters);
             const APIData = await getRMPMBufferTrendsData({appliedFilters: formatedFilters});
-            const updatedDataMTO = convertToGraphData(lastRunDate);
+            const updatedDataMTO = convertToGraphData(APIData?.data?.data.MTO,lastRunDate);
             const updatedDataMTA = convertToGraphData(APIData?.data?.data.MTA);
             console.log('==>', updatedDataMTA)
             setMTOData(updatedDataMTO);
