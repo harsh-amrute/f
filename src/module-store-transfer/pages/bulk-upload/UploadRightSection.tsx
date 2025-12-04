@@ -4,6 +4,7 @@ import RightSectionFilePanel from "./RightSectionFilePanel";
 import VFTable from "../../../VectorFlow/Pages/MTO/Common/VFTable";
 import { GridRef } from "../../../VectorFlow/types/MDM";
 import { useRef } from "react";
+import { ExcelExportName } from "../../../VectorFlow/Pages/MTO/Common/Enum";
 
 interface UploadRightSectionProps {
   errorCount?: number;
@@ -23,8 +24,8 @@ function UploadRightSection({
   const onErrorFileDownload = () => {
     if (errorGridRef && errorGridRef.current) {
       errorGridRef.current.api.exportDataAsExcel({
-        fileName: "Error-Data.xlsx",
-        sheetName: "User Data",
+        fileName: ExcelExportName.ErrorData,
+        sheetName: ExcelExportName.ErrorData,
       });
     }
   };

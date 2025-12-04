@@ -50,7 +50,7 @@ import { useGetFilterData } from "../../../../../VectorFlow/Services/MTO/Common/
 import useFilter from "../../../../../hooks/useFilter";
 import { formatFilterJSON, getColumnDefinations,DownloadExcel, getBodyForExcelExport } from "../../../../../helpers/utils";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
-import { FilterPageName, UIGridCode } from "../../Common/Enum";
+import { ExcelExportName, FilterPageName, UIGridCode } from "../../Common/Enum";
 import { useDispatch } from "react-redux";
 import { BM_REPORT_ANALYTICS } from "../../../../../redux/actions/MTO";
 import { modifyAnalyticsData } from "../DepartmentWiseBMReport/helper";
@@ -824,6 +824,8 @@ const handleActionChange = (option: any) => {
       notifyLoader("Preparing data for export...");
       const headersdata = refGraph2?.current?.api?.getColumnState();
       const formatedFilters = formatFilterJSON(appliedFilters);
+
+
       const body = getBodyForExcelExport({headersdata,filterData: formatedFilters,groupedColDefsRef})
           try{
               const response = await getOverallBMReportData({body,isExcelExport : 1,page:currentPage,report_name : FilterPageName.Prod_OverAll_BMReport, page_size: pageSize || userPageSize,isBomExplosion})
@@ -1150,27 +1152,27 @@ const onPivotModeChanged = (event: any) => {
   const [tempGridData, setTempGridData] = useState<any>(undefined);
   const [isExcelLoading, setIsExcelLoading] = useState<boolean>(false);
 
-  const getTempGridData = async () => {
-    
-    setIsExcelLoading(true);
-    try {
-      const formatedFilters = formatFilterJSON(appliedFilters);
-      const gridData = await getOverallBMReportData({
-        page: 1,
-        appliedFilters: formatedFilters,
-        page_size: gridDataCount,
-      });
-      setTempGridData(gridData?.data?.data?.results || []);
-    } catch (e) {
-      console.log(e);
-    } finally {
-      setIsExcelLoading(false);
-    }
-  };
+
 
   const onExcelExport = () => {
-    if (isPivot) {
-      getTempGridData();
+
+    const gridApi = refGraph2.current?.api;
+
+    if (!gridApi) {
+      // Grid might not be ready, notify the user
+      notifyError("Grid is not ready, please wait.");
+      return;
+    }
+
+    const isRowGroupingActive = gridApi.getRowGroupColumns().length > 0;
+    const isValueActive = gridApi.getValueColumns().length > 0;
+
+
+    if (isPivot || isRowGroupingActive || isValueActive) {
+     refGraph2.current?.api?.exportDataAsExcel({
+          fileName: ExcelExportName.OverallBMReport ,
+          sheetName: ExcelExportName.OverallBMReport,
+        });
     } else {
       if (bomActive) {
         setShowExcelModal(true)
@@ -1179,26 +1181,6 @@ const onPivotModeChanged = (event: any) => {
       }
     }
   };
-  useEffect(() => {
-    if (tempGridData) {
-      const colState = refGraph2.current?.api?.getColumnState();
-      tempGridRef.current?.api?.applyColumnState({
-        state: colState,
-        applyOrder: true,
-      });
-
-      const isPivotMode = refGraph2.current?.api?.isPivotMode();
-      if (isPivotMode) {
-        refGraph2.current?.api?.exportDataAsExcel({
-          fileName: "OverallBMReport",
-        });
-      } else {
-        tempGridRef.current?.api?.exportDataAsExcel({
-          fileName: "OverallBMReport",
-        });
-      }
-    }
-  }, [tempGridData]);
 
   const getUserColumnConfig = async () => {
     try {
