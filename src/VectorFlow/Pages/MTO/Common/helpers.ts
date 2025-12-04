@@ -68,7 +68,7 @@ export const formatDate = (date: Date): string => {
 }
 
 export const convertToGraphData = (apiData: any) => {
-    const startDate = formatDate(new Date());
+    const startDate = formatDate(new Date(apiData));
     const numDays = 90;
     const updatedData: BufferTrendData[] = [];
     const dateParts = startDate?.split('-');

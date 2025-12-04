@@ -15,6 +15,7 @@ import { useGetFilterData } from '../../../../../..//VectorFlow/Services/MTO/Com
 import useFilter from '../../../../../../hooks/useFilter';
 import { FilterPageName } from "../../../Common/Enum";
 import { formatFilterJSON } from "../../../../../../helpers/utils"
+import { useGetDate } from "../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting"
 
 const APIFilterConfig = {
     filSecVisConfig: {
@@ -54,10 +55,13 @@ const RMPMBufferTrends = () => {
 
     const { user } = useUserData();
     const themeUi = user?.user?.theme_ui;
+    const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
+
+    const lastRunDate = apiResponseData?.data?.data;
 
     const convertToGraphData = (apiData: any) => {
         try {
-            const startDate = formatDate(new Date());
+            const startDate = formatDate(new Date(apiData));
             const numDays = 90;
             const updatedData: BufferTrendData[] = [];
             const dateParts = startDate?.split('-');
@@ -65,7 +69,6 @@ const RMPMBufferTrends = () => {
 
             for (let i = 0; i < numDays; i++) {
                 const day = formatDate(date);
-                console.log(day)
                 let entry: any = {
                     'dt': day,
                     'b': 0,
@@ -126,7 +129,7 @@ const RMPMBufferTrends = () => {
             notifyLoader("Loading Graph Data ...")
             const formatedFilters = formatFilterJSON(appliedFilters);
             const APIData = await getRMPMBufferTrendsData({appliedFilters: formatedFilters});
-            const updatedDataMTO = convertToGraphData(APIData?.data?.data.MTO);
+            const updatedDataMTO = convertToGraphData(lastRunDate);
             const updatedDataMTA = convertToGraphData(APIData?.data?.data.MTA);
             console.log('==>', updatedDataMTA)
             setMTOData(updatedDataMTO);
@@ -186,7 +189,7 @@ const RMPMBufferTrends = () => {
                             (<Allotment vertical={false} separator={false}   >
                                 <Allotment.Pane minSize={460} preferredSize={'50%'}>
                                     <BTRAllomentSection>
-                                        <BTMTO data={MTOData} isMTO={isMTO} />
+                                        <BTMTO data={MTOData} isMTO={isMTO} lastRunDate={lastRunDate} />
                                     </BTRAllomentSection>
                                 </Allotment.Pane>
 
@@ -197,7 +200,7 @@ const RMPMBufferTrends = () => {
                                 </Allotment.Pane>
                             </Allotment>)
                             :
-                            <BTMTO data={MTOData} isMTO={isMTO} />
+                            <BTMTO data={MTOData} isMTO={isMTO} lastRunDate={lastRunDate} />
 
                     }
                 </BTRTableWrapper>
