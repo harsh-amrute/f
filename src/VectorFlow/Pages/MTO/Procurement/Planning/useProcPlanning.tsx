@@ -667,9 +667,6 @@ const useProcPlanning = ( appliedFilters: any) => {
     }, [colDef])
 
     const renderView = () => {
-        const filterByChildren = (data: any[]) => data.filter(
-        (item: any) => item.children && item.children.length > 0
-    );
         switch (currentTab?.id) {
             case "ca":
                 return (
@@ -678,7 +675,7 @@ const useProcPlanning = ( appliedFilters: any) => {
                             {...agGridProps}
                             
                             columnDefs={colDef}
-                            rowData={filterByChildren(CompleteAvailableDatas)}
+                            rowData={CompleteAvailableDatas}
                             tooltipHideDelay={100000}
                             tooltipShowDelay={0}
                             tooltipMouseTrack={true}
@@ -716,7 +713,7 @@ const useProcPlanning = ( appliedFilters: any) => {
                             key={2}
                             {...agGridProps}
                             columnDefs={colDef}
-                            rowData={filterByChildren(CompleteAvailableDatas)}
+                            rowData={CompleteAvailableDatas}
                             tooltipHideDelay={100000}
                             tooltipShowDelay={0}
                             tooltipMouseTrack={true}
@@ -880,6 +877,9 @@ const useProcPlanning = ( appliedFilters: any) => {
         detailCellRendererParams: {
             colDef: childColDef
         },
+        isRowMaster: (data: any) => {
+                return data.children && Array.isArray(data.children) && data.children.length > 0;
+            },
         detailRowHeight: 225,
         autoGroupColumnDef: autoGroupColumnDef,
         enterNavigatesVertically: true,
