@@ -713,7 +713,7 @@ const useProcPlanning = ( appliedFilters: any) => {
                             key={2}
                             {...agGridProps}
                             columnDefs={colDef}
-                            rowData={CompleteAvailableDatas}
+                            rowData={ShortageDatas}
                             tooltipHideDelay={100000}
                             tooltipShowDelay={0}
                             tooltipMouseTrack={true}
@@ -877,7 +877,7 @@ const useProcPlanning = ( appliedFilters: any) => {
         detailCellRendererParams: {
             colDef: childColDef
         },
-        isRowMaster: (data: any) => {
+          isRowMaster: (data: any) => {
                 return data.children && Array.isArray(data.children) && data.children.length > 0;
             },
         detailRowHeight: 225,
