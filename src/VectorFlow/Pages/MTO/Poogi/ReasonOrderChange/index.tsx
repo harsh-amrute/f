@@ -26,6 +26,7 @@ import PlannedReleaseRenderer from './PlannedReleaseRenderer';
 import { Wrapper } from './styles';
 import VFButtonOutline from '../../../../../components/VectorFLOW/commons/VFButtonOutline';
 import { filter } from 'lodash';
+import moment from 'moment';
 
 const APIFilterConfig = {
     filSecVisConfig: {
@@ -175,6 +176,11 @@ const ReasonForDelayOrder = () => {
                 'border': "none",
             },
             cellRenderer: (props: any) => {
+
+                if (!props.data) {
+                    return null;
+                  }
+
                 return <CustomCellEditor {...props} selectedValue={props.data.maj} selectedMinorReason={props.data.min} />
             },
             enablePivot: true,
@@ -191,6 +197,11 @@ const ReasonForDelayOrder = () => {
                 'border': "none",
             },
             cellRenderer: (props: any) => {
+
+                if (!props.data) {
+                return null;
+              }
+
                 return <CustomCellEditor {...props} selectedValue={props.data.maj} selectedMinorReason={props.data.min} />
             },
             enablePivot: true,
@@ -232,20 +243,40 @@ const ReasonForDelayOrder = () => {
     const getInitialData = async (wipval = isWIPChecked, page = 1, isExcelExport = false, pageSize?: any) => {
         if (isExcelExport) {
             try {
-                const headersdata = currentGridRef?.current?.api.getColumnState();
-                const formattedFilters = formatFilterJSON(appliedFilters);
-                const body = getBodyForExcelExport({ headersdata, appliedFilters: formattedFilters, colDefMap });
-                const apiResponse = await getPoogiReasonsDelayedOrderExcelExport({ wip: wipval == true ? 1 : 0, body, isExcelExport: 1, report_name: FilterPageName.Poogi_Reason_For_Delayed_Orders })
-                if (apiResponse.status == 200) {
-                    DownloadExcel(apiResponse, FilterPageName.Poogi_Reason_For_Delayed_Orders)
-                } else {
-                    notifyError("Error downloading")
+                const gridApi = currentGridRef?.current?.api;
+
+                if (!gridApi) {
+                    notifyError("Grid API not available for export.");
+                    return;
+                }   
+
+                const isPivot = gridApi.isPivotMode(); 
+                const isValue = gridApi.getValueColumns().length > 0;
+                const isRowGroup = gridApi.getRowGroupColumns().length > 0;
+
+                if(isPivot || isValue || isRowGroup){
+                  const exportName = `${FilterPageName.Poogi_Reason_For_Delayed_Orders}_${moment().format("DD-MM-YYYY")}`;
+                  gridApi.exportDataAsExcel({
+                    fileName: exportName,
+                    sheetName: exportName
+                })
+             }
+             else {
+                 const headersdata = currentGridRef?.current?.api.getColumnState();
+                 const formattedFilters = formatFilterJSON(appliedFilters);
+                 const body = getBodyForExcelExport({ headersdata, appliedFilters: formattedFilters, colDefMap });
+                 const apiResponse = await getPoogiReasonsDelayedOrderExcelExport({ wip: wipval == true ? 1 : 0, body, isExcelExport: 1, report_name: FilterPageName.Poogi_Reason_For_Delayed_Orders })
+                 if (apiResponse.status == 200) {
+                     DownloadExcel(apiResponse, FilterPageName.Poogi_Reason_For_Delayed_Orders)
+                    } else { 
+                        notifyError("Error downloading")
+                    }
+                } 
+                } catch (error) {
+                    notifyError("An error occurred")
+                    console.log(error)
                 }
-            } catch (error) {
-                notifyError("An error occurred")
-                console.log(error)
-            }
-        } else {
+            } else {
             try {
                 const formatedFilters = formatFilterJSON(appliedFilters);
                 const apiResponse = await getPoogiReasonsDelayedOrder({ 

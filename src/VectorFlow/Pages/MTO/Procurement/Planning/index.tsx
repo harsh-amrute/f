@@ -51,10 +51,10 @@ const ProcurementPlanning = () => {
     currentTab,
     handleResetClick,
     handleSaveClick,
-    getTempGridData,
     selectedDate,
     setSelectedDate,
     isPivot,
+    gridRef
   } = useProcPlanning(appliedFilters);
 
   const handleDateChange = (date: string) => {
@@ -81,8 +81,23 @@ const ProcurementPlanning = () => {
   }, []);
 
   const ExcelExportData = () => {
-    if (isPivot) {
-      getTempGridData();
+    const gridApi = gridRef?.current?.api; 
+
+    if (!gridApi) {
+      console.error("Grid API not available for export.");
+      return;
+    }
+
+    const isRowGroupingActive = gridApi.getRowGroupColumns().length > 0;
+    const isValueActive =  gridApi.getValueColumns().length > 0;
+
+    if (isPivot || isRowGroupingActive || isValueActive) {
+      const exportName = `${FilterPageName.Proc_Procurement_Planning}_${moment().format("DD-MM-YYYY")}`;
+      
+      gridApi.exportDataAsExcel({
+          fileName: exportName,
+          sheetName: exportName
+      });
       return;
     }
     else{
