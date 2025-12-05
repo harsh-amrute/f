@@ -22,6 +22,7 @@ const LandingPage = () => {
   const [listMenu] = useState(listMenuParent);
   const map = useRef(new Map());
   const { t } = useTranslation();
+  const [renderMap, setRenderMap] = useState(new Map());
   const navigate = useNavigate();
 
   const themeUi = user?.user?.theme_ui;
@@ -103,6 +104,7 @@ const LandingPage = () => {
 
   useEffect(() => {
     createMenu();
+    setRenderMap(new Map(map.current));
   }, [themeUi]);
 
 
