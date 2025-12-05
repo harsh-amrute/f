@@ -667,6 +667,9 @@ const useProcPlanning = ( appliedFilters: any) => {
     }, [colDef])
 
     const renderView = () => {
+        const filterByChildren = (data: any[]) => data.filter(
+        (item: any) => item.children && item.children.length > 0
+    );
         switch (currentTab?.id) {
             case "ca":
                 return (
@@ -675,7 +678,7 @@ const useProcPlanning = ( appliedFilters: any) => {
                             {...agGridProps}
                             
                             columnDefs={colDef}
-                            rowData={CompleteAvailableDatas}
+                            rowData={filterByChildren(CompleteAvailableDatas)}
                             tooltipHideDelay={100000}
                             tooltipShowDelay={0}
                             tooltipMouseTrack={true}
@@ -683,7 +686,6 @@ const useProcPlanning = ( appliedFilters: any) => {
                             onGridReady={(params: any) => {
                                 params.api.autoSizeAllColumns();
                                 // setDefaultColState(params?.api?.getColumnState())
-                                
                             }}
                             maintainColumnOrder={true}        
                     onFilterChanged={()=>{Object.keys((gridRef?.current?.api?.getFilterModel()))?.length>0 ? clearFilterDisabled(false) : clearFilterDisabled(true)}}
@@ -714,7 +716,7 @@ const useProcPlanning = ( appliedFilters: any) => {
                             key={2}
                             {...agGridProps}
                             columnDefs={colDef}
-                            rowData={ShortageDatas}
+                            rowData={filterByChildren(CompleteAvailableDatas)}
                             tooltipHideDelay={100000}
                             tooltipShowDelay={0}
                             tooltipMouseTrack={true}
