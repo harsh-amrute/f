@@ -145,6 +145,7 @@ export const ButtonFilterWrapper = style({
   flexDirection: "row",
   alignItems: "center",
   backgroundColor: "#F4F4F4",
+  borderRadius: "0px 0px 12px 12px",
 });
 
 export const ButtonContainer = style({
@@ -169,6 +170,11 @@ export const Option = style({
   fontSize: "16px",
   letterSpacing: "0",
   color: "#313131",
+  selectors: {
+    "&:hover": {
+      backgroundColor: "rgb(249, 249, 249)",
+    },
+  },
 });
 
 export const AccordianContainer = style({

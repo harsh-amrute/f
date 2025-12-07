@@ -6,7 +6,10 @@ import {
   BPRRemarksCellRendererWrapper,
   BPRColorCellRendererIcon,
   BPRSubmitRemarkInput,
+  themeBg
 } from "./styles.css";
+import { useUserData } from "../../../../../context";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 
 // interface BPRSubmitRemarkCellRendererProps extends ICellRendererParams{
 //     onClick:(params:any)=>void
@@ -166,7 +169,8 @@ export const BPRTechColorCellRenderer = (params: any) => {
 export const TextToTextColorMapper = (params: any) => {
   const styles = colorToColorMapper(params.value);
   return (
-    <div className={BPRColorCellRendererWrapper}
+    <div
+      className={BPRColorCellRendererWrapper}
       onClick={() => console.log(params)}
       style={{ backgroundColor: styles.bg, color: styles.text, maxWidth: 90 }}
     >
@@ -191,7 +195,8 @@ export const BPREcoColorCellRenderer = (params: any) => {
 
   if (params.data.EcoPen == null) {
     return (
-      <div className={BPRColorCellRendererWrapper}
+      <div
+        className={BPRColorCellRendererWrapper}
         onClick={() => console.log(params)}
         style={{ backgroundColor: cellColor.bg, maxWidth: 90 }}
       ></div>
@@ -199,7 +204,8 @@ export const BPREcoColorCellRenderer = (params: any) => {
   }
 
   return (
-    <div className={BPRColorCellRendererWrapper}
+    <div
+      className={BPRColorCellRendererWrapper}
       style={{
         backgroundColor: cellColor.bg,
         color: cellColor.text,
@@ -212,26 +218,44 @@ export const BPREcoColorCellRenderer = (params: any) => {
 };
 
 export const BPRTagsCellRenderer = (params: any) => {
+  const { user } = useUserData();
   if (!params.value || params.value.length === 0) {
     return null;
   }
+  const themeUi = user?.user?.theme_ui;
+
+  const bg = themeUi === "REGALBLAZE" ? "#FCA311 0% 0% no-repeat padding-box" : "#B93B7E 0% 0% no-repeat padding-box";
+
   return (
-    <div className={BPRTagsCellRendererWrapper}>{params.value}</div>
+    <div
+      className={BPRTagsCellRendererWrapper}
+      style={{
+        height: 18,
+        padding: "0px 3px",
+        fontSize: 9,
+        width: 55,
+        ...assignInlineVars({ [themeBg]: bg }),
+      }}
+      data-theme={user.user.theme_ui}
+    >
+      {params.value}
+    </div>
   );
 };
 
 export const BPRSubmitRemarkCellRenderer = (params: any) => {
   return (
     <div className={BPRRemarksCellRendererWrapper}>
-      <div className={BPRSubmitRemarkInput}
-      // ref={(ref) => {
-      //     if (!ref) return;
+      <div
+        className={BPRSubmitRemarkInput}
+        // ref={(ref) => {
+        //     if (!ref) return;
 
-      //     ref.onclick = (e:any) => {
-      //         params.onClick(e,{skucode:params.data.SKUCode,whcode:params.data.WHCode})
-      //         e.stopPropagation();
-      //     };
-      // }}
+        //     ref.onclick = (e:any) => {
+        //         params.onClick(e,{skucode:params.data.SKUCode,whcode:params.data.WHCode})
+        //         e.stopPropagation();
+        //     };
+        // }}
       >
         {params.value ? params.value : params.data.remarks}
       </div>
@@ -242,7 +266,8 @@ export const BPRSubmitRemarkCellRenderer = (params: any) => {
 export const BPRRemarksCellRenderer = (params: any) => {
   return (
     <div className={BPRRemarksCellRendererWrapper}>
-      <img className={BPRColorCellRendererIcon}
+      <img
+        className={BPRColorCellRendererIcon}
         alt="eye icon"
         src="/assets/img/VectorFLOW/BPR/history.svg"
         ref={(ref) => {

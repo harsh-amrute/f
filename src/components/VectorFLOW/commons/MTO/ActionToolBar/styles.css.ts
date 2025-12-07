@@ -35,7 +35,6 @@ export const SCTaskBarContainer = style({
   },
 });
 
-
 export const SCGoBackContainer = style({
   display: "flex",
   alignItems: "center",
@@ -60,6 +59,12 @@ export const SCViewContainer = style({
   cursor: "pointer",
   overflow: "hidden",
   gap: "2px",
+  selectors: {
+    "&:hover": {
+      transform: "scale(1.05)",
+      transition: "all 0.3s ease-in-out",
+    },
+  },
 });
 
 export const SCHorizontalDivison = style({
@@ -95,6 +100,13 @@ export const SCViewContainerWithBg = style({
   padding: vBgPadding,
   minWidth: vBgMinW,
   minHeight: vBgMinH,
+  paddingTop: "5px",
+  selectors: {
+    "&:hover": {
+      transform: "scale(1.05)",
+      transition: "all 0.3s ease-in-out",
+    },
+  },
 });
 
 /* helper to set overrides inline (optional) */
@@ -177,6 +189,21 @@ export const SCButton = style({
   boxShadow: `-5px 4px 10px ${ColorsMTO.LightGrey.code}`,
   border: `1px solid ${ColorsMTO.Pink.code}`,
   opacity: 1,
+  selectors: {
+    "&:hover": {
+      transform: "scale(1.05)",
+      transition: "all 0.3s ease-in-out",
+    },
+  },
+});
+
+export const AddFilterWrapper = style({
+  selectors: {
+    "&:hover": {
+      transform: "scale(1.05)",
+      transition: "all 0.3s ease-in-out",
+    },
+  },
 });
 
 /* =========================
@@ -309,10 +336,11 @@ export const DateTitle = style({ width: "100px" });
 export const DateValue = style({
   padding: "15px 40px",
   background: "rgb(242, 242, 242)",
-  borderRadius: "4px",
+  borderRadius: "8px",
   minWidth: "180px",
+  border: "1px solid rgb(206, 206, 206)",
+  boxShadow: "rgba(0, 0, 0, 0.15) 0px 2px 6px",
 });
-
 
 // ---- CheckBoxDiv
 export const checkBoxDiv = style({
@@ -368,4 +396,3 @@ export const chartHeaderRadioGroup = style({
   lineHeight: "19px",
   fontFamily: "Roboto",
 });
-

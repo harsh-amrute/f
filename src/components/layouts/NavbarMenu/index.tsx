@@ -45,6 +45,7 @@ const NavbarMenu = ({
   isHide,
   setIsHide,
   setWidthResponsive,
+  menuItem,
 }: any) => {
   const nonce =
     (window as any).__nonce__ ??
@@ -58,7 +59,17 @@ const NavbarMenu = ({
 
   const { mutateAsync: getAllReports } = useGetAllReports();
   const { mutateAsync: getAllMTOReports } = useGetAllMTOReports();
-  const [listMenu, setListMenu] = useState(listMenuParent);
+  const [listMenu, setListMenu] = useState(() => {
+    if (menuItem) {
+      const updatedMenu = listMenuParent.map((item: any) => ({
+        ...item,
+        status: item.id === menuItem.id,
+      }));
+      return updatedMenu;
+    } else {
+      return listMenuParent;
+    }
+  });
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   const queryClient = useQueryClient();
   const { user, setUser } = useUserData();
@@ -143,7 +154,16 @@ const NavbarMenu = ({
       }
 
       // Clone the menu once and update it
-      const updatedMenu = _.cloneDeep(listMenuParent);
+      const updatedMenu = _.cloneDeep(listMenuParent).map((item: any) => {
+        if (menuItem) {
+          return {
+            ...item,
+            status: item.id === menuItem.id,
+          };
+        } else {
+          return item;
+        }
+      });
       const targetObject = updatedMenu.find((item: any) => item.id === 8);
 
       if (targetObject) {
@@ -361,7 +381,7 @@ const NavbarMenu = ({
       id="vector_nav"
       className={`${NavStyle.scGridNav} navmenu list-roles-per--content`}
     >
-      <div style={{ width: 0, height: 0, opacity: 0, position:"absolute" }}>
+      <div style={{ width: 0, height: 0, opacity: 0, position: "absolute" }}>
         <AgCharts options={tinyChartOptions} />
       </div>
 

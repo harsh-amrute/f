@@ -40,18 +40,17 @@ export const AuthGate = ()=>{
 
 export const UnAuthGate = ()=>{
 
-  const { isAdmin, loading } = useAuth();
+  const { isAdmin, isPermissionsManager, loading } = useAuth();
 
   if (loading)  return <Spinner/>
 
-if(!isAdmin)   return < PageNotFound /> 
-  return (
-    <>
-        <ToastContainer />
-        <Outlet />
-    </>
-);
+  if (isAdmin || isPermissionsManager) {
+    return (
+      <>
+          <ToastContainer />
+          <Outlet />
+      </>
+    );
+  }
+  return <PageNotFound />;
 }
-
-
-

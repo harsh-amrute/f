@@ -29,7 +29,8 @@ import DRMAnalytics from "../../../VectorFlow/Pages/MTO/Production/DynamicReleas
 import DeptWiseAnalytics from "../../../VectorFlow/Pages/MTO/Production/DepartmentWiseBMReport/DeptWiseAnalytics";
 import ResourceUtilAnalytics from "../../../VectorFlow/Pages/MTO/Poogi/InsightAndTrends/ResourceUtilization/ResourceUtilAnalytics";
 import { RESET_MTO_STATE } from "../../../redux/actions/MTO";
-import * as globalStyles from '../../../styles/global';
+import * as globalStyles from "../../../styles/global";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 
 const NavbarItem = ({
   setWidthResponsive,
@@ -43,11 +44,9 @@ const NavbarItem = ({
   const { currentView, currentCategory } = useSelector(
     (state: RootState) => state.mta.planning
   );
+  // const analyticsPaths: Array<string> = ["/mta/supply-chain-intelligence-hub/bpr", "/mta/insights-and-trends/research-insights", "/mta/insights-and-trends/buffer-trend-report", "/mta/insights-and-trends/buffer-trends"]
   const analyticsPaths: Array<string> = [
     "/mta/supply-chain-intelligence-hub/bpr",
-    "/mta/insights-and-trends/research-insights",
-    "/mta/insights-and-trends/buffer-trend-report",
-    "/mta/insights-and-trends/buffer-trends",
   ];
   const themeUi = user?.user?.theme_ui;
   const navigate = useNavigate();
@@ -77,13 +76,15 @@ const NavbarItem = ({
     ) {
       return null;
     }
+    const isActive =
+      listMenu.url === location.pathname ||
+      listMenu.child.some((i: any) => i.url === location.pathname);
 
     return (
       <div
-        className={NavStyle.SCMenuItem({
-          active:
-            listMenu.url === location.pathname ||
-            listMenu.child.some((i: any) => i.url === location.pathname),
+        className={NavStyle.SCMenuItem}
+        style={assignInlineVars({
+          [NavStyle.menuItemColorVar]: isActive ? "#0a58ca" : "#495057",
         })}
         key={listMenu.id}
       >
@@ -104,7 +105,12 @@ const NavbarItem = ({
             </div>
 
             <img
-              className={NavStyle.SCInterStoreArrowDown({ rotated: toggle })}
+              className={NavStyle.SCInterStoreArrowDown}
+              style={assignInlineVars({
+                [NavStyle.interStoreArrowTransformVar]: toggle
+                  ? "rotate(180deg)"
+                  : "rotate(0deg)",
+              })}
               src="/assets/img/nav/arrow_down.svg"
               alt=""
             />
@@ -123,33 +129,44 @@ const NavbarItem = ({
   };
 
   const renderAnalyticsGrid = useCallback(() => {
-    if (location.pathname === "/mta/supply-chain-intelligence-hub/planning") {
-      if (currentView !== "chart" && currentCategory !== "") {
-        return true;
-      }
-      if (currentCategory === "") {
-        return true;
-      }
-    }
-    if (analyticsPaths.includes(pathname)) {
-      return true;
-    }
-    return false;
-  }, [location.pathname, currentCategory, currentView]);
+    // if (location.pathname === "/mta/supply-chain-intelligence-hub/planning") {
+
+    //   if (currentView !== 'chart' && currentCategory !== "") {
+    //     return true
+    //   }
+    //   if (currentCategory === "") {
+    //     return true
+    //   }
+    // }
+    return analyticsPaths.includes(pathname);
+  }, [pathname]);
 
   const renderListMenuChild = (listChild: any, status: boolean) => {
     return listChild.map((item: any) => {
       const checkForUrl = user?.url_permission.includes(item?.url);
+      const isActive = item.url === location.pathname;
       if (checkForUrl) {
         return (
           <div
             key={item.url}
-            className={NavStyle.SCItemChild({
-              active: item.url === location.pathname,
-              status,
-            })}
+            className={NavStyle.SCItemChild}
             style={
               {
+                ...assignInlineVars({
+                  [NavStyle.itemChildColorVar]: isActive
+                    ? "#000000"
+                    : "#929292",
+                  [NavStyle.itemChildBgVar]: isActive
+                    ? "var(--chooseItemBg)"
+                    : "transparent",
+                  [NavStyle.itemChildFontWeightVar]: isActive ? "500" : "300",
+                  [NavStyle.itemChildHeightVar]: status ? "24px" : "0px",
+                  [NavStyle.itemChildMarginVar]: status
+                    ? "12px 0 12px 15px"
+                    : "0",
+                  [NavStyle.itemChildPaddingVar]: status ? "18px 0" : "unset",
+                }),
+                // still allow theme to control the background color
                 "--chooseItemBg":
                   globalStyles.chooseThemeColor[themeUi]?.colorChooseItem,
               } as React.CSSProperties
@@ -229,10 +246,12 @@ const NavbarItem = ({
   return (
     <div
       id="vector_nav"
-      className={`${NavStyle.SCGridNav({
-        isHide,
-        isAvailCompare: pathname === "/availability-comparison",
-      })} navitem list-roles-per--content`}
+      className={`${NavStyle.SCGridNav} navitem list-roles-per--content`}
+      style={assignInlineVars({
+        [NavStyle.gridNavZIndexVar]: isHide ? "3" : "5",
+        [NavStyle.gridNavHeightVar]:
+          pathname === "/availability-comparison" ? "auto" : "85vh",
+      })}
     >
       <div className={NavStyle.SCNavbar}>
         <div className={NavStyle.SCNavBox}>
@@ -251,9 +270,13 @@ const NavbarItem = ({
             )}
 
             <img
-              className={NavStyle.SCIconMenu({
-                isRegalblaze: themeUi === "REGALBLAZE",
-                rotated: isHide,
+              className={NavStyle.SCIconMenu}
+              style={assignInlineVars({
+                [NavStyle.iconMenuBorderVar]:
+                  themeUi === "REGALBLAZE" ? "unset" : "5px solid #f9f9f9",
+                [NavStyle.iconMenuTransformVar]: isHide
+                  ? "rotate(180deg)"
+                  : "rotate(0deg)",
               })}
               src={`/assets/img/nav/icon_hide_menu${
                 themeUi === "REGALBLAZE" ? "_yellow" : ""
@@ -287,9 +310,9 @@ const NavbarItem = ({
           />
         )}
 
-        {isHide &&
-          pathname === "/mta/logistics/intransit-whereabouts" &&
-          menuItem.id === 9 && <InTransitAnalytics />}
+        {/* {isHide && pathname === '/mta/logistics/intransit-whereabouts' && menuItem.id === 9 && (
+          <InTransitAnalytics />
+        )} */}
 
         {isHide &&
           pathname === "/mto/procurement/material-coverage-open-sales" &&
@@ -334,9 +357,9 @@ const NavbarItem = ({
             "/mto/procurement/insights-and-trends/day-wise-coverage" &&
           menuItem.id === 19 && <DaywiseCoverageAnalytics />}
 
-        {isHide &&
-          pathname === "/mta/supply-chain-intelligence-hub/rrr" &&
-          menuItem.id === 9 && <RRRAnalytics />}
+        {/* {isHide && pathname === '/mta/supply-chain-intelligence-hub/rrr' && menuItem.id === 9 && (
+          <RRRAnalytics />
+        )}
 
         {isHide &&
           pathname === "/mta/supply-chain-intelligence-hub/bor" &&
@@ -346,10 +369,9 @@ const NavbarItem = ({
           pathname === "/mta/dbm/dbm-norm-suggestions" &&
           menuItem.id === 9 && <DBMAnalytics />}
 
-        {isHide &&
-          pathname ===
-            "/mta/supply-chain-intelligence-hub/open-expediting-requests" &&
-          menuItem.id === 9 && <OpenExpediteAnalytics />}
+        {isHide && pathname === '/mta/supply-chain-intelligence-hub/open-expediting-requests' && menuItem.id === 9 && (
+          <OpenExpediteAnalytics />
+        )} */}
 
         {isHide && pathname === "/ist-forced-closure" && menuItem.id === 6 && (
           <ParticularForced themeUi={themeUi} />

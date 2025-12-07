@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import  { useEffect, useRef, useState } from "react";
 import VFTable from "../../../VectorFlow/Pages/MTO/Common/VFTable";
 import MTOActionToolBar from "../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
 import {
@@ -9,6 +9,9 @@ import { useUserData } from "../../../context";
 import { useLoginAuditReport } from "../../../VectorFlow/Services/MTO/Login-Audit-Report";
 import OverlayLoader from "../../../VectorFlow/Pages/MTO/Common/Loader";
 import { TableWrapper } from "./styles.css";
+import CustomPageSizeInput from "../../../VectorFlow/Pages/MTO/Common/VFPagination/CustomPageSizeInput"; // Assuming this path
+import { FilterPageName } from "../../../VectorFlow/Pages/MTO/Common/Enum";
+
 
 const AuditReport = () => {
   const { mutateAsync: getLoginAuditReport, isLoading } = useLoginAuditReport();
@@ -18,17 +21,36 @@ const AuditReport = () => {
   const theme_ui = user.user.theme_ui;
 
   const [rowData, setRowData] = useState([]);
+  const [userPageSize, setUserPageSize] = useState<number>(50);
+
+
+  const savePageSize = (pageSize: any) => {
+     const newSize = Number(pageSize);
+     if (newSize > 0) {
+     setUserPageSize(newSize);
+     } else {
+     // Optionally, show an error for invalid input
+     console.error("Invalid page size");
+     }
+     }
+
+    const customPage = () => (
+       <div>
+       <CustomPageSizeInput 
+       savePageSize={savePageSize}
+       userPageSize={userPageSize}
+       />
+       </div>
+     );
 
   const getLoginDetails = async () => {
     try {
       const response = await getLoginAuditReport();
-
-      setRowData(response.data.data);
+      setRowData(response.data.data); 
     } catch (error) {
       console.error("Failed to fetch audit report:", error);
     }
   };
-
   useEffect(() => {
     getLoginDetails();
   }, []);
@@ -39,56 +61,67 @@ const AuditReport = () => {
       field: "username", // Matches API
       sortable: true,
       flex: 1,
+      suppressMenu:true
     },
     {
       headerName: "Status",
       field: "status",
       sortable: true,
       flex: 1,
+      suppressMenu:true
     },
     {
-      headerName: "Last Login Date",
-      field: "last_login",
-      sortable: true,
-      flex: 1,
-      filter: "agDateColumnFilter",
-
-      filterParams: {
-        comparator: function (filterDate: any, cellValue: any) {
-          if (cellValue == null) {
-            return 0;
+        headerName: "Last Login Date",
+        field: "last_login",
+        sortable: true,
+        flex: 1,
+        filter: "agDateColumnFilter",
+        suppressMenu:true,
+        
+        filterParams: {
+            comparator: function(filterDate:any, cellValue:any) {
+              if (cellValue == null) {
+                return 0;
+              }
+              
+              const parts = cellValue.split('-');
+              const month = Number(parts[0]) - 1; 
+              const day = Number(parts[1]);     
+               const year = Number(parts[2]);    
+              
+              const cellDate = new Date(year, month, day);
+    
+              if (cellDate < filterDate) {
+                return -1;
+              } else if (cellDate > filterDate) {
+                return 1;
+              }
+              return 0;
+            }
           }
-
-          const parts = cellValue.split("-");
-          const month = Number(parts[0]) - 1;
-          const day = Number(parts[1]);
-          const year = Number(parts[2]);
-
-          const cellDate = new Date(year, month, day);
-
-          if (cellDate < filterDate) {
-            return -1;
-          } else if (cellDate > filterDate) {
-            return 1;
-          }
-          return 0;
-        },
       },
-    },
     {
       headerName: "Days Since Last Login",
       field: "days_since_last_login",
       sortable: true,
       flex: 1,
       filter: "agNumberColumnFilter",
+      suppressMenu:true
     },
   ]);
 
+  const getRowStyle = (params: any) => {
+    if (params.node.rowIndex % 2 === 0) {
+      return { background: "white" };
+    }
+    return { background: "#F4F4F4" };
+  };
+  
+
   const ExcelExport = () => {
-    const today = new Date();
-    const formattedDate = today.toLocaleDateString("en-GB").replace(/\//g, "-");
     gridRef.current?.api?.exportDataAsExcel({
-      fileName: `Login_Audit_Report_${formattedDate}.xlsx`,
+      fileName: FilterPageName.Login_Audit_Report,
+      sheetName: FilterPageName.Login_Audit_Report
     });
   };
 
@@ -122,7 +155,9 @@ const AuditReport = () => {
           columnDefs={columnDefs}
           rowData={rowData}
           pagination={true}
-          paginationPageSize={10}
+          getRowStyle={getRowStyle}
+        paginationPageSize={userPageSize}
+        paginationPageSizeSelector={false}
           sideBar={false}
           height="100%"
           statusBar={{
@@ -130,8 +165,10 @@ const AuditReport = () => {
               { statusPanel: CustomStatusPanel, align: "left" },
               {
                 statusPanel: "agTotalAndFilteredRowCountComponent",
-                align: "right",
-              },
+                align: 'left' },
+            { statusPanel: customPage, align: "right",
+              }
+
             ],
           }}
           onGridReady={(params: any) => {

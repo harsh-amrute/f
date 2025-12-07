@@ -20,23 +20,23 @@ import {
   heightVar,
   headerBorderRadius,
   headerPadding,
-  absolutePosition
+  absolutePosition,
 } from "./styles.css";
 import { noop } from "lodash";
 
 interface VFModalProps {
   openModal: boolean;
   closeModal?: () => void;
-  headerText?:string | ReactNode;
-  headerIcon:string;
-  children:ReactNode;
-  paddingLeftAndRight?:number;
-  headerBgColor?:string;
-  headerTextColor?:string;
-  closeIcon?:string;
-  backgroundColor?:string;
-  zoom?:string;
-  absolute?:boolean;
+  headerText?: string | ReactNode;
+  headerIcon: string;
+  children: ReactNode;
+  paddingLeftAndRight?: number;
+  headerBgColor?: string;
+  headerTextColor?: string;
+  closeIcon?: string;
+  backgroundColor?: string;
+  zoom?: string;
+  absolute?: boolean;
 }
 
 const VFModalCard = ({
@@ -50,8 +50,8 @@ const VFModalCard = ({
   headerBgColor,
   headerTextColor,
   backgroundColor,
-  zoom = '1',
-  absolute
+  zoom = "1",
+  absolute,
 }: VFModalProps) => {
   const resolvedLR =
     paddingLeftAndRight === 0
@@ -60,7 +60,7 @@ const VFModalCard = ({
       ? `${paddingLeftAndRight}px`
       : "74px";
 
-      console.log(headerBgColor,"headerBgColor");
+  console.log(headerBgColor, "headerBgColor");
   return (
     <>
       {
@@ -89,31 +89,38 @@ const VFModalCard = ({
                   leaveFrom="opa translate-y-0"
                   leaveTo="opacity-0 tranlate"
                 >
-                  <Dialog.Panel className={modalForcedBlock}>
+                  <Dialog.Panel className="modal-forced--block">
                     <Dialog.Title
                       as="h3"
-                      className={modalTitleForced}
+                      className="modal-title-forced"
                       style={{
                         backgroundColor: headerBgColor,
-                        boxShadow: "0px 5px 10px 0px rgba(110, 107, 107, 0.11)",
+                        boxShadow: "0px 5px 10px 0px rgba(110, 107, 107,0.11)",
                         position: "relative",
-                        zIndex: 10,
+                        zIndex: "10",
                       }}
                     >
                       <div
-                        className={`${VFHeaderWrapper} ${absolute ? absolutePosition : ""}`}
-                        style={{backgroundColor: headerBgColor, ...assignInlineVars({
-                          [heightVar]: absolute ? '44px' : '40px', 
-                          [headerBorderRadius]: absolute ? '12px 12px 0 0' : '0 0 12px 12px',
-                          [headerPadding] : absolute ? '0 12px' : '0',
-                        })}}
+                        className={`${VFHeaderWrapper} ${
+                          absolute ? absolutePosition : ""
+                        }`}
+                        style={{
+                          backgroundColor: headerBgColor,
+                          ...assignInlineVars({
+                            [heightVar]: absolute ? "44px" : "40px",
+                            [headerBorderRadius]: absolute
+                              ? "12px 12px 0 0"
+                              : "0 0 12px 12px",
+                            [headerPadding]: absolute ? "0 12px" : "0",
+                          }),
+                        }}
                       >
                         <div className={SCHeader}>
                           {headerIcon.length > 0 && (
                             <img
                               src={headerIcon}
-                              height={25}
-                              width={27}
+                              height={20}
+                              width={20}
                               data-testid="vfmodal-img"
                             />
                           )}
@@ -124,9 +131,8 @@ const VFModalCard = ({
                             })}
                           >
                             {headerText}
-                          </span>
+                          </span>{" "}
                         </div>
-
                         {closeModal && (
                           <span
                             className={SCCloseModal}

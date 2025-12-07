@@ -127,140 +127,125 @@ const AddRecord = () => {
     );
   };
 
-  if (isSelectMasterOpen) {
-    return (
-      <SelectGroupedMasters
-        onSubmit={handleSubmitSelectMaster} //console.log()
-        onCancel={onCancel}
-        handleOnClickMaster={handleOnClickMaster}
-        allMasters={allMasters}
-        selectedMasters={selectedMasters}
-        text="add"
-        shouldShowMasterGroup={showMasterGroup}
-        shouldShowMaster={showMaster}
-        options={options}
-        selectedOptions={selectedOptions}
-        isAdd={true}
-      />
-    );
-  }
-  const dispatch = useDispatch();
-  const suppressMovable = true;
-  return (
-    <React.Fragment>
-      <div className={SCContainer}>
-        <VFTab
-          activeMaster={activeMaster}
-          themeUi={themeUi}
-          onTabChange={handleTabChange}
-          onTabClose={handleTabClose}
-          newTabTitle={"Add Master"}
-          newTabIcon={"/assets/img/VectorFLOW/NMS/add-circle.svg"}
-          newTabHandler={addNewMaster}
-        >
-          <VFTable
-            height={"calc(100% )"}
-            ref={ref}
-            columnDefs={activeMaster.colDefs}
-            suppressMovableColumns={suppressMovable}
-            rowData={activeMaster.rowData}
-            {...agGridProps}
-            suppressPaginationPanel={!isDataAvailableLocally}
-            statusBar={{
-              statusPanels: isDataAvailableLocally
-                ? [
-                    {
-                      statusPanel: "agTotalAndFilteredRowCountComponent",
-                      align: "left",
-                    },
-                    { statusPanel: "agTotalRowCountComponent", align: "left" },
-                    {
-                      statusPanel: "agFilteredRowCountComponent",
-                      align: "left",
-                    },
-                    {
-                      statusPanel: "agSelectedRowCountComponent",
-                      align: "left",
-                    },
-                    { statusPanel: "agAggregationComponent", align: "left" },
-                    { statusPanel: CustomStatusPanel, align: "right" },
-                  ]
-                : [],
-            }}
-            onFilterChanged={() => {
-              const filterModel = ref?.current?.api?.getFilterModel();
-              if (filterModel && Object.keys(filterModel).length > 0) {
-                setDisabled(false);
-              } else {
-                setDisabled(true);
-              }
-            }}
+
+    if(isSelectMasterOpen){
+      return(
+          <SelectGroupedMasters  
+              onSubmit={handleSubmitSelectMaster}  //console.log()
+              onCancel={onCancel}
+              handleOnClickMaster={handleOnClickMaster}
+              allMasters={allMasters}
+              selectedMasters={selectedMasters}
+              text="add"
+              shouldShowMasterGroup={showMasterGroup}
+              shouldShowMaster={showMaster}
+              options={options}
+              selectedOptions={selectedOptions}
+              isAdd={true}
           />
-          <div style={{ display: "none" }}>
-            <VFTable
-              ref={tempRef}
-              rowData={tempGridData}
-              {...tempAgGridProps}
-            />
-          </div>
-        </VFTab>
-        {!["default"].includes(activeMaster.progress) &&
-          !isDataAvailableLocally &&
-          !isSelectMasterOpen && (
-            <VFPagination
-              selectedRows={selectedRowsCount}
-              totalRows={recordCount}
-              currentPage={currentPage}
-              rowsPerPage={parseInt(ADDRECORD_PAGE || "100")}
-              handleChangePage={(e) => handleChangePage(e)}
-            />
-          )}
-      </div>
-      {isUploadModalOpen && (
-        <UploadModal
-          header={"Addition"}
-          openModal={isUploadModalOpen}
-          onCloseModal={() => {
-            setFile(undefined);
-            dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
-          }}
-          // onDownload={()=>ref.current?.api.exportDataAsExcel({
-          //   fileName:downloadFileName.length>0?downloadFileName :activeMaster.name,
-          // })}
-          onDownload={() => {
-            const currentMaster = allMasters.find(
-              (master: MDMMasterState) => master.id === activeMaster.id
-            );
-            const downloadableColumnKeys: string[] = [];
-            activeMaster.fields.forEach((field: Field) => {
-              if (field.isAdd) {
-                downloadableColumnKeys.push(field.key);
+      )
+    }
+    const dispatch = useDispatch();
+    const suppressMovable = true;
+    return(
+        <React.Fragment>
+      <div className={SCContainer}>
+      <VFTab 
+                activeMaster={activeMaster}
+                themeUi={themeUi}
+                onTabChange={handleTabChange}
+                onTabClose={handleTabClose}
+                newTabTitle={"Add Master"}
+                newTabIcon={"/assets/img/VectorFLOW/NMS/add-circle.svg"}
+                newTabHandler={addNewMaster}
+                >
+                  <VFTable
+                    height={"calc(100% )"}
+                    ref={ref}
+                    columnDefs={activeMaster.colDefs}
+                    suppressMovableColumns={suppressMovable}
+                    rowData={activeMaster.rowData}
+                    {...agGridProps}
+                    suppressPaginationPanel={!isDataAvailableLocally}
+                  statusBar={{
+                    statusPanels: isDataAvailableLocally?[
+                      { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
+                      { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                      { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
+                      { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
+                      { statusPanel: 'agAggregationComponent', align: 'left' },
+                      { statusPanel: CustomStatusPanel, align: "right" },
+                    ]:
+                    [],
+                    
+                  }}
+                  onFilterChanged={() => {
+                    const filterModel = ref?.current?.api?.getFilterModel();
+                    if (filterModel && Object.keys(filterModel).length > 0) {
+                      setDisabled(false);
+                    } else {
+                      setDisabled(true);
+                    }
+                }}
+                  />
+                  <div style={{display:'none'}}>                
+                    <VFTable
+                      ref={tempRef}
+                      rowData={tempGridData}
+                      {...tempAgGridProps}
+                    />
+                  </div>
+
+              </VFTab>
+              {
+                (!['default'].includes(activeMaster.progress) && (!isDataAvailableLocally && !isSelectMasterOpen)) 
+                  && 
+                  <VFPagination 
+                    selectedRows={selectedRowsCount} 
+                    totalRows={recordCount} 
+                    currentPage={currentPage} 
+                    rowsPerPage={parseInt(ADDRECORD_PAGE  || '100')} 
+                    handleChangePage={(e)=>handleChangePage(e)}  
+                  />
               }
-            });
-            if (currentMaster) {
-              ref.current?.api.exportDataAsExcel({
-                fileName:
-                  downloadFileName === ""
-                    ? currentMaster.name
-                    : downloadFileName,
-                columnKeys: downloadableColumnKeys,
+          </div>
+          {isUploadModalOpen && 
+          <UploadModal 
+            header={"Addition"}
+            openModal={isUploadModalOpen} 
+            onCloseModal={() => {
+              setFile(undefined);
+              dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
+            }}
+            // onDownload={()=>ref.current?.api.exportDataAsExcel({
+            //   fileName:downloadFileName.length>0?downloadFileName :activeMaster.name,
+            // })} 
+            onDownload={()=>{
+              const currentMaster = allMasters.find((master:MDMMasterState)=>master.id === activeMaster.id);
+              const downloadableColumnKeys:string[] = [];
+              activeMaster.fields.forEach((field:Field)=>{
+                if(field.isAdd){
+                  downloadableColumnKeys.push(field.key)
+                }
               });
-            }
-          }}
-          onUpload={() => {
-            onUploadMaster(RECORD_UPLOAD_LIMIT);
-          }}
-          inputText={downloadFileName}
-          setInputText={setDownloadFileName}
-          file={file}
-          setFile={setFile}
-          uploadButtonStatus={false}
-          radioButtons={getUploadModalRadioButtons(activeMaster.id)}
-          handleRadioButton={handleRadioButton}
-          downloadFileText={"Download sample template"}
-        />
-      )}
-      {/* {isConflictModalOpen && 
+              if(currentMaster){
+                ref.current?.api.exportDataAsExcel({fileName:downloadFileName ==='' ? currentMaster.name : downloadFileName,columnKeys:downloadableColumnKeys});
+              }
+            }}
+            onUpload={async ()=>{
+              await onUploadMaster(RECORD_UPLOAD_LIMIT)
+            }}
+            inputText={downloadFileName}
+            setInputText={setDownloadFileName}
+            file={file}
+            setFile={setFile}
+            uploadButtonStatus={false}
+            radioButtons={getUploadModalRadioButtons(activeMaster.id)}
+            handleRadioButton={handleRadioButton}
+            downloadFileText={'Download sample template'}
+            />
+        }
+        {/* {isConflictModalOpen && 
           <SubmitErrorModal 
             totalCount={activeMaster.rowData.length}
             errorCount={errorCount}

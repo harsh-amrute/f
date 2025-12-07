@@ -5,6 +5,7 @@ import { useLocation } from "react-router";
 import { RootState } from "../../../../redux/store/store";
 import { routerToAnalyticsStringMap } from "../../../../helpers/BPRConstants";
 import { useGetAnalyticsData } from "../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
+import { toast } from "react-toastify";
 
 import { isBefore } from "date-fns";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
@@ -44,11 +45,13 @@ const BPRDailyAnalytics = (props: BPRDailyAnalyticsProps) => {
   const { colDefs } = props;
   const [rowData, setRowData] = useState<Array<any>>([]);
 
-  const location = useLocation();
-  const { currentCategory, currentTab, currentView } = useSelector(
+  const { mutateAsync: getAnalyticsData, isLoading } = useGetAnalyticsData();
+  const { currentCategory, currentTab } = useSelector(
     (state: RootState) => state.mta.planning
   );
-  const { mutateAsync: getAnalyticsData, isLoading } = useGetAnalyticsData();
+  const MTAVFMultiFilter = useSelector(
+    (state: RootState) => state.mta.mtaVFMultiFilter
+  );
 
   const { user } = useUserData();
 
@@ -62,68 +65,23 @@ const BPRDailyAnalytics = (props: BPRDailyAnalyticsProps) => {
     return temp;
   }, [rowData]);
 
-  function calculatePercentIncrease(data: Array<any>) {
-    //if (data.length < 2) {
-    //  notifyError("Insufficient data to calculate percent increase")
-    //}
-
-    const todaysDateIndex = isBefore(data[0].ReportDate, data[1].ReportDate)
-      ? 1
-      : 0;
-    const yesterdayDateIndex =
-      (todaysDateIndex - 1 + data.length) % data.length;
-
-    const today = data[todaysDateIndex];
-    const yesterday = data[yesterdayDateIndex];
-
-    const percentIncrease: any = {};
-
-    const colors = ["Black", "Red", "Yellow", "Green", "White", "Blue"];
-
-    for (const color of colors) {
-      const onHandToday = today[`OnHand${color}`];
-      const onHandYesterday = yesterday[`OnHand${color}`];
-      const pipelineToday = today[`Pipeline${color}`];
-      const pipelineYesterday = yesterday[`Pipeline${color}`];
-
-      percentIncrease[`OnHand${color}`] =
-        onHandYesterday - onHandToday !== 0
-          ? onHandYesterday !== undefined && onHandYesterday !== 0
-            ? parseFloat(
-                (
-                  ((onHandToday - onHandYesterday) / onHandYesterday) *
-                  100
-                ).toFixed(2)
-              )
-            : null
-          : 0;
-      percentIncrease[`Pipeline${color}`] =
-        pipelineYesterday - pipelineToday !== 0
-          ? pipelineYesterday !== undefined && pipelineYesterday !== 0
-            ? parseFloat(
-                (
-                  ((pipelineToday - pipelineYesterday) / pipelineYesterday) *
-                  100
-                ).toFixed(2)
-              )
-            : null
-          : 0;
+  function transformAnalyticsData(data: Array<any>): Array<any> {
+    if (!data || data.length === 0 || !data[0]) {
+      return [];
     }
-    const result = [];
-    for (const color of colors) {
-      const obj = {
-        color: color,
-        techCount: today[`OnHand${color}`],
-        techChange: percentIncrease[`OnHand${color}`],
-        ecoCount: today[`Pipeline${color}`],
-        ecoChange: percentIncrease[`Pipeline${color}`],
-      };
-      result.push(obj);
-    }
+    const analyticsData = data[0];
+    const colors = ["Black", "Red", "Yellow", "Green", "White", "Blue", "Grey"];
+
+    const result = colors.map((color) => ({
+      color: color,
+      techCount: analyticsData[`OnHand${color}`] || 0,
+      ecoCount: analyticsData[`Pipeline${color}`] || 0,
+    }));
+
     return result;
   }
 
-  const onGetAnalyticsData = async () => {
+  const onGetAnalyticsData = async (filter: any) => {
     const pathname: string = location.pathname;
     let payloadString = "";
     if (location.pathname === "/mta/supply-chain-intelligence-hub/planning") {
@@ -158,105 +116,26 @@ const BPRDailyAnalytics = (props: BPRDailyAnalyticsProps) => {
       }
     } else payloadString = routerToAnalyticsStringMap[pathname];
     try {
-      const data = await getAnalyticsData({ reportname: payloadString });
-      setRowData(calculatePercentIncrease(data.data.data));
-      // setRowData(calculatePercentIncrease([
-      //     {
-      //       "ReportDate": "2024-05-29",
-      //       "OnHandBlack": 10,
-      //       "OnHandRed": 1297,
-      //       "OnHandYellow": 597,
-      //       "OnHandGreen": 546,
-      //       "OnHandWhite": 138,
-      //       "OnHandBlue": 21,
-      //       "PipelineBlack": 2077,
-      //       "PipelineRed": 1284,
-      //       "PipelineYellow": 672,
-      //       "PipelineGreen": 629,
-      //       "PipelineWhite": 159,
-      //       "PipelineBlue": 35
-      //     },
-      //     {
-      //       "ReportDate": "2024-05-30",
-      //       "OnHandBlack": 0,
-      //       "OnHandRed": 1337,
-      //       "OnHandYellow": 587,
-      //       "OnHandGreen": 537,
-      //       "OnHandWhite": 40,
-      //       "OnHandBlue": 25,
-      //       "PipelineBlack": 2189,
-      //       "PipelineRed": 1323,
-      //       "PipelineYellow": 646,
-      //       "PipelineGreen": 619,
-      //       "PipelineWhite": 44,
-      //       "PipelineBlue": 35
-      //     }
-      //   ]))
-    } catch (err: any) {
+      const rowData = await getAnalyticsData({
+        id: 1,
+        name: payloadString,
+        fields: [],
+        filters: filter,
+      });
+
+      if (rowData.data.data) {
+        setRowData(transformAnalyticsData(rowData.data.data));
+      } else setRowData([]);
+    } catch (Exception: any) {
+      toast.dismiss();
+      toast.error("Error in loading Analytics Data");
       setRowData([]);
     }
   };
-
   useEffect(() => {
-    onGetAnalyticsData();
-  }, [location.pathname, currentCategory, currentView, currentTab]);
+    onGetAnalyticsData(MTAVFMultiFilter);
+  }, [MTAVFMultiFilter]);
 
-  const getCellText = (text: any, colKey: string) => {
-    if (colKey === "techChange" || colKey === "ecoChange") {
-      if (text === 0) return "0%";
-      if (!text)
-        return (
-          <img
-            className={BPRDailyAnalyticsTableCellIcon}
-            src="/assets/img/VectorFLOW/BPR/infinity.svg"
-          />
-        );
-      text = String(text);
-      if (text.startsWith("-")) {
-        return `${text.slice(1)}%`;
-      }
-      return `${text}%`;
-    }
-    return text;
-  };
-
-  const cx = (...xs: Array<string | false | null | undefined>) =>
-    xs.filter(Boolean).join(" ");
-
-  const getCellIcons = (value: number) => {
-    if (value > 0) {
-      return (
-        <img
-          className={BPRDailyAnalyticsTableChangeIcon}
-          src="/assets/img/VectorFLOW/BPR/analytics-increase.svg"
-          alt="increase"
-        />
-      );
-    }
-    if (value < 0) {
-      return (
-        <img
-          className={cx(BPRDailyAnalyticsTableChangeIcon, rotate90)}
-          src="/assets/img/VectorFLOW/BPR/analytics-decrease.svg"
-          alt="decrease"
-        />
-      );
-    }
-    return (
-      <div className={BPRDailyAnalyticsTableNoChangeWrapper}>
-        <img
-          className={BPRDailyAnalyticsTableChangeIcon}
-          src="/assets/img/VectorFLOW/BPR/analytics-increase.svg"
-          alt="no change up"
-        />
-        <img
-          className={cx(BPRDailyAnalyticsTableChangeIcon, rotate90)}
-          src="/assets/img/VectorFLOW/BPR/analytics-decrease.svg"
-          alt="no change down"
-        />
-      </div>
-    );
-  };
   const bg =
     themeUi === "NOIRFUSION"
       ? globalstyles.chooseThemeColor[themeUi].color3
@@ -277,7 +156,7 @@ const BPRDailyAnalytics = (props: BPRDailyAnalyticsProps) => {
           className={BPRDailyAnalyticsContainer}
           style={{ aspectRatio: "0.9", width: "90%", ...containerVars }}
         >
-          <div className={BPRDailyAnalyticsHeader}>
+          <div className={BPRDailyAnalyticsHeader} data-theme={themeUi}>
             Analytics (SKU Locations)
           </div>
           <div
@@ -288,7 +167,7 @@ const BPRDailyAnalytics = (props: BPRDailyAnalyticsProps) => {
               placeItems: "center",
             }}
           >
-            <p style={{ color: "white" }}>________</p>
+            <p style={{ color: "white" }}>Loading ...</p>
           </div>
         </div>
       </div>
@@ -327,79 +206,74 @@ const BPRDailyAnalytics = (props: BPRDailyAnalyticsProps) => {
 
         <div className={BPRDailyAnalyticsTableContainer}>
           <div className={BPRDailyAnalyticsTableHeaderContainer}>
-            {colDefs.map((colDef, i) =>
-              colDef.colId === "color" ? (
-                <div
-                  key={i}
-                  className={BPRDailyAnalyticsTableHeader}
-                  style={{ width: 25 }}
-                />
-              ) : (
-                <div key={i} className={BPRDailyAnalyticsTableHeader}>
+            {colDefs.map((colDef: ColDef) => {
+              if (colDef.colId === "color") {
+                return (
+                  <div
+                    className={BPRDailyAnalyticsTableHeader}
+                    style={{ width: 110 }}
+                  />
+                );
+              }
+              return (
+                <div className={BPRDailyAnalyticsTableHeader}>
                   {colDef.headerName}
                 </div>
-              )
-            )}
+              );
+            })}
           </div>
 
           <div className={BPRDailyAnalyticsTableRowContainer}>
-            {rowData.map((row, rIdx) => (
-              <div key={rIdx} className={BPRDailyAnalyticsTableRow}>
-                {Object.keys(row).map((key, cIdx) => {
-                  if (key === "color") {
-                    return (
-                      <div
-                        key={`${rIdx}-color-${cIdx}`}
-                        className={BPRDailyAnalyticsTableCell}
-                        style={{
-                          backgroundColor: row[key],
-                          width: 60,
-                          boxShadow: "0px 3px 12px #AFAFAF",
-                        }}
-                      />
-                    );
-                  }
-
-                  if (key === "techCount") {
-                    return (
-                      <React.Fragment key={`${rIdx}-tech-${cIdx}`}>
-                        <div className={BPRDailyAnalyticsTableCell}>
-                          <p className={BPRDailyAnalyticsTableCellHeader}>
-                            {getCellText(row[key], key)}
-                          </p>
-                          <p className={BPRDailyAnalyticsTableCellText}>
-                            {getCellText(row.techChange, "techChange")}
-                          </p>
-                        </div>
-                        <div className={BPRDailyAnalyticsTableCell}>
-                          {getCellIcons(row.techChange)}
-                        </div>
-                      </React.Fragment>
-                    );
-                  }
-
-                  if (key === "ecoCount") {
-                    return (
-                      <React.Fragment key={`${rIdx}-eco-${cIdx}`}>
-                        <div className={BPRDailyAnalyticsTableCell}>
-                          <p className={BPRDailyAnalyticsTableCellHeader}>
-                            {getCellText(row[key], key)}
-                          </p>
-                          <p className={BPRDailyAnalyticsTableCellText}>
-                            {getCellText(row.ecoChange, "ecoChange")}
-                          </p>
-                        </div>
-                        <div className={BPRDailyAnalyticsTableCell}>
-                          {getCellIcons(row.ecoChange)}
-                        </div>
-                      </React.Fragment>
-                    );
-                  }
-
-                  return null;
-                })}
-              </div>
-            ))}
+            {rowData.map((row: any) => {
+              return (
+                <div className={BPRDailyAnalyticsTableRow}>
+                  {Object.keys(row).map((key: string) => {
+                    if (key === "color") {
+                      return (
+                        <div
+                          className={BPRDailyAnalyticsTableCell}
+                          style={{
+                            backgroundColor: row[key],
+                            width: 60,
+                            boxShadow: "0px 3px 12px #AFAFAF",
+                          }}
+                        />
+                      );
+                    }
+                    if (key == "techCount") {
+                      return (
+                        <React.Fragment>
+                          <div className={BPRDailyAnalyticsTableCell}>
+                            <p className={BPRDailyAnalyticsTableCellHeader}>
+                              {row[key]}
+                            </p>
+                            {/* <BPRDailyAnalyticsTableCellText>{getCellText(row.techChange,'techChange')}</BPRDailyAnalyticsTableCellText> */}
+                          </div>
+                          {/* <BPRDailyAnalyticsTableCell>
+                                                {getCellIcons(row.techChange)}
+                                            </BPRDailyAnalyticsTableCell> */}
+                        </React.Fragment>
+                      );
+                    }
+                    if (key === "ecoCount") {
+                      return (
+                        <React.Fragment>
+                          <div className={BPRDailyAnalyticsTableCell}>
+                            <p className={BPRDailyAnalyticsTableCellHeader}>
+                              {row[key]}
+                            </p>
+                            {/* <BPRDailyAnalyticsTableCellText>{getCellText(row.ecoChange,'ecoChange')}</BPRDailyAnalyticsTableCellText> */}
+                          </div>
+                          {/* <BPRDailyAnalyticsTableCell>
+                                                {getCellIcons(row.ecoChange)}
+                                           </BPRDailyAnalyticsTableCell> */}
+                        </React.Fragment>
+                      );
+                    }
+                  })}
+                </div>
+              );
+            })}
           </div>
         </div>
 

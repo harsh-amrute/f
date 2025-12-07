@@ -1,4 +1,10 @@
-import React, { Dispatch, SetStateAction, useEffect, useRef } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard";
 import {
   UploadModalWrapper,
@@ -18,7 +24,7 @@ import {
   manualBtnBgVar,
   SCManualUploadButton,
   SCManualUploadInput,
-  scManualUploadBtnBgVar
+  scManualUploadBtnBgVar,
 } from "../../../../../module-store-transfer/pages/manual-upload/styles.css";
 import { useUserData } from "../../../../../context";
 import * as ManualStyle from "../../../../../module-store-transfer/pages/manual-upload/styles.css";
@@ -30,7 +36,7 @@ interface UploadModalProps {
   header?: string;
   onCloseModal: () => void;
   onDownload: () => void;
-  onUpload: () => void;
+  onUpload: () => Promise<any>;
   inputText: string;
   setInputText: Dispatch<SetStateAction<string>>;
   file: File | undefined;
@@ -60,6 +66,7 @@ const UploadModal = (props: UploadModalProps) => {
 
   const { user } = useUserData();
   const inputRef = useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleClick = (): void => {
     if (inputRef.current != null) {
@@ -97,6 +104,15 @@ const UploadModal = (props: UploadModalProps) => {
     }
   }, []);
 
+  const handleUpload = async () => {
+    if (isUploading) return;
+    setIsUploading(true);
+    try {
+      await onUpload();
+    } finally {
+      setIsUploading(false);
+    }
+  };
   const theme = user.user.theme_ui;
   const regal = globalStyles?.chooseThemeColor?.[theme]?.color5 ?? "#FCA311";
   const altGradient = "linear-gradient(180deg, #bc3d81 0%, #820f4c 100%)";
@@ -218,7 +234,6 @@ const UploadModal = (props: UploadModalProps) => {
                   onClick={handleClick}
                   data-testid="view-modify-manual-upload-btn"
                 >
-                  {" "}
                   <img
                     src="/assets/img/manual/plus.png"
                     width={19}
@@ -235,15 +250,12 @@ const UploadModal = (props: UploadModalProps) => {
                     data-testid="view-modify-file-upload"
                   />
                 </div>
-
                 <input
                   className={UploadModalInput}
                   placeholder="Click here to upload new file"
                   value={file?.name}
                   readOnly
                 />
-
-                {/* ✅ vanilla-extract version: set background via manualBtnBgVar; no `themeUi` prop */}
                 <button
                   className={SCManualUploadBtn}
                   onClick={onUpload}
@@ -267,10 +279,11 @@ const UploadModal = (props: UploadModalProps) => {
                     }),
                   }}
                 >
+                  {" "}
                   <img
                     src="/assets/img/VectorFLOW/NMS/upload.svg"
-                    className={SCManualImgUpload}
-                  />
+                    style={{ margin: "6px" }}
+                  ></img>
                   Upload
                 </button>
               </div>

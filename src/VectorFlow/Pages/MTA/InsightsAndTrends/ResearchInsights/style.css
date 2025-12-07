@@ -3,26 +3,62 @@
     max-height: 100% !important;
 } */
 
-.color-red {
+.color-red, .colorBg-red {
   color: red;
 }
 
-.color-green {
+.color-green, .colorBg-green {
   color: green;
 }
 
-.color-yellow {
+.color-yellow, .colorBg-yellow {
   color: #ffbf00;
 }
 
-.color-black {
+.color-black, .colorBg-black {
   color: black;
 }
 
-.color-blue {
+.color-blue, .colorBg-blue {
   color: blue;
 }
 
-.color-white {
+.color-white, .colorBg-white {
   color: gray;
+}
+
+.colorRowDiv {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+}
+.colorRowValue {
+  margin-left: 12px;
+  font-weight: 550;
+}
+
+.tooltipKey {
+  padding: 6px 12px;
+  margin-left: 10px;
+  color: white;
+  font-weight: 550;
+  font-size: 12px;
+}
+.tooltipRows {
+  padding: 8px 12px;
+  background: white;
+  border-radius: 0 0 4px 4px;
+  color: #333;
+  font-size: 12px;
+}
+.colorRowDivKeySpan {
+  font-weight: 550;
+}
+
+.seriesColorCommonTooltip {
+  padding: 0;
+  border-radius: 4px;
+  min-width: 100px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }

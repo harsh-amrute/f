@@ -30,50 +30,54 @@ import {
   type Filter,
 } from "../../../../../../types/MDM";
 
-const FilterSelectDropdown = ({
-  placeholder,
-  options,
-  hideDropdownArrow,
-  onChange,
-  filterId,
-  value,
-}: any) => {
-  const customStylesClose = {
-    control: (baseStyles: any) => ({
-      ...baseStyles,
-      height: "39px",
-      borderRadius: " 20px 20px 20px 20px",
-      background: "#F2F2F2 0% 0% no-repeat padding-box",
-      border: "none",
-      cursor: "pointer",
-      display: "flex",
-      justifyContent: "center",
-    }),
-    indicatorsContainer: () => ({
-      paddingRight: "10px",
-    }),
-    option: (baseStyles: any) => ({
-      ...baseStyles,
-      color: "#313131",
-      fontFamily: "Roboto",
-      fontWeight: "300",
-      fontSize: "16px",
-      // marginTop:'5px',
-      // marginBottom:'5px',
-      // marginLeft:'5px',
-      paddingTop: "3px",
-      paddingBottom: "3px",
-      cursor: "pointer",
-      borderTop: "1px solid #B7B7B7",
-    }),
-    menuList: (baseStyles: any) => ({
-      ...baseStyles,
-      borderRadius: "0px 0px 20px 20px",
-      background: "#F2F2F2 0% 0% no-repeat padding-box",
-      paddingLeft: "5px",
-      marginTop: "0px",
-      overflowY: "overlay",
-      overflowX: "hidden",
+const FilterSelectDropdown = ({ placeholder, options, hideDropdownArrow, onChange, filterId, value }: any) => {
+
+
+    const customStylesClose = {
+        control: (baseStyles: any) => (
+            {
+                ...baseStyles,
+                height: '39px',
+                borderRadius: ' 20px 20px 20px 20px',
+                background: '#F2F2F2 0% 0% no-repeat padding-box',
+                // border: 'none',
+                cursor: 'pointer',
+                display: 'flex',
+                justifyContent: 'center',
+
+
+                border: '1px solid rgb(204, 204, 204)'
+
+            }
+        ),
+        indicatorsContainer: () => ({
+            paddingRight: '10px',
+        }),
+        option: (baseStyles: any) => (
+            {
+                ...baseStyles,
+                color: '#313131',
+                fontFamily: 'Roboto',
+                fontWeight: '300',
+                fontSize: '16px',
+                // marginTop:'5px',
+                // marginBottom:'5px',
+                // marginLeft:'5px',
+                paddingTop: '3px',
+                paddingBottom: '3px',
+                cursor: 'pointer',
+                borderTop: '1px solid #B7B7B7',
+            }
+        ),
+        menuList: (baseStyles: any) => (
+            {
+                ...baseStyles,
+                borderRadius: '0px 0px 20px 20px',
+                background: '#F2F2F2 0% 0% no-repeat padding-box',
+                paddingLeft: '5px',
+                marginTop: '0px',
+                overflowY: 'overlay',
+                overflowX: 'hidden',
 
       "&::-webkit-scrollbar": {
         width: "7px",
@@ -153,35 +157,13 @@ const FilterSelectDropdown = ({
   );
 };
 
-const FilterTextInput = ({
-  placeholder,
-  onChange,
-  disabled = false,
-  value,
-}: any) => {
-  return (
-    <input
-      type="number"
-      disabled={disabled}
-      style={{
-        width: "100%",
-        height: "38px",
-        background: "#F2F2F2 0% 0% no-repeat padding-box",
-        borderRadius: "20px",
-        outline: "none",
-        color: "#313131",
-        fontFamily: "Roboto",
-        fontWeight: "300",
-        fontSize: "16px",
-        textAlign: "center",
-        border: "none",
-      }}
-      placeholder={placeholder}
-      onChange={onChange}
-      value={value}
-    />
-  );
-};
+const FilterTextInput = ({ placeholder, onChange, disabled = false, value }: any) => {
+    return (
+        <input type="number" disabled={disabled} style={{ width: '100%', height: '38px', background: '#F2F2F2 0% 0% no-repeat padding-box', borderRadius: '20px', outline: 'none', color: '#313131', fontFamily: 'Roboto', fontWeight: '300', fontSize: '16px', textAlign: 'center', border:'1px solid rgb(204, 204, 204)'
+        }} placeholder={placeholder} onChange={onChange} value={value} />
+    )
+}
+
 
 interface IFilterModalProps {
   isOpen: boolean;

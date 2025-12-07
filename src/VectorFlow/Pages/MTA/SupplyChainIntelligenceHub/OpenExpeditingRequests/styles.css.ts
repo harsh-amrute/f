@@ -20,7 +20,7 @@ export const ETACellValue = style({
   textOverflow: "ellipsis",
 });
 
-const submitRemarkBase = style({
+export const submitRemarkBase = style({
   height: "90%",
   width: "100%",
   border: "1px solid black",
@@ -41,3 +41,49 @@ export const ButtonWrapper = style({
   paddingRight: "20px",
   zoom: "0.7", // preserved from styled-components
 });
+
+
+export const DatePickerWrapper = style({
+    display: 'flex',
+    cursor: 'pointer',
+    flexDirection: 'row',
+    width: '180px',
+    padding: '5px',
+    justifyContent: 'space-between'
+
+})
+
+export const TextInputWrapper = style({
+  width: '80%',
+  height: '100%',
+  textAlign: 'center',
+  font: '12px',
+  letterSpacing: '0px',
+  opacity: 1,
+  fontSize: '12px',
+  padding: '4px',
+  fontStyle:'normal',
+  fontVariant:'normal',
+  fontWeight: 'medium',
+  fontFamily: 'Roboto',
+  border: 'none',
+  pointerEvents: 'none',
+  background: 'transparent'
+})
+
+export const DateInputWrapper = style({
+  opacity: 0,
+  position: 'absolute',
+  pointerEvents: 'none'
+})
+
+export const ButtonWrapperForSubmitRemark = style({
+  marginRight: '30px',
+  background: 'none'
+})
+
+export const ImageWrapper = style({
+  cursor: 'pointer',
+  height: '20px',
+  width: '20px'
+})

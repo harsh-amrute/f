@@ -1,6 +1,5 @@
 // style.css.ts
-import { style } from '@vanilla-extract/css';
-import { recipe } from '@vanilla-extract/recipes';
+import { style, createVar } from '@vanilla-extract/css';
 import * as globalStyles from '../../../styles/global';
 
 // Row / container
@@ -67,34 +66,36 @@ export const SCIstStatusInput = style({
   display: 'none',
 });
 
-// Label (with active variant)
+// ---------- Label variants via CSS vars (no recipe)
+
+// We’ll toggle these with assignInlineVars in JSX
+export const istStatusLabelBackgroundVar = createVar();
+export const istStatusLabelBorderVar = createVar();
+export const istStatusLabelColorVar = createVar();
+
 // Use a CSS var for theme accent: set `--accent` inline where you render it.
-export const SCIstStatusLabel = recipe({
-  base: {
-    display: 'inline-flex',
-    margin: '4px 0',
-    position: 'relative',
-    borderRadius: '2px',
-    fontSize: '1.2rem',
-    cursor: 'pointer',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: '4px 10px',
-    boxSizing: 'border-box',
-    border: '1px solid #929292',
-    background: '#fff',
-    color: '#929292',
+export const SCIstStatusLabel = style({
+  display: 'inline-flex',
+  margin: '4px 0',
+  position: 'relative',
+  borderRadius: '2px',
+  fontSize: '1.2rem',
+  cursor: 'pointer',
+  justifyContent: 'center',
+  alignItems: 'center',
+  padding: '4px 10px',
+  boxSizing: 'border-box',
+
+  // defaults: active = false
+  vars: {
+    [istStatusLabelBackgroundVar]: '#fff',
+    [istStatusLabelBorderVar]: '1px solid #929292',
+    [istStatusLabelColorVar]: '#929292',
   },
-  variants: {
-    active: {
-      false: {},
-      true: {
-        background: 'var(--accent)',
-        border: '1px solid var(--accent)',
-        color: '#fff',
-      },
-    },
-  },
+
+  background: istStatusLabelBackgroundVar,
+  border: istStatusLabelBorderVar,
+  color: istStatusLabelColorVar,
 });
 
 export const SCIstStatusAddText = style({

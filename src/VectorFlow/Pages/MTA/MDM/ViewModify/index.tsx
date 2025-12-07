@@ -247,7 +247,6 @@ const ViewModify = () => {
                 >
                   <div className={SCFilterControls}>
                     <legend className={SCLegend}>Filter</legend>
-
                     {activeMaster.filters.map((f: Filter) => {
                       if (f.masterId == activeMaster?.id) {
                         return (
@@ -262,10 +261,8 @@ const ViewModify = () => {
                           />
                         );
                       }
-                      return null;
                     })}
                   </div>
-
                   <div className={SCFilterAddControls}>
                     {activeMaster.filters.map((f: Filter, index: number) => {
                       if (f.masterId === activeMaster?.id && index === 0) {
@@ -287,10 +284,8 @@ const ViewModify = () => {
                           </div>
                         );
                       }
-                      return null;
                     })}
                   </div>
-
                   <div className={SCFilterSeperator} />
                   <div className={SCFilterButtonGroup}>
                     <VFButton
@@ -403,7 +398,9 @@ const ViewModify = () => {
             toggleUploadModal(false);
           }}
           onDownload={() => exportToExcel(true)}
-          onUpload={() => onUploadMaster(RECORD_UPLOAD_LIMIT)}
+          onUpload={async () => {
+            await onUploadMaster(RECORD_UPLOAD_LIMIT);
+          }}
           inputText={downloadFileName}
           setInputText={setDownloadFileName}
           file={file}

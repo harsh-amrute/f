@@ -22,6 +22,9 @@ import { assignInlineVars } from "@vanilla-extract/dynamic";
 import * as globalStyles from "../../../../styles/global";
 
 import { useNavigate } from "react-router";
+import { useGetAllEnvironmentConfiguration } from "../../../../VectorFlow/Services/MTA/MDM";
+import { useDispatch } from "react-redux";
+import { UPDATE_ENV_CONFIG } from "../../../../redux/actions/MTA";
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -29,6 +32,16 @@ const Login = () => {
   const [password, setPassword] = useState<string>("");
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const {mutateAsync : getAllEnvConfiguration} = useGetAllEnvironmentConfiguration();
+  const manageEnvConfig = async () => {
+        const response = await getAllEnvConfiguration();
+        const configMap = response?.data?.data.reduce((map:any, item:any) => {
+          map[item.ConfigKey] = item.ConfigValue;
+          return map;
+        }, {});
+        dispatch(UPDATE_ENV_CONFIG(configMap))
+  }
 
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -37,6 +50,7 @@ const Login = () => {
       if (password === "password") {
         localStorage.setItem("isAdmin", "1");
         navigate("/vector-admin/");
+        manageEnvConfig();
       } else {
         notifyError("Invalid Password");
       }

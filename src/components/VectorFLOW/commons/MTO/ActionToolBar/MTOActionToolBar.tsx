@@ -29,9 +29,10 @@ import {
   DateTitle,
   DateValue,
   VFSelectedFilterLabel,
+  AddFilterWrapper,
   // setWithBgOverrides,
 } from "./styles.css";
-import { Fragment , ReactElement } from 'react';
+import { Fragment, ReactElement } from "react";
 import moment from "moment";
 
 import { format } from "date-fns";
@@ -306,54 +307,60 @@ const MTOActionToolBar = ({
 
                       return (
                         filter?.value?.length > 0 && (
-                          <Fragment key={`${key}_${index}`}>
+                          <>
                             <div className={VFSelectedFilterLabel}>
                               {filter?.label}:
                             </div>
 
-                            {filter?.value?.map((f: any) => (
-                              <div key={f.value}>
-                                <div className={VFSelectedFiltersFilterContent}>
-                                  <div className={VFSelectedFiltersFilterValue}>
-                                    <p
-                                      style={{
-                                        margin: "0px 5px 0px 5px",
-                                        fontFamily: "500",
-                                      }}
+                            {filter?.value?.map((f: any) => {
+                              return (
+                                <div key={f.value}>
+                                  <div
+                                    className={VFSelectedFiltersFilterContent}
+                                  >
+                                    <div
+                                      className={VFSelectedFiltersFilterValue}
                                     >
-                                      {operatorText ? operatorText : ""}
-                                      {f.label || f.value}
-                                    </p>
-                                  </div>
+                                      <p
+                                        style={{
+                                          margin: "0px 5px 0px 5px",
+                                          fontFamily: "500",
+                                        }}
+                                      >
+                                        {operatorText ? operatorText : ""}
+                                        {f.label || f.value}
+                                      </p>
+                                    </div>
 
-                                  {disableRemoveFilter ? (
-                                    <div>-</div>
-                                  ) : (
-                                    <img
-                                      className={
-                                        VFSelectedFiltersFilterCloseIcon
-                                      }
-                                      onClick={() => {
-                                        const filtervalue = f.id || f.value;
-                                        onFilterRemove(
-                                          key,
-                                          filter.filterId,
-                                          filtervalue
-                                        );
-                                      }}
-                                      src="/assets/img/VectorFLOW/BPR/close-circle.svg"
-                                      alt="close-icon"
-                                      data-testid="closeIcon-filter"
-                                    />
-                                  )}
+                                    {disableRemoveFilter ? (
+                                      <div>-</div>
+                                    ) : (
+                                      <img
+                                        className={
+                                          VFSelectedFiltersFilterCloseIcon
+                                        }
+                                        onClick={() => {
+                                          const filtervalue = f.id || f.value;
+                                          onFilterRemove(
+                                            key,
+                                            filter.filterId,
+                                            filtervalue
+                                          );
+                                        }}
+                                        src="/assets/img/VectorFLOW/BPR/close-circle.svg"
+                                        alt="close-icon"
+                                        data-testid="closeIcon-filter"
+                                      />
+                                    )}
+                                  </div>
                                 </div>
-                              </div>
-                            ))}
+                              );
+                            })}
 
                             {index !== newFilters[key]?.filters?.length - 1 && (
-                              <div className={SCFilterVerticalDivider} />
+                              <SCFilterVerticalDivider />
                             )}
-                          </Fragment>
+                          </>
                         )
                       );
                     }
@@ -363,6 +370,7 @@ const MTOActionToolBar = ({
             </div>
           </div>
         )}
+      {/**Selected Filter ends*/}
 
       <div className={SCCustomActionsContainer}>
         {utilityBtns && (
@@ -382,32 +390,41 @@ const MTOActionToolBar = ({
 
         {isAddFilterButton &&
           (onAddFilter ? (
-            <VFButton
-              onClick={() => onAddFilter()}
-              themeUi={themeUi}
-              disabled={false}
-              width={110}
-            >
-              {(selectedFilters || newFilters) &&
-              (selectedFilters?.length || Object.keys(newFilters).length) ? (
-                <p style={{ padding: "2px" }}>Edit Filter</p>
-              ) : (
-                <p style={{ padding: "2px" }}>+ Add Filter</p>
-              )}
-            </VFButton>
+            <div className={AddFilterWrapper}>
+              <VFButton
+                onClick={() => onAddFilter()}
+                themeUi={themeUi}
+                disabled={false}
+                width={110}
+              >
+                {(selectedFilters || newFilters) &&
+                (selectedFilters?.length || Object.keys(newFilters).length) ? (
+                  <p style={{ padding: "2px" }}>Edit Filter</p>
+                ) : (
+                  <p style={{ padding: "2px" }}>+ Add Filter</p>
+                )}
+              </VFButton>
+            </div>
           ) : (
-            <button className={SCButton}>
-              <p>+ Add Filter</p>
-            </button>
+            <div className={AddFilterWrapper}>
+              <button className={SCButton}>
+                <p>+ Add Filter</p>
+              </button>
+            </div>
           ))}
 
         <>
           {isExcelExport && (
             <>
-              <div className={SCVerticalDivider} />
-              <div className={SCViewContainerWithBg} onClick={onExcelExportClick}>
-                <ExportExcelSVG theme={themeUi} />
-                <p style={{ padding: "5px" }}>Excel Export</p>
+              <SCVerticalDivider />
+              <div
+                className={SCViewContainerWithBg}
+                onClick={onExcelExportClick}
+              >
+                <>
+                  <ExportExcelSVG theme={themeUi} />
+                  <p style={{ padding: "5px" }}>Excel Export</p>
+                </>
               </div>
             </>
           )}
@@ -415,11 +432,17 @@ const MTOActionToolBar = ({
           {isGridView && handleSaveClick && handleResetClick && (
             <>
               <div className={SCVerticalDividerGray} />
-              <div className={SCViewContainerWithBg} onClick={() => handleSaveClick()}>
+              <div
+                className={SCViewContainerWithBg}
+                onClick={() => handleSaveClick()}
+              >
                 <SaveSVG theme={themeUi} />
                 <p style={{ padding: "5px" }}>Save Layout</p>
               </div>
-              <div className={SCViewContainerWithBg} onClick={() => handleResetClick()}>
+              <div
+                className={SCViewContainerWithBg}
+                onClick={() => handleResetClick()}
+              >
                 <ResetSVG theme={themeUi} />
                 <p style={{ padding: "5px" }}>Reset Layout</p>
               </div>

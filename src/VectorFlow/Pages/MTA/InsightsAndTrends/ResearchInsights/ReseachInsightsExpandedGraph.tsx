@@ -111,6 +111,38 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
       ? (Object.keys(data[0]).filter((key) => key in colorMap) as ColorKey[])
       : [];
 
+  const createCommonTooltip = (seriesColor: string) => ({
+    enabled: true,
+    renderer: (params: any) => {
+      const { datum, xKey } = params;
+
+      const colorRows = yKeys
+        .map((key) => {
+          const value = datum[key] !== undefined ? datum[key] : 0;
+          return `
+                    <div className="colorRowDiv">
+                        <span className="color-${colorMap[
+                          key
+                        ].toLowerCase()} colorRowDivKeySpan">${key}:</span>
+                        <span className="colorRowValue">${value}</span>
+                    </div>
+                `;
+        })
+        .join("");
+
+      return `
+                <div className="colorBg-${seriesColor.toLowerCase()} seriesColorCommonTooltip">
+                    <div className="tooltipKey">
+                        ${datum[xKey]}
+                    </div>
+                    <div className="tooltipRows">
+                        ${colorRows}
+                    </div>
+                </div>
+            `;
+    },
+  });
+
   const series = yKeys.map((key) => ({
     type: "line",
     xKey: "date",
@@ -123,40 +155,8 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
       stroke: colorMap[key],
     },
     stroke: colorMap[key],
-    tooltip: {
-      renderer: (params: any) => {
-        const { datum } = params;
-        const tooltipItems = Object.entries(datum)
-          .filter(([k]) => k in colorMap)
-          .map(([k, v]) => {
-            const color = colorMap[k as ColorKey];
-            return `<div class="color-${color}">${k}: ${v}</div>`;
-          });
-
-        return {
-          title: datum.date,
-          content: tooltipItems.join(""),
-        };
-      },
-    },
+    tooltip: createCommonTooltip(colorMap[key]),
   }));
-
-  const whiteSeriesConfig = series.find((s) => s.yKey === "White");
-  if (whiteSeriesConfig) {
-    whiteSeriesConfig.tooltip.renderer = (params: any) => {
-      const { datum } = params;
-      const tooltipItems = Object.entries(datum)
-        .filter(([k]) => k in colorMap)
-        .map(([k, v]) => {
-          const color = k === "White" ? "gray" : colorMap[k as ColorKey];
-          return `<div class="color-${color}">${k}: ${v}</div>`;
-        });
-      return {
-        title: datum.date,
-        content: tooltipItems.join(""),
-      };
-    };
-  }
 
   const chartOptions: AgCartesianChartOptions = useMemo(
     () => ({

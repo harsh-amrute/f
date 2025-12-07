@@ -44,7 +44,6 @@ export const SCModalContent = style({
 
 export const SCTextTitle = style({
   display: 'flex',
-  paddingTop: '3px',
   justifyContent: 'center',
   width: '100%',
   flexDirection: 'row',
@@ -52,7 +51,7 @@ export const SCTextTitle = style({
   fontStyle: 'normal',
   fontVariant: 'normal',
   fontWeight: 500,
-  fontSize: '18px',
+  // fontSize: '18px',
   lineHeight: '21px',
   fontFamily: 'Roboto',
   letterSpacing: '0px',

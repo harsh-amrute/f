@@ -22,3 +22,21 @@ globalStyle(`${TableWrapper} > .ag-theme-alpine`, {
   flex: 1,
   height: "100%",
 });
+
+globalStyle(`${TableWrapper} > .ag-paging-panel`, {
+  zIndex: 1,
+  fontSize: "11px !important",
+  fontFamily: "Roboto !important",
+  position: "relative",
+});
+
+globalStyle(`${TableWrapper} > .ag-status-bar`, {
+  zIndex: '2 !important', 
+  display: 'flex  !important', 
+  justifyContent: 'space-between !important',
+  alignItems: 'center !important',
+  border:'none !important',
+  width: 'calc(100% - 230px) !important',
+  position: 'absolute',
+  bottom: '-0px !important'
+});

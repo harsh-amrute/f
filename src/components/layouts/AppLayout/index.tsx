@@ -266,6 +266,7 @@ const AppLayout = () => {
               isHide={isHide}
               setIsHide={setIsHide}
               setWidthResponsive={setWidthResponsive}
+              menuItem={menuItem}
             />
           </div>
           <div

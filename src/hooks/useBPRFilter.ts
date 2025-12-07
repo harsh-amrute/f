@@ -1,5 +1,7 @@
 import {useState} from 'react';
 import { BPRFilterState} from '../VectorFlow/types/BPR';
+import { useDispatch } from 'react-redux';
+import { UPDATE_MTA_VF_MULTI_FILTER } from '../redux/actions/MTA';
 
 const useBPRFilter = () => {
     const defaultFilters = {
@@ -84,20 +86,26 @@ const useBPRFilter = () => {
     };
 
     const [multiFilter, setMultiFilter]= useState<BPRFilterState>(defaultFilters)
-    
+    const dispatch = useDispatch();
 
 
     const onDelete = (parentId:any, filterId:any, value:any) => {
         const updatedMultiFilter = { ...multiFilter };
-    
-        const currGroupKey = Object.keys(updatedMultiFilter).find(key => updatedMultiFilter[key as keyof BPRFilterState].id === parentId);
-    
-        if (currGroupKey && updatedMultiFilter[currGroupKey as keyof BPRFilterState].filters) {
-            updatedMultiFilter[currGroupKey as keyof BPRFilterState].filters = updatedMultiFilter[currGroupKey as keyof BPRFilterState].filters.filter(filter =>filter.name !== filterId || filter.value !== value);
-     
+        const currGroupKey = Object.keys(updatedMultiFilter).find(
+            (key) => updatedMultiFilter[key as keyof BPRFilterState].id === parentId
+        ) as keyof BPRFilterState | undefined;
+        
+        if (currGroupKey && updatedMultiFilter[currGroupKey]?.filters) {
+            updatedMultiFilter[currGroupKey] = {
+                ...updatedMultiFilter[currGroupKey],
+                filters: updatedMultiFilter[currGroupKey]!.filters.filter(
+                    (filter) => filter.name !== filterId || filter.value !== value
+                ),
+            };
         }
-    
+        
         setMultiFilter(updatedMultiFilter);
+        dispatch(UPDATE_MTA_VF_MULTI_FILTER(updatedMultiFilter))
         return updatedMultiFilter
     };
         

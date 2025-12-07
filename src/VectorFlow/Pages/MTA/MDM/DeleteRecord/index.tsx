@@ -313,38 +313,35 @@ const DeleteRecord = () => {
         </VFTab>
       </div>
 
-      {isWarningModalOpen && (
+      {isWarningModalOpen && 
         <WarningModal
           rowsPerPage={rowsPerPage}
           showAll={isShowAll}
-          count={tempRecordCount}
-          onCloseModal={onWarningModalClose}
-          onFailure={onWarningModalClose}
-          onSuccess={() => onWarningModalSuccess()}
-        />
-      )}
-      {isUploadModalOpen && (
-        <UploadModal
-          header={"Deletion"}
-          openModal={isUploadModalOpen}
-          onCloseModal={() => {
-            setFile(undefined);
-            toggleUploadModal(false);
-          }}
-          onDownload={() => exportToExcel(true)}
-          onUpload={() => {
-            onUploadMaster(RECORD_UPLOAD_LIMIT);
-          }}
-          inputText={downloadFileName}
-          setInputText={setDownloadFileName}
-          file={file}
-          setFile={setFile}
-          uploadButtonStatus={false}
-          radioButtons={getUploadModalRadioButtons(activeMaster.id)}
-          handleRadioButton={handleRadioButton}
-        />
-      )}
-      {/* {isConflictModalOpen && 
+            count={tempRecordCount} 
+            onCloseModal={onWarningModalClose} 
+            onFailure={onWarningModalClose} 
+            onSuccess={()=>onWarningModalSuccess()}
+            />
+        }
+          {isUploadModalOpen && 
+          <UploadModal 
+            header={"Deletion"}
+            openModal={isUploadModalOpen} 
+            onCloseModal={()=>{setFile(undefined);toggleUploadModal(false)}} 
+            onDownload={() => exportToExcel(true)} 
+            onUpload={async ()=>{
+              await onUploadMaster(RECORD_UPLOAD_LIMIT)
+            }}
+            inputText={downloadFileName}
+            setInputText={setDownloadFileName}
+            file={file}
+            setFile={setFile}
+            uploadButtonStatus={false}
+            radioButtons={getUploadModalRadioButtons(activeMaster.id)}
+            handleRadioButton={handleRadioButton}
+            />
+        }
+         {/* {isConflictModalOpen && 
           <SubmitErrorModal 
             totalCount={activeMaster.rowData.length}
             errorCount={errorCount}

@@ -8,7 +8,7 @@ export const tabTextColorVar = createVar(); // BPRViewTableHeaderTab text color
 export const tabZIndexVar = createVar(); // BPRViewTableHeaderTab z-index
 export const tabMarLeftVar = createVar(); // BPRViewTableHeaderTab margin-left
 export const tabPadLeftVar = createVar(); // BPRViewTableHeaderTab padding-left
-
+export const themeBg = createVar();
 /* ========= layout / basic ========= */
 export const BPRLayout = style({
   marginTop: "0px",
@@ -289,7 +289,7 @@ export const BPRTagsCellRendererWrapper = style({
   padding: "4px 5px",
   maxWidth: "90px",
   height: "25px",
-  background: "#8E8E8E 0% 0% no-repeat padding-box",
+  background: themeBg ,
   color: "#FFFFFF",
   boxShadow: "0px 6px 12px #8D8D8D29",
   borderRadius: "2px",

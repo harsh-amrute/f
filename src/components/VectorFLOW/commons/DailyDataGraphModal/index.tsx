@@ -23,7 +23,7 @@ import {
 } from "../../../../VectorFlow/types/BPR";
 //  import {enIN} from 'date-fns/locale';
 import { useEffect, useState } from "react";
-import Select, { CSSObjectWithLabel } from 'react-select'
+import Select, { CSSObjectWithLabel } from "react-select";
 import VFRangeSlider from "../VFRangeSlider";
 import { AgCharts } from "ag-charts-react";
 import { getFormattedDate } from "../../../../helpers/utils";
@@ -268,6 +268,22 @@ const DailyDataGraphModal = ({
             normGreen: normBand,
             normYellow: normBand,
             normBlue: normBlue,
+            rrs:
+              newadjustedChartData[index]["rrs"] > 0
+                ? newadjustedChartData[index]["rrs"]
+                : 0,
+            grs:
+              newadjustedChartData[index]["grs"] > 0
+                ? newadjustedChartData[index]["grs"]
+                : 0,
+            rrc:
+              newadjustedChartData[index]["rrc"] > 0
+                ? newadjustedChartData[index]["rrc"]
+                : 0,
+            grc:
+              newadjustedChartData[index]["grc"] > 0
+                ? newadjustedChartData[index]["grc"]
+                : 0,
             upwardStockBasedNorm:
               newadjustedChartData[index]["rrs"] > 0 ? data.norm : 0,
             downwardStockBasedNorm:
@@ -408,6 +424,21 @@ const DailyDataGraphModal = ({
     `;
 
     function renderer(params: any) {
+      let inputRRS = 0;
+      let inputGRS = 0;
+      let inputRRC = 0;
+      let inputGRC = 0;
+
+      if (suspensionType === "upwardStockBased") {
+        inputRRS = params.datum.rrs;
+      } else if (suspensionType === "downwardStockBased") {
+        inputGRS = params.datum.grs;
+      } else if (suspensionType === "upwardConsumptionBased") {
+        inputRRC = params.datum.rrc;
+      } else if (suspensionType === "downwardConsumptionBased") {
+        inputGRC = params.datum.grc;
+      }
+
       const suggestionObject = suggestionData.find(
         (data: any) =>
           new Date(data["sdate"]).getTime() ===
@@ -437,17 +468,17 @@ const DailyDataGraphModal = ({
       }
 
       const suspensionReasons = generateSuspensionReasons(
-        params.datum.upwardStockBasedNorm,
-        params.datum.downwardStockBasedNorm,
-        params.datum.upwardConsumptionBasedNorm,
-        params.datum.downwardConsumptionBasedNorm
+        inputRRS,
+        inputGRS,
+        inputRRC,
+        inputGRC
       );
 
       let tooltip = `
           <div class="dailygraph-tooltip-header">
-            ${getFormattedDate(new Date(params.datum.date))}
-          </div>
-      `;
+              ${getFormattedDate(new Date(params.datum.date))}
+            </div>
+          `;
 
       if (suggestionObject)
         tooltip += generateRevisionSuggestedBlock(
@@ -892,29 +923,31 @@ const DailyDataGraphModal = ({
                 defaultValue={suspensionOptions[0]}
                 onChange={(data: any) => setSuspensionType(data.value)}
                 styles={{
-                  option: (baseStyles, { isSelected }) => ({
-                    ...baseStyles,
-                    backgroundColor: isSelected
-                      ? themeUi === "REGALBLAZE"
-                        ? "#FCA311"
-                        : "#BC3D80"
-                      : "white",
-                    "&:hover": {
-                      backgroundColor:
-                        themeUi === "REGALBLAZE"
-                          ? "rgb(252, 163, 17,0.3) "
-                          : "#bc3d814d",
-                      color: "black",
-                    },
-                  }as CSSObjectWithLabel),
-                  control: (baseStyles, { isFocused }) => ({
-                    ...baseStyles,
-                    borderColor: isFocused ? "none" : "hsl(0, 0%, 80%);",
-                    boxShadow: "none",
-                    "&:hover": {
+                  option: (baseStyles, { isSelected }) =>
+                    ({
+                      ...baseStyles,
+                      backgroundColor: isSelected
+                        ? themeUi === "REGALBLAZE"
+                          ? "#FCA311"
+                          : "#BC3D80"
+                        : "white",
+                      "&:hover": {
+                        backgroundColor:
+                          themeUi === "REGALBLAZE"
+                            ? "rgb(252, 163, 17,0.3) "
+                            : "#bc3d814d",
+                        color: "black",
+                      },
+                    } as CSSObjectWithLabel),
+                  control: (baseStyles, { isFocused }) =>
+                    ({
+                      ...baseStyles,
                       borderColor: isFocused ? "none" : "hsl(0, 0%, 80%);",
-                    },
-                  }as CSSObjectWithLabel),
+                      boxShadow: "none",
+                      "&:hover": {
+                        borderColor: isFocused ? "none" : "hsl(0, 0%, 80%);",
+                      },
+                    } as CSSObjectWithLabel),
                 }}
               />
             </div>

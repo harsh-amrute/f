@@ -75,6 +75,8 @@ const usePlanning = ()=>{
 
     const [totalRows,setTotalRows] = useState<number>(0);
 
+    const [goBack,setGoBack] = useState<boolean>(false);
+
     // const [currentGridState,setCurrentGridState] = useState<any>()
 
     const [isDataLoading,setIsDataLoading] = useState(false);
@@ -183,6 +185,9 @@ const usePlanning = ()=>{
     useEffect(()=>{
         fetchPlanningDataCount();
     },[])
+    useEffect(()=>{
+        fetchPlanningDataCount();
+    },[goBack])
 
     const {mutateAsync: getUIConfig}  = useGetUIConfigData();
 
@@ -1001,6 +1006,7 @@ const usePlanning = ()=>{
         setCurrentView('');
         setCurrentTab('');
         setCurrentPage(1);
+        setGoBack(true);
         toast.dismiss();
     }
 

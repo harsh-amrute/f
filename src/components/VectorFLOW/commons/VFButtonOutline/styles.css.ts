@@ -18,6 +18,16 @@ const base = style({
   height: "50px",
   boxShadow: "-5px 5px 10px #71717129",
   border: `1px solid ${strokeColorVar}`,
+
+  selectors: {
+    "&:hover": {
+      transform: "scale(1.01)",
+      transition: "all 0.2s ease-in-out",
+    },
+    "&:active": {
+      transform: "scale(1.04) translateY(0.1px)",
+    },
+  },
 });
 
 /** default values so it looks fine even if you forget to pass inline vars */

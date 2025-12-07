@@ -114,12 +114,14 @@ const Scheduling = () => {
         }
     }
 
+    const WEB_SOCKET = process.env.REACT_APP_WS_API_HOST
+
     useEffect(() => {
-        if(runId){
+        if(runId && WEB_SOCKET){
     
             try{
 
-                const socket = new WebSocket(`ws://10.8.1.11:10050/ws/scheduler/${runId}/`);
+                const socket = new WebSocket(`${WEB_SOCKET}/ws/scheduler/${runId}/`);
                 
                 socket.onopen = () => {
                 console.log("WebSocket connection opened");

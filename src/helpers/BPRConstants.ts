@@ -88,7 +88,7 @@ export const suspensionMessages = [
     { Key: 2, Value: "Suspended as Norm is in Sleep Mode" },
     { Key: 4, Value: "Suspended as Phase-In in progress" },
     { Key: 8, Value: "Suspended as Phase-Out in progress" },
-    { Key: 16, Value: "Suspended as either norm<Min norm or norm<2 or RLT,RCP,GCP<3" },
+    { Key: 16, Value: "Suspended as either norm &lt; Min norm or norm &lt; 2 or RLT,RCP,GCP &lt; 3" },
     { Key: 32, Value: "Suspended as Insufficient Data Points" },
     { Key: 64, Value: "Suspended due to stock is in white" },
     { Key: 128, Value: "Suspended due to Supply Issue" },
@@ -145,13 +145,13 @@ export interface RouterToAnalyticsStringMap {
 
 export const routerToAnalyticsStringMap:RouterToAnalyticsStringMap = {
     // "/supply-chain-intelligence-hub/planning": "planning",
-    "/mta/supply-chain-intelligence-hub/bpr": "bpr",
-    "/mta/supply-chain-intelligence-hub/rrr": "rrr",
-    "/mta/supply-chain-intelligence-hub/bor": "bor",
-    "/mta/dbm/dbm-norm-suggestions": "dbm",
-    "/mta/insights-and-trends/research-insights": "ri",
-    "/mta/insights-and-trends/buffer-trends":'btr',
-    "/mta/insights-and-trends/buffer-trend-report":'btr'
+    "/mta/supply-chain-intelligence-hub/bpr": "BPR",
+    "/mta/supply-chain-intelligence-hub/rrr": "RRR",
+    "/mta/supply-chain-intelligence-hub/bor": "BOR",
+    "/mta/dbm/dbm-norm-suggestions": "DBM",
+    "/mta/insights-and-trends/research-insights": "RI",
+    "/mta/insights-and-trends/buffer-trends":'BTR',
+    "/mta/insights-and-trends/buffer-trend-report":'BTR'
   };
   
 

@@ -1,16 +1,17 @@
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 import Tooltip from "../../../VectorFLOW/commons/MTO/Tooltip";
-import { scButton, tooltipText } from "./styles.css";
+import { buttonBackgroundVar, buttonOpacityVar, buttonPointerEventsVar, scButton, tooltipText } from "./styles.css";
 import React, { CSSProperties, ReactNode } from "react";
 
 interface VFButtonProps {
-    onClick: any ,
-    themeUi: string,
-    disabled?: boolean,
-    width?: number,
-    children: React.ReactNode,
-    style?: CSSProperties,
-    onHoverChild?: ReactNode,
-    currentStep?: number
+  onClick: any;
+  themeUi: string;
+  disabled?: boolean;
+  width?: number;
+  children: React.ReactNode;
+  style?: CSSProperties;
+  onHoverChild?: ReactNode;
+  currentStep?: number;
 }
 
 const VFButton = (props: VFButtonProps) => {
@@ -37,8 +38,19 @@ const VFButton = (props: VFButtonProps) => {
   const button = (
     <button
       onClick={onClick}
-      className={scButton({ theme: themeVariant, disabled: !!disabled })}
-      style={mergedStyle}
+      className={scButton}
+      style={{
+        ...assignInlineVars({
+          [buttonBackgroundVar]:
+            themeVariant === "magenta"
+              ? "transparent linear-gradient(74deg, #820F4C 0%, #BC3D81 100%) 0% 0% no-repeat padding-box"
+              : "transparent linear-gradient(261deg, #FCA311 0%, #CB830E 100%) 0% 0% no-repeat padding-box",
+
+          [buttonOpacityVar]: disabled ? "0.2" : "1",
+          [buttonPointerEventsVar]: disabled ? "none" : "all",
+        }),
+        ...mergedStyle, // your incoming styles remain applied last
+      }}
       data-testid="vf-button"
     >
       {children}

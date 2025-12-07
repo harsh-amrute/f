@@ -1,35 +1,51 @@
 // styles.css.ts
-import { style, globalStyle } from '@vanilla-extract/css';
-import { recipe } from '@vanilla-extract/recipes';
-
+import { style, globalStyle, createVar } from '@vanilla-extract/css';
 import * as gridSystem from '../../../styles/gridSystem.css';
 
 // ---------- helpers
 const mqLaptopL = `(min-width: ${gridSystem.size.laptopL}) and (max-width: ${gridSystem.size.desktop})`;
-const mqLaptop  = `(min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem.size.laptopL})`;
+const mqLaptop = `(min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem.size.laptopL})`;
 
-// Theme + runtime values via CSS variables you set inline in JSX
-// --text, --textActive, --chooseItemBg, --particularBg, --particularFooterBg, --tooltip-left, --tooltip-bottom
+// ---------- Variant variables (replacing recipes)
+// SCGridNav
+export const gridNavZIndexVar = createVar();
+export const gridNavHeightVar = createVar();
+
+// SCIconMenu
+export const iconMenuBorderVar = createVar();
+export const iconMenuTransformVar = createVar();
+
+// SCInterStoreArrowDown
+export const interStoreArrowTransformVar = createVar();
+
+// SCMenuItem
+export const menuItemColorVar = createVar();
+
+// SCItemChild
+export const itemChildColorVar = createVar();
+export const itemChildBgVar = createVar();
+export const itemChildFontWeightVar = createVar();
+export const itemChildHeightVar = createVar();
+export const itemChildMarginVar = createVar();
+export const itemChildPaddingVar = createVar();
 
 // ---------- Layout shells
-export const SCGridNav = recipe({
-  base: {
-    position: 'sticky',
-    top: '95px',
-    maxHeight: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    selectors: {},
+export const SCGridNav = style({
+  position: 'sticky',
+  top: '95px',
+  maxHeight: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-between',
+
+  // defaults (isHide: false, isAvailCompare: false)
+  vars: {
+    [gridNavZIndexVar]: '5',
+    [gridNavHeightVar]: '85vh',
   },
-  variants: {
-    isHide: { true: { zIndex: '3' }, false: { zIndex: '5' } },
-    isAvailCompare: { // pathname === '/availability-comparison'
-      true: {},
-      false: { height: '85vh' },
-    },
-  },
-  defaultVariants: { isHide: false, isAvailCompare: false },
+
+  zIndex: gridNavZIndexVar,
+  height: gridNavHeightVar,
 });
 
 export const SCNavbar = style({
@@ -74,25 +90,28 @@ export const SCText = style({
   },
 });
 
-// ---------- Icon toggle
-export const SCIconMenu = recipe({
-  base: {
-    position: 'absolute',
-    right: '-24px',
-    width: '40px',
-    zIndex: 300,
-    borderRadius: '50%',
-    cursor: 'pointer',
-    marginTop: '20px',
-    '@media': {
-      [mqLaptop]: { width: '32px', marginTop: '0px', right: '-17px' },
-    },
+// ---------- Icon toggle (no recipe)
+export const SCIconMenu = style({
+  position: 'absolute',
+  right: '-24px',
+  width: '40px',
+  zIndex: 300,
+  borderRadius: '50%',
+  cursor: 'pointer',
+  marginTop: '20px',
+
+  vars: {
+    // default: isRegalblaze = false, rotated = false
+    [iconMenuBorderVar]: '5px solid #f9f9f9',
+    [iconMenuTransformVar]: 'rotate(0deg)',
   },
-  variants: {
-    isRegalblaze: { true: { border: 'unset' }, false: { border: '5px solid #f9f9f9' } },
-    rotated: { true: { transform: 'rotate(180deg)' }, false: { transform: 'rotate(0)' } },
+
+  border: iconMenuBorderVar,
+  transform: iconMenuTransformVar,
+
+  '@media': {
+    [mqLaptop]: { width: '32px', marginTop: '0px', right: '-17px' },
   },
-  defaultVariants: { isRegalblaze: false, rotated: false },
 });
 
 // ---------- Menu row (header)
@@ -106,29 +125,12 @@ export const SCNavMenu = style({
   color: '#333',
   paddingLeft: '10px',
   position: 'relative',
-  // selectors: {
-  //   '& .arrow': { position: 'absolute', top: '7px', right: '-70px' },
-  //   '& .arrow::before, & .arrow::after': {
-  //     position: 'relative',
-  //     content: '',
-  //     display: 'block',
-  //     width: '9px',
-  //     height: '1px',
-  //     background: 'black',
-  //     transition: '0.3s ease-in-out',
-  //   },
-  //   '& .arrow::before': { transform: 'rotate(45deg)' },
-  //   '& .arrow::after': { left: '6px', top: '-1px', transform: 'rotate(-45deg)' },
-
-  //   // when this element gets class "active"
-  //   '&.active .arrow::before': { transform: 'rotate(-45deg)' },
-  //   '&.active .arrow::after': { transform: 'rotate(45deg)' },
-  // },
   '@media': {
     [mqLaptopL]: { paddingTop: '5px' },
     [mqLaptop]: { fontSize: '1.6rem', gap: '3rem', marginBottom: '23px', paddingTop: '20px' },
   },
 });
+
 globalStyle(`${SCNavMenu} .arrow`, { position: 'absolute', top: '7px', right: '-70px' });
 globalStyle(`${SCNavMenu} .arrow::before, ${SCNavMenu} .arrow::after`, {
   position: 'relative',
@@ -142,7 +144,6 @@ globalStyle(`${SCNavMenu} .arrow::before, ${SCNavMenu} .arrow::after`, {
 globalStyle(`${SCNavMenu}.active .arrow::before`, { transform: 'rotate(-45deg)' });
 globalStyle(`${SCNavMenu}.active .arrow::after`, { transform: 'rotate(45deg)' });
 
-
 export const SCInterStore = style({
   color: 'var(--text)',
   fontSize: '1.4rem',
@@ -151,15 +152,11 @@ export const SCInterStore = style({
   },
 });
 
-export const SCInterStoreArrowDown = recipe({
-  base: {
-    height: '8px',
-    '@media': { [mqLaptop]: { height: '6px', left: '20rem', position: 'absolute' } },
-  },
-  variants: {
-    rotated: { true: { transform: 'rotate(180deg)' }, false: { transform: 'rotate(0)' } },
-  },
-  defaultVariants: { rotated: false },
+// ---------- InterStore Arrow (no recipe)
+export const SCInterStoreArrowDown = style({
+  height: '8px',
+  transform: interStoreArrowTransformVar,
+  '@media': { [mqLaptop]: { height: '6px', left: '20rem', position: 'absolute' } },
 });
 
 // ---------- Menu list / items
@@ -170,50 +167,44 @@ export const SCMenuLeft = style({
   '@media': { [mqLaptop]: { padding: '5px 5px' } },
 });
 
-export const SCMenuItem = recipe({
-  base: { fontWeight: 600, cursor: 'pointer' },
-  variants: {
-    active: { true: { color: '#0a58ca' }, false: { color: '#495057' } },
-  },
-  defaultVariants: { active: false },
+// SCMenuItem (no recipe)
+export const SCMenuItem = style({
+  fontWeight: 600,
+  cursor: 'pointer',
+  color: menuItemColorVar,
 });
 
-export const SCItemChild = recipe({
-  base: {
-    width: '90%',
-    whiteSpace: 'nowrap',
-    fontSize: '1.8rem',
-    borderRadius: '10px',
-    overflow: 'hidden',
-    transition: 'height 0.3s ease-in-out',
-    margin: '0px',
-    padding: 'unset',
-    display: 'flex',
-    alignItems: 'center',
-    '@media': {
-      [mqLaptopL]: {},
-      [mqLaptop]: { fontSize: '1.2rem', width: '100%' },
-    },
+// SCItemChild (no recipe)
+export const SCItemChild = style({
+  width: '90%',
+  whiteSpace: 'nowrap',
+  fontSize: '1.8rem',
+  borderRadius: '10px',
+  overflow: 'hidden',
+  transition: 'height 0.3s ease-in-out',
+  display: 'flex',
+  alignItems: 'center',
+
+  vars: {
+    // defaults: active = false, status = false
+    [itemChildColorVar]: '#929292',
+    [itemChildBgVar]: 'transparent',
+    [itemChildFontWeightVar]: '300',
+    [itemChildHeightVar]: '0px',
+    [itemChildMarginVar]: '0',
+    [itemChildPaddingVar]: 'unset',
   },
-  variants: {
-    active: {
-      true: { color: '#000000', backgroundColor: 'var(--chooseItemBg)', fontWeight: 500 },
-      false: { color: '#929292', backgroundColor: 'transparent', fontWeight: 300 },
-    },
-    status: {
-      true: {
-        height: '24px',
-        margin: '12px 0 12px 15px',
-        padding: '18px 0',
-        '@media': {
-          [mqLaptopL]: { margin: '5px 0 5px 15px' },
-          [mqLaptop]: { margin: '2px 6px', padding: '13px 0' },
-        },
-      },
-      false: { height: '0px', margin: '0', padding: 'unset' },
-    },
+
+  color: itemChildColorVar,
+  backgroundColor: itemChildBgVar,
+  fontWeight: itemChildFontWeightVar as any,
+  height: itemChildHeightVar,
+  margin: itemChildMarginVar,
+  padding: itemChildPaddingVar,
+
+  '@media': {
+    [mqLaptop]: { fontSize: '1.2rem', width: '100%' },
   },
-  defaultVariants: { active: false, status: false },
 });
 
 export const SCNavChild = style({
@@ -221,7 +212,7 @@ export const SCNavChild = style({
   lineHeight: '24px',
   textTransform: 'capitalize',
   display: 'block',
-  color: 'var(--text)', // set via inline depending on theme + active
+  color: 'var(--text)',
   '@media': { [mqLaptopL]: { paddingLeft: '8px', fontSize: '1.4rem' } },
 });
 
@@ -309,7 +300,7 @@ export const SCNavCountItem = style({
 export const SCNavCountFooter = style({
   padding: '15px 25px 12px 35px',
   borderRadius: '0 0 12px 12px',
-  color: 'var(--footerText)', // set via inline per theme
+  color: 'var(--footerText)',
   backgroundColor: 'var(--particularFooterBg)',
   fontSize: '1.5rem',
   lineHeight: '21px',
@@ -321,22 +312,8 @@ export const SCNavCountFooter = style({
     [mqLaptopL]: { padding: '5px 15px' },
     [mqLaptop]: { padding: '5px 12px 0 16px', fontSize: '1.2rem' },
   },
-  // Tooltip placement using CSS vars set inline
-  // selectors: {
-  //   '& #yield_particulars': {
-  //     left: 'var(--tooltip-left)',
-  //     boxShadow: '0px 3px 25px #77777729',
-  //     backgroundColor: '#fff',
-  //     color: '#222',
-  //     opacity: 1,
-  //     position: 'fixed',
-  //     width: '33vw',
-  //     bottom: 'var(--tooltip-bottom)',
-  //     top: 'auto !important',
-  //   },
-  //   '& .react-tooltip-arrow': { left: '29px !important' },
-  // },
 });
+
 globalStyle(`${SCNavCountFooter} #yield_particulars`, {
   left: 'var(--tooltip-left)',
   boxShadow: '0px 3px 25px #77777729',
@@ -352,7 +329,6 @@ globalStyle(`${SCNavCountFooter} #yield_particulars`, {
 globalStyle(`${SCNavCountFooter} .react-tooltip-arrow`, {
   left: '29px !important',
 });
-
 
 export const SCBenefits = style({
   marginTop: '5px',
