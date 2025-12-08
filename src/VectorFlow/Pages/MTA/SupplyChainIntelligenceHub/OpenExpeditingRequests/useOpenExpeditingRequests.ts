@@ -387,19 +387,34 @@ const useOpenExpeditingRequests = () => {
 
     const onCloseRemarkHistory = ()=>setIsRemarkHistoryToolTipOpen(false)
 
-    const onApplyFilter = async(filter:any)=>{
-      setCurrentFilter(filter)
-      setEditedRows([])
-      notifyLoader("Loading Grid Data")
-      try{
-        const data = await getData(filter)
-        setRowData(data.data.data.data.map((r:any,index:number)=>({...r,id:index,action:''})))
-        toast.dismiss()
-        notifySuccess("Data Loaded Successfully")
-      }catch(err:any){
-        notifyError(err)
+    const onApplyFilter = async (filter: any) => {
+      setCurrentFilter(filter);
+      setEditedRows([]);
+      notifyLoader("Loading Grid Data");
+      try {
+        const data = await getData(filter);
+        if (
+          data?.data?.data?.data &&
+          Array.isArray(data.data.data.data) &&
+          data.data.data.data.length > 0
+        ) {
+          setRowData(
+            data.data.data.data.map((r: any, index: number) => ({
+              ...r,
+              id: index,
+              action: "",
+            }))
+          );
+        } else {
+          setRowData([]);
+        }
+        toast.dismiss();
+        notifySuccess("Data Loaded Successfully");
+      } catch (err: any) {
+        notifyError(err);
+        setRowData([]);
       }
-    }
+    };
 
     const onDeleteFilter = async(parentId:any, filterId:any, value:any)=>{
       const updatedFilter = onDelete(parentId,filterId,value)

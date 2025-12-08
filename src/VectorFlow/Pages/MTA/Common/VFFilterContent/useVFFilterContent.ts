@@ -283,12 +283,8 @@ export const useMultiFilterChange = ({
     const current = updatedSelections[rowId];
 
     const existingFilters = (multiFilter[parentId]?.filters || []) as BPRFilter[];
-    const operationFilters = existingFilters.filter(
-      (f) => !f.name.startsWith(`${prefix}6`)
-    );
-    const specialFilters = existingFilters.filter((f) => f.name.startsWith(`${prefix}6`));
-
-    const nextFilters = operationFilters.slice();
+ 
+    const nextFilters = existingFilters.slice();
     const newIndexMap = { ...rowFilterIndexMap };
     const idx = rowFilterIndexMap[rowId];
 
@@ -331,7 +327,7 @@ export const useMultiFilterChange = ({
       ...multiFilter,
       [parentId]: {
         ...multiFilter[parentId],
-        filters: [...nextFilters, ...specialFilters],
+        filters: nextFilters,
       },
     });
 

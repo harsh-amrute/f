@@ -174,6 +174,7 @@ export const listMenuParent: any = [
     status: false,
     lp_attr : true,
     lp_img : "/assets/img/IST 1.svg",
+    rp_img : "/assets/img/IST 2.svg",
     app_id : 1,
     child: [
       {
