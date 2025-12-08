@@ -137,6 +137,12 @@ const ExpediteChildCustomCharts = ({recordCount}:{recordCount:any}) => {
                         labelKey: "columns",
                         iconKey: "columns",
                         toolPanel: "agColumnsToolPanel",
+                        toolPanelParams: {
+                            suppressPivots: false,
+                            suppressPivotMode: false,
+                            suppressRowGroups: true,
+                            suppressValues: false,
+                        },
                       }
                     ]}
                   }
