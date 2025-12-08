@@ -22,6 +22,7 @@ import { FilterPageName, pagination, UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 import useColDef from "../../../../../../hooks/useColDef";
 import BPPRenderer from "../../../Common/BPRRenderer/BPPRenderer";
+import moment from "moment";
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -86,14 +87,35 @@ const OTIFAnalysis = () => {
 
   const getGraphData = async (params: any) => {
     if (params.isExcelExport) {
-      const headersdata = currentGridRef?.current?.api.getColumnState();
-      const formattedFilters = formatFilterJSON(appliedFilters);
-      const body = getBodyForExcelExport({ headersdata, filterData: formattedFilters, colDefMap })
-      const response = await getOTIFAnalysisDataExcelExport({ body, report_name: FilterPageName.Poogi_OTIF_Analysis, isExcelExport: 1, graphflag: 0 })
-      if (response.status === 200) {
-        DownloadExcel(response, FilterPageName.Poogi_OTIF_Analysis)
-      } else {
-        notifyError('Failed to export Excel file!');
+
+      const gridAPi = currentGridRef?.current?.api;
+
+      if (!gridAPi) {
+        notifyError('Grid is not ready for Excel export!');
+        return;
+      }
+
+      const isPivot = gridAPi.getPivotMode();
+      const isRowGroup = gridAPi.getRowGroupColumns().length > 0;
+      const isValue = gridAPi.getValueColumns().length > 0;
+      
+      if (isPivot || isValue || isRowGroup) {                 
+       const exportName = `${FilterPageName.Poogi_OTIF_Analysis}_${moment().format("DD-MM-YYYY")}`;
+        gridAPi.exportDataAsExcel({
+        fileName: exportName,
+        sheetName: exportName
+      })
+    }
+    else {
+        const headersdata = currentGridRef?.current?.api.getColumnState();
+        const formattedFilters = formatFilterJSON(appliedFilters);
+        const body = getBodyForExcelExport({ headersdata, filterData: formattedFilters, colDefMap })
+        const response = await getOTIFAnalysisDataExcelExport({ body, report_name: FilterPageName.Poogi_OTIF_Analysis, isExcelExport: 1, graphflag: 0 })
+        if (response.status === 200) {
+          DownloadExcel(response, FilterPageName.Poogi_OTIF_Analysis)
+        } else {
+          notifyError('Failed to export Excel file!');
+        }
       }
     }
     else {
