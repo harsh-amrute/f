@@ -5,7 +5,7 @@ import { useLocation } from "react-router";
 import { RootState } from "../../../../redux/store/store";
 import { routerToAnalyticsStringMap } from "../../../../helpers/BPRConstants";
 import { useGetAnalyticsData } from "../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
-import { toast } from "react-toastify";
+import { toast } from "react-toastify/unstyled";
 
 import { isBefore } from "date-fns";
 import { assignInlineVars } from "@vanilla-extract/dynamic";

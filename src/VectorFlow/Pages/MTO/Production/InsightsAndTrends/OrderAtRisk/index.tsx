@@ -19,11 +19,8 @@ import {
 import { ReasonOrderAtRiskType } from "../../../../../../../src/types/MTO/types";
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import OverlayLoader from "../../../Common/Loader";
-import {
-  useGetUserUIConfigData,
-  useUpdateUserUIConfigData,
-} from "../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig";
-import { FilterPageName, UIGridCode } from "../../../Common/Enum";
+import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
+import { ExcelExportName, FilterPageName, UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 import GridView from "./GridView";
 import { useGetFilterData } from "../../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
@@ -31,6 +28,7 @@ import useFilter from "../../../../../../hooks/useFilter";
 import { notifyError } from "../../../../../../helpers/notify";
 import useColDef from "../../../../../../hooks/useColDef";
 import BPPRenderer from "../../../Common/BPRRenderer/BPPRenderer";
+import moment from "moment";
 import "./style.css";
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -335,109 +333,128 @@ const OrderAtRisk = () => {
             fontSize: 8,
             fontWeight: "bold",
             color: "black",
-            padding: 10,
-          },
-          gridLine: {
-            enabled: false,
-          },
+          padding: 10,
         },
-        {
-          title: {
-            text: "Count Of Orders",
-            fontSize: 10,
-            fontWeight: "bold",
-            spacing: 3,
-          },
-          type: "number",
-          position: "bottom",
-          line: { enabled: true },
-          label: {
-            fontSize: 8,
-            fontWeight: "bold",
-            color: "black",
-          },
-          gridLine: {
-            enabled: false,
-          },
-        },
-      ],
-
-      legend: {
-        item: {
-          label: {
-            fontSize: 10,
-          },
+        gridLine: {
+          enabled: false,
         },
       },
-    });
-  }, [rawData]);
+      {
+        title: {
+          text: "Count Of Orders",
+          fontSize: 10,
+          fontWeight: "bold",
+          spacing: 3,
+        },
+        type: "number",
+        position: "bottom",
+        line: { enabled: true },
+        label: {
+          fontSize: 8,
+          fontWeight: "bold",
+          color: "black",
+        },
+        gridLine: {
+          enabled: false,
+        },
+      },
+    ],
+    
+    legend: {
+      item: {
+        label: {
+          fontSize: 10,
+        },
+      },
+    },
+  })
+  
+}, [rawData])
+ 
+      const [isFirstRendered,setIsFirstRendered]=useState(true)
+      
+      const getData = async (isExcelExport = false,pageSize?:any) => {
+        if(isExcelExport) {
+            try {
 
-  const [isFirstRendered, setIsFirstRendered] = useState(true);
-
-  const getData = async (isExcelExport = false, pageSize?: any) => {
-    if (isExcelExport) {
-      try {
-        const headersdata = currentGridRef?.current?.api.getColumnState();
-        const formattedFilters = formatFilterJSON(appliedFilters);
-        const body = getBodyForExcelExport({
-          headersdata,
-          filterData: formattedFilters,
-          colDefMap,
-        });
-        const response = await getOrderAtRiskDataExcelExport({
-          body,
-          isExcelExport: 1,
-          report_name: FilterPageName.Prod_Order_At_Risk,
-          page_size: pageSize || userPageSize,
-        });
-        if (response.status === 200) {
-          DownloadExcel(response, FilterPageName.Prod_Order_At_Risk);
-        } else {
-          notifyError("Failed to export data to Excel");
+              const gridAPi = currentGridRef?.current?.api;
+              if (!gridAPi) {
+                notifyError("Grid is not ready for export");
+                return;
+              }
+              const isPivotMode = gridAPi.isPivotMode();
+              const isRowGroupingActive = gridAPi.getRowGroupColumns().length > 0;
+              const isValueActive =  gridAPi.getValueColumns().length > 0;
+               if (isPivotMode || isRowGroupingActive || isValueActive) {                 
+                              //  const exportName = `${FilterPageName.Prod_Order_At_Risk}_${moment().format("DD-MM-YYYY")}`;
+                               const exportName = ExcelExportName.Order_At_Risk
+                               gridAPi.exportDataAsExcel({
+                               fileName: exportName,
+                               sheetName: exportName
+                               });
+                }else{ 
+                  const headersdata = currentGridRef?.current?.api.getColumnState();
+                  const formattedFilters = formatFilterJSON(appliedFilters)
+                  const body = getBodyForExcelExport({headersdata, filterData : formattedFilters,colDefMap})
+                  const response = await getOrderAtRiskDataExcelExport({body , isExcelExport : 1,report_name : FilterPageName.Prod_Order_At_Risk,page_size: pageSize || userPageSize })
+              if(response.status === 200) {
+                DownloadExcel(response,FilterPageName.Prod_Order_At_Risk)
+              }else{
+                notifyError("Failed to export data to Excel")
+              }
+            }
+            } catch (error) {
+              notifyError("An error occurred")
+              console.log(error)
+            }
         }
-      } catch (error) {
-        notifyError("An error occurred");
-        console.log(error);
+        else{
+
+          try {
+            let payload;
+            if(isFirstRendered){
+              payload={graphflag:1}
+              setIsFirstRendered(false);
+            }
+            else {
+              const formatedFilters= formatFilterJSON(appliedFilters);
+              payload = {
+                page: currentPage,
+                page_size: userPageSize,
+                graphflag: 0,
+                appliedFilters: formatedFilters
+              };
+            }
+        
+            const response = await getOrderAtRiskData(payload);
+            if(payload.graphflag==1){
+              setRawData(response?.data?.data);
+            }
+            else{
+              setGridData(response.data.data.results || []);
+            }
+            setTotalRow(response?.data?.data?.count)
+
+          }
+          catch (e) {
+            console.log(e);
+            notifyError('Failed to fetch Grid data!');
+          }
+        }
+  }
+
+  
+    useEffect(() => {
+      if (Object.entries(appliedFilters).length) {
+        getData();    
       }
-    } else {
-      try {
-        let payload;
-        if (isFirstRendered) {
-          payload = { graphflag: 1 };
-          setIsFirstRendered(false);
-        } else {
-          const formatedFilters = formatFilterJSON(appliedFilters);
-          payload = {
-            page: currentPage,
-            page_size: userPageSize,
-            graphflag: 0,
-            appliedFilters: formatedFilters,
-          };
-        }
+    }, [currentPage]);
 
-        const response = await getOrderAtRiskData(payload);
-        if (payload.graphflag == 1) {
-          setRawData(response?.data?.data);
-        } else {
-          setGridData(response.data.data.results || []);
-        }
-        setTotalRow(response?.data?.data?.count);
-      } catch (e) {
-        console.log(e);
-        notifyError("Failed to fetch Grid data!");
-      }
-    }
-  };
 
-  useEffect(() => {
-    if (Object.entries(appliedFilters).length) {
-      getData();
-    }
-  }, [currentPage]);
-
-  useEffect(() => {
-    if (Object.entries(appliedFilters).length && userConfigFetched) {
-      setCurrentPage(1);
+  
+    useEffect(() => {
+      if (Object.entries(appliedFilters).length && userConfigFetched ) {
+        setCurrentPage(1);
     }
   }, [appliedFilters, userConfigFetched]);
 

@@ -20,7 +20,7 @@ import {
   useUpdateUserUIConfigData,
 } from "../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig";
 import OverlayLoader from "../../../Common/Loader";
-import { UIGridCode } from "../../../Common/Enum";
+import { ExcelExportName, UIGridCode } from "../../../Common/Enum";
 import { format } from "date-fns";
 
 const FOLSummary = () => {
@@ -635,10 +635,13 @@ const FOLSummary = () => {
   }, [HeaderData]);
 
   const onExcelExport = () => {
+    // const exportName = `FOL_Summary_${format(Date.now(), "dd-MM-yyyy")}`;
+    const exportName = ExcelExportName.FOL_Summary
     gridRef.current?.api?.exportDataAsExcel({
-      fileName: `FOL_Summary_${format(Date.now(), "dd/MM/yyyy")}`,
+      fileName: exportName,
+      sheetName: exportName 
     });
-  };
+  }
 
   return (
     <div className={EnquiryWrapper}>

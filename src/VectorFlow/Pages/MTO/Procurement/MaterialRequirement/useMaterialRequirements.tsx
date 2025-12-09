@@ -42,6 +42,13 @@ import { notifyError, notifySuccess } from "../../../../../helpers/notify";
 import _ from "lodash";
 
 const getRows = (params: ProcessRowGroupForExportParams) => {
+    
+    const children = params.node.data?.children;
+
+    if (!children || !Array.isArray(children)) {
+        return [];
+    }
+
   const rows: ExcelRow[] = [
     {
       outlineLevel: 1,
@@ -306,109 +313,91 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
     // getInitialData()
   };
 
-  const onExcelExportClickReq = () => {
-    getInitialData(0, date, true);
-  };
-
-  const getInitialData = async (
-    currPage?: number,
-    releaseDate?: string,
-    isExcelExport = false,
-    pageSize?: any
-  ) => {
-    currentTab.id === "sdv"
-      ? getSelectedDateWise(currPage, releaseDate, isExcelExport, pageSize)
-      : getCumulativeDateWise(currPage, releaseDate, isExcelExport, pageSize);
-  };
-
-  const getSelectedDateWise = async (
-    currPage?: number,
-    releaseDate: string = date,
-    isExcelExport = false,
-    pageSize?: any
-  ) => {
-    const formatedFilters = formatFilterJSON(appliedFilters);
-    if (isExcelExport) {
-      const headersdata = currentGridRef?.current?.api.getColumnState();
-      const body = getBodyForExcelExport({
-        headersdata: headersdata,
-        filterData: formatedFilters,
-        colDefMap,
-      });
-
-      const response = await getMaterialRequirementDataDayWise({
-        releaseDate: releaseDate,
-        body,
-        isExcelExport: 1,
-        report_name: FilterPageName.Proc_Material_Requirement,
-      });
-      if (response.status === 200) {
-        DownloadExcel(response, FilterPageName.Proc_Material_Requirement);
-        notifySuccess("Excel exported successfully");
-      } else {
-        notifyError("Failed to export excel");
-      }
-    } else {
-      const datWiseData = await getMaterialRequirementDataDayWise({
-        releaseDate: releaseDate,
-        currPage: currPage ? currPage : currentPage,
-        appliedFilters: formatedFilters,
-        page_size: pageSize || userPageSize,
-      });
-      const dayWiseOutput = datWiseData.data?.data?.results;
-      setDayWiseRecordCount(datWiseData.data?.data?.count);
-      setDayWiseData(dayWiseOutput);
+    const onExcelExportClickReq = () => {
+        getInitialData(0, date, true)
     }
-  };
 
-  const getCumulativeDateWise = async (
-    currPage = 1,
-    releaseDate: string = date,
-    isExcelExport = false,
-    pageSize?: any
-  ) => {
-    const formatedFilters = formatFilterJSON(appliedFilters);
-    if (isExcelExport) {
-      const headersdata = currentGridRef?.current?.api.getColumnState();
-      const body = getBodyForExcelExport({
-        headersdata: headersdata,
-        filterData: formatedFilters,
-        colDefMap,
-      });
-      const response = await getMaterialRequirementDataExcelExport({
-        releaseDate: releaseDate,
-        body,
-        isExcelExport: 1,
-        report_name: FilterPageName.Proc_Material_Requirement,
-      });
-      if (response.status === 200) {
-        DownloadExcel(response, FilterPageName.Proc_Material_Requirement);
-        notifySuccess("Excel exported successfully");
-      } else {
-        notifyError("Failed to export excel");
-      }
-    } else {
-      const cumulativeData = await getMaterialRequirementData({
-        releaseDate: releaseDate,
-        currPage: currPage ? currPage : currentCumPage,
-        appliedFilters: formatedFilters,
-        page_size: pageSize || userPageSize,
-      });
-      const cumulativeOutput = cumulativeData.data?.data?.results;
-      setcumulativeRecordCount(cumulativeData.data?.data?.count);
-      SetCumulativeData(cumulativeOutput);
+    const getInitialData = async (currPage?: number, releaseDate?: string, isExcelExport = false, pageSize?:any ) => {
+         currentTab.id === 'sdv' ? getSelectedDateWise(currPage, releaseDate, isExcelExport, pageSize ) : getCumulativeDateWise(currPage, releaseDate, isExcelExport, pageSize );
     }
-  };
-  const savePageSize = (pageSize: any) => {
-    if (pageSize) {
-      setCurrentPage(1);
-      setUserPageSize(pageSize);
-      handleSaveClick(undefined, pageSize);
-      getInitialData(1, date, false, pageSize);
-    } else {
-      notifyError("Invalide page size");
+
+    const getSelectedDateWise = async (currPage?: number, releaseDate: string = date, isExcelExport = false, pageSize?:any ) => {
+
+        const formatedFilters = formatFilterJSON(appliedFilters);
+        if (isExcelExport) {
+
+            const gridApi = currentGridRef?.current?.api;
+
+            if(!gridApi){
+                notifyError("The grid is not ready");
+                return;
+            }
+
+            const isPivotMode = gridApi.isPivotMode();
+            const isRowGroupingActive = gridApi.getRowGroupColumns().length > 0;
+            const isValueActive =  gridApi.getValueColumns().length > 0;
+
+            if (isPivotMode || isRowGroupingActive || isValueActive) {
+                                
+                 const exportName = `${FilterPageName.Proc_Material_Requirement}_${moment().format("DD-MM-YYYY")}`;
+                 gridApi.exportDataAsExcel({
+                 fileName: exportName,
+                 sheetName: exportName
+                 });
+            }
+            else{
+                const headersdata = currentGridRef?.current?.api.getColumnState();
+                const body = getBodyForExcelExport({ headersdata: headersdata, filterData: formatedFilters, colDefMap })
+                
+                const response = await getMaterialRequirementDataDayWise({ releaseDate: releaseDate, body, isExcelExport: 1, report_name: FilterPageName.Proc_Material_Requirement })
+                if (response.status === 200) {
+                    DownloadExcel(response, FilterPageName.Proc_Material_Requirement)
+                    notifySuccess("Excel exported successfully")
+                } else {
+                    notifyError("Failed to export excel")
+                }
+            }
+        } else {
+
+            const datWiseData = await getMaterialRequirementDataDayWise({ releaseDate: releaseDate, currPage: currPage ? currPage : currentPage, appliedFilters: formatedFilters,page_size: pageSize || userPageSize });
+            const dayWiseOutput = datWiseData.data?.data?.results;
+            setDayWiseRecordCount(datWiseData.data?.data?.count)
+            setDayWiseData(dayWiseOutput)
+        }
     }
-  };
+
+    const getCumulativeDateWise = async (currPage = 1, releaseDate: string = date, isExcelExport = false,pageSize?:any) => {        
+        const formatedFilters = formatFilterJSON(appliedFilters);
+        if (isExcelExport) {
+            const headersdata = currentGridRef?.current?.api.getColumnState();
+            const body = getBodyForExcelExport({ headersdata: headersdata, filterData: formatedFilters, colDefMap })
+            const response = await getMaterialRequirementDataExcelExport({ releaseDate: releaseDate, body, isExcelExport: 1, report_name: FilterPageName.Proc_Material_Requirement })
+            if (response.status === 200) {
+                DownloadExcel(response, FilterPageName.Proc_Material_Requirement)
+                notifySuccess("Excel exported successfully")
+            } else {
+                notifyError("Failed to export excel")
+            }
+        }
+        else {
+
+            const cumulativeData = await getMaterialRequirementData({ releaseDate: releaseDate, currPage: currPage ? currPage : currentCumPage, appliedFilters: formatedFilters ,page_size: pageSize || userPageSize});
+            const cumulativeOutput = cumulativeData.data?.data?.results
+            setcumulativeRecordCount(cumulativeData.data?.data?.count)
+            SetCumulativeData(cumulativeOutput)
+        }
+    }
+    const savePageSize = (pageSize: any) => {
+        if (pageSize) {
+            setCurrentPage(1)
+            setUserPageSize(pageSize);
+            handleSaveClick(undefined, pageSize);
+            getInitialData(1,date,false, pageSize);
+        } else {
+            notifyError("Invalide page size");
+        }
+        
+    }
 
   const autoGroupColumnDef = useMemo(() => {
     return {

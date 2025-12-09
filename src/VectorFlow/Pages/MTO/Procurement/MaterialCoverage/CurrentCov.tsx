@@ -1,11 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  main,
-  mainContainer,
-  box,
-  divider,
-  borderColorVar,
-} from "./styles.css";
+import { mainContainer, box, main } from "./styles.css";
 import {
   calculatePercentage,
   mapOrderDetails,
@@ -531,7 +525,6 @@ const CurrentCov = ({
             )
           }
         >
-          {" "}
           <MTOMaterialSO
             kit={"No Kit"}
             colors={{
@@ -652,7 +645,6 @@ const CurrentCov = ({
             }}
           />
         </div>
-
         <div
           className={box}
           onClick={() =>
@@ -674,7 +666,6 @@ const CurrentCov = ({
             }}
           />
         </div>
-
         <div
           className={box}
           onClick={() =>
@@ -719,7 +710,6 @@ const CurrentCov = ({
 
       <div className={mainContainer}>
         <div
-          data-testid="btn_navigate"
           className={box}
           onClick={() =>
             handleToggle(
@@ -761,57 +751,56 @@ const CurrentCov = ({
               egthEndDt
             )
           }
-        ></div>
-        <MTOMaterialSO
-          kit={"Partial Kit"}
-          colors={{ c1: ColorsMTO.Blue.code, c2: null, c3: null }}
-          height={"72px"}
-          text={formatDate(egthSrtDt, egthEndDt)}
-          orderCount={egthBlockOrdCnt}
-          cutCount={egthBlockCustCnt}
-          orderValue={egthdOrderVal}
-          percent={egthBlockOrdCnt / totalBlueOrdCount}
-          ToolTipdata={{
-            c3: colorOrderCount?.Blpk,
-            c2: colorOrderCount?.Wpk,
-            p3: colorOrderCount?.Blpkp,
-            p2: colorOrderCount?.Wpkp,
-          }}
-        />
-      </div>
-      <div
-        className={box}
-        onClick={() =>
-          handleToggle(
-            ColorsMTO.Blue.label,
-            ColorsMTO.White.label,
-            "",
-            "FK",
-            nthSrtDt,
-            nthEndDt
-          )
-        }
-      >
-        <MTOMaterialSO
-          kit={"Full Kit"}
-          colors={{ c1: ColorsMTO.Blue.code, c2: null, c3: null }}
-          height={"72px"}
-          text={formatDate(nthSrtDt, nthEndDt)}
-          orderCount={nthBlockOrdCnt}
-          cutCount={nthBlockCustCnt}
-          orderValue={nthhdOrderVal}
-          percent={nthBlockOrdCnt / totalBlueOrdCount}
-          ToolTipdata={{
-            c2: colorOrderCount?.Wfk,
-            c3: colorOrderCount?.Blfk,
-            p2: colorOrderCount?.Wfkp,
-            p3: colorOrderCount?.Blfkp,
-          }}
-        />
+        >
+          <MTOMaterialSO
+            kit={"Partial Kit"}
+            colors={{ c1: ColorsMTO.Blue.code, c2: null, c3: null }}
+            height={"72px"}
+            text={formatDate(egthSrtDt, egthEndDt)}
+            orderCount={egthBlockOrdCnt}
+            cutCount={egthBlockCustCnt}
+            orderValue={egthdOrderVal}
+            percent={egthBlockOrdCnt / totalBlueOrdCount}
+            ToolTipdata={{
+              c3: colorOrderCount?.Blpk,
+              c2: colorOrderCount?.Wpk,
+              p3: colorOrderCount?.Blpkp,
+              p2: colorOrderCount?.Wpkp,
+            }}
+          />
+        </div>
+        <div
+          className={box}
+          onClick={() =>
+            handleToggle(
+              ColorsMTO.Blue.label,
+              ColorsMTO.White.label,
+              "",
+              "FK",
+              nthSrtDt,
+              nthEndDt
+            )
+          }
+        >
+          <MTOMaterialSO
+            kit={"Full Kit"}
+            colors={{ c1: ColorsMTO.Blue.code, c2: null, c3: null }}
+            height={"72px"}
+            text={formatDate(nthSrtDt, nthEndDt)}
+            orderCount={nthBlockOrdCnt}
+            cutCount={nthBlockCustCnt}
+            orderValue={nthhdOrderVal}
+            percent={nthBlockOrdCnt / totalBlueOrdCount}
+            ToolTipdata={{
+              c2: colorOrderCount?.Wfk,
+              c3: colorOrderCount?.Blfk,
+              p2: colorOrderCount?.Wfkp,
+              p3: colorOrderCount?.Blfkp,
+            }}
+          />
+        </div>
       </div>
     </div>
-
-    // </div>
   );
 };
 

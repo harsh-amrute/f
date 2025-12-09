@@ -38,10 +38,9 @@ import {
 } from "../../../../../VectorFlow/Services/MTO/Common/UserUIConfig";
 import OverlayLoader from "../../Common/Loader";
 import { format } from "date-fns";
-const tabOptions = [
-  { label: "RM Not Available", value: "RM Not Available" },
-  { label: "RM Available", value: "RM Available" },
-];
+import { ExcelExportName } from "../../Common/Enum";
+const tabOptions = [{ label: "RM Not Available", value: "RM Not Available" }, { label: "RM Available", value: "RM Available" }];
+
 
 const EnquiryResponse = () => {
   const [activeTab, setActiveTab] = useState<number>(0);
@@ -819,13 +818,14 @@ const EnquiryResponse = () => {
       setMyColDefs(getColumnDefinations(HeaderData, CustomHeader));
       getUserColumnConfig();
     }
-  }, [HeaderData]);
+  }, [HeaderData])
 
-  const ExcelExport = () => {
-    gridRef.current?.api?.exportDataAsExcel({
-      fileName: `Enquiry_Response_${format(Date.now(), "dd/MM/yyyy")}`,
-    });
-  };
+ 
+    
+  const ExcelExport =()=>{
+    const exportName = ExcelExportName.Enquiry_Response
+    gridRef.current?.api?.exportDataAsExcel({ fileName: exportName,sheetName: exportName })
+  }
   return (
     <div className={EnquiryWrapper}>
       {(isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />}
