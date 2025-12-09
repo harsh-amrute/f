@@ -94,19 +94,19 @@ const ExpeditingMTA = (props: {
 
   const TooltipRenderer = ({ datum }: any) => {
     return `
-      <div class="tooltip-container">
+      <div class="exp-mta-tooltip-container">
         ${datum.tt
           .map(
             (item: { rn: string; c: number }) => `
-              <div class="tooltip-row">
-                <div class="tooltip-label">${item.rn} :</div>
-                <div class="tooltip-value">${item.c}</div>
+              <div class="exp-mta-tooltip-row">
+                <div class="exp-mta-tooltip-label">${item.rn} :</div>
+                <div class="exp-mta-tooltip-value">${item.c}</div>
               </div>
             `
           )
           .join("")}
-        <hr class="tooltip-divider"/>
-        <div class="tooltip-footer">No. Of Orders : ${datum.rc}</div>
+        <hr class="exp-mta-tooltip-divider"/>
+        <div class="exp-mta-tooltip-footer">No. Of Orders : ${datum.rc}</div>
       </div>
     `;
   };

@@ -137,12 +137,12 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean; data: any }) => {
     }
 
     return `
-  <div class="tooltip-container">
-    <div class="tooltip-header">
+  <div class="BTMTO-tooltip-container">
+    <div class="BTMTO-tooltip-header">
       ${datum[xKey]}
     </div>
-    <div class="tooltip-body">
-      <table class="tooltip-table">
+    <div class="BTMTO-tooltip-body">
+      <table class="BTMTO-tooltip-table">
         <thead>
           <tr>
             <th class="empty-cell"></th>

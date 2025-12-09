@@ -1,4 +1,4 @@
-.tooltip-container {
+.fka-tooltip-container {
   background-color: #6c696a;
   color: white;
   padding: 0 10px 10px 10px;
@@ -11,7 +11,7 @@
   transform: translateX(120px);
 }
 
-.tooltip-header {
+.fka-tooltip-header {
   background-color: #6c696a;
   color: white;
   padding: 10px 10px 4px;
@@ -22,12 +22,12 @@
   font-weight: 600;
 }
 
-.tooltip-body {
+.fka-tooltip-body {
   background-color: #6c696a;
   padding: 10px 0 0 0;
 }
 
-.tooltip-row {
+.fka-tooltip-row {
   display: flex;
   align-items: center;
   margin-bottom: 6px;

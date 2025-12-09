@@ -3,30 +3,30 @@ import "./style.css";
 
 export function TooltipRenderer({ datum, xKey }: any) {
   return `
-      <div class="tooltip-container">
-        <div class="tooltip-title">
+      <div class="data-tooltip-container">
+        <div class="data-tooltip-title">
           ${datum[xKey]}
         </div>
-        <div class="tooltip-content">
-          <div class="tooltip-row">
+        <div class="data-tooltip-content">
+          <div class="data-tooltip-row">
             <div class="color-box color-1-2-days"></div>
             <div class="label-value">
               <div>1-2 days</div><div>${datum["1_2_d"]}</div>
             </div>
           </div>
-          <div class="tooltip-row">
+          <div class="data-tooltip-row">
             <div class="color-box color-3-7-days"></div>
             <div class="label-value">
               <div>3-7 days</div><div>${datum["3_7_d"]}</div>
             </div>
           </div>
-          <div class="tooltip-row">
+          <div class="data-tooltip-row">
             <div class="color-box color-8-15-days"></div>
             <div class="label-value">
               <div>8-15 days</div><div>${datum["8_15_d"]}</div>
             </div>
           </div>
-          <div class="tooltip-row">
+          <div class="data-tooltip-row">
             <div class="color-box color-16-30-days"></div>
             <div class="label-value">
               <div>16-30 days</div><div>${datum["16_30_d"]}</div>
@@ -38,40 +38,40 @@ export function TooltipRenderer({ datum, xKey }: any) {
 }
 export function TooltipRendererIF({ datum, xKey }: any) {
   return `
-      <div class="tooltip-container">
-        <div class="tooltip-title">
+      <div class="data-tooltip-container">
+        <div class="data-tooltip-title">
           ${datum[xKey]}
         </div>
-        <div class="tooltip-content">
-          <div class="tooltip-row">
+        <div class="data-tooltip-content">
+          <div class="data-tooltip-row">
             <div class="color-box color-0-20"></div>
             <div class="label-value">
               <div>0%-20%</div>
               <div>${datum["0_2_p"]}</div>
             </div>
           </div>
-          <div class="tooltip-row">
+          <div class="data-tooltip-row">
             <div class="color-box color-20-40"></div>
             <div class="label-value">
               <div>20%-40%</div>
               <div>${datum["20_40_p"]}</div>
             </div>
           </div>
-          <div class="tooltip-row">
+          <div class="data-tooltip-row">
             <div class="color-box color-40-60"></div>
             <div class="label-value">
               <div>40%-60%</div>
               <div>${datum["40_60_p"]}</div>
             </div>
           </div>
-          <div class="tooltip-row">
+          <div class="data-tooltip-row">
             <div class="color-box color-60-80"></div>
             <div class="label-value">
               <div>60%-80%</div>
               <div>${datum["60_80_p"]}</div>
             </div>
           </div>
-          <div class="tooltip-row">
+          <div class="data-tooltip-row">
             <div class="color-box color-80-100"></div>
             <div class="label-value">
               <div>80%-100%</div>

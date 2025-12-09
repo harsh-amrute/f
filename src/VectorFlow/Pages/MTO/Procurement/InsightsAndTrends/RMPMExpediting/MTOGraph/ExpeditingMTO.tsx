@@ -41,13 +41,13 @@ const ExpeditingMTO = (props: {
 
   function TooltipRenderer({ datum }: any) {
     return `
-      <div class="tooltip-container">
-        <div class="tooltip-title">
+      <div class="exp-mto-tooltip-container">
+        <div class="exp-mto-tooltip-title">
           ${datum.rn}
         </div>
-        <hr class="tooltip-divider"/>
-        <div class="tooltip-text">RM Desc : ${datum.rd}</div>
-        <div class="tooltip-text">No. Of Orders : ${datum.rc}</div>
+        <hr class="exp-mto-tooltip-divider"/>
+        <div class="exp-mto-tooltip-text">RM Desc : ${datum.rd}</div>
+        <div class="exp-mto-tooltip-text">No. Of Orders : ${datum.rc}</div>
       </div>
     `;
   }

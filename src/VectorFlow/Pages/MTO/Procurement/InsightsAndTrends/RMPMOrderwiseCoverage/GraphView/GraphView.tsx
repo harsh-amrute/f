@@ -96,33 +96,33 @@ const GraphView = ({ shortageData }: any) => {
 
     return `<div class="ag-custom-tooltip ">
 
-<div class="tooltip-container">
-      <div class="tooltip-title">
+<div class="graphview-tooltip-container">
+      <div class="graphview-tooltip-title">
         ${label}
       </div>
-      <div class="tooltip-content">
-        <div class="tooltip-row">
+      <div class="graphview-tooltip-content">
+        <div class="graphview-tooltip-row">
           <div class="color-box color-bg1"></div>
           <div class="label-value">
             <div>${InsightsAndTrendsString.ordersWithFullkitOHS}</div>
             <div>${datum["total_soh"]}</div>
           </div>
         </div>
-        <div class="tooltip-row">
+        <div class="graphview-tooltip-row">
           <div class="color-box color-bg2"></div>
           <div class="label-value">
             <div>${InsightsAndTrendsString.ordersWithFullkitSIT}</div>
             <div>${datum["total_sit"]}</div>
           </div>
         </div>
-        <div class="tooltip-row">
+        <div class="graphview-tooltip-row">
           <div class="color-box color-bg3"></div>
           <div class="label-value">
             <div>${InsightsAndTrendsString.ordersWithFullkitOPO}</div>
             <div>${datum["total_po"]}</div>
           </div>
         </div>
-        <div class="tooltip-row">
+        <div class="graphview-tooltip-row">
           <div class="color-box color-bg4"></div>
           <div class="label-value">
             <div>${InsightsAndTrendsString.ordersWithRMPM}</div>

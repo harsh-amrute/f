@@ -49,7 +49,7 @@ import {
 import useColDef from "../../../../../hooks/useColDef";
 import CustomLegend from "../../Common/CustomLegend";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
-import "./style.css"
+import "./style.css";
 
 interface GraphDataRow {
   ccr_name: string;
@@ -762,27 +762,27 @@ const FullKitAssignment = () => {
   };
 
   const barColors = {
-    "Released_WIP": "#191919",
-    "Allocated_Full_Kits": "#EBBF2C",
+    Released_WIP: "#191919",
+    Allocated_Full_Kits: "#EBBF2C",
     Limit: "#E53F3F",
   };
 
   function TooltipRenderer({ datum, xKey }: any) {
     return `
-      <div class="tooltip-container transform-translate-x">
-        <div class="tooltip-header">
+      <div class="fka-tooltip-container transform-translate-x">
+        <div class="fka-tooltip-header">
           ${datum[xKey]}
         </div>
-        <div class="tooltip-body">
-          <div class="tooltip-row">
+        <div class="fka-tooltip-body">
+          <div class="fka-tooltip-row">
             <div class="color-box barcolor-${barColors["Released_WIP"]}"></div>
             Released WIP: ${datum["Released WIP"]}
           </div>
-          <div class="tooltip-row">
+          <div class="fka-tooltip-row">
             <div class="color-box barcolor-${barColors["Allocated_Full_Kits"]}"></div>
             Allocated Full Kits: ${datum["Allocated Full Kits"]}
           </div>
-          <div class="tooltip-row">
+          <div class="fka-tooltip-row">
             <div class="color-box barcolor-${barColors["Limit"]}"></div>
             Limit: ${datum["Limit"]}
           </div>
@@ -790,7 +790,6 @@ const FullKitAssignment = () => {
       </div>
     `;
   }
-
 
   const [chartoptions, setChartOptions] = useState<any>({
     // data: graphData,

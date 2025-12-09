@@ -803,20 +803,20 @@ const DynamicReleaseManagement = () => {
 
   function TooltipRenderer({ datum, xKey }: any) {
     return `
-      <div class="tooltip-container transform-translate-x">
-        <div class="tooltip-header">
+      <div class="drm-tooltip-container transform-translate-x">
+        <div class="drm-tooltip-header">
           ${datum[xKey]}
         </div>
-        <div class="tooltip-body">
-          <div class="tooltip-row">
+        <div class="drm-tooltip-body">
+          <div class="drm-tooltip-row">
             <div class="color-box barcolor-${barColors["Released_WIP"]}"></div>
             <div>Released WIP: ${datum["Released WIP"]}</div>
           </div>
-          <div class="tooltip-row">
+          <div class="drm-tooltip-row">
             <div class="color-box barcolor-${barColors["Incremental_WIP"]}"></div>
             <div>Incremental WIP: ${datum["Incremental WIP"]}</div>
           </div>
-          <div class="tooltip-row">
+          <div class="drm-tooltip-row">
             <div class="color-box barcolor-${barColors["Limit"]}"></div>
             <div>Limit: ${datum["Limit"]}</div>
           </div>
@@ -826,8 +826,8 @@ const DynamicReleaseManagement = () => {
   }
 
   const barColors = {
-    "Released_WIP": "#191919",
-    "Incremental_WIP": "#4BAAF7",
+    Released_WIP: "#191919",
+    Incremental_WIP: "#4BAAF7",
     Limit: "#E53F3F",
   };
 
@@ -1052,23 +1052,22 @@ const DynamicReleaseManagement = () => {
     GetData(table1 ? 0 : 1, 0, 0, true);
   };
 
-    // helper to mirror your styled-logic
-    const computeTabBg = ({
-      status,
-      themeUi,
-      bgColor,
-    }: {
-      status: boolean;
-      themeUi: string;
-      bgColor?: string;
-    }) =>
-      bgColor ??
-      (status
-        ? themeUi === "REGALBLAZE"
-          ? globalStyles.chooseThemeColor[themeUi]?.color5
-          : "transparent linear-gradient(74deg, #820F4C 0%, #BC3D81 100%) 0% 0% no-repeat padding-box"
-        : "white");
-  
+  // helper to mirror your styled-logic
+  const computeTabBg = ({
+    status,
+    themeUi,
+    bgColor,
+  }: {
+    status: boolean;
+    themeUi: string;
+    bgColor?: string;
+  }) =>
+    bgColor ??
+    (status
+      ? themeUi === "REGALBLAZE"
+        ? globalStyles.chooseThemeColor[themeUi]?.color5
+        : "transparent linear-gradient(74deg, #820F4C 0%, #BC3D81 100%) 0% 0% no-repeat padding-box"
+      : "white");
 
   const ReleaseOrderHeader: any = (
     <>

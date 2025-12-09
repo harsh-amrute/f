@@ -1,9 +1,9 @@
-.tooltip-container {
+.data-tooltip-container {
   width: 180px;
   font-family: "Roboto", sans-serif;
 }
 
-.tooltip-title {
+.data-tooltip-title {
   background-color: #6c696a;
   display: flex;
   justify-content: center;
@@ -13,13 +13,13 @@
   font-weight: 600;
 }
 
-.tooltip-content {
+.data-tooltip-content {
   background-color: #6c696a;
   color: white;
   padding: 8px;
 }
 
-.tooltip-row {
+.data-tooltip-row {
   display: flex;
   margin-bottom: 6px;
 }

@@ -356,18 +356,18 @@ const Step2 = forwardRef(
     };
     function TooltipRenderer({ datum, xKey }: any) {
       return `
-        <div class="tooltip-container transform-translate-x">
-          <div class="tooltip-header">
+        <div class="step2-tooltip-container transform-translate-x">
+          <div class="step2-tooltip-header">
             ${datum[xKey]}
           </div>
-          <div class="tooltip-body">
-            <div class="tooltip-row">
+          <div class="step2-tooltip-body">
+            <div class="step2-tooltip-row">
               <div class="color-box barcolor-${barColors["ccrFolWithHoliday"]}"></div>
               <div>
                 FOL with holidays: ${tooltipValues(datum["ccrFolWithHoliday"])} (FOL- ${tooltipValues(datum["FOL"])}, Holidays- ${tooltipValues(datum["holidays"])})
               </div>
             </div>
-            <div class="tooltip-row">
+            <div class="step2-tooltip-row">
               <div class="color-box barcolor-${barColors["orderLoad"]}"></div>
               <div>SOL: ${tooltipValues(datum["orderLoad"])}</div>
             </div>

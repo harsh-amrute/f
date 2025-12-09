@@ -1,84 +1,84 @@
-.tooltip-container {
-    background-color: #6c696a;
-    font-family: 'Roboto', sans-serif;
-    color: white;
-    width: 100%;
-  }
+.BTMTO-tooltip-container {
+  background-color: #6c696a;
+  font-family: "Roboto", sans-serif;
+  color: white;
+  width: 100%;
+}
 
-  .tooltip-header {
-    color: white;
-    padding: 10px 0 4px;
-    background-color: #6c696a;
-    text-align: center;
-    font-weight: bold;
-  }
+.BTMTO-tooltip-header {
+  color: white;
+  padding: 10px 0 4px;
+  background-color: #6c696a;
+  text-align: center;
+  font-weight: bold;
+}
 
-  .tooltip-body {
-    padding: 10px;
-    background-color: #6c696a;
-  }
+.BTMTO-tooltip-body {
+  padding: 10px;
+  background-color: #6c696a;
+}
 
-  .tooltip-table {
-    width: 100%;
-    color: white;
-    border-collapse: collapse;
-  }
+.BTMTO-tooltip-table {
+  width: 100%;
+  color: white;
+  border-collapse: collapse;
+}
 
-  .tooltip-table thead tr {
-    border-top: 1px dashed white;
-    border-bottom: 1px dashed white;
-  }
+.BTMTO-tooltip-table thead tr {
+  border-top: 1px dashed white;
+  border-bottom: 1px dashed white;
+}
 
-  .empty-cell {
-    padding: 5px;
-    background-color: #6c696a;
-    width: 120px;
-    text-align: left;
-  }
+.empty-cell {
+  padding: 5px;
+  background-color: #6c696a;
+  width: 120px;
+  text-align: left;
+}
 
-  .header-cell {
-    font-size: 8px;
-    padding: 5px;
-    background-color: #6c696a;
-    text-align: right;
-  }
+.header-cell {
+  font-size: 8px;
+  padding: 5px;
+  background-color: #6c696a;
+  text-align: right;
+}
 
-  .color-label {
-    padding: 5px;
-    background-color: #6c696a;
-    display: flex;
-    align-items: center;
-  }
+.color-label {
+  padding: 5px;
+  background-color: #6c696a;
+  display: flex;
+  align-items: center;
+}
 
-  .color-box {
-    margin-right: 10px;
-    height: 3px;
-    width: 15px;
-  }
+.color-box {
+  margin-right: 10px;
+  height: 3px;
+  width: 15px;
+}
 
-  .black {
-    background-color: black;
-  }
+.black {
+  background-color: black;
+}
 
-  .red {
-    background-color: red;
-  }
+.red {
+  background-color: red;
+}
 
-  .yellow {
-    background-color: yellow;
-  }
+.yellow {
+  background-color: yellow;
+}
 
-  .green {
-    background-color: green;
-  }
+.green {
+  background-color: green;
+}
 
-  .grey {
-    background-color: grey;
-  }
+.grey {
+  background-color: grey;
+}
 
-  .percentage-cell,
-  .count-cell {
-    padding: 5px;
-    background-color: #6c696a;
-    text-align: right;
-  }
+.percentage-cell,
+.count-cell {
+  padding: 5px;
+  background-color: #6c696a;
+  text-align: right;
+}

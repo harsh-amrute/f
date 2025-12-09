@@ -1,66 +1,73 @@
-.tooltip-container {
-    width: 500px;
-    border-radius: 6px;
-    overflow: hidden;
-    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.15);
-    font-family: Arial, sans-serif;
-    background-color: transparent; /* Ensure no background here */
-    padding: 0; /* Remove any padding */
-  }
+.graphview-tooltip-container {
+  width: 500px;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.15);
+  font-family: Arial, sans-serif;
+  background-color: transparent; /* Ensure no background here */
+  padding: 0; /* Remove any padding */
+}
 
-  /* Header */
-  .tooltip-title {
-    background-color: yellow; /* changed from red to yellow */
-    color: #000;
-    font-weight: 600;
-    padding: 10px;
-    font-size: 14px;
-  }
+/* Header */
+.graphview-tooltip-title {
+  background-color: yellow; /* changed from red to yellow */
+  color: #000;
+  font-weight: 600;
+  padding: 10px;
+  font-size: 14px;
+}
 
-  /* Content */
-  .tooltip-content {
-    background: #ffffff; /* confirmed white */
-    color: #000;
-    padding: 10px;
-    font-size: 13px;
-  }
+/* Content */
+.graphview-tooltip-content {
+  background: #ffffff; /* confirmed white */
+  color: #000;
+  padding: 10px;
+  font-size: 13px;
+}
 
+/* Rows */
+.graphview-tooltip-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
 
-  /* Rows */
-  .tooltip-row {
-    display: flex;
-    align-items: center;
-    margin-bottom: 8px;
-  }
+/* Last row margin fix */
+.graphview-tooltip-row:last-child {
+  margin-bottom: 0;
+}
 
-  /* Last row margin fix */
-  .tooltip-row:last-child {
-    margin-bottom: 0;
-  }
+/* Color squares */
+.color-box {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  margin-right: 10px;
+}
 
-  /* Color squares */
-  .color-box {
-    width: 12px;
-    height: 12px;
-    border-radius: 2px;
-    margin-right: 10px;
-  }
+.color-bg1 {
+  background: #4caf50;
+}
+.color-bg2 {
+  background: #2196f3;
+}
+.color-bg3 {
+  background: #ff9800;
+}
+.color-bg4 {
+  background: #f44336;
+}
 
-  .color-bg1 { background: #4caf50; }
-  .color-bg2 { background: #2196f3; }
-  .color-bg3 { background: #ff9800; }
-  .color-bg4 { background: #f44336; }
+/* Labels */
+.label-value {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
 
-  /* Labels */
-  .label-value {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  .label-value div:nth-child(1) {
-    line-height: 1.2;
-    white-space: normal;
-    word-wrap: break-word;
-    text-align: justify;
-  }
+.label-value div:nth-child(1) {
+  line-height: 1.2;
+  white-space: normal;
+  word-wrap: break-word;
+  text-align: justify;
+}

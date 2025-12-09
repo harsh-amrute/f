@@ -32,7 +32,7 @@
   pointer-events: none;
 }
 
-.tooltip-container {
+.step2-tooltip-container {
   background-color: #6c696a;
   color: white;
   padding: 10px;
@@ -45,7 +45,7 @@
   transform: translateX(120px);
 }
 
-.tooltip-header {
+.step2-tooltip-header {
   background-color: #6c696a;
   padding: 10px 10px 4px;
   display: flex;
@@ -55,12 +55,12 @@
   font-weight: 600;
 }
 
-.tooltip-body {
+.step2-tooltip-body {
   background-color: #6c696a;
   padding: 10px;
 }
 
-.tooltip-row {
+.step2-tooltip-row {
   display: flex;
   align-items: center;
   margin-bottom: 6px;

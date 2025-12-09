@@ -2,12 +2,13 @@
     width: 2em;
     height: 2rem;
     accent-color: #820F4C;
-} */.tooltip-container {
+} */
+.drm-tooltip-container {
   background-color: #6c696a;
   color: white;
   padding: 0 10px 10px 10px;
   border-radius: 4px;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   width: max-content;
 }
 
@@ -15,7 +16,7 @@
   transform: translateX(120px);
 }
 
-.tooltip-header {
+.drm-tooltip-header {
   background-color: #6c696a;
   color: white;
   padding: 10px 10px 4px;
@@ -26,12 +27,12 @@
   font-weight: 600;
 }
 
-.tooltip-body {
+.drm-tooltip-body {
   background-color: #6c696a;
   padding: 10px 0 0 0;
 }
 
-.tooltip-row {
+.drm-tooltip-row {
   display: flex;
   align-items: center;
   margin-bottom: 6px;
