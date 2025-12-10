@@ -14,6 +14,7 @@ import VFRangeSlider from "../../../../../../components/VectorFLOW/commons/VFRan
 import { AgCharts } from "ag-charts-react";
 import { AgChartOptions } from "ag-charts-community";
 import VFInfoToolTip from ".././../../../../../components/VectorFLOW/commons/VFInfoToolTip";
+import "./style.css";
 
 interface EconomicalWiseProps {
   data: any;
@@ -61,15 +62,15 @@ const EconomicalWise = ({
 
   function TooltipRenderer({ datum }: any) {
     return `
-      <div class="tooltip-wrapper">
-        <div class="tooltip-header">
+      <div class="ev-tooltip-wrapper">
+        <div class="ev-tooltip-header">
           <b>${datum.dt || "No Date"}</b>
         </div>
-        <table class="tooltip-table">
+        <table class="ev-tooltip-table">
           <thead>
             <tr>
-              <th class="tooltip-th-left">Category</th>
-              <th class="tooltip-th-right">${
+              <th class="ev-tooltip-th-left">Category</th>
+              <th class="ev-tooltip-th-right">${
                 graphs[0].pen.label === "Percentage" ? "Percentage" : "Count"
               }</th>
             </tr>
@@ -97,19 +98,17 @@ const EconomicalWise = ({
 
                 return `
                   <tr>
-                    <td class="tooltip-td color-label color-value-${key}">
-                      <div class="color-box""></div>
+                    <td class="ev-tooltip-td color-label ">
+                      <div class="color-box ev-color-value-${key}"></div>
                       ${color.label}
                     </td>
-                    <td class="tooltip-td tooltip-td-right">
+                    <td class="ev-tooltip-td ev-tooltip-td-right">
                       ${
                         graphs[0].pen.label === "Percentage"
                           ? (() => {
                               const value = parseFloat(datum[key]);
                               const total = parseFloat(datum.total);
-                              return !isNaN(value) &&
-                                !isNaN(total) &&
-                                total > 0
+                              return !isNaN(value) && !isNaN(total) && total > 0
                                 ? Math.round((value / total) * 100) + "%"
                                 : "0%";
                             })()
@@ -130,8 +129,8 @@ const EconomicalWise = ({
               graphs[0].pen.label !== "Percentage"
                 ? `
                   <tr>
-                    <td class="tooltip-td font-bold">Total</td>
-                    <td class="tooltip-td tooltip-td-right font-bold">${datum.total.toFixed(
+                    <td class="ev-tooltip-td font-bold">Total</td>
+                    <td class="ev-tooltip-td ev-tooltip-td-right font-bold">${datum.total.toFixed(
                       2
                     )}</td>
                   </tr>
@@ -144,14 +143,13 @@ const EconomicalWise = ({
     `;
   }
 
-
   const options: AgChartOptions = {
-        tooltip: {
-            position: {
-            xOffset: -50,
-            yOffset: -10,
-        },
-        range: "nearest",
+    tooltip: {
+      position: {
+        xOffset: -50,
+        yOffset: -10,
+      },
+      range: "nearest",
     },
     axes: [
       {
@@ -358,7 +356,8 @@ const EconomicalWise = ({
             </div>
           </div>
 
-          <div className={SCChartHeaderContainer}
+          <div
+            className={SCChartHeaderContainer}
             style={{ display: "flex", marginBottom: "5px" }}
           >
             <div className={capsuleWrapper}>

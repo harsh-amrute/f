@@ -1,45 +1,50 @@
-.tooltip-wrapper {
+.ev-tooltip-wrapper {
   background: #6c696a;
-  color: white;
-  /* padding: 10px; */
-  font-family: "Roboto", sans-serif;
+  border-radius: 6px;
+  overflow: hidden;
+  text-align: center;
+  min-width: 140px;
+  padding: 10px;
 }
 
-.tooltip-header {
+.ev-tooltip-header {
   color: white;
   padding: 5px;
   text-align: center;
+  font-weight: bold;
 }
 
-.tooltip-table {
+.ev-tooltip-table {
   width: 100%;
   color: white;
   border-collapse: collapse;
 }
 
-.tooltip-th-left {
+.ev-tooltip-th-left {
   text-align: left;
 }
 
-.tooltip-th-right {
+.ev-tooltip-th-right {
   text-align: right;
 }
 
-.tooltip-td {
+.ev-tooltip-td {
   padding: 5px;
   background-color: #6c696a;
 }
 
-.tooltip-td-right {
+.ev-tooltip-td-right {
   text-align: right;
 }
 
 .color-label {
+  padding: 5px;
+  background-color: #6c696a;
   display: flex;
   align-items: center;
 }
 
-.color-box {
+.ev-color-box {
   margin-right: 10px;
   height: 10px;
   width: 15px;
@@ -51,21 +56,21 @@
   font-weight: bold;
 }
 
-.color-value-b {
-  background-color: "Black";
+.ev-color-value-b {
+  background: black;
 }
-.color-value-r {
-  background-color: "Red";
+.ev-color-value-r {
+  background: red;
 }
-.color-value-y {
-  background-color: "#FFBF00";
+.ev-color-value-y {
+  background: #ffbf00;
 }
-.color-value-g {
-  background-color: "Green";
+.ev-color-value-g {
+  background: green;
 }
-.color-value-bu {
-  background-color: "Blue";
+.ev-color-value-bu {
+  background: blue;
 }
-.color-value-w {
-  background-color: "grey";
+.ev-color-value-w {
+  background: grey;
 }

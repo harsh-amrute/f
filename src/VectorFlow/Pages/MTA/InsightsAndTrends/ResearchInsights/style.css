@@ -1,30 +1,45 @@
 /* .ag-theme-alpine{
-    height:100% !important; 
+    height:100% !important;
     max-height: 100% !important;
 } */
 
-.color-red, .colorBg-red {
+.color-red,
+.rie-color-red,
+.colorBg-red {
   color: red;
 }
-
-.color-green, .colorBg-green {
+.color-green,
+.rie-color-green,
+.colorBg-green {
   color: green;
 }
 
-.color-yellow, .colorBg-yellow {
+.color-#ffbf00,
+.color-yellow,
+.rie-color-#ffbf00,
+.rie-color-yellow,
+.colorBg-yellow {
   color: #ffbf00;
 }
 
-.color-black, .colorBg-black {
+.color-black,
+.rie-color-black,
+.colorBg-black {
   color: black;
 }
 
-.color-blue, .colorBg-blue {
+.color-blue,
+.rie-color-blue,
+.colorBg-blue {
   color: blue;
 }
 
-.color-white, .colorBg-white {
-  color: gray;
+.color-white,
+.color-gray,
+.rie-color-gray,
+.rie-color-white,
+.colorBg-gray {
+  color: rgb(205, 205, 205);
 }
 
 .colorRowDiv {
@@ -40,10 +55,11 @@
 
 .tooltipKey {
   padding: 6px 12px;
-  margin-left: 10px;
+  /* margin-left: 10px; */
   color: white;
   font-weight: 550;
   font-size: 12px;
+  background: black;
 }
 .tooltipRows {
   padding: 8px 12px;

@@ -7,7 +7,6 @@ import {
   ExpandedChartSelectLabel,
   ExpandedChartCapsuleWrapper,
 } from "./styles.css";
-import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import Select, { CSSObjectWithLabel } from "react-select";
 import VFCapsule from "../../../../../components/VectorFLOW/commons/VFCapsule";
 import { ReseachInsightsGraphState } from "../../../../../VectorFlow/types/BPR";
@@ -17,6 +16,7 @@ import {
   SCViewImage,
   SCViewContainerWithBg,
 } from "../../SupplyChainIntelligenceHub/Planning/ActionToolBar/styles.css";
+import "./style.css";
 
 interface ExpandedGraphProps {
   id: number;
@@ -120,22 +120,20 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
         .map((key) => {
           const value = datum[key] !== undefined ? datum[key] : 0;
           return `
-                    <div className="colorRowDiv">
-                        <span className="color-${colorMap[
-                          key
-                        ].toLowerCase()} colorRowDivKeySpan">${key}:</span>
-                        <span className="colorRowValue">${value}</span>
+                    <div class="colorRowDiv">
+                        <span class="rie-color-${key?.toLowerCase()} colorRowDivKeySpan">${key}:</span>
+                        <span class="colorRowValue">${value}</span>
                     </div>
                 `;
         })
         .join("");
 
       return `
-                <div className="colorBg-${seriesColor.toLowerCase()} seriesColorCommonTooltip">
-                    <div className="tooltipKey">
+                <div class="colorBg-${seriesColor.toLowerCase()} seriesColorCommonTooltip">
+                    <div class="tooltipKey">
                         ${datum[xKey]}
                     </div>
-                    <div className="tooltipRows">
+                    <div class="tooltipRows">
                         ${colorRows}
                     </div>
                 </div>
@@ -163,176 +161,7 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
       height: 400,
       width: 1000,
       data: data,
-      series: [
-        {
-          type: "line",
-          xKey: "date",
-          yKey: "Red",
-          marker: {
-            fill: "red",
-            size: 2,
-            shape: "square",
-            stroke: "red",
-          },
-          stroke: "red",
-          tooltip: {
-            renderer: (params: any) => {
-              const { datum, xKey } = params;
-              const tooltipItems = Object.entries(datum)
-                .filter(([key]) => key !== xKey && key !== "undefined")
-                .map(
-                  ([key, value]) =>
-                    `<div class="color-${key.toLowerCase()}">${key}: ${value}</div>`
-                );
-
-              return `
-              <div><strong>${datum[xKey]}</strong></div>
-              ${tooltipItems.join("")}
-            `;
-            },
-          },
-        },
-        {
-          type: "line",
-          xKey: "date",
-          yKey: "Green",
-          marker: {
-            fill: "green",
-            size: 2,
-            shape: "square",
-            stroke: "green",
-          },
-          stroke: "green",
-          tooltip: {
-            renderer: (params: any) => {
-              const { datum, xKey } = params;
-              const tooltipItems = Object.entries(datum)
-                .filter(([key]) => key !== xKey && key !== "undefined")
-                .map(
-                  ([key, value]) =>
-                    `<div class="color-${key.toLowerCase()}">${key}: ${value}</div>`
-                );
-
-              return `
-              <div><strong>${datum[xKey]}</strong></div>
-              ${tooltipItems.join("")}
-            `;
-            },
-          },
-        },
-        {
-          type: "line",
-          xKey: "date",
-          yKey: "Yellow",
-          marker: {
-            fill: "#FFBF00",
-            size: 2,
-            shape: "square",
-            stroke: "#FFBF00",
-          },
-          stroke: "#FFBF00",
-          tooltip: {
-            renderer: (params: any) => {
-              const { datum, xKey } = params;
-              const tooltipItems = Object.entries(datum)
-                .filter(([key]) => key !== xKey && key !== "undefined")
-                .map(
-                  ([key, value]) =>
-                    `<div class="color-${key.toLowerCase()}">${key}: ${value}</div>`
-                );
-
-              return `
-              <div><strong>${datum[xKey]}</strong></div>
-              ${tooltipItems.join("")}
-            `;
-            },
-          },
-        },
-        {
-          type: "line",
-          xKey: "date",
-          yKey: "Black",
-          marker: {
-            fill: "black",
-            size: 2,
-            shape: "square",
-            stroke: "black",
-          },
-          stroke: "black",
-          tooltip: {
-            renderer: (params: any) => {
-              const { datum, xKey } = params;
-              const tooltipItems = Object.entries(datum)
-                .filter(([key]) => key !== xKey && key !== "undefined")
-                .map(
-                  ([key, value]) =>
-                    `<div class="color-${key.toLowerCase()}">${key}: ${value}</div>`
-                );
-
-              return `
-              <div><strong>${datum[xKey]}</strong></div>
-              ${tooltipItems.join("")}
-            `;
-            },
-          },
-        },
-        {
-          type: "line",
-          xKey: "date",
-          yKey: "Blue",
-          marker: {
-            fill: "blue",
-            size: 2,
-            shape: "square",
-            stroke: "blue",
-          },
-          stroke: "blue",
-          tooltip: {
-            renderer: (params: any) => {
-              const { datum, xKey } = params;
-              const tooltipItems = Object.entries(datum)
-                .filter(([key]) => key !== xKey && key !== "undefined")
-                .map(
-                  ([key, value]) =>
-                    `<div class="color-${key.toLowerCase()}">${key}: ${value}</div>`
-                );
-
-              return `
-              <div><strong>${datum[xKey]}</strong></div>
-              ${tooltipItems.join("")}
-            `;
-            },
-          },
-        },
-        {
-          type: "line",
-          xKey: "date",
-          yKey: "White",
-          marker: {
-            fill: "gray",
-            size: 2,
-            shape: "square",
-            stroke: "gray",
-          },
-          stroke: "gray",
-          tooltip: {
-            renderer: (params: any) => {
-              const { datum, xKey } = params;
-              const tooltipItems = Object.entries(datum)
-                .filter(([key]) => key !== xKey && key !== "undefined")
-                .map(
-                  ([key, value]) =>
-                    `<div class="color-${key.toLowerCase()}">${key}: ${value}</div>`
-                );
-
-              return `
-              <div><strong>${datum[xKey]}</strong></div>
-              ${tooltipItems.join("")}
-            `;
-            },
-          },
-        },
-      ],
+      series: series as any,
       axes: [
         {
           type: "category",
@@ -524,7 +353,7 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
                               xKey: "date",
                               yKey: "Red",
                               yName: "Red",
-   
+
                               marker: {
                                   fill: 'red',
                                   size: 2,

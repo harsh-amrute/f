@@ -2,23 +2,23 @@ import "./style.css";
 
 export function TooltipRenderer({ datum, xKey }: any) {
   return `
-      <div class="tooltip-title">
+      <div class="ob-tooltip-title">
         ${datum[xKey]}
       </div>
-      <div class="tooltip-content">
-        <div class="tooltip-divider"></div>
+      <div class="ob-tooltip-content">
+        <div class="ob-tooltip-divider"></div>
         ${[
-          { label: "Black", key: "b", colorClass: "color-black" },
-          { label: "Red", key: "r", colorClass: "color-red" },
-          { label: "Yellow", key: "y", colorClass: "color-yellow" },
-          { label: "Green", key: "g", colorClass: "color-green" },
-          { label: "Blue", key: "bl", colorClass: "color-blue" },
-          { label: "White", key: "w", colorClass: "color-white" },
+          { label: "Black", key: "b", colorClass: "bg-color-black" },
+          { label: "Red", key: "r", colorClass: "bg-color-red" },
+          { label: "Yellow", key: "y", colorClass: "bg-color-yellow" },
+          { label: "Green", key: "g", colorClass: "bg-color-green" },
+          { label: "Blue", key: "bl", colorClass: "bg-color-blue" },
+          { label: "White", key: "w", colorClass: "bg-color-white" },
         ]
           .map(
             (item) => `
-          <div class="tooltip-row">
-            <div class="color-box ${item.colorClass}"></div>
+          <div class="ob-tooltip-row">
+            <div class="bg-color-box ${item.colorClass}"></div>
             <div class="label-value">
               <div>${item.label}</div>
               <div>${datum[item.key]}</div>
@@ -59,4 +59,3 @@ export function createSeriesData() {
 
   return seriesData;
 }
-

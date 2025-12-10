@@ -1,66 +1,66 @@
-.tooltip-title {
-    background-color: #6c696a;
-    color: lightgray;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 8px 0;
-    font-family: 'Roboto', sans-serif;
-    font-weight: 600;
-  }
+.ob-tooltip-title {
+  background-color: #6c696a;
+  color: lightgray;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 0;
+  font-family: "Roboto", sans-serif;
+  font-weight: 600;
+}
 
-  .tooltip-content {
-    color: white;
-    background-color: #6c696a;
-    padding: 0 20px;
-    font-family: 'Roboto', sans-serif;
-  }
+.ob-tooltip-content {
+  color: white;
+  background-color: #6c696a;
+  padding: 0 20px;
+  font-family: "Roboto", sans-serif;
+}
 
-  .tooltip-divider {
-    border-top: 1px dashed lightgray;
-    margin: 8px 0;
-  }
+.ob-tooltip-divider {
+  border-top: 1px dashed lightgray;
+  margin: 8px 0;
+}
 
-  .tooltip-row {
-    display: flex;
-    margin-bottom: 6px;
-    align-items: center;
-  }
+.ob-tooltip-row {
+  display: flex;
+  margin-bottom: 6px;
+  align-items: center;
+}
 
-  .color-box {
-    margin-right: 10px;
-    margin-top: 5px;
-    height: 10px;
-    width: 10px;
-    flex-shrink: 0;
-  }
+.bg-color-box {
+  margin-right: 10px;
+  margin-top: 5px;
+  height: 10px;
+  width: 10px;
+  flex-shrink: 0;
+}
 
-  .color-black {
-    background-color: #151515;
-  }
+.bg-color-black {
+  background-color: #151515;
+}
 
-  .color-red {
-    background-color: #e53f40;
-  }
+.bg-color-red {
+  background-color: #e53f40;
+}
 
-  .color-yellow {
-    background-color: #ebbf2c;
-  }
+.bg-color-yellow {
+  background-color: #ebbf2c;
+}
 
-  .color-green {
-    background-color: #418d18;
-  }
+.bg-color-green {
+  background-color: #418d18;
+}
 
-  .color-blue {
-    background-color: #3876fe;
-  }
+.bg-color-blue {
+  background-color: #3876fe;
+}
 
-  .color-white {
-    background-color: #e8e8e8;
-  }
+.bg-color-white {
+  background-color: #e8e8e8;
+}
 
-  .label-value {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-  }
+.label-value {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
