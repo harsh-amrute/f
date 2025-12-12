@@ -37,7 +37,7 @@ const ExpediteChildCreateAvailabilityAtParentGrid = ({data,paginationProps,onOpe
                       }
                 )
         toast.dismiss()
-        notifySuccess('Request Submitted sucessfully')
+        notifySuccess('Request Submitted successfully')
         }catch(err:any){
             notifyError(err)
         }finally{

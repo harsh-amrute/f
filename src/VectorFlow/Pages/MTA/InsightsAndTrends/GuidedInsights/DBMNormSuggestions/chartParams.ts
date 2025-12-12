@@ -66,7 +66,7 @@ export const chartParams2 = {
     chartType:'pie',
     downloadName:'Distribution Of Current Active DBM Suggestions',
     palette:{
-        fills: ["#355FD3", "#D0A928", "#403F3F", "#00000026"],
+        fills: ["#D0A928" ,"#355FD3" , "#403F3F", "#00000026"],
         strokes: ["#ffffff", "#ffffff"],
     },
     legend:{

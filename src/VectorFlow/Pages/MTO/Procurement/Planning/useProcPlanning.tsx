@@ -683,7 +683,6 @@ const useProcPlanning = ( appliedFilters: any) => {
                             onGridReady={(params: any) => {
                                 params.api.autoSizeAllColumns();
                                 // setDefaultColState(params?.api?.getColumnState())
-                                
                             }}
                             maintainColumnOrder={true}        
                     onFilterChanged={()=>{Object.keys((gridRef?.current?.api?.getFilterModel()))?.length>0 ? clearFilterDisabled(false) : clearFilterDisabled(true)}}
@@ -878,6 +877,9 @@ const useProcPlanning = ( appliedFilters: any) => {
         detailCellRendererParams: {
             colDef: childColDef
         },
+          isRowMaster: (data: any) => {
+                return data.children && Array.isArray(data.children) && data.children.length > 0;
+            },
         detailRowHeight: 225,
         autoGroupColumnDef: autoGroupColumnDef,
         enterNavigatesVertically: true,

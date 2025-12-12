@@ -74,7 +74,7 @@ const VerticalSplitView = (props: SplitViewProps) => {
 
     const ecoTableColDefs = useMemo<any>(() => {
         if (!ecoTable.columnDefs) return []
-        const colDefs = ecoTable.columnDefs.filter((col: any) => col.colId && !['dailydatagraph',"WhCode"].includes(col.colId));
+        const colDefs = ecoTable.columnDefs.filter((col: any) => col.colId && !['dailydatagraph','Category', "LocationName", "Norm", "SKUCode", "SKUDescription", "Tags", "VirtualNorm", "RN", "pc", "pn","WhCode"].includes(col.colId));
         const newColDef = colDefs.map((colDef: any) => {
             colDef.pinned = false;
             colDef.filter=false;
