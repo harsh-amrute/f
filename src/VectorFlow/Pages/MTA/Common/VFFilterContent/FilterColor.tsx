@@ -12,6 +12,8 @@ import { useThemeStyles } from "../../../../../hooks/useVFFilterContent";
 import { colorFilterOptions, numericOperators } from "./useVFFilterContent";
 import { useUserData } from "../../../../../context";
 import { BPRFilter, BPRFilterState } from "../../../../../VectorFlow/types/BPR";
+import { useDispatch } from "react-redux";
+import { UPDATE_MTA_VF_MULTI_FILTER } from "../../../../../redux/actions/MTA";
 
 interface FilterSectionProps {
   filters: any;
@@ -42,7 +44,7 @@ export const ColorFilters: React.FC<FilterSectionProps> = ({
   const isUpdatingFromInternal = useRef(false);
 
   const [filterRows, setFilterRows] = useState<FilterRowState[]>(INITIAL_ROWS);
-
+  const dispatch = useDispatch();
   const colorTypeFilterOptions = [
     { value: "colorcount", label: "Color Count" },
     { value: "colorage", label: "Color Age" },
@@ -110,9 +112,11 @@ export const ColorFilters: React.FC<FilterSectionProps> = ({
           label: "Color",
           filters: [],
         };
+      } else {
+        updatedMultiFilter.colorFilter = { ...updatedMultiFilter.colorFilter };
       }
 
-      const existingFilters = updatedMultiFilter.colorFilter.filters || [];
+      const existingFilters = updatedMultiFilter.colorFilter.filters ? [...updatedMultiFilter.colorFilter.filters] : [];
       const filteredFilters = existingFilters.filter(
         (f: BPRFilter) => f.name !== rowId
       );
@@ -133,6 +137,7 @@ export const ColorFilters: React.FC<FilterSectionProps> = ({
       }
       isUpdatingFromInternal.current = true;
       onMultiFilterChange(updatedMultiFilter);
+      dispatch(UPDATE_MTA_VF_MULTI_FILTER(updatedMultiFilter))
     }
   };
 
@@ -163,6 +168,7 @@ export const ColorFilters: React.FC<FilterSectionProps> = ({
     const updatedMultiFilter = { ...multiFilter };
     
     if (updatedMultiFilter.colorFilter?.filters) {
+      updatedMultiFilter.colorFilter = { ...updatedMultiFilter.colorFilter };
       const filteredFilters = updatedMultiFilter.colorFilter.filters.filter(
         (f: BPRFilter) => f.name !== rowId
       );
@@ -171,6 +177,7 @@ export const ColorFilters: React.FC<FilterSectionProps> = ({
       
       isUpdatingFromInternal.current = true;
       onMultiFilterChange(updatedMultiFilter);
+      dispatch(UPDATE_MTA_VF_MULTI_FILTER(updatedMultiFilter))
     }
   };
 

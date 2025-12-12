@@ -52,6 +52,13 @@ export const SCButtonOutline = styled.button<{themeUi: string, isDisabled:boolea
   //   background:${(props)=>(!props.color) ? getColor(props) :props.color };
   //   color:white;
   
+  &:hover {
+    transform: scale(1.01);
+    transition: all 0.2s ease-in-out;
+  }
+   &:active {
+    transform: scale(1.04) translateY(0.1px);
+  }
 `
 
 

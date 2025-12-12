@@ -1,5 +1,5 @@
 import { useQuery,useMutation } from '@tanstack/react-query'
-import { BPRDataPayload, GetDailyDataPayload, SubmitBPRRemarkPayload } from '../../../../../VectorFlow/types/BPR';
+import { AnalyticsDataPayload, BPRDataPayload, GetDailyDataPayload, SubmitBPRRemarkPayload } from '../../../../../VectorFlow/types/BPR';
 
 import { BPRService } from './api'
 import axios from 'axios';
@@ -88,7 +88,7 @@ export const useResetState = () => {
 }
 
 export const useGetAnalyticsData = () => {
-  return useMutation(async (payload:object) => {
+  return useMutation(async (payload:AnalyticsDataPayload) => {
     return await BPRService.getAnalyticsData(payload);
   });
 }

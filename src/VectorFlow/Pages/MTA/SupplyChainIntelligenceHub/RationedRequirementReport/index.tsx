@@ -140,7 +140,7 @@ const RRR = () => {
                 // onGridSizeChanged={(params) => params.api.sizeColumnsToFit()}
               />  
             {
-            RRRRowData?.length &&  
+            RRRRowData?.length  > 0 &&  
             <VFPagination 
                 selectedRows={0} 
                 totalRows={RRRDataCount} 

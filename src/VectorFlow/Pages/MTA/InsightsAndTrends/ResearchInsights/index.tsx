@@ -184,7 +184,7 @@ const ResearchInsights = ()=>{
                             
                         />
                     {
-                    ResearchInsightsData?.length &&
+                    ResearchInsightsData?.length  > 0 &&
                         <VFPagination
                             selectedRows={0}
                             totalRows={recordCount || 0}

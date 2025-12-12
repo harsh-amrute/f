@@ -1728,6 +1728,18 @@ export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData: any[], ex
         isModified: isRowModified
       };
     }
+    const dataPrefixed1: any = {};
+    if( (masterId === 6 || masterId === 10) && taskType === 'modify'){
+      existingColumnFields.map((f: Field) => {
+       dataPrefixed1[f.key] = String(entry[f.key] !== undefined ? entry[f.key] : '')
+      })
+      return {
+        ...dataPrefixed1,
+         isModified:true,
+        comments:  '',
+        status: ''
+      };
+    }
     const data = entry;
 
 

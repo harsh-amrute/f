@@ -18,6 +18,7 @@ import useFilter from '../../../../../../hooks/useFilter'
 import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter'
 import useColDef from '../../../../../../hooks/useColDef'
 import BPPRenderer from '../../../Common/BPRRenderer/BPPRenderer'
+import moment from 'moment'
 
 const APIFilterConfig = {
     filSecVisConfig: {
@@ -67,15 +68,38 @@ const OTAndIFAnalysis = () => {
     const getGraphData = async (params: any,pageSize?:any) => {
 
         if(params.isExcelExport){
-            const headersdata = currentGridRef?.current?.api.getColumnState();
-            const formattedFilters = formatFilterJSON(appliedFilters);
-            const body = getBodyForExcelExport({ headersdata, filterData: formattedFilters,colDefMap})
-            const response = await getOTAndIFAnalysisDataExcelExport({body, isExcelExport : 1, graphflag : 0,report_name : FilterPageName.Poogi_OTIF_And_Analysis})
-            if(response.status === 200){
-                DownloadExcel(response, FilterPageName.Poogi_OTIF_And_Analysis)
-            }else{
-                notifyError('Failed to export Excel!');
+
+            const gridAPi = currentGridRef?.current?.api;
+
+            if (!gridAPi) {
+                notifyError('Grid is not ready for Excel export!');
+                return;
             }
+
+            const isPivot = gridAPi.isPivotMode(); 
+            const isValue = gridAPi.getValueColumns().length > 0;
+            const isRowGroup = gridAPi.getRowGroupColumns().length > 0;
+            console.log("isPivot:, isValue:, isRowGroup:", isPivot, isValue, isRowGroup);  
+
+            if(isPivot || isValue || isRowGroup){
+                const exportName = `${FilterPageName.Poogi_OTIF_And_Analysis}_${moment().format("DD-MM-YYYY")}`;
+                
+                gridAPi.exportDataAsExcel({
+                    fileName: exportName,
+                    sheetName: exportName
+                })
+                
+            } else {
+                const headersdata = currentGridRef?.current?.api.getColumnState();
+                const formattedFilters = formatFilterJSON(appliedFilters);
+                const body = getBodyForExcelExport({ headersdata, filterData: formattedFilters,colDefMap})
+                const response = await getOTAndIFAnalysisDataExcelExport({body, isExcelExport : 1, graphflag : 0,report_name : FilterPageName.Poogi_OTIF_And_Analysis})
+                if(response.status === 200){
+                    DownloadExcel(response, FilterPageName.Poogi_OTIF_And_Analysis)
+                }else{
+                    notifyError('Failed to export Excel!');
+                }
+            }        
         }else{
             try {
                 const response = await getOTAndIFAnalysisData({

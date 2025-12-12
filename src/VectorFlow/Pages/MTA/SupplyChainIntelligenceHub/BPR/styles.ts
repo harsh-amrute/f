@@ -292,13 +292,13 @@ export const BPRColorCellRendererWrapper = styled.div`
   transform: translate(-50%, -50%);
 `
 
-export const BPRTagsCellRendererWrapper = styled.div`
+export const BPRTagsCellRendererWrapper = styled.div<{theme:string}>`
     display:block;
     padding:4px 5px;
     // width: 55px;
     max-width:90px;
     height: 25px;
-    background: #8E8E8E 0% 0% no-repeat padding-box;
+    background: ${(props) => props.theme === "REGALBLAZE" ? "#FCA311" : '#B93B7E'}  0% 0% no-repeat padding-box;
     color: #FFFFFF;
     box-shadow: 0px 6px 12px #8D8D8D29;
     border-radius: 2px;

@@ -85,10 +85,16 @@ const TaskStatus = ()=>{
             return
         }
        
-        if(currentMasterFields){
-          setCurrentMasterName(currentMasterFields.name)
-          const existingColumns = getExistingColumns(payload.Actiontype==2?JSON.parse(currentTaskMaster.data[0].new):currentTaskMaster.data[0])
-          let existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields.fields)
+         if(currentMasterFields) {
+            setCurrentMasterName(currentMasterFields.name);
+            let dataToAnalyze = currentTaskMaster.data[0];
+            if (payload.Actiontype == 2 && dataToAnalyze.new) {
+                dataToAnalyze = typeof dataToAnalyze.new === 'string'
+                    ? JSON.parse(dataToAnalyze.new)
+                    : dataToAnalyze.new;
+            }
+        const existingColumns = getExistingColumns(dataToAnalyze);
+        let existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields.fields)
           if(actionName === "remove") {
             existingColumnFields = existingColumnFields.filter(field => field?.isDelete);
           }

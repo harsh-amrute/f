@@ -563,6 +563,41 @@ const useBTR = () => {
             pinned: 'left',
         },
     };
+useEffect(() => {
+    if (techInternalRef && techGridState?.columns) {
+        setTimeout(() => {
+            const result = techInternalRef?.api.applyColumnState({
+                state: techGridState.columns,
+                applyOrder: true
+            });
+
+            techInternalRef.api.sizeColumnsToFit();
+
+            if (!result) {
+                console.error("Failed to apply column state", result);
+            }
+        }, 100);
+    }
+}, [techInternalRef, techGridState]);
+
+
+useEffect(() => {
+    if (ecoInternalRef && ecoGridState?.columns) {
+        setTimeout(() => {
+            const result = ecoInternalRef?.api.applyColumnState({
+                state: ecoGridState.columns,
+                applyOrder: true
+            });
+
+            ecoInternalRef.api.sizeColumnsToFit();
+
+            if (!result) {
+                console.error("Failed to apply column state", result);
+            }
+        }, 100);
+    }
+}, [ecoInternalRef, ecoGridState]);
+
 
     const techColDefs = useMemo((): Array<ColDef> => {
         if (initialColumnState) {
@@ -600,6 +635,16 @@ const useBTR = () => {
         } else return [];
     }, [ecoRowData, dateLabels, verticalView, currentTab]);
 
+
+  useEffect(() => {
+    if (initialColumnState) {
+        getUserColumnConfig();  
+        if(currentTab.id === "1" && techColDefs?.length)     getDataTech(currFilter , 1);
+        if(currentTab.id === "2"  )     getDataEco(currFilter , 1);
+        if(currentTab.id === "3" )     getData(currFilter , 1)
+        } 
+    },[]);
+    
     useEffect(() => {
     if (initialColumnState) {
         getUserColumnConfig();  
@@ -607,7 +652,7 @@ const useBTR = () => {
         if(currentTab.id === "2"  )     getDataEco(currFilter , 1);
         if(currentTab.id === "3" )     getData(currFilter , 1)
         } 
-    },[currentTab, initialColumnState, currFilter]);
+    },[currentTab]);
 
     useEffect(() => {
     if (initialColumnState) {
@@ -622,27 +667,6 @@ const useBTR = () => {
             setEcoMasterUIConfig(ecoInternalRef?.api.getColumnState());
         }
     }, [ecoInternalRef, ecoColDefs, currentTab]);
-
-    useEffect(() => {
-        if (techInternalRef && techGridState && techGridState.columns) {
-            const result = techInternalRef?.api.applyColumnState({ state: techGridState.columns, applyOrder: true });
-            
-            techInternalRef.api.sizeColumnsToFit();  
-            if (!result) {
-                console.error("Failed to apply column state", result);
-            }
-        }
-    }, [techInternalRef, techGridState]);
-    
-    useEffect(() => {
-        if (ecoInternalRef && ecoGridState && ecoGridState.columns) {
-            const result = ecoInternalRef?.api.applyColumnState({ state: ecoGridState.columns, applyOrder: true });
-            ecoInternalRef.api.sizeColumnsToFit();
-            if (!result) {
-                console.error("Failed to apply column state", result);
-            }
-        }
-    }, [ecoInternalRef, ecoGridState]);
 
     const renderView = () => {
         switch (currentTab.id) {
