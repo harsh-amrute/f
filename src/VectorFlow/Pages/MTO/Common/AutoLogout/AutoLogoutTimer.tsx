@@ -16,7 +16,7 @@ export function AutoLogoutTimer() {
   const finalLogoutTimerRef = useRef<number | null>(null);
   const { user, setUser } = useUserData();
   
-  const logoutTimeout = parseInt(user?.config_data?.IDLE_TIMEOUT || '120000', 10);
+  const logoutTimeout = parseInt(user?.config_data?.IDLE_TIMEOUT || '900000', 10);
   const promptDuration = 60 * 1000;
   const promptTimeout = logoutTimeout - promptDuration;
 
