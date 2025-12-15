@@ -683,7 +683,7 @@ const useResearchInsights = () => {
             sortable:false,
 
         },
-        Tags: {
+        tags: {
             cellRenderer: 'tagsCellRenderer',
             width: 100,
             minWidth: 100,

@@ -93,4 +93,9 @@ export const SCMenuItem = styled.div<{
   background-color: ${(props) => (props.active ? globalStyles.chooseThemeColor[props.themeUi]?.color2 : "")};
   border-left: ${(props) => (props.active ? '5px solid' + globalStyles.chooseThemeColor[props.themeUi]?.color5 : "unset")};
 
+
+   &:hover {
+    transform: scale(1.02);
+    transition: all 0.2s ease-in-out;
+  }
 `;

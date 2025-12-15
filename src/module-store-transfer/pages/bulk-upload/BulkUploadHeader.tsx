@@ -8,6 +8,7 @@ import { GridRef } from "../../../VectorFlow/types/MDM";
 import { ActionButton } from "./style";
 import { notifyWarning } from "../../../helpers/notify";
 import _ from "lodash";
+import { ExcelExportName } from "../../../VectorFlow/Pages/MTO/Common/Enum";
 
 /**
  * Props for the BulkUploadHeader component.
@@ -169,15 +170,15 @@ const BulkUploadHeader = ({
           {"Bulk Action"}
         </VFButton>
 
-        {/* Export Button */}
+        {/*Export Button*/}
         <VFButton
           disabled={false}
           style={{ width: "100px", height: "35px", fontSize: "1rem" }}
           themeUi={themeUi}
           onClick={() => {
             gridRef.current.api.exportDataAsExcel({
-              fileName: "UserData.xlsx",
-              sheetName: "User Data",
+              fileName: ExcelExportName.UserData,
+              sheetName: ExcelExportName.UserData,
               columnKeys: ["id", "username", "email", "pwd"],
             });
           }}

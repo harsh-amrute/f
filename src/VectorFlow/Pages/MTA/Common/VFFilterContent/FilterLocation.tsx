@@ -104,16 +104,14 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [manualSearchQuery, setManualSearchQuery] = useState("");
   const [hasSearched, setHasSearched] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
+  const selectRef = useRef<any>(null);
 
   const { data: locationData, isLoading: isLocationDataLoading } =
     useGetAllLocations();
 
-  const {
-    data: searchData,
-    isLoading: isSearchLoading,
-    refetch: triggerSearch,
-    isFetching: isSearchFetching,
-  } = useSearchWHDescription(manualSearchQuery);
+  const { data: searchData, refetch: triggerSearch } =
+    useSearchWHDescription(manualSearchQuery);
 
   const targetSize = 2000;
   const locationDataSize = locationData?.data?.data?.length || 0;
@@ -182,9 +180,7 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
     ? localLocationOptions
     : searchLocationOptions;
 
-  const isLoading = shouldUseLocalData
-    ? isLocationDataLoading
-    : isSearchLoading || isSearchFetching;
+  const isLoading = shouldUseLocalData ? isLocationDataLoading : isSearching;
 
   const CustomOption = (props: any) => {
     const optionStyles = useColorOptionStyles();
@@ -376,13 +372,24 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
 
   const handleSearchApply = async () => {
     if (searchQuery && searchQuery.length >= 2) {
+      setIsSearching(true);
       setHasSearched(true);
       setManualSearchQuery(searchQuery);
 
       try {
         await triggerSearch();
+        setTimeout(() => {
+          if (selectRef.current) {
+            selectRef.current.focus();
+            if (selectRef.current.openMenu) {
+              selectRef.current.openMenu();
+            }
+          }
+        }, 100);
       } catch (error) {
         console.error("Search failed:", error);
+      } finally {
+        setIsSearching(false);
       }
     }
   };
@@ -399,6 +406,7 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
     setSearchQuery("");
     setManualSearchQuery("");
     setHasSearched(false);
+    setIsSearching(false);
 
     const parentId = "locationFilter";
     const existingFilters = (multiFilter[parentId]?.filters ||
@@ -425,6 +433,7 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
       if (hasSearched && inputValue.length < 2) {
         setManualSearchQuery("");
         setHasSearched(false);
+        setIsSearching(false);
       }
     }
   };
@@ -556,6 +565,7 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
           <DropDownRow>
             <DropDownWrapper style={{ flex: 1 }}>
               <Select
+                ref={selectRef}
                 placeholder={
                   shouldUseLocalData
                     ? "Type location code to search..."
@@ -596,7 +606,9 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
                     ? inputValue
                       ? "No locations found"
                       : "Start typing to search locations"
-                    : "No locations found. Try searching with the Search button."
+                    : inputValue && hasSearched 
+                    ? "No locations found. Try a different search term."
+                    : "Type to search and click Search button"
                 }
               />
 
