@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { LoginRequest } from "../../../module-main/types";
 import { useLoginAccount } from "../../../module-main/services";
 import {  useNavigate } from "react-router";
-import { notifyError, notifySuccess, notifyWarning, notifyWarningWithoutAutoClose } from "../../../helpers/notify";
+import { notifyError, notifySuccess, notifyWarningWithoutAutoClose } from "../../../helpers/notify";
 import { useEffect, useRef, useState } from "react";
 import WelcomeBoard from "./welcome-board";
 import { hashPassword } from '../../../helpers/utils'
