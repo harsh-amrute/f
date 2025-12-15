@@ -112,6 +112,7 @@ const OrderRescheduling = () => {
 
   const GetData = async (isExcelExport = false, page?: number, page_size?: number) => {  
     setIsLoading(true); 
+    console.log("this is working....", isLoading);
     if (isExcelExport) {
       const headersdata = refGraph1?.current?.api?.getColumnState();
       const formatedFilters = formatFilterJSON(appliedFilters);
@@ -148,6 +149,7 @@ const OrderRescheduling = () => {
     }
     setIsLoading(false);
   };
+
 
   const getSelectedRowData = () => {
     const selectedData = refGraph1.current?.api.getSelectedRows();
@@ -345,10 +347,8 @@ const OrderRescheduling = () => {
   }, [currTab]);
 
   const handlePageChangeCumulative = async (pageNumber: number) => {
-    setIsLoading(true);
     setCurrentPage(pageNumber);
     GetData(false,pageNumber);
-    setIsLoading(false);
   };
 
   type OutputItem = {

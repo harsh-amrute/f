@@ -74,6 +74,7 @@ const DueDateCellRenderer = (params: any) => {
 
   const [holidayDates, setHolidayDates] = useState<any>([])
   const [forceOpenCalendar, setForceOpenCalendar] = useState(false);
+  const [maxDate, setMaxDate] = useState<Date | undefined>(undefined);
 
   const handleCalendarIconClick = async (rowData: any) => {
     try {
@@ -81,6 +82,8 @@ const DueDateCellRenderer = (params: any) => {
       setIsLoading(true)
       const data = await getHolidaysForMaxFolCCROfOrder(rowData.odk);
       setHolidayDates(data.data.data.holidays || []);
+      console.log("last time ", new Date(data.data.data.schhor))
+      setMaxDate(data.data.data.schhor?  new Date(data.data.data.schhor): undefined);
   
       if (data.status == 200) {
         setTimeout(() => {
@@ -125,6 +128,7 @@ const DueDateCellRenderer = (params: any) => {
       onDateChange={handleDateChange}
       date={!params.node.selected ? params.data.oldDate : currDate}
       minDate={minDate}
+      maxDate={maxDate}
       onClick={() => handleCalendarIconClick(params.data)}
       showCalendarIcon={params.node.selected}
       forceOpenCalendar={forceOpenCalendar}
