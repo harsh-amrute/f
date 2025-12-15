@@ -13,7 +13,6 @@ import {
   usePutUpdateOrderDueDate,
   useGetOrderSchedulingPageData,
   useGetOrderSchedulingExcelData,
-  useGetHolidaysForMaxFolCCROfOrder,
 } from "../../../../Services/MTO/Production/OrderRescheduling";
 import { AgGridReactProps } from "ag-grid-react";
 import { GridRef } from "../../../../types/MDM";
@@ -59,7 +58,6 @@ const APIFilterConfig = {
 
 const OrderRescheduling = () => {
   const { mutateAsync: putUpdateOrderDueDate } = usePutUpdateOrderDueDate();
-  const {mutateAsync:getHolidaysForMaxFolCCROfOrder}=useGetHolidaysForMaxFolCCROfOrder()
   const { mutateAsync: getOrderSchedulingPageData } =
     useGetOrderSchedulingPageData();
   const {
