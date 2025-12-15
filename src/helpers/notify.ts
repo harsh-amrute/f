@@ -60,3 +60,10 @@ export const notifyWarning = (msg: string) =>{
   toast.dismiss()
   return toast.warning(msg, ATTR_TOAST)
 }
+
+export const notifyPersistentWarning = (msg: string) => {
+  return toast.warning(msg, {
+    ...ATTR_TOAST,
+    autoClose: false, 
+  })
+}
