@@ -82,7 +82,6 @@ const DueDateCellRenderer = (params: any) => {
       setIsLoading(true)
       const data = await getHolidaysForMaxFolCCROfOrder(rowData.odk);
       setHolidayDates(data.data.data.holidays || []);
-      console.log("last time ", new Date(data.data.data.schhor))
       setMaxDate(data.data.data.schhor?  new Date(data.data.data.schhor): undefined);
   
       if (data.status == 200) {
