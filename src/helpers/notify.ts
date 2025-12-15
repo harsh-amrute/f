@@ -61,7 +61,7 @@ export const notifyWarning = (msg: string) =>{
   return toast.warning(msg, ATTR_TOAST)
 }
 
-export const notifyPersistentWarning = (msg: string) => {
+export const notifyWarningWithoutAutoClose = (msg: string) => {
   return toast.warning(msg, {
     ...ATTR_TOAST,
     autoClose: false, 
