@@ -45,6 +45,12 @@ export const useGetAllPermissions = () => {
   })
 }
 
+export const useGetRoles = () => {
+  return useQuery(QUERY_KEYS.useGetAllRoles, async () => {
+    return await MainService.getAllRoles()
+  })
+}
+
 export const UsePutDeleteUser = () => {
   return useMutation(async (id: string) => {
     return await MainService.putDeleteUser(id)

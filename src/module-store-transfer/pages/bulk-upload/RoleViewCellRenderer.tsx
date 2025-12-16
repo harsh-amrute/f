@@ -15,10 +15,7 @@ import {
   SubItem,
   BottomButtons,
   Container,
-  ScrollWrapper,
-  ScrollContainer,
-  RoleTab,
-  ButtonGroup,
+  ImageSpan,
 } from "./style";
 
 
@@ -226,23 +223,36 @@ const RoleViewCellRenderer = (params: MyCellRendererProps) => {
   };
 
   const onApplyRole = (selectedRoles: Set<any>) => {
+    // const applicationName = Array.from(selectedRoles).map(item => item.application_name);
+    // const permissions = params.data?.permissions;
+    // if (permissions) {
+    //   Object.keys(permissions).forEach(key => {
+    //     if (!applicationName.includes(key)) {
+    //       delete permissions[key];
+    //     }
+    //   });
+    // }
+
     params.data.roles = selectedRoles;
+    // params.data.permissions = permissions;
     params.api?.refreshCells({ rowNodes: [params.node] });
     setOpen(false);
   };
 
   if (!roles || roles.length === 0) {
     return (
-      <Container
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
+      <Container>
+        {
+          params.data.errorRole &&
+          <ImageSpan>
+            <img
+              style={{ width: "20px", height: "20px" }}
+              src="\assets\img\error_icon.svg" alt="" />
+          </ImageSpan>
+        }
         <VFButton
           disabled={false}
-          style={{ width: "60%", height: "25px", fontSize: "1rem" }}
+          style={{ width: "80%", height: "25px", fontSize: "1rem" }}
           themeUi={themeUi}
           onClick={onSelectClick}
         >
@@ -270,26 +280,29 @@ const RoleViewCellRenderer = (params: MyCellRendererProps) => {
       </Container>
     );
   }
+
   return (
     <Container>
-      <ScrollWrapper>
-        <ScrollContainer isScroll={roles.length > 3}>
-          {roles?.map((role: any, index: number) => (
-            <RoleTab key={index}>{role}</RoleTab>
-          ))}
-        </ScrollContainer>
-      </ScrollWrapper>
+      <ImageSpan>
+        {
+          roles.length > 0 &&
+          <ImageSpan>
+            <img
+              style={{ width: "20px", height: "20px" }}
+              src="\assets\img\check_list_icon.svg" alt="" />
+          </ImageSpan>
+        }
+      </ImageSpan>
+      
+      <VFButton
+        disabled={false}
+        style={{ width: "80%", height: "25px", fontSize: "1rem" }}
+        themeUi={themeUi}
+        onClick={onSelectClick}
+      >
+        {"View / Edit Roles"}
+      </VFButton>
 
-      <ButtonGroup>
-        <VFButton
-          disabled={false}
-          style={{ width: "90px", height: "25px", fontSize: "1rem" }}
-          themeUi={themeUi}
-          onClick={onSelectClick}
-        >
-          {"Edit Roles"}
-        </VFButton>
-      </ButtonGroup>
       {open && (
         <Portal wrapperId="checkbox-dropdown">
           <DropdownWrapper
