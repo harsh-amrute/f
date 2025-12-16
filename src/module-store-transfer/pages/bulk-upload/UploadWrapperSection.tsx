@@ -17,7 +17,6 @@ function UploadWrapperSection({
   const [noData, setNoData] = useState(true);
   const [errorCount, setErrorCount] = useState(0);
   const [errorData, setErrorData] = useState<any>([]);
-  const user = useUserData();
   const [progress, setProgress] = useState(0);
 
   const {
@@ -113,16 +112,16 @@ function UploadWrapperSection({
 
     const userData = data.map((row: any, index: number) => {
       return {
-        id: index,
+        srNo: index,
+        id: `${row[0] ?? ""}_${index}`,
         username: row[0] ?? "",
         email: row[1] ?? "",
-        pwd: row[2] ?? "",
+        pwd: row[2] ?? ""
       };
     });
 
-
     userData.shift();
-
+    
     try {
       const response = await postUsersDataForValidation({ userData });
 
@@ -130,11 +129,12 @@ function UploadWrapperSection({
       if (response?.data?.ec && response?.data?.ec > 0) {
         if (response?.data.inv_ent) {
           const errorRowData = response?.data?.inv_ent?.map((row: any) => {
+            const userDataWithError = userData.find((userData) => userData.id === row.id);
             return {
               error: row?.err,
-              username: userData[row.id - 1].username,
-              email: userData[row.id - 1].email,
-              pwd: userData[row.id - 1].pwd,
+              username: userDataWithError?.username,
+              email: userDataWithError?.email,
+              pwd: userDataWithError?.pwd,
               roles: null,
               permissions: null,
             };
@@ -148,7 +148,7 @@ function UploadWrapperSection({
           );
         });
         validData.forEach((ele: any, index: number) => {
-          ele.id = index + 1;
+          ele.srNo = index + 1;
         });
         setValidUserData(validData);
         setNoData(false);
@@ -157,6 +157,7 @@ function UploadWrapperSection({
         setNoData(false);
       }
     } catch (error: any) {
+      console.error(error);
       notifyError("Failed to validate data!");
     }
   };

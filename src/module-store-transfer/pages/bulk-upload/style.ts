@@ -184,6 +184,12 @@ export const SectionContainer = styled.div`
   zoom: 0.85;
 `;
 
+export const TitleContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
 export const SectionTitle = styled.h4`
   margin: 0 0 12px 0;
   font-size: 14px;
@@ -312,11 +318,13 @@ type ScrollContainerProps = {
   
   export const Container = styled.div`
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     padding: 4px;
     overflow: hidden;
     width: 100%;
+    gap: 5px;
+    height: 100%
   `;
   export const scrollAnimation = keyframes`
     0% {
@@ -357,9 +365,10 @@ type ScrollContainerProps = {
     white-space: nowrap;
     font-size: 8px;
   `;
-  export const ButtonGroup = styled.span`
-    gap: 6px;
-    background: transparent;
+
+  export const ImageSpan = styled.span`
+    width: 10%;
+    height: 100%;
   `;
   
   export const RoleTile = styled.div`
