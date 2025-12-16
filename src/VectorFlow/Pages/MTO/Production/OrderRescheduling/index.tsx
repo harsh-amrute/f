@@ -110,7 +110,6 @@ const OrderRescheduling = () => {
 
   const GetData = async (isExcelExport = false, page?: number, page_size?: number) => {  
     setIsLoading(true); 
-    console.log("this is working....", isLoading);
     if (isExcelExport) {
       const headersdata = refGraph1?.current?.api?.getColumnState();
       const formatedFilters = formatFilterJSON(appliedFilters);
