@@ -772,11 +772,6 @@ const PermissionSelectionPage = ({
             if (params.column.getColId() === "roles") {
               params.api.forEachNode((node: any, index: number) => {
                 if (params.rowNode.rowIndex === index) {
-                  // node.setData({
-                  //   ...node.data,
-                  //   roles: params.initialValues[0],
-                  // });
-
                   const userData = node.data;
                   userData.roles = params.initialValues[0];
                   node.setData(userData);
@@ -785,12 +780,7 @@ const PermissionSelectionPage = ({
             }
             if (params.column.getColId() === "permissions") {
               params.api.forEachNode((node: any, index: number) => {
-                if (params.rowNode.rowIndex === index) {
-                  // node.setData({
-                  //   ...node.data,
-                  //   permissions: params.initialValues[0],
-                  // });
-
+                if (params.rowNode.rowIndex === index) {                
                   const userData = node.data;
                   userData.permissions = params.initialValues[0];
                   node.setData(userData);
