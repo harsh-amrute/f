@@ -98,6 +98,7 @@ const DueDateCellRenderer = (params: any) => {
       } 
   
     } catch (error) {
+      setIsLoading(false)
       setForceOpenCalendar(false);
       notifyError("Failed to fetch holidays");
     }
