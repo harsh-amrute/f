@@ -5,10 +5,14 @@ import 'react-calendar/dist/Calendar.css';
 import { useUserData } from "../../../../../context/index";
 import VFDatePicker from '../../Common/VFDatePicker';
 import _ from 'lodash';
+import { useGetHolidaysForMaxFolCCROfOrder } from '../../../../../VectorFlow/Services/MTO/Production/OrderRescheduling';
+import { notifyError } from '../../../../../helpers/notify';
+import OverlayLoader from "../../Common/Loader";
 
 type Value = CalendarProps['value'];
 
 const DueDateCellRenderer = (params: any) => {
+
   const [currDate, setCurrDate] = useState(() => {
     if (!_.isEmpty(params.data)) {
       return params.data.dd;
@@ -20,7 +24,9 @@ const DueDateCellRenderer = (params: any) => {
 
   const inputRef = useRef<HTMLInputElement>(null);
   const calendarRef = useRef<HTMLDivElement>(null); 
-  const [calendarPosition, setCalendarPosition] = useState({ top: 0, left: 0 });
+
+  const [isLoading, setIsLoading] = useState(false);
+  const {mutateAsync:getHolidaysForMaxFolCCROfOrder}=useGetHolidaysForMaxFolCCROfOrder()
 
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
@@ -53,19 +59,6 @@ const DueDateCellRenderer = (params: any) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showCalendar]);
 
-  const toggleCalendar = () => {
-    if (params.node.selected && !_.isEmpty(params.data)) {
-      const rect = inputRef.current?.getBoundingClientRect();
-      if (rect) {
-        setCalendarPosition({
-          top: rect.bottom + window.scrollY,
-          left: rect.left + window.scrollX
-        });
-      }
-      setShowCalendar((prev) => !prev);
-    }
-  };
-
   const handleDateChange = (value: Value) => {
     if (value && !(value instanceof Array) && !_.isEmpty(params.data)) {
       const formattedDate = moment(value).format(format2);
@@ -79,7 +72,51 @@ const DueDateCellRenderer = (params: any) => {
     return <></>
   }
 
+  const [holidayDates, setHolidayDates] = useState<any>([])
+  const [forceOpenCalendar, setForceOpenCalendar] = useState(false);
+  const [maxDate, setMaxDate] = useState<Date | undefined>(undefined);
+
+  const handleCalendarIconClick = async (rowData: any) => {
+    try {
+      setForceOpenCalendar(false); 
+      setIsLoading(true)
+      const data = await getHolidaysForMaxFolCCROfOrder(rowData.odk);
+      setHolidayDates(data.data.data.holidays || []);
+      setMaxDate(data.data.data.schhor?  new Date(data.data.data.schhor): undefined);
+  
+      if (data.status == 200) {
+        setTimeout(() => {
+          setIsLoading(false)
+          setForceOpenCalendar(true);
+        },500)
+
+      }
+      else {
+        setIsLoading(false)
+        setForceOpenCalendar(false);
+        notifyError("Failed to fetch holidays")
+      } 
+  
+    } catch (error) {
+      setIsLoading(false)
+      setForceOpenCalendar(false);
+      notifyError("Failed to fetch holidays");
+    }
+  };
+
+  const tileDisabled = ({ date }:any) => {
+    const formattedDate = moment(date).format('YYYY-MM-DD');
+      return holidayDates.includes(formattedDate);
+    }
+
+  
+
   return (
+    <>
+    {(isLoading ) && (
+      <OverlayLoader />
+    )}
+
     <VFDatePicker
       dateInputStyle={{
         background: 'transparent',
@@ -87,11 +124,17 @@ const DueDateCellRenderer = (params: any) => {
         color: params.data.oldDate === currDate ? 'black' : '#BC3D81',
       }}
       themeUi={themeUi}
+      enableIconClick={true}
       onDateChange={handleDateChange}
       date={!params.node.selected ? params.data.oldDate : currDate}
       minDate={minDate}
+      maxDate={maxDate}
+      onClick={() => handleCalendarIconClick(params.data)}
       showCalendarIcon={params.node.selected}
-    />
+      forceOpenCalendar={forceOpenCalendar}
+      tileDisabled={tileDisabled}
+      />
+    </>
   );
 };
 
