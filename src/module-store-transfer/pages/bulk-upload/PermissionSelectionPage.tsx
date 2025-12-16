@@ -525,33 +525,33 @@ const PermissionSelectionPage = ({
           setValidUsersData(sortedUsers);
           
           let errorMsg = "Errors found:\n";
-          errorMsg += `User: ${errors[0].userName} (${errors[0].email}) - ${errors[0].message}\n`;
+          errorMsg += `${errors[0].message}\n`;
           notifyError(errorMsg);
           console.error("Errors in user data:", errors);
           return;
         }
 
-        // const response = await postPostBulkUploadUsers({...modifiedData})
-        // if(response.status===200){
-        //   // setIsFinalView(true);
-        //   const errorUserData = response?.data?.failed_users || [];
-        //   const updatedUserData:any = userDataAll;
-        //   errorUserData.forEach((ele:any)=>{
-        //     const index = updatedUserData.findIndex((user:any)=>user.id === ele.id);
-        //     if(index !== -1){
-        //       updatedUserData[index].error = ele.error;
-        //     }
-        //   })
-        //   notifySuccess("Following users created successfully!")
-        //   setErrorRes(errorUserData.length);
-        //   setIsFinalView(true);
-        //   setValidUsersData(validUserData)
-        // }
-        // else{
-        //   setIsFinalView(false);
-        //   notifyError("Failed to register Users! Please try again!")
-        //   console.error("Failed to register Users! Please try again!", response);
-        // }
+        const response = await postPostBulkUploadUsers({...modifiedData})
+        if(response.status===200){
+          // setIsFinalView(true);
+          const errorUserData = response?.data?.failed_users || [];
+          const updatedUserData:any = userDataAll;
+          errorUserData.forEach((ele:any)=>{
+            const index = updatedUserData.findIndex((user:any)=>user.id === ele.id);
+            if(index !== -1){
+              updatedUserData[index].error = ele.error;
+            }
+          })
+          notifySuccess("Following users created successfully!")
+          setErrorRes(errorUserData.length);
+          setIsFinalView(true);
+          setValidUsersData(validUserData)
+        }
+        else{
+          setIsFinalView(false);
+          notifyError("Failed to register Users! Please try again!")
+          console.error("Failed to register Users! Please try again!", response);
+        }
         
       }catch(e){
         notifyError("Failed to register Users! Please try again!")
@@ -656,9 +656,6 @@ const PermissionSelectionPage = ({
         else if (isFinalView) {
           return { backgroundColor: "rgb(103, 242, 75,0.4)", } as RowStyle;
 
-        } else if (!isFinalView && (params.data.errorRole || params.data.errorPermission)) {
-          return { color: 'red' };
-
         }
     
       },
@@ -682,7 +679,7 @@ const PermissionSelectionPage = ({
       suppressRowClickSelection: true,
       pagination: true,
     };
-  }, []);
+  }, [isFinalView]);
     
   const removeSelectedUser = () => {
     if (gridRef.current) {
