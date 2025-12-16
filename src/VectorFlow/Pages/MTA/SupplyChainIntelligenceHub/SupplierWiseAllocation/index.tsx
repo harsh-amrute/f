@@ -146,7 +146,7 @@ const SupplierWiseAllocation = ()=>{
                     }
                   }}
                 />
-                {rowData?.length &&
+                {rowData?.length  > 0 &&
                 <VFPagination
                   selectedRows={0}
                   totalRows={recordCount}
