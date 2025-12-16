@@ -495,7 +495,7 @@ const BTMTO = ({ isMTO, data, lastRunDate }: { isMTO: boolean, data: any, lastRu
 
     const generateHeader = () => {
         return (
-            <>
+            
                 <SCChartMainContainer style={{ zoom: 1, width: '100%' }}>
                     <SCChartSliderContainer style={{ zoom: 0.75, marginTop: '6px' }}>
                         <label style={{
@@ -564,7 +564,7 @@ const BTMTO = ({ isMTO, data, lastRunDate }: { isMTO: boolean, data: any, lastRu
                         </div>
                     </SCChartHeaderContainer>
                 </SCChartMainContainer>
-            </>
+            
 
         )
     }

@@ -20,6 +20,8 @@ import { useUserData } from "../../../../../../context/index";
 import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
 import useFilter from '../../../../../../hooks/useFilter';
 import useColDef from "../../../../../../hooks/useColDef";
+import { format } from "date-fns";
+import { useGetDate } from "../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting";
 
 
 const APIFilterConfig = {
@@ -70,7 +72,9 @@ const STPLAndFullKits = () => {
   const [totalRow, setTotalRow] = useState<number>(0)
   const [currentPage, setCurrentPage] = useState<number>(1)
   
-  
+  const { data: apiResponseData } = useGetDate();
+   
+  const lastRunDate = new Date(apiResponseData?.data?.data).toString() !== "Invalid Date" ? format(new Date(apiResponseData?.data?.data), 'dd MMM yyyy') : '';
 
   const themeUi = user?.user?.theme_ui;
 
@@ -321,13 +325,13 @@ const STPLAndFullKits = () => {
             <Allotment vertical={false} separator={false}>
               <Allotment.Pane preferredSize={"50%"}>
                 <BTRAllomentSection>
-                  <STPLGraph graphData={graphData?.stpl} />
+                  <STPLGraph graphData={graphData?.stpl} lastRunDate={lastRunDate} />
                 </BTRAllomentSection>
               </Allotment.Pane>
 
               <Allotment.Pane preferredSize={"50%"}>
                 <BTRAllomentSection>
-                  <FullKitGraph graphData={graphData?.fk} />
+                  <FullKitGraph graphData={graphData?.fk} lastRunDate={lastRunDate} />
                 </BTRAllomentSection>
               </Allotment.Pane>
             </Allotment>

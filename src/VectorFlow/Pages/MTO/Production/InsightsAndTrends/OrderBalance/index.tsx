@@ -27,6 +27,8 @@ import { useUserData } from "../../../../../../context/index";
 import useColDef from "../../../../../../hooks/useColDef";
 import BPPRenderer from "../../../Common/BPRRenderer/BPPRenderer";
 import GridView from "../OrderAtRisk/GridView";
+import { useGetDate } from "../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting";
+import { format } from "date-fns";
 
 
 const APIFilterConfig = {
@@ -81,6 +83,9 @@ const OrderBalance = () => {
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [gridData, setGridData] = useState([]);
 
+  const { data: apiResponseData } = useGetDate();
+ 
+  const lastRunDate = new Date(apiResponseData?.data?.data).toString() !== "Invalid Date" ? format(new Date(apiResponseData?.data?.data), 'dd MMM yyyy') : '';
   
   const colDefCustomizations = {
     BPP: {
@@ -356,7 +361,7 @@ const OrderBalance = () => {
             <Allotment vertical={false} separator={false}>
               <Allotment.Pane preferredSize={"50%"}>
                 <BTRAllomentSection>
-                  <TrailDeptCount graphData={graphData} />
+                  <TrailDeptCount graphData={graphData} lastRunDate={lastRunDate} />
                 </BTRAllomentSection>
               </Allotment.Pane>
 
@@ -368,6 +373,7 @@ const OrderBalance = () => {
                   orderOptions={orderOptions}
                   handleChange={handleChange}
                   orderType={orderType}
+                  lastRunDate={lastRunDate} 
                   />
                 </BTRAllomentSection>
               </Allotment.Pane>

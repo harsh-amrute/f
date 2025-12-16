@@ -130,8 +130,8 @@ const RMPMBufferTrends = () => {
             const formatedFilters = formatFilterJSON(appliedFilters);
             const APIData = await getRMPMBufferTrendsData({appliedFilters: formatedFilters});
             const updatedDataMTO = convertToGraphData(APIData?.data?.data.MTO,lastRunDate);
-            const updatedDataMTA = convertToGraphData(APIData?.data?.data.MTA);
-            console.log('==>', updatedDataMTA)
+            const updatedDataMTA = convertToGraphData(APIData?.data?.data.MTA,lastRunDate);
+            // console.log('==>', updatedDataMTA)
             setMTOData(updatedDataMTO);
             setMTAData(updatedDataMTA);
             toast.dismiss();
@@ -195,7 +195,7 @@ const RMPMBufferTrends = () => {
 
                                 <Allotment.Pane minSize={460} preferredSize={'50%'}>
                                     <BTRAllomentSection>
-                                        <BTMTA data={MTAData} isMTO={isMTO} />
+                                        <BTMTA data={MTAData} isMTO={isMTO} lastRunDate={lastRunDate} />
                                     </BTRAllomentSection>
                                 </Allotment.Pane>
                             </Allotment>)
