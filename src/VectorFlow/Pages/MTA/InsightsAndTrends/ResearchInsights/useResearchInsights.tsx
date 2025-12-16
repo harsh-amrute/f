@@ -336,13 +336,14 @@ const useResearchInsights = () => {
     }
 
     function convertToObjects(colorArray: Array<string>) {
-        const today = new Date();
+
+        const today = new Date(lastRunDate);
         const result = [];
         // Loop through each color in the array
         for (let i = 0; i < colorArray.length; i++) {
             const daysBeforeToday = colorArray.length - i;
             const date = new Date(today);
-            date.setDate(today.getDate() - daysBeforeToday + 1); // Adding 1 to start from 1 day ago
+            date.setDate(today.getDate() - daysBeforeToday+2); // Adding 1 to start from 1 day ago
 
             const dateString = date.toISOString().slice(0, 10); // Get date in YYYY-MM-DD format
 

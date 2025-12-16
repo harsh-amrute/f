@@ -143,7 +143,7 @@ const InTransitWhereAbouts = ()=>{
                 <div style={{marginBottom:'10px'}}>
                 <div>
              {
-              rowData?.length &&
+              rowData?.length  > 0 &&
                 <VFPagination
                     selectedRows={0}
                     totalRows={recordCount}
