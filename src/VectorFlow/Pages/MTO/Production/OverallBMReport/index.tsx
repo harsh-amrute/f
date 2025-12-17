@@ -493,14 +493,11 @@ const handleModalConfirm = async (orderId?: any, actionText?: any) => {
           notifyError("Something went wrong!");
         }
       } else if (Array.isArray(masterSelectedRowData)) {
-        // --- BULK ACTION UPDATE ---
-        // 1. Filter out MTA orders AND already closed orders before creating the ID list
         const okValues = masterSelectedRowData
-          .filter((item) => item?.ot !== "MTA") // <--- Safety filter: Exclude MTA
+          .filter((item) => item?.ot !== "MTA")
           .map((item) => (item.ct === null || item.ct === undefined || item.ct === "") ? item?.ok : undefined)
           .filter((value) => value !== undefined);
 
-        // 2. Prevent API call if the filtered list is empty
         if (okValues.length === 0) {
           notifyError("No eligible orders to close.");
           return;
@@ -513,7 +510,6 @@ const handleModalConfirm = async (orderId?: any, actionText?: any) => {
           newGridData.forEach((ele: any) => {
             if (!_.isEmpty(ele)) {
               if (okValues.includes(ele.ok)) {
-                // Use actionText (passed to modal) or selectedAction.value
                 ele.ct = actionText || selectedAction.value; 
               }
             }
@@ -521,10 +517,10 @@ const handleModalConfirm = async (orderId?: any, actionText?: any) => {
           setGridData(newGridData);
           setMasterSelectedRowData([]); 
           setSelectedAction(null);
-          setIsCheckboxChecked(false); // Reset the header checkbox state
+          setIsCheckboxChecked(false); 
           notifySuccess("Orders closed successfully!");
         } else {
-          notifyError("Something went wrong!"); // Corrected from notifySuccess
+          notifyError("Something went wrong!"); 
         }
       }
     } catch (error) {
