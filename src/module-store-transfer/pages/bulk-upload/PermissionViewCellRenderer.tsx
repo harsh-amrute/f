@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import VFButton from "../../../components/VectorFLOW/commons/VFButton";
 import { useUserData } from "../../../context";
 import { notifyWarning } from "../../../helpers/notify";
+import { Container, ImageSpan } from "./style";
 
 interface MyCellRendererProps extends CustomCellRendererProps {
   allPermissions?: any[];
@@ -25,38 +26,65 @@ const PermissionViewCellRenderer = (params: MyCellRendererProps) => {
   return (
     <>
       {PermissionCount > 0 ? (
-        <VFButton
-          style={{ width: "140px", height: "25px", fontSize: "1rem" }}
-          themeUi={themeUi}
-          onClick={() => {
-            if(params?.data?.roles?.size && params?.data?.roles?.size > 0){ 
+        <Container>
+          {
+            params.data.errorPermission ?
+              <ImageSpan>
+                <img
+                  style={{ width: "20px", height: "20px" }}
+                  src="\assets\img\error_icon.svg" alt="" />
+              </ImageSpan>
+              :
+              <ImageSpan>
+                <img
+                  style={{ width: "20px", height: "20px" }}
+                  src="\assets\img\check_list_icon.svg" alt="" />
+              </ImageSpan>
+          }
+          
+          <VFButton
+            style={{ width: "80%", height: "25px", fontSize: "1rem" }}
+            themeUi={themeUi}
+            onClick={() => {
+              if (params?.data?.roles?.size && params?.data?.roles?.size > 0) {
 
-            params.setRowIndex(params.node.rowIndex || 0);
-            params.setIsPermissionModalOpen?.(true);
-            }
-            else{
-              notifyWarning("select a role before editing permissions");
-            }
-          }}
-        >
-          {"View / Edit Permissions"}
-        </VFButton>
+                params.setRowIndex(params.node.rowIndex || 0);
+                params.setIsPermissionModalOpen?.(true);
+              }
+              else {
+                notifyWarning("select a role before editing permissions");
+              }
+            }}
+          >
+            {"View / Edit Permissions"}
+          </VFButton>
+        </Container>
       ) : (
-        <VFButton
-          style={{ width: "140px", height: "25px", fontSize: "1rem" }}
-          themeUi={themeUi}
-          onClick={() => {
-            if(params?.data?.roles?.size && params?.data?.roles?.size > 0){ 
-            params.setRowIndex(params.node.rowIndex || 0);
-            params.setIsPermissionModalOpen?.(true);
+        <Container> 
+            {
+              params.data.errorPermission &&
+              <ImageSpan>
+                <img
+                  style={{ width: "20px", height: "20px" }}
+                  src="\assets\img\error_icon.svg" alt="" />
+              </ImageSpan>
             }
-            else{
-              notifyWarning("select a role before selecting permissions");
-            }
-          }}
-        >
-          {"Select Permissions"}
-        </VFButton>
+          <VFButton
+            style={{ width: "80%", height: "25px", fontSize: "1rem" }}
+            themeUi={themeUi}
+            onClick={() => {
+              if (params?.data?.roles?.size && params?.data?.roles?.size > 0) {
+                params.setRowIndex(params.node.rowIndex || 0);
+                params.setIsPermissionModalOpen?.(true);
+              }
+              else {
+                notifyWarning("select a role before selecting permissions");
+              }
+            }}
+          >
+            {"Select Permissions"}
+          </VFButton>
+        </Container>   
       )}
     </>
   );
