@@ -285,12 +285,18 @@ const RoleViewCellRenderer = (params: MyCellRendererProps) => {
     <Container>
       <ImageSpan>
         {
-          roles.length > 0 &&
-          <ImageSpan>
-            <img
-              style={{ width: "20px", height: "20px" }}
-              src="\assets\img\check_list_icon.svg" alt="" />
-          </ImageSpan>
+          params.data.errorRole ?
+            <ImageSpan>
+              <img
+                style={{ width: "20px", height: "20px" }}
+                src="\assets\img\error_icon.svg" alt="" />
+            </ImageSpan>
+            :
+            <ImageSpan>
+              <img
+                style={{ width: "20px", height: "20px" }}
+                src="\assets\img\check_list_icon.svg" alt="" />
+            </ImageSpan>
         }
       </ImageSpan>
       

@@ -643,7 +643,7 @@ const PermissionSelectionPage = ({
       
     ];
 
-    const [isBulkActionEnabled, setIsBulkActionEnabled] = useState(false);
+  const [isBulkActionEnabled, setIsBulkActionEnabled] = useState({ removeUserEnable: false, bulkActionEnable: false });
 
   const agGridProps: AgGridReactProps = useMemo(() => {
     return {
@@ -674,7 +674,13 @@ const PermissionSelectionPage = ({
       },
       onSelectionChanged: (params) => {
         const selectedRows = params.api.getSelectedRows();
-        setIsBulkActionEnabled(selectedRows.length > 0);
+        const totalRows = params.api.getDisplayedRowCount();
+
+        setIsBulkActionEnabled(
+          {
+            removeUserEnable: (selectedRows.length > 0 && totalRows > 1 && selectedRows.length !== totalRows),
+            bulkActionEnable: selectedRows.length > 0
+          });
       },
       suppressRowClickSelection: true,
       pagination: true,
