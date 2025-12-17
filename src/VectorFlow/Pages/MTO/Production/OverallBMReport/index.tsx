@@ -433,16 +433,22 @@ const handleActionChange = (option: any) => {
       
       //  orders that haven't been closed yett
       const openOrders = masterSelectedRowData.filter(
-        (item) => item?.ct === null || item?.ct === undefined
-      );
+        (item) => 
+           item?.ot !== "MTA" &&
+          (item?.ct === null || item?.ct === undefined)      );
       
       masterSelectedRowData.forEach((item) => {
-        if (item?.oca === "Short Close" && (item.ct===null || item.ct==undefined) ) {
+       const isNotMta = item?.ot !== "MTA";
+      const isNotClosed = item.ct === null || item.ct === undefined;
+
+        if (isNotMta && isNotClosed) {
+        if (item?.oca === "Short Close") {
           shortCloseCount++;
-        } else if (item?.oca === "Complete Close" && (item.ct===null || item.ct==undefined)) {
+        } else if (item?.oca === "Complete Close") {
           compCloseCount++;
         }
-      });
+      }
+    });
       
       setShortCloseTracker(shortCloseCount);
       setCompleteCloseTracker(compCloseCount);
@@ -466,7 +472,7 @@ const handleActionChange = (option: any) => {
     setShowModal(false); // Close the modal
   };
 
-  const handleModalConfirm = async (orderId?: any, actionText?: any) => {
+const handleModalConfirm = async (orderId?: any, actionText?: any) => {
     try {
       setShowModal(false);
 
@@ -488,8 +494,14 @@ const handleActionChange = (option: any) => {
         }
       } else if (Array.isArray(masterSelectedRowData)) {
         const okValues = masterSelectedRowData
+          .filter((item) => item?.ot !== "MTA")
           .map((item) => (item.ct === null || item.ct === undefined || item.ct === "") ? item?.ok : undefined)
           .filter((value) => value !== undefined);
+
+        if (okValues.length === 0) {
+          notifyError("No eligible orders to close.");
+          return;
+        }
 
         const response = await updateActionAPI(selectedAction.value, okValues);
 
@@ -498,17 +510,17 @@ const handleActionChange = (option: any) => {
           newGridData.forEach((ele: any) => {
             if (!_.isEmpty(ele)) {
               if (okValues.includes(ele.ok)) {
-                ele.ct = actionText;
+                ele.ct = actionText || selectedAction.value; 
               }
             }
           });
           setGridData(newGridData);
-          setMasterSelectedRowData([]); // after short/complete close reset selected rows
-
+          setMasterSelectedRowData([]); 
           setSelectedAction(null);
-          notifySuccess("Order closed successfully!");
+          setIsCheckboxChecked(false); 
+          notifySuccess("Orders closed successfully!");
         } else {
-          notifySuccess("something went wrong!");
+          notifyError("Something went wrong!"); 
         }
       }
     } catch (error) {
@@ -523,7 +535,7 @@ const handleActionChange = (option: any) => {
       if (response?.status === 200) {
         notifySuccess("Order retrived succesfully! ");
         const newGridData: any = [];
-        props.api.forEachNode((node: any) => {
+        props.api.forEachNode((node: any) => {                            
           newGridData.push(node.data);
         });
 
@@ -648,6 +660,10 @@ const handleActionChange = (option: any) => {
 
   const DropDownCellRenderer = (props: any) => {
 
+    if (props.data?.ot === "MTA") {
+    return null; 
+  }
+  
     return (
       <>
         
