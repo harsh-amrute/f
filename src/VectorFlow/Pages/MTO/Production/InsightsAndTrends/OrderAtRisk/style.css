@@ -1,4 +1,4 @@
-.tooltip-title {
+.insightOrderRisk-tooltip-title {
     background-color: #2e2e2e;
     color: lightgray;
     display: flex;
@@ -8,19 +8,19 @@
     font-weight: 600;
   }
 
-  .tooltip-content {
+  .insightOrderRisk-tooltip-content {
     background-color: #2e2e2e;
     color: white;
     font-family: 'Roboto', sans-serif;
     padding: 8px 12px;
   }
 
-  .tooltip-divider {
+  .insightOrderRisk-tooltip-divider {
     border-top: 1px dashed lightgray;
     margin: 6px 0;
   }
 
-  .tooltip-row {
+  .insightOrderRisk-tooltip-row {
     display: flex;
     width: 100%;
     color: lightgray;
@@ -34,7 +34,7 @@
     justify-content: space-around;
   }
 
-  .tooltip-cell {
+  .insightOrderRisk-tooltip-cell {
     padding: 5px 10px;
   }
 

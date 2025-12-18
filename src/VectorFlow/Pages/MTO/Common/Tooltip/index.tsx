@@ -6,6 +6,7 @@ import {
   arrowLeftVar,
   zoomVar,
 } from "./styles.css";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 interface IToolTipProps extends CSSProperties {
   arrowLeft: string | number;
 }
@@ -57,13 +58,16 @@ const Tooltip = ({
     }, 0);
   };
   const onMouseOut = () => setShowTooltip(false);
-  const containerStyle = {
-    top: toolTipPosition?.top,
-    left: toolTipPosition?.left,
-    // runtime CSS vars for vanilla-extract
-    [arrowLeftVar as unknown as string]: toolTipPosition?.arrowLeft ?? "50%",
-    [zoomVar as unknown as string]: tooltipZoom ?? 1,
-  } as React.CSSProperties & Record<string, string | number>;
+  // const containerStyle = assignInlineVars(
+  //   {
+  //     [arrowLeftVar]: toolTipPosition?.arrowLeft ?? "50%",
+  //     // [zoomVar]: tooltipZoom ?? 1,
+  //   }
+  //   // {
+  //   //   top: toolTipPosition?.top,
+  //   //   left: toolTipPosition?.left,
+  //   // }
+  // );
 
   return (
     <div
@@ -79,7 +83,13 @@ const Tooltip = ({
           <div
             className={tooltipContainer}
             data-testid="tooltip"
-            style={containerStyle}
+            style={{
+              top: toolTipPosition?.top,
+              left: toolTipPosition?.left,
+              ...assignInlineVars({
+                [arrowLeftVar]: String(toolTipPosition?.arrowLeft ?? "50%")
+              }),
+            }}
             ref={tooltipRef}
           >
             {content}

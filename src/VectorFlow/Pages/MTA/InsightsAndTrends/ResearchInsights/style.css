@@ -4,43 +4,63 @@
 } */
 
 .color-red,
-.rie-color-red,
-.colorBg-red {
+.rie-color-red {
   color: red;
 }
+.colorBg-red {
+  background-color: red;
+}
 .color-green,
-.rie-color-green,
-.colorBg-green {
+.rie-color-green
+ {
   color: green;
+}
+.colorBg-green{
+  background-color: green;
 }
 
 .color-#ffbf00,
 .color-yellow,
 .rie-color-#ffbf00,
-.rie-color-yellow,
-.colorBg-yellow {
+.rie-color-yellow{
   color: #ffbf00;
 }
 
-.color-black,
-.rie-color-black,
-.colorBg-black {
-  color: black;
+.colorBg-yellow {
+  background-color: #ffbf00;
 }
 
+
+.color-black,
+.rie-color-black{
+  color: black;
+}
+.colorBg-black {
+  background-color: black;
+}
+
+
 .color-blue,
-.rie-color-blue,
-.colorBg-blue {
+.rie-color-blue{
   color: blue;
+}
+.colorBg-blue {
+  background-color: blue;
 }
 
 .color-white,
 .color-gray,
 .rie-color-gray,
-.rie-color-white,
-.colorBg-gray {
+.rie-color-white{
   color: rgb(205, 205, 205);
 }
+.colorBg-white {
+  background-color: gray;
+}
+.colorBg-gray {
+  background-color: gray;
+}
+
 
 .colorRowDiv {
   display: flex;
@@ -59,7 +79,6 @@
   color: white;
   font-weight: 550;
   font-size: 12px;
-  background: black;
 }
 .tooltipRows {
   padding: 8px 12px;

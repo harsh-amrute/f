@@ -21,12 +21,12 @@ const FullKitGraph = (props: any) => {
 
   function TooltipRenderer({ datum, xKey }: any) {
     return `
-      <div class="tooltip-title">
+      <div class="insightStpl-tooltip-title">
         ${datum[xKey]}
       </div>
-      <div class="tooltip-content">
-        <div class="tooltip-row">
-          <div class="color-box color-gray"></div>
+      <div class="insightStpl-tooltip-content">
+        <div class="insightStpl-tooltip-row">
+          <div class="insightStpl-color-box color-gray"></div>
           <div class="label-value">
             <div>${ProductionInsightsAndTrendsString.fullKitInDays}</div>
             <div>${datum["days"]}</div>

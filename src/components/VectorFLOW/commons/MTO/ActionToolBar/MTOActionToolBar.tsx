@@ -416,7 +416,7 @@ const MTOActionToolBar = ({
         <>
           {isExcelExport && (
             <>
-              <SCVerticalDivider />
+              <div className={SCVerticalDivider} />
               <div
                 className={SCViewContainerWithBg}
                 onClick={onExcelExportClick}

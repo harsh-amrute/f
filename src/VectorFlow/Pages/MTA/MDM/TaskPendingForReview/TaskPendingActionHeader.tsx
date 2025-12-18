@@ -2,11 +2,11 @@ import {
   ActionHeaderContent,
   ActionHeaderWrapper,
   TaskPendingActionHeaderButton,
-  headerBtnBgVar
+  headerBtnBgVar,
 } from "./styles.css";
 import { useUserData } from "../../../../../context";
-import { assignInlineVars } from '@vanilla-extract/dynamic';
-import * as globalStyles from '../../../../../styles/global';
+import { assignInlineVars } from "@vanilla-extract/dynamic";
+import * as globalStyles from "../../../../../styles/global";
 
 const TaskPendingActionHeader = (props: any) => {
   const { user } = useUserData();

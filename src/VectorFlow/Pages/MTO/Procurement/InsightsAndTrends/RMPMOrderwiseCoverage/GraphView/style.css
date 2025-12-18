@@ -71,3 +71,66 @@
   word-wrap: break-word;
   text-align: justify;
 }
+
+.tooltipStyle {
+  background-color: #6c696a;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ag-chart-tooltip-contentRmpm {
+  color: white;
+  background-color: #6c696a;
+}
+.displayFlex {
+  display: flex;
+}
+.contentStyle {
+  margin-right: 10px;
+  margin-top: 5px;
+  height: 10px;
+  width: 10px;
+  background-color: #f4bd8e;
+}
+.rmpmContent {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+.fullkitSitDiv1 {
+  margin-right: 10px;
+  margin-top: 5px;
+  height: 10px;
+  width: 10px;
+  background-color: #f09241;
+}
+.fullkitSitDiv2 {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+.fullkitOpoDiv1 {
+  margin-right: 10px;
+  margin-top: 5px;
+  height: 10px;
+  width: 10px;
+  background-color: #ad5000;
+}
+.fullkitOpoDiv2 {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+.fullkitRmpmDiv1 {
+  margin-right: 10px;
+  margin-top: 5px;
+  height: 10px;
+  width: 10px;
+  background-color: #6a3001;
+}
+.fullkitRmpmDiv2 {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}

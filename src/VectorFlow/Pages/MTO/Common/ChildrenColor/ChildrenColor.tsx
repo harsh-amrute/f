@@ -44,6 +44,7 @@ const ChildrenColor = (props: ICellRendererParams) => {
   } else if (props.data.clr === "Orange") {
     str = "Partial Kit/No kit";
   }
+
   return str !== "" ? (
     <Tooltip
       disableStyleInjection="core"

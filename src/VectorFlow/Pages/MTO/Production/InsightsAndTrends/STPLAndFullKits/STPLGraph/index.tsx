@@ -67,11 +67,11 @@ const STPLGraph = (props: any) => {
 
   function TooltipRenderer({ datum, xKey }: any) {
     return `
-      <div class="tooltip-title">
+      <div class="stplGraph-tooltip-title">
         ${datum[xKey]}
       </div>
-      <div class="tooltip-content">
-        <div class="tooltip-row">
+      <div class="stplGraph-tooltip-content">
+        <div class="stplGraph-tooltip-row">
           <div class="color-box color-gray"></div>
           <div class="label-value">
             <div>${ProductionInsightsAndTrendsString.fullKitInDays}</div>

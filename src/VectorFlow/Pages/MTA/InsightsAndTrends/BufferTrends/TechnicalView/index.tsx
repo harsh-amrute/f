@@ -14,7 +14,7 @@ import VFRangeSlider from "../../../../../../components/VectorFLOW/commons/VFRan
 import { AgCharts } from "ag-charts-react";
 import { AgChartOptions } from "ag-charts-community";
 import VFInfoToolTip from ".././../../../../../components/VectorFLOW/commons/VFInfoToolTip";
-import "./style.css"
+import "./style.css";
 interface TechnicalWiseProps {
   data: any;
   currentPageTab: string;
@@ -61,97 +61,118 @@ const TechnicalWise = ({
 
   function TooltipRenderer({ datum }: any) {
     return `
-        <div class="tooltip-wrapper">
-          <div class="tooltip-header">
-            <b>${datum.dt || "No Date"}</b>
-          </div>
-          <table class="tooltip-table">
-            <thead>
-              <tr>
-                <th class="left-align">Category</th>
-                <th class="right-align">${
-                  graphs[0].pen.label === "Percentage" ? "Percentage" : "Count"
-                }</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${colors
-                .map((color) => {
-                  const key =
-                    color.value === "black"
-                      ? "b"
-                      : color.value === "Red"
-                      ? "r"
-                      : color.value === "#FFBF00"
-                      ? "y"
-                      : color.value === "Green"
-                      ? "g"
-                      : color.value === "Blue"
-                      ? "bu"
-                      : color.value === "grey"
-                      ? "w"
-                      : null;
+            <div class="tooltip-wrapper-btTechView">
+                <div class="tooltip-header-btTechView">
+                    <b>${datum.dt || "No Date"}</b>
+                </div>
+                <table class="tooltip-table-btTechView">
+                    <thead>
+                        <tr>
+                            <th class="left-align">Category</th>
+                            <th class="right-align">
+                                ${
+                                  graphs[0].pen.label === "Percentage"
+                                    ? "Percentage"
+                                    : "Count"
+                                }
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="left-align">
+                        ${colors
+                          .map((color) => {
+                            const key =
+                              color.value === "black"
+                                ? "b"
+                                : color.value === "Red"
+                                ? "r"
+                                : color.value === "#FFBF00"
+                                ? "y"
+                                : color.value === "Green"
+                                ? "g"
+                                : color.value === "Blue"
+                                ? "bu"
+                                : color.value === "grey"
+                                ? "w"
+                                : null;
 
-                  if (!key) return "";
+                            if (!key) return "";
 
-                  return `
-                    <tr>
-                      <td class="tooltip-cell color-label">
-                        <div class="color-box" data-color="${
-                          color.value
-                        }"></div>
-                        ${color.label}
-                      </td>
-                      <td class="tooltip-cell right-align">
+                            return `
+                                <tr>
+                                    <td class="tooltip-cell-btTechView">
+                                        <div class="color-label">
+                                            <div class="color-box color-${
+                                              color.label
+                                            }"></div>
+                                            ${color.label}
+                                        </div>
+                                    </td>
+                                    <td  class="tooltip-cell-btTechView right-align">
+                                            ${
+                                              graphs[0].pen.label ===
+                                              "Percentage"
+                                                ? (() => {
+                                                    const value = parseFloat(
+                                                      datum[key]
+                                                    );
+                                                    const total = parseFloat(
+                                                      datum.total
+                                                    );
+                                                    return !isNaN(value) &&
+                                                      !isNaN(total) &&
+                                                      total > 0
+                                                      ? Math.round(
+                                                          (value / total) * 100
+                                                        ) + "%"
+                                                      : "0%";
+                                                  })()
+                                                : (() => {
+                                                    const val = parseFloat(
+                                                      datum[key]
+                                                    );
+                                                    if (isNaN(val)) return "0";
+                                                    return Number.isInteger(val)
+                                                      ? val
+                                                      : val.toFixed(2);
+                                                  })()
+                                            }
+                                        
+                                    </td>
+                                </tr>
+                            `;
+                          })
+                          .join("")}
+
                         ${
-                          graphs[0].pen.label === "Percentage"
-                            ? (() => {
-                                const value = parseFloat(datum[key]);
-                                const total = parseFloat(datum.total);
-                                return !isNaN(value) &&
-                                  !isNaN(total) &&
-                                  total > 0
-                                  ? Math.round((value / total) * 100) + "%"
-                                  : "0%";
-                              })()
-                            : (() => {
-                                const val = parseFloat(datum[key]);
-                                if (isNaN(val)) return "0";
-                                return Number.isInteger(val)
-                                  ? val
-                                  : val.toFixed(2);
-                              })()
+                          graphs[0].pen.label !== "Percentage"
+                            ? `
+                                <tr>
+                                    <td class="tooltip-cell-btTechView font-bold" >
+                                        <div class="color-label">
+                                            Total
+                                        </div>
+                                    </td>
+                                    <td class="tooltip-innerCell-btTechView">
+                                        ${datum.total.toFixed(2)}
+                                    </td>
+                                </tr>
+                            `
+                            : ""
                         }
-                      </td>
-                    </tr>
-                  `;
-                })
-                .join("")}
-              ${
-                graphs[0].pen.label !== "Percentage"
-                  ? `
-                    <tr>
-                      <td class="tooltip-cell font-bold">Total</td>
-                      <td class="tooltip-cell right-align font-bold">${datum.total.toFixed(
-                        2
-                      )}</td>
-                    </tr>
-                  `
-                  : ""
-              }
-            </tbody>
-          </table>
-        </div>
-      `;
+                    </tbody>
+                </table>
+            </div>
+        `;
   }
 
   const options: AgChartOptions = {
-        tooltip: {
-            position: {
-            xOffset: -50,
-            yOffset: -10,
-        },
-        range: "nearest",
+    tooltip: {
+      position: {
+        xOffset: -50,
+        yOffset: -10,
+      },
+      range: "nearest",
     },
     axes: [
       {
@@ -361,8 +382,14 @@ const TechnicalWise = ({
               <VFCapsule
                 activeBtn={graphs[0].pen}
                 capsules={[
-                  { label: "Percentage", value: "Percentage" },
-                  { label: "Absolute Value", value: "Absolute" },
+                  {
+                    label: "Percentage",
+                    value: "Percentage",
+                  },
+                  {
+                    label: "Absolute Value",
+                    value: "Absolute",
+                  },
                 ]}
                 handleClick={(value: any) => updateGraphState(1, "pen", value)}
               />
@@ -396,7 +423,7 @@ const TechnicalWise = ({
                 <VFInfoToolTip infoList={graph1} />
               </div>
             </div>
-            <AgCharts options={options} />
+            <AgCharts options={{ ...options, data: numericData }} />
           </div>
         </div>
       </div>

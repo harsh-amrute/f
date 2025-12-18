@@ -67,46 +67,46 @@ const BTMTA = ({ isMTO, data }: { isMTO: boolean; data: any }) => {
       <table class="BTMTA-tooltip-table">
         <thead>
           <tr>
-            <th class="empty-cell"></th>
-            <th class="header-cell">Percentage</th>
-            <th class="header-cell">Count</th>
+            <th class="BTMTA-empty-cell"></th>
+            <th class="BTMTA-header-cell">Percentage</th>
+            <th class="BTMTA-header-cell">Count</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td class="color-label">
-              <div class="color-box black"></div>Black
+            <td class="BTMTA-color-label">
+              <div class="BTMTA-color-box black"></div>Black
             </td>
-            <td class="percentage-cell">${Math.round(perArr[0])}%</td>
-            <td class="count-cell">${countArr[0]}</td>
+            <td class="BTMTA-percentage-cell">${Math.round(perArr[0])}%</td>
+            <td class="BTMTA-count-cell">${countArr[0]}</td>
           </tr>
           <tr>
-            <td class="color-label">
-              <div class="color-box red"></div>Red
+            <td class="BTMTA-color-label">
+              <div class="BTMTA-color-box red"></div>Red
             </td>
-            <td class="percentage-cell">${Math.round(perArr[1])}%</td>
-            <td class="count-cell">${countArr[1]}</td>
+            <td class="BTMTA-percentage-cell">${Math.round(perArr[1])}%</td>
+            <td class="BTMTA-count-cell">${countArr[1]}</td>
           </tr>
           <tr>
-            <td class="color-label">
-              <div class="color-box yellow"></div>Yellow
+            <td class="BTMTA-color-label">
+              <div class="BTMTA-color-box yellow"></div>Yellow
             </td>
-            <td class="percentage-cell">${Math.round(perArr[2])}%</td>
-            <td class="count-cell">${countArr[2]}</td>
+            <td class="BTMTA-percentage-cell">${Math.round(perArr[2])}%</td>
+            <td class="BTMTA-count-cell">${countArr[2]}</td>
           </tr>
           <tr>
-            <td class="color-label">
-              <div class="color-box green"></div>Green
+            <td class="BTMTA-color-label">
+              <div class="BTMTA-color-box green"></div>Green
             </td>
-            <td class="percentage-cell">${Math.round(perArr[3])}%</td>
-            <td class="count-cell">${countArr[3]}</td>
+            <td class="BTMTA-percentage-cell">${Math.round(perArr[3])}%</td>
+            <td class="BTMTA-count-cell">${countArr[3]}</td>
           </tr>
           <tr>
-            <td class="color-label">
-              <div class="color-box grey"></div>White
+            <td class="BTMTA-color-label">
+              <div class="BTMTA-color-box grey"></div>White
             </td>
-            <td class="percentage-cell">${Math.round(perArr[4])}%</td>
-            <td class="count-cell">${countArr[4]}</td>
+            <td class="BTMTA-percentage-cell">${Math.round(perArr[4])}%</td>
+            <td class="BTMTA-count-cell">${countArr[4]}</td>
           </tr>
         </tbody>
       </table>

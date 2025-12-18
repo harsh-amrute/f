@@ -50,11 +50,11 @@ describe("Tooltip", () => {
 
   // Edge case: Tooltip should not go outside the viewport
   it("adjusts tooltip position to stay within viewport", () => {
-    jest.mock("styled-components", () =>
-      jest.requireActual(
-        "styled-components/dist/styled-components.browser.esm.js"
-      )
-    );
+    // jest.mock("styled-components", () =>
+    //   jest.requireActual(
+    //     "styled-components/dist/styled-components.browser.esm.js"
+    //   )
+    // );
     const { getByText, queryByText } = render(
       <div style={{ width: "100%", display: "flex", justifyContent: "end" }}>
         <Tooltip

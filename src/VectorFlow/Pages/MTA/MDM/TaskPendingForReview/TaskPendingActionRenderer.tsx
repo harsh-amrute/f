@@ -33,6 +33,7 @@ const TaskPendingActionRenderer = (props: TaskPendingActionRendererProps) => {
         }
         onClick={() => onClick("Approved")}
       />
+
       <img
         className={ActionButtonWrapper}
         src={

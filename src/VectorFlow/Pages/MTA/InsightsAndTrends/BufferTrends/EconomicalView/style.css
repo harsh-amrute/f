@@ -44,6 +44,10 @@
   align-items: center;
 }
 
+.color-labelDiv {
+  display: flex;
+  align-items: center;
+}
 .ev-color-box {
   margin-right: 10px;
   height: 10px;

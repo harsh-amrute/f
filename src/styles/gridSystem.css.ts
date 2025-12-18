@@ -85,23 +85,17 @@ export const SCCol2 = style({
 });
 
 export const SCCol4 = style({
-  flexGrow: 0,
-  flexShrink: 0,
-  flexBasis: "33.33%",
+  flex: "0 0 33.33%",
   maxWidth: "33.33%",
 });
 
 export const SCCol5 = style({
-  flexGrow: 0,
-  flexShrink: 0,
-  flexBasis: "66.66%",
+  flex: "0 0 66.66%",
   maxWidth: "66.66%",
 });
 
 export const SCCol6 = style({
-  flexGrow: 0,
-  flexShrink: 0,
-  flexBasis: "50%",
+  flex: "0 0 50%",
   maxWidth: "50%",
 });
 

@@ -2,10 +2,7 @@ import { useState } from "react";
 import VFButtonOutline from "../../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import VFButton from "../../../../../../components/VectorFLOW/commons/VFButton";
 import VFModalCard from "../../../../../../components/VectorFLOW/commons/VFModalCard";
-import {
-  type Option as MDMOption,
-  type Filter,
-} from "../../../../../types/MDM";
+
 import {
   AccordianContainer,
   ButtonContainer,
@@ -100,7 +97,7 @@ const FilterModal = (props: IFilterModalProps) => {
       <div className={ModalBody}>
         <div className={FilterContainer}>
           <div className={FilterHeading}>Resource Filters</div>
-          <HorizontalLine></HorizontalLine>
+          <div className={HorizontalLine}></div>
           {/* <SearchBar>
                         <PlantInput
                         id={'plntNmInput'}
@@ -125,12 +122,7 @@ const FilterModal = (props: IFilterModalProps) => {
                   }
                 }
               }}
-              options={(filters[0]?.options ?? []).map(
-                (opt: string): MDMOption => ({
-                  label: opt,
-                  value: opt,
-                })
-              )}
+              options={filters[0].options}
               placeholder={"Plant"}
               handleListChild={() => {
                 console.log("child change");

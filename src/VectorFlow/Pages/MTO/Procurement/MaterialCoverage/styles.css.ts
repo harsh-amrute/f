@@ -1,4 +1,4 @@
-import { style, styleVariants, globalStyle , createVar } from '@vanilla-extract/css';
+import { style, globalStyle , createVar } from '@vanilla-extract/css';
 
 
 // ---------- Shared dynamic vars ----------
@@ -339,11 +339,15 @@ export const childrenColorCellRegalblaze = style([
 // ---------- SCDynamicContainer + AG Grid globals ----------
 export const scDynamicContainer = style({});
 globalStyle(`${scDynamicContainer} .ag-header-cell-text`, {
-  fontSize: '10px',
+  fontSize: '10px !important',
   fontWeight: 'bold',
 });
 globalStyle(`${scDynamicContainer} > .ag-theme-alpine`, {
-  // --ag-borders is a CSS var from AG Grid; we won’t try to set it here.
+  // TS doesn't know about custom properties like --ag-borders,
+  // so we suppress the type check for this line.
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-expect-error - custom CSS variable not in GlobalStyleRule type
+  '--ag-borders': 'none',
 });
 globalStyle(`${scDynamicContainer} .ag-theme-alpine .ag-cell`, {
   border: 'none',

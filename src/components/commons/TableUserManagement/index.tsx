@@ -85,11 +85,39 @@ const TableUserManagement = ({
     setIdUser(id);
   };
 
+  const renderAction = (item: any, is_admin: any) => {
+    const permissionUser = item.role_id.map((item: any) => item.name);
+
+    if (is_admin) {
+      if (item.is_admin) {
+        return <NoAction rolesMap={permissionUser} />;
+      } else {
+        return <>{action({ item, permissionUser })}</>;
+      }
+    } else {
+      if (permission?.includes("IST Admin") || permission?.includes("Admin")) {
+        if (item.is_admin) {
+          return <NoAction rolesMap={permissionUser} />;
+        } else {
+          if (
+            permissionUser?.includes("IST Admin") ||
+            permissionUser?.includes("Admin")
+          ) {
+            return <NoAction rolesMap={permissionUser} />;
+          } else {
+            return <>{action({ item, permissionUser })}</>;
+          }
+        }
+      } else {
+        return <NoAction rolesMap={permissionUser} />;
+      }
+    }
+  };
+
   const clearGridFilter = () => {
     gridRef?.current?.api.setFilterModel(null);
     setIsDisabled(true);
   };
-
   const brand = theme_ui === "REGALBLAZE" ? "REGALBLAZE" : "DEFAULT";
 
   const CustomStatusPanel = () => {
@@ -106,69 +134,88 @@ const TableUserManagement = ({
     );
   };
 
-  const ListAction = ({ item }: any) => (
-    <div className={tableTd}>
-      <div className={iconWrapper}>
-        <img
-          className={icon}
-          data-tooltip-id="edit"
-          src="/assets/img/profile/icon_edit.svg"
-          onClick={() => handleClickEdit(item)}
-        />
-      </div>
-      <div className={iconWrapper}>
-        <img
-          className={icon}
-          data-tooltip-id="delete"
-          src="/assets/img/profile/icon_delete.svg"
-          onClick={() => {
-            handleOpenDelete(item.id);
-          }}
-        />
-      </div>
-      <div className={iconWrapper}>
-        <img
-          className={icon}
-          data-tooltip-id="reset"
-          src="/assets/img/profile/icon_lock.svg"
-          onClick={() => {
-            handleResetPwd(item.id);
-          }}
-        />
-      </div>
-    </div>
-  );
-  const action = ({ item, permissionUser }: any) => <ListAction item={item} />;
+  const ListAction = ({ item }: any) => {
+    return (
+      <>
+        <div className={tableTd}>
+          <div className={iconWrapper}>
+            <Tooltip
+              id="edit"
+              content={
+                <p style={{ fontSize: "1rem", padding: "4px" }}>Edit User</p>
+              }
+              place="top"
+              className="user-manage-tooltip"
+            >
+              <img
+                className={icon}
+                data-tooltip-id="edit"
+                src="/assets/img/profile/icon_edit.svg"
+                onClick={() => handleClickEdit(item)}
+              />
+            </Tooltip>
+          </div>
 
-  const NoAction = ({ rolesMap }: any) => <></>;
+          <div className={iconWrapper}>
+            <Tooltip
+              id="delete"
+              content={
+                <p style={{ fontSize: "1rem", padding: "4px" }}>Delete User</p>
+              }
+              place="top"
+              className="user-manage-tooltip"
+            >
+              <img
+                className={icon}
+                data-tooltip-id="delete"
+                src="/assets/img/profile/icon_delete.svg"
+                onClick={() => {
+                  handleOpenDelete(item.id);
+                }}
+              />
+            </Tooltip>
+          </div>
 
-  const renderAction = (item: any, is_admin_flag: any) => {
-    const permissionUser = item.role_id.map((r: any) => r.name);
+          <div className={iconWrapper}>
+            <Tooltip
+              id="reset"
+              content={
+                <p style={{ fontSize: "1rem", padding: "4px" }}>
+                  Reset Password
+                </p>
+              }
+              place="top"
+              className="user-manage-tooltip"
+            >
+              <img
+                className={icon}
+                data-tooltip-id="reset"
+                src="/assets/img/profile/icon_lock.svg"
+                onClick={() => {
+                  handleResetPwd(item.id);
+                }}
+              />
+            </Tooltip>
+          </div>
+        </div>
+      </>
+    );
+  };
 
-    if (is_admin_flag) {
-      return item.is_admin ? (
-        <NoAction rolesMap={permissionUser} />
-      ) : (
-        <>{action({ item, permissionUser })}</>
-      );
-    } else {
-      if (permission?.includes("IST Admin") || permission?.includes("Admin")) {
-        if (item.is_admin) return <NoAction rolesMap={permissionUser} />;
-        if (
-          permissionUser?.includes("IST Admin") ||
-          permissionUser?.includes("Admin")
-        )
-          return <NoAction rolesMap={permissionUser} />;
-        return <>{action({ item, permissionUser })}</>;
-      }
-      return <NoAction rolesMap={permissionUser} />;
-    }
+  const action = ({ item, permissionUser }: any) => {
+    return (
+      <>
+        <ListAction item={item} />
+      </>
+    );
+  };
+
+  const NoAction = ({ rolesMap }: any) => {
+    return <></>;
   };
 
   const columnDefs = useMemo(
     () => [
-      { headerName: "User ID", field: "name", flex: 1 },
-      { headerName: "Email ID", field: "email", flex: 1 },
       {
         headerName: "User ID",
         field: "name",
@@ -204,7 +251,6 @@ const TableUserManagement = ({
                 {value}
               </span>
               <Tooltip
-                disableStyleInjection="core"
                 id={tooltipId}
                 content={value}
                 place="top"

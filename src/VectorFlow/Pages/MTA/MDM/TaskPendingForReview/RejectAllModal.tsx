@@ -2,10 +2,10 @@ import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard";
 import {
   ButtonSeperator,
+  radioAccentVar,
   RadioButtonGroup,
   RadioContainer,
   SubmitButtonWrapper,
-  radioAccentVar,
 } from "./styles.css";
 import { useUserData } from "../../../../../context";
 import { assignInlineVars } from "@vanilla-extract/dynamic";

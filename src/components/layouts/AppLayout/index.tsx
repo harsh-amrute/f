@@ -28,17 +28,19 @@ import {
 import { ISTStatusContext } from "../../../context/ISTStatusContext";
 import { useTranslation } from "react-i18next";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
+import * as globalStyles from "../../../styles/global";
+
 // import { listMenuParent } from "../NavbarMenu/listMenu";
 // --- helper: map your colorTheme key to actual colors
-const themeBg = (key?: string) => {
-  switch (key) {
-    case "NOIRFUSION":
-      return { col1Bg: "#000", col2Bg: "#000" };
-    // add other themes here
-    default:
-      return { col1Bg: "transparent", col2Bg: "transparent" };
-  }
-};
+// const themeBg = (key?: string) => {
+//   switch (key) {
+//     case "NOIRFUSION":
+//       return { col1Bg: "#000", col2Bg: "#000" };
+//     // add other themes here
+//     default:
+//       return { col1Bg: "transparent", col2Bg: "transparent" };
+//   }
+// };
 
 const isAnonymous = false;
 
@@ -224,7 +226,7 @@ const AppLayout = () => {
   const padLeft = urlExcludePadding.includes(location.pathname)
     ? "0px"
     : "50px";
-  const { col1Bg, col2Bg } = themeBg(colorTheme);
+  // const { col1Bg, col2Bg } = themeBg(colorTheme);
   // zoom no longer needed -> force 1’s (keeps your API intact)
   const zoomVars = {
     [vZoomBase]: "1",
@@ -259,7 +261,7 @@ const AppLayout = () => {
         <div className={GridSystem.SCRow}>
           <div
             className={GridSystem.SCCol1}
-            style={assignInlineVars({ [vColor1]: col1Bg })}
+            style={assignInlineVars({ [vColor1]: globalStyles.chooseThemeColor[colorTheme]?.color1 })}
           >
             <NavbarMenu
               setMenuItem={setMenuItem}
@@ -273,7 +275,7 @@ const AppLayout = () => {
             className={GridSystem.SCCol2}
             style={assignInlineVars({
               [vLeftWidth]: leftWidth,
-              [vColor2]: col2Bg,
+              [vColor2]: globalStyles.chooseThemeColor[colorTheme]?.color2,
             })}
           >
             <NavbarItem

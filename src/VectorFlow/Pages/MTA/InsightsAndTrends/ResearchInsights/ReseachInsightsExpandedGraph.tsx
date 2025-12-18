@@ -153,7 +153,7 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
       stroke: colorMap[key],
     },
     stroke: colorMap[key],
-    tooltip: createCommonTooltip(colorMap[key]),
+    tooltip: createCommonTooltip(key),
   }));
 
   const chartOptions: AgCartesianChartOptions = useMemo(

@@ -165,6 +165,10 @@ const NavbarItem = ({
                     ? "12px 0 12px 15px"
                     : "0",
                   [NavStyle.itemChildPaddingVar]: status ? "18px 0" : "unset",
+                  [NavStyle.mqLaptopMarginVar]: status ? "5px 0px 5px 15px" : "0px",
+                  [NavStyle.mqLaptopLMarginVar]: status ? "2px 6px" : "0px",
+                  [NavStyle.mqLaptopLPaddingVar]: status ? "13px 0px" : "unset",
+                  [NavStyle.mqLaptopLWidthVar]: isActive ? "90%" : "100%",
                 }),
                 // still allow theme to control the background color
                 "--chooseItemBg":

@@ -1,4 +1,4 @@
-.tooltip-title {
+.insightStpl-tooltip-title {
     background-color: #6c696a;
     display: flex;
     justify-content: center;
@@ -9,20 +9,20 @@
     font-weight: 600;
   }
 
-  .tooltip-content {
+  .insightStpl-tooltip-content {
     color: white;
     background-color: #6c696a;
     padding: 10px 20px;
     font-family: 'Roboto', sans-serif;
   }
 
-  .tooltip-row {
+  .insightStpl-tooltip-row {
     display: flex;
     align-items: center;
     margin-bottom: 6px;
   }
 
-  .color-box {
+  .insightStpl-color-box {
     margin-right: 10px;
     margin-top: 5px;
     height: 10px;

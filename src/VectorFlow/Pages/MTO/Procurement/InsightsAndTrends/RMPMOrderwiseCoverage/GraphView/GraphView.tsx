@@ -1,9 +1,9 @@
 import React, { useRef, useState } from "react";
 import "allotment/dist/style.css";
 import {
+  chartHeightVar,
   SCChartContainer,
   SCHorizontalDivider,
-  chartHeightVar,
 } from "../styles.css";
 import { AgCharts } from "ag-charts-react";
 import { AgChartOptions } from "ag-charts-community";
@@ -86,52 +86,40 @@ const GraphView = ({ shortageData }: any) => {
   }, [apiDate, isSuccess]);
 
   function TooltipRenderer({ datum, xKey }: any) {
-    const label = isNaN(datum[xKey])
-      ? `${datum[xKey]} Days`
-      : datum[xKey] === 1
-      ? "0-7 Days"
-      : datum[xKey] === 85
-      ? "85-90 Days"
-      : datum[xKey] + "-" + Number(datum[xKey] + 6) + " Days";
-
-    return `<div class="ag-custom-tooltip ">
-
-<div class="graphview-tooltip-container">
-      <div class="graphview-tooltip-title">
-        ${label}
-      </div>
-      <div class="graphview-tooltip-content">
-        <div class="graphview-tooltip-row">
-          <div class="color-box color-bg1"></div>
-          <div class="label-value">
-            <div>${InsightsAndTrendsString.ordersWithFullkitOHS}</div>
-            <div>${datum["total_soh"]}</div>
-          </div>
-        </div>
-        <div class="graphview-tooltip-row">
-          <div class="color-box color-bg2"></div>
-          <div class="label-value">
-            <div>${InsightsAndTrendsString.ordersWithFullkitSIT}</div>
-            <div>${datum["total_sit"]}</div>
-          </div>
-        </div>
-        <div class="graphview-tooltip-row">
-          <div class="color-box color-bg3"></div>
-          <div class="label-value">
-            <div>${InsightsAndTrendsString.ordersWithFullkitOPO}</div>
-            <div>${datum["total_po"]}</div>
-          </div>
-        </div>
-        <div class="graphview-tooltip-row">
-          <div class="color-box color-bg4"></div>
-          <div class="label-value">
-            <div>${InsightsAndTrendsString.ordersWithRMPM}</div>
-            <div>${datum["shortage"]}</div>
-          </div>
-        </div>
-      </div>
+    return `
+    <div class="ag-chart-tooltip-title tooltipStyle">
+        ${
+          isNaN(datum[xKey])
+            ? `${datum[xKey]} Days`
+            : datum[xKey] === 1
+            ? "0-7 Days"
+            : datum[xKey] === 85
+            ? "85-90 Days"
+            : datum[xKey] + "-" + Number(datum[xKey] + 6) + " Days"
+        }
     </div>
-
+    <div class="ag-chart-tooltip-contentRmpm">
+    
+    <div>
+        <div class="displayFlex">
+            <div class="contentStyle">
+            </div>
+            <div class="rmpmContent">
+                <div>${InsightsAndTrendsString.ordersWithFullkitOHS}
+                </div>
+                <div> ${datum["total_soh"]}
+                </div>
+            </div>
+        </div>
+        <div class="displayFlex"><div class="fullkitSitDiv1"></div><div class="fullkitSitDiv2"><div>${
+          InsightsAndTrendsString.ordersWithFullkitSIT
+        }</div><div>${datum["total_sit"]}</div></div></div>
+        <div class="displayFlex"><div class="fullkitOpoDiv1"></div><div class="fullkitOpoDiv2"><div>${
+          InsightsAndTrendsString.ordersWithFullkitOPO
+        }</div><div>${datum["total_po"]}</div></div></div>
+        <div class="displayFlex"><div class="fullkitRmpmDiv1"></div><div class="fullkitRmpmDiv2"><div>${
+          InsightsAndTrendsString.ordersWithRMPM
+        }</div><div> ${datum["shortage"]}</div></div></div>
     </div>`;
   }
 
@@ -175,9 +163,16 @@ const GraphView = ({ shortageData }: any) => {
           fontWeight: "bold",
           color: "black",
           formatter: (params) => {
-            if (params.value === "1") {
+            // Guard: params or value missing
+            if (!params || params.value == null) {
+              return "";
+            }
+
+            const valueStr = String(params.value); // normalise to string
+
+            if (valueStr === "1") {
               return "0-7 Days";
-            } else if (params.value === "85") {
+            } else if (valueStr === "85") {
               return "85-90 Days";
             } else {
               const categoryLable = isNaN(Number(params.value))
@@ -338,6 +333,7 @@ const GraphView = ({ shortageData }: any) => {
           flexDirection: "column",
         }}
       >
+        {" "}
         <div
           className="title"
           style={{
@@ -386,9 +382,7 @@ const GraphView = ({ shortageData }: any) => {
             </div>
           </div>
         </div>
-
         <hr className={SCHorizontalDivider} />
-
         <div className={chartWrapper}>
           <div style={{ height: "100%", width: "100%" }} ref={containerRef}>
             <div style={{ display: "flex", justifyContent: "right" }}>
@@ -410,9 +404,9 @@ const GraphView = ({ shortageData }: any) => {
             </div>
           </div>
         </div>
-
         <VFModalCard
           openModal={hideChart1}
+
           closeModal={() => toggleChart1(false)}
           headerIcon=""
           headerText={`RM / PM Orderwise Coverage ( ${date})`}

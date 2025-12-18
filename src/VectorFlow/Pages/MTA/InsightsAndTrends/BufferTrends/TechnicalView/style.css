@@ -1,47 +1,72 @@
-.tooltip-wrapper {
-    background-color: #6c696a;
-    color: white;
-    /* padding: 10px; */
-    font-family: 'Roboto', sans-serif;
-  }
+.tooltip-wrapper-btTechView {
+  background-color: #6c696a;
+  color: white;
+  padding: 10px;
+  font-family: "Roboto", sans-serif;
+}
 
-  .tooltip-header {
-    padding: 5px;
-    text-align: center;
-  }
+.tooltip-header-btTechView {
+  color: white;
+  padding: 5px;
+  text-align: center;
+}
 
-  .tooltip-table {
-    width: 100%;
-    color: white;
-    border-collapse: collapse;
-  }
+.tooltip-table-btTechView {
+  width: 100%;
+  color: white;
+  border-collapse: collapse;
+}
 
-  .left-align {
-    text-align: left;
-  }
+.left-align {
+  text-align: left;
+}
 
-  .right-align {
-    text-align: right;
-  }
+.right-align {
+  text-align: right;
+}
 
-  .tooltip-cell {
-    padding: 5px;
-    background-color: #6c696a;
-  }
+.tooltip-cell-btTechView {
+  padding: 5px;
+  background-color: #6c696a;
+}
 
-  .color-label {
-    display: flex;
-    align-items: center;
-  }
+.color-label {
+  display: flex;
+  align-items: center;
+}
 
-  .color-box {
-    margin-right: 10px;
-    height: 10px;
-    width: 15px;
-    /* background-color will be set dynamically */
-  }
+.color-box {
+  margin-right: 10px;
+  height: 10px;
+  width: 15px;
+  /* background-color will be set dynamically */
+}
 
-  /* Bold text for totals */
-  .font-bold {
-    font-weight: bold;
-  }
+/* Bold text for totals */
+.font-bold {
+  font-weight: bold;
+}
+
+.tooltip-innerCell-btTechView {
+  padding: 5px;
+  text-align: right;
+  font-weight: bold;
+}
+.color-Black{
+ background-color: black;
+}
+.color-Red{
+  background-color: red;
+ }
+ .color-Yellow{
+  background-color: #FFBF00;
+ }
+ .color-Green{
+  background-color: green;
+ }
+ .color-Blue{
+  background-color: blue;
+ }
+ .color-White{
+  background-color: gray;
+ }

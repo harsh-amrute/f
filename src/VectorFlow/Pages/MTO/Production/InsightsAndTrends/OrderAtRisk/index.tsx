@@ -263,23 +263,23 @@ const OrderAtRisk = () => {
 
   function TooltipRenderer({ datum }: any) {
     return `
-      <div class="tooltip-title">
+      <div class="insightOrderRisk-tooltip-title">
         Major Reason
       </div>
-      <div class="tooltip-content">
-        <div class="tooltip-divider"></div>
-        <div class="tooltip-row header-row">
-          <span class="tooltip-cell total-order">Total Order</span>
-          <span class="tooltip-cell black">Black</span>
-          <span class="tooltip-cell red">Red</span>
+      <div class="insightOrderRisk-tooltip-content">
+        <div class="insightOrderRisk-tooltip-divider"></div>
+        <div class="insightOrderRisk-tooltip-row header-row">
+          <span class="insightOrderRisk-tooltip-cell total-order">Total Order</span>
+          <span class="insightOrderRisk-tooltip-cell black">Black</span>
+          <span class="insightOrderRisk-tooltip-cell red">Red</span>
         </div>
-        <div class="tooltip-divider"></div>
-        <div class="tooltip-row value-row">
-          <span class="tooltip-cell total-order">${
+        <div class="insightOrderRisk-tooltip-divider"></div>
+        <div class="insightOrderRisk-tooltip-row value-row">
+          <span class="insightOrderRisk-tooltip-cell total-order">${
             (datum?.bo || 0) + (datum?.ro || 0)
           }</span>
-          <span class="tooltip-cell black">${datum?.bo || 0}</span>
-          <span class="tooltip-cell red">${datum?.ro || 0}</span>
+          <span class="insightOrderRisk-tooltip-cell black">${datum?.bo || 0}</span>
+          <span class="insightOrderRisk-tooltip-cell red">${datum?.ro || 0}</span>
         </div>
       </div>
     `;

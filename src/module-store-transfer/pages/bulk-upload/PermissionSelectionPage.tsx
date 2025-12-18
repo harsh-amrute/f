@@ -8,6 +8,7 @@ import VFModalCard from "../../../components/VectorFLOW/commons/VFModalCard";
 import {
   useGetAllPermissions,
   useGetAllRoles,
+  useGetRoles,
   usePostBulkUploadUsers,
 } from "../../../services/profile";
 import RoleSelectionModal from "./RoleSelectionModal";
@@ -52,7 +53,8 @@ const PermissionSelectionPage = ({
 
   const {mutateAsync: postPostBulkUploadUsers, isLoading} = usePostBulkUploadUsers();
   const [isRoleModalOpen, setIsRoleModalOpen] = React.useState(false);
-  const { data: dataPermissions } = useGetAllPermissions();
+  const { data: dataPermissions, isLoading: isDataPermissions } = useGetAllPermissions();
+  const { data: dataRoles, isLoading: isDataRoles } = useGetRoles();
   const [listRoles, setListRoles] = useState<any>([]);
   const gridRef = useRef<GridRef>(null);
 
@@ -652,7 +654,7 @@ const PermissionSelectionPage = ({
 
     return (
       <div className={TableWrapper} style={{ paddingBottom: "50px" }}>
-        {isLoading && <OverlayLoader message="Creating Users..." />}
+        {(isLoading || isDataPermissions || isDataRoles) && <OverlayLoader message="Creating Users..." />}
         {!isFinalView && (
           <BulkUploadHeader
             gridRef={gridRef}

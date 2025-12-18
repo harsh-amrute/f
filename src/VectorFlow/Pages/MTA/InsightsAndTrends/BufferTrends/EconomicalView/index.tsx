@@ -1,5 +1,5 @@
 import "allotment/dist/style.css";
-import { capsuleWrapper, chartWrapper } from "./styles.css";
+import { capsuleWrapper } from "./styles.css";
 import {
   SCChartHeaderContainer,
   SCChartContainer,
@@ -14,7 +14,6 @@ import VFRangeSlider from "../../../../../../components/VectorFLOW/commons/VFRan
 import { AgCharts } from "ag-charts-react";
 import { AgChartOptions } from "ag-charts-community";
 import VFInfoToolTip from ".././../../../../../components/VectorFLOW/commons/VFInfoToolTip";
-import "./style.css";
 
 interface EconomicalWiseProps {
   data: any;
@@ -64,83 +63,105 @@ const EconomicalWise = ({
     return `
       <div class="ev-tooltip-wrapper">
         <div class="ev-tooltip-header">
-          <b>${datum.dt || "No Date"}</b>
-        </div>
+                    <b>${datum.dt || "No Date"}</b>
+                </div>
         <table class="ev-tooltip-table">
-          <thead>
-            <tr>
+                    <thead>
+                        <tr>
               <th class="ev-tooltip-th-left">Category</th>
-              <th class="ev-tooltip-th-right">${
-                graphs[0].pen.label === "Percentage" ? "Percentage" : "Count"
-              }</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${colors
-              .map((color) => {
-                const key =
-                  color.value === "black"
-                    ? "b"
-                    : color.value === "Red"
-                    ? "r"
-                    : color.value === "#FFBF00"
-                    ? "y"
-                    : color.value === "Green"
-                    ? "g"
-                    : color.value === "Blue"
-                    ? "bu"
-                    : color.value === "grey"
-                    ? "w"
-                    : null;
+              <th class="ev-tooltip-th-right">
+                                ${
+                                  graphs[0].pen.label === "Percentage"
+                                    ? "Percentage"
+                                    : "Count"
+                                }
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="ev-tooltip-th-left">
+                        ${colors
+                          .map((color) => {
+                            const key =
+                              color.value === "black"
+                                ? "b"
+                                : color.value === "Red"
+                                ? "r"
+                                : color.value === "#FFBF00"
+                                ? "y"
+                                : color.value === "Green"
+                                ? "g"
+                                : color.value === "Blue"
+                                ? "bu"
+                                : color.value === "grey"
+                                ? "w"
+                                : null;
 
-                if (!key) return "";
-                // <div class="color-box" style="background-color: ${color.value};"></div>
+                            if (!key) return "";
 
-                return `
-                  <tr>
-                    <td class="ev-tooltip-td color-label ">
-                      <div class="color-box ev-color-value-${key}"></div>
-                      ${color.label}
-                    </td>
-                    <td class="ev-tooltip-td ev-tooltip-td-right">
-                      ${
-                        graphs[0].pen.label === "Percentage"
-                          ? (() => {
-                              const value = parseFloat(datum[key]);
-                              const total = parseFloat(datum.total);
-                              return !isNaN(value) && !isNaN(total) && total > 0
-                                ? Math.round((value / total) * 100) + "%"
-                                : "0%";
-                            })()
-                          : (() => {
-                              const val = parseFloat(datum[key]);
-                              if (isNaN(val)) return "0";
-                              return Number.isInteger(val)
-                                ? val
-                                : val.toFixed(2);
-                            })()
-                      }
-                    </td>
-                  </tr>
-                `;
-              })
-              .join("")}
-            ${
-              graphs[0].pen.label !== "Percentage"
-                ? `
-                  <tr>
-                    <td class="ev-tooltip-td font-bold">Total</td>
-                    <td class="ev-tooltip-td ev-tooltip-td-right font-bold">${datum.total.toFixed(
-                      2
-                    )}</td>
-                  </tr>
-                `
-                : ""
-            }
-          </tbody>
-        </table>
-      </div>
-    `;
+                            return `
+                                <tr>
+                                  <td class="ev-tooltip-td color-label ">
+                                    <div class="color-labelDiv">
+                                      <div class="color-box ev-color-value-${key}"></div>
+                                      ${color.label}
+                                    </div>
+                                    </td>
+                                    <td class="ev-tooltip-td ev-tooltip-td-right">
+
+                                        ${
+                                          graphs[0].pen.label === "Percentage"
+                                            ? (() => {
+                                                const value = parseFloat(
+                                                  datum[key]
+                                                );
+                                                const total = parseFloat(
+                                                  datum.total
+                                                );
+                                                return !isNaN(value) &&
+                                                  !isNaN(total) &&
+                                                  total > 0
+                                                  ? Math.round(
+                                                      (value / total) * 100
+                                                    ) + "%"
+                                                  : "0%";
+                                              })()
+                                            : (() => {
+                                                const val = parseFloat(
+                                                  datum[key]
+                                                );
+                                                if (isNaN(val)) return "0";
+                                                return Number.isInteger(val)
+                                                  ? val
+                                                  : val.toFixed(2);
+                                              })()
+                                        }
+                                    </td>
+                                </tr>
+                            `;
+                          })
+                          .join("")}
+                        
+                        ${
+                          graphs[0].pen.label !== "Percentage"
+                            ? `
+                                <tr>
+                                    <td class="ev-tooltip-td font-bold">
+                                        <div class="color-labelDiv">
+                                            Total
+                                        </div>
+                                    </td>
+                                    <td class="ev-tooltip-td ev-tooltip-td-right font-bold">
+                                        ${datum.total.toFixed(2)}
+                                    </td>
+                                </tr>
+                            `
+                            : ""
+                        }
+                        
+                    </tbody>
+                </table>
+            </div>
+        `;
   }
 
   const options: AgChartOptions = {
@@ -379,7 +400,7 @@ const EconomicalWise = ({
           </div>
         </div>
 
-        <hr className={SCHorizontalDivider} />
+        <SCHorizontalDivider />
         {/* <ChartWrapper> */}
         <div style={{ height: "70%", width: "100%" }}>
           <div

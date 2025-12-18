@@ -1937,6 +1937,20 @@ export const mapNewAndOldMasterRowDataToCustomRowData = (
         isModified: isRowModified,
       };
     }
+    const dataPrefixed1: any = {};
+    if ((masterId === 6 || masterId === 10) && taskType === "modify") {
+      existingColumnFields.map((f: Field) => {
+        dataPrefixed1[f.key] = String(
+          entry[f.key] !== undefined ? entry[f.key] : ""
+        );
+      });
+      return {
+        ...dataPrefixed1,
+        isModified: true,
+        comments: "",
+        status: "",
+      };
+    }
     const data = entry;
 
     const dataPrefixed: any = {};
@@ -2896,7 +2910,7 @@ const pieTooltip = {
 export const generateChartOptions = (
   data: any,
   chartParams: any,
-  isCategoryData?: string,
+  isCategoryData?: string
 ) => {
   const {
     series,
@@ -2911,7 +2925,7 @@ export const generateChartOptions = (
     if (chartType === "pie") {
       return { ...obj, tooltip: pieTooltip };
     }
-console.log(palette?.fills?.[index],"palette");
+    console.log(palette?.fills?.[index], "palette");
     const seriesColor = palette?.fills?.[index] || "#666666";
 
     return {

@@ -30,7 +30,7 @@ import VFErrorFallBack from "./components/layouts/VFErrorFallBack";
 import createCache from "@emotion/cache";
 import { CacheProvider } from "@emotion/react";
 
-import { StyleSheetManager } from "styled-components";
+// import { StyleSheetManager } from "styled-components";
 // import '../node_modules/react-select/dist/re'
 // import { setAgChartsNonce } from 'ag-charts-react';
 
@@ -63,9 +63,9 @@ function Root() {
         <QueryClientProvider client={queryClient}>
           <Router>
             <Provider store={store}>
-              <StyleSheetManager {...({ nonce } as any)}>
+              {/* <StyleSheetManager {...({ nonce } as any)}> */}
                 <App />
-              </StyleSheetManager>
+              {/* </StyleSheetManager> */}
               <ToastContainer />
             </Provider>
           </Router>

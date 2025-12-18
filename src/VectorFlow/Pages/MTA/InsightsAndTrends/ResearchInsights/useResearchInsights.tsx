@@ -12,7 +12,7 @@ import { isSameDay, format, addDays } from 'date-fns'
 import { ReseachInsightsGraphState } from '../../../../../VectorFlow/types/BPR'
 import { useGetUpdatedGraphData, useGetHistroricalAvailabilityData } from '../../../../../VectorFlow/Services/MTA/InsightsAndTrends/ResearchInsights'
 import { notifyError, notifyLoader,notifySuccess } from '../../../../../helpers/notify'
-import { toast } from "react-toastify/unstyled"
+import { toast } from 'react-toastify/unstyled'
 
 
 import { useSelector, useDispatch } from 'react-redux'
@@ -28,14 +28,7 @@ import { useGetUIConfigData } from '../../../../Services/MTA/Common/UIConfig'
 import { UIColumnConfigName, UserUIColumnConfigName } from '../../../../../helpers/Enum'
 
 const useResearchInsights = () => {
-    const nonce =
-    (typeof window !== "undefined" &&
-      ((window as any).__nonce__ ??
-        document
-          .querySelector<HTMLMetaElement>('meta[name="csp-nonce"]')
-          ?.content?.trim())) ||
-    undefined;
-  
+
     const { mutateAsync: getUiConfig, isLoading: isUIConfigLoading } = useGetUIConfigData();
 
     const dispatch = useDispatch();
@@ -230,7 +223,6 @@ const useResearchInsights = () => {
             rowSelection:'multiple',
             gridOptions:{
                 rowHeight:50,
-                styleNonce: nonce,
                 getRowStyle: (params: any) => {
                 if (params.node.rowIndex % 2 === 0) {
                     return { background: "#EBEBEB" };
@@ -247,7 +239,7 @@ const useResearchInsights = () => {
             defaultColDef:defaultColDefObject,
             onGridReady:(params)=>setInternalRef(params)
         }
-    }, [nonce, RESEARCHINSIGHT_ROWS_PER_PAGE, customCellRenderers, defaultColDefObject]);
+    },[])
 
     const tempAgGridProps:AgGridReactProps = useMemo (()=> {
         return{
@@ -668,7 +660,7 @@ const useResearchInsights = () => {
             headerCheckboxSelection: true,
             headerCheckboxSelectionCurrentPageOnly: true,
             resizable: false,
-            suppressHeaderMenuButton: true,
+            suppressMenu: true,
             maxWidth: 50,
             pinned: 'left',
             filter: false,
