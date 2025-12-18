@@ -74,6 +74,9 @@ function UploadWrapperSection({
 
   const handleUploadClick = async () => {
     setProgress(0);
+    setErrorData([]);       
+    setValidUserData([]);    
+    setNoData(true);
 
     if (!file) {
       notifyError("Please select a file to upload");
