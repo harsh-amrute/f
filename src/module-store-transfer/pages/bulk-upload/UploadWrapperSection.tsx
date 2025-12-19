@@ -19,6 +19,9 @@ function UploadWrapperSection({
   const [errorData, setErrorData] = useState<any>([]);
   const [progress, setProgress] = useState(0);
 
+  const REQUIRED_HEADERS = ["Username", "Email ID", "Password"];
+  const MAX_RECORDS = 100;
+
   const {
     mutateAsync: postUsersDataForValidation,
     isLoading,
@@ -74,67 +77,129 @@ function UploadWrapperSection({
 
   const handleUploadClick = async () => {
     setProgress(0);
+    setErrorData([]); // Clear previous errors
+    setValidUserData([]); // Clear previous valid data
+    setNoData(true); // Reset display
 
     if (!file) {
-      notifyError("Please select a file to upload");
+      notifyError("Please select a file to upload.");
       return;
     }
 
-    const fileData = await file.arrayBuffer();
-    const data = await readXlsxFile(fileData, {
-      parseNumber: (string) => string,
-    });
+    // --- 1. Check for valid file type ---
+    if (file.type !== "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+      notifyError("Only xlsx files are accepted.");
+      return;
+    }
 
-    if (data.length === 0) {
+    let allData: any[] = [];
+    try {
+      // Note: readXlsxFile reads the first sheet only, covering typical single-sheet template use.
+      const fileData = await file.arrayBuffer();
+      
+      // Read all data from the first sheet
+      allData = await readXlsxFile(fileData, {
+        parseNumber: (string) => string,
+      });
+
+    } catch (error) {
+      // Handles cases where the file might be corrupted or unreadable (similar to 'blank file')
+      notifyError("Could not read the file. It might be corrupted or empty.");
+      return;
+    }
+
+    // --- 2. Check for No Data (Blank sheet content / Blank File) ---
+    if (allData.length === 0) {
       notifyError("No data found in the file.");
       return;
     }
 
-    if (data.length === 1) {
-      if (!_.isEqual(data[0], ["Username", "Email ID", "Password"])) {
-        notifyError("Invalid file format. Please upload a valid template.");
-        return;
-      }
-    }
-    if (data.length === 1) {
-      if (_.isEqual(data[0], ["Username", "Email ID", "Password"])) {
-        notifyError(
-          "Please enter atleast one row of data apart from the header."
-        );
-        return;
-      }
-    }
+    const headers = allData[0];
+    const dataRows = allData.slice(1);
 
-    if (data.length - 1 > 100) {
-      notifyError("You can only upload a maximum of 100 records at a time.");
+    //  3. Validate Headers (Mismatches, Duplicates, Extra/Missing) 
+    const lowerCaseHeaders = headers.map((h: string) => h ? h.trim().toLowerCase() : "");
+    
+    // Define lower case required headers for easier comparison
+    const requiredLower = REQUIRED_HEADERS.map(h => h.toLowerCase());
+
+    // 3a. Check for Missing Required Headers 
+    const missingHeaders = requiredLower.filter(
+        (rh) => !lowerCaseHeaders.includes(rh)
+    );
+
+    if (missingHeaders.length > 0) {
+      notifyError(`Missing required headers: ${missingHeaders.join(", ")}.`);
+      return;
+    }
+    
+    // 3b. Check for Duplicate or Blank Headers (LOWER PRIORITY)
+    const uniqueHeaders = new Set(lowerCaseHeaders.filter((h:any) => h !== ""));
+    if (uniqueHeaders.size !== lowerCaseHeaders.length || lowerCaseHeaders.some((h:any) => h === "")) {
+        notifyError("Duplicate or blank column headers found in the file.");
+        return;
+    }
+    
+    // 3c. Check for Extra Headers (if the column count must match exactly)
+    if (headers.length !== REQUIRED_HEADERS.length) {
+        const extraHeaders = lowerCaseHeaders.filter(
+            (ch:any) => !requiredLower.includes(ch)
+        );
+        if (extraHeaders.length > 0) {
+            notifyError(`The file contains extra headers not required: ${extraHeaders.join(", ")}.`);
+            return;
+        } 
+    }
+    
+    //  4. Check for Data Rows Only (Header with no data) ---
+    if (dataRows.length === 0) {
+      notifyError(
+        "Please enter at least one row of data apart from the header."
+      );
       return;
     }
 
-    const userData = data.map((row: any, index: number) => {
-      return {
-        srNo: index,
-        id: `${row[0] ?? ""}_${index}`,
-        username: row[0] ?? "",
-        email: row[1] ?? "",
-        pwd: row[2] ?? ""
-      };
-    });
+    //  5. Check Max Records Limit ---
+    if (dataRows.length > MAX_RECORDS) {
+      notifyError(`You can only upload a maximum of ${MAX_RECORDS} records at a time.`);
+      return;
+    }
 
-    userData.shift();
-    
+    // Map the data rows using header indexing (resilient to column order changes)
+    const userData = dataRows.map((row: any, index: number) => {
+      // Find the index of the required headers in the uploaded file's headers
+      const usernameIndex = lowerCaseHeaders.indexOf("username");
+      const emailIndex = lowerCaseHeaders.indexOf("email id");
+      const pwdIndex = lowerCaseHeaders.indexOf("password");
+
+      return {
+        id: index + 1, // Start IDs from 1 for data rows
+        username: row[usernameIndex] ? String(row[usernameIndex]).trim() : "",
+        email: row[emailIndex] ? String(row[emailIndex]).trim() : "",
+        pwd: row[pwdIndex] ? String(row[pwdIndex]).trim() : "",
+      };
+    }).filter((user: any) => user.username || user.email || user.pwd); // Filter out entirely empty rows
+
+    // Re-check for no actual data rows after filtering entirely empty ones
+    if (userData.length === 0) {
+        notifyError("All data rows were empty or contained only blank values.");
+        return;
+    }
+
     try {
+      // 6. Server Validation Call ---
       const response = await postUsersDataForValidation({ userData });
 
       setNoData(false);
+      
       if (response?.data?.ec && response?.data?.ec > 0) {
         if (response?.data.inv_ent) {
           const errorRowData = response?.data?.inv_ent?.map((row: any) => {
-            const userDataWithError = userData.find((userData) => userData.id === row.id);
             return {
               error: row?.err,
-              username: userDataWithError?.username,
-              email: userDataWithError?.email,
-              pwd: userDataWithError?.pwd,
+              username: userData.find((u: any) => u.id === row.id)?.username || "",
+              email: userData.find((u: any) => u.id === row.id)?.email || "",
+              pwd: userData.find((u: any) => u.id === row.id)?.pwd || "",
               roles: null,
               permissions: null,
             };
@@ -142,22 +207,25 @@ function UploadWrapperSection({
 
           setErrorData(errorRowData);
         }
+        
         const validData = userData.filter((row: any) => {
           return !response?.data?.inv_ent?.some(
-            (errorRow: any) => errorRow.id === row.id
+            (errorRow: any) => errorRow.id === row.id 
           );
         });
+
         validData.forEach((ele: any, index: number) => {
-          ele.srNo = index + 1;
+          ele.id = index + 1;
         });
+
         setValidUserData(validData);
         setNoData(false);
       } else {
+        // All data is valid
         setValidUserData(userData);
         setNoData(false);
       }
     } catch (error: any) {
-      console.error(error);
       notifyError("Failed to validate data!");
     }
   };
