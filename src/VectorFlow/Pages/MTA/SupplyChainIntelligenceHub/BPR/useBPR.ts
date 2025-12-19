@@ -599,7 +599,7 @@ const useBPR =()=>{
             floatingFilter: false,
             headerTooltip: "Remark History",
         },
-        Tags: {
+        tags: {
             cellRenderer: 'tagsCellRenderer',
             width: 100,
             minWidth: 100,

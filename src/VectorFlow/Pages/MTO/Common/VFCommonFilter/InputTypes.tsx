@@ -9,18 +9,18 @@ import {
   OptionsWrapper,
   MultiSelectThemeREGALBLAZE,
   MultiSelectThemeDEFAULT,
-  TextBtnREGALBLAZE,
-  TextBtnDEFAULT,
   MultiSelectCheckBoxBase,
   fullWidth,
   pointer,
   defaultCursor,
+  accentColorThemeVar,
 } from "./styles.css";
 import { Filter } from "../../../../../VectorFlow/types/MTO";
 import "./style.css";
 import { InputTypes } from "../Enum";
 import { checkValue } from "../../../../../helpers/utils";
 import { SCFilterAddButton } from "../../MDM/ViewModify/styles.css";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 
 interface FilterMultiSelectCheckboxProps {
   filterOptions: Array<{ label: string; id: string }>;
@@ -118,9 +118,8 @@ const FilterMultiSelectCheckbox = ({
   const multiSelectTheme = (t: ThemeKey) =>
     t === "REGALBLAZE" ? MultiSelectThemeREGALBLAZE : MultiSelectThemeDEFAULT;
 
-  const textBtnTheme = (t: ThemeKey) =>
-    t === "REGALBLAZE" ? TextBtnREGALBLAZE : TextBtnDEFAULT;
 
+  const themeColor = themeUi ==="REGALBLAZE"?"#C7810E":"#82104C"
   return (
     <>
       {filterOptions?.map((option: { label: string; id: string }) => {
@@ -129,9 +128,8 @@ const FilterMultiSelectCheckbox = ({
           <>
             <div
               key={option.id}
-              className={`${MultiSelectCheckBoxBase} ${multiSelectTheme(
-                themeUi
-              )}`}
+              className={MultiSelectCheckBoxBase}
+              style={assignInlineVars({[accentColorThemeVar]: themeColor})}
             >
               <input
                 key={option.id}
@@ -179,8 +177,6 @@ const Checkbox = ({
   const multiSelectTheme = (t: ThemeKey) =>
     t === "REGALBLAZE" ? MultiSelectThemeREGALBLAZE : MultiSelectThemeDEFAULT;
 
-  const textBtnTheme = (t: ThemeKey) =>
-    t === "REGALBLAZE" ? TextBtnREGALBLAZE : TextBtnDEFAULT;
 
   return (
     <>

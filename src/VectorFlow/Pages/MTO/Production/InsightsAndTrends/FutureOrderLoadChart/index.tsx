@@ -620,6 +620,12 @@ const FutureOrderLoadChart = () => {
   const currentYear = new Date().getFullYear();
   const maxAllowedDate = new Date(currentYear + 3, 11, 31);
 
+  const tileDisabled = ({ date }: any) => {
+    if (disabledFOLHorizonDate) {
+      return disabledFOLHorizonDate(date);
+    }
+  };
+
   return (
     <>
       {(isLoading ||
@@ -686,7 +692,10 @@ const FutureOrderLoadChart = () => {
               })}
             >
               <span className={filterLabel}>Select CCR</span>
-              <div className={selectGroup} style={{ width: "120px !important" }}>
+              <div
+                className={selectGroup}
+                style={{ width: "120px !important" }}
+              >
                 <VFSelect
                   options={ccrOptions}
                   themeUi={themeUi}
@@ -703,7 +712,10 @@ const FutureOrderLoadChart = () => {
               })}
             >
               <span className={filterLabel}>Order Option</span>
-              <div className={selectGroup} style={{ width: "120px !important" }}>
+              <div
+                className={selectGroup}
+                style={{ width: "120px !important" }}
+              >
                 <VFSelect
                   options={OrderOptions}
                   onChange={handleActionChange}
@@ -731,8 +743,7 @@ const FutureOrderLoadChart = () => {
                     minDate={new Date()}
                     maxDate={maxAllowedDate}
                     disabled={isDateDisabled}
-                    disabledFOLHorizonDate={disabledFOLHorizonDate}
-                    // disabledFOLHorizonDate={disabledFOLHorizonDateFrom}
+                    tileDisabled={tileDisabled}
                     dateInputStyle={{
                       fontSize: "10px",
                       fontWeight: 300,
@@ -769,9 +780,7 @@ const FutureOrderLoadChart = () => {
                     date={toDate}
                     onDateChange={setToDate}
                     disabled={isDateDisabled}
-                    disabledFOLHorizonDate={disabledFOLHorizonDate}
-                    // disabledFOLHorizonDate={disabledFOLHorizonDateTo}
-
+                    tileDisabled={tileDisabled}
                     minDate={new Date()}
                     maxDate={maxAllowedDate}
                     dateInputStyle={{

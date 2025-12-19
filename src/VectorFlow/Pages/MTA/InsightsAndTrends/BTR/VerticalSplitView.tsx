@@ -111,19 +111,16 @@ const VerticalSplitView = (props: SplitViewProps) => {
     return newColDef;
   }, [techTable.columnDefs]);
 
-  const ecoTableColDefs = useMemo<any>(() => {
-    if (!ecoTable.columnDefs) return [];
-    const colDefs = ecoTable.columnDefs.filter(
-      (col: any) =>
-        col.colId && !["dailydatagraph", "WhCode"].includes(col.colId)
-    );
-    const newColDef = colDefs.map((colDef: any) => {
-      colDef.pinned = false;
-      colDef.filter = false;
-      return colDef;
-    });
-    return newColDef;
-  }, [techTable.columnDefs]);
+    const ecoTableColDefs = useMemo<any>(() => {
+        if (!ecoTable.columnDefs) return []
+        const colDefs = ecoTable.columnDefs.filter((col: any) => col.colId && !['dailydatagraph','Category', "LocationName", "Norm", "SKUCode", "SKUDescription", "Tags", "VirtualNorm", "RN", "pc", "pn","WhCode"].includes(col.colId));
+        const newColDef = colDefs.map((colDef: any) => {
+            colDef.pinned = false;
+            colDef.filter=false;
+            return colDef;
+        });
+        return newColDef
+    }, [techTable.columnDefs]);
 
   const handleChange = (sizes: Array<number>) => {
     setLockBtnPosition(sizes[0]);

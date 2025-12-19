@@ -137,6 +137,12 @@ const ExpediteChildCustomCharts = ({recordCount}:{recordCount:any}) => {
                         labelKey: "columns",
                         iconKey: "columns",
                         toolPanel: "agColumnsToolPanel",
+                        toolPanelParams: {
+                            suppressPivots: false,
+                            suppressPivotMode: false,
+                            suppressRowGroups: true,
+                            suppressValues: false,
+                        },
                       }
                     ]}
                   }
@@ -159,8 +165,11 @@ const ExpediteChildCustomCharts = ({recordCount}:{recordCount:any}) => {
                         textAlign: "center",
                         fontStyle: "normal",
                         fontVariant: "normal",
-                        height: "50px", 
-                      }
+                        height: "50px",
+                        display: "block",           
+                        textOverflow: "ellipsis",   
+                        whiteSpace: "nowrap",       
+                    }
                 }}
                 disableZoomScaling={true}
                 rowHeight={30}

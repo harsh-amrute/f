@@ -19,14 +19,9 @@ import {
   subItem,
   bottomButtons,
   container,
-  scrollWrapper,
-  scrollContainer,
-  roleTab,
-  buttonGroup,
-  scrollContainerScrolling
+  ImageSpan,
 } from "./style.css";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
-import clsx from "clsx";
 
 const RoleDropdown = ({ allRoles, width, onApplyRole, currentRoles }: any) => {
   const user = useUserData();
@@ -237,7 +232,18 @@ const RoleViewCellRenderer = (params: MyCellRendererProps) => {
   };
 
   const onApplyRole = (selectedRoles: Set<any>) => {
+    // const applicationName = Array.from(selectedRoles).map(item => item.application_name);
+    // const permissions = params.data?.permissions;
+    // if (permissions) {
+    //   Object.keys(permissions).forEach(key => {
+    //     if (!applicationName.includes(key)) {
+    //       delete permissions[key];
+    //     }
+    //   });
+    // }
+
     params.data.roles = selectedRoles;
+    // params.data.permissions = permissions;
     params.api?.refreshCells({ rowNodes: [params.node] });
     setOpen(false);
   };
@@ -249,17 +255,19 @@ const RoleViewCellRenderer = (params: MyCellRendererProps) => {
 
   if (!roles || roles.length === 0) {
     return (
-      <div
-        className={container}
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
+      <div className={container}>
+        {params.data.errorRole && (
+          <span className={ImageSpan}>
+            <img
+              style={{ width: "20px", height: "20px" }}
+              src="\assets\img\error_icon.svg"
+              alt=""
+            />
+          </span>
+        )}
         <VFButton
           disabled={false}
-          style={{ width: "60%", height: "25px", fontSize: "1rem" }}
+          style={{ width: "80%", height: "25px", fontSize: "1rem" }}
           themeUi={themeUi}
           onClick={onSelectClick}
         >
@@ -290,35 +298,30 @@ const RoleViewCellRenderer = (params: MyCellRendererProps) => {
       </div>
     );
   }
-  const shouldScroll = roles.length > 3;
 
   return (
     <div className={container}>
-      <div className={scrollWrapper}>
-        <div
-          className={clsx(
-            scrollContainer,
-            shouldScroll && scrollContainerScrolling
-          )}
-        >
-          {roles?.map((role: any, index: number) => (
-            <div className={roleTab} key={index}>
-              {role}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <span className={buttonGroup}>
-        <VFButton
-          disabled={false}
-          style={{ width: "90px", height: "25px", fontSize: "1rem" }}
-          themeUi={themeUi}
-          onClick={onSelectClick}
-        >
-          {"Edit Roles"}
-        </VFButton>
+      <span className={ImageSpan}>
+        {roles.length > 0 && (
+          <span className={ImageSpan}>
+            <img
+              style={{ width: "20px", height: "20px" }}
+              src="\assets\img\check_list_icon.svg"
+              alt=""
+            />
+          </span>
+        )}
       </span>
+
+      <VFButton
+        disabled={false}
+        style={{ width: "80%", height: "25px", fontSize: "1rem" }}
+        themeUi={themeUi}
+        onClick={onSelectClick}
+      >
+        {"View / Edit Roles"}
+      </VFButton>
+
       {open && (
         <Portal wrapperId="checkbox-dropdown">
           <div

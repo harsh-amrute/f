@@ -3,14 +3,13 @@ import { SearchInputMultiple } from "../../../components";
 import { useUserData } from "../../../context";
 import Checkbox from "../../../components/VectorFLOW/commons/MTO/Checkbox";
 import { set } from "lodash";
-import {
-  selectAllWrapper,
+import { selectAllWrapper,
   sectionContainer,
   sectionTitle,
   selectContainer,
   label,
-  grid,
-} from "./style.css";
+  grid, titleContainer } from "./style.css";
+
 
 const PermissionForm = ({
   currentAppAllPermissions,
@@ -417,38 +416,36 @@ const PermissionForm = ({
 
   const themeUi = useUserData().user.user.theme_ui;
 
-  const isSelectAll = (selectedPermissions: any) => {
+  const isSelectAll = (selectedPermissions: any, isProduct: boolean) => {
     if (!selectedApplication) return false;
 
     const currentPermissions = selectedPermissions[selectedApplication] || {};
-    const locPerms = currentPermissions["location_permission"] || [];
-    const prodPerms = currentPermissions["product_permission"] || [];
+    if (isProduct) {
+      const prodPerms = currentPermissions["product_permission"] || [];
+      const totalProdPerms = PL3.length;
+      
+      const selectedProdPermsCount = prodPerms.filter((e: any) => e.length === 3).length;
+      return selectedProdPermsCount === totalProdPerms;
 
-    const totalLocPerms = LL3.length;
-    const totalProdPerms = PL3.length;
+    } else {
+      const locPerms = currentPermissions["location_permission"] || [];
+      
+      const totalLocPerms = LL3.length;
+      const selectedLocPermsCount = locPerms.filter((e: any) => e.length === 3).length;
+      return selectedLocPermsCount === totalLocPerms;
+    }
+  }
 
-    const selectedLocPermsCount = locPerms.filter(
-      (e: any) => e.length === 3
-    ).length;
-    const selectedProdPermsCount = prodPerms.filter(
-      (e: any) => e.length === 3
-    ).length;
-
-    return (
-      selectedLocPermsCount === totalLocPerms &&
-      selectedProdPermsCount === totalProdPerms
-    );
-  };
-  const setAllPermissions = () => {
+  const setAllPermissions = (isProductPermission:boolean) => {
     if (!selectedApplication) return;
 
-    if (isSelectAll(selectedPermissions)) {
+    if (isSelectAll(selectedPermissions, isProductPermission)) {
       // Deselect all
       setSelectedPermissions((prev: any) => ({
         ...prev,
         [selectedApplication]: {
-          location_permission: [],
-          product_permission: [],
+          location_permission: !isProductPermission ? [] : prev[selectedApplication]?.location_permission,
+          product_permission: isProductPermission ? [] : prev[selectedApplication]?.product_permission,
         },
       }));
     } else {
@@ -459,8 +456,8 @@ const PermissionForm = ({
       setSelectedPermissions((prev: any) => ({
         ...prev,
         [selectedApplication]: {
-          location_permission: allLocPerms,
-          product_permission: allProdPerms,
+          location_permission: !isProductPermission ? allLocPerms : prev[selectedApplication]?.location_permission,
+          product_permission: isProductPermission ? allProdPerms : prev[selectedApplication]?.product_permission,
         },
       }));
     }
@@ -468,36 +465,29 @@ const PermissionForm = ({
 
   return (
     <div style={{ padding: "40px 20px 20px 20px" }}>
-      <div
-        style={{
-          marginBottom: "20px",
-          fontSize: "14px",
-          fontWeight: 600,
-          display: "flex",
-          justifyContent: "right",
-          alignItems: "center",
-        }}
-      >
-        <div className={selectAllWrapper}>
-          <Checkbox
-            style={{ zoom: 0.5 }}
-            theme={themeUi}
-            type="checkbox"
-            checked={isSelectAll(selectedPermissions)}
-            onClick={(e) => e.stopPropagation()} // prevent double trigger
-            onChange={(e: any) => {
-              setAllPermissions();
-            }}
-          />
-          <label style={{ cursor: "pointer" }}>Select All</label>
-        </div>
-      </div>
       <div className={sectionContainer}>
+        <div className={titleContainer}>
         <h4 className={sectionTitle}>Product Permission</h4>
+            <div style={{ marginBottom: "20px", fontSize: "14px", fontWeight: 600, display: 'flex', justifyContent: 'right', alignItems: 'center'}}>
+            <div className={selectAllWrapper}>
+            <Checkbox
+                          style={{ zoom: 0.5 }}
+                          theme={themeUi}
+                          type="checkbox"
+                          checked={isSelectAll(selectedPermissions, true)}
+                          onClick={(e) => e.stopPropagation()} // prevent double trigger
+                          onChange={(e: any) => {setAllPermissions(true)}}
+                          />
+                        <label style={{ cursor: "pointer" }}>Select All</label>
+
+              </div>
+            </div>
+          
+        </div>
         <div className={grid}>
-          <div className={selectContainer}>
-            <label className={label}>Business</label>
-            <SearchInputMultiple
+        <div className={selectContainer}>
+        <label className={label}>Business</label>
+        <SearchInputMultiple
               disabled={false}
               placeholder="Select"
               options={PL1Opts}
@@ -571,9 +561,26 @@ const PermissionForm = ({
       </div>
 
       <div className={sectionContainer}>
-        <h4 className={sectionTitle}>Location Permission</h4>
-        <div className={grid}>
-          <div className={selectContainer}>
+      <div className={titleContainer}>
+      <h4 className={sectionTitle}>Location Permission</h4>
+              <div style={{ marginBottom: "20px", fontSize: "14px", fontWeight: 600, display: 'flex', justifyContent: 'right', alignItems: 'center'}}>
+              <div className={selectAllWrapper}>
+              <Checkbox
+                            style={{ zoom: 0.5 }}
+                            theme={themeUi}
+                            type="checkbox"
+                            checked={isSelectAll(selectedPermissions, false)}
+                            onClick={(e) => e.stopPropagation()} // prevent double trigger
+                            onChange={(e: any) => {setAllPermissions(false)}}
+                            />
+                          <label style={{ cursor: "pointer" }}>Select All</label>
+
+                </div>
+              </div>
+              
+            </div>
+            <div className={grid}>
+            <div className={selectContainer}>
             <label className={label}>Zone</label>
             <SearchInputMultiple
               placeholder="Select"

@@ -183,11 +183,14 @@ const mapUIConfigToColdefs1 = (columns:Array<{header:string,colCode:string}>) =>
     overridenChartparams.defaultColForChart = defaultColForChart
  
     overridenChartparams.chartKey.Yaxis = dynamicFeilds
-    const customizedSeriesData = overridenChartparams.series.map((point:any,index:number)=>{
-      return {
-        ...point , yKey:dynamicFeilds[index], yName:dynamicFeilds[index]
-      }
-    })
+    const customizedSeriesData = dynamicFeilds.map(field => ({
+      type: 'bar',
+      xKey: 'WHDescription',
+      stacked: true,
+      barPadding: 0.2,
+      yKey: field,
+      yName: field
+    }));
     overridenChartparams.series = customizedSeriesData
     return overridenChartparams
   }

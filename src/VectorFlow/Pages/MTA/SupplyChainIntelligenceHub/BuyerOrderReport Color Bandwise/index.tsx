@@ -161,7 +161,7 @@ const BuyerOrderReportColorBandwise = ()=>{
                   }}
                 />
              { 
-             rowData?.length &&
+             rowData?.length  > 0 &&
              <>
              <VFPagination
                   selectedRows={0}

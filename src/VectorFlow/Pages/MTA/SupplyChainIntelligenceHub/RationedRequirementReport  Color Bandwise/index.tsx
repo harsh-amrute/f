@@ -132,7 +132,7 @@ const RRRColorBandwise = () => {
                 }}
               />  
               {
-              rowData?.length &&
+              rowData?.length  > 0 &&
               <VFPagination 
                 selectedRows={0} 
                 totalRows={recordsCount} 

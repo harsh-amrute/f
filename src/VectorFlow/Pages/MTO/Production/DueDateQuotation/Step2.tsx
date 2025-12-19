@@ -41,6 +41,7 @@ import {
   notifySuccess,
 } from "../../../../../helpers/notify";
 import * as globalStyles from "../../../../../styles/global";
+import "./style.css";
 
 const Step2 = forwardRef(
   (
@@ -215,7 +216,7 @@ const Step2 = forwardRef(
         field: "",
         headerCheckboxSelection: true,
         checkboxSelection: true,
-        suppressHeaderMenuButton: true,
+        suppressMenu: true,
         maxWidth: 35,
         position: 0,
         filter: false,
@@ -235,7 +236,6 @@ const Step2 = forwardRef(
               style={{ height: "100%", display: "flex", alignItems: "center" }}
             >
               <Tooltip
-                disableStyleInjection="core"
                 content={
                   <div
                     style={{
@@ -317,7 +317,7 @@ const Step2 = forwardRef(
             </div>
           );
         },
-        suppressHeaderMenuButton: true,
+        suppressMenu: true,
         position: 1,
         filter: false,
       },
@@ -354,28 +354,31 @@ const Step2 = forwardRef(
     const tooltipValues = (value: any) => {
       return `${value} ${value == 1 ? " day" : " days"}`;
     };
+
     function TooltipRenderer({ datum, xKey }: any) {
       return `
-        <div class="step2-tooltip-container transform-translate-x">
-          <div class="step2-tooltip-header">
-            ${datum[xKey]}
-          </div>
-          <div class="step2-tooltip-body">
-            <div class="step2-tooltip-row">
-              <div class="color-box barcolor-${barColors["ccrFolWithHoliday"]}"></div>
-              <div>
-                FOL with holidays: ${tooltipValues(datum["ccrFolWithHoliday"])} (FOL- ${tooltipValues(datum["FOL"])}, Holidays- ${tooltipValues(datum["holidays"])})
-              </div>
-            </div>
-            <div class="step2-tooltip-row">
-              <div class="color-box barcolor-${barColors["orderLoad"]}"></div>
-              <div>SOL: ${tooltipValues(datum["orderLoad"])}</div>
-            </div>
-          </div>
+        <div class="step2-tooltip-container">
+      <div class="step2-tooltip-header">
+          ${datum[xKey]}
+      </div>
+      <div class="step2-tooltip-body">
+        <div class="step2-tooltip-row">
+          <div class="step2-color-box barcolor-ccrFolWithHoliday"></div>
+          FOL with holidays: ${tooltipValues(datum["ccrFolWithHoliday"])} (FOL- ${tooltipValues(datum["FOL"])}, Holidays- ${tooltipValues(datum["holidays"])} )
         </div>
-      `;
+        <div class="step2-tooltip-row">
+          <div class="step2-color-box barcolor-orderLoad"></div>
+          SOL: ${tooltipValues(datum["orderLoad"])}
+        </div>
+      </div>
+      </div>`;
+  
+      // dont remove below code require for fol gap phase 2
+      {/*<div style="display: flex; align-items: center;">
+          <div style="margin-right: 10px; height: 3px; width: 15px; background-color: ${barColors["fol_gap"]}"></div>
+          FOL Gap: ${tooltipValues(datum["fol_gap"])}
+        </div>*/}
     }
-
 
     const chartOptions: any = {
       data: chartData,
@@ -1647,6 +1650,7 @@ const Step2 = forwardRef(
                   paddingBottom: "75px",
                 }}
               >
+                {" "}
                 <div
                   style={{
                     height: "100%",

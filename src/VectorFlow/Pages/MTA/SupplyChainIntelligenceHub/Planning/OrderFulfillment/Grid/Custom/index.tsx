@@ -162,6 +162,13 @@ const OrderFulfillmentCustomCharts = ({
         iconKey: "columns",
         toolPanel: "agColumnsToolPanel",
         // toolPanelParams: {},
+            toolPanelParams: {
+              suppressPivots: false,
+              suppressPivotMode: false,
+              suppressRowGroups: true,
+              suppressValues: false,
+            },
+      
       },
       {
         id: "filters",

@@ -182,7 +182,7 @@ const BPR = () => {
                 />
               </div>
 
-              {BPRRowData?.length && (
+              {BPRRowData?.length > 0 && (
                 <>
                   <VFPagination
                     selectedRows={0}

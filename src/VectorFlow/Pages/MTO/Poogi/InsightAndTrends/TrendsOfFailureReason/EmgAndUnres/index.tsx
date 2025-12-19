@@ -35,7 +35,7 @@ const EmgAndUnres = (props: any) => {
                         <span style={{ fontWeight: 500 }}>Emergent & Unresolved Major-Minor Reasons Impacting OTIF &nbsp;</span>
                         <span style={{ fontWeight: 350 }}>{`(${moment(date).subtract(150, 'days').format('D MMM YYYY')} - ${moment(date).format('D MMM YYYY')})`}</span>
                     </div>
-                    <div className={scChartMainContainer}>
+                    <div className={SCChartHeaderContainer}>
                         <div style={{ marginLeft: 30, marginBottom: '-5px' }}>
                             <VFInfoToolTip infoList={infoTipData} />
                         </div>

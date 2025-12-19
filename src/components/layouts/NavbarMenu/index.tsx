@@ -5,9 +5,9 @@ import { listMenuParent } from "./listMenu";
 import { MenuToolTip } from "../../../components/index";
 import { useState, useEffect } from "react";
 import { useUserData } from "../../../context";
-import { useNavigate } from "react-router";
-import { useGetAllReports } from "../../../VectorFlow/Services/MTA/MDM";
-import _ from "lodash";
+import { useLocation, useNavigate } from "react-router";
+import { useGetAllReports } from '../../../VectorFlow/Services/MTA/MDM'
+import _ from 'lodash'
 import { useGetAllMTOReports } from "../../../VectorFlow/Services/MTO/Common/DownloadReports";
 import { getNestedChildren } from "../../../helpers/utils";
 import { Tooltip } from "react-tooltip";
@@ -78,6 +78,19 @@ const NavbarMenu = ({
   const [isLoading, setIsLoading] = useState(false);
   const [tempUrls, setTempUrls] = useState([]); //temp url is used to show downloading
   const [reportUrls, setReportUrls] = useState<string[]>([]);
+
+  const location = useLocation();       
+   useEffect(()=>{
+    setListMenu((prev:any[])=>{
+      const updatedPrev = prev.map((list)=>{
+        return {
+          ...list,
+          status : list.url === location.pathname
+        }
+      })
+      return updatedPrev
+    })
+  },[location])
 
   const getReportFields = async () => {
     try {

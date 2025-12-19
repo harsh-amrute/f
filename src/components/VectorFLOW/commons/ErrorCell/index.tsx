@@ -149,12 +149,7 @@ const ErrorCell = (props: ICellRendererParams) => {
     <>
       <div
         className={container}
-        style={
-          {
-            overflow: "visible",
-            ...assignInlineVars({[containerBgVar]: themedBg})
-          } as React.CSSProperties
-        }
+        style={assignInlineVars({ [containerBgVar]: themedBg })}
       >
         <img
           src={imageSrc}
@@ -169,9 +164,7 @@ const ErrorCell = (props: ICellRendererParams) => {
 
         <span
           className={errorText}
-          style={
-            { [themeTextColorVar]: themedTextColor } as React.CSSProperties
-          }
+          style={assignInlineVars({ [themeTextColorVar]: themedTextColor })}
         >
           {getFomattedMessage(message)}
         </span>

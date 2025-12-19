@@ -1,14 +1,8 @@
-import { style, globalStyle } from "@vanilla-extract/css";
+import { style, globalStyle, createVar } from "@vanilla-extract/css";
+import { opacityDisableVar } from "../../MDM/ViewModify/styles.css";
 
-/** tokens */
-const colors = {
-  regalblaze: "#C7810E",
-  defaultAccent: "#82104C",
-  text: "#313131",
-  grayBg: "#F2F2F2",
-  lightGray: "#F4F4F4",
-  shadow: "#95959529",
-};
+export const accentColorThemeVar = createVar();
+export const textBtnVar = createVar();
 
 export const FilterBody = style({
   display: "flex",
@@ -24,7 +18,7 @@ globalStyle(`${FilterBody} input`, { padding: "9px" });
 
 export const FilterCardWrapper = style({
   width: "400px",
-  margin: "47px 0",
+  margin: "47px 0px 47px 0px",
   backgroundColor: "white",
   // boxShadow: `0px 6px 12px ${colors.shadow}`,
   // borderRadius: '6px',
@@ -76,7 +70,7 @@ export const FilterHeader = style({
 
 export const FilterComponent = style({
   backgroundColor: "white",
-  color: colors.text,
+  color: "#313131",
   minHeight: "50px",
   fontStyle: "normal",
   fontVariant: "normal",
@@ -90,7 +84,7 @@ export const FilterComponent = style({
 });
 
 export const SearchComponent = style({
-  background: `${colors.grayBg} 0% 0% no-repeat padding-box`,
+  background: "#F2F2F2 0% 0% no-repeat padding-box",
   borderRadius: "20px",
   height: "30px",
   width: "90%",
@@ -110,20 +104,15 @@ export const ButtonContainer = style({
 
 export const ButtonFilterWrapper = style({
   borderTop: "1px dashed #A0A0A0",
+  opacity: "1px",
   height: "109px",
   width: "100%",
   display: "flex",
   justifyContent: "flex-end",
   flexDirection: "row",
   alignItems: "center",
-  backgroundColor: colors.lightGray,
+  backgroundColor: "#F4F4F4",
   borderRadius: "0px 0px 12px 12px",
-  selectors: {
-    "&:hover": {
-      transform: "scale(1.01)",
-      transition: "all 0.2s ease-in-out",
-    },
-  },
 });
 
 export const DropdownGroupWrapper = style({
@@ -147,7 +136,7 @@ export const TextFieldHeader = style({
   lineHeight: "20px",
   fontFamily: "Roboto",
   letterSpacing: "0px",
-  color: colors.text,
+  color: "#313131",
   textAlign: "left",
   width: "100%",
   padding: "0 1rem",
@@ -183,6 +172,7 @@ export const MultiSelectCheckBoxBase = style({
   justifyContent: "flex-start",
   alignItems: "center",
   gap: "6px",
+  accentColor: accentColorThemeVar,
 });
 export const MultiSelectThemeREGALBLAZE = style({
   // selectors: { '& input[type="checkbox"]': { accentColor: colors.regalblaze } },
@@ -191,12 +181,12 @@ export const MultiSelectThemeDEFAULT = style({
   // selectors: { '& input[type="checkbox"]': { accentColor: colors.defaultAccent } },
 });
 // descendants
-globalStyle(`${MultiSelectThemeREGALBLAZE} input[type="checkbox"]`, {
-  accentColor: colors.regalblaze,
-});
-globalStyle(`${MultiSelectThemeDEFAULT} input[type="checkbox"]`, {
-  accentColor: colors.defaultAccent,
-});
+// globalStyle(`${MultiSelectThemeREGALBLAZE} input[type="checkbox"]`, {
+//   accentColor: colors.regalblaze,
+// });
+// globalStyle(`${MultiSelectThemeDEFAULT} input[type="checkbox"]`, {
+//   accentColor: colors.defaultAccent,
+// });
 
 /* TextBtn */
 export const TextBtnBase = style({
@@ -207,9 +197,16 @@ export const TextBtnBase = style({
   display: "flex",
   alignItems: "center",
   cursor: "pointer",
+  color: textBtnVar,
+  selectors: {
+    "&:hover": {
+      transform: "scale(1.01)",
+      transition: "all 0.2s ease-in-out",
+    },
+  },
 });
-export const TextBtnREGALBLAZE = style({ color: colors.regalblaze });
-export const TextBtnDEFAULT = style({ color: colors.defaultAccent });
+// export const TextBtnREGALBLAZE = style({ color: colors.regalblaze });
+// export const TextBtnDEFAULT = style({ color: colors.defaultAccent });
 
 export const ConfirmationText = style({
   fontFamily: "Roboto",

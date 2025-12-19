@@ -19,17 +19,19 @@ import {
 import { assignInlineVars } from "@vanilla-extract/dynamic";
 
 interface CustomDatePickerProps {
-    date: any;
-    onDateChange: any;
-    themeUi?: string;
-    minDate?: any;
-    disabled?: boolean;
-    dateInputStyle?: React.CSSProperties;
-    imgStyle?: React.CSSProperties;
+  date: any;
+  onDateChange: any;
+  themeUi?: string;
+  minDate?: any;
+  disabled?: boolean;
+  dateInputStyle?: React.CSSProperties;
+  imgStyle?: React.CSSProperties;
   showCalendarIcon?: boolean;
-  disabledFOLHorizonDate?: any;
+  onClick?: any;
+  enableIconClick?: boolean;
+  forceOpenCalendar?: boolean;
   maxDate?: any;
-
+  tileDisabled?: any
 }
 
 type Value = CalendarProps["value"];
@@ -41,9 +43,12 @@ const VFDatePicker = ({
   dateInputStyle,
   imgStyle,
   showCalendarIcon,
-  disabledFOLHorizonDate,
   minDate,
-  maxDate
+  onClick,
+  enableIconClick,
+  forceOpenCalendar,
+  tileDisabled,
+  maxDate,
 }: CustomDatePickerProps) => {
   const [showCalendar, setShowCalendar] = useState(false);
   const [calendarPosition, setCalendarPosition] = useState({ top: 0, left: 0 });
@@ -91,6 +96,19 @@ const VFDatePicker = ({
     }
   };
 
+  useEffect(() => {
+    if (forceOpenCalendar) {
+      const rect = inputRef.current?.getBoundingClientRect();
+      if (rect) {
+        setCalendarPosition({
+          top: rect.bottom + window.scrollY,
+          left: rect.left + window.scrollX,
+        });
+      }
+      setShowCalendar(true);
+    }
+  }, [forceOpenCalendar]);
+
   return (
     <div className={DatePickerWrapper}>
       <input
@@ -109,7 +127,13 @@ const VFDatePicker = ({
         <>
           <button
             type="button"
-            onClick={toggleCalendar}
+            onClick={(e) => {
+              if (enableIconClick && onClick) {
+                onClick(e);
+                return;
+              }
+              toggleCalendar();
+            }}
             className={ButtonWrapper}
           >
             <img
@@ -158,6 +182,7 @@ const VFDatePicker = ({
                     onChange={handleCalendarChange}
                     value={date ? new Date(date) : new Date()}
                     minDate={minDate}
+                    tileDisabled={tileDisabled}
                   />
                 </div>
               </div>,

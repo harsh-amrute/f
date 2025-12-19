@@ -4,16 +4,15 @@ import { AgChartOptions } from "ag-charts-community";
 // import { APIMock } from "../StplAndFullKitsData";
 import { ProductionInsightsAndTrendsString } from "../../../../Common/String";
 import VFInfoToolTip from "../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
-import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer'
+import SplitGraphContainer from "../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer";
 import { columnConfigData } from "../ColumnData";
 import { getColumnDefinations } from "../../../../../../../helpers/utils";
 import { format } from "date-fns";
-import "./style.css";
-
+import "./style.css"
 const FullKitGraph = (props: any) => {
   const { graphData } = props;
 
-  const [date] = useState(format(new Date(), 'd MMM yyyy'));
+  const [date] = useState(format(new Date(), "d MMM yyyy"));
   const [hideChart1, toggleChart1] = useState(false);
   const [chartLoading, setChartLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
@@ -21,19 +20,23 @@ const FullKitGraph = (props: any) => {
 
   function TooltipRenderer({ datum, xKey }: any) {
     return `
-      <div class="insightStpl-tooltip-title">
+    <div class="insightStpl-tooltip-title" >
         ${datum[xKey]}
-      </div>
-      <div class="insightStpl-tooltip-content">
-        <div class="insightStpl-tooltip-row">
-          <div class="insightStpl-color-box color-gray"></div>
-          <div class="label-value">
-            <div>${ProductionInsightsAndTrendsString.fullKitInDays}</div>
-            <div>${datum["days"]}</div>
-          </div>
+    </div>
+    <div class="insightStpl-tooltip-content">
+    
+    <div>
+        <div class="displayFlex">
+            <div class="insightStpl-color-box color-gray">
+            </div>
+            <div class="insightStpl-label-value">
+                <div>${ProductionInsightsAndTrendsString.fullKitInDays}
+                </div>
+                <div> ${datum["days"]}
+                </div>
+            </div>
         </div>
-      </div>
-    `;
+    </div>`;
   }
 
   const options: AgChartOptions = {
@@ -91,7 +94,7 @@ const FullKitGraph = (props: any) => {
   };
 
   const colDefs = useMemo(() => {
-    return getColumnDefinations(columnConfigData?.fullkitTableColumn, {}, [])
+    return getColumnDefinations(columnConfigData?.fullkitTableColumn, {}, []);
   }, []);
 
   const generateHeader = () => {
@@ -113,13 +116,12 @@ const FullKitGraph = (props: any) => {
             fontSize: "14px",
             margin: "0 auto",
             textAlign: "center",
-          }}>
-          <span style={{ fontWeight: 500, }}>
+          }}
+        >
+          <span style={{ fontWeight: 500 }}>
             {`${ProductionInsightsAndTrendsString.fullKitInDays}  `}
           </span>
-          <span style={{ fontWeight: 300, }}>
-            {` (${date})`}
-          </span>
+          <span style={{ fontWeight: 300 }}>{` (${date})`}</span>
         </div>
         <div style={{ display: "flex" }}>
           <div style={{ marginLeft: 30, marginBottom: "-5px" }}>
@@ -149,18 +151,25 @@ const FullKitGraph = (props: any) => {
           </div>
         </div>
       </div>
-    )
-  }
+    );
+  };
 
-  useEffect(()=>{
-    if(graphData){
+  useEffect(() => {
+    if (graphData) {
       setRawData(graphData);
     }
-  },[graphData])
+  }, [graphData]);
 
   return (
-    <div style={{ height: "100%", display: "flex", justifyContent: "left", marginLeft: '12px', paddingBottom: '10px' }}>
-
+    <div
+      style={{
+        height: "100%",
+        display: "flex",
+        justifyContent: "left",
+        marginLeft: "12px",
+        paddingBottom: "10px",
+      }}
+    >
       <SplitGraphContainer
         tableLoading={tableLoading}
         chartLoading={chartLoading}
@@ -168,7 +177,7 @@ const FullKitGraph = (props: any) => {
         setChartLoading={setChartLoading}
         data={rawData}
         rowData={options.data}
-        graphTitle={''}
+        graphTitle={""}
         tableTitle={ProductionInsightsAndTrendsString.fullKitInDays}
         options={options}
         colDef={colDefs}

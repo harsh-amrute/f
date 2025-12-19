@@ -8,7 +8,6 @@ import { GridRef } from "../../../VectorFlow/types/MDM";
 import { actionButton } from "./style.css";
 import { notifyWarning } from "../../../helpers/notify";
 import _ from "lodash";
-import { ExcelExportName } from "../../../VectorFlow/Pages/MTO/Common/Enum";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
 
 /**
@@ -28,6 +27,7 @@ type BulkUploadHeaderParams = {
   isBulkActionEnabled: boolean | undefined;
   resetState: () => void;
   gridRef?: GridRef | any;
+  removeSelectedUser: () => void,
 };
 
 /**
@@ -43,6 +43,7 @@ const BulkUploadHeader = ({
   isBulkActionEnabled,
   resetState,
   gridRef,
+  removeSelectedUser
 }: BulkUploadHeaderParams): JSX.Element => {
   const [open, setOpen] = useState(false);
   const [dropdownPosition, setDropdownPosition] = useState<CSSProperties>({});
@@ -159,38 +160,33 @@ const BulkUploadHeader = ({
             style={{ height: "20px" }}
           />
           <div className={SCGoBackText} style={{ fontSize: "1.5rem" }}>
-            <b>Reupload</b>
+            <b>Go Back</b>
           </div>
         </div>
       </div>
 
       {/* Action Buttons */}
       <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+        {/*Remove user Button*/}
+        <VFButton
+          disabled={!isBulkActionEnabled}
+          style={{ width: "120px", height: "35px", fontSize: "1rem" }}
+          themeUi={themeUi}
+          onClick={removeSelectedUser}
+        >
+          {"Remove Selected User"}
+        </VFButton>
+
         {/* Bulk Action Button */}
         <VFButton
           disabled={!isBulkActionEnabled}
-          style={{ width: "100px", height: "35px", fontSize: "1rem" }}
+          style={{ width: "150px", height: "35px", fontSize: "1rem" }}
           themeUi={themeUi}
           onClick={onSelectClick}
         >
-          {"Bulk Action"}
+          {"Bulk Action For Selected User"}
         </VFButton>
 
-        {/*Export Button*/}
-        <VFButton
-          disabled={false}
-          style={{ width: "100px", height: "35px", fontSize: "1rem" }}
-          themeUi={themeUi}
-          onClick={() => {
-            gridRef.current.api.exportDataAsExcel({
-              fileName: ExcelExportName.UserData,
-              sheetName: ExcelExportName.UserData,
-              columnKeys: ["id", "username", "email", "pwd"],
-            });
-          }}
-        >
-          {"Export"}
-        </VFButton>
       </div>
 
       {/* Dropdown Menu */}

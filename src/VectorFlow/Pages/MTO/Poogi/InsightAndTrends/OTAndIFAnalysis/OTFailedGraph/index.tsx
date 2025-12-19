@@ -40,7 +40,7 @@ const OTFailedGraph = (props: OTFailedGraphProps) => {
                         <span style={{ fontWeight: 350 }}>{`(${moment(apiResponseData?.data?.data || '-').subtract(90, 'days').format('D MMM YYYY')} - ${moment(apiResponseData?.data?.data || '-').format('D MMM YYYY')})`}</span>
                     </div>
 
-                    <div className={scChartMainContainer}>
+                    <div className={SCChartHeaderContainer}>
 
                         <div style={{ marginLeft: 30, marginBottom: '-5px' }}>
                             <VFInfoToolTip infoList={graph1} />

@@ -1,7 +1,7 @@
 import moment from 'moment'
 import { useEffect, useState } from 'react'
 import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VFInfoToolTip'
-import { scChartMainContainer } from '../../../../Common/SplitGraphContainer/styles.css'
+import { scChartMainContainer, SCChartHeaderContainer } from '../../../../Common/SplitGraphContainer/styles.css'
 import { useGetDate } from '../../../../../../Services/MTO/Production/InsightsAndTrends/RMPMExpediting'
 import BoxPlotContainer from '../../../../Common/BoxPlotContainer'
 import OverlayLoader from '../../../../../../../VectorFlow/Pages/MTO/Common/Loader'
@@ -34,7 +34,7 @@ const ChartView = ({ chartData, chartTableData }: any) => {
                         <span style={{ fontWeight: 500 }}>Statistical Overview Of Lead Time Of Closed Orders &nbsp;</span>
                         <span style={{ fontWeight: 350 }}>{`(${moment(date).add(-90, 'days').format('D MMM YYYY')} - ${moment(date).format('D MMM YYYY')})`}</span>
                     </div>
-                    <div className={scChartMainContainer}>
+                    <div className={SCChartHeaderContainer}>
 
                         <div style={{ marginLeft: 30, marginBottom: '-5px' }}>
                             <VFInfoToolTip infoList={graph1} />

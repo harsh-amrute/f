@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import VFTable from "../../../VectorFlow/Pages/MTO/Common/VFTable";
 import { TableWrapper } from "../../../VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMOrderwiseCoverage/styles.css";
 import { CellStyle, ColDef, FillOperationParams, RowStyle } from "ag-grid-enterprise";
@@ -43,7 +43,7 @@ const PermissionSelectionPage = ({
   themeUi: any;
   setIsAssignPage: any
 }) => {
-
+  const user = useUserData();
   const { mutateAsync: getDBRsettingsData} = useGetDBRsettingsData(); 
   const [isFinalView, setIsFinalView] = useState(false);
   const [isPermissionModalOpen, setIsPermissionModalOpen] =
@@ -57,23 +57,24 @@ const PermissionSelectionPage = ({
   const { data: dataRoles, isLoading: isDataRoles } = useGetRoles();
   const [listRoles, setListRoles] = useState<any>([]);
   const gridRef = useRef<GridRef>(null);
+  const [compulsoryPermissions, setCompulsoryPermissions] = useState<any>([]);
 
-   
-  const [compulsorPermissions, setCompulsoryPermissionsApps] = useState<any>([]);
-  const addMTOToCompulsoryPermissions = async()=>{
+  const dataAllPermissions = dataPermissions?.data;
+  const dataAllRole = dataRoles?.data;
+
+  const addMTOToCompulsoryPermissions = async(dataAllRole:any)=>{
     try{
       const response = await getDBRsettingsData();
       if(response.status===200){
         const DBRSettings = response?.data?.data || [];
         const isMTOPermissionRequired = DBRSettings?.find((data: any) => data.flag === "IsDataPermissionEnabled" && data.value == 1);
-        const MTAPerm = _.uniq(listRoles?.filter((ele:any)=>ele.application_name==='Distribution').map((role:any)=>role.application_id)) || [];
+        const MTAPerm = _.uniq(dataAllRole?.filter((ele:any)=>ele.application_name==='Distribution').map((role:any)=>role.application_id)) || [];
         if(isMTOPermissionRequired){
-          const MTOPerm = _.uniq(listRoles?.filter((ele:any)=>ele.application_name==='Orders').map((role:any)=>role.application_id)) || [];
-          setCompulsoryPermissionsApps([...MTAPerm,...MTOPerm]);
+          const MTOPerm = _.uniq(dataAllRole?.filter((ele:any)=>ele.application_name==='Orders').map((role:any)=>role.application_id)) || [];
+          setCompulsoryPermissions([...MTAPerm,...MTOPerm]);
         }
         else{
-          console.log("MTAPerm", MTAPerm);
-          setCompulsoryPermissionsApps([...MTAPerm]);
+          setCompulsoryPermissions([...MTAPerm]);
         }
       }
       else{
@@ -85,29 +86,35 @@ const PermissionSelectionPage = ({
     }
   }
 
-  const user = useUserData();
-  const activeApplications:any  = [];
-  if(user.user.config_data.MTO_ACTIVE===true){
-    activeApplications.push('Orders');
-  }
-  if(user.user.config_data.MTA_ACTIVE===true){
-    activeApplications.push('Distribution');
-  }
-
-  useEffect(()=>{
-    if(compulsorPermissions.length===0 && listRoles.length>0){
-      console.log("this is calling baar baar", compulsorPermissions.length===0);
-
-      if(activeApplications.includes('Orders')){
-        console.log("here");
-        addMTOToCompulsoryPermissions();
-      }else{
-        console.log("or here");
-        const MTAPerm = _.uniq(listRoles?.filter((ele:any)=>ele.application_name==='Distribution').map((role:any)=>role.application_id)) || [];
-        setCompulsoryPermissionsApps([...MTAPerm]);
-      }
+  const activeApplications = useMemo(() => {
+    const apps: string[] = [];
+  
+    if (user?.user?.config_data?.MTO_ACTIVE) {
+      apps.push('Orders');
     }
-  },[activeApplications])
+    if (user?.user?.config_data?.MTA_ACTIVE) {
+      apps.push('Distribution');
+    }
+  
+    return apps;
+  }, [user]);
+  
+
+  useEffect(() => {
+    if (!dataAllPermissions?.length) return;
+    if (!dataAllRole?.length) return;
+
+    if (compulsoryPermissions.length === 0 && dataAllRole.length > 0) {
+      
+      if (activeApplications.includes('Orders')) {
+        addMTOToCompulsoryPermissions(dataAllRole);
+      } else {
+        const MTAPerm = _.uniq(dataAllRole?.filter((ele: any) => ele.application_name === 'Distribution').map((role: any) => role.application_id)) || [];
+        setCompulsoryPermissions([...MTAPerm]);
+      }
+      setListRoles(dataAllRole);
+    }
+  }, [dataAllPermissions, dataAllRole]);
 
   const updateRolesForSelected = (selectedRoles: Set<Role>) => {
     gridRef.current?.api.forEachNode((node: any) => {
@@ -119,7 +126,6 @@ const PermissionSelectionPage = ({
       }
     });
   };
-
 
   const updatePermissionsForSelected = (selectedPermissions: Set<string>) => {
     gridRef.current?.api.forEachNode((node: any) => {
@@ -148,13 +154,6 @@ const PermissionSelectionPage = ({
     setRowIndex(null);
 
   }
-
-    useGetAllRoles((data: any) => {
-      const dataAllRoles = data.data ? data.data : [];
-      setListRoles(dataAllRoles);
-    });
-
-    const dataAllPermissions = dataPermissions?.data;
 
     useEffect(() => {
       if (!isFinalView) {
@@ -186,6 +185,7 @@ const PermissionSelectionPage = ({
     
         // Push to users array 
         output.users.push({
+          srNo: user.srNo || "",
           id: user.id || "",
           email: user.email || "",
           name: user.username || "",
@@ -375,8 +375,9 @@ const PermissionSelectionPage = ({
 
           if(userRoles.length === 0){
             errors.push({
-              type: 'MISSING_COMPULSORY_PERMISSION',
+              type: 'MISSING_ROLES',
               message: `All users must have at least one role assigned`,
+              srNo: user.srNo,
               userId: user.id,
               userName: user.name,
               email: user.email,
@@ -384,13 +385,11 @@ const PermissionSelectionPage = ({
           });
           }
           
-         
           // Check each role assigned to the user
           userRoles.forEach((roleId:any) => {
               const appId = roleToAppMap[roleId];
-              
               // If the role belongs to a compulsory permissions app
-              if (compulsorPermissions.includes(appId)) {
+              if (compulsoryPermissions.includes(appId)) {
                   // Check if user has permissions for this application
                   if (!userPermissionAppIdsLoc.has(appId) || !userPermissionAppIdsPerm.has(appId)) {
                       errors.push({
@@ -433,6 +432,7 @@ const PermissionSelectionPage = ({
                       warnings.push({
                           type: 'LOCATION_PERMISSION_REMOVED',
                           message: `Location permission for application id ${perm.application_id} removed for user ${user.name} (no corresponding role)`,
+                          srNo: user.srNo,
                           userId: user.id,
                           userName: user.name,
                           email: user.email,
@@ -457,6 +457,7 @@ const PermissionSelectionPage = ({
                       warnings.push({
                           type: 'PRODUCT_PERMISSION_REMOVED',
                           message: `Product permission for application ${perm.application_id} removed for user ${user.name} (no corresponding role)`,
+                          srNo: user.srNo,
                           userId: user.id,
                           userName: user.name,
                           email: user.email,
@@ -489,22 +490,47 @@ const PermissionSelectionPage = ({
 
     const createUsers = async()=>{
       const userDataAll: string[] = [];
-      gridRef &&  gridRef.current && gridRef?.current.api.forEachNode((node: any)=>{
+      gridRef?.current?.api.forEachNode((node: any)=>{
         userDataAll.push(node.data);
-        
       })
       try{
         const finalData = optimizePermissionsAndRoles(transformUserData(userDataAll));
-        console.log("finalData", finalData);
-        const {isValid, errors, modifiedData} = validateUserPermissions({roles: listRoles, finalData, compulsorPermissions});
-        console.log("errors", errors);
-        if(!isValid){
+        const {isValid, errors, modifiedData} = validateUserPermissions({roles: listRoles, finalData, compulsorPermissions: compulsoryPermissions});
+        if (!isValid) {
+          const newValidData = validUserData.map((userData:any) => {
+            const error = errors.find((error: any) => error.userId === userData.id);
+            if (error) {
+              if (error.type === "MISSING_ROLES") {
+                userData.errorRole = true;
+                userData.errorPermission = true;
+              } else if (error.type === "MISSING_COMPULSORY_PERMISSION"){
+                userData.errorPermission = true;
+              }
+            } else {
+              delete userData.errorRole;
+              delete userData.errorPermission;
+            }
+            return userData;
+          })
+
+          const sortedUsers = [...newValidData].sort((userA, userB) => {
+            const aHasError = userA.errorRole || userA.errorPermission;
+            const bHasError = userB.errorRole || userB.errorPermission;
+            
+            if (aHasError && !bHasError) return -1;
+            if (!aHasError && bHasError) return 1;
+            return 0;
+          });
+
+          setValidUsersData(sortedUsers);
+          
           let errorMsg = "Errors found:\n";
-          errorMsg += `User: ${errors[0].userName} (${errors[0].email}) - ${errors[0].message}\n`;
+          errorMsg += `${errors[0].message}\n`;
           notifyError(errorMsg);
           console.error("Errors in user data:", errors);
           return;
         }
+
         const response = await postPostBulkUploadUsers({...modifiedData})
         if(response.status===200){
           // setIsFinalView(true);
@@ -567,7 +593,7 @@ const PermissionSelectionPage = ({
       },
       {
         headerName: "Sr.No",
-        field: "id",
+        field: "srNo",
         maxWidth: 80,
         enablePivot: true,
         filter: 'agNumberColumnFilter',
@@ -619,20 +645,22 @@ const PermissionSelectionPage = ({
 
     const [isBulkActionEnabled, setIsBulkActionEnabled] = useState(false);
 
-    const agGridProps: AgGridReactProps = {
+  const agGridProps: AgGridReactProps = useMemo(() => {
+    return {
       rowSelection: "multiple",
     
-      getRowStyle: (params)=>{
+      getRowStyle: (params) => {
         if (isFinalView && params.data.error) {
-          return { backgroundColor: "rgb(242, 75, 75,0.3)",  } as RowStyle;
+          return { backgroundColor: "rgb(242, 75, 75,0.3)", } as RowStyle;
         }
-        else if(isFinalView){
+        else if (isFinalView) {
           return { backgroundColor: "rgb(103, 242, 75,0.4)", } as RowStyle;
+
         }
     
       },
       enableFillHandle: true,
-      sideBar:false,
+      sideBar: false,
       defaultColDef: {
         flex: 1,
         resizable: true,
@@ -651,10 +679,26 @@ const PermissionSelectionPage = ({
       suppressRowClickSelection: true,
       pagination: true,
     };
+  }, [isFinalView]);
+    
+  const removeSelectedUser = () => {
+    if (gridRef.current) {
+
+      const selectedUsersIds = gridRef.current.api.getSelectedRows()?.map((user: any) => user.id);
+      
+      const newValidUser = validUserData.filter((validUserData: any) => !selectedUsersIds.includes(validUserData.id));
+  
+      newValidUser.forEach((row: any, index: number) => {
+        row.srNo = index + 1;
+      });
+      
+      setValidUsersData(newValidUser);
+    }
+  }
 
     return (
       <div className={TableWrapper} style={{ paddingBottom: "50px" }}>
-        {(isLoading || isDataPermissions || isDataRoles) && <OverlayLoader message="Creating Users..." />}
+        {((isLoading || isDataPermissions || isDataRoles) || isDataPermissions || isDataRoles) && <OverlayLoader message="Creating Users..." />}
         {!isFinalView && (
           <BulkUploadHeader
             gridRef={gridRef}
@@ -668,6 +712,7 @@ const PermissionSelectionPage = ({
               setIsFinalView(false);
               setIsAssignPage(false);
             }}
+            removeSelectedUser={removeSelectedUser}
           />
         )}
         {isFinalView && (
@@ -693,26 +738,9 @@ const PermissionSelectionPage = ({
                     style={{ height: "20px" }}
                   />
                   <div className={SCGoBackText} style={{ fontSize: "1.5rem" }}>
-                    <b>Reupload</b>
+                    <b>Go Back</b>
                   </div>
                 </div>
-              </div>
-
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <VFButton
-                  disabled={false}
-                  style={{ width: "100px", height: "35px", fontSize: "1rem" }}
-                  themeUi={themeUi}
-                  onClick={() => {
-                    gridRef.current?.api.exportDataAsExcel({
-                      fileName: "UserData",
-                      sheetName: "UserData",
-                      columnKeys: ["id", "username", "email", "pwd"],
-                    });
-                  }}
-                >
-                  {"Export"}
-                </VFButton>
               </div>
             </div>
 
@@ -734,6 +762,7 @@ const PermissionSelectionPage = ({
           {...agGridProps}
           columnDefs={columnDefs}
           rowData={validUserData}
+          getRowId={(params) => params.data.id}
           tooltipHideDelay={100000}
           tooltipShowDelay={0}
           tooltipMouseTrack={true}
@@ -751,7 +780,7 @@ const PermissionSelectionPage = ({
             }
             if (params.column.getColId() === "permissions") {
               params.api.forEachNode((node: any, index: number) => {
-                if (params.rowNode.rowIndex === index) {
+                if (params.rowNode.rowIndex === index) {                
                   const userData = node.data;
                   userData.permissions = params.initialValues[0];
                   node.setData(userData);
@@ -782,11 +811,12 @@ const PermissionSelectionPage = ({
               }}
               themeUi={themeUi}
             >
-              Create Users
+              Create All Users
             </VFButton>
           </div>
         )}
         {
+          isPermissionModalOpen &&
           <VFModalCard
             openModal={isPermissionModalOpen}
             headerIcon={"/assets/img/profile/icon_upload.svg"}
@@ -809,6 +839,7 @@ const PermissionSelectionPage = ({
           </VFModalCard>
         }
         {
+          isPermissionModalOpenForRow &&
           <VFModalCard
             openModal={isPermissionModalOpenForRow}
             headerIcon={""}

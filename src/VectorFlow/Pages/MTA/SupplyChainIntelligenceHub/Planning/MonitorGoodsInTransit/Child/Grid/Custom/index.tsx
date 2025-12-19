@@ -142,6 +142,12 @@ const MonitorGITChildCustomCharts = ({recordCount}:{recordCount:number}) => {
                         labelKey: "columns",
                         iconKey: "columns",
                         toolPanel: "agColumnsToolPanel",
+                        toolPanelParams: {
+                          suppressPivots: false,
+                          suppressPivotMode: false,
+                          suppressRowGroups: true,
+                          suppressValues: false,
+                        },
                       },
                     ],
                 }}

@@ -112,7 +112,7 @@ const ElephantOrder = () => {
 
           <div>
             {
-              RowData?.length &&
+              RowData?.length  > 0 &&
             <VFPagination
               selectedRows={0}
               totalRows={EOCount}

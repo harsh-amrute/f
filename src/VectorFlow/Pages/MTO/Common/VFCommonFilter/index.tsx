@@ -10,8 +10,7 @@ import {
   FilterHeader,
   FilterWrapper,
   TextBtnBase,
-  TextBtnREGALBLAZE,
-  TextBtnDEFAULT
+  textBtnVar
 } from "./styles.css";
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard";
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
@@ -28,6 +27,7 @@ import VFMasterFieldSearch from "../../../../../components/VectorFLOW/commons/VF
 import { checkValue } from "../../../../../helpers/utils";
 import { InputTypes } from "../Enum";
 import _ from "lodash";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 
 interface VFCommonFilterProps {
   onApplyFilter: (params: any) => void;
@@ -221,6 +221,7 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
   }, [multiFilter]);
 
   const filterKeys = Object.keys(filterState) || [];
+  const themeColor = themeUi ==="REGALBLAZE"?"#C7810E":"#82104C"
 
   return (
     <>
@@ -496,11 +497,8 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
               <div className={ButtonContainer}>
                 <div
                   onClick={() => setIsConfirmModalOpen(true)}
-                  className={`${TextBtnBase} ${
-                    themeUi === "REGALBLAZE"
-                      ? TextBtnREGALBLAZE
-                      : TextBtnDEFAULT
-                  }`}
+                  className={TextBtnBase}
+                  style={assignInlineVars({[textBtnVar]:themeColor})}
                 >
                   Clear All Filters
                 </div>

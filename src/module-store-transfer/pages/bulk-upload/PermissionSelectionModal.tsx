@@ -129,7 +129,7 @@ const PermissionSelectionModal = ({
   const [selectedApplication, setSelectedApplication] = React.useState<
     string[]
   >(allApplications[0]);
-
+  
   const [selectedPermissions, setSelectedPermissions] = useState<any>({});
 
   const ResetPermissions = () => {
@@ -137,34 +137,35 @@ const PermissionSelectionModal = ({
       if (selectedIndex === index) {
         setSelectedPermissions(node.data.permissions || {});
       }
-    });
-  };
-  useEffect(() => {
-    ResetPermissions();
-    let currentVal: any = gridRef?.current?.api?.getSelectedRows()?.[0] || {};
-    console.log("gridRef", gridRef?.current?.api?.getSelectedRows());
-    if (selectedIndex !== undefined && selectedIndex !== null) {
-      gridRef?.current?.api?.forEachNode((node: IRowNode, index: number) => {
-        if (selectedIndex === index) {
-          currentVal = node.data || {};
-        }
-      });
-    }
-    console.log("val", currentVal);
-    setAllApplications(
-      dataAllPermissions
-        ?.map((ele: any) => ele.application_name)
-        .filter(
-          (app: string) =>
-            activeApplications.includes(app) &&
-            Array.from(currentVal?.roles ?? []).some(
-              (role: any) => role.application_name === app
-            )
-        )
-    );
-  }, [selectedIndex, gridRef]);
+    })
+  }
 
-  useEffect(() => {
+  useEffect(()=>{
+    ResetPermissions();
+      let currentVal:any = gridRef?.current?.api?.getSelectedRows()?.[0] || {};
+      if(selectedIndex!==undefined && selectedIndex!==null){
+
+        gridRef?.current?.api?.forEachNode((node: IRowNode, index: number)=>{
+          if(selectedIndex===index){
+            currentVal = node.data || {};
+          }
+        })
+      }
+      setAllApplications(
+        dataAllPermissions
+          ?.map((ele: any) => ele.application_name)
+          .filter(
+            (app: string) =>
+              activeApplications.includes(app) &&
+              Array.from(currentVal?.roles ?? []).some(
+                (role: any) => role.application_name === app
+              )
+          )
+      );
+      
+  },[selectedIndex, gridRef])
+
+  useEffect(()=>{
     setSelectedApplication(allApplications[0]);
   }, [allApplications]);
 

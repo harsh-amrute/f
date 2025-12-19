@@ -219,3 +219,10 @@ export const totalCell = style({
   color: "#fff",
   fontWeight: 600,
 });
+
+export const zoom075 = style({
+  zoom: "0.75",
+  selectors: {
+    "&": { zoom: "0.75 !important" }
+  }
+});

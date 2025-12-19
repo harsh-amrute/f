@@ -33,8 +33,8 @@ import { Errors } from "../../../components";
 import { useForm } from "react-hook-form";
 import { LoginRequest } from "../../../module-main/types";
 import { useLoginAccount } from "../../../module-main/services";
-import { useNavigate } from "react-router";
-import { notifyError, notifySuccess } from "../../../helpers/notify";
+import {  useNavigate } from "react-router";
+import { notifyError, notifySuccess, notifyWarningWithoutAutoClose } from "../../../helpers/notify";
 import { useEffect, useRef, useState } from "react";
 import WelcomeBoard from "./welcome-board";
 import { hashPassword } from "../../../helpers/utils";
@@ -125,7 +125,10 @@ function LoginContainer() {
           const url = "/landing-page";
           navigate(url, { replace: true });
           getAllEnvironmentConfiguration();
-          notifySuccess(t("loginPage.notify.success"));
+          notifySuccess(data.data?.data?.msg);
+          if(data.data?.data?.wrng != null){
+           notifyWarningWithoutAutoClose(data.data.data.wrng)
+          }
         }
       },
       onError(error: any) {

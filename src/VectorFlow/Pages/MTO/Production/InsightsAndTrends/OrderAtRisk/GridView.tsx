@@ -84,20 +84,7 @@ const GridView = ({
       <div
         data-testid="grid-view"
         className={vfTableWrapper}
-        style={{
-          // your extra outer spacing:
-          margin: "20px",
-          paddingRight: "20px",
-          paddingBottom: "10px",
-          width: "100%",
-          // and the CSS vars for the wrapper:
-          ...assignInlineVars({
-            [vfHeightVar]: height,
-            [vfZoomVar]: disableZoomScaling ? "1" : "0.75",
-          }),
-        }}
       >
-        {" "}
         <VFTable
           {...gridOptions}
           columnDefs={colDef}

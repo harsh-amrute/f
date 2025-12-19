@@ -11,7 +11,12 @@ import {
 } from "./style.css";
 import Select from "react-select";
 import { useThemeStyles } from "../../../../../hooks/useVFFilterContent";
-import { useFilterRows, stringOpertors } from "./useVFFilterContent";
+import {
+  useFilterRows,
+  stringOpertors,
+  useRowCompletion,
+  useMultiFilterChange,
+} from "./useVFFilterContent";
 import { useUserData } from "../../../../../context";
 import { useGetUIConfigData } from "../../../../Services/MTA/Common/UIConfig";
 import { UIColumnConfigName } from "../../../../../helpers/Enum";
@@ -56,28 +61,39 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
   const commonFilterKeywords = ["skulocattr", "skuattr", "locattr"];
   const isUpdatingFromInternal = useRef(false);
 
-  const isRowComplete = (rowId: number) => {
-    const row = rowSelections[rowId];
-    return row && row.operation && row.value && row.value.trim() !== "";
-  };
+  const { isRowComplete } = useRowCompletion(rowSelections);
 
   useEffect(() => {
     const loadAttributes = async () => {
       setIsLoading(true);
       try {
-        const res = await getUiConfig(reportName);
+        const resCurrent = await getUiConfig(reportName);
+        const currentData =
+          resCurrent?.data?.data?.data || resCurrent?.data?.data || [];
 
-        const data = res?.data?.data?.data || res?.data?.data || [];
-
-        const filtered = data.filter((col: any) =>
+        const currentAttributes = currentData.filter((col: any) =>
           commonFilterKeywords.some((kw) =>
             col.Col_Code?.toLowerCase()?.includes(kw)
           )
         );
 
-        const finalCols = filtered.length > 0 ? filtered : [];
+        let finalAttributes = currentAttributes;
 
-        const formatted = finalCols.map((col: any, idx: number) => ({
+        if (currentAttributes.length === 0) {
+          const resBPR = await getUiConfig(UIColumnConfigName.BPR);
+
+          const bprData = resBPR?.data?.data?.data || resBPR?.data?.data || [];
+
+          const bprAttributes = bprData.filter((col: any) =>
+            commonFilterKeywords.some((kw) =>
+              col.Col_Code?.toLowerCase()?.includes(kw)
+            )
+          );
+
+          finalAttributes = bprAttributes;
+        }
+
+        const formatted = finalAttributes.map((col: any, idx: number) => ({
           value: col.Col_Code,
           label: col.Header || col.Col_Code,
           name: `CAF${idx + 1}`,
@@ -86,7 +102,7 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
         setAttributeOptions(formatted);
       } catch (err) {
         console.error(
-          `Error loading UIConfig attributes for ${reportName}:`,
+          `Error loading UIConfig attributes for ${reportName}`,
           err
         );
         setAttributeOptions([]);
@@ -261,11 +277,6 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
   if (!isLoading && attributeOptions.length === 0) {
     return <NoAttributesFilters reportName={reportName} />;
   }
-
-  if (!isInitialized && attributeOptions.length > 0) {
-    return <VFLoader />;
-  }
-
   const brand = user.user.theme_ui === "REGALBLAZE" ? "REGALBLAZE" : "DEFAULT";
 
   return (
@@ -344,10 +355,16 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
                 <img
                   src={"/assets/img/MTAVFMultiFilter/Error.svg"}
                   alt="error"
+                  title={
+                    isRowComplete(row.id)
+                      ? "All fields are filled"
+                      : "Must select a column."
+                  }
                 />
               </div>
               <div
                 className={iconWrapper}
+                data-theme={user.user.theme_ui}
                 style={{
                   [accentColorVar]: brand,
                   [disabledVar]: isMaxRows ? "true" : "false",

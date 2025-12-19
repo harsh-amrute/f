@@ -6,9 +6,15 @@ export const VFTableWrapper = style({
   height: vHeight,
   // max-height: 90%; // (kept commented like original)
   // margin: 20px 0;  // (kept commented like original)
-  width: '100%',     // replaces the broken width
-  minWidth: 0,
+  // width: '100%',     // replaces the broken width
+  // minWidth: 0,
+  // width: '100%',     // replaces the broken width
+  maxWidth: '100%',
+  boxSizing: 'border-box',
   overflow: 'hidden',
+  // if inside a flex parent:
+  minWidth: 0,
+
   zoom: '1 !important',
 
   // selectors: {

@@ -12,6 +12,7 @@ import React, { CSSProperties, useState, useEffect } from "react";
 import Portal from "../../VectorFLOW/layouts/Portal";
 import useViewPort from "../../../hooks/useViewPort";
 import { useUserData } from "../../../context";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 
 const ErrorCell = (props: ICellRendererParams) => {
   const { user } = useUserData();
@@ -161,9 +162,7 @@ const ErrorCell = (props: ICellRendererParams) => {
         />
         <span
           className={errorText}
-          style={
-            { [themeTextColorVar]: themedTextColor } as React.CSSProperties
-          }
+          style={assignInlineVars({ [themeTextColorVar]: themedTextColor })}
         >
           {getFomattedMessage(message)}
         </span>

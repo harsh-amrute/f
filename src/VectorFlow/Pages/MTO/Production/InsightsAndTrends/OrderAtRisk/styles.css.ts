@@ -40,11 +40,10 @@ export const chartWrapper = style({
 
 /* Grid view container */
 export const vfTableWrapper = style({
-  vars: { [vfHeightVar]: "100%", [vfZoomVar]: "0.75" }, // sensible defaults
-  height: vfHeightVar,
+  height: '100%',
   maxHeight: "93%",
   position: "relative",
-  zoom: "1",
+  zoom: "1 !important",
   width: "100%",
   display: "flex",
   flexDirection: "column",
@@ -78,7 +77,7 @@ export const vfTableWrapper = style({
   "@media": {
     // laptop .. desktop => apply zoom var (0.75 by default; override via assignInlineVars)
     [`screen and (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem.size.desktop})`]:
-      { zoom: vfZoomVar },
+      { zoom: 0.75 },
 
     // >= desktop
     [`screen and (min-width: ${gridSystem.size.desktop})`]: { zoom: "1" },

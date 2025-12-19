@@ -31,7 +31,7 @@ export const container = style({
   border: "1px solid #BC3D81",
   color: "#820F4C",
   fontSize: "10px",
-  fontFamily: "Roboto",
+  fontFamily: 'Roboto',
   fontStyle: "normal",
   fontWeight: 500,
   marginBottom: "auto",

@@ -13,6 +13,7 @@ import {
   justifyEnd,
 } from "./RouteAssignment.styled.css";
 import _ from "lodash";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 
 interface IRouteAssignmentProps {
   theme: string;
@@ -279,10 +280,10 @@ const RouteAssignment = ({
                     >
                       <div
                         className={FOLIcon}
-                        style={{
-                          [folWidthVar as any]: (data.fol / data.maxFol) * 100,
-                          [folColorVar as any]: color,
-                        }}
+                        style={assignInlineVars({
+                          [folWidthVar]: String((data.fol / data.maxFol) * 100),
+                          [folColorVar]: color
+                        })}
                       />
                       <span>[{data.fol}]</span>
                     </div>

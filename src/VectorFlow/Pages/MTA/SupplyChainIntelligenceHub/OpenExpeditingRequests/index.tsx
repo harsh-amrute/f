@@ -139,14 +139,15 @@ const OpenExpeditingRequests = () => {
             {...agGridProps}
             ref={ref}
             onGridReady={(params) => {
-              params.api.addEventListener("filterChanged", () => {
-                const filterModel = params.api.getFilterModel();
-                if (Object.keys(filterModel).length > 0) {
-                  setIsDisabled(false);
-                } else {
-                  setIsDisabled(true);
-                }
-              });
+              agGridProps.onGridReady?.(params);
+              params.api.addEventListener('filterChanged', () => {
+                  const filterModel = params.api.getFilterModel();
+                  if (Object.keys(filterModel).length > 0) {
+                      setIsDisabled(false); 
+                  } else {
+                      setIsDisabled(true); 
+                  }
+                  });
             }}
             height={"95%"}
             maintainColumnOrder={true}

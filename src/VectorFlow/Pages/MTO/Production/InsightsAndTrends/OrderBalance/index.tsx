@@ -24,16 +24,23 @@ import {
   // <-------------- uncomment below code to enable dropdown for orderType    --------->
   useGetOrderTypeOptions,
 } from "../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/OrderBalance";
-import OverlayLoader from '../../../Common/Loader';
-import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
-import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
-import { ExcelExportName, FilterPageName, pagination, UIGridCode } from "../../../Common/Enum";
+import OverlayLoader from "../../../Common/Loader";
+import { notifyError, notifySuccess } from "../../../../../../helpers/notify";
+import {
+  useGetUserUIConfigData,
+  useUpdateUserUIConfigData,
+} from "../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig";
+import {
+  ExcelExportName,
+  FilterPageName,
+  pagination,
+  UIGridCode,
+} from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 import useColDef from "../../../../../../hooks/useColDef";
 import BPPRenderer from "../../../Common/BPRRenderer/BPPRenderer";
 import GridView from "../OrderAtRisk/GridView";
 import moment from "moment";
-
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -126,7 +133,6 @@ const OrderBalance = () => {
   const getGraphData = async (params: any, pageSize?: any) => {
     if (params.isExcelExport) {
       try {
-
         const gridAPi = currentGridRef?.current?.api;
 
         if (!gridAPi) {
@@ -136,27 +142,35 @@ const OrderBalance = () => {
 
         const isPivotMode = gridAPi.isPivotMode();
         const isRowGroupingActive = gridAPi.getRowGroupColumns().length > 0;
-        const isValueActive =  gridAPi.getValueColumns().length > 0;
+        const isValueActive = gridAPi.getValueColumns().length > 0;
 
-          if (isPivotMode || isRowGroupingActive || isValueActive) {                 
-                                        //  const exportName = `${FilterPageName.Prod_Order_Balance}_${moment().format("DD-MM-YYYY")}`;
-                                        const exportName = ExcelExportName.Order_Balance
-                                        gridAPi.exportDataAsExcel({
-                                         fileName: exportName,
-                                         sheetName: exportName
-                                         });
-          }else {            
-            const headersdata = currentGridRef?.current?.api.getColumnState();
-            const formattedFilters = formatFilterJSON(appliedFilters);
-            const body = getBodyForExcelExport({headersdata,filterData :formattedFilters,colDefMap})
-            const response = await getOrderBalanceGraphDataExcelExport({body , report_name : FilterPageName.Prod_Order_Balance , isExcelExport : 1})
-            if(response.status === 200){
-          DownloadExcel(response,FilterPageName.Prod_Order_Balance)
-          notifySuccess("Excel data exported successfully")
-        }else{
-          notifyError("Failed to export Excel data")
+        if (isPivotMode || isRowGroupingActive || isValueActive) {
+          //  const exportName = `${FilterPageName.Prod_Order_Balance}_${moment().format("DD-MM-YYYY")}`;
+          const exportName = ExcelExportName.Order_Balance;
+          gridAPi.exportDataAsExcel({
+            fileName: exportName,
+            sheetName: exportName,
+          });
+        } else {
+          const headersdata = currentGridRef?.current?.api.getColumnState();
+          const formattedFilters = formatFilterJSON(appliedFilters);
+          const body = getBodyForExcelExport({
+            headersdata,
+            filterData: formattedFilters,
+            colDefMap,
+          });
+          const response = await getOrderBalanceGraphDataExcelExport({
+            body,
+            report_name: FilterPageName.Prod_Order_Balance,
+            isExcelExport: 1,
+          });
+          if (response.status === 200) {
+            DownloadExcel(response, FilterPageName.Prod_Order_Balance);
+            notifySuccess("Excel data exported successfully");
+          } else {
+            notifyError("Failed to export Excel data");
+          }
         }
-      }
       } catch (error) {
         notifyError(" An error has occurred");
         console.log(error);
@@ -393,7 +407,7 @@ const OrderBalance = () => {
           >
             <Allotment vertical={false} separator={false}>
               <Allotment.Pane preferredSize={"50%"}>
-                <div>
+                <div className={BTRAllomentSection}>
                   <TrailDeptCount graphData={graphData} />
                 </div>
               </Allotment.Pane>

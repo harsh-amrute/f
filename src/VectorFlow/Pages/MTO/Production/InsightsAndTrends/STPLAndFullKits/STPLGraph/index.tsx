@@ -7,7 +7,7 @@ import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Commo
 import { getColumnDefinations } from "../../../../../../../helpers/utils";
 import { columnConfigData } from "../ColumnData";
 import { format } from "date-fns";
-import "./style.css";
+import "./style.css"
 
 const STPLGraph = (props: any) => {
     const { graphData } = props;
@@ -67,19 +67,26 @@ const STPLGraph = (props: any) => {
 
   function TooltipRenderer({ datum, xKey }: any) {
     return `
-      <div class="stplGraph-tooltip-title">
-        ${datum[xKey]}
-      </div>
-      <div class="stplGraph-tooltip-content">
-        <div class="stplGraph-tooltip-row">
-          <div class="color-box color-gray"></div>
-          <div class="label-value">
-            <div>${ProductionInsightsAndTrendsString.fullKitInDays}</div>
-            <div>${datum["days"]}</div>
-          </div>
-        </div>
-      </div>
-    `;
+       <div class="stplGraph-tooltip-title" >
+           ${datum[xKey]}
+       </div>
+       <div class="stplGraph-tooltip-content">
+       
+       <div>
+           <div class="displayFlex">
+               <div class="stplGraph-color-box">
+               </div>
+               <div class="stplGraph-label-value">
+                   <div>Released WIP (In Days) Exceeding Limit
+                   </div>
+                   <div class="stplGraph-marginLeft"> ${datum["exceedDays"]}
+                   </div>
+               </div>
+           </div> 
+        <div class="displayFlex"><div class="stplGraph-color-box-days"></div><div class="stplGraph-label-value"><div>Released WIP (In Days)</div><div>${datum["days"]}</div></div></div>
+        <div class="displayFlex"><div class="stplGraph-color-box-limit"></div><div class="stplGraph-label-value"><div>Limit</div><div>${datum["limit"]}</div></div></div>
+
+        </div>`;
   }
 
   function createSeriesData(val: number) {

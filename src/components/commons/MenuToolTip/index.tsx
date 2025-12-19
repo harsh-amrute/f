@@ -3,27 +3,27 @@ import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useUserData } from "../../../context";
 import {
-  WrapToolTip,
-  TooltipContainer,
-  TooltipTitle,
-  TooltipContent,
-  TooltipContentActive,
-  SCIcon,
-  IconRotated,
-  // tooltipLeftVar,
+  wrapToolTip,
+  tooltipContainer,
+  tooltipTitle,
+  tooltipContent,
+  scIcon,
   tooltipMaxHeightVar,
-  activeTextVar,
-  activeBgVar,
+  tooltipTextColorVar,
+  tooltipBgColorVar,
+  tooltipFontWeightVar,
+  scIconTransformVar,
+  tooltipLeftVar,
 } from "./style.css";
 import { navigateWithPrompt } from "../../../helpers/utils";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store/store";
 import { RESET_STATE } from "../../../redux/actions/MDM";
 import { RESET_MTO_STATE } from "../../../redux/actions/MTO";
-import { useRef, useLayoutEffect, useState, useId, useMemo } from "react";
+import { useRef, useLayoutEffect, useState } from "react";
 import useDownloadHandler from "../../../helpers/useDownloadHandler";
-import * as globalStyles from "../../../styles/global";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
+import * as globalStyles from "../../../styles/global";
 
 const ITEM_HEIGHT = 48; // Adjust to match your TooltipContent height
 const MIN_VISIBLE_ITEMS = 5;
@@ -153,16 +153,6 @@ const MenuToolTip = ({
         reportUrls.includes(itemChild.url)
       ) {
         const isActive = itemChild.url === location.pathname;
-        const activeVars = isActive
-          ? {
-              [activeTextVar]:
-                globalStyles.chooseThemeColor[themeUi]
-                  ?.textColorActiveTooltip ?? "#000",
-              [activeBgVar]:
-                globalStyles.chooseThemeColor[themeUi]
-                  ?.backgroundActiveTooltip ?? "#f1f1f1",
-            }
-          : {};
 
         const isArrow =
           !isLoading &&
@@ -174,10 +164,16 @@ const MenuToolTip = ({
         return (
           <div
             key={index}
-            className={`${TooltipContent} ${
-              isActive ? TooltipContentActive : ""
-            }`}
-            style={assignInlineVars(activeVars)}
+            className={tooltipContent}
+            style={assignInlineVars({
+              [tooltipTextColorVar]: isActive
+                ? globalStyles.chooseThemeColor[themeUi].textColorActiveTooltip
+                : "unset",
+              [tooltipBgColorVar]: isActive
+                ? globalStyles.chooseThemeColor[themeUi].backgroundActiveTooltip
+                : "unset",
+              [tooltipFontWeightVar]: isActive ? 500 : 300,
+            })}
             onClick={() =>
               handleTooltipClick(
                 itemChild.url,
@@ -197,7 +193,11 @@ const MenuToolTip = ({
                     : "/assets/img/nav/arrow_down.svg"
                 }
                 alt="arrow"
-                className={`${SCIcon} ${isArrow ? IconRotated : ""}`}
+                style={assignInlineVars({
+                  [scIconTransformVar]: isArrow
+                    ? "transform: rotate(-90deg)"
+                    : "",
+                })}
               />
             )}
           </div>
@@ -205,36 +205,32 @@ const MenuToolTip = ({
       }
     });
   };
-  // stable id for the anchor element (avoid useId colons if you like)
-  const anchorId = useMemo(
-    () => `menu-tooltip-anchor-${Math.random().toString(36).slice(2)}`,
-    []
-  );
 
   return (
     <div ref={tooltipRef}>
-      <div className={WrapToolTip}>
+      <div
+        className={wrapToolTip}
+        style={assignInlineVars({ [tooltipLeftVar]: String(left) })}
+      >
         <Tooltip
-          disableStyleInjection="core"
           id={item.name}
-          place="right-start"
+          place="right"
+          className="tooltip_list"
           noArrow
           isOpen
-          positionStrategy="fixed"
-          offset={8}
         >
           <div
-            className={TooltipContainer}
+            className={tooltipContainer}
             style={{
               maxHeight: tooltipMaxHeight,
               top: tooltipPosition === "down" ? "0" : "auto",
-              bottom: tooltipPosition === "up" ? '-30px': "auto",
+              bottom: tooltipPosition === "up" ? "-30px" : "auto",
               background: "white",
               minWidth: "230px",
               width: "fit-content",
             }}
           >
-            <div className={TooltipTitle}>{t(item.name)}</div>
+            <div className={tooltipTitle}>{t(item.name)}</div>
             <div
               style={{
                 overflowY: "auto",
@@ -246,32 +242,6 @@ const MenuToolTip = ({
             </div>
           </div>
         </Tooltip>
-        {/* Your tooltip component goes here; sample structure below */}
-        {/* 
-      <Tooltip
-
-disableStyleInjection="core"        id={item.name}
-        place="right"
-        className="tooltip_list"
-        noArrow
-        isOpen
-      >
-        <div
-          className={TooltipContainer}
-          style={assignInlineVars({
-            [tooltipMaxHeightVar]: tooltipMaxHeight,
-          })}
-        >
-          <div className={TooltipTitle}>{t(item.name)}</div>
-          <div
-            style={{ overflowY: 'auto', maxHeight: `calc(${tooltipMaxHeight} - 48px)` }}
-            className="custom-scrollbar"
-          >
-            {renderToolTipContent(item)}
-          </div>
-        </div>
-      </Tooltip>
-      */}
       </div>
     </div>
   );
