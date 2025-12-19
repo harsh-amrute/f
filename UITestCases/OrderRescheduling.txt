@@ -1,0 +1,9 @@
+Test cases that are passed-
+
+
+1.When a user selects a row and clicks the calendar icon, the system must trigger the Holidays API call. While the data is loading, a loader is displayed on the page.
+2.The calendar should disable all holiday dates returned by the backend and allow selection only for valid dates.
+3.When the user selects multiple rows using "Select All", the date picker should NOT allow drag-and-drop date selection.
+4.If the Holidays API fails (network error / server error), the system will show a pop up and handle it without allowing the user to open the calendar.
+5. At a time only one calendar can get opened, not allowing user to open multiple calendar.
+
