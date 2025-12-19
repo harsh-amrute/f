@@ -4,10 +4,8 @@ import UploadRightSection from "./UploadRightSection";
 import UploadLeftSection from "./UploadLeftSection";
 import NoDataToDisplay from "./NoDataToDisplay";
 import { notifyError } from "../../../helpers/notify";
-import { useUserData } from "../../../context";
 import { usePostUsersDataForValidations } from "../../../services/profile";
 import readXlsxFile from "read-excel-file";
-import _ from "lodash";
 
 function UploadWrapperSection({
   setIsAssignPageOpen,
