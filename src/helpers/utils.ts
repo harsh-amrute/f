@@ -26,6 +26,8 @@ import { AgChartOptions } from "ag-charts-community";
 import CryptoJS from 'crypto-js';
 import MTOActionRenderer from '../VectorFlow/Pages/MTO/MDM/SavedDrafts/MTOActionRenderer';
 import { decryptStorageData } from '../VectorFlow/Pages/MTO/Common/encryption';
+import { getNumberFormat } from './numberFormat';
+
 
 const keyboardCharacters = [
   // '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -4476,7 +4478,7 @@ export function getColumnDefinations(
       minWidth: 150,
       valueFormatter: (params: any) => {
         if (params.value) {
-          const format = (process.env.REACT_APP_NUMBER_FORMAT || '').toUpperCase();
+          const format = (getNumberFormat() || '').toUpperCase();
           const locale = format === 'USA' ? 'en-US' : format === 'IND' ? 'hi-IN' : undefined;
       
           if (data.dt === 'number') {

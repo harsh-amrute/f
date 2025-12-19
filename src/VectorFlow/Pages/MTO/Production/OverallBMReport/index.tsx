@@ -19,7 +19,6 @@ import {
 import { Allotment } from "allotment";
 //import BPRRemarkHistoryModal from '../DepartmentWiseBMReport/MTORemarkHistoryModal';
 // import useViewPort from '../../../../../hooks/useViewPort';
-//import { useUserData } from '../../../../../context';
 import { AgGridReactProps } from "ag-grid-react";
 import BPPRenderer from "../../Common/BPRRenderer/BPPRenderer";
 import AgeingCellRenderer from "../DepartmentWiseBMReport/AgeingIconCellRenderer";
@@ -174,6 +173,7 @@ const OverallBmReport = () => {
   const [orderClosingEnable, setorderClosingEnable] = useState<any>();
   const { getGroupedColDef, groupedColDefsRef } = useColDef();
 
+  const { user } = useUserData(); 
   const [masterSelectedRowData, setMasterSelectedRowData] = useState<any>(
     () => {
       return [];
@@ -217,7 +217,6 @@ const OverallBmReport = () => {
     mutateAsync: getShortOrderCompleteOrder,
     isLoading: isShortOrderCompleteOrder,
   } = useShortOrderCompleteOrder();
-  const { user } = useUserData();
   const themeUi = user?.user?.theme_ui; 
   const feature_permission = user?.feature_permission || [];
   const canShowOrderClosing = feature_permission.includes("Order_Closing");
@@ -309,7 +308,7 @@ const setColumnDef = async () => {
       onOpenRemarkHistory: onOpenRemarkHistory,
     };
 
-    const colDefsData = createDynamicColumnDefs(response?.data?.data || [], gridOptions);
+    const colDefsData = createDynamicColumnDefs(response?.data?.data || [], gridOptions,user);
 
     setColdef(colDefsData);
   } catch (e) {
@@ -815,7 +814,6 @@ const handleActionChange = (option: any) => {
         const columnBomDefs = useMemo(() => {
           return getColumnDefinations(bomHeader);
         }, [bomHeader]);
-
 
   const getInitialGridData = async (currentPage: number, pageSize?: any, isExcelExport = false, isBomExplosion=0) => {
     //excellll

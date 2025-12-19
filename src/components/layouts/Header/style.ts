@@ -152,11 +152,11 @@ export const SCHeaderIconProfile = styled.img`
   height: 100%;
   cursor: pointer;
 `;
-export const SCWrapperImg = styled.div<{ isHideLogo: boolean }>`
+export const SCWrapperImg = styled.div<{ isHideLogo: boolean}>`
   position: fixed;
   right: 0px;
   top:135px;
-  width: ${(props) => (props.isHideLogo ? "176px" : "1vw")};
+  width: ${(props) => (props.isHideLogo ? "fit-content" : "1vw")};;
   height: 55px;
   margin-top: -22px;
   box-shadow: 0px 6px 9px #00000029;
@@ -165,6 +165,7 @@ export const SCWrapperImg = styled.div<{ isHideLogo: boolean }>`
   cursor: pointer;
   transition: ${globalStyles.customTransition};
   z-index:1000;
+  gap:5px;
   `
 export const ClientNameText = styled.div<{marginLeft:any, isHideLogo: boolean }>`
   flex: 1;
@@ -177,6 +178,7 @@ export const ClientNameText = styled.div<{marginLeft:any, isHideLogo: boolean }>
   font-size: 1.3rem;
   font-weight: 500;
   font-family:Roboto;
+  padding-right:5px;        
 `;
 
 export const SCImg = styled.img<{marginLeft?:any, isHideLogo: boolean }>`
@@ -184,4 +186,6 @@ export const SCImg = styled.img<{marginLeft?:any, isHideLogo: boolean }>`
   // display: ${props => (props.isHideLogo ? 'none' : 'block')};
   z-index: 1000;
   margin-left: ${props => (props.marginLeft ? props.marginLeft : '')};
+  padding-left:5px;
+  padding-right:8px;
 `;
