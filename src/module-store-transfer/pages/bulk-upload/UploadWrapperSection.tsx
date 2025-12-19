@@ -103,7 +103,6 @@ function UploadWrapperSection({
       });
 
       const allSheets = await readSheetNames(file);
-      console.log("myfile", allSheets);
 
       if (allSheets.length !== 1) {
         notifyError("The file should contain only one sheet named UserData!");
