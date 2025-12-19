@@ -98,8 +98,8 @@ const TaskStatus = ()=>{
           if(actionName === "remove") {
             existingColumnFields = existingColumnFields.filter(field => field?.isDelete);
           }
-          setTempAgGridColDefs(mapMasterToTaskStatusColumnGroupDefs(existingColumnFields,currentTaskMasterId,actionName))
-          setTempAgridRowData(mapTaskStatusDataToRowData(currentTaskMaster.data,existingColumnFields,actionName))
+          setTempAgGridColDefs(mapMasterToTaskStatusColumnGroupDefs(currentTaskMasterId,existingColumnFields,currentTaskMasterId,actionName))
+          setTempAgridRowData(mapTaskStatusDataToRowData(currentTaskMasterId,currentTaskMaster.data,existingColumnFields,actionName))
           setTempDownloadData(true)
         }
        }catch(error:any){

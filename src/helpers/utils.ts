@@ -1631,7 +1631,7 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields: Field[], maste
     ...taskPendingCustomColDefs ,...colDefs]
 }
 
-export const mapMasterToTaskStatusColumnGroupDefs = (existingColumnsFields: Field[], masterId: number, tasktype?: string): ColGroupDef[] | ColDef[] => {
+export const mapMasterToTaskStatusColumnGroupDefs = (currentTaskMasterId: number, existingColumnsFields: Field[], masterId: number, tasktype?: string): ColGroupDef[] | ColDef[] => {
 
   const colDefs = existingColumnsFields.map((f: Field) => {
 
@@ -1648,6 +1648,17 @@ export const mapMasterToTaskStatusColumnGroupDefs = (existingColumnsFields: Fiel
     }
 
     if (tasktype === "remove") {
+      return {
+        headerName: f.displayName,
+        field: f.key,
+        colId: f.key,
+        hide: !f.visible,
+        ...defaultColDefs,
+
+      }
+    }
+
+    if (tasktype === "modify" && currentTaskMasterId == 6 || currentTaskMasterId == 10) {
       return {
         headerName: f.displayName,
         field: f.key,
@@ -1789,11 +1800,13 @@ export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData: any[], ex
   return response
 }
 
-export const mapTaskStatusDataToRowData = (dirtyRowData: any[], existingColumnFields: Field[], taskType: string) => {
+export const mapTaskStatusDataToRowData = (currentTaskMasterId: number, dirtyRowData: any[], existingColumnFields: Field[], taskType: string) => {
 
   return dirtyRowData.map(entry => {
 
-    if (taskType === 'modify') {
+    if (taskType === 'modify' && currentTaskMasterId != 6 && currentTaskMasterId!=10  ) {
+
+      console.log(dirtyRowData)
       const oldData = JSON.parse(entry.old);
       const newData = JSON.parse(entry.new);
 
