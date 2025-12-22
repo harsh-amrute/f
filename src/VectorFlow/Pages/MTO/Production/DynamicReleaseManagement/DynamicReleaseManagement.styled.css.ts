@@ -104,6 +104,11 @@ globalStyle(
   `${Wrapper} .chart-wrapper > div .ag-charts-wrapper .ag-charts-canvas > canvas`,
   { height: "100% !important" }
 );
+globalStyle(
+  `${Wrapper} .chart-wrapper .chart-scroll`,
+  { height: "95% !important" }
+);
+
 
 export const Button = style({
   padding: "1rem 2rem",

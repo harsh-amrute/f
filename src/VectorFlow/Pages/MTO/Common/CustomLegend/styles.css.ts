@@ -33,5 +33,5 @@ export const legendOptions = style({
 });
 
 export const legendOptionsName = style({
-  fontSize: '12px',
+  // fontSize: '12px',
 });

@@ -35,9 +35,11 @@ import {
   ButtonLabelSelected,
   dropdownTopVar,
   dropdownLeftVar,
+  buttonLabelColorVar,
 } from "./styles.css";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
 import clsx from "clsx";
+import { style } from "@vanilla-extract/css";
 const gridViewIcon = (isSelected: boolean) => {
   const activeColor = "rgb(188, 61, 129)";
   const inactiveColor = "#3e3e3e";
@@ -588,7 +590,7 @@ const SchedulingActionToolbar = ({
             </span>
           </button>
 
-          <ToggleDivider />
+          <div className={ToggleDivider} />
 
           <button
             className={ToggleButton}
@@ -607,7 +609,7 @@ const SchedulingActionToolbar = ({
               Job View
             </span>
           </button>
-          <ToggleDivider />
+          <div className={ToggleDivider} />
 
           <button className={ToggleButton} onClick={onSelectClick}>
             {gridViewIcon(
@@ -618,7 +620,8 @@ const SchedulingActionToolbar = ({
                 ButtonLabel,
                 (currentView === "GridViewR" || currentView === "GridViewJ") &&
                   ButtonLabelSelected
-              )}
+              )
+            }
             >
               Grid View
             </span>
@@ -656,7 +659,7 @@ const SchedulingActionToolbar = ({
                   Resource List
                 </span>
               </button>
-              <ToggleDivider />
+              <div className={ToggleDivider} />
               <button
                 className={ToggleButton}
                 onClick={() => {

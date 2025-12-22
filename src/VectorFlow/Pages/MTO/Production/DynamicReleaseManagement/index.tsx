@@ -803,7 +803,7 @@ const DynamicReleaseManagement = () => {
 
   function TooltipRenderer({ datum, xKey }: any) {
     return `
-      <div class="drm-tooltip-container transform-translate-x">
+      <div class="drm-tooltip-container">
         <div class="drm-tooltip-header">
           ${datum[xKey]}
         </div>

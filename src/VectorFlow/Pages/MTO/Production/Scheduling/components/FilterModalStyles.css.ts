@@ -151,10 +151,6 @@ export const Checkbox = style({
   appearance: "none",
   cursor: "pointer",
 
-  vars: {
-    [CheckboxColorVar]: "rgb(148, 154, 171)", // default if not overridden
-  },
-
   selectors: {
     "&:checked": {
       backgroundColor: CheckboxColorVar,

@@ -150,9 +150,6 @@ export const headerCell = style({
   background: "black",
   width: cellWidthVar,
   minWidth: cellWidthVar,
-  vars: {
-    [cellWidthVar]: "120px",
-  },
 });
 
 export const resizeHandle = style({
@@ -171,8 +168,8 @@ export const contentCell = style({
   fontSize: "0.9rem",
   fontWeight: 300,
   padding: 4,
-  width: cellWidthVar,
-  minWidth: cellWidthVar,
+  // width: cellWidthVar,
+  // minWidth: cellWidthVar,
 });
 
 export const calendarHeaderRow = style({
@@ -335,9 +332,6 @@ export const colorPalette = style({
   borderRadius: 3,
   marginRight: 6,
   border: "0.4px solid #333",
-  vars: {
-    [colorPaletteBgVar]: "grey",
-  },
 });
 
 export const label = style({

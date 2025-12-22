@@ -5,11 +5,11 @@
 } */
 .drm-tooltip-container {
   background-color: #6c696a;
-  color: white;
+  /* color: white;
   padding: 0 10px 10px 10px;
   border-radius: 4px;
   font-family: "Roboto", sans-serif;
-  width: max-content;
+  width: max-content; */
 }
 
 .transform-translate-x {

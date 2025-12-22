@@ -185,6 +185,7 @@ const MenuToolTip = ({
             {t(itemChild.name) || itemChild.name}
             {itemChild.url !== location.pathname && (
               <img
+                className={scIcon}
                 src={
                   isLoading && tempUrls.includes(itemChild.url)
                     ? "/assets/img/nav/loader.svg"
@@ -195,7 +196,7 @@ const MenuToolTip = ({
                 alt="arrow"
                 style={assignInlineVars({
                   [scIconTransformVar]: isArrow
-                    ? "transform: rotate(-90deg)"
+                    ? "rotate(-90deg)"
                     : "",
                 })}
               />
@@ -214,6 +215,7 @@ const MenuToolTip = ({
       >
         <Tooltip
           id={item.name}
+          disableStyleInjection="core"
           place="right"
           className="tooltip_list"
           noArrow

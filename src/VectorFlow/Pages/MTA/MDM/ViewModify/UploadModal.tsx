@@ -258,8 +258,8 @@ const UploadModal = (props: UploadModalProps) => {
                 />
                 <button
                   className={SCManualUploadBtn}
-                  onClick={onUpload}
-                  disabled={uploadButtonStatus}
+                  onClick={handleUpload}
+                  disabled={uploadButtonStatus || isUploading}
                   style={{
                     height: "30px",
                     borderRadius: "0",

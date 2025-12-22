@@ -21,6 +21,7 @@ import {
   chartHeightVar,
   chartWrapper,
   colorPalette,
+  colorPaletteBgVar,
   columnBodyWrapper,
   columnHeaderRow,
   columnHeaderWrapper,
@@ -529,7 +530,10 @@ const MyChart: React.FC<MyChartProps> = ({
         {colors &&
           Object.keys(colors).map((key, index) => (
             <React.Fragment key={index}>
-              <div className={colorPalette} color={colors[key]} />
+              <div
+                className={colorPalette}
+                style={assignInlineVars({ [colorPaletteBgVar]: colors[key] })}
+              />
               <span className={label}>{key}</span>
             </React.Fragment>
           ))}

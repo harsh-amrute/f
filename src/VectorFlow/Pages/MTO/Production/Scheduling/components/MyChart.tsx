@@ -83,8 +83,8 @@ const MemoizedTaskBar = React.memo(
     <div
       className={taskBar}
       style={assignInlineVars({
-        [taskBarLeftVar]: left,
-        [taskBarWidthVar]: width,
+        [taskBarLeftVar]: `${left}px`,
+        [taskBarWidthVar]: `${width}px`,
         [taskBarBgVar]: backgroundColor,
       })}
       onClick={onClick}
@@ -708,6 +708,7 @@ const MyChart: React.FC<MyChartProps> = ({
   const totalHeight = RowData.length * rowHeight;
   const offsetTop = visibleRowRange.start * rowHeight;
 
+  console.log(ColDef,"ColDef");
   return (
     <div className={sectionWrapper}>
       <div
@@ -728,7 +729,7 @@ const MyChart: React.FC<MyChartProps> = ({
                         borderBottom: "1px solid #cecece",
                         height: "57px",
                         ...assignInlineVars({
-                          [cellWidthVar]: colWidths[index],
+                          [cellWidthVar]: `${colWidths[index]}px`,
                         }),
                       }}
                       key={index}
@@ -946,7 +947,10 @@ const MyChart: React.FC<MyChartProps> = ({
         {colors &&
           Object.keys(colors).map((key, index) => (
             <React.Fragment key={index}>
-              <div className={colorPalette} color={colors[key]} />
+              <div
+                className={colorPalette}
+                style={assignInlineVars({ [colorPaletteBgVar]: colors[key] })}
+              />
               <span className={label}>{key}</span>
             </React.Fragment>
           ))}

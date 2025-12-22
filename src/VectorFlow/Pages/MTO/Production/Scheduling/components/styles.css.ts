@@ -229,20 +229,19 @@ export const ToggleButton = style({
 });
 
 export const ButtonLabel = style({
-  vars: {
-    [buttonLabelColorVar]: "#3e3e3e",
-    [buttonLabelWeightVar]: "400",
-  },
   fontSize: "0.8rem",
-  color: buttonLabelColorVar,
-  fontWeight: buttonLabelWeightVar as any,
   userSelect: "none",
+  color: '#3e3e3e',
+  fontWeight: 400,
 });
 
 export const ButtonLabelSelected = style({
-  vars: {
-    [buttonLabelColorVar]: "rgb(188, 61, 129)",
-  },
+  color: 'rgb(188, 61, 129)',
+  fontWeight: 600,
+
+  // vars: {
+  //   [buttonLabelColorVar]: "rgb(188, 61, 129)",
+  // },
 });
 
 

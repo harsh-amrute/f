@@ -24,7 +24,7 @@ type BulkUploadHeaderParams = {
   themeUi: any;
   setIsPermissionModalOpen: (e: boolean) => void;
   setIsRoleModalOpen: (e: boolean) => void;
-  isBulkActionEnabled: boolean | undefined;
+  isBulkActionEnabled: any;
   resetState: () => void;
   gridRef?: GridRef | any;
   removeSelectedUser: () => void,
@@ -169,7 +169,7 @@ const BulkUploadHeader = ({
       <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
         {/*Remove user Button*/}
         <VFButton
-          disabled={!isBulkActionEnabled}
+          disabled={!isBulkActionEnabled?.removeUserEnable}
           style={{ width: "120px", height: "35px", fontSize: "1rem" }}
           themeUi={themeUi}
           onClick={removeSelectedUser}
@@ -179,7 +179,7 @@ const BulkUploadHeader = ({
 
         {/* Bulk Action Button */}
         <VFButton
-          disabled={!isBulkActionEnabled}
+          disabled={!isBulkActionEnabled.bulkActionEnable}
           style={{ width: "150px", height: "35px", fontSize: "1rem" }}
           themeUi={themeUi}
           onClick={onSelectClick}

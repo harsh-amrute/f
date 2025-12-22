@@ -4,6 +4,8 @@ import VFButtonOutline from "../../../../../../components/VectorFLOW/commons/VFB
 import VFButton from "../../../../../../components/VectorFLOW/commons/VFButton";
 import {
   Checkbox,
+  CheckboxBgImageVar,
+  CheckboxColorVar,
   CloseButton,
   DateLabel,
   DateRow,
@@ -21,7 +23,8 @@ import {
   FilterTabLayout,
   FilterWrapper,
 } from "./FilterModalStyles.css";
-import * as globalStyles  from "../../../../../../styles/global";
+import * as globalStyles from "../../../../../../styles/global";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 const FilterModal = ({
   setIsFilterModalOpen,
   ResourceData,
@@ -206,8 +209,7 @@ const FilterModal = ({
   const endDateConstraints = getEndDateConstraints();
   const checkedIconUrl = "/assets/img/mto/dueDateQuotation/checked.svg";
   const color4 =
-    globalStyles.chooseThemeColor[themeUi]?.color4 ??
-    "rgb(148, 154, 171)";
+    globalStyles.chooseThemeColor[themeUi]?.color4 ?? "rgb(148, 154, 171)";
 
   return (
     <div className={FilterWrapper}>
@@ -220,7 +222,12 @@ const FilterModal = ({
           />
           Select Filter
         </div>
-        <button className={CloseButton} onClick={() => setIsFilterModalOpen(false)}>×</button>
+        <button
+          className={CloseButton}
+          onClick={() => setIsFilterModalOpen(false)}
+        >
+          ×
+        </button>
       </div>
 
       <div className={FilterContent}>
@@ -228,7 +235,8 @@ const FilterModal = ({
           {/* Stage */}
           <div className={FilterTab}>
             <div className={FilterTabHeader}>Stage</div>
-            <input className={FilterSearchBar}
+            <input
+              className={FilterSearchBar}
               type="text"
               placeholder="Search Stage..."
               value={searchTerms.stages}
@@ -248,14 +256,23 @@ const FilterModal = ({
                     }}
                     onClick={() => onSelectValue("stages", stage)}
                   >
-                    <input className={Checkbox}
+                    <input
+                      className={Checkbox}
+                      type="checkbox"
                       id={id}
                       data-theme={themeUi}
-                      style={{ zoom: "0.5" }}
+                      style={{
+                        zoom: "0.5",
+                        ...assignInlineVars({
+                          [CheckboxColorVar]:
+                            globalStyles.chooseThemeColor[themeUi]?.color4,
+                          [CheckboxBgImageVar]:
+                            "url(/assets/img/mto/dueDateQuotation/checked.svg)",
+                        }),
+                      }}
                       onClick={(e) => e.stopPropagation()}
                       onChange={() => onSelectValue("stages", stage)}
                       checked={selectedFilters.stages.includes(stage)}
-                      
                     />
                     <p>{stage}</p>
                   </div>
@@ -267,7 +284,8 @@ const FilterModal = ({
           {/* WorkStation */}
           <div className={FilterTab}>
             <div className={FilterTabHeader}>WorkStation</div>
-            <input className={FilterSearchBar}
+            <input
+              className={FilterSearchBar}
               type="text"
               placeholder="Search WorkStation..."
               value={searchTerms.workStations}
@@ -287,7 +305,8 @@ const FilterModal = ({
                     }}
                     onClick={() => onSelectValue("workStations", ws)}
                   >
-                    <input className={Checkbox}
+                    <input
+                      className={Checkbox}
                       id={id}
                       style={{ zoom: 0.5 }}
                       data-theme={themeUi}
@@ -305,7 +324,8 @@ const FilterModal = ({
           {/* Job List */}
           <div className={FilterTab}>
             <div className={FilterTabHeader}>Job List</div>
-            <input className={FilterSearchBar}
+            <input
+              className={FilterSearchBar}
               type="text"
               placeholder="Search Job..."
               value={searchTerms.jobs}
@@ -325,7 +345,8 @@ const FilterModal = ({
                     }}
                     onClick={() => onSelectValue("jobs", job)}
                   >
-                    <input className={Checkbox}
+                    <input
+                      className={Checkbox}
                       id={id}
                       style={{ zoom: 0.5 }}
                       data-theme={themeUi}
@@ -345,7 +366,9 @@ const FilterModal = ({
             <div className={FilterTabHeader}>Time Preference</div>
             <div className={DateRow}>
               <div className={DateWrapper}>
-                <label className={DateLabel} htmlFor="start-date">Start Date</label>
+                <label className={DateLabel} htmlFor="start-date">
+                  Start Date
+                </label>
                 <input
                   style={{
                     width: "90px",
@@ -370,7 +393,9 @@ const FilterModal = ({
                 />
               </div>
               <div className={DateWrapper}>
-                <label className={DateLabel} htmlFor="end-date">End Date</label>
+                <label className={DateLabel} htmlFor="end-date">
+                  End Date
+                </label>
                 <input
                   style={{
                     width: "90px",
@@ -400,7 +425,8 @@ const FilterModal = ({
           {/* Action Preference */}
           <div className={FilterTab}>
             <div className={FilterTabHeader}>Action Preference</div>
-            <input className={FilterSearchBar}
+            <input
+              className={FilterSearchBar}
               type="text"
               placeholder="Search Action Preference..."
               value={searchTerms.actionPreferences}
@@ -422,7 +448,8 @@ const FilterModal = ({
                     }}
                     onClick={() => onSelectValue("actionPreferences", pref)}
                   >
-                    <input className={Checkbox}
+                    <input
+                      className={Checkbox}
                       id={id}
                       style={{ zoom: 0.5 }}
                       data-theme={themeUi}

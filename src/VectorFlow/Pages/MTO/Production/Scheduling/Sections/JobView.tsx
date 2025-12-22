@@ -123,8 +123,8 @@ const JobView = ({ ResourceData }: any) => {
         className={taskBar}
         key={taskIdx}
         style={assignInlineVars({
-          [taskBarLeftVar]: left,
-          [taskBarWidthVar]: width,
+          [taskBarLeftVar]: `${left}px`,
+          [taskBarWidthVar]: `${width}px`,
           [taskBarBgVar]: colors?.[task.stage] ?? "#cecece",
         })}
       >
