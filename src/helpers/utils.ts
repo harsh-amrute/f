@@ -4620,7 +4620,7 @@ export const getType = (attributes: any, key: any) => {
 }
 
 // Function to check values already there in Values
-  export const formatFilterJSON = (filter: any) => {
+  export const formatFilterJSON = (filter: any = {}) => {
   const formatFilter: any = {};
 
   for (const key in filter) {

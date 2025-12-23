@@ -208,7 +208,8 @@ const useFilter=(filterData: any, page: any)=>{
         onApplyFilter:onApplyFilter,
         onAddFilter:onAddFilter,
         toggleFilter:toggleFilter,
-        appliedFilters:appliedFilters
+        appliedFilters:appliedFilters,
+        setAppliedFilters:setAppliedFilters
     }
 
 }

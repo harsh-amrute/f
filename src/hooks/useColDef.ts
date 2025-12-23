@@ -5,6 +5,12 @@ const useColDef = () => {
     const groupedColDefsRef = useRef<any>(null);
 
 
+    const getNewColDef = (response: any) => {
+        response?.data?.data?.default_coldef.forEach((row : any) =>{
+            colDefMap.current.set(row.cc , { hd: row.hd, scc: row.scc })
+        })
+    }
+
     const getColDef = (response: any) => {
         response.data.data?.forEach((row : any) =>{
             colDefMap.current.set(row.cc , { hd: row.hd, scc: row.scc })
@@ -30,7 +36,8 @@ const useColDef = () => {
         getColDef,
         colDefMap,
         getGroupedColDef,
-        groupedColDefsRef
+        groupedColDefsRef,
+        getNewColDef,
     }
 }
 
