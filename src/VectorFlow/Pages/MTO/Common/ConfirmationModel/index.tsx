@@ -4,7 +4,7 @@ import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButt
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard";
 import VFSelect from "../../../../../../src/VectorFlow/Pages/MTO/Common/VFSelect"; 
 
-type DownloadOptionValue = "completely_close" | "shortage" | "all";
+type DownloadOptionValue = "completely_available" | "shortage" | "all";
 
 type OptionType = {
   label: string;
@@ -24,7 +24,7 @@ type ConfirmationModelProps = {
 const downloadOptions: OptionType[] = [
   { label: "All", value: "all" },
   { label: "Shortage", value: "shortage" },
-  { label: "Completely Close", value: "completely_close" },
+  { label: "Completely Available", value: "completely_available" },
 ];
 
 const ConfirmationModel: React.FC<ConfirmationModelProps> = ({

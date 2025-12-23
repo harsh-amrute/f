@@ -105,20 +105,13 @@ const ProcurementPlanning = () => {
     } 
   };
 
-  const getStatusFromOption = (option: string, currentTabLabel: string | undefined) => {
-    if (option === "shortage") return "0";
-    if (option === "completely_close") return "1";
-    if (option === "all") return ""; // Adjust based on your API
-    return currentTabLabel === "Shortage" ? "0" : "1"; // Fallback
-  };
-
   
 const handleExcelConfirm = (option: string, includeDetails: boolean) => {
     setShowExcelModal(false);
     
     let status = currentTab?.label === "Shortage" ? "0" : "1";
     if (option === "shortage") status = "0";
-    if (option === "completely_close") status = "1";
+    if (option === "completely_available") status = "1";
 
     const excelScopeParam = option === "all" ? "all" : "";
 
