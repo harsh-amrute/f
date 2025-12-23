@@ -2611,7 +2611,7 @@ const colorNameMap: Record<string, string> = {
   "#ED1C24": "Red",
   "#FFCB05": "Yellow",
   "#418D18": "Green",
-  "#BCBCBC": "Gray",
+  "#BCBCBC": "White",
   "#355FD3": "Blue",
 };
 
