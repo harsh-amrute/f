@@ -123,9 +123,9 @@ const handleExcelConfirm = (option: string, includeDetails: boolean) => {
       selectedDate,
       1,
       status, 
-      true,         // isExcelExport
-      1,            // pageSize (irrelevant for export usually)
-      detailsFlag,   // isChildren: 1 = With Order Details, 0 = Without
+      true,         
+      1,            
+      detailsFlag,   
       excelScopeParam
     );
   };
@@ -133,7 +133,7 @@ const handleExcelConfirm = (option: string, includeDetails: boolean) => {
 
   return (
     <>
-      <ConfirmationModel
+      <ConfirmationModel  
         open={showExcelModal}
         onClose={() => setShowExcelModal(false)}
         onConfirm={handleExcelConfirm}
