@@ -9,7 +9,7 @@ import { useGetFilterData } from "../../../../../VectorFlow/Services/MTO/Common/
 import { FilterPageName } from "../../Common/Enum";
 import { useUserData } from "../../../../../context";
 import BomExcelModal from "../../Common/BomExcelModal";
-
+import ConfirmationModel from "../../Common/ConfirmationModel";
 const APIFilterConfig = {
   filSecVisConfig: {
     Proc_Procurement_Planning: {
@@ -105,40 +105,48 @@ const ProcurementPlanning = () => {
     } 
   };
 
-  
-  const handleExcelConfirm = () => {
-    setShowExcelModal(false);
-    fetchData(
-      selectedDate,
-      1,
-      currentTab?.label === "Shortage" ? "0" : "1",
-      true,
-      1,
-      1
-    );
+  const getStatusFromOption = (option: string, currentTabLabel: string | undefined) => {
+    if (option === "shortage") return "0";
+    if (option === "completely_close") return "1";
+    if (option === "all") return ""; // Adjust based on your API
+    return currentTabLabel === "Shortage" ? "0" : "1"; // Fallback
   };
-  const handleExcelCancel = () => {
+
+  
+const handleExcelConfirm = (option: string, includeDetails: boolean) => {
     setShowExcelModal(false);
+    
+    let status = currentTab?.label === "Shortage" ? "0" : "1";
+    if (option === "shortage") status = "0";
+    if (option === "completely_close") status = "1";
+
+    const excelScopeParam = option === "all" ? "all" : "";
+
+    const detailsFlag = includeDetails ? 1 : 0;
+    
+
+
     fetchData(
       selectedDate,
       1,
-      currentTab?.label === "Shortage" ? "0" : "1",
-      true,
-      0,
-      0
+      status, 
+      true,         // isExcelExport
+      1,            // pageSize (irrelevant for export usually)
+      detailsFlag,   // isChildren: 1 = With Order Details, 0 = Without
+      excelScopeParam
     );
   };
 
+
   return (
     <>
-      <BomExcelModal
+      <ConfirmationModel
         open={showExcelModal}
         onClose={() => setShowExcelModal(false)}
         onConfirm={handleExcelConfirm}
-        onCancel={handleExcelCancel}
         themeUi={themeUi}
         headerText={"Excel Export"}
-        messageText={"Do you want to download Excel with Order details?"}        
+        messageText={" BOM details:"}        
       />
 
       {(isLoading || getFilterdataLoading) && <OverlayLoader />}

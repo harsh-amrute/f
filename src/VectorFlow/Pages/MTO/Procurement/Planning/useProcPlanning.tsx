@@ -286,13 +286,13 @@ const useProcPlanning = ( appliedFilters: any) => {
       }, [tempGridData]);
     
     
-    const fetchData = useCallback(async (date: string, pageNumber = 1, currentTab = '1', isExcelExport = false, pageSize?:any, isChildren?:any) => {
+    const fetchData = useCallback(async (date: string, pageNumber = 1, currentTab = '1', isExcelExport = false, pageSize?:any, isChildren?:any,excel_scope?:string) => {
         if(isExcelExport){
             try {
                 const headersdata = gridRef?.current?.api.getColumnState();
                 const formattedFilters = formatFilterJSON(appliedFilters)
                 const body = getBodyForExcelExport({headersdata, filterData : formattedFilters,colDefMap})
-                const response = await GetProcPlanningDataForExcelData({body ,ca: currentTab, isExcelExport: 1 , date , report_name : FilterPageName.Proc_Procurement_Planning,isChildren });
+                const response = await GetProcPlanningDataForExcelData({body ,ca: currentTab, isExcelExport: 1 , date , report_name : FilterPageName.Proc_Procurement_Planning,isChildren,excel_scope:excel_scope });
                 if (response.status === 200) {
                     DownloadExcel(response, FilterPageName.Proc_Procurement_Planning);
                     notifySuccess('Excel Export Successfully')
