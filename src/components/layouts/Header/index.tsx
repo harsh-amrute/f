@@ -3,8 +3,6 @@ import { useUserData } from '../../../context'
 import * as HeaderStyled from './style'
 import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
-import { RootState } from '../../../redux/store/store'
 
 interface HeaderProps{
   urlExcludeHeader:Array<string>

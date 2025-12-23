@@ -186,6 +186,6 @@ export const SCImg = styled.img<{marginLeft?:any, isHideLogo: boolean }>`
   // display: ${props => (props.isHideLogo ? 'none' : 'block')};
   z-index: 1000;
   margin-left: ${props => (props.marginLeft ? props.marginLeft : '')};
-  padding-left:5px;
+  padding-left:18px;
   padding-right:8px;
 `;

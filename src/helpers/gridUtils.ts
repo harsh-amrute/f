@@ -1,7 +1,6 @@
 import { ColDef } from "ag-grid-enterprise";
 import _ from "lodash";
-import { ColorsMTO } from "../VectorFlow/Pages/MTO/Common/Colors"; 
-import { useUserData } from "../context";
+import { ColorsMTO } from "../VectorFlow/Pages/MTO/Common/Colors";
 
 interface ApiResponseItem {
   cc: string;
