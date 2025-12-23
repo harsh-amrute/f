@@ -587,6 +587,12 @@ const getFilterData = async () => {
  
   const currentYear = new Date().getFullYear();
   const maxAllowedDate = new Date(currentYear + 3, 11, 31);
+
+  const tileDisabled = ({ date }: any) => {
+    if (disabledFOLHorizonDate) {
+          return disabledFOLHorizonDate(date);
+        }
+  }
  
   return (
     <>
@@ -667,8 +673,7 @@ const getFilterData = async () => {
                     minDate={new Date()} 
                     maxDate={maxAllowedDate}
                     disabled={isDateDisabled}
-                    disabledFOLHorizonDate={disabledFOLHorizonDate} 
-                    // disabledFOLHorizonDate={disabledFOLHorizonDateFrom}
+                    tileDisabled={tileDisabled}
                   dateInputStyle={{
                     fontSize: "10px",
                     fontWeight: 300,
@@ -699,11 +704,9 @@ const getFilterData = async () => {
                 date={toDate}
                 onDateChange={setToDate}
                 disabled={isDateDisabled}
-                    disabledFOLHorizonDate={disabledFOLHorizonDate} 
-                    // disabledFOLHorizonDate={disabledFOLHorizonDateTo}
-
-                    minDate={new Date()} 
-                    maxDate={maxAllowedDate}
+                tileDisabled={tileDisabled}
+                minDate={new Date()} 
+                maxDate={maxAllowedDate}
                 dateInputStyle={{
                   fontSize: "10px",
                   fontWeight: 300,

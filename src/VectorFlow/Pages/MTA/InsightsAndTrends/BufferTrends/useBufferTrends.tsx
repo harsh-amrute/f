@@ -188,8 +188,8 @@ const useBufferTrends = () => {
         setMultiFilterState(params); 
         try {
             setCurrentView('chart');
-            setCurrentTab(currentTab);
-            setCurrentPageTab(currentPageTab);
+            // setCurrentTab(currentTab);
+            // setCurrentPageTab(currentPageTab);
             setHorizondays(horizonDays);
             const body = {
                 days:horizonDays,
@@ -197,8 +197,14 @@ const useBufferTrends = () => {
                 filters:params
             }           
             const result:any = await getBufferTrendsGraph(body)
+            const processedData = getGraphDataWithTotal(result.data);
             setIsSelectCategoryOpen(false);
-            setCurrentGraphData(result.data?.data?.absolute);
+            setGraphData(processedData);
+            if (currentPageTab === 'Percentage') {
+                setCurrentGraphData(processedData.data.percentage);
+            } else {
+                setCurrentGraphData(processedData.data.absolute);
+            }
             setSummaryData(result.data?.data?.summary);
             setAvailability(result.data?.data?.avail);
             setGraphData(getGraphDataWithTotal(result.data));

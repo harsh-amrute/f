@@ -28,7 +28,7 @@ const RRRColorBandwise = () => {
   exportExcelColumns,
   setExportExcelColumns,
   onExportToExcelCallBack,
-  // getRRRBandwiseRowData,
+  getRRRBandwiseRowData,
   onApplyFilter,
   currFilter,
   setCurrFilter,
@@ -138,7 +138,7 @@ const RRRColorBandwise = () => {
                 totalRows={recordsCount} 
                 currentPage={currentPage} 
                 rowsPerPage={userPageSize || parseInt(RRR_ROWS_PER_PAGE || '100')}
-                handleChangePage={(e)=>console.log(e)} 
+                handleChangePage={(e)=>getRRRBandwiseRowData(e,userPageSize)} 
                 resetGridRef={ref} 
                 isDisabled={isDisabled}
                 customPageSizeEnabled={true}

@@ -21,12 +21,43 @@ function UploadRightSection({
   progress
 }: UploadRightSectionProps) {
   const errorGridRef = useRef<GridRef>(null);
+  const exportingRef = useRef(false);
+
   const onErrorFileDownload = () => {
+    
     if (errorGridRef && errorGridRef.current) {
+
+      if (exportingRef.current) return;
+      exportingRef.current = true;
+
       errorGridRef.current.api.exportDataAsExcel({
         fileName: ExcelExportName.ErrorData,
         sheetName: ExcelExportName.ErrorData,
+
+        processHeaderCallback: (params) => {
+          return String(params.column.getColDef().headerName ?? '');
+        },
+
+        processCellCallback: (params) => {
+          const cellValue = params.value;
+
+          if (cellValue === null || cellValue === undefined) return '';
+
+          if (Array.isArray(cellValue)) {
+            return cellValue.join(' ');
+          }
+          if (typeof cellValue === 'object') {
+            return JSON.stringify(cellValue);
+          }
+      
+          return String(cellValue);
+
+        },
       });
+
+      setTimeout(() => {
+        exportingRef.current = false;
+      }, 0);
     }
   };
 
