@@ -357,21 +357,25 @@ const PermissionSelectionPage = ({
           const userRoles = finalData.roles[user.rid]?.roles || [];
           const userPermissions = finalData.permissions[user.perm_id] || {};
           const userLocationPermissions = userPermissions.location_permissions || [];
-          const userProductPermissions = userPermissions.product_permissions || [];
+        const userProductPermissions = userPermissions.product_permissions || [];
           
           // Get application IDs from user's permissions (both location and product)
           const userPermissionAppIdsLoc = new Set();
           const userPermissionAppIdsPerm = new Set();
           
           // Add application IDs from location permissions
-          userLocationPermissions.forEach((perm:any) => {
-              userPermissionAppIdsLoc.add(perm.application_id);
-          });
+        userLocationPermissions.forEach((perm: any) => {
+          if (perm?.permissions?.length) {
+            userPermissionAppIdsLoc.add(perm.application_id);
+          }
+        });
           
           // Add application IDs from product permissions
-          userProductPermissions.forEach((perm:any) => {
-              userPermissionAppIdsPerm.add(perm.application_id);
-          });
+        userProductPermissions.forEach((perm: any) => {
+          if (perm?.permissions?.length) {
+            userPermissionAppIdsPerm.add(perm.application_id);
+          }
+        });
 
           if(userRoles.length === 0){
             errors.push({

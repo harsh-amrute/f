@@ -362,43 +362,44 @@ import { RootState } from "../../../../../redux/store/store";
             rowData={seasonalityRowData}
             normChangeData={normChangeData}
 
-          />
-        }
-        {
-          isOverlayVisible && (
-            <VFOverlay>
-               <div style={{backgroundColor:'white',borderRadius:'6px'}}>
-              <VFLoader/>
-              <h1 style={{backgroundColor:"white",padding:'15px',borderRadius:'8px'}}>Validating Data. Please Wait this might take some time.... {((uploadProgress==='' || parseInt(uploadProgress)===0)) ? '' : 'Progress: ' + uploadProgress + ' / ' + totalProgress}</h1>
-              </div>
-            </VFOverlay>
-          )
-        }
-        {
-          !isSelectMasterOpen && 
-          <div style={{zoom:'var(--nms-filter-zoom)'}}>
-            <VFTaskBar
-            disableStopSeasonality={()=>{
-              const flatState=_.flatMap(seasonalityActiveQuickFilter)
-              let error = false;
-              flatState.map((state:number)=>{
-                if(!validStopStatuses.includes(state)) error = true;
-              })
-              if(error) return true;
-              
-              return false;
-             
-             }}
+        />
+      }
+      {
+        isOverlayVisible && (
+          <VFOverlay>
+            <div style={{ backgroundColor: 'white', borderRadius: '6px' }}>
+              <VFLoader />
+              <h1 style={{ backgroundColor: "white", padding: '15px', borderRadius: '8px' }}>Validating Data. Please Wait this might take some time.... {((uploadProgress === '' || parseInt(uploadProgress) === 0)) ? '' : 'Progress: ' + uploadProgress + ' / ' + totalProgress}</h1>
+            </div>
+          </VFOverlay>
+        )
+      }
+      {
+        !isSelectMasterOpen &&
+        <div style={{ zoom: 'var(--nms-filter-zoom)' }}>
+          <VFTaskBar
+            disableStopSeasonality={() => {
+              const selectedRows = ref.current?.api.getSelectedRows() || [];
+              if (selectedRows.length === 0) return true;
 
-            disableResumeSeasonality={()=>{
-              const flatState=_.flatMap(seasonalityActiveQuickFilter)
               let error = false;
-              flatState.map((state:number)=>{
-                if(!validResumeStatuses.includes(state)) error = true;
-              })
-              if(error) return true;
-              
-              return false;
+              selectedRows.forEach((row: any) => {
+                if (!validStopStatuses.includes(row.sts)) error = true;
+              });
+
+              return error;
+            }}
+
+            disableResumeSeasonality={() => {
+              const selectedRows = ref.current?.api.getSelectedRows() || [];
+              if (selectedRows.length === 0) return true;
+
+              let error = false;
+              selectedRows.forEach((row: any) => {
+                if (!validResumeStatuses.includes(row.sts)) error = true;
+              });
+
+              return error;
             }}
             showSubmittedExportError={activeMaster?.rowData.length > 0 && errorCount>0}
             masterProgress={activeMaster.progress}
