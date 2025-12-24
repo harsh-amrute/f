@@ -3,6 +3,7 @@ import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard";
 import VFSelect from "../../../../../../src/VectorFlow/Pages/MTO/Common/VFSelect"; 
+import Checkbox from "../../../../../components/VectorFLOW/commons/MTO/Checkbox";
 
 type DownloadOptionValue = "completely_available" | "shortage" | "all";
 
@@ -14,7 +15,6 @@ type OptionType = {
 type ConfirmationModelProps = {
   open: boolean;
   onClose: () => void;
-  // UPDATED: Now passes option AND checked state
   onConfirm: (option: DownloadOptionValue, includeDetails: boolean) => void;
   themeUi: any;
   messageText: string;
@@ -36,12 +36,10 @@ const ConfirmationModel: React.FC<ConfirmationModelProps> = ({
   headerText,
 }) => {
   const [selectedOption, setSelectedOption] = useState<OptionType | null>(null);
-  // New state for checkbox
   const [isChecked, setIsChecked] = useState(false);
 
   const handleConfirm = () => {
     if (selectedOption) {
-      // Pass both the selected Value and the Checkbox State
       onConfirm(selectedOption.value, isChecked);
     }
   };
@@ -108,16 +106,12 @@ const ConfirmationModel: React.FC<ConfirmationModelProps> = ({
             <span style={{ fontSize: "14px", fontWeight: 500 }}>
             {messageText}
           </span>
-            <input 
-                type="checkbox" 
-                id="order-details-check"
+            <Checkbox 
+                theme={themeUi}
+                type="checkbox"
                 checked={isChecked}
                 onChange={(e) => setIsChecked(e.target.checked)}
-                style={{
-                    width: "16px",
-                    height: "16px",
-                    cursor: "pointer"
-                }}
+                style={{ cursor: "pointer" }}
             />
         </div>
       </div>
@@ -140,7 +134,7 @@ const ConfirmationModel: React.FC<ConfirmationModelProps> = ({
             cursor: !selectedOption ? "not-allowed" : "pointer",
           }}
         >
-          Yes
+          Okay
         </VFButtonOutline>
       </div>
     </VFModalCard>
