@@ -4478,7 +4478,7 @@ export function getColumnDefinations(
       minWidth: 150,
       valueFormatter: (params: any) => {
         if (params.value) {
-          const format = (getNumberFormat() || '').toUpperCase();
+          const format = (getNumberFormat() || 'USA').toUpperCase();
           const locale = format === 'USA' ? 'en-US' : format === 'IND' ? 'hi-IN' : undefined;
       
           if (data.dt === 'number') {
