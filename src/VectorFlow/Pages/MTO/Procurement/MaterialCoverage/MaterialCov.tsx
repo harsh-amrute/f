@@ -3,6 +3,7 @@ import {
   TextXAxis,
   TextYAxis,
   BTRLayoutTabsWrapper,
+  ProcurementLayout,
 } from '../MaterialCoverage/styles';
 import VFFloatingTab from "../../../../../components/VectorFLOW/commons/VFFloatingTab"
 import ActionToolBar from "../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar"
@@ -648,6 +649,8 @@ const MaterialCov = () => {
               onFilterRemove: onFilterRemove,
             }}
             BomExcelExport={BomExcelExportModal}
+            VFWrapper={ProcurementLayout}
+            vfWrapperStyle={{ marginLeft: '25px', flex: "1" }}
           />
 
           {/* <MaterialSODetailed 

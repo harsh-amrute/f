@@ -100,6 +100,13 @@ type CommonGridviewProps = {
     onClose: () => void;
     showExcelModal: boolean;
   }>;
+  VFWrapper: React.ComponentType<{
+    children: React.ReactNode;
+    className?: string;
+    style?: React.CSSProperties;
+  }>;
+  vfWrapperStyle?: React.CSSProperties;
+  vfWrapperClassName?: string;
 };
 
 /**
@@ -165,6 +172,15 @@ type CommonGridviewProps = {
  * Optional modal component displayed before Excel export
  * when BOM export confirmation is required.
  *
+ * @param {React.ComponentType} props.VFWrapper
+ * Wrapper component used to style the AG Grid container.
+ * 
+ * @param {React.CSSProperties} [props.vfWrapperStyle]
+ * Custom styles applied to the VFWrapper component.
+ * 
+ * @param {string} [props.vfWrapperClassName]
+ * Custom class name applied to the VFWrapper component.
+ * 
  * @returns {JSX.Element}
  * A fully configured grid view with pagination, filtering,
  * column customization, and Excel export support.
@@ -250,6 +266,7 @@ type CommonGridviewProps = {
  *   getExcelExportData={fetchExcelData}
  *   actionToolBarProps={toolbarConfig}
  *   gridDataLoading={isLoading}
+ *   VFWrapper={SCDynamicContainer}
  * />
  */
 
@@ -268,6 +285,9 @@ function CommonGridview(props: CommonGridviewProps) {
     gridDataLoading,
     BomExcelExport,
     setCurrentFilters,
+    VFWrapper,
+    vfWrapperStyle,
+    vfWrapperClassName,
   } = props;
 
   const {
@@ -598,11 +618,12 @@ function CommonGridview(props: CommonGridviewProps) {
         setMultiFilter={setMultiFilter}
         isMfgSelected={isMfgSelected}
         toggleFilter={toggleFilter}
+        saveBtnName={"Save"}
+        resetBtnName={"Reset"}
       />
 
-      <SCDynamicContainer className=" .ag-theme-alpine">
+      <VFWrapper className={vfWrapperClassName ?? ".ag-theme-alpine"} style={vfWrapperStyle ?? {}}>
         <VFTable
-          {...customGridOptions}
           sideBar={{
             toolPanels: ["columns"],
           }}
@@ -622,6 +643,7 @@ function CommonGridview(props: CommonGridviewProps) {
               ? setIsDisabled(false)
               : setIsDisabled(true);
           }}
+          {...customGridOptions}
         />
         {excelExportParams?.showBomExcelModal && BomExcelExport && (
           <BomExcelExport
@@ -643,7 +665,7 @@ function CommonGridview(props: CommonGridviewProps) {
           savePageSize={savePageSize}
           userPageSize={userPageSize}
         />
-      </SCDynamicContainer>
+      </VFWrapper>
     </div>
   );
 }

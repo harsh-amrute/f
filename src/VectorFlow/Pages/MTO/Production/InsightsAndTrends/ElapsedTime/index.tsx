@@ -24,6 +24,7 @@ import BPPRenderer from '../../../Common/BPRRenderer/BPPRenderer'
 import CommonGridview, { getRowDataArgs } from '../../../../../../helpers/CommonGridview'
 import CustomTagTooltip from '../../../Poogi/InsightAndTrends/OTIFAnalysis/CustomTagTooltip'
 import { GridOptions } from 'ag-grid-enterprise'
+import { SCDynamicContainer } from './GridView/styles'
 // import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
 // import useFilter from '../../../../../../hooks/useFilter';
 
@@ -446,7 +447,7 @@ const ElapsedTime = () => {
               reportName="Elapse Time"
               customGridOptions={gridOptions}
               excelExportParams={{
-                isExcelExportFromBackend: false,
+                isExcelExportFromBackend: true,
                 excelExportReportName: FilterPageName.Poogi_Elapsed_Time,
                 excelExportSheetName: FilterPageName.Poogi_Elapsed_Time,
               }}
@@ -460,6 +461,7 @@ const ElapsedTime = () => {
                 isGridView: isGridView,
                 setIsGridView: setIsGridView,
               }}
+              VFWrapper={SCDynamicContainer}
             />
           ) : (
             
