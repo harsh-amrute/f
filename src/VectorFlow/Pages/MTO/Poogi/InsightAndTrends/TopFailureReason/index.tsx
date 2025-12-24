@@ -22,6 +22,8 @@ import { useUserData } from "../../../../../../context/index";
 import useFilter from '../../../../../../hooks/useFilter'
 import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter'
 import BPPRenderer from "../../../Common/BPRRenderer/BPPRenderer";
+import { format } from "date-fns";
+import { useGetDate } from "../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting";
 
 
 const APIFilterConfig = {
@@ -66,6 +68,10 @@ const TopFailureReasons = () => {
   const [userConfigFetched, setUserConfigFetched] = useState(false);
 
   const reportName = "TopFailureReasons";
+
+  const { data: apiResponseData } = useGetDate();
+ 
+  const lastRunDate = new Date(apiResponseData?.data?.data).toString() !== "Invalid Date" ? format(new Date(apiResponseData?.data?.data), 'dd MMM yyyy') : '';
 
   const colDefCustomizations = {
     tag: {
@@ -266,12 +272,12 @@ const TopFailureReasons = () => {
             <Allotment vertical={false} separator={false}>
               <Allotment.Pane preferredSize={"50%"}>
                 <BTRAllomentSection>
-                  <OTIFFailureGraph month="previous" graphData={graphData.m1} />
+                  <OTIFFailureGraph month="previous" graphData={graphData.m1} lastRunDate={lastRunDate} subtractStartMonths={1} subtractEndMonths={2}/>
                 </BTRAllomentSection>
               </Allotment.Pane>
               <Allotment.Pane preferredSize={"50%"}>
                 <BTRAllomentSection>
-                  <OTIFFailureGraph month="current" graphData={graphData.m2} />
+                  <OTIFFailureGraph month="current" graphData={graphData.m2} lastRunDate={lastRunDate}  subtractStartMonths={0}  subtractEndMonths={1} />
                 </BTRAllomentSection>
               </Allotment.Pane>
             </Allotment>

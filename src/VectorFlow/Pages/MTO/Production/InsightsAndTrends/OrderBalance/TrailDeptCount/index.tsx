@@ -1,16 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
 import { AgChartOptions } from "ag-charts-community";
-import { ProductionInsightsAndTrendsString } from "../../../../Common/String";
-import VFInfoToolTip from "../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
-import SplitGraphContainer from "../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer";
+import { useEffect, useMemo, useState } from "react";
 import { getColumnDefinations } from "../../../../../../../helpers/utils";
-import { columnConfigData } from "../OrderBalanceMockData";
-import { format } from "date-fns";
+import SplitGraphContainer from "../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer";
+import { ProductionInsightsAndTrendsString } from "../../../../Common/String";
 import { createSeriesData, TooltipRenderer } from "../OrderBalanceCommon";
+import { columnConfigData } from "../OrderBalanceMockData";
+import VFInfoToolTip from "../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 
 const TrailDeptCount = (props: any) => {
-  const {graphData} = props;
-  const [date] = useState(format(new Date(), "d MMM yyyy"));
+  const {graphData, lastRunDate} = props;
   const [rawData, setRawData] = useState<any>([]);
   const [hideChart1, toggleChart1] = useState(false);
   const [chartLoading, setChartLoading] = useState(false);
@@ -146,7 +144,7 @@ const TrailDeptCount = (props: any) => {
     }}
   >
     <span style={{ fontWeight: 500 }}>{`${ProductionInsightsAndTrendsString.trailDeptCount}  `}</span>
-    <span style={{ fontWeight: 300 }}>{`(${date})`}</span>
+    <span style={{ fontWeight: 300 }}>{`(${lastRunDate})`}</span>
   </div>
 
   return (
