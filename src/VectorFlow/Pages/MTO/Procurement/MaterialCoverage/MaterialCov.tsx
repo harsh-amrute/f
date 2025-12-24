@@ -432,16 +432,12 @@ const MaterialCov = () => {
 
   return (
     <div style={{ width: "100%", height: "100%" }}>
-      {!toggleComponent ?
+      {!toggleComponent ? (
         <>
-          {
-            isLoading && (
-              <OverlayLoader />
-            )
-          }
+          {isLoading && <OverlayLoader />}
 
           <ActionToolBar
-            comp={'MaterialCov'}
+            comp={"MaterialCov"}
             themeUi={themeUi}
             // isAddFilterButton
             // isFilterOpen={isFilterOpen}
@@ -455,70 +451,119 @@ const MaterialCov = () => {
             // onDateChange={() => { console.log('') }}
             // submitDate={() => { console.log('') }}
           />
-          <div >
-            <div style={{display: 'flex', justifyContent: isAllData?'right':'center', alignItems: 'center', width: '100%', padding: '0 1rem'}}>
-
-            <BTRLayoutTabsWrapper>
-              <VFFloatingTab
-                handleClick={(e) => setCurrTab(e.value)}
-                tabs={tabs}
-                defaultTab={defaultTab}
-              />
-
+          <div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: isAllData ? "right" : "center",
+                alignItems: "center",
+                width: "100%",
+                padding: "0 1rem",
+              }}
+            >
+              <BTRLayoutTabsWrapper>
+                <VFFloatingTab
+                  handleClick={(e) => setCurrTab(e.value)}
+                  tabs={tabs}
+                  defaultTab={defaultTab}
+                />
               </BTRLayoutTabsWrapper>
-              
-           
-              {isAllData &&
 
-                <VFButton style={{ marginLeft: '30%', fontSize: '10px', height: '30px', fontFamily: 'roboto' }} themeUi={themeUi} onClick={() => { handleToggleComponent(true), handleParameterData({ allOrders: true }) }}>
+              {isAllData && (
+                <VFButton
+                  style={{
+                    marginLeft: "30%",
+                    fontSize: "10px",
+                    height: "30px",
+                    fontFamily: "roboto",
+                  }}
+                  themeUi={themeUi}
+                  onClick={() => {
+                    handleToggleComponent(true),
+                      handleParameterData({ allOrders: true });
+                  }}
+                >
                   Show All Orders
                 </VFButton>
-              }
-                </div>
-            <div style={{ display: 'flex', justifyContent: "center", width: "100%" }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: "center", width: "max-content", position: "relative" }}>
-                <TextXAxis style={{ height: 'max-content', position: "absolute", right: "100%" }}>
+              )}
+            </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                width: "100%",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "max-content",
+                  position: "relative",
+                }}
+              >
+                <TextXAxis
+                  style={{
+                    height: "max-content",
+                    position: "absolute",
+                    right: "100%",
+                  }}
+                >
                   {MaterialCoverageString.orderPriority}
-                  <div style={{
-                    width: "85%",
-                    border: "1px solid #000",
-                    color: "#FFFFFF",
-                    marginBottom: '10px',
-                    marginLeft: '5px'
-                  }}>
-                  </div>
+                  <div
+                    style={{
+                      width: "85%",
+                      border: "1px solid #000",
+                      color: "#FFFFFF",
+                      marginBottom: "10px",
+                      marginLeft: "5px",
+                    }}
+                  ></div>
                 </TextXAxis>
 
                 {/**code goes here */}
-                {
-                  currTab === 'FutureCoverage' ?
-                    <FutureCov handleToggleComponent={handleToggleComponent} setDetailDataObj={handleParameterData} data={soData} />
-                    :
-                    <CurrentCov handleToggleComponent={handleToggleComponent} setDetailDataObj={handleParameterData} data={soData} />
-                }
+                {currTab === "FutureCoverage" ? (
+                  <FutureCov
+                    handleToggleComponent={handleToggleComponent}
+                    setDetailDataObj={handleParameterData}
+                    data={soData}
+                  />
+                ) : (
+                  <CurrentCov
+                    handleToggleComponent={handleToggleComponent}
+                    setDetailDataObj={handleParameterData}
+                    data={soData}
+                  />
+                )}
               </div>
             </div>
 
             <div style={{ display: "flex", justifyContent: "center" }}>
               <TextYAxis style={{ width: "max-content" }}>
                 {MaterialCoverageString.statusKits}
-                <div style={{
-                  width: "85%",
-                  border: "1px solid #000",
-                  color: "#FFFFFF",
-                  marginBottom: '8px',
-                  marginLeft: '5px'
-                }}>
-                </div>
+                <div
+                  style={{
+                    width: "85%",
+                    border: "1px solid #000",
+                    color: "#FFFFFF",
+                    marginBottom: "8px",
+                    marginLeft: "5px",
+                  }}
+                ></div>
               </TextYAxis>
             </div>
           </div>
-
         </>
-        :
-        <div style={{ height: '100%', display: "flex", flexDirection: "column", paddingBottom: "2rem" }}>
-
-
+      ) : (
+        <div
+          style={{
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+            paddingBottom: "2rem",
+          }}
+        >
           {/* <ActionToolBar
             isGoBackButton
             themeUi={themeUi}
@@ -547,44 +592,60 @@ const MaterialCov = () => {
             // submitDate={() => { console.log('') }}
           /> */}
 
-          <CommonGridview 
+          <CommonGridview
             reportName={reportName}
             columnDefinationProps={{
               customColDef: customHeader,
-              extras:extras,
+              extras: extras,
             }}
             gridDataLoading={gridDataLoading}
-            excelExportParams={{ isExcelExportFromBackend: true, excelExportReportName: reportName, showBomExcelModal:true}}
+            excelExportParams={{
+              isExcelExportFromBackend: true,
+              excelExportReportName: reportName,
+              showBomExcelModal: true,
+              excelExportSheetName: reportName,
+            }}
             customGridOptions={agGridProps}
             setAppliedFilters={setAppliedFilters}
             setCurrentFilters={setCurrFilter}
             appliedFilters={appliedFilters}
             reportNameId={UIGridCode.ProcMaterialCovOpenSales}
-            getExcelExportData={(params:getExcelExportDataArgs)=>{
-              const queryString = getInitialDataQuery({ isChildren : params.isChildren,isExcelExport:true});
-              return getOpenSODetailsDataForExcelExport({data:queryString,...params})
+            getExcelExportData={(params: getExcelExportDataArgs) => {
+              const queryString = getInitialDataQuery({
+                isChildren: params.isChildren,
+                isExcelExport: true,
+              });
+              return getOpenSODetailsDataForExcelExport({
+                data: queryString,
+                ...params,
+              });
             }}
-            getRowData={(params:getRowDataArgs)=>{
-              const queryString = getInitialDataQuery({currPage:params.page,pageSize:params.page_size});
-              return getOpenSODetailsData({data:queryString, appliedFilters: params?.appliedFilters})
+            getRowData={(params: getRowDataArgs) => {
+              const queryString = getInitialDataQuery({
+                currPage: params.page,
+                pageSize: params.page_size,
+              });
+              return getOpenSODetailsData({
+                data: queryString,
+                appliedFilters: params?.appliedFilters,
+              });
             }}
             actionToolBarProps={{
-              comp:'MaterialCovDetailData',
-              isAddFilterButton:true,
-              isGoBackButton:true,
-              handleGoBack:() => {
+              comp: "MaterialCovDetailData",
+              isAddFilterButton: true,
+              isGoBackButton: true,
+              handleGoBack: () => {
                 handleToggleComponent(false);
                 // setCurrTab("CurrentCoverage")
               },
-              isFilterOpen:isFilterOpen,
-              onAddFilter:onAddFilter,
-              toggleFilter:toggleFilter,
-              onApplyFilter:onApplyFilter,
-              isMfgSelected:isMfgSelected,
-              multiFilter:currFilter,
-              setMultiFilter:setCurrFilter,
-              onFilterRemove:onFilterRemove,
-
+              isFilterOpen: isFilterOpen,
+              onAddFilter: onAddFilter,
+              toggleFilter: toggleFilter,
+              onApplyFilter: onApplyFilter,
+              isMfgSelected: isMfgSelected,
+              multiFilter: currFilter,
+              setMultiFilter: setCurrFilter,
+              onFilterRemove: onFilterRemove,
             }}
             BomExcelExport={BomExcelExportModal}
           />
@@ -609,10 +670,8 @@ const MaterialCov = () => {
             excelBody={excelBody}
           /> */}
         </div>
-
-      }
+      )}
     </div>
-
-  )
+  );
 }
 export default MaterialCov;

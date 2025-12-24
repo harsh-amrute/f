@@ -26,6 +26,7 @@ import { SCDynamicContainer } from "../VectorFlow/Pages/MTO/Common/GridView/styl
 type ExcelExportParams = {
   isExcelExportFromBackend?: boolean;
   excelExportReportName?: string;
+  excelExportSheetName?: string;
   showBomExcelModal?: boolean;
 };
 
@@ -54,7 +55,7 @@ export type GetGridDataArgs = {
   page?: number;
   pageSize?: number;
   isChildren?: number;
-}
+};
 
 type actionToolBarPropsType = {
   comp: string;
@@ -67,8 +68,13 @@ type actionToolBarPropsType = {
   handleGoBack?: () => void;
   isFilterOpen?: boolean;
   onAddFilter?: () => void;
-  toggleFilter?: (state:boolean) => void;
-  onApplyFilter?: (filter: any,selectedHeader?:any,selectedOperator?:any,selectedValue?:any) => void;
+  toggleFilter?: (state: boolean) => void;
+  onApplyFilter?: (
+    filter: any,
+    selectedHeader?: any,
+    selectedOperator?: any,
+    selectedValue?: any
+  ) => void;
   isMfgSelected?: boolean;
   multiFilter?: any[];
   setMultiFilter?: (val: any) => void;
@@ -80,8 +86,8 @@ type CommonGridviewProps = {
   columnDefinationProps: columnDefinationPropsType;
   excelExportParams?: ExcelExportParams;
   customGridOptions?: any;
-  setAppliedFilters?: (state:any) => void;
-  setCurrentFilters?: (state:any) => void;
+  setAppliedFilters?: (state: any) => void;
+  setCurrentFilters?: (state: any) => void;
   appliedFilters?: any;
   reportNameId?: number;
   getExcelExportData?: (args: getExcelExportDataArgs) => Promise<any>;
@@ -247,7 +253,6 @@ type CommonGridviewProps = {
  * />
  */
 
-
 function CommonGridview(props: CommonGridviewProps) {
   const {
     appliedFilters,
@@ -262,7 +267,7 @@ function CommonGridview(props: CommonGridviewProps) {
     actionToolBarProps,
     gridDataLoading,
     BomExcelExport,
-    setCurrentFilters
+    setCurrentFilters,
   } = props;
 
   const {
@@ -305,8 +310,9 @@ function CommonGridview(props: CommonGridviewProps) {
   const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const [showExcelModal, setShowExcelModal] = useState<boolean>(false);
+  const [isPivot, setIsPivot] = useState<boolean>(false);
 
-  const [defaultFilterState ] = useState<any>(appliedFilters || {});
+  const [defaultFilterState] = useState<any>(appliedFilters || {});
 
   const gridRef = useRef<any>(null);
 
@@ -322,18 +328,16 @@ function CommonGridview(props: CommonGridviewProps) {
         JSON.parse(response?.data?.data?.columns_settings) || [];
 
       getNewColDef(response);
-        setColDef(
-          getColumnDefinations(
-            defaultColDef,
-            columnDefinationProps?.customColDef,
-            columnDefinationProps?.extras
-          )
-        );
-        if (userWiseConfig?.cs && userWiseConfig?.cs?.length > 0) {
-          getUserColumnConfig(userWiseConfig);
-        }
-        
-
+      setColDef(
+        getColumnDefinations(
+          defaultColDef,
+          columnDefinationProps?.customColDef,
+          columnDefinationProps?.extras
+        )
+      );
+      if (userWiseConfig?.cs && userWiseConfig?.cs?.length > 0) {
+        getUserColumnConfig(userWiseConfig);
+      }
     } catch (e) {
       console.log(e);
     }
@@ -399,45 +403,61 @@ function CommonGridview(props: CommonGridviewProps) {
       newConfig.pageSize ? Number(newConfig.pageSize) : undefined
     );
     setColumnState(newConfig.cs);
-    if(setAppliedFilters && setCurrentFilters && newConfig?.fs?.filters?.length > 0) {
-      
-      setAppliedFilters(newConfig.fs );
+    setIsPivot(newConfig.pivot);
+    if (
+      setAppliedFilters &&
+      setCurrentFilters &&
+      newConfig?.fs?.filters?.length > 0
+    ) {
+      setAppliedFilters(newConfig.fs);
       setCurrentFilters(newConfig.fs);
     }
   };
 
   const handleSaveClick = async (coldefs?: any, page_size?: any) => {
     try {
-      let payload:any;
+      let payload: any;
       const currentColumnState = gridRef?.current?.api?.getColumnState();
+      
 
       if (coldefs) {
-        const fullConfig = { cs: coldefs, pageSize: userPageSize, fs: [] };
+        const fullConfig = {pivot: false, cs: coldefs, pageSize: userPageSize, fs: [] };
         payload = {
           un: user.user.name,
           rn_id: reportNameId,
           cs: JSON.stringify(fullConfig),
         };
         setColumnState([...coldefs]);
+        setIsPivot(false);
       } else if (page_size) {
-        const fullConfig = { cs: currentColumnState, pageSize: page_size, fs : appliedFilters || {} };
+        const fullConfig = {
+          pivot: isPivot,
+          cs: currentColumnState,
+          pageSize: page_size,
+          fs: appliedFilters || {},
+        };
         payload = {
           un: user.user.name,
           rn_id: reportNameId,
           cs: JSON.stringify(fullConfig),
         };
       } else if (gridRef?.current?.api) {
-        const fullConfig = { cs: currentColumnState, pageSize: userPageSize, fs: appliedFilters || {} };
+        const isPivot = gridRef?.current?.api?.isPivotMode();
+        const fullConfig = {
+          pivot: isPivot,
+          cs: currentColumnState,
+          pageSize: userPageSize,
+          fs: appliedFilters || {},
+        };
         payload = {
           un: user.user.name,
           rn_id: reportNameId,
           cs: JSON.stringify(fullConfig),
         };
-        
       }
       await updateUserUIReportConfigData([payload]);
-      if(!coldefs){
-        setColumnState(currentColumnState)
+      if (!coldefs) {
+        setColumnState(currentColumnState);
       }
     } catch (error) {
       console.error(error);
@@ -450,7 +470,7 @@ function CommonGridview(props: CommonGridviewProps) {
 
   const handlePageChange = async (currPage: number) => {
     setCurrentPage(currPage);
-    getGridData({page: currPage});
+    getGridData({ page: currPage });
   };
 
   const savePageSize = (pageSize: any) => {
@@ -458,24 +478,24 @@ function CommonGridview(props: CommonGridviewProps) {
       setUserPageSize(pageSize);
       setCurrentPage(1);
       handleSaveClick(undefined, pageSize);
-      getGridData({pageSize});
+      getGridData({ pageSize });
     } else {
       notifyError("Invalide page size");
     }
   };
 
-  const onCancelBomExcelExportModal = ()=>{
-    getGridData({isExcelExport:true});
+  const onCancelBomExcelExportModal = () => {
+    getGridData({ isExcelExport: true });
     setShowExcelModal(false);
-  }
+  };
 
-  const onConfirmBomExcelExportModal = ()=>{
-    getGridData({isExcelExport:true, isChildren: 1});
+  const onConfirmBomExcelExportModal = () => {
+    getGridData({ isExcelExport: true, isChildren: 1 });
     setShowExcelModal(false);
-  }
+  };
 
   useEffect(() => {
-    if (userConfigFetched ) {
+    if (userConfigFetched) {
       setCurrentPage(1);
       getGridData({});
     }
@@ -485,10 +505,9 @@ function CommonGridview(props: CommonGridviewProps) {
     if (isReset) {
       handleSaveClick(masterUIConfig);
       setIsReset(false);
-      if(setAppliedFilters && setCurrentFilters){
+      if (setAppliedFilters && setCurrentFilters) {
         setAppliedFilters(defaultFilterState);
         setCurrentFilters(defaultFilterState);
-       
       }
     }
   }, [isReset]);
@@ -500,18 +519,21 @@ function CommonGridview(props: CommonGridviewProps) {
   }, [colDef, gridRef.current]);
 
   useEffect(() => {
-    if (gridRef?.current && columnState?.length ) {
+    if (gridRef?.current && columnState?.length) {
       try {
         const result = gridRef.current.api.applyColumnState({
           state: columnState,
           applyOrder: true,
-
         });
 
-        if (!result) {
+        const applyPivot = gridRef.current?.api.setGridOption(
+          "pivotMode",
+          isPivot
+        );
+
+        if (!result || !applyPivot) {
           throw new Error("Failed to apply column state");
         }
-
       } catch (error) {
         console.error(error);
       }
@@ -524,8 +546,20 @@ function CommonGridview(props: CommonGridviewProps) {
 
   const excelExportFromGrid = () => {
     if (gridRef?.current?.api?.exportDataAsExcel) {
-      gridRef.current.api.exportDataAsExcel();
+      gridRef.current.api.exportDataAsExcel({
+        fileName: `${
+          excelExportParams?.excelExportReportName || reportName
+        }.xlsx`,
+        sheetName: `${excelExportParams?.excelExportSheetName || reportName}`,
+      });
     }
+  };
+
+  const onPivotModeChanged = (event: any) => {
+    const isPivotOn = event.api.isPivotMode();
+    setIsPivot(isPivotOn);
+
+    event.api.getColumnApi()?.setColumnVisible("chckbx", !isPivotOn);
   };
 
   return (
@@ -544,15 +578,14 @@ function CommonGridview(props: CommonGridviewProps) {
         handleSaveClick={handleSaveClick}
         handleResetClick={handleResetClick}
         onExcelExportClick={
-          excelExportParams?.isExcelExportFromBackend
-            ? () =>{
-              if(excelExportParams?.showBomExcelModal){
-                setShowExcelModal(true);
-              }else{
-                getGridData({isExcelExport:true, isChildren: 1});
+          excelExportParams?.isExcelExportFromBackend && !isPivot
+            ? () => {
+                if (excelExportParams?.showBomExcelModal) {
+                  setShowExcelModal(true);
+                } else {
+                  getGridData({ isExcelExport: true, isChildren: 1 });
+                }
               }
-            }
-               
             : excelExportFromGrid
         }
         isFilterOpen={isFilterOpen}
@@ -583,7 +616,7 @@ function CommonGridview(props: CommonGridviewProps) {
           tooltipMouseTrack={true}
           ref={gridRef}
           maintainColumnOrder={true}
-          maintain
+          onColumnPivotModeChanged={onPivotModeChanged}
           onFilterChanged={() => {
             Object.keys(gridRef?.current?.api?.getFilterModel())?.length > 0
               ? setIsDisabled(false)

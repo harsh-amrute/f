@@ -448,6 +448,7 @@ const ElapsedTime = () => {
               excelExportParams={{
                 isExcelExportFromBackend: false,
                 excelExportReportName: FilterPageName.Poogi_Elapsed_Time,
+                excelExportSheetName: FilterPageName.Poogi_Elapsed_Time,
               }}
               reportNameId={UIGridCode.ProdElapsedTime}
               getExcelExportData={getElapsedTimeDataExcelExport}
