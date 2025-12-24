@@ -336,6 +336,7 @@ function CommonGridview(props: CommonGridviewProps) {
 
   const gridRef = useRef<any>(null);
 
+  // Set up column definitions
   const setColumnDef = async () => {
     try {
       const response = await getUIAndUserConfigData({
@@ -363,6 +364,7 @@ function CommonGridview(props: CommonGridviewProps) {
     }
   };
 
+  // Fetch grid data function
   const getGridData = async ({
     isExcelExport = false,
     page = 1,
@@ -412,6 +414,7 @@ function CommonGridview(props: CommonGridviewProps) {
     }
   };
 
+  // Apply user column configuration
   const getUserColumnConfig = (data: any) => {
     if (!data) {
       console.error("Failed to apply column state");
@@ -434,12 +437,12 @@ function CommonGridview(props: CommonGridviewProps) {
     }
   };
 
+  // Handle save click
   const handleSaveClick = async (coldefs?: any, page_size?: any) => {
     try {
       let payload: any;
       const currentColumnState = gridRef?.current?.api?.getColumnState();
       
-
       if (coldefs) {
         const fullConfig = {pivot: false, cs: coldefs, pageSize: userPageSize, fs: [] };
         payload = {
@@ -484,15 +487,18 @@ function CommonGridview(props: CommonGridviewProps) {
     }
   };
 
+  // Handle reset click
   const handleResetClick = () => {
     setIsReset(true);
   };
 
+  // Handle page change
   const handlePageChange = async (currPage: number) => {
     setCurrentPage(currPage);
     getGridData({ page: currPage });
   };
 
+  // Save page size change
   const savePageSize = (pageSize: any) => {
     if (pageSize) {
       setUserPageSize(pageSize);
@@ -504,16 +510,19 @@ function CommonGridview(props: CommonGridviewProps) {
     }
   };
 
+  // Cancel export from BOM Excel Export Modal
   const onCancelBomExcelExportModal = () => {
     getGridData({ isExcelExport: true });
     setShowExcelModal(false);
   };
 
+  // Confirm export from BOM Excel Export Modal
   const onConfirmBomExcelExportModal = () => {
     getGridData({ isExcelExport: true, isChildren: 1 });
     setShowExcelModal(false);
   };
 
+  // Fetch grid data on user config fetch or filter change
   useEffect(() => {
     if (userConfigFetched) {
       setCurrentPage(1);
@@ -521,6 +530,8 @@ function CommonGridview(props: CommonGridviewProps) {
     }
   }, [userConfigFetched, appliedFilters]);
 
+
+  // Handle reset action
   useEffect(() => {
     if (isReset) {
       handleSaveClick(masterUIConfig);
@@ -532,12 +543,14 @@ function CommonGridview(props: CommonGridviewProps) {
     }
   }, [isReset]);
 
+  // Store master UI config on initial load
   useEffect(() => {
     if (gridRef?.current?.api?.getColumnState) {
       setMasterUIConfig(gridRef?.current?.api.getColumnState());
     }
   }, [colDef, gridRef.current]);
 
+  // Apply saved column state to grid
   useEffect(() => {
     if (gridRef?.current && columnState?.length) {
       try {
@@ -560,10 +573,12 @@ function CommonGridview(props: CommonGridviewProps) {
     }
   }, [gridRef.current, columnState, rowData]);
 
+  // Initial column definition setup
   useEffect(() => {
     setColumnDef();
   }, []);
 
+  // Excel export directly from grid
   const excelExportFromGrid = () => {
     if (gridRef?.current?.api?.exportDataAsExcel) {
       gridRef.current.api.exportDataAsExcel({
@@ -575,6 +590,7 @@ function CommonGridview(props: CommonGridviewProps) {
     }
   };
 
+  // Handle pivot mode changes to show/hide checkbox column
   const onPivotModeChanged = (event: any) => {
     const isPivotOn = event.api.isPivotMode();
     setIsPivot(isPivotOn);
