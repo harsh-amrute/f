@@ -201,9 +201,9 @@ const useBufferTrends = () => {
             setIsSelectCategoryOpen(false);
             setGraphData(processedData);
             if (currentPageTab === 'Percentage') {
-                setCurrentGraphData(processedData.data.percentage);
+                setCurrentGraphData(processedData?.data?.percentage);
             } else {
-                setCurrentGraphData(processedData.data.absolute);
+                setCurrentGraphData(processedData?.data?.absolute);
             }
             setSummaryData(result.data?.data?.summary);
             setAvailability(result.data?.data?.avail);
