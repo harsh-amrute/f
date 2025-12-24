@@ -5,7 +5,7 @@ import UploadLeftSection from "./UploadLeftSection";
 import NoDataToDisplay from "./NoDataToDisplay";
 import { notifyError } from "../../../helpers/notify";
 import { usePostUsersDataForValidations } from "../../../services/profile";
-import readXlsxFile from "read-excel-file";
+import readXlsxFile, { readSheetNames } from "read-excel-file";
 
 function UploadWrapperSection({
   setIsAssignPageOpen,
@@ -90,6 +90,8 @@ function UploadWrapperSection({
       return;
     }
 
+    
+
     let allData: any[] = [];
     try {
       // Note: readXlsxFile reads the first sheet only, covering typical single-sheet template use.
@@ -100,11 +102,25 @@ function UploadWrapperSection({
         parseNumber: (string) => string,
       });
 
+      const allSheets = await readSheetNames(file);
+
+      if (allSheets.length !== 1) {
+        notifyError("The file should contain only one sheet named UserData!");
+        return;
+      }
+
+      if (allSheets[0] !== 'UserData') {
+        notifyError("The sheet name in the file should be UserData!");
+        return;
+      }
+      
+
     } catch (error) {
       // Handles cases where the file might be corrupted or unreadable (similar to 'blank file')
       notifyError("Could not read the file. It might be corrupted or empty.");
       return;
     }
+
 
     // --- 2. Check for No Data (Blank sheet content / Blank File) ---
     if (allData.length === 0) {
