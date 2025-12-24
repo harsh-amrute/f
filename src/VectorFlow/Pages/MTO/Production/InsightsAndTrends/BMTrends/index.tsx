@@ -47,6 +47,8 @@ const BMTrends = () => {
     const [selectedPlant, setSelectedPlant] = useState<any>();
     const [selectOptionsPlnt, setSelectOptionsPlnt] = useState([]);
     const { mutateAsync: getBMTrendsData, isLoading: isLoading } = useGetBMTrendsData()
+    const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
+
     
     // const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
     // const [filterData, setFilterData] = useState({});
@@ -439,11 +441,14 @@ const BMTrends = () => {
     }, [numericData]);
     
     useEffect(() => {
-        if (BMTrendsData?.data?.data) {
-            const updatedData = convertToGraphData(BMTrendsData?.data?.data);
+        const trendDate = BMTrendsData?.data?.data
+        const lastRunDate = apiResponseData?.data?.data
+        
+        if (trendDate && lastRunDate) {
+            const updatedData = convertToGraphData(lastRunDate,trendDate );
             setBMTrendData(updatedData);
             setNumericData(filterDataByDaysGap(updatedData, 0, horizonDays, false));
-            setPlantData(BMTrendsData?.data?.data?.plants  || {});
+            setPlantData(trendDate?.plants  || {});
         }
     }, [BMTrendsData]);
 
@@ -463,8 +468,6 @@ const BMTrends = () => {
         
         setSelectOptionsPlnt(newPlantOptions);
     };
-
-    const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
 
     const date = apiResponseData?.data?.data;
 

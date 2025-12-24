@@ -20,7 +20,7 @@ import useFilter from '../../../../../../hooks/useFilter';
 import { notifyError } from "../../../../../../helpers/notify";
 import useColDef from "../../../../../../hooks/useColDef";
 import BPPRenderer from "../../../Common/BPRRenderer/BPPRenderer";
-import moment from "moment";
+import { useGetDate } from "../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting";
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -73,6 +73,10 @@ const OrderAtRisk = () => {
   const [currentPage, setCurrentPage] = useState<number>(1)
 
   const themeUi = user?.user?.theme_ui;
+
+  const { data: apiResponseData } = useGetDate();
+ 
+  const lastRunDate = new Date(apiResponseData?.data?.data).toString() !== "Invalid Date" ? format(new Date(apiResponseData?.data?.data), 'dd MMM yyyy') : '';
 
 
   const setColumnDef = async () => {
@@ -214,7 +218,7 @@ const OrderAtRisk = () => {
             {`${ProductionInsightsAndTrendsString.orderAtRisk}  `}
           </span>
           <span style={{ fontWeight: 300 }}>
-            {` (${format(new Date(), "d MMM yyyy")})`}
+            {` (${lastRunDate})`}
           </span>
         </div>
         <div style={{ display: "flex" }}>

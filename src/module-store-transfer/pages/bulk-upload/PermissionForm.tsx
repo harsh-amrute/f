@@ -4,7 +4,7 @@ import {  SearchInputMultiple } from "../../../components";
 import { useUserData } from "../../../context";
 import Checkbox from "../../../components/VectorFLOW/commons/MTO/Checkbox";
 import { set } from "lodash";
-import { SelectAllWrapper, SectionContainer, SectionTitle, SelectContainer, Label, Grid } from "./style";
+import { SelectAllWrapper, SectionContainer, SectionTitle, SelectContainer, Label, Grid, TitleContainer } from "./style";
 
 
 const PermissionForm = ({
@@ -404,31 +404,36 @@ const PermissionForm = ({
 
   const themeUi= useUserData().user.user.theme_ui
 
-  const isSelectAll = (selectedPermissions: any) => {
+  const isSelectAll = (selectedPermissions: any, isProduct: boolean) => {
     if (!selectedApplication) return false;
 
     const currentPermissions = selectedPermissions[selectedApplication] || {};
-    const locPerms = currentPermissions["location_permission"] || [];
-    const prodPerms = currentPermissions["product_permission"] || [];
+    if (isProduct) {
+      const prodPerms = currentPermissions["product_permission"] || [];
+      const totalProdPerms = PL3.length;
+      
+      const selectedProdPermsCount = prodPerms.filter((e: any) => e.length === 3).length;
+      return selectedProdPermsCount === totalProdPerms;
 
-    const totalLocPerms = LL3.length;
-    const totalProdPerms = PL3.length;
+    } else {
+      const locPerms = currentPermissions["location_permission"] || [];
+      
+      const totalLocPerms = LL3.length;
+      const selectedLocPermsCount = locPerms.filter((e: any) => e.length === 3).length;
+      return selectedLocPermsCount === totalLocPerms;
+    }
+  }
 
-    const selectedLocPermsCount = locPerms.filter((e: any) => e.length === 3).length;
-    const selectedProdPermsCount = prodPerms.filter((e: any) => e.length === 3).length;
-
-    return selectedLocPermsCount === totalLocPerms && selectedProdPermsCount === totalProdPerms;
-  };
-  const setAllPermissions = () => {
+  const setAllPermissions = (isProductPermission:boolean) => {
     if (!selectedApplication) return;
 
-    if (isSelectAll(selectedPermissions)) {
+    if (isSelectAll(selectedPermissions, isProductPermission)) {
       // Deselect all
       setSelectedPermissions((prev: any) => ({
         ...prev,
         [selectedApplication]: {
-          location_permission: [],
-          product_permission: [],
+          location_permission: !isProductPermission ? [] : prev[selectedApplication]?.location_permission,
+          product_permission: isProductPermission ? [] : prev[selectedApplication]?.product_permission,
         },
       }));
     } else {
@@ -439,8 +444,8 @@ const PermissionForm = ({
       setSelectedPermissions((prev: any) => ({
         ...prev,
         [selectedApplication]: {
-          location_permission: allLocPerms,
-          product_permission: allProdPerms,
+          location_permission: !isProductPermission ? allLocPerms : prev[selectedApplication]?.location_permission,
+          product_permission: isProductPermission ? allProdPerms : prev[selectedApplication]?.product_permission,
         },
       }));
     }
@@ -448,25 +453,28 @@ const PermissionForm = ({
 
   return (
     <div style={{ padding: "40px 20px 20px 20px" }}>
-      <div style={{ marginBottom: "20px", fontSize: "14px", fontWeight: 600, display: 'flex', justifyContent: 'right', alignItems: 'center'}}>
-        <SelectAllWrapper>
-        <Checkbox
-                    style={{ zoom: 0.5 }}
-                    theme={themeUi}
-                    type="checkbox"
-                    checked={isSelectAll(selectedPermissions)}
-                    onClick={(e) => e.stopPropagation()} // prevent double trigger
-                    onChange={(e: any) => {setAllPermissions()}}
-                    />
-                  <label style={{ cursor: "pointer" }}>Select All</label>
-
-        </SelectAllWrapper>
-      </div>
       <SectionContainer>
-        <SectionTitle>Product Permission</SectionTitle>
+        <TitleContainer>
+            <SectionTitle>Product Permission</SectionTitle>
+            <div style={{ marginBottom: "20px", fontSize: "14px", fontWeight: 600, display: 'flex', justifyContent: 'right', alignItems: 'center'}}>
+              <SelectAllWrapper>
+              <Checkbox
+                          style={{ zoom: 0.5 }}
+                          theme={themeUi}
+                          type="checkbox"
+                          checked={isSelectAll(selectedPermissions, true)}
+                          onClick={(e) => e.stopPropagation()} // prevent double trigger
+                          onChange={(e: any) => {setAllPermissions(true)}}
+                          />
+                        <label style={{ cursor: "pointer" }}>Select All</label>
+
+              </SelectAllWrapper>
+            </div>
+          
+        </TitleContainer>
         <Grid>
           <SelectContainer>
-            <Label>Business</Label>
+              <Label>Business</Label>
             <SearchInputMultiple
               disabled={false}
               placeholder="Select"
@@ -541,7 +549,24 @@ const PermissionForm = ({
       </SectionContainer>
 
       <SectionContainer>
+        <TitleContainer>
         <SectionTitle>Location Permission</SectionTitle>
+              <div style={{ marginBottom: "20px", fontSize: "14px", fontWeight: 600, display: 'flex', justifyContent: 'right', alignItems: 'center'}}>
+                <SelectAllWrapper>
+                <Checkbox
+                            style={{ zoom: 0.5 }}
+                            theme={themeUi}
+                            type="checkbox"
+                            checked={isSelectAll(selectedPermissions, false)}
+                            onClick={(e) => e.stopPropagation()} // prevent double trigger
+                            onChange={(e: any) => {setAllPermissions(false)}}
+                            />
+                          <label style={{ cursor: "pointer" }}>Select All</label>
+
+                </SelectAllWrapper>
+              </div>
+              
+            </TitleContainer>
         <Grid>
           <SelectContainer>
             <Label>Zone</Label>

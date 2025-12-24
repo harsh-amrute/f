@@ -26,6 +26,8 @@ import { AgChartOptions } from "ag-charts-community";
 import CryptoJS from 'crypto-js';
 import MTOActionRenderer from '../VectorFlow/Pages/MTO/MDM/SavedDrafts/MTOActionRenderer';
 import { decryptStorageData } from '../VectorFlow/Pages/MTO/Common/encryption';
+import { getNumberFormat } from './numberFormat';
+
 
 const keyboardCharacters = [
   // '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -1631,7 +1633,7 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields: Field[], maste
     ...taskPendingCustomColDefs ,...colDefs]
 }
 
-export const mapMasterToTaskStatusColumnGroupDefs = (existingColumnsFields: Field[], masterId: number, tasktype?: string): ColGroupDef[] | ColDef[] => {
+export const mapMasterToTaskStatusColumnGroupDefs = (currentTaskMasterId: number, existingColumnsFields: Field[], masterId: number, tasktype?: string): ColGroupDef[] | ColDef[] => {
 
   const colDefs = existingColumnsFields.map((f: Field) => {
 
@@ -1648,6 +1650,17 @@ export const mapMasterToTaskStatusColumnGroupDefs = (existingColumnsFields: Fiel
     }
 
     if (tasktype === "remove") {
+      return {
+        headerName: f.displayName,
+        field: f.key,
+        colId: f.key,
+        hide: !f.visible,
+        ...defaultColDefs,
+
+      }
+    }
+
+    if (tasktype === "modify" && (currentTaskMasterId == 6 || currentTaskMasterId == 10)) {
       return {
         headerName: f.displayName,
         field: f.key,
@@ -1728,6 +1741,18 @@ export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData: any[], ex
         isModified: isRowModified
       };
     }
+    const dataPrefixed1: any = {};
+    if( (masterId === 6 || masterId === 10) && taskType === 'modify'){
+      existingColumnFields.map((f: Field) => {
+       dataPrefixed1[f.key] = String(entry[f.key] !== undefined ? entry[f.key] : '')
+      })
+      return {
+        ...dataPrefixed1,
+         isModified:true,
+        comments:  '',
+        status: ''
+      };
+    }
     const data = entry;
 
 
@@ -1777,11 +1802,12 @@ export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData: any[], ex
   return response
 }
 
-export const mapTaskStatusDataToRowData = (dirtyRowData: any[], existingColumnFields: Field[], taskType: string) => {
+export const mapTaskStatusDataToRowData = (currentTaskMasterId: number, dirtyRowData: any[], existingColumnFields: Field[], taskType: string) => {
 
   return dirtyRowData.map(entry => {
 
-    if (taskType === 'modify') {
+    if (taskType === 'modify' && currentTaskMasterId != 6 && currentTaskMasterId!=10  ) {
+
       const oldData = JSON.parse(entry.old);
       const newData = JSON.parse(entry.new);
 
@@ -2597,7 +2623,7 @@ const colorNameMap: Record<string, string> = {
   "#ED1C24": "Red",
   "#FFCB05": "Yellow",
   "#418D18": "Green",
-  "#BCBCBC": "Gray",
+  "#BCBCBC": "White",
   "#355FD3": "Blue",
 };
 
@@ -4464,7 +4490,7 @@ export function getColumnDefinations(
       minWidth: 150,
       valueFormatter: (params: any) => {
         if (params.value) {
-          const format = (process.env.REACT_APP_NUMBER_FORMAT || '').toUpperCase();
+          const format = (getNumberFormat() || 'USA').toUpperCase();
           const locale = format === 'USA' ? 'en-US' : format === 'IND' ? 'hi-IN' : undefined;
       
           if (data.dt === 'number') {

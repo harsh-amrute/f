@@ -94,8 +94,6 @@ const PermissionSelectionModal = ({selectedIndex, gridRef,dataAllPermissions,clo
   string[]
   >(allApplications[0]);
   
-  
-  
   const [selectedPermissions, setSelectedPermissions] = useState<any>({});
   
   const ResetPermissions = ()=>{
@@ -105,12 +103,10 @@ const PermissionSelectionModal = ({selectedIndex, gridRef,dataAllPermissions,clo
       }
     })
   }
-  useEffect(()=>{
-   
 
+  useEffect(()=>{
     ResetPermissions();
       let currentVal:any = gridRef?.current?.api?.getSelectedRows()?.[0] || {};
-      console.log("gridRef", gridRef?.current?.api?.getSelectedRows());
       if(selectedIndex!==undefined && selectedIndex!==null){
 
         gridRef?.current?.api?.forEachNode((node: IRowNode, index: number)=>{
@@ -119,7 +115,6 @@ const PermissionSelectionModal = ({selectedIndex, gridRef,dataAllPermissions,clo
           }
         })
       }
-      console.log("val", currentVal);
       setAllApplications(
         dataAllPermissions
           ?.map((ele: any) => ele.application_name)
