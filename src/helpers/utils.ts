@@ -1658,7 +1658,7 @@ export const mapMasterToTaskStatusColumnGroupDefs = (currentTaskMasterId: number
       }
     }
 
-    if (tasktype === "modify" && currentTaskMasterId == 6 || currentTaskMasterId == 10) {
+    if (tasktype === "modify" && (currentTaskMasterId == 6 || currentTaskMasterId == 10)) {
       return {
         headerName: f.displayName,
         field: f.key,
@@ -1806,7 +1806,6 @@ export const mapTaskStatusDataToRowData = (currentTaskMasterId: number, dirtyRow
 
     if (taskType === 'modify' && currentTaskMasterId != 6 && currentTaskMasterId!=10  ) {
 
-      console.log(dirtyRowData)
       const oldData = JSON.parse(entry.old);
       const newData = JSON.parse(entry.new);
 
