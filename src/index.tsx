@@ -37,7 +37,12 @@ import { CacheProvider } from "@emotion/react";
 LicenseManager.setLicenseKey(AG_GRID_KEY);
 // Axios default settings and interceptors
 setupAxios();
-const nonce = (window as any).__nonce__ as string;
+const nonce =
+  (window as any).__nonce__ ??
+  document
+    .querySelector<HTMLMetaElement>('meta[name="csp-nonce"]')
+    ?.content?.trim();
+
 console.log(nonce);
 const cache = createCache({
   key: "my-cache-key",
@@ -64,7 +69,7 @@ function Root() {
           <Router>
             <Provider store={store}>
               {/* <StyleSheetManager {...({ nonce } as any)}> */}
-                <App />
+              <App />
               {/* </StyleSheetManager> */}
               <ToastContainer />
             </Provider>

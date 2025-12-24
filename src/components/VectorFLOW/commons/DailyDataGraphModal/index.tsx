@@ -377,7 +377,7 @@ const DailyDataGraphModal = ({
           ${
             git != null && git != undefined
               ? `<div class="dailydata-item">
-                  <div class="color-box git-color"></div>
+                  <div class="dailydata-color-box git-color"></div>
                   <span class="label">GIT :</span>
                   <span>${git}</span>
                 </div>`
@@ -386,7 +386,7 @@ const DailyDataGraphModal = ({
           ${
             receipt != null && receipt != undefined
               ? `<div class="dailydata-item">
-                  <div class="color-box receipt-color"></div>
+                  <div class="dailydata-color-box receipt-color"></div>
                   <span class="label">Receipt :</span>
                   <span>${receipt}</span>
                 </div>`
@@ -395,7 +395,7 @@ const DailyDataGraphModal = ({
           ${
             consumption != null && consumption != undefined
               ? `<div class="dailydata-item">
-                  <div class="color-box consumption-color"></div>
+                  <div class="dailydata-color-box consumption-color"></div>
                   <span class="label">Consumption :</span>
                   <span>${consumption}</span>
                 </div>`
@@ -404,19 +404,19 @@ const DailyDataGraphModal = ({
         </div>
         <div class="dailydata-bottom-row">
           <div class="dailydata-item">
-            <div class="color-box red-norm-color"></div>
+            <div class="dailydata-color-box red-norm-color"></div>
             <span>${redNorm}</span>
           </div>
           <div class="dailydata-item">
-            <div class="color-box yellow-norm-color"></div>
+            <div class="dailydata-color-box yellow-norm-color"></div>
             <span>${yellowNorm}</span>
           </div>
           <div class="dailydata-item">
-            <div class="color-box green-norm-color"></div>
+            <div class="dailydata-color-box green-norm-color"></div>
             <span>${greenNorm}</span>
           </div>
           <div class="dailydata-item">
-            <div class="color-box blue-norm-color"></div>
+            <div class="dailydata-color-box blue-norm-color"></div>
             <span>${blueNorm}</span>
           </div>
         </div>
