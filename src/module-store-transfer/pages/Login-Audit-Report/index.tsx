@@ -7,7 +7,7 @@ import { useLoginAuditReport } from "../../../VectorFlow/Services/MTO/Login-Audi
 import OverlayLoader from "../../../VectorFlow/Pages/MTO/Common/Loader";
 import { TableWrapper } from "./styles";
 import CustomPageSizeInput from "../../../VectorFlow/Pages/MTO/Common/VFPagination/CustomPageSizeInput"; // Assuming this path
-import { FilterPageName } from "../../../VectorFlow/Pages/MTO/Common/Enum";
+import { ExcelExportName } from "../../../VectorFlow/Pages/MTO/Common/Enum";
 
 
 const AuditReport = () => {
@@ -117,8 +117,8 @@ const AuditReport = () => {
 
   const ExcelExport = () => {
     gridRef.current?.api?.exportDataAsExcel({
-      fileName: FilterPageName.Login_Audit_Report,
-      sheetName: FilterPageName.Login_Audit_Report
+      fileName: ExcelExportName.Login_Audit_Report,
+      sheetName: ExcelExportName.Login_Audit_Report
     });
   };
 

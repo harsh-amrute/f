@@ -11,7 +11,6 @@ import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import DueDateCellRenderer from "./DueDateCellRenderer";
 import {
   usePutUpdateOrderDueDate,
-  useGetOrderSchedulingData,
   useGetOrderSchedulingPageData,
   useGetOrderSchedulingExcelData,
 } from "../../../../Services/MTO/Production/OrderRescheduling";
@@ -59,7 +58,6 @@ const APIFilterConfig = {
 
 const OrderRescheduling = () => {
   const { mutateAsync: putUpdateOrderDueDate } = usePutUpdateOrderDueDate();
-  const { mutateAsync: getOrderSchedulingData } = useGetOrderSchedulingData();
   const { mutateAsync: getOrderSchedulingPageData } =
     useGetOrderSchedulingPageData();
   const {
@@ -95,11 +93,6 @@ const OrderRescheduling = () => {
   const [filterData, setFilterData] = useState({});
 
   const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
-  
-
-  
-
-  
 
   const {
     state: currFilter,
@@ -112,9 +105,6 @@ const OrderRescheduling = () => {
     toggleFilter,
     appliedFilters
   } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_Order_Rescheduling);
-  
-
-
 
   const themeUi = user?.user?.theme_ui;
 
@@ -156,6 +146,7 @@ const OrderRescheduling = () => {
     }
     setIsLoading(false);
   };
+
 
   const getSelectedRowData = () => {
     const selectedData = refGraph1.current?.api.getSelectedRows();
@@ -236,8 +227,6 @@ const OrderRescheduling = () => {
   ];
 
   
-  
-
   const reportName = "OrderRescheduling";
 
   const setColumnDef = async () => {
@@ -355,10 +344,8 @@ const OrderRescheduling = () => {
   }, [currTab]);
 
   const handlePageChangeCumulative = async (pageNumber: number) => {
-    setIsLoading(true);
     setCurrentPage(pageNumber);
     GetData(false,pageNumber);
-    setIsLoading(false);
   };
 
   type OutputItem = {
@@ -681,9 +668,6 @@ const OrderRescheduling = () => {
   const GetExcelData = async () => {
     GetData(true);
   };
-
- 
-
 
   return (
     <>

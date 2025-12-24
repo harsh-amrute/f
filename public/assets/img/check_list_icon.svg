@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="25.04" height="25.04" viewBox="0 0 25.04 25.04">
+  <g id="图层_x0020_1" transform="translate(0 0)">
+    <path id="Path_1" data-name="Path 1" d="M0,0H25.04V25.04H0Z" transform="translate(0 25.04) rotate(-90)" fill="none" fill-rule="evenodd"/>
+    <g id="_209071168" transform="translate(1.252 1.252)">
+      <path id="_204951616" d="M1.05,12.318a11.27,11.27,0,1,1,3.3,7.967,11.233,11.233,0,0,1-3.3-7.967ZM5.059,5.059a10.265,10.265,0,1,0,7.259-3.007A10.235,10.235,0,0,0,5.059,5.059Z" transform="translate(-1.05 -1.05)" fill="#00ba00"/>
+      <path id="_205309752" d="M5.819,11.377a.5.5,0,0,1,.708-.708l3.94,3.94,5.815-7.789a.5.5,0,1,1,.8.6l-6.15,8.237a.5.5,0,0,1-.767.07Z" transform="translate(-0.161 0.022)" fill="#00ba00"/>
+    </g>
+  </g>
+</svg>

@@ -24,6 +24,13 @@ import { notifyError, notifySuccess } from "../../../../../helpers/notify";
 import _ from "lodash";
 
 const getRows = (params: ProcessRowGroupForExportParams) => {
+    
+    const children = params.node.data?.children;
+
+    if (!children || !Array.isArray(children)) {
+        return [];
+    }
+
     const rows: ExcelRow[] = [
         {
             outlineLevel: 1,
@@ -294,15 +301,37 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
 
         const formatedFilters = formatFilterJSON(appliedFilters);
         if (isExcelExport) {
-            const headersdata = currentGridRef?.current?.api.getColumnState();
-            const body = getBodyForExcelExport({ headersdata: headersdata, filterData: formatedFilters, colDefMap })
-            
-            const response = await getMaterialRequirementDataDayWise({ releaseDate: releaseDate, body, isExcelExport: 1, report_name: FilterPageName.Proc_Material_Requirement })
-            if (response.status === 200) {
-                DownloadExcel(response, FilterPageName.Proc_Material_Requirement)
-                notifySuccess("Excel exported successfully")
-            } else {
-                notifyError("Failed to export excel")
+
+            const gridApi = currentGridRef?.current?.api;
+
+            if(!gridApi){
+                notifyError("The grid is not ready");
+                return;
+            }
+
+            const isPivotMode = gridApi.isPivotMode();
+            const isRowGroupingActive = gridApi.getRowGroupColumns().length > 0;
+            const isValueActive =  gridApi.getValueColumns().length > 0;
+
+            if (isPivotMode || isRowGroupingActive || isValueActive) {
+                                
+                 const exportName = `${FilterPageName.Proc_Material_Requirement}_${moment().format("DD-MM-YYYY")}`;
+                 gridApi.exportDataAsExcel({
+                 fileName: exportName,
+                 sheetName: exportName
+                 });
+            }
+            else{
+                const headersdata = currentGridRef?.current?.api.getColumnState();
+                const body = getBodyForExcelExport({ headersdata: headersdata, filterData: formatedFilters, colDefMap })
+                
+                const response = await getMaterialRequirementDataDayWise({ releaseDate: releaseDate, body, isExcelExport: 1, report_name: FilterPageName.Proc_Material_Requirement })
+                if (response.status === 200) {
+                    DownloadExcel(response, FilterPageName.Proc_Material_Requirement)
+                    notifySuccess("Excel exported successfully")
+                } else {
+                    notifyError("Failed to export excel")
+                }
             }
         } else {
 

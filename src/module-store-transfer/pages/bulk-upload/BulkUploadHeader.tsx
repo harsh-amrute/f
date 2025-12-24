@@ -23,9 +23,10 @@ type BulkUploadHeaderParams = {
   themeUi: any;
   setIsPermissionModalOpen: (e: boolean) => void;
   setIsRoleModalOpen: (e: boolean) => void;
-  isBulkActionEnabled: boolean | undefined;
+  isBulkActionEnabled: any;
   resetState: () => void;
   gridRef?: GridRef | any;
+  removeSelectedUser: () => void,
 };
 
 /**
@@ -41,6 +42,7 @@ const BulkUploadHeader = ({
   isBulkActionEnabled,
   resetState,
   gridRef,
+  removeSelectedUser
 }: BulkUploadHeaderParams): JSX.Element => {
   const [open, setOpen] = useState(false);
   const [dropdownPosition, setDropdownPosition] = useState<CSSProperties>({});
@@ -152,38 +154,33 @@ const BulkUploadHeader = ({
             style={{ height: "20px" }}
           />
           <SCGoBackText style={{ fontSize: "1.5rem" }}>
-            <b>Reupload</b>
+            <b>Go Back</b>
           </SCGoBackText>
         </SCGoBackContainer>
       </div>
 
       {/* Action Buttons */}
       <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+        {/*Remove user Button*/}
+        <VFButton
+          disabled={!isBulkActionEnabled?.removeUserEnable}
+          style={{ width: "120px", height: "35px", fontSize: "1rem" }}
+          themeUi={themeUi}
+          onClick={removeSelectedUser}
+        >
+          {"Remove Selected User"}
+        </VFButton>
+
         {/* Bulk Action Button */}
         <VFButton
-          disabled={!isBulkActionEnabled}
-          style={{ width: "100px", height: "35px", fontSize: "1rem" }}
+          disabled={!isBulkActionEnabled.bulkActionEnable}
+          style={{ width: "150px", height: "35px", fontSize: "1rem" }}
           themeUi={themeUi}
           onClick={onSelectClick}
         >
-          {"Bulk Action"}
+          {"Bulk Action For Selected User"}
         </VFButton>
 
-        {/* Export Button */}
-        <VFButton
-          disabled={false}
-          style={{ width: "100px", height: "35px", fontSize: "1rem" }}
-          themeUi={themeUi}
-          onClick={() => {
-            gridRef.current.api.exportDataAsExcel({
-              fileName: "UserData.xlsx",
-              sheetName: "User Data",
-              columnKeys: ["id", "username", "email", "pwd"],
-            });
-          }}
-        >
-          {"Export"}
-        </VFButton>
       </div>
 
       {/* Dropdown Menu */}

@@ -563,6 +563,41 @@ const useBTR = () => {
             pinned: 'left',
         },
     };
+useEffect(() => {
+    if (techInternalRef && techGridState?.columns) {
+        setTimeout(() => {
+            const result = techInternalRef?.api.applyColumnState({
+                state: techGridState.columns,
+                applyOrder: true
+            });
+
+            techInternalRef.api.sizeColumnsToFit();
+
+            if (!result) {
+                console.error("Failed to apply column state", result);
+            }
+        }, 2000);
+    }
+}, [techInternalRef, techGridState]);
+
+
+useEffect(() => {
+    if (ecoInternalRef && ecoGridState?.columns) {
+        setTimeout(() => {
+            const result = ecoInternalRef?.api.applyColumnState({
+                state: ecoGridState.columns,
+                applyOrder: true
+            });
+
+            ecoInternalRef.api.sizeColumnsToFit();
+
+            if (!result) {
+                console.error("Failed to apply column state", result);
+            }
+        }, 2000);
+    }
+}, [ecoInternalRef, ecoGridState]);
+
 
     const techColDefs = useMemo((): Array<ColDef> => {
         if (initialColumnState) {
@@ -632,27 +667,6 @@ const useBTR = () => {
             setEcoMasterUIConfig(ecoInternalRef?.api.getColumnState());
         }
     }, [ecoInternalRef, ecoColDefs, currentTab]);
-
-    useEffect(() => {
-        if (techInternalRef && techGridState && techGridState.columns) {
-            const result = techInternalRef?.api.applyColumnState({ state: techGridState.columns, applyOrder: true });
-            
-            techInternalRef.api.sizeColumnsToFit();  
-            if (!result) {
-                console.error("Failed to apply column state", result);
-            }
-        }
-    }, [techInternalRef, techGridState]);
-    
-    useEffect(() => {
-        if (ecoInternalRef && ecoGridState && ecoGridState.columns) {
-            const result = ecoInternalRef?.api.applyColumnState({ state: ecoGridState.columns, applyOrder: true });
-            ecoInternalRef.api.sizeColumnsToFit();
-            if (!result) {
-                console.error("Failed to apply column state", result);
-            }
-        }
-    }, [ecoInternalRef, ecoGridState]);
 
     const renderView = () => {
         switch (currentTab.id) {

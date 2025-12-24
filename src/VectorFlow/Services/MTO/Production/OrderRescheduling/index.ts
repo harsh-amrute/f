@@ -5,11 +5,6 @@ export const QUERY_KEYS = {
     useGetOrderSchedulingData: ['MDMService.useGetOrderSchedulingData']
 }
 
-export const useGetOrderSchedulingData = () => {
-    return useMutation(async (pageSize: number) => {
-        return OrderReschedulingService.getOrderReschedulingData(pageSize)
-    })
-}
 
 export const useGetOrderSchedulingPageData = () => {
     return useMutation(async ({pageNum
@@ -30,3 +25,10 @@ export const usePutUpdateOrderDueDate = () => {
         return OrderReschedulingService.putUpdateOrderDueDate([body]);
     })
 }
+
+export const useGetHolidaysForMaxFolCCROfOrder = () => {
+    return useMutation(async (orderId: number) => {
+        return OrderReschedulingService.getHolidaysForMaxFolCCROfOrder(orderId)
+    })
+}
+

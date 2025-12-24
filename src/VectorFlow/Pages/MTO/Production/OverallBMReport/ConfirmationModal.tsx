@@ -11,7 +11,6 @@ interface ModalProps {
   orderCount: number; 
   shortCloseTracker?: any;
   completeCloseTracker?:any
-
 }
 
 const ConfirmationModal: React.FC<ModalProps> = ({
@@ -27,7 +26,8 @@ const ConfirmationModal: React.FC<ModalProps> = ({
 }) => {
   if (!isOpen) return null;
 
-
+ 
+  const hasNoOrders = orderCount === 0;
 
   return (
     <VFModalCard
@@ -48,32 +48,37 @@ const ConfirmationModal: React.FC<ModalProps> = ({
             textAlign: "center",
             fontSize: "16px",
             color: "#444",
-            wordWrap: "break-word", // Ensures long words wrap
+            wordWrap: "break-word",
             overflowWrap: "break-word",
-            lineHeight: "1.5", // Improved spacing for text
+            lineHeight: "1.5",
           }}
         >
-          <p style={{ marginBottom: "10px" }}>{message}</p>
-         
-         {
-          shortCloseTracker && completeCloseTracker ? (
-            <p>
-              Are you sure you want to <strong>Short Close</strong> {shortCloseTracker} {shortCloseTracker === 1 ? "Order" : "Orders"} and{" "}
-              <strong>Complete Close</strong> {completeCloseTracker} {completeCloseTracker === 1 ? "Order" : "Orders"}?
+          {hasNoOrders ? (
+            <p style={{ color: "#d9534f", fontWeight: "bold" }}>
+              No MTO orders to close.
             </p>
           ) : (
-            typeof orderCount === "number" ? (
-              <p>
-                Are you sure you want to <strong>{actionText}</strong> {orderCount} {orderCount === 1 ? "Order" : "Orders"}?
-              </p>
-            ) : (
-              <p>
-                Are you sure you want to <strong>{actionText}</strong> order with order id{" "}
-                {orderCount}?
-              </p>
-              )
-            )
-          }
+            <>
+              <p style={{ marginBottom: "10px" }}>{message}</p>
+              {shortCloseTracker && completeCloseTracker ? (
+                <p>
+                  Are you sure you want to <strong>Short Close</strong> {shortCloseTracker} {shortCloseTracker === 1 ? "Order" : "Orders"} and{" "}
+                  <strong>Complete Close</strong> {completeCloseTracker} {completeCloseTracker === 1 ? "Order" : "Orders"}?
+                </p>
+              ) : (
+                typeof orderCount === "number" ? (
+                  <p>
+                    Are you sure you want to <strong>{actionText}</strong> {orderCount} {orderCount === 1 ? "Order" : "Orders"}?
+                  </p>
+                ) : (
+                  <p>
+                    Are you sure you want to <strong>{actionText}</strong> order with order id{" "}
+                    {orderCount}?
+                  </p>
+                )
+              )}
+            </>
+          )}
         </div>
 
         {/* Button Section */}
@@ -96,24 +101,27 @@ const ConfirmationModal: React.FC<ModalProps> = ({
               cursor: "pointer",
             }}
           >
-            Cancel
+            {hasNoOrders ? "Close" : "Cancel"}
           </button>
-          <button
-            onClick={() => {
-              orderCount !== null &&
-                onConfirm(typeof orderCount === "number" ? "" : orderCount, actionText);
-            }}
-            style={{
-              background: "#A50064",
-              color: "#fff",
-              border: "none",
-              borderRadius: "4px",
-              padding: "8px 16px",
-              cursor: "pointer",
-            }}
-          >
-            Confirm
-          </button>
+
+          {!hasNoOrders && (
+            <button
+              onClick={() => {
+                orderCount !== null &&
+                  onConfirm(typeof orderCount === "number" ? "" : orderCount, actionText);
+              }}
+              style={{
+                background: "#A50064",
+                color: "#fff",
+                border: "none",
+                borderRadius: "4px",
+                padding: "8px 16px",
+                cursor: "pointer",
+              }}
+            >
+              Confirm
+            </button>
+          )}
         </div>
       </div>
     </VFModalCard>

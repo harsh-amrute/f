@@ -40,7 +40,7 @@ const ExpediteParentExpediteDispatchesGrid = ({data,paginationProps,onOpenDailyD
                       }
                 )
         toast.dismiss()
-        notifySuccess('Request Submitted sucessfully')
+        notifySuccess('Request Submitted successfully')
         }catch(err:any){
             console.log(err)
             notifyError(err)

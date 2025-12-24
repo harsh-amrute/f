@@ -18,14 +18,6 @@ describe('OrderRescheduling', () => {
     });
 
 
-    it('should fetch rm and supplier data', async () => {
-
-        mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
-        const response = await OrderReschedulingService.getOrderReschedulingData(10);
-        expect(response.status).toBe(200);
-    });
-
-
     it('should fetch data with pagination for next page', async () => {
 
         mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200,appliedFilters:'plant' });

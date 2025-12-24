@@ -298,15 +298,15 @@ const useRRRColorBandwise = () => {
         // tooltipComponent:'remarksToolTipComponent',
         cellStyle: {
           "textAlign": "center",
-          "height": "50px",
-          "fontStyle": "normal",
-          "fontVariant": "normal",
-          "fontWeight": "300",
-          "fontSize": "20px",
-          "fontFamily": "Roboto",
-          "display": "block",
-          "textOverflow": "ellipsis",
-          "whiteSpace": "nowrap",
+          // "height": "50px",
+          // "fontStyle": "normal",
+          // "fontVariant": "normal",
+          // "fontWeight": "300",
+          // "fontSize": "20px",
+          // "fontFamily": "Roboto",
+          // "display": "block",
+          // "textOverflow": "ellipsis",
+          // "whiteSpace": "nowrap",
         },
         // ,
         // onCellClicked:(params:any)=>{
@@ -373,6 +373,12 @@ const onExportToExcelCallBack=async(pageNumber:number)=>{
         setUserPageSize(pageSize)
         await loadGridData(currentPage,currFilter, pageSize);
     }
+
+    const getRRRBandwiseRowData = async (pageNumber: any, pageSize: any) => {
+    setCurrentPage(pageNumber);
+    await loadGridData(pageNumber, currFilter, pageSize);
+  };
+
   return {
     isSideBarOpen,
     RRRColorBandWiseColumns,
@@ -390,7 +396,7 @@ const onExportToExcelCallBack=async(pageNumber:number)=>{
     exportExcelColumns,
     setExportExcelColumns,
     onExportToExcelCallBack,
-    // getRRRBandwiseRowData,
+    getRRRBandwiseRowData,
     onApplyFilter,
     currFilter,
     setCurrFilter,
