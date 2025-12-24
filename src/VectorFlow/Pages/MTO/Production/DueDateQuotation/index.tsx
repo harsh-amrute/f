@@ -26,6 +26,8 @@ import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Commo
 import { useNavigate } from 'react-router';
 import VFWarningModal from '../../../../../components/VectorFLOW/commons/MTO/VFWarningModal'
 import BomExcelModal from '../../Common/BomExcelModal'
+import VFToolTip from '../../../../../components/VectorFLOW/commons/MTO/VFToolTip';
+
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -482,6 +484,8 @@ const DueDateQuotation = () => {
     }
   }
 
+  const canSchedule = (user?.feature_permission?.includes('Schedule_Orders'));
+  
   const renderSubmitText = () => {
     switch (step) {
       case 1: {
@@ -499,7 +503,7 @@ const DueDateQuotation = () => {
     }
   }
 
-
+  const isScheduleDisabled = (step == 3 && canSchedule==false); 
 
   const getUpdatedFilterData = async (isExcelExport = false,pageSize?:any,isBomExplosion?:any ) => {
     if(isExcelExport){
@@ -754,10 +758,11 @@ const DueDateQuotation = () => {
             themeUi={themeUi}
             headerText={"Excel Export"}
             messageText={"Do you want to download Excel with BOM Details?"} 
-          />
-
-        <VFButton themeUi={themeUi}
-          disabled={disabled}
+        />
+        
+        <div className="disabled-button-wrapper">
+           <VFButton themeUi={themeUi}
+        disabled={disabled || isScheduleDisabled }
           onClick={() => {
             if (step == 1) {
               setPageCallBack(true);
@@ -780,7 +785,20 @@ const DueDateQuotation = () => {
           currentStep={step}
           style={{ fontSize: "12px", width: "100px", height: "40px", display: "flex", justifyContent: "center", alignItems: "center" }}>
           {renderSubmitText()}
-        </VFButton>
+          </VFButton>
+          
+          {isScheduleDisabled && (
+            // <span className="hover-text" style={{left:80, bottom:10}}>
+            //   The logged-in user does not have access to schedule orders.
+            // </span>
+
+            <VFToolTip left={80} bottom={10}
+            text={'The logged-in user does not have access to schedule orders.'}
+          />
+          )}
+
+    </div>
+        
       </Footer>
       <VFWarningModal
         warningMsg={"Access to this page is restricted because due date assignment is automatic in the current system."}
