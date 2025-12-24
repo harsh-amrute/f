@@ -3,8 +3,6 @@ import { useUserData } from '../../../context'
 import * as HeaderStyled from './style'
 import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
-import { RootState } from '../../../redux/store/store'
 
 interface HeaderProps{
   urlExcludeHeader:Array<string>
@@ -63,13 +61,12 @@ const Header = (props:HeaderProps) => {
       hideLogo()
     }, 300);
   }
-  const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
-  const getValidValue = (val?: string) =>
-    val && val.trim() !== "" ? val : undefined;
+ 
+const CLIENT_LOGO_PATH = "/client/logo.svg";
 
-  const CLIENT_LOGO = getValidValue(EnvConfig['CLIENT_LOGO']) ?? process.env.REACT_APP_CLIENT_LOGO;
   
-  const CLIENT_NAME = getValidValue(EnvConfig['CLIENT_NAME']) ?? process.env.REACT_APP_CLIENT_NAME;
+  const CLIENT_NAME = user?.config_data?.CLIENT_NAME
+ 
 
   const renderHeader = () => {
     if (location.pathname === '/ist-status') {
@@ -165,7 +162,7 @@ const Header = (props:HeaderProps) => {
         }
         
         <HeaderStyled.SCWrapperImg isHideLogo={isHideLogo} onMouseEnter={onMouseEnterLogo} onMouseLeave={onMouseLeaveLogo} style={{ display: 'flex', alignItems: 'center' }}>
-          {!CLIENT_LOGO && !CLIENT_NAME &&
+          {!CLIENT_LOGO_PATH && !CLIENT_NAME &&
             <HeaderStyled.SCImg
               marginLeft={"20px"}
               src="/assets/img/header/VectorFlowLogoBlackNew.svg"
@@ -173,15 +170,27 @@ const Header = (props:HeaderProps) => {
               isHideLogo={isHideLogo}
             />
           }
-          {CLIENT_LOGO && (
+          {!CLIENT_LOGO_PATH && (
             <HeaderStyled.SCImg
-              src={CLIENT_LOGO.toString()}
+            marginLeft={"20px"}
+            src="/assets/img/header/VectorFlowLogoBlackNew.svg"
+            alt="logo"
+            isHideLogo={isHideLogo}
+          />
+          )
+          }
+          {CLIENT_LOGO_PATH && (
+            <HeaderStyled.SCImg
+              src={CLIENT_LOGO_PATH}
               alt="logo"
               isHideLogo={isHideLogo}
+              onError={(e: any) => {
+                e.currentTarget.src = "/assets/img/header/VectorFlowLogoBlackNew.svg";
+              }}
             />
           )}
           {CLIENT_NAME && (
-            <HeaderStyled.ClientNameText marginLeft={!CLIENT_LOGO && "15px"} isHideLogo={isHideLogo}>
+            <HeaderStyled.ClientNameText marginLeft={!CLIENT_LOGO_PATH && "15px"} isHideLogo={isHideLogo}>
               {CLIENT_NAME}
             </HeaderStyled.ClientNameText>
           )}

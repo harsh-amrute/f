@@ -2,11 +2,18 @@ import { useNavigate, useRoutes } from 'react-router'
 import { initRoutes } from './app-routes'
 import { AutoLogoutTimer } from './VectorFlow/Pages/MTO/Common/AutoLogout/AutoLogoutTimer';
 import { UserDataContext } from './context';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { setNumberFormat } from './helpers/numberFormat';
 
 function App() {
   const [isSideBarOpen, toggleSidebar] = useState<boolean>(false)
-  const [ userData, setUserData ] = useState<any>(null);
+  const [userData, setUserData] = useState<any>(null);
+  
+  useEffect(() => {
+    if (userData?.config_data?.NUMBER_FORMAT) {
+      setNumberFormat(userData.config_data.NUMBER_FORMAT );
+    }
+  }, [userData?.config_data?.NUMBER_FORMAT]);
 
   const changeColorTheme = (color: string) => {
 
