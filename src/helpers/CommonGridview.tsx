@@ -60,7 +60,7 @@ type actionToolBarPropsType = {
   comp: string;
   isAddFilterButton?: boolean;
   isChartGridToggle?: boolean;
-  isExcelExport?: boolean;
+  isExcelExportIcon?: boolean;
   isGridView?: boolean;
   setIsGridView?: (val: boolean) => void;
   isGoBackButton?: boolean;
@@ -97,27 +97,136 @@ type CommonGridviewProps = {
 };
 
 /**
- * CommonGridview is a reusable component that renders a grid view with customizable columns,
- * pagination, and Excel export functionality. It supports user-specific configurations for
- * column states and page size, and allows saving and resetting these configurations.
+ * CommonGridview
+ *
+ * A reusable AG Grid wrapper component used to display report data with
+ * pagination, filtering, column customization, and Excel export support.
+ *
+ * Responsibilities:
+ * - Renders an AG Grid table with configurable column definitions
+ * - Fetches and displays paginated row data using `getRowData`
+ * - Applies and persists user-specific grid settings such as:
+ *   column width, column order, column visibility, page size, and filters
+ * - Allows users to save and reset grid configuration
+ * - Supports both frontend and backend driven Excel export
+ * - Optionally shows a confirmation modal before Excel export (BOM export)
+ *
+ * Usage:
+ * - Provide column definitions via `columnDefinationProps`
+ * - Provide a `getRowData` function to fetch grid data
+ * - Optionally provide `getExcelExportData` for backend Excel export
+ * - Configure toolbar behavior using `actionToolBarProps`
  *
  * @component
- * @param {CommonGridviewProps} props - The properties passed to the component.
- * @param {string} props.reportName - The name of the report to be displayed in the grid.
- * @param {columnDefinationPropsType} props.columnDefinationProps - Custom column definitions and additional options for the grid.
- * @param {ExcelExportParams} [props.excelExportParams] - Parameters for Excel export functionality.
- * @param {any} [props.customGridOptions] - Additional options for customizing the grid.
- * @param {() => void} props.setAppliedFilters - Function to set applied filters.
- * @param {any[]} props.appliedFilters - object of applied filters.
- * @param {number} [props.reportNameId] - Optional ID for the report name.
- * @param {boolean} [props.isGridView] - Flag to toggle between grid and chart views.
- * @param {(val: boolean) => void} [props.setIsGridView] - Function to set the grid view state.
- * @param {(args: { body: any; isExcelExport: number; report_name: string }) => Promise<any>} [props.getExcelExportData] -
- *        Function to fetch Excel export data.
- * @param {(args: getRowDataArgs) => Promise<any>} props.getRowData -
- *        Function to fetch row data for the grid.
  *
- * @returns {JSX.Element} A grid view component with customizable columns, pagination, and Excel export functionality.
+ * @param {CommonGridviewProps} props
+ *
+ * @param {string} props.reportName
+ * Name of the report. Used to fetch UI configuration and for Excel export naming.
+ *
+ * @param {columnDefinationPropsType} props.columnDefinationProps
+ * Contains custom column definitions and additional column options.
+ *
+ * @param {ExcelExportParams} [props.excelExportParams]
+ * Configuration for Excel export behavior, including backend export
+ * and optional BOM confirmation modal.
+ *
+ * @param {any} [props.customGridOptions]
+ * Additional AG Grid options passed directly to the grid.
+ *
+ * @param {(state: any) => void} [props.setAppliedFilters]
+ * Callback used to update applied filter state.
+ *
+ * @param {any} [props.appliedFilters]
+ * Object containing currently applied filters used while fetching grid data.
+ *
+ * @param {number} [props.reportNameId]
+ * Unique report identifier used for saving and retrieving user UI configuration.
+ *
+ * @param {(args: getExcelExportDataArgs) => Promise<any>} [props.getExcelExportData]
+ * Function used to fetch Excel data from backend when backend export is enabled.
+ *
+ * @param {(args: getRowDataArgs) => Promise<any>} props.getRowData
+ * Function used to fetch paginated row data for the grid.
+ *
+ * @param {actionToolBarPropsType} props.actionToolBarProps
+ * Configuration object controlling the grid toolbar behavior and actions.
+ *
+ * @param {boolean} props.gridDataLoading
+ * Flag to display loader while grid data is being fetched.
+ *
+ * @param {React.FC} [props.BomExcelExport]
+ * Optional modal component displayed before Excel export
+ * when BOM export confirmation is required.
+ *
+ * @returns {JSX.Element}
+ * A fully configured grid view with pagination, filtering,
+ * column customization, and Excel export support.
+ *
+ *
+ * ------------------------------------------------------------------
+ * actionToolBarProps
+ * ------------------------------------------------------------------
+ *
+ * Configuration object used to control the behavior and UI of the grid toolbar
+ * rendered by `MTOActionToolBar`.
+ *
+ * Controls:
+ * - Visibility of toolbar buttons (Excel, Save, Reset, Filters, Go Back, Chart toggle)
+ * - Filter related actions
+ * - Grid view and chart view toggling
+ * - Navigation actions like Go Back
+ *
+ * @param {string} comp
+ * Unique identifier for the grid/report.
+ *
+ * @param {boolean} [isAddFilterButton]
+ * Shows or hides the "Add Filter" button.
+ *
+ * @param {boolean} [isChartGridToggle]
+ * Enables toggle between Grid view and Chart view.
+ *
+ * @param {boolean} [isExcelExportIcon]
+ * Shows or hides the Excel export icon in the toolbar.
+ *
+ * @param {boolean} [isGridView]
+ * Indicates current view mode.
+ * true  → Grid view
+ * false → Chart view
+ *
+ * @param {(val: boolean) => void} [setIsGridView]
+ * Callback to toggle between Grid and Chart views.
+ *
+ * @param {boolean} [isGoBackButton]
+ * Shows or hides the Go Back button.
+ *
+ * @param {() => void} [handleGoBack]
+ * Callback executed when Go Back button is clicked.
+ *
+ * @param {boolean} [isFilterOpen]
+ * Indicates whether the filter panel is currently open.
+ *
+ * @param {() => void} [onAddFilter]
+ * Triggered when the Add Filter button is clicked.
+ *
+ * @param {(state: boolean) => void} [toggleFilter]
+ * Opens or closes the filter panel.
+ *
+ * @param {(filter: any, selectedHeader?: any, selectedOperator?: any, selectedValue?: any) => void} [onApplyFilter]
+ * Called when a filter is applied from the toolbar.
+ *
+ * @param {boolean} [isMfgSelected]
+ * Domain-specific flag used to control toolbar behavior
+ * based on Manufacturing or similar selections.
+ *
+ * @param {any[]} [multiFilter]
+ * List of currently applied filters.
+ *
+ * @param {(val: any) => void} [setMultiFilter]
+ * Updates the multi-filter state.
+ *
+ * @param {(parentId: string, filterId: any, value: any) => any} [onFilterRemove]
+ * Called when a filter is removed from the toolbar.
  *
  * @example
  * <CommonGridview
@@ -126,17 +235,18 @@ type CommonGridviewProps = {
  *     customColDef: customDefinitions,
  *     extras: additionalOptions,
  *   }}
- *   excelExportParams={{ isExcelExportFromBackend: true, excelExportReportName: "SampleReport" }}
- *   customGridOptions={gridOptions}
- *   setAppliedFilters={handleSetFilters}
- *   appliedFilters={filters}
- *   reportNameId={1}
- *   isGridView={true}
- *   setIsGridView={setGridView}
- *   getExcelExportData={fetchExcelData}
+ *   excelExportParams={{
+ *     isExcelExportFromBackend: true,
+ *     excelExportReportName: "SampleReport",
+ *     showBomExcelModal: true,
+ *   }}
  *   getRowData={fetchRowData}
+ *   getExcelExportData={fetchExcelData}
+ *   actionToolBarProps={toolbarConfig}
+ *   gridDataLoading={isLoading}
  * />
  */
+
 
 function CommonGridview(props: CommonGridviewProps) {
   const {
@@ -163,7 +273,7 @@ function CommonGridview(props: CommonGridviewProps) {
   const {
     comp,
     isAddFilterButton = false,
-    isExcelExport = false,
+    isExcelExportIcon = true,
     isGoBackButton = false,
     isMfgSelected = false,
     isFilterOpen = false,
@@ -428,7 +538,7 @@ function CommonGridview(props: CommonGridviewProps) {
         themeUi={user?.user?.theme_ui}
         isAddFilterButton={isAddFilterButton}
         isChartGridToggle={isChartGridToggle}
-        isExcelExport={isExcelExport}
+        isExcelExport={isExcelExportIcon}
         isGridView={isGridView}
         setIsGridView={setIsGridView}
         handleSaveClick={handleSaveClick}

@@ -584,7 +584,6 @@ const MaterialCov = () => {
               multiFilter:currFilter,
               setMultiFilter:setCurrFilter,
               onFilterRemove:onFilterRemove,
-              isExcelExport:true
             }}
             BomExcelExport={BomExcelExportModal}
           />
