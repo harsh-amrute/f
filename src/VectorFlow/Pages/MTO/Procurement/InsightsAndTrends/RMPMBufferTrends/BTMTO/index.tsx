@@ -11,15 +11,14 @@ import { useUserData } from '../../../../../../../context'
 import VFButton from '../../../../../../../components/VectorFLOW/commons/VFButton'
 
 
-const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
+const BTMTO = ({ isMTO, data, lastRunDate }: { isMTO: boolean, data: any, lastRunDate: Date}) => {
 
     const { user } = useUserData();
     const themeUi = user?.user?.theme_ui;
    
 
     const [horizonDays, setHorizondays] = useState(14);
-
-    console.log(isMTO)
+    
     useEffect(() => {
         setNumericData(filterDataByDaysGap(data, 0, horizonDays, false))
     }, [data])
@@ -496,7 +495,7 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
 
     const generateHeader = () => {
         return (
-            <>
+            
                 <SCChartMainContainer style={{ zoom: 1, width: '100%' }}>
                     <SCChartSliderContainer style={{ zoom: 0.75, marginTop: '6px' }}>
                         <label style={{
@@ -565,14 +564,12 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
                         </div>
                     </SCChartHeaderContainer>
                 </SCChartMainContainer>
-            </>
+            
 
         )
     }
 
-    const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
 
-    const date = apiResponseData?.data?.data;
 
     const graphTitleJSX = <div
         data-testid="ot-if-graph"
@@ -584,7 +581,7 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
         }}
     >
         <span style={{ fontWeight: 500 }}>RM / PM Buffer Trend- MTO</span>
-        <span style={{ fontWeight: 300 }}>{` (${moment(date).subtract(horizonDays - 1, 'days').format('D MMM YYYY')} - ${moment(date).format('D MMM YYYY')})`}</span>
+        <span style={{ fontWeight: 300 }}>{` (${moment(lastRunDate).subtract(horizonDays - 1, 'days').format('D MMM YYYY')} - ${moment(lastRunDate).format('D MMM YYYY')})`}</span>
     </div>
 
     return (
@@ -600,7 +597,7 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
                 rowData={rowData}
                 graphTitle={''}
                 graphTitleJSX={graphTitleJSX}
-                tableTitle={`RM / PM Buffer Trend- MTO (${moment(date).subtract(horizonDays - 1, 'days').format('D MMM YYYY')} - ${moment(date).format('D MMM YYYY')})`}
+                tableTitle={`RM / PM Buffer Trend- MTO (${moment(lastRunDate).subtract(horizonDays - 1, 'days').format('D MMM YYYY')} - ${moment(lastRunDate).format('D MMM YYYY')})`}
                 options={options}
                 colDef={colDef}
                 header={generateHeader}

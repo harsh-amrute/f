@@ -10,8 +10,8 @@ import { TooltipRenderer } from "../common";
 import moment from "moment";
 
 const OTIFFailureGraph = (props: any) => {
-  const { month, graphData } =props; 
-  const [startDate, setStartDate] = useState('-');
+  const { month, graphData, lastRunDate, subtractStartMonths, subtractEndMonths} =props; 
+  const [startDate, setStartDate] = useState(lastRunDate);
   const [endDate, setEndDate] = useState('-');
   const [hideChart1, toggleChart1] = useState(false);
   const [chartLoading, setChartLoading] = useState(false);
@@ -146,8 +146,8 @@ const OTIFFailureGraph = (props: any) => {
 
   useEffect(()=>{
     if(graphData){
-      setStartDate(month ==='current' ? moment().subtract(1, 'days').format('DD-MMM-YYYY') : moment().subtract(1, 'months').subtract(1, 'days').format('DD-MMM-YYYY'));
-      setEndDate(month ==='current' ?  moment().subtract(1, 'months').format('DD-MMM-YYYY') : moment().subtract(2, 'months').format('DD-MMM-YYYY'));
+      setStartDate(moment(lastRunDate).subtract(subtractStartMonths, 'months').subtract(1, 'days').format('DD-MMM-YYYY'));
+      setEndDate( moment(lastRunDate).subtract(subtractEndMonths, 'months').format('DD-MMM-YYYY'));
       const data = Object.keys(graphData)?.map((key: string) => ({ r: key, co: graphData[key]}));
       setRawData(data);
     }

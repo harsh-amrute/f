@@ -576,7 +576,7 @@ useEffect(() => {
             if (!result) {
                 console.error("Failed to apply column state", result);
             }
-        }, 100);
+        }, 2000);
     }
 }, [techInternalRef, techGridState]);
 
@@ -594,7 +594,7 @@ useEffect(() => {
             if (!result) {
                 console.error("Failed to apply column state", result);
             }
-        }, 100);
+        }, 2000);
     }
 }, [ecoInternalRef, ecoGridState]);
 

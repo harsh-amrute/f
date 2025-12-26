@@ -1,6 +1,6 @@
 import { ColDef } from "ag-grid-enterprise";
 import _ from "lodash";
-import { ColorsMTO } from "../VectorFlow/Pages/MTO/Common/Colors"; 
+import { ColorsMTO } from "../VectorFlow/Pages/MTO/Common/Colors";
 
 interface ApiResponseItem {
   cc: string;
@@ -14,6 +14,7 @@ interface ApiResponseItem {
   dt?: string;
 }
 
+
 export interface GridOptions {
   bomActive?: boolean;
   orderClosingEnable?: boolean;
@@ -26,11 +27,11 @@ export const excelColorArr = ["Black", "Red", "White", "Green", "Yellow", "Blue"
 
 export const createDynamicColumnDefs = (
   apiResponse: ApiResponseItem[],
-  options: GridOptions
+  options: GridOptions,
+  user: any
 ): ColDef[] => {
   const modifiedResponse: ApiResponseItem[] = [];
   const cpMap: { [key: string]: number } = {};
-
 
 
   apiResponse.forEach((item) => {
@@ -197,7 +198,7 @@ export const createDynamicColumnDefs = (
       },
       valueFormatter: (params: any) => {
         if (params.value != null) {
-          const format = (process.env.REACT_APP_NUMBER_FORMAT || "").toUpperCase();
+          const format = (user?.config_data?.NUMBER_FORMAT || "USA").toUpperCase();
           const locale =
             format === "USA" ? "en-US" : format === "IND" ? "hi-IN" : undefined;
 
