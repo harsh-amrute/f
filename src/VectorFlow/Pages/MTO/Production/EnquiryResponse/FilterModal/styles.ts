@@ -173,6 +173,10 @@ export const Option = styled.div`
     font-size: 16px;
     letter-spacing: 0px;
     color:#313131;
+
+     &:hover{
+    background-color:rgb(249, 249, 249)
+    }
     
 `;
 

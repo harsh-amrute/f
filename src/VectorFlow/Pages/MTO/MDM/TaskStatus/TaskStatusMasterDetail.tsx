@@ -4,7 +4,6 @@ import { VFTaskStatusWrapper,VFTaskStatusContentWrapper, VFTaskStatusStepperWrap
 import { useUserData } from "../../../../../context"
 import StepperPrefix from "./StepperPrefix"
 import { useEffect } from "react"
-import { useGetMTOTaskById } from "../../../../../VectorFlow/Services/MTA/MDM"
 
 
 
@@ -202,8 +201,6 @@ const getStepperState = (data:any):StepItem[]=>{
 }
 
 const TaskStatusMasterDetail = (props:TaskStatusMasterDetailProps)=>{
-
-
     const{
         data,
         onDownload
@@ -211,26 +208,6 @@ const TaskStatusMasterDetail = (props:TaskStatusMasterDetailProps)=>{
     const approvedStatuses = ["Approved","Partially Approved - DB update Pending","Approved - DB update Pending","Approved - DB Updated"]
     const {user} = useUserData()
     const {Approvers} = data;
-
-
-    const {mutateAsync: getTaskById} = useGetMTOTaskById();
-
-    const GetTaskDetails = async()=>{
-        try{
-            const result = await getTaskById(data.TaskID);
-            console.log("Taks details. resultu", result.data.data.results);
-        }
-        catch(e){
-            console.log(e)
-        }
-    }
-
-    useEffect(()=>{
-        if(data.TaskID){
-            GetTaskDetails();
-        }
-    },[data.TaskID]);
-    
 
     const showDisplayDownloadButton = (status:string):boolean=>{
         return approvedStatuses.includes(status)
@@ -247,7 +224,7 @@ const TaskStatusMasterDetail = (props:TaskStatusMasterDetailProps)=>{
                         <VFTaskStatusStepperWrapper gridFraction={gridFraction}>
                         {/* <VFTaskStatusStepperLabel></VFTaskStatusStepperLabel> */}
                             <VFStepper
-                                items={getStepperState({...approver, Requester: props.data.Requester, Approver: props.data.Approver[index], TaskStatus: props.data.TaskStatus})}
+                                items={getStepperState({...approver, Requester: props.data.Requester, Approver: props.data.Approvers[index], TaskStatus: props.data.TaskStatus})}
                                 dashWidth="500px"
                                 zoom={0.7}
                             />

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import SelectGroupedMasters from "../../../../../components/VectorFLOW/layouts/SelectMTOGroupedMasters";
 import useViewModify from "../ViewModify/useViewModify";
 import useAdd from "./useAdd";
@@ -64,7 +64,8 @@ const MTOAddRecord = () => {
         isOverlayVisible,
         errorCount,
         onMTOSaveBufferData,
-        onMTOSaveAsDraft
+        onMTOSaveAsDraft,
+        onExcelExport
 
     } = useViewModify('add');
 
@@ -86,6 +87,16 @@ const MTOAddRecord = () => {
 
 
     useSimpleBlocker(activeMaster,onBackButton);
+
+    const handleExportData = useCallback(() => {
+        notifyLoader('Exporting Data')
+        try {
+          ref?.current?.api?.exportDataAsExcel(onExcelExport());
+          notifySuccess('Exported Data Successfully')
+        } catch (error:any) {
+          notifyError(error.message || "Failed to Export Data")
+        }
+      }, [ref, onExcelExport]);
 
     
     useEffect(()=>{
@@ -280,8 +291,6 @@ const MTOAddRecord = () => {
           <VFTaskBar
           showSubmittedExportError={errorCount>0}
             enableEditOnlineReset={false}
-            disableResumeSeasonality={()=>false}
-            disableStopSeasonality={()=>false}
             masterProgress={activeMaster.progress}
             onReset={onReset}
             onSaveToDraft={onSaveToDraft}
@@ -291,12 +300,10 @@ const MTOAddRecord = () => {
             onBack={onBackButton}
             onClearAndExportErrors={()=>onClearExportError()}
             onModifyData={()=>toggleUploadModal(true)}
-            onExportData={exportToExcel}
+            onExportData={handleExportData}
             onSubmit={onSubmit}
             onDeleteSelected={deleteSelected}
             onPhaseInPhaseOutStop={()=>console.log('')}
-            onSeasonalityResume={()=>console.log('')}
-            onSeasonalityStop={()=>console.log('')}
             onDeleteData={()=>console.log('')}
             onDeleteOnline={()=>console.log('')}
             onDeleteOnlineReset={()=>console.log('')}

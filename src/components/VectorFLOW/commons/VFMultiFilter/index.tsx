@@ -16,6 +16,8 @@ import VFRangeSlider from "../VFRangeSlider";
 import {  BPRFilter, BPRFilterState } from "../../../../VectorFlow/types/BPR";
 import { BTRCategoryNumberToTextMapper } from "../../../../helpers/BPRConstants";
 import { Skeleton } from "../../../../components/commons/styled";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../redux/store/store";
 
 // import { generalFilterOptions } from '../../utils';
 
@@ -271,23 +273,27 @@ const FilterTextInput = ({placeholder, onChange,disabled=false, value}:any) => {
 
 
 const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,generalFilterOptions}:any)=>{
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
 
+    const PRODUCT_PERMISSION_L1 = EnvConfig['PRODUCT_PERMISSION_L1'];   
+    const PRODUCT_PERMISSION_L2 = EnvConfig['PRODUCT_PERMISSION_L2'];   
+    const PRODUCT_PERMISSION_L3 = EnvConfig['PRODUCT_PERMISSION_L3'];   
+
+    const LOCATION_PERMISSION_L1 = EnvConfig['LOCATION_PERMISSION_L1']; 
+    const LOCATION_PERMISSION_L2 = EnvConfig['LOCATION_PERMISSION_L2']; 
+    const LOCATION_PERMISSION_L3 = EnvConfig['LOCATION_PERMISSION_L3']; 
 
 
     const filterLocationOptions = [
-        {value:'l1',label:process.env.REACT_APP_LOCATION_PERMISSION_L1},
-        {value:'l2',label:process.env.REACT_APP_LOCATION_PERMISSION_L2},
-        {value:'l3',label:process.env.REACT_APP_LOCATION_PERMISSION_L3},
-        {value:'l4',label:'L4'},
-        {value:'l5',label:'L5'}, 
+        {value:'l1',label:LOCATION_PERMISSION_L1},
+        {value:'l2',label:LOCATION_PERMISSION_L2},
+        {value:'l3',label:LOCATION_PERMISSION_L3},
     ]
 
     const filterProductOptions = [
-        {value:'p1',label:process.env.REACT_APP_PRODUCT_PERMISSION_L1},
-        {value:'p2',label:process.env.REACT_APP_PRODUCT_PERMISSION_L2},
-        {value:'p3',label:process.env.REACT_APP_PRODUCT_PERMISSION_L3},
-        {value:'p4',label:'P4'},
-        {value:'p5',label:'P5'},  
+        {value:'p1',label:PRODUCT_PERMISSION_L1},
+        {value:'p2',label:PRODUCT_PERMISSION_L2},
+        {value:'p3',label:PRODUCT_PERMISSION_L3},
     ]
 
     const colorFilterOptions = [
@@ -513,12 +519,12 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         }
         if(filterId==='AF6'){
             filterObj.attributeName='PIC';
-            filterObj.label='PIc';
+            filterObj.label='PIC';
             filterObj.operator='='
         }
         if(filterId==='AF7'){
             filterObj.attributeName='PIPO,Seasonality';
-            filterObj.label='PIPO,Seasonality';
+            filterObj.label='Tags';
             filterObj.operator='='
         }
         if(filterId==='AF8'){
@@ -817,6 +823,11 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
             }
         }
     }, []);
+
+    const hasAppliedFilters = () => {
+        if (!filterState) return false;
+        return Object.values(filterState).some(filterGroup => filterGroup.filters && filterGroup.filters.length > 0);
+    };
 
     return(
         <>
@@ -1193,7 +1204,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                                 onChange={(e:any,key:string)=>onFilterChange('AF7',e,'4',key)} filterId={'AF7'}/> 
                             </FilterCheckboxAccordian>
                         </FilterComponent> */}
-                       {location.pathname==='/insights-and-trends/buffer-trend-report' && (
+                       {location.pathname==='/mta/insights-and-trends/buffer-trend-report' && (
                             <FilterComponent style={{borderTop:'0.5px solid #B7B7B7',height: openStatus.btrCategory?'unset' : '50px'}}>
                             <FilterCheckboxAccordian filterType="Category" filterKey="btrCategory" isOpen={openStatus.btrCategory} setOpenStatus={setOpenStatus}>
                             <FilterMultiSelectCheckbox header={'Category'} filterOptions={Object.keys(BTRCategoryNumberToTextMapper).map((key:string)=>{
@@ -1250,9 +1261,12 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
             
             <ButtonFilterWrapper>
                 <ButtonContainer>
+                   {
+                   hasAppliedFilters() &&
                     <VFButtonOutline themeUi={user.user.theme_ui} onClick={resetFilters}>
                        Reset Filters
                     </VFButtonOutline>
+                    }
                     <VFButton
                         themeUi={user.user.theme_ui}
                         onClick={() => {
@@ -1267,7 +1281,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                             }
                         }}
                         >
-                        Apply Filter
+                        {hasAppliedFilters() ? 'Apply Filter' : 'Show All'}
                     </VFButton>
                 </ButtonContainer>
             </ButtonFilterWrapper>

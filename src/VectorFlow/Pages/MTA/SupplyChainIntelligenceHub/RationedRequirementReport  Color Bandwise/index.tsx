@@ -6,6 +6,8 @@ import { GridStateContext } from '../../../../../context/GridStateContext';
 import OverlayLoader from '../../../../..//VectorFlow/Pages/MTO/Common/Loader';
 import VFPagination from "../../../../../VectorFlow/Pages/MTO/Common/VFPagination"
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../../../redux/store/store';
 
 
 const RRRColorBandwise = () => {
@@ -26,7 +28,7 @@ const RRRColorBandwise = () => {
   exportExcelColumns,
   setExportExcelColumns,
   onExportToExcelCallBack,
-  // getRRRBandwiseRowData,
+  getRRRBandwiseRowData,
   onApplyFilter,
   currFilter,
   setCurrFilter,
@@ -34,11 +36,16 @@ const RRRColorBandwise = () => {
   isSavedDataLoading,
   ref,
   generalFilterOptions,
-  onResetCallback
+  onResetCallback,
+  savePageSize,
+  userPageSize
 } = useRRRColorBandwise();
 
   const [isDisabled, setIsDisabled]= useState<boolean>(true)
- 
+  
+  const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+  const RRR_ROWS_PER_PAGE = EnvConfig['RRR_ROWS_PER_PAGE'];   
+  
   return (
   <GridStateContext.Provider
   value={{
@@ -124,15 +131,21 @@ const RRRColorBandwise = () => {
                   }
                 }}
               />  
+              {
+              rowData?.length  > 0 &&
               <VFPagination 
                 selectedRows={0} 
                 totalRows={recordsCount} 
                 currentPage={currentPage} 
-                rowsPerPage={parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '100')}
-                handleChangePage={(e)=>console.log(e)} 
+                rowsPerPage={userPageSize || parseInt(RRR_ROWS_PER_PAGE || '100')}
+                handleChangePage={(e)=>getRRRBandwiseRowData(e,userPageSize)} 
                 resetGridRef={ref} 
                 isDisabled={isDisabled}
+                customPageSizeEnabled={true}
+                userPageSize={userPageSize}
+                savePageSize={savePageSize}
               />  
+              }
         </div>
     
         <div style={{display:'none'}}>                

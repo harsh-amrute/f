@@ -4,7 +4,7 @@ export const Wrapper = styled.div`
     height: 85%;
     margin-left: 2rem;
     margin-top: 2rem;
-    & .ag-theme-alpine{
+    & > .ag-theme-alpine{
         height: 100%;
     }
     & div[data-testid="vf_pagination"]{

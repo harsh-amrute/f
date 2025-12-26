@@ -74,7 +74,7 @@ const useAdd=()=>{
 
     const onCancel=()=>{
         dispatch(RESET_STATE());
-        navigate('/master-data-management/control-panel');
+        navigate('/mta/master-data-management/control-panel');
     }
 
     const handleOnClickMaster=(master:MDMMasterState)=>{
@@ -117,8 +117,11 @@ const useAdd=()=>{
       if (firstDefaultIndex !== -1) {
         dispatch(UPDATE_ACTIVE_MASTER(firstDefaultIndex));
       }
-        dispatch(TOGGLE_SELECT_MASTER_SCREEN(false))
-        
+      else{
+        dispatch(UPDATE_ACTIVE_MASTER(selectedMasters?.length - 1));
+        dispatch(TOGGLE_UPLOAD_MODAL(false))
+      }      
+      dispatch(TOGGLE_SELECT_MASTER_SCREEN(false))
         if(selectedMasters[0].progress==='default' || selectedMasters[0].progress==='view'){
             if(selectedMasters[0].rowData.length<=0)dispatch(TOGGLE_UPLOAD_MODAL(true))
             dispatch(UPDATE_PROGRESS_STATE('view'))
@@ -161,7 +164,7 @@ const useAdd=()=>{
             dispatch(TOGGLE_UPLOAD_MODAL(true))
             return 
         }
-        else return notifyError(`Please complete the activity in ${selectedMasters[nextMasterIndex].name}`);  
+        else return notifyError(`Please complete the activity in ${activeMaster.name}`);  
   
         
         
@@ -185,7 +188,7 @@ const useAdd=()=>{
             id:activeMaster.id,
             action:"",
             TaskId:'',
-            IsOverWrite:isOverWrite===true?true:false,
+            IsOverWrite:true,
             data:[],
             uiconfig:activeMaster.fields
           }
@@ -316,7 +319,7 @@ const useAdd=()=>{
           const submittedRecordsCount = totalRecords - errorRowData.length - conflictCount
 
           if(submittedRecordsCount === totalRecords){
-            notifySuccess("Addition Successful")
+            notifySuccess("Added Successfully")
           }
 
           else if(errorRowData.length > 0 || conflictCount > 0){
@@ -335,11 +338,12 @@ const useAdd=()=>{
               notifyError(`Submitted ${submittedRecordsCount} records out of ${totalRecords}. ${conflictCount} records have conflicts. `)
             }
           }
-          else notifySuccess("Addition Successful")
+          else notifySuccess("Added Successfully")
           dispatch(UPDATE_PROGRESS_STATE('submitted'));
           dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
           if(draftID.length > 0){
             await deleteDraft(draftID);
+            dispatch(SET_DRAFT_ID(''));
           }
       }catch(err){
         notifyError("Something went wrong")

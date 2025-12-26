@@ -75,30 +75,94 @@ const usePlanning = ()=>{
 
     const [totalRows,setTotalRows] = useState<number>(0);
 
+    const [goBack,setGoBack] = useState<boolean>(false);
+
     // const [currentGridState,setCurrentGridState] = useState<any>()
 
     const [isDataLoading,setIsDataLoading] = useState(false);
 
     const [globalColDef, setGlobalColDef] = useState<any>();
 
-
-    const rowsPerPage = parseInt(process.env.REACT_APP_PLANNING_ROWS_PER_PAGE || '50');
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const PLANNING_ROWS_PER_PAGE = EnvConfig['PLANNING_ROWS_PER_PAGE'];  
+    const rowsPerPage = parseInt(PLANNING_ROWS_PER_PAGE || '50');
 
     const showDailyDataGraphModal = useSelector((state:RootState) => state.mta.showDailyDataGraphModal);
     const showNormChangeHistoryTable = useSelector((state:RootState) => state.mta.showNormChangeHistoryTable);
     const dailyData = useSelector((state:RootState) => state.mta.dailyData);
-
+    const [OrderFulfillmentuserPageSize , setOrderFulfillmentuserPageSize]  = useState<number>(PLANNING_ROWS_PER_PAGE?parseInt(PLANNING_ROWS_PER_PAGE):50) 
+    const [GITFromParentuserPageSize , setGITFromParentuserPageSize]  = useState<number>(PLANNING_ROWS_PER_PAGE?parseInt(PLANNING_ROWS_PER_PAGE):50) 
+    const [GITToChildLocationWiseuserPageSize , setGITToChildLocationWiseuserPageSize]  = useState<number>(PLANNING_ROWS_PER_PAGE?parseInt(PLANNING_ROWS_PER_PAGE):50) 
+    const [GITToChildTransporterWiseuserPageSize , setGITToChildTransporterWiseuserPageSize]  = useState<number>(PLANNING_ROWS_PER_PAGE?parseInt(PLANNING_ROWS_PER_PAGE):50) 
+    const [ExpediteFromParentcreateAvailabilityAtParentuserPageSize , setExpediteFromParentcreateAvailabilityAtParentuserPageSize]  = useState<number>(PLANNING_ROWS_PER_PAGE?parseInt(PLANNING_ROWS_PER_PAGE):50) 
+    const [ExpediteFromParentexpediteDispatchesuserPageSize , setExpediteFromParentexpediteDispatchesuserPageSize]  = useState<number>(PLANNING_ROWS_PER_PAGE?parseInt(PLANNING_ROWS_PER_PAGE):50) 
+    const [ExpediteToChilduserPageSize , setExpediteToChilduserPageSize]  = useState<number>(PLANNING_ROWS_PER_PAGE?parseInt(PLANNING_ROWS_PER_PAGE):50) 
+    const [ExcessInventoryuserPageSize , setExcessInventoryuserPageSize]  = useState<number>(PLANNING_ROWS_PER_PAGE?parseInt(PLANNING_ROWS_PER_PAGE):50) 
+ 
     const {mutateAsync:getDailyData} = useGetDailyData();
+
+    const getUserPageSizeForCategory = (category: string , currentTab:string) => {
+        
+        switch(category){
+            case 'GITFromParent': return GITFromParentuserPageSize;
+            case 'GITToChild': {
+                if(currentTab === 'transporterWise') return GITToChildTransporterWiseuserPageSize;
+                else    return GITToChildLocationWiseuserPageSize;
+            }
+            case 'ExpediteFromParent': {
+                if(currentTab === 'expediteDispatches') return ExpediteFromParentexpediteDispatchesuserPageSize
+                else    return ExpediteFromParentcreateAvailabilityAtParentuserPageSize;
+            }
+            case 'ExpediteToChild': return ExpediteToChilduserPageSize;
+            case 'ExcessInventory': return ExcessInventoryuserPageSize;
+            case 'OrderFulfillment': return OrderFulfillmentuserPageSize;
+            default: return rowsPerPage;
+        }
+    };
+
+    const updateUserPageSizeForCategory = (category: string, pageSize: number , currentTab:string) => {
+        
+        switch(category){
+            case 'GITFromParent':
+                setGITFromParentuserPageSize(pageSize);
+                break;
+            case 'GITToChild':
+                if(currentTab === 'transporterWise')  setGITToChildTransporterWiseuserPageSize(pageSize);
+                else  setGITToChildLocationWiseuserPageSize(pageSize);
+                break;
+            case 'ExpediteFromParent':
+                if(currentTab === 'expediteDispatches')  setExpediteFromParentexpediteDispatchesuserPageSize(pageSize)
+                else    setExpediteFromParentcreateAvailabilityAtParentuserPageSize(pageSize);
+                break;
+            case 'ExpediteToChild':
+                setExpediteToChilduserPageSize(pageSize);
+                break;
+            case 'ExcessInventory':
+                setExcessInventoryuserPageSize(pageSize);
+                break;
+            case 'OrderFulfillment':
+                setOrderFulfillmentuserPageSize(pageSize);
+                break;
+        }
+    };
+    const savePageSize = async( pageSize:number)=>{
+        updateUserPageSizeForCategory(currentCategory, pageSize,currentTab);
+        await fetchAndUpdateGridData(currentPage,false,currentFilter, currentTab,pageSize)
+    }
+    let currentUserPageSize = getUserPageSizeForCategory(currentCategory,currentTab);
 
     const paginationProps:VFPaginationProps = {
         selectedRows:0,
         totalRows:totalRows,
-        rowsPerPage:rowsPerPage,
+        rowsPerPage: currentUserPageSize,
         currentPage:currentPage,
         handleChangePage:(currPage:number) => {
-            fetchAndUpdateGridData(currPage,true,currentFilter);
+            fetchAndUpdateGridData(currPage,true,currentFilter, currentTab,currentUserPageSize);
             setCurrentPage(currPage)
-        }
+        },
+        customPageSizeEnabled:true,
+        userPageSize:currentUserPageSize,
+        savePageSize:savePageSize
         
     }
 
@@ -121,6 +185,9 @@ const usePlanning = ()=>{
     useEffect(()=>{
         fetchPlanningDataCount();
     },[])
+    useEffect(()=>{
+        fetchPlanningDataCount();
+    },[goBack])
 
     const {mutateAsync: getUIConfig}  = useGetUIConfigData();
 
@@ -481,7 +548,7 @@ const usePlanning = ()=>{
                         filters:currentFilter,
                         paginationParameter:{
                             pageNumber:1,
-                            recordsPerPage:rowsPerPage
+                            recordsPerPage:GITFromParentuserPageSize
                         }
                     }
                     const count = await getPlanningDataGridCount(body)
@@ -610,8 +677,8 @@ const usePlanning = ()=>{
     // }
 
 
-    const fetchAndUpdateGridData = async (currentPage:number,fromPagination:boolean,filter?:any,tab?:string) => {
-        try {
+    const fetchAndUpdateGridData = async (currentPage:number,fromPagination:boolean,filter?:any,tab?:string  , pageSize?:number) => {
+        try {            
             setIsDataLoading(true);
             // await getAndApplyGridState()
             switch(currentCategory){
@@ -624,7 +691,7 @@ const usePlanning = ()=>{
                         filters:filter || currentFilter,
                         paginationParameter:{
                             pageNumber:currentPage,
-                            recordsPerPage:rowsPerPage
+                            recordsPerPage:pageSize || currentUserPageSize || rowsPerPage
                         }
                     }
                     if(!fromPagination){
@@ -652,7 +719,7 @@ const usePlanning = ()=>{
                         filters:filter || currentFilter,
                         paginationParameter:{
                             pageNumber:currentPage,
-                            recordsPerPage:rowsPerPage
+                            recordsPerPage:pageSize || currentUserPageSize || rowsPerPage
                         }
                     }
                     if(!fromPagination){
@@ -689,7 +756,7 @@ const usePlanning = ()=>{
                         filters:filter,
                         paginationParameter:{
                             pageNumber:currentPage,
-                            recordsPerPage:rowsPerPage
+                            recordsPerPage:pageSize || currentUserPageSize || rowsPerPage
                         }
                     }
                     if(!fromPagination){
@@ -717,7 +784,7 @@ const usePlanning = ()=>{
                     // };
                     const customData = {
                         "createAvailabilityAtParent": { "data": createAvailabilityAtParent, "uiConfig": uiConfig },
-                        "expediteDispatches": { "data": expediteDispatches, "uiConfig": uiConfig }
+                        "expediteDispatches": { "data": expediteDispatches,stockData: expediteDispatchestransit, "uiConfig": uiConfig },
                     };
                     setCurrentGridData(customData);
                     if(fromPagination){
@@ -737,7 +804,7 @@ const usePlanning = ()=>{
                         filters:filter,
                         paginationParameter:{
                             pageNumber:currentPage,
-                            recordsPerPage:rowsPerPage
+                            recordsPerPage:pageSize || currentUserPageSize || rowsPerPage
                         }
                     }
                     if(!fromPagination){
@@ -779,7 +846,7 @@ const usePlanning = ()=>{
                         filters:filter,
                         paginationParameter:{
                             pageNumber:currentPage,
-                            recordsPerPage:rowsPerPage
+                            recordsPerPage:pageSize || currentUserPageSize || rowsPerPage
                         }
                     }
                     if(!fromPagination){
@@ -810,7 +877,7 @@ const usePlanning = ()=>{
                         filters:filter,
                         paginationParameter:{
                             pageNumber:currentPage,
-                            recordsPerPage:rowsPerPage
+                            recordsPerPage:pageSize || currentUserPageSize || rowsPerPage
                         }
                     }
                     if(!fromPagination){
@@ -851,7 +918,7 @@ const usePlanning = ()=>{
         // await fetchPlanningDataCount(filter)
         setCurrentFilter(filter)
         setCurrentPage(1)
-        fetchAndUpdateGridData(currentPage,false,filter)
+        fetchAndUpdateGridData(1,false,filter)
     }
 
     const onDeleteFilter = async(parentId:any, filterId:any, value:any)=>{
@@ -862,25 +929,26 @@ const usePlanning = ()=>{
 
     const onFloatingTabChange = (tab:any) => {
         setCurrentTab(tab.value);
+        currentUserPageSize = getUserPageSizeForCategory(currentCategory,tab.value);
         if(currentCategory==='GITToChild' && currentView==='grid'){
             setCurrentPage(1)
-            fetchAndUpdateGridData(1,false,currentFilter,tab.value)
+            fetchAndUpdateGridData(1,false,currentFilter,tab.value , currentUserPageSize)
         }
         if(currentCategory==='ExpediteFromParent' && currentView==='grid'){
             setCurrentPage(1)
-            fetchAndUpdateGridData(1,false,currentFilter,tab.value)
+            fetchAndUpdateGridData(1,false,currentFilter,tab.value , currentUserPageSize)
         }
         if(currentCategory==='ExpediteToChild' && currentView==='grid'){
             setCurrentPage(1)
-            fetchAndUpdateGridData(1,false,currentFilter,tab.value)
+            fetchAndUpdateGridData(1,false,currentFilter,tab.value , currentUserPageSize)
         }
         if(currentCategory==='ExcessInventory' && currentView==='grid'){
             setCurrentPage(1)
-            fetchAndUpdateGridData(1,false,currentFilter,tab.value)
+            fetchAndUpdateGridData(1,false,currentFilter,tab.value , currentUserPageSize)
         }
         if(currentCategory==='OrderFulfillment' && currentView==='grid'){
             setCurrentPage(1)
-            fetchAndUpdateGridData(1,false,currentFilter,tab.value)
+            fetchAndUpdateGridData(1,false,currentFilter,tab.value , currentUserPageSize)
         }
     }
 
@@ -921,6 +989,16 @@ const usePlanning = ()=>{
                 id:'7',
                 label:'General',
                 filters:[]
+            },
+            customAttributeFilter:{
+                id:'8',
+                label:'Attribute',
+                filters:[]
+            },
+            horizonFilter: {
+                id:'9',
+                label: 'Horizon',
+                filters: [],
             }
         })
         setIsSelectCategoryOpen(true);
@@ -928,6 +1006,7 @@ const usePlanning = ()=>{
         setCurrentView('');
         setCurrentTab('');
         setCurrentPage(1);
+        setGoBack(true);
         toast.dismiss();
     }
 

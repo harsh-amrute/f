@@ -4,6 +4,8 @@
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { useUserData } from "../../../../../context";
 import {useGetDBMNormSuggestionLoc,useGetDBMNormSuggestionPie,useGetDBMNormSuggestionSKUs,useGetDBMNormSuggestionAgeing, useGetChronicUnavailabilityLoc,useGetChronicUnavailabilitySku, useGetChronicUnavailabilityGridView} from "../../../../Services/MTA/InsightsAndTrends";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../../redux/store/store";
 
 
 const useGuidedInsights = ()=>{
@@ -34,6 +36,9 @@ const [chroniceRowData,setChronicRowData] = useState<Array<any>>([])
 const [horizon,setHorizon] = useState<number>(9)
 const [ageing,setAgeing] = useState<number>(1)
 
+const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+const GUIDEDINSIGHT_ROWS_PER_PAGE = EnvConfig['GUIDEDINSIGHT_ROWS_PER_PAGE']; 
+
 // const ChronicUnavailabilityGridViewData=ChronicUnavailabilityGrid?.data?.data;
  const onFloatingTabChange = (tab:any) => {
         setCurrentTab(tab.value);
@@ -53,7 +58,7 @@ const [ageing,setAgeing] = useState<number>(1)
             "fields": [],
             "paginationParameter": {
                 "pageNumber": 1,
-                "recordsPerPage": 100
+                "recordsPerPage": GUIDEDINSIGHT_ROWS_PER_PAGE || 100
             },
             filters:filter || currentFilter
         }

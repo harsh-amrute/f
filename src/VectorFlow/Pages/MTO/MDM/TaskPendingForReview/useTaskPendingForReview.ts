@@ -1,9 +1,9 @@
 
 import { ColDef, ColGroupDef } from "ag-grid-enterprise"
 import { useEffect, useRef, useState } from "react"
-import { useApproveTask, useGetBufferMasterData, useGetCCRMasterData, useGetMasterUIConfiguration, useGetMTOMasterUIConfiguration, useGetMTOTaskById, useGetMTOTaskStatusData, usePutMtoBufferMasterData, usePutMtoCalendarMasterData, usePutMtoCCRMasterData, usePutMtoPoogiMasterData } from "../../../../../VectorFlow/Services/MTA/MDM"
+import { useApproveTask, useGetApproverName, useGetBufferMasterData, useGetCCRMasterData, useGetMasterUIConfiguration, useGetMTOMasterUIConfiguration, useGetMTOTaskById, useGetMTOTaskStatusData, usePutMtoBufferMasterData, usePutMtoCalendarMasterData, usePutMtoCCRMasterData, usePutMtoPoogiMasterData } from "../../../../../VectorFlow/Services/MTA/MDM"
 
-import { createTaskPendingSubmitPayload, getActionName, getCCRNamesFromId, getExistingColumnFields, getExistingColumns, mapMasterToColumnGroupDefs, mapNewAndOldMasterRowDataToCustomRowData, mapPendingTaskToColumnDefs } from "../../../../../helpers/utils"
+import { createTaskPendingSubmitPayload, getActionName, getCCRNamesFromId, getCellFilter, getExistingColumnFields, getExistingColumns, mapMasterToColumnGroupDefs, mapNewAndOldMasterRowDataToCustomRowData, mapPendingTaskToColumnDefs } from "../../../../../helpers/utils"
 import { GridRef, Master, TaskDataType } from "../../../../../VectorFlow/types/MDM"
 import TaskPendingLinkCellRenderer from "./TaskPendingLinkCellRenderer"
 import { useSelector, useDispatch } from "react-redux"
@@ -19,6 +19,7 @@ import { SET_TASK_PENDING_ROW_DATA } from "../../../../../redux/actions/MTO"
 import CommentCellRenderer from "./CommentCellRenderer"
 import { v4 as uuidv4 } from "uuid";
 import DaysOfWeekRenderer from "../ViewModify/DaysOfWeekRenderer"
+import { convertDateFormat } from "../ViewModify/CommonUtils"
 
 
 
@@ -38,7 +39,7 @@ const useTaskPendingForReview = ()=>{
                 setTempMasterData(result.data.data)
             }
             catch(e){
-                console.log(e);
+                console.error(e);
             }
         }
         else if(mid===502){
@@ -47,7 +48,7 @@ const useTaskPendingForReview = ()=>{
                 setTempMasterData(result.data.data)
             }
             catch(e){
-                console.log(e);
+                console.error(e);
             }
         }
     }
@@ -85,18 +86,45 @@ const useTaskPendingForReview = ()=>{
     const rowsPerPage = 50;
 
     // const {data,isLoading,refetch} = useGetPendingTasks();
-    const {mutateAsync : getMTOTaskStatusData, isLoading: showLoader} = useGetMTOTaskStatusData();
+    const { mutateAsync: getMTOTaskStatusData, isLoading: showLoader } = useGetMTOTaskStatusData();
+    const {mutateAsync:getApproverNames} = useGetApproverName();
+    
 
     const [mtoPendingTaskData, setMTOPendingTaskData ] = useState<any>([]);
 
+    const getUniqueAppIds = (taskData: any[]): any[] => {
+        const allIds: number[] = [];
+        
+        taskData.forEach(task => {
+          if (task.a_ids) {
+            const ids = task.a_ids.split(',').map((id: string) => parseInt(id.trim(), 10));
+            allIds.push(...ids);
+          }
+        });
+      
+        const uniqueIds: number[] = [];
+        allIds.filter(id => !isNaN(id)).forEach(id => {
+          if (!uniqueIds.includes(id)) {
+            uniqueIds.push(id);
+          }
+        });
+        
+        return uniqueIds;
+    };
+    
     const GetMTOData = async()=>{
         try{
             const response = await getMTOTaskStatusData();
-            setMTOPendingTaskData(MTOToMTAFormat(response.data.data))
+            const allApproverIds = getUniqueAppIds(response.data.data);
+
+            const approverNames = await getApproverNames({approver_ids: allApproverIds })
+            const allUsersData = approverNames.data || [];
+
+            setMTOPendingTaskData(MTOToMTAFormat(response.data.data, allUsersData))
             
         }
         catch(error){
-            console.log(error);
+            console.error(error);
         }
     }
 
@@ -166,6 +194,47 @@ const useTaskPendingForReview = ()=>{
             (a: any, b: any) => parseInt(a.col_Position) - parseInt(b.col_Position)
         );
 
+        // Case for mid = 502 — special renderers/formatters
+        if (mid === 502) {
+            return sortedColumns.map((col: any, index: number) => {
+                const baseColDef = {
+                    field: col.key,
+                    headerName: col.displayName,
+                    position: index + 1,
+                    dataType: col.dataType,
+                    visible: col.visible,
+                    minWidth: 100,
+                    filter:getCellFilter(col.dataType)
+                    
+                };
+
+                if (col.key === "cgid") {
+                    return {
+                        ...baseColDef,
+                        dataType: "string",
+                        valueGetter: (params: any) => params?.data?.cgnm,
+                        
+                    };
+                } else if (col.key === "pl") {
+                    return {
+                        ...baseColDef,
+                        dataType: "string",
+                        valueGetter: (params: any) => params?.data?.plnm,
+                        
+                    };
+                }  else if (col.key === "dp") {
+                    return {
+                        ...baseColDef,
+                        dataType: "string",
+                        valueGetter: (params: any) => params?.data?.dpnm,
+
+                    };
+                } else {
+                    return baseColDef;
+                }
+            });
+        }
+
         // Case for mid = 504 — special renderers/formatters
         if (mid === 504) {
             let ccrsData: any[] = [];
@@ -210,7 +279,8 @@ const useTaskPendingForReview = ()=>{
             position: index + 1,
             dataType: col.dataType,
             visible: col.visible,
-            minWidth: 200
+            minWidth: 200,
+            filter:getCellFilter(col.dataType)
         }));
     }
 
@@ -323,12 +393,11 @@ const useTaskPendingForReview = ()=>{
                 setTaskId(taskData.TaskID)
                 
                 setTaskActionType(1)
-                const res: any = await getMTOTAskById({taskId: taskData.TaskID, mmid: taskData.mid});
-
-                const taskCount = res.data.data.count;
+                const res: any = await getMTOTAskById({ taskId: taskData.TaskID, mmid: taskData.mid });
+                const taskCount = res.data.data.length;
                 dispatch(SET_RECORD_COUNT(taskCount));
 
-                const taskDataStore = res.data.data.results;
+                const taskDataStore = res.data.data;
                 toast.dismiss(toastId)
                 const currentTaskMaster = taskDataStore[0];
                 // TODO: get the 
@@ -346,8 +415,8 @@ const useTaskPendingForReview = ()=>{
                     // TODO do the modification of column definations here!
                     const existingColumns = getExistingColumns(currentTaskMaster);
 
-                        const existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields)
-                        const newColDefs = await convertColumnsFormat(existingColumnFields, taskData.mid);
+                        // const existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields)
+                        const newColDefs = await convertColumnsFormat(currentMasterFields, taskData.mid);
                         newColDefs.push(
                             {
                                 colId: "cm",
@@ -387,7 +456,8 @@ const useTaskPendingForReview = ()=>{
                                 cellStyle: {
                                   "border-left": "solid 1px #B9B9B9"
                                 },
-                                pinned: 'right'
+                                pinned: 'right',
+                                filter: false
                               }  
                         )
 
@@ -417,61 +487,9 @@ const useTaskPendingForReview = ()=>{
 
             }
             catch(error){
-                console.log(error)
+                console.error(error)
             }
         }
-        else{
-
-            
-            try {
-            resetState()
-            
-            setTaskId(taskData.TaskID)
-            
-            setTaskActionType(taskData.Actiontype)
-            
-            const tempToastId = notifyLoader('Loading Data')
-            
-           
-         
-            const taskDataStore:any = [];
-            toast.dismiss(tempToastId)
-
-          
-            toast.dismiss(toastId);
-            
-            const currentTaskMaster = taskDataStore[0]
-            const currentTaskMasterId:number = currentTaskMaster.MasterId
-            setCurrMasterId(currentTaskMasterId)
-            
-            
-            const uiConfigurationResponse = await getMasterUIConfiguration(getActionName(taskData.Actiontype).value)
-            
-            const masters:Master[] = uiConfigurationResponse.data.data
-            const currentMasterFields = masters.find((master:Master)=>master.id==currentTaskMasterId)?.fields
-            if(currentMasterFields){
-                const existingColumns = getExistingColumns(
-                    (taskData.Actiontype === 2 && currentTaskMasterId !== 6 && currentTaskMasterId !== 10) || (currentTaskMasterId === 13)
-                    ? JSON.parse(currentTaskMaster.data[0].new)
-                    : currentTaskMaster.data[0]
-                    );
-                    
-                    const existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields)
-                    setDetailTableColDefs(mapMasterToColumnGroupDefs(existingColumnFields,currentTaskMasterId,themeUi,getActionName(taskData.Actiontype).value,toggleApproveAllModal,toggleRejectAllModal,actionStatus))
-                    setDetailTableRowData(mapNewAndOldMasterRowDataToCustomRowData(currentTaskMaster.data,existingColumnFields,getActionName(taskData.Actiontype).value,currentTaskMasterId))
-                // dispatch(SET_RECORD_COUNT(currentTaskMaster.data.length));
-            }
-            
-            notifySuccess("Task Details Fetched Successfully");
-            setIsViewTableOpen(false)
-            
-        } catch (error) {
-            toast.dismiss();
-            console.log(error)
-            notifyError("Something Went Wrong");
-            
-        }
-    }
         
     }
 
@@ -618,29 +636,16 @@ const useTaskPendingForReview = ()=>{
         const dayDifference = Math.round(timeDifference / (1000 * 60 * 60 * 24));
         return dayDifference;
     };
-    
-    const convertDateFormat = (inputDate: string)=>{
 
-        // Extract parts of the string
-        const [date, ltime] = inputDate.split("T");
-        const time = ltime.split(".")[0]; // Remove milliseconds
-        const [year, month, day] = date.split("-");
-        const [hours, minutes, seconds] = time.split(":");
+    const MTOToMTAFormat = (inData: any[], allUsersData: any) => {
 
-        // Convert to 12-hour format
-        const isPM = parseInt(hours) >= 12;
-        const newHours = (parseInt(hours) % 12 || 12).toString().padStart(2, "0");
-        const period = isPM ? "PM" : "AM";
-
-        const newMonth = month;
-        // Format the output
-        const formattedDate = `${year}/${newMonth}/${day}  ${newHours}:${minutes}:${seconds} ${period}`;
-        return formattedDate;
-    }
-
-    const MTOToMTAFormat = (inData: any[]) => {
+        const allUserId = new Set(allUsersData.map((allUsersData: any) => allUsersData.id));
+        
         return inData
-            .filter((val: any) => val.std === "Pending")
+            .filter((val: any) => {
+                if (val.std !== "Pending") return false;
+                return allUserId.has(user.user.id);
+             })
             .map((val: any) => ({
                 TaskID: val.tid,
                 PendingSince: convertDateFormat(val.co),
@@ -840,7 +845,7 @@ const useTaskPendingForReview = ()=>{
                 }
             catch(error){
                 notifyError("Failed to update DB!");
-                console.log(error)
+                console.error(error)
             }
         }
     }
@@ -910,7 +915,7 @@ const useTaskPendingForReview = ()=>{
             }
         catch(error){
             notifyError("Failed to Update DB!")
-            console.log(error)
+            console.error(error)
         }
     }}
 
@@ -960,7 +965,7 @@ const useTaskPendingForReview = ()=>{
         }
         catch(error){
             notifyError(error ? "Make sure you provide a comment for the rejected task!" : "Failed to update DB!");
-            console.log(error)
+            console.error(error)
         }
     }else if(mtoTask.mid === 504){
         notifyLoader("Updating Task...")
@@ -1001,7 +1006,7 @@ const useTaskPendingForReview = ()=>{
             }
         } catch (error) {
             notifyError(error ? "Make sure you provide a comment for the rejected task!" : "Failed to update DB!");
-            console.log(error)
+            console.error(error)
         }
     }
     }

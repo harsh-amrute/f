@@ -119,6 +119,11 @@ const useSaveAllState = (isPlanning?:boolean) => {
     try {
       
       const columnState = ref.current?.api.getColumnState();
+      if(!columnState?.length)
+      {
+        notifyError("Cannot save layout: The table is empty.");
+        return;
+      }
       const chartsState =  ref.current?.api.getChartModels()
       const isPivot = ref.current?.api.isPivotMode()
       const gridState:GridState = {
@@ -126,6 +131,7 @@ const useSaveAllState = (isPlanning?:boolean) => {
         charts:chartsState,
         columns:columnState
       }
+
       await saveState({
         reportname: name,
         state: JSON.stringify(gridState),
@@ -144,9 +150,20 @@ const useSaveAllState = (isPlanning?:boolean) => {
     notifyLoader("Reseting Data");
     try {
       
-      await resetState({"reportname":name});
       let tempCurrentGridState = ref.current?.api.getColumnState()
+      
+      if(!tempCurrentGridState?.length) {
+        notifyError("Cannot reset layout: The table is empty.");
+        return;
+      }
+
+      await resetState({"reportname":name});
+      if (onResetCallback) {
+        await onResetCallback();
+      }
+
       tempCurrentGridState = tempCurrentGridState.map((t:any) => {
+        
         return {
           ...t,
           hide: false,
@@ -169,6 +186,7 @@ const useSaveAllState = (isPlanning?:boolean) => {
         const tempRef = ref.current.api.getChartRef(c.chartId)
         tempRef.destroyChart()
       })
+      await onSaveState(name);
       notifySuccess("State has been reset");
     } catch (err: any) {
       notifyError(err);

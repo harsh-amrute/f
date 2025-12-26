@@ -11,7 +11,7 @@ export const ChartWrapper = styled.div`
 export const HorizontalViewWrapper = styled.div`
       width:100%;
       height:90%;
-      & .ag-theme-alpine{
+      & > .ag-theme-alpine{
             height: 100%;
             margin-top: 0 !important;
       }
@@ -39,8 +39,8 @@ export const OrderAtRiskChartWrapper = styled.div`
     flex-direction: column;
     height: 100%;
     margin: 20px 0px;
-    & .ag-theme-alpine {
-      flex: 1;
+    & > .ag-theme-alpine {
+      flex: 1 !important;
     }
 
     @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem

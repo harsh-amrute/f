@@ -22,6 +22,15 @@ export const QUERY_KEYS = {
   usegetTaskMastersHistory: ['MDMService.useGetTaskMastersHistory'],
   useGetUploadProgress: ['MDMService.useGetUploadProgress'],
   useGetAllReports: ['MDMService.useGetAllReports'],
+  useGetAllEnvironmentConfiguration: ['MDMService.useGetAllEnvironmentConfiguration'],
+  useEditEnvironmentConfiguration: ['MDMService.useEditEnvironmentConfiguration'],
+  useGetAllUIReportConfiguration:['MDMService.useGetAllUIReportConfiguration'],
+  useGetAllUIMDMConfiguration:['MDMService.useGetAllUIMDMConfiguration'],
+  useGetAllAdminPermissions:['useGetAllAdminPermissions'],
+  useAddProductPermissions:['useAddProductPermissions'],
+  useAddLocationPermissions:['useAddLocationPermissions'],
+  useEditReportConfiguration:['useEditReportConfiguration'],
+  useEditMDMConfiguration:['useEditMDMConfiguration'],
   useGetMTOPendingTask: ['MDMService.useGetMTOPendingTask']
 }
 
@@ -238,6 +247,67 @@ export const useGetAllReports = () => {
   })
 }
 
+export const useGetAllEnvironmentConfiguration = () => {
+  return useMutation(QUERY_KEYS.useGetAllEnvironmentConfiguration, async () => {
+    return await MDMService.getAllEnvironmentConfiguration()
+  })
+}
+
+export const useEditEnvironmentConfiguration = () => {
+  return useMutation(QUERY_KEYS.useEditEnvironmentConfiguration, async (body:any) => {
+    return await MDMService.editEnvironmentConfiguration(body)
+  })
+}
+
+export const useGetAllUIReportConfiguration = () => {
+  return useMutation(QUERY_KEYS.useGetAllUIReportConfiguration, async () => {
+    return await MDMService.getAllUIReportConfiguration()
+  })
+}
+
+export const useGetAllUIMDMConfiguration = () => {
+  return useMutation(QUERY_KEYS.useGetAllUIMDMConfiguration, async () => {
+    return await MDMService.getAllUIMDMConfiguration()
+  })
+}
+
+export const useGetAdminPermissions = () => {
+  return useMutation(QUERY_KEYS.useGetAllAdminPermissions, async () => {
+    return await MDMService.useGetAllAdminPermissions()
+  })
+}
+
+export const useAddProductPermissions = () => {
+  return useMutation(QUERY_KEYS.useAddProductPermissions, async (body:any) => {
+    return await MDMService.useAddProductPermissions(body)
+  })
+}
+
+export const useAddLocationPermissions = () => {
+  return useMutation(QUERY_KEYS.useAddLocationPermissions, async (body:any) => {
+    return await MDMService.useAddLocationPermissions(body)
+  })
+}
+
+export const useBulkUploadPermissions= () => {
+  return useMutation(async (body: any) => {
+    return await MDMService.useBulkUploadPermission(body)
+  })
+}
+
+export const useEditReportConfiguration = () => {
+  return useMutation(QUERY_KEYS.useEditReportConfiguration, async (body:any) => {
+    return await MDMService.useEditReportConfiguration(body)
+  })
+}
+
+export const useEditMDMConfiguration = () => {
+  return useMutation(QUERY_KEYS.useEditMDMConfiguration, async (body:any) => {
+    return await MDMService.useEditMDMConfiguration(body)
+  })
+}
+
+
 /**Adding the MTO Masters related calls */
 export const useGetMTOMasterUIConfiguration = () => {
   return useMutation(async () => {
@@ -363,3 +433,16 @@ export const useGetAllUsers = ()=>{
   })
 }
 
+export const useGetMaxFolDate = () => {
+  return useMutation(async () => {
+    return await MDMService.getMaxFolDate()
+  })
+}
+
+export const useGetApproverName = () => { 
+  return useMutation(
+    async (params: { approver_ids: any[] }) => {
+      return await MDMService.getApproverNames(params);
+    }
+  );
+};

@@ -6,7 +6,6 @@ import ChildrenColor from "../../../Common/ChildrenColor/ChildrenColor";
 
 const DetailCellRenderer = (params: any, childColDef:any) => {
     const columnDef = params?.colDef
-    const rowData = params?.data?.children   
     const customChildrenCellRenderers = useMemo(() => ({
         "coloPriorityOfBall": ChildrenColor
     }), []);
@@ -16,6 +15,7 @@ const DetailCellRenderer = (params: any, childColDef:any) => {
         <div style={{ backgroundColor: 'white' }}>
             <h3 style={{ marginLeft: 20, fontSize: 17 }}>Raw Material Details</h3>
             <VFTable
+                sideBar={false}
                 className='child-grid'
                 columnDefs={columnDef}
                 defaultColDef={{
@@ -36,7 +36,7 @@ const DetailCellRenderer = (params: any, childColDef:any) => {
                     },
                     flex: 0,
                 }}
-                rowData={rowData}
+                rowData={params?.data?.children }
                 height={'260px'}
                 pagination={true}
                 components={customChildrenCellRenderers}
@@ -46,11 +46,6 @@ const DetailCellRenderer = (params: any, childColDef:any) => {
                 enableRangeSelection={true}
                 paginationAutoPageSize={true}
                 alwaysShowVerticalScroll={true}
-                statusBar={{
-                    statusPanels: [
-                        { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                    ]
-                }}
             />
         </div>
     );

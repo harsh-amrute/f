@@ -52,7 +52,7 @@ const BufferTrendReport = () => {
     return (
         <GridStateContext.Provider
             value={{
-                ref: currentTab.id === "2" ? techRef : currentTab.id === "3" ? ecoRef : "",
+                ref: currentTab.id === "1" ? techRef : currentTab.id === "2" ? ecoRef : "",
                 exportExcelColumns: exportExcelColumns,
                 setExportExcelColumns: setExportExcelColumns,
                 tempDownloadData: tempDownloadData,
@@ -101,23 +101,25 @@ const BufferTrendReport = () => {
                             tabs={[
                                 {
                                     id: "1",
-                                    value: 'both',
-                                    label: "Both On-Hand & Pipeline View"
+                                      value: 'on-hand',
+                                    label: "On-Hand Inv. View"
+                                  
                                 },
                                 {
                                     id: "2",
-                                    value: 'on-hand',
-                                    label: "On-Hand Inv. View"
+                                     value: 'pipeline',
+                                    label: "Pipeline Inv. View"
+                                   
                                 },
                                 {
                                     id: "3",
-                                    value: 'pipeline',
-                                    label: "Pipeline Inv. View"
+                                     value: 'both',
+                                    label: "Both On-Hand & Pipeline View"
                                 }
                             ]}
                         />
                     </div>
-                    {currentTab?.id === '1' && (
+                    {currentTab?.id === '3' && (
                         <ToggleViewBtnWrapper>
                             <SCViewBackground>
                                 <SCViewContainer onClick={() => toggleVerticalView(true)}>
@@ -141,6 +143,7 @@ const BufferTrendReport = () => {
                         columnDefs={currentTab.id==='2'?techColDefs:ecoColDefs}
                         rowData={exportExcelRowData}
                         {...tempAgGridProps}
+                        maintainColumnOrder={true}
                     />
                 </div>
             </BTRLayoutWrapper>

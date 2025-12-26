@@ -1,6 +1,6 @@
 // import { useGetBORUIConfiguration, useBORData, useBORDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport"
 import {useGetDailyData} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
-import { convertUiConfigToOptions, MainMenuItemsCustomization, getColumnDefinationsMTA  } from "../../../../../helpers/utils"
+import { convertUiConfigToOptions, MainMenuItemsCustomization, getColumnDefinationsMTA , CsvExportMTA } from "../../../../../helpers/utils"
 import { useState,useMemo, useEffect,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import BPRGraphCellRenderer from "../BPR/BPRGraphCellRenderer"
@@ -69,8 +69,10 @@ export const useBORColorBandwise =()=>{
      const showNormChangeHistoryTable = useSelector((state:RootState) => state.mta.showNormChangeHistoryTable);
 
      const dailyData = useSelector((state:RootState) => state.mta.dailyData);
-    //  const rowsPerPage=50;
-     const rowsPerPage = parseInt(process.env.REACT_APP_BOR_COLORBANDWISE_ROWS_PER_PAGE || '100');
+     const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+     const BOR_COLORBANDWISE_ROWS_PER_PAGE = EnvConfig['BOR_COLORBANDWISE_ROWS_PER_PAGE'];   
+     const rowsPerPage = parseInt(BOR_COLORBANDWISE_ROWS_PER_PAGE || '100');
+     const [userPageSize , setUserPageSize]  = useState<number>(BOR_COLORBANDWISE_ROWS_PER_PAGE?parseInt(BOR_COLORBANDWISE_ROWS_PER_PAGE):50)  
 
      const {date:lastRunDate} = useGetLastRunData()
 
@@ -239,16 +241,16 @@ export const useBORColorBandwise =()=>{
     }
   }, [internalRef, gridState]);
 
-      useEffect(()=>{       
-        const fetchData = async () => {
-            await getRecordsCount();
-            await getBORColorBandWiseUiConfig()
-            await loadGridData(currentPage);
+    //   useEffect(()=>{       
+    //     const fetchData = async () => {
+    //         await getRecordsCount();
+    //         await getBORColorBandWiseUiConfig()
+    //         await loadGridData(currentPage);
 
-        };
-        fetchData();
+    //     };
+    //     fetchData();
 
-    }, []);
+    // }, []);
 
 
       const getRecordsCount=async(filter?:any)=>{
@@ -256,7 +258,7 @@ export const useBORColorBandwise =()=>{
           filters:filter || {},
           paginationParameter: {
             pageNumber: currentPage,
-            recordsPerPage: parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100')
+            recordsPerPage: parseInt(BOR_COLORBANDWISE_ROWS_PER_PAGE || '100')
           }
         }
         const resultCount=await getDataCount(payload);
@@ -264,12 +266,12 @@ export const useBORColorBandwise =()=>{
         setRecordCount(resultCount?.data?.data[0]?.count || 0); 
       }
     
-    const loadGridData = async (pageNo:any,filter?:any)=> {
+    const loadGridData = async (pageNo:any,filter?:any , pageSize?:any)=> {
         try{
           notifyLoader("loading Grid Data")
           const payload={
             filters:filter || {},
-            paginationParameter:{pageNumber:pageNo,recordsPerPage:rowsPerPage}
+            paginationParameter:{pageNumber:pageNo,recordsPerPage:pageSize || userPageSize || rowsPerPage || 100}
         }
         const result = await getData(payload);
         if(result.data.data && Array.isArray(result.data.data))setRowData(result?.data?.data);
@@ -349,6 +351,7 @@ export const useBORColorBandwise =()=>{
   }
 
     const onApplyFilter = async(filter:any)=>{
+      await getBORColorBandWiseUiConfig()
       await getRecordsCount(filter)
       await loadGridData(1,filter)
       setCurrFilter(filter)
@@ -386,7 +389,7 @@ export const useBORColorBandwise =()=>{
         components:customCellRenderers,
         enableBrowserTooltips:true,
         getMainMenuItems: MainMenuItemsCustomization,
-        paginationPageSize:parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100'),
+        paginationPageSize:parseInt(BOR_COLORBANDWISE_ROWS_PER_PAGE || '100'),
         gridOptions:{
             rowHeight:50,
             getRowStyle: (params: any) => {
@@ -429,17 +432,32 @@ export const useBORColorBandwise =()=>{
            }
         }
 
-      const onExportToExcelCallBack=async(pageNumber:number)=>{
-        const data =  await getData({
-            filters:currFilter,
-            paginationParameter:{
-                pageNumber:pageNumber,
-                recordsPerPage:5000
-            }
-        })
-        
-        return data.data.data
-    }
+        const onExportToExcelCallBack=async(pageNumber:number)=>{
+          const payload = {
+              id: 1,
+              name: '',
+              fields: [],
+              filters: currFilter,
+              paginationParameter: {
+                  pageNumber: pageNumber,
+                  recordsPerPage: 5000
+              },
+              ISExport:"1",
+              reportName:"BOROA",
+              stream:1,
+              responseType: `arraybuffer`
+          }
+          notifyLoader("Downloading Data...")
+          try {
+              await CsvExportMTA(payload, "BORColorBandwiseReport");
+              notifySuccess(`Data Exported Successfully`);
+          }
+          catch(error) {
+              console.log(error);
+              notifyError("Error Exporting Excel")
+              throw error;
+          }
+        }
 
     const onSubmitRemarks = async()=>{
           try{
@@ -487,7 +505,11 @@ export const useBORColorBandwise =()=>{
         }
       }, [BORCBColumns])
 
-  
+      const savePageSize = async( pageSize:number)=>{
+        setUserPageSize(pageSize)
+        await loadGridData(currentPage,currFilter, pageSize);
+    }
+
      return {   
         ref,    
         isLoading :isUIConfigLoading || isDataLoading || isCountLoading,      
@@ -525,6 +547,8 @@ export const useBORColorBandwise =()=>{
         isRemarkHistoryToolTipOpen,
         setIsRemarkHistoryToolTipOpen,
         remarkHistory,
-        onCloseRemarkHistory
+        onCloseRemarkHistory,
+         savePageSize,
+        userPageSize
     }
 }

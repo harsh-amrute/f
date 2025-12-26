@@ -59,7 +59,7 @@ export const chartParams2 = {
     downloadName:'Top 10 SKU (Max No of Loc Where SKU has Pipeline B/R Greater than RLT)',
     LabelPosition:'bottom',
     Labels:{
-        Xaxis:'Sku Code',
+        Xaxis:'SKU Code',
         Yaxis:'Count Of Locations'   
     },
     palette:{

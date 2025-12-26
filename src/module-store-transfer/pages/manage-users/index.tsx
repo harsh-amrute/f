@@ -18,19 +18,18 @@ import {
   useGetAllRoles,
   useGetAllUsers,
   useGetAllPermissions,
-  useGetHeadersData
+  useGetHeadersData,
+  useGetUserPermissions
 } from "../../../services/profile";
 import Spinner from "../../../components/commons/Spinner";
 import { useTranslation } from "react-i18next";
 // import { dataListRoles } from "./listRoles";
 import { generateRolesObject } from '../../../helpers/utils';
 import _ from 'lodash'
-import SearchInputManageUser from "../../../components/commons/SearchInputManageUser";
-import VFModalCard from "../../../components/VectorFLOW/commons/VFModalCard";
-import PermissionHeirarchyCanvas from "./ModalBulkUpload";
 import { useNavigate } from "react-router";
 import { notifyError } from "../../../helpers/notify";
 import { APPLICATION_NAMES } from "../../../helpers/constants";
+import { useUserData } from "../../../context";
 
 
 interface ManageUsersProps{
@@ -70,14 +69,12 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   const { mutateAsync : usegetHeaderData } = useGetHeadersData();
   const [headers , setHeaders] = useState<any>();
 
-  const [searchUserBasedOn, setSearchUserBasedOn] = useState("");
-  
+  const { mutateAsync: getUserPermissions,isLoading:edit } = useGetUserPermissions();
   
   useGetAllRoles((data:any)=>{
     const dataAllRoles = data.data ? generateRolesObject(data.data) : [];
     setListRoles(dataAllRoles);
   });
-  
   
   const getHeaderDatafunct = async() =>{
     const reponse = await usegetHeaderData();
@@ -96,6 +93,10 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   const [storePermission,setStorePermission] = useState([]);
   const [currentItem,setCurrentItem] = useState();
   const [isEditUser,setIsEditUser] = useState<boolean | undefined>()
+
+  const {user} = useUserData()
+  const feature_permission = user?.feature_permission || [];
+  const bulkUploadEnabled = feature_permission.includes("Bulk_upload");
 
   const isCheckBoxRef = useRef<any>({
     isPrdCheck: {},
@@ -138,7 +139,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     isCheckBoxRef.current.isPrdCheck = {},
     isCheckBoxRef.current.isLcCheck = {}
   };
-
+  
   const onCloseModal = () => {
     setIsOpenUser(false);
   };
@@ -353,12 +354,14 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   }
 
 
-  const handleClickEdit = (item: any) => {
+  const handleClickEdit = async(initialItem: any) => {
     const applicationIds = getApplicationIds();
     if (!applicationIds.length) {
       notifyError(t("profile.tabContent.manageUsers.notifyError.RoleMismatch"));
       return;
     }
+    const response = await getUserPermissions(initialItem.id);
+    const item = {...initialItem, ...response.data? response.data: {}}
     setCurrentItem(item)
     setIsEditUser(true)
     const roles = item.role_id.map((role: any) => role.id);
@@ -406,25 +409,40 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   }
 
 
-  const [isBulkModalOpen , setIsBulkModalOpen] = useState(false);
   const navigate = useNavigate()
   const handleClickBulkUpload = ()=>{
-    // setIsBulkModalOpen(true);
     navigate("/profile/bulk-upload")
   }
   
 
   return (
     <>
+    {edit && (
+  <div
+    style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      background: "rgba(255, 255, 255, 0.6)", 
+      backdropFilter: "blur(3px)",            
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      zIndex: 2000,                           
+    }}
+  >
+    <Spinner />
+  </div>
+)}
       <SCProfileOverView>
         <SCSubTitleBox>
           <SCSubTitlePad>
             <SCSubTitleSpan>
               {t("profile.tabContent.manageUsers.title")}
             </SCSubTitleSpan>
-            <SCSubTitlePadItem>
-                <SearchInputManageUser searchUserBasedOn={searchUserBasedOn} setSearchUserBasedOn={setSearchUserBasedOn} />
-              
+            <SCSubTitlePadItem>              
               <SCItemBtn>
                 <ButtonFloat
                   text={t("profile.tabContent.manageUsers.button.addNewUser")}
@@ -432,18 +450,24 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
                   icon="/assets/img/profile/icon_plus.svg"
                 />
               </SCItemBtn>
-              <SCItemBtn>
-                <ButtonOutlineIcon
-                  text={t("profile.tabContent.manageUsers.button.bulkUpload")}
-                  icon={`/assets/img/profile/${
-                    themeUi === "REGALBLAZE"
-                      ? "icon_upload_yellow"
-                      : "icon_upload"
-                  }.svg`}
-                  disabled={true}
-                  onClick={handleClickBulkUpload}
-                />
-              </SCItemBtn>
+             
+             {
+              bulkUploadEnabled &&
+
+                <SCItemBtn>
+                  <ButtonOutlineIcon
+                    text={t("profile.tabContent.manageUsers.button.bulkUpload")}
+                    icon={`/assets/img/profile/${
+                      themeUi === "REGALBLAZE"
+                        ? "icon_upload_yellow"
+                        : "icon_upload"
+                        }.svg`}
+                        disabled={false}
+                        onClick={handleClickBulkUpload}
+                        />
+                </SCItemBtn>
+                      }
+            
             </SCSubTitlePadItem>
           </SCSubTitlePad>
         </SCSubTitleBox>
@@ -457,21 +481,20 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
             refetch={refetch}
             is_admin={is_admin}
             permission={permission}
-            searchUserBasedOn={searchUserBasedOn}
           />
         )}
       </SCProfileOverView>
 
       {/* {isURLsDrawerOpen && (
         <UserURLsDrawer
-          onClose={()=>toggleURLsDrawer(false)}
+        onClose={()=>toggleURLsDrawer(false)}
         />
         )}
-
-      {isRolesDrawerOpen && (
-        <UserRolesDrawer
+        
+        {isRolesDrawerOpen && (
+          <UserRolesDrawer
           onClose={()=>toggleRolesDrawer(false)}
-        />
+          />
         )} */}
 
 
@@ -488,7 +511,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
         currentItem={currentItem}
         isEditUser={isEditUser}
         setIsEditUser={setIsEditUser}
-      />
+        />
 
       <ModalAdvanedPermissions
         contentModal={contentModal}
@@ -512,17 +535,10 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
         setStepperDetails={setStepperDetails}
         headers = {headers}
         isCheckBoxRef={isCheckBoxRef}
-      />
+        />
 
 
-        <VFModalCard
-          openModal={isBulkModalOpen}
-          headerIcon={"/assets/img/profile/icon_upload.svg"}
-          closeModal={()=>{setIsBulkModalOpen(false)}}
-        >
-       <PermissionHeirarchyCanvas  allPermissions={dataAllPermissions}/>
-
-        </VFModalCard>
+        
       
     </>
   );

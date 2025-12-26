@@ -6,14 +6,16 @@ import {
   useGetExcessInventoryValue,
 } from "../../../../../Services/MTA/InsightsAndTrends";
 import VFInfoToolTip from "../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import OverlayLoader from "../../../../../../VectorFlow/Pages/MTO/Common/Loader";
-import { chartParams1, chartParams2 } from "./chartParams";
+import { createChartParams } from "./chartParams";
 import {
   createTotalLegendForLineCharts,
   generateChartOptions,
 } from "../../../../../../helpers/utils";
 import VFHorizon from "../../../../../../components/VectorFLOW/commons/VFHorizon";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../../../redux/store/store";
 
 const ExcessInventoryTrend = ({
   filter,
@@ -27,6 +29,10 @@ const ExcessInventoryTrend = ({
 }) => {
   const [options1, setOptions1] = useState({});
   const [options2, setOptions2] = useState({});
+  const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+  const CURRENCY = EnvConfig?.CURRENCY; 
+  const chartParams1 = useMemo(() => createChartParams('skuCount'), []);
+    const chartParams2 = useMemo(() => createChartParams('value', CURRENCY), [CURRENCY]);
 
   const greyShades = [
     "#333333",
@@ -74,7 +80,10 @@ const ExcessInventoryTrend = ({
       };
     });
     series.push(createTotalLegendForLineCharts(data, "countSku"));
-    const chartProps = { ...chartParams1, series: series };
+    const chartProps = { 
+    ...JSON.parse(JSON.stringify(chartParams1)), // Deep copy to break all references
+    series: series 
+};
     const customizedChartProps = generateChartOptions(data, chartProps);
     setOptions1(customizedChartProps);
   };
@@ -92,7 +101,7 @@ const ExcessInventoryTrend = ({
         .filter((d: any) => d.locationtype === locationType)
         .map((d: any) => ({ date: d.date, value: d.value }));
       return {
-        ...chartParams1.series[0],
+        ...chartParams2.series[0],
         yName: locationType,
         data: seriesData,
         stroke: greyShades[index % greyShades.length],
@@ -106,7 +115,10 @@ const ExcessInventoryTrend = ({
       };
     });
     series.push(createTotalLegendForLineCharts(data, "value"));
-    const chartProps = { ...chartParams2, series: series };
+    const chartProps = { 
+    ...JSON.parse(JSON.stringify(chartParams2)), // Deep copy
+    series: series 
+};
     const customizedChartProps = generateChartOptions(data, chartProps);
     setOptions2(customizedChartProps);
   };
@@ -166,6 +178,9 @@ const ExcessInventoryTrend = ({
 export default ExcessInventoryTrend;
 
 export const CustomizedChartComponent = ({chartOptions,chartParams}:any) => {
+  const chartKey = chartOptions?.series?.length 
+    ? `chart-series-${chartOptions.series.length}` 
+    : 'chart-default';
   return (
     <SCChartContainer>
       <div
@@ -193,7 +208,7 @@ export const CustomizedChartComponent = ({chartOptions,chartParams}:any) => {
             <VFInfoToolTip infoList={chartParams.graphInfo} />
           </div>
         </div>
-        <AgCharts options={chartOptions} />
+        <AgCharts key={chartKey} options={chartOptions} />
       </div>
     </SCChartContainer>
   );

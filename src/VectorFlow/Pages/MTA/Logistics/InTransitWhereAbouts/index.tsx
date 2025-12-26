@@ -70,7 +70,9 @@ const InTransitWhereAbouts = ()=>{
         onSubmitEditedRows,
         themeUi,
         lastRunDate,
-        onResetCallback
+        onResetCallback,
+        savePageSize,
+        userPageSize
     } = useInTransitWhereAbouts()
 
     const [isDisabled, setIsDisabled]= useState<boolean>(true)
@@ -140,7 +142,8 @@ const InTransitWhereAbouts = ()=>{
                 />
                 <div style={{marginBottom:'10px'}}>
                 <div>
-
+             {
+              rowData?.length  > 0 &&
                 <VFPagination
                     selectedRows={0}
                     totalRows={recordCount}
@@ -149,12 +152,16 @@ const InTransitWhereAbouts = ()=>{
                     handleChangePage={handlePageChange}
                     resetGridRef={ref} 
                     isDisabled={isDisabled}
+                    customPageSizeEnabled={true}
+                    userPageSize={userPageSize}
+                    savePageSize={savePageSize}
                 />
+             }
                 </div>
                 </div>
-                <ButtonWrapper>
+                {/* <ButtonWrapper>
                     <VFButtonOutline disabled={editedRows.length===0} themeUi={themeUi} width={169} style={{fontSize:'20px', fontWeight:'500'}} onClick={onSubmitEditedRows}>Save  Remarks</VFButtonOutline>
-                </ButtonWrapper>
+                </ButtonWrapper> */}
             </div>
         }
           

@@ -3,7 +3,7 @@ import { AgGridReactProps } from "ag-grid-react"
 
 import { useGetBPRData, useGetBPRRemarkHistory, useSubmitBPRRemark, useGetDailyData, useGetBPRDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BPR"
 import { BPREcoColorCellRenderer,BPRRemarksCellRenderer,BPRSubmitRemarkCellRenderer,BPRTagsCellRenderer,BPRTechColorCellRenderer } from "./BPRCellRenderers"
-import { convertUiConfigToOptions, mapBPRRowData, MainMenuItemsCustomization, getColumnDefinationsMTA } from "../../../../../helpers/utils"
+import { convertUiConfigToOptions, mapBPRRowData, MainMenuItemsCustomization, getColumnDefinationsMTA, CsvExportMTA } from "../../../../../helpers/utils"
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify"
 import { toast } from "react-toastify"
 import BPRGraphCellRenderer from "./BPRGraphCellRenderer"
@@ -94,11 +94,13 @@ const useBPR =()=>{
     const columnsNotToBeIncluded = ['remarks','rh','dailydatagraph']
     const [initialColumnState, setInitialColumnState] = useState<any>(undefined);
     const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
-
-    useEffect(() => {   
-        getInitialBPRRowData()
-        getBPRUiConfig();
-    }, []);
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const BPR_ROWS_PER_PAGE = EnvConfig['BPR_ROWS_PER_PAGE']; 
+    const [userPageSize , setUserPageSize]  = useState<number>(BPR_ROWS_PER_PAGE?parseInt(BPR_ROWS_PER_PAGE):50)   
+    // useEffect(() => {   
+    //     getInitialBPRRowData()
+    //     getBPRUiConfig();
+    // }, []);
     
     const getBPRUiConfig = async () => {
         try {
@@ -268,10 +270,10 @@ const useBPR =()=>{
             getMainMenuItems: MainMenuItemsCustomization,
             enableFillHandle: true,
             rowSelection:"single",
-            paginationPageSize:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'),
+            paginationPageSize:parseInt(BPR_ROWS_PER_PAGE || '50'),
             onRowSelected:(params:any)=>{
                 if(params.data.intransit && params.data.intransit.length>0){
-                    setActiveRow(params.data.intransit)
+                    setActiveRow(JSON.parse(params.data.intransit))
                     toggleSubGrid(true)
                 }
             },
@@ -330,7 +332,7 @@ const useBPR =()=>{
             filters:filter,
             paginationParameter:{
                 pageNumber:currGridPage,
-                recordsPerPage:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50') 
+                recordsPerPage:parseInt(BPR_ROWS_PER_PAGE || '50') 
             }
         })
 
@@ -358,7 +360,7 @@ const useBPR =()=>{
         });
       };
 
-    const getBPRRowData = async(filter:any,pageNo:number)=>{
+    const getBPRRowData = async(filter:any,pageNo:number , pageSize?:number)=>{
         notifyLoader("Loading Grid Data")
         const rowData =await  getBPRData({
             id: 1,
@@ -367,7 +369,7 @@ const useBPR =()=>{
             filters:filter,
             paginationParameter:{
                 pageNumber:pageNo,
-                recordsPerPage:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50') 
+                recordsPerPage:pageSize || userPageSize || parseInt(BPR_ROWS_PER_PAGE || '50') 
             }
         })
         toast.dismiss()
@@ -499,18 +501,45 @@ const useBPR =()=>{
         dispatch(TOGGLE_GRAPH_MODAL(true));
     }
 
+    // const onExportToExcelCallBack=async(pageNumber:number)=>{
+    //     const rowDta =  await getBPRDataForExcelDownload({
+    //         id:1,
+    //         name:'',
+    //         fields:[],
+    //         filters:currFilter,
+    //         paginationParameter:{
+    //             pageNumber:pageNumber,
+    //             recordsPerPage:5000
+    //         }
+    //     })
+    //     return rowDta.data.data
+    // }
+
     const onExportToExcelCallBack=async(pageNumber:number)=>{
-        const rowDta =  await getBPRDataForExcelDownload({
-            id:1,
-            name:'',
-            fields:[],
-            filters:currFilter,
-            paginationParameter:{
-                pageNumber:pageNumber,
-                recordsPerPage:5000
-            }
-        })
-        return rowDta.data.data
+        const payload = {
+            id: 1,
+            name: '',
+            fields: [],
+            filters: currFilter,
+            paginationParameter: {
+                pageNumber: pageNumber,
+                recordsPerPage: 5000
+            },
+            ISExport:"1",
+            reportName:"BPR",
+            stream:1,
+            responseType: `arraybuffer`
+        }
+        notifyLoader("Downloading Data...")
+        try {
+            await CsvExportMTA(payload, "BufferPenetrationReport");
+            notifySuccess(`Data Exported Successfully`);
+        }
+        catch(error) {
+            console.log(error);
+            notifyError("Error Exporting Excel")
+            throw error;
+        }
     }
 
     const onResetCallback = async () => {
@@ -570,7 +599,7 @@ const useBPR =()=>{
             floatingFilter: false,
             headerTooltip: "Remark History",
         },
-        Tags: {
+        tags: {
             cellRenderer: 'tagsCellRenderer',
             width: 100,
             minWidth: 100,
@@ -584,14 +613,19 @@ const useBPR =()=>{
 
     const handleOnPageChange = async(pageNumber:number)=>{
         setCurrGridPage(pageNumber)
-        await getBPRRowData(currFilter,pageNumber)
+        await getBPRRowData(currFilter,pageNumber,userPageSize)
+    }
+    const savePageSize = async( pageSize:number)=>{
+        setUserPageSize(pageSize)
+        await getBPRRowData(currFilter,currGridPage,pageSize)
     }
 
     const onApplyFilter = (filter: any) => {
         setCurrFilter(filter)
         getBPRRecordCount(filter)
         setCurrGridPage(1)
-        getBPRRowData(filter,1)
+        getBPRRowData(filter,1 ,userPageSize)
+        getBPRUiConfig()
     }
 
     const onDeleteFilter = async(parentId:any, filterId:any, value:any)=>{
@@ -599,7 +633,7 @@ const useBPR =()=>{
         onApplyFilter(updatedFilter)
     }
 
-    const rowsPerPage = useMemo(()=>parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'),[]) 
+    const rowsPerPage = useMemo(()=>parseInt(BPR_ROWS_PER_PAGE || '50'),[]) 
     
     // const BPRColumnData = useMemo(() => {
     //     return mapBPRFieldsToColDefs(
@@ -667,7 +701,9 @@ const useBPR =()=>{
         gridState,
         lastRunDate,
         generalFilterOptions,
-        onResetCallback
+        onResetCallback,
+        savePageSize,
+        userPageSize
 
     }
 }

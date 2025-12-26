@@ -19,12 +19,13 @@ interface IResizeTableProps {
   gridRef: any;
   userPageSize: number;
   savePageSize: any;
+  isPivot?: boolean;
 }
 
 const ResizableTable = (props: IResizeTableProps) => {
   const {
     data, colDef, setCurrentGridRef, currentGridRef, columnState,
-    userPageSize, savePageSize
+    userPageSize, savePageSize, isPivot
   } = props;
 
     const gridRef = props.gridRef;
@@ -58,11 +59,15 @@ const ResizableTable = (props: IResizeTableProps) => {
 
   useEffect(() => {
     if (currentGridRef?.current && columnState?.length) {
+      const applyPivot = currentGridRef.current?.api.setGridOption(
+        "pivotMode",
+        isPivot
+      );
       const result = currentGridRef.current.api.applyColumnState({
         state: columnState,
         applyOrder: true
       });
-      if (!result) console.error('Failed to apply column state');
+      if (!result || !applyPivot) console.error('Failed to apply column state');
     }
   }, [columnState]);
 
@@ -84,7 +89,7 @@ const ResizableTable = (props: IResizeTableProps) => {
     const CustomStatusPanel = () => {
           return (
               <GridFilterWrapper>
-                  <TextBtn onClick={clearGridFilter} disabled={isDisabled} themeUi={theme_ui}>
+                  <TextBtn  onClick={clearGridFilter} style={{marginTop:'15px'}} disabled={isDisabled} themeUi={theme_ui}>
                       Clear All Grid Filters
                   </TextBtn>  
               </GridFilterWrapper>           
@@ -101,7 +106,19 @@ const ResizableTable = (props: IResizeTableProps) => {
         getRowStyle={getRowStyle}
         statusBar={{
           statusPanels: [{ statusPanel: customPage, align:'right' },
-                        { statusPanel: CustomStatusPanel, align: "left" }
+            { statusPanel: CustomStatusPanel, align: "left" },
+              { statusPanel: "agTotalAndFilteredRowCountComponent", align: "left"  },
+              { statusPanel: "agTotalRowCountComponent", align: "left"  },
+              { statusPanel: "agFilteredRowCountComponent", align: "left"  },
+              { statusPanel: "agSelectedRowCountComponent", align: "left"  },
+        
+              {
+                statusPanel: "agAggregationComponent",
+                align:'left',
+                statusPanelParams: {
+                    aggFuncs: ["avg", "sum", "min", "max", "count",  ],
+                },
+            },
           ],
         }}
         pagination={true}

@@ -7,7 +7,7 @@ const useSimpleBlocker = (activeMaster:any,backFunction:any,message = 'You have 
     useEffect(() => {
   
       const handlePopState = () => {
-           backFunction(); 
+          backFunction(activeMaster?.rowdata?.length);
       };
     
       window.history.pushState(null, '', location.pathname);
@@ -16,6 +16,7 @@ const useSimpleBlocker = (activeMaster:any,backFunction:any,message = 'You have 
       return () => {
         window.removeEventListener('popstate', handlePopState);
       };
+
     }, [ activeMaster,message, location.pathname]);
   };
 

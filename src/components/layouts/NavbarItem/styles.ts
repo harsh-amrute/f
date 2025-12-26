@@ -122,7 +122,7 @@ export const SCIconMenu = styled.img<{ themeUi: string; isHide: boolean }>`
   position: absolute;
   right: -24px;
   width: 40px;
-  z-index:20;
+  z-index:300;
   border: ${(props) =>
     props.themeUi === "REGALBLAZE" ? "unset" : "5px solid #f9f9f9"};
   border-radius: 50%;
@@ -586,6 +586,12 @@ export const SCItemChild = styled.div<{
   padding: ${(props) => (props.status ? "18px 0px" : "unset")};
   display: flex;
   align-items: center;
+
+
+ &:hover {
+    transform: scale(1.05);
+    transition: all 0.2s ease-in-out;
+  }
 
   @media (min-width: ${gridSystem.size.laptopL}) and (max-width: ${gridSystem
     .size.desktop}) {

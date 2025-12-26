@@ -5,6 +5,8 @@ import {SCDynamicContainer} from '../../../styles';
 import {convertToInt, getProductAndLocationHeirarchiesFromEnv, generateChartOptions} from '../../../../../../../../../helpers/utils';
 import { chartParams1 , chartParams2 } from './chartParams' 
 import VFCharts from "../../../../../../../../../components/VectorFLOW/commons/VFCharts";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../../../../../../redux/store/store";
 
 interface CreateAvailabilityAtParentProps{
     data:any
@@ -18,7 +20,15 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
 
     const [rowData1,setRowData1] = useState<any>([])
     const [rowData2,setRowData2] = useState<any>([])
+
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const PRODUCT_PERMISSION_L1 = EnvConfig['PRODUCT_PERMISSION_L1']; 
+    const PRODUCT_PERMISSION_L2 = EnvConfig['PRODUCT_PERMISSION_L2']; 
+    const PRODUCT_PERMISSION_L3 = EnvConfig['PRODUCT_PERMISSION_L3']; 
     
+    const LOCATION_PERMISSION_L1 = EnvConfig['LOCATION_PERMISSION_L1']; 
+    const LOCATION_PERMISSION_L2 = EnvConfig['LOCATION_PERMISSION_L2']; 
+    const LOCATION_PERMISSION_L3 = EnvConfig['LOCATION_PERMISSION_L3']; 
 
     const mapUIConfigToColdefs1 = (columns:Array<{header:string,colCode:string}>) => {
         let colDefs = [];
@@ -54,7 +64,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
         ]
         
         colDefs = columns.map((column:{header:string,colCode:string})=>{
-            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
+            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{} , PRODUCT_PERMISSION_L1 , PRODUCT_PERMISSION_L2 , PRODUCT_PERMISSION_L3 , LOCATION_PERMISSION_L1 , LOCATION_PERMISSION_L2 , LOCATION_PERMISSION_L3);  
 
             if(customColdef) return customColdef
             return {
@@ -102,7 +112,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
         ]
         
         colDefs = columns.map((column:{header:string,colCode:string})=>{
-            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
+            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{} , PRODUCT_PERMISSION_L1 , PRODUCT_PERMISSION_L2 , PRODUCT_PERMISSION_L3 , LOCATION_PERMISSION_L1 , LOCATION_PERMISSION_L2 , LOCATION_PERMISSION_L3); 
 
             if(customColdef) return customColdef;
             return {

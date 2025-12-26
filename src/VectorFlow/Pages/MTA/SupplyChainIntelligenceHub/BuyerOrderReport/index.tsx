@@ -12,6 +12,8 @@ import VFSaveRemark from "../../../../../components/VectorFLOW/commons/VFSaveRem
 import LastRunDateComponent from "../../../../../components/commons/lastRundate";
 import OverlayLoader from "../../../../../VectorFlow/Pages/MTO/Common/Loader";
 import { useState } from "react"
+import { useSelector } from "react-redux"
+import { RootState } from "../../../../../redux/store/store"
 
 
 const BuyerOrderReport = ()=>{
@@ -50,11 +52,14 @@ const BuyerOrderReport = ()=>{
         generalFilterOptions,
         onCloseRemarkHistory,
         onResetCallback,
-        lastRunDate
+        lastRunDate,
+         savePageSize,
+        userPageSize
     } = useBOR()
 
     const [isDisabled, setIsDisabled]= useState<boolean>(true)
-    
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const BOR_ROWS_PER_PAGE = EnvConfig['BOR_ROWS_PER_PAGE'];   
     return(
       <GridStateContext.Provider
         value={{
@@ -142,18 +147,24 @@ const BuyerOrderReport = ()=>{
                   }}
       
                   />
-                <VFPagination
+              {
+              rowData?.length  > 0 && 
+              <>
+              <VFPagination
                   selectedRows={0}
                   totalRows={recordCount}
                   currentPage={currentPage}
-                  rowsPerPage={parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100')}
+                  rowsPerPage={userPageSize || parseInt(BOR_ROWS_PER_PAGE || '100')}
                   handleChangePage={(e) => handleChangePage(e)}
                   resetGridRef={ref} 
                   isDisabled={isDisabled} 
+                      customPageSizeEnabled={true}
+                    userPageSize={userPageSize}
+                    savePageSize={savePageSize}
                   />
-
                 <VFSaveRemark onSubmitRemarks={onSubmitRemarks}/>
-
+              </> 
+                }
               </div>
           
           {/* <div style={{ display: 'none' }}>

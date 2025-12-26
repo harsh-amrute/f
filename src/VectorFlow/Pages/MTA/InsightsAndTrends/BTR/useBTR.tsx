@@ -6,7 +6,7 @@ import { VFFloatingTabItemProps } from "../../../../../components/VectorFLOW/com
 import HorizontalSplitView from "./HorizontalSplitView"
 
 import VerticalSplitView from "./VerticalSplitView"
-import { getColumnsForExcelExport, mapBTRRowData, mapBTRRowDataToColDefs, MainMenuItemsCustomization, getColumnDefinationsMTA, DownloadExcel, DownloadExcelMTA } from "../../../../../helpers/utils"
+import { getColumnsForExcelExport, mapBTRRowData, mapBTRRowDataToColDefs, MainMenuItemsCustomization, getColumnDefinationsMTA, DownloadExcel, DownloadExcelMTA , CsvExportMTA} from "../../../../../helpers/utils"
 
 import { useGetBTRDataCount, useGetBTRData } from "../../../../../VectorFlow/Services/MTA/InsightsAndTrends/BTR"
 
@@ -62,18 +62,20 @@ const useBTR = () => {
     const tabs: Array<VFFloatingTabItemProps> = [
         {
             id: "1",
-            value: 'both',
-            label: "Both On-Hand & Pipeline View"
+              value: 'on-hand',
+            label: "On-Hand Inv. View"
+          
         },
         {
             id: "2",
-            value: 'on-hand',
-            label: "On-Hand Inv. View"
+             value: 'pipeline',
+            label: "Pipeline Inv. View"
+           
         },
         {
             id: "3",
-            value: 'pipeline',
-            label: "Pipeline Inv. View"
+             value: 'both',
+            label: "Both On-Hand & Pipeline View"
         }
     ]
 
@@ -83,7 +85,10 @@ const useBTR = () => {
 
     const themeUi = user.user.theme_ui
 
-    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [currentPageTech, setCurrentPageTech] = useState<number>(1);
+    const [currentPageEco, setCurrentPageEco] = useState<number>(1);
+    const [currentPageTechForBoth, setCurrentPageTechForBoth] = useState<number>(1);
+    const [currentPageEcoForBoth, setCurrentPageEcoForBoth] = useState<number>(1);
 
     const [isLockMode, toggleLockMode] = useState<boolean>(false)
 
@@ -91,8 +96,14 @@ const useBTR = () => {
 
     const { state: currFilter, setState: setCurrFilter, onDelete } = useBPRFilter()
 
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const BTR_ROWS_PER_PAGE = EnvConfig['BTR_ROWS_PER_PAGE'];  
+    const rowsPerPage = parseInt(BTR_ROWS_PER_PAGE || '50');
 
-    const rowsPerPage = parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '50');
+    const [userPageSizeTech , setUserPageSizeTech]  = useState<number>(BTR_ROWS_PER_PAGE?parseInt(BTR_ROWS_PER_PAGE):50) 
+    const [userPageSizeEco , setUserPageSizeEco]  = useState<number>(BTR_ROWS_PER_PAGE?parseInt(BTR_ROWS_PER_PAGE):50) 
+    const [userPageSizeTechForBoth , setuserPageSizeTechForBoth]  = useState<number>(BTR_ROWS_PER_PAGE?parseInt(BTR_ROWS_PER_PAGE):50) 
+    const [userPageSizeEcoForBoth , setUserPageSizeEcoBoth]  = useState<number>(BTR_ROWS_PER_PAGE?parseInt(BTR_ROWS_PER_PAGE):50) 
 
     const { mutateAsync: getBTRData, isLoading } = useGetBTRData()
 
@@ -126,29 +137,70 @@ const useBTR = () => {
     const [ecoMasterUIConfig, setEcoMasterUIConfig] = useState<any>([]);
     const [isDisabled, setIsDisabled]= useState<boolean>(true)
 
+    const RowsPerPageCurrTab = currentTab?.value === "on-hand"?userPageSizeTech:currentTab?.value === "pipeline"?userPageSizeEco:rowsPerPage 
+    const savePageSizeTech = async( pageSize:number)=>{
+        setUserPageSizeTech(pageSize)
+        await getDataTech(currFilter , currentPageTech,pageSize)
+    }
+
+    const savePageSizeEco = async( pageSize:number)=>{
+        setUserPageSizeEco(pageSize)
+        await getDataEco(currFilter , currentPageEco,pageSize)
+    }
+
 
     const techPaginationProps: VFPaginationProps = {
         selectedRows: 0,
         totalRows: techTotalRows,
-        rowsPerPage: rowsPerPage,
-        currentPage: currentPage,
+        rowsPerPage: userPageSizeTech,
+        currentPage: currentPageTech,
         handleChangePage: (currPage: number) => {
-            getData(getPreparedFilter(currFilter), currPage);
-            setCurrentPage(currPage)
-        }
+            getDataTech(getPreparedFilter(currFilter), currPage)
+            setCurrentPageTech(currPage)
+        },
+        customPageSizeEnabled:true,
+        userPageSize:userPageSizeTech,
+        savePageSize:savePageSizeTech
 
     }
 
     const ecoPaginationProps: VFPaginationProps = {
         selectedRows: 0,
         totalRows: ecoTotalRows,
-        rowsPerPage: rowsPerPage,
-        currentPage: currentPage,
+        rowsPerPage: userPageSizeEco,
+        currentPage: currentPageEco,
         handleChangePage: (currPage: number) => {
-            getData(getPreparedFilter(currFilter), currPage);
-            setCurrentPage(currPage)
-        }
+            getDataEco(getPreparedFilter(currFilter), currPage);
+            setCurrentPageEco(currPage)
+        },
+        customPageSizeEnabled:true,
+        userPageSize:userPageSizeEco,
+        savePageSize:savePageSizeEco
 
+    }
+    const techPaginationPropsForBoth: VFPaginationProps = {
+        selectedRows: 0,
+        totalRows: techTotalRows,
+        rowsPerPage: userPageSizeTechForBoth,
+        currentPage: currentPageTechForBoth,
+        handleChangePage: (currPage: number) => {
+            getDataTech(getPreparedFilter(currFilter), currPage , userPageSizeTechForBoth)
+            setCurrentPageTechForBoth(currPage)
+        },
+
+    }
+    const ecoPaginationPropsForBoth: VFPaginationProps = {
+        selectedRows: 0,
+        totalRows: ecoTotalRows,
+        rowsPerPage: userPageSizeEcoForBoth,
+        currentPage: currentPageEcoForBoth,
+        handleChangePage: (currPage: number) => {
+            getDataEco(getPreparedFilter(currFilter), currPage,userPageSizeEcoForBoth);
+            setCurrentPageEcoForBoth(currPage)
+        },
+        customPageSizeEnabled:true,
+        userPageSize:userPageSizeEco,
+        savePageSize:savePageSizeEco
     }
 
     const defaultColDef = {
@@ -214,17 +266,21 @@ const useBTR = () => {
     }
 
     const getUserColumnConfig = async () => {
-        if (currentTab.id === "2") {
+
+        if (currentTab.id === "1") {
             const stateData = await getState({ "reportname": UserUIColumnConfigName.BTROnHand });
+
+            
             if (stateData.data.data.length !== 0) {
                 const parsedContent = JSON.parse(stateData.data.data)
                 setTechGridState(parsedContent)
+                
             } else {
                 console.log("State Data not available for BTROnHand");
             }
         }
 
-        if (currentTab.id === "3") {
+        if (currentTab.id === "2") {
             const stateData = await getState({ "reportname": UserUIColumnConfigName.BTRPipeline });
             if (stateData.data.data.length !== 0) {
                 const parsedContent = JSON.parse(stateData.data.data)
@@ -238,14 +294,14 @@ const useBTR = () => {
     }
 
     const onResetCallback = async () => {
-        if (currentTab.id === "2") {
+        if (currentTab.id === "1") {
 
             setTechGridState({
                 charts: [],
                 columns: techMasterUIConfig,
                 pivot: false,
             })
-        } else if (currentTab.id === "3") {
+        } else if (currentTab.id === "2") {
 
             setEcoGridState({
                 charts: [],
@@ -256,6 +312,62 @@ const useBTR = () => {
         
     }
 
+    const getDataTech = async (filter: any, pageNumber: number  , pageSize?:number) => {
+        const payload = {
+            id: 0,
+            name: 'tech',
+            fields: [],
+            filters: filter,
+            paginationParameter: {
+                pageNumber: pageNumber,
+                recordsPerPage: pageSize || userPageSizeTech
+            },
+            ISExport:"0"
+        }
+        const loaderId = notifyLoader("Loading data")
+        try {
+            const data = await getBTRData(payload)
+            console.log("data Tech::",data) // to see the large btr data in console
+            setTechRowData(mapBTRRowData(data.data.data.tech, horizon))
+            setDateLabels(data.data.data.labels[0])
+        } catch (err: any) {
+            notifyError(err)
+            setTechRowData([])
+            setEcoRowData([])
+        } finally {
+            toast.dismiss(loaderId)
+        }
+
+    }
+
+    const getDataEco = async (filter: any, pageNumber: number , pageSize?:number) => {
+        
+        const payload = {
+            id: 0,
+            name: 'eco',
+            fields: [],
+            filters: filter,
+            paginationParameter: {
+                pageNumber: pageNumber,
+                recordsPerPage: pageSize ||  userPageSizeEco
+            },
+            ISExport:"0"
+        }
+        const loaderId = notifyLoader("Loading data")
+        try {
+            const data = await getBTRData(payload)
+            console.log("data Eco::",data) // to see the large btr data in console
+            setEcoRowData(mapBTRRowData(data.data.data.eco, horizon))
+            setDateLabels(data.data.data.labels[0])
+        } catch (err: any) {
+            notifyError(err)
+            setTechRowData([])
+            setEcoRowData([])
+        } finally {
+            toast.dismiss(loaderId)
+        }
+    }
+
     const getData = async (filter: any, pageNumber: number) => {
         const payload = {
             id: 0,
@@ -264,14 +376,14 @@ const useBTR = () => {
             filters: filter,
             paginationParameter: {
                 pageNumber: pageNumber,
-                recordsPerPage: rowsPerPage
+                recordsPerPage: RowsPerPageCurrTab
             },
             ISExport:"0"
         }
         const loaderId = notifyLoader("Loading data")
         try {
             const data = await getBTRData(payload)
-            console.log("data::",data) // to see the large btr data in console
+            console.log("data for Both Eco and Tech::",data) // to see the large btr data in console
             setEcoRowData(mapBTRRowData(data.data.data.eco, horizon))
             setTechRowData(mapBTRRowData(data.data.data.tech, horizon))
             setDateLabels(data.data.data.labels[0])
@@ -285,21 +397,21 @@ const useBTR = () => {
 
     }
 
-    useEffect(() => {
-        const payload = {
-            id: 0,
-            name: 'both',
-            fields: [],
-            filters: currFilter,
-            paginationParameter: {
-                pageNumber: 1,
-                recordsPerPage: rowsPerPage
-            },
-        }
-        getBTRDataCount(payload)
-        getData(currFilter, 1)
-        getBPRUiConfig();
-    }, [])
+    // useEffect(() => {
+    //     const payload = {
+    //         id: 0,
+    //         name: 'tech',
+    //         fields: [],
+    //         filters: currFilter,
+    //         paginationParameter: {
+    //             pageNumber: 1,
+    //             recordsPerPage: rowsPerPage
+    //         },
+    //     }
+    //     getBTRDataCount(payload)
+    //     getDataTech(currFilter, 1)
+    //     getBPRUiConfig();
+    // }, [])
 
     const getPreparedFilter = (filter: BPRFilterState): BPRFilterState => {
         const doesCategoryExist = (filter.availabilityFilter.filters.length > 0 && filter.availabilityFilter.filters.some((f) => f.name === "AF8"))
@@ -307,10 +419,13 @@ const useBTR = () => {
         if (doesCategoryExist) {
 
             tempFilter.availabilityFilter.filters = tempFilter.availabilityFilter.filters.map((f) => {
-                return {
-                    ...f,
-                    value: BTRCategoryTextToNumberMapper[f.value]
+                if (f.name === "AF8") {
+                    return {
+                        ...f,
+                        value: BTRCategoryTextToNumberMapper[f.value] ?? f.value
+                    };
                 }
+                return f; 
             })
         }
         return tempFilter
@@ -318,8 +433,11 @@ const useBTR = () => {
 
     const onApplyFilter = async (filter: BPRFilterState) => {
         setCurrFilter(filter)
+        setCurrentPageTech(1)
+        setCurrentPageEco(1)
+        setCurrentPageTechForBoth(1)
+        setCurrentPageEcoForBoth(1)
         const tempFilter = getPreparedFilter(filter)
-
         const payload = {
             id: 0,
             name: '',
@@ -327,18 +445,20 @@ const useBTR = () => {
             filters: tempFilter,
             paginationParameter: {
                 pageNumber: 1,
-                recordsPerPage: rowsPerPage
+                recordsPerPage: RowsPerPageCurrTab
             },
         }
         getBTRDataCount(payload)
-        getData(tempFilter, 1)
+        if(currentTab?.value === "on-hand") getDataTech(tempFilter, 1)
+        else if(currentTab?.value === "pipeline") getDataEco(tempFilter, 1)
+        else getData(tempFilter, 1)
+        getBPRUiConfig()
     }
 
 
     const onDeleteFilter = async (parentId: any, filterId: any, value: any) => {
         const updatedFilter = onDelete(parentId, filterId, value)
         onApplyFilter(updatedFilter)
-        setCurrentPage(1)
     }
 
     const toggleVerticalView = (isVertical: boolean) => setVerticalView(isVertical)
@@ -443,6 +563,41 @@ const useBTR = () => {
             pinned: 'left',
         },
     };
+useEffect(() => {
+    if (techInternalRef && techGridState?.columns) {
+        setTimeout(() => {
+            const result = techInternalRef?.api.applyColumnState({
+                state: techGridState.columns,
+                applyOrder: true
+            });
+
+            techInternalRef.api.sizeColumnsToFit();
+
+            if (!result) {
+                console.error("Failed to apply column state", result);
+            }
+        }, 2000);
+    }
+}, [techInternalRef, techGridState]);
+
+
+useEffect(() => {
+    if (ecoInternalRef && ecoGridState?.columns) {
+        setTimeout(() => {
+            const result = ecoInternalRef?.api.applyColumnState({
+                state: ecoGridState.columns,
+                applyOrder: true
+            });
+
+            ecoInternalRef.api.sizeColumnsToFit();
+
+            if (!result) {
+                console.error("Failed to apply column state", result);
+            }
+        }, 2000);
+    }
+}, [ecoInternalRef, ecoGridState]);
+
 
     const techColDefs = useMemo((): Array<ColDef> => {
         if (initialColumnState) {
@@ -480,16 +635,31 @@ const useBTR = () => {
         } else return [];
     }, [ecoRowData, dateLabels, verticalView, currentTab]);
 
+
+  useEffect(() => {
+    if (initialColumnState) {
+        getUserColumnConfig();  
+        if(currentTab.id === "1" && techColDefs?.length)     getDataTech(currFilter , 1);
+        if(currentTab.id === "2"  )     getDataEco(currFilter , 1);
+        if(currentTab.id === "3" )     getData(currFilter , 1)
+        } 
+    },[]);
+    
     useEffect(() => {
-        if (currentTab.id === "2" || currentTab.id === "3") {
-            getUserColumnConfig();   
-        }
-    },[currentTab])
+    if (initialColumnState) {
+        getUserColumnConfig();  
+        if(currentTab.id === "1" && techColDefs?.length)     getDataTech(currFilter , 1);
+        if(currentTab.id === "2"  )     getDataEco(currFilter , 1);
+        if(currentTab.id === "3" )     getData(currFilter , 1)
+        } 
+    },[currentTab]);
 
     useEffect(() => {
-        if (currentTab.id === "2" && techColDefs.length && techInternalRef?.api) {
+    if (initialColumnState) {
+        if (currentTab.id === "1" && techColDefs.length && techInternalRef?.api) {
             setTechMasterUIConfig(techInternalRef?.api.getColumnState());
         }
+    }
     }, [techInternalRef, techColDefs, currentTab]);
 
     useEffect(() => {
@@ -498,73 +668,9 @@ const useBTR = () => {
         }
     }, [ecoInternalRef, ecoColDefs, currentTab]);
 
-    useEffect(() => {
-        if (techInternalRef && techGridState && techGridState.columns) {
-            const result = techInternalRef?.api.applyColumnState({ state: techGridState.columns, applyOrder: true });
-            techInternalRef.api.sizeColumnsToFit();  
-            if (!result) {
-                console.error("Failed to apply column state", result);
-            }
-        }
-    }, [techInternalRef, techGridState]);
-    
-    useEffect(() => {
-        if (ecoInternalRef && ecoGridState && ecoGridState.columns) {
-            const result = ecoInternalRef?.api.applyColumnState({ state: ecoGridState.columns, applyOrder: true });
-            ecoInternalRef.api.sizeColumnsToFit();
-            if (!result) {
-                console.error("Failed to apply column state", result);
-            }
-        }
-    }, [ecoInternalRef, ecoGridState]);
-
     const renderView = () => {
         switch (currentTab.id) {
             case "1":
-                if (verticalView) return (
-                    <VerticalSplitView
-                        themeUi={themeUi}
-                        techTable={{
-                            columnDefs: techColDefs,
-                            rowData: techRowData,
-                            header: "On-Hand Inventory View Trend Report",
-                            paginationProps: techPaginationProps,
-                            ...gridProps
-                        }}
-                        ecoTable={{
-                            columnDefs: ecoColDefs,
-                            paginationProps: ecoPaginationProps,
-                            rowData: ecoRowData,
-                            header: "Pipeline Inventory Trend Report",
-                            ...gridProps
-                        }}
-                        isLocked={isLockMode}
-                        toggleLockMode={toggleLockMode}
-                    />
-                )
-
-                return (
-                    <HorizontalSplitView
-                        themeUi={themeUi}
-                        techTable={{
-                            columnDefs: techColDefs,
-                            rowData: techRowData,
-                            header: "On-Hand Inventory View Trend Report",
-                            paginationProps: techPaginationProps,
-                            ...gridProps
-                        }}
-                        ecoTable={{
-                            columnDefs: ecoColDefs,
-                            rowData: ecoRowData,
-                            header: "Pipeline Inventory Trend Report",
-                            paginationProps: ecoPaginationProps,
-                            ...gridProps
-                        }}
-                        isLocked={isLockMode}
-                        toggleLockMode={toggleLockMode}
-                    />
-                )
-            case "2":
                 return (
                     <>
                         <BTRTableHeader>
@@ -582,8 +688,8 @@ const useBTR = () => {
                             rowData={techRowData}
                             {...gridProps}
                             pagination={false}
-                            paginationPageSize={parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100')}
-                            maintainColumnOrder={true}
+                            paginationPageSize={parseInt(BTR_ROWS_PER_PAGE || '100')}
+                            maintainColumnOrder
                             onGridReady={(params) => setTechInternalRef(params)}
                             onFilterChanged={() => {
                                 const filterModel = techRef?.current?.api?.getFilterModel();
@@ -593,15 +699,17 @@ const useBTR = () => {
                                   setIsDisabled(true);
                                 }
                             }}                        />
-                        
+                        {
+                        initialColumnState &&
                             <VFPagination 
                             {...techPaginationProps} 
                             resetGridRef={techRef} 
                             isDisabled={isDisabled}/>
+                        }
                         </div>
                     </>
                 )
-            case "3":
+            case "2":
                 return (
                     <>
                         <BTRTableHeader>
@@ -620,7 +728,7 @@ const useBTR = () => {
                             rowData={ecoRowData}
                             {...gridProps}
                             pagination={false}
-                            paginationPageSize={parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100')}
+                            paginationPageSize={parseInt(BTR_ROWS_PER_PAGE || '100')}
                             maintainColumnOrder
                             onGridReady={(params) => setEcoInternalRef(params)}
                             onFilterChanged={() => {
@@ -633,13 +741,63 @@ const useBTR = () => {
                             }}  
 
                         />
+                        {
+                        initialColumnState &&
                         <VFPagination
                             {...ecoPaginationProps} 
                             resetGridRef={ecoRef} 
                             isDisabled={isDisabled}/>
-                        </div>
+                             }
+                        </div>   
                     </>
                 )
+
+            case "3":
+                    if (verticalView) return (
+                        <VerticalSplitView
+                            themeUi={themeUi}
+                            techTable={{
+                                columnDefs: techColDefs,
+                                rowData: techRowData,
+                                header: "On-Hand Inventory View Trend Report",
+                                paginationProps: techPaginationPropsForBoth,
+                                ...gridProps
+                            }}
+                            ecoTable={{
+                                columnDefs: ecoColDefs,
+                                paginationProps: ecoPaginationPropsForBoth,
+                                rowData: ecoRowData,
+                                header: "Pipeline Inventory Trend Report",
+                                ...gridProps
+                            }}
+                            isLocked={isLockMode}
+                            toggleLockMode={toggleLockMode}
+                            initialColumnState={initialColumnState}
+                        />
+                    )
+    
+                    return (
+                        <HorizontalSplitView
+                            themeUi={themeUi}
+                            techTable={{
+                                columnDefs: techColDefs,
+                                rowData: techRowData,
+                                header: "On-Hand Inventory View Trend Report",
+                                paginationProps: techPaginationPropsForBoth,
+                                ...gridProps
+                            }}
+                            ecoTable={{
+                                columnDefs: ecoColDefs,
+                                rowData: ecoRowData,
+                                header: "Pipeline Inventory Trend Report",
+                                paginationProps: ecoPaginationPropsForBoth,
+                                ...gridProps
+                            }}
+                            isLocked={isLockMode}
+                            toggleLockMode={toggleLockMode}
+                            initialColumnState={initialColumnState}
+                        />
+                    )
             default:
                 return <CustomVFTable columnDefs={[]} rowData={[]} {...gridProps} />
         }
@@ -682,12 +840,20 @@ const useBTR = () => {
                 pageNumber: pageNumber
             },
             ISExport:"1",
+            reportName:"BTR",
+            stream:1,
             responseType: `arraybuffer`
         }
         notifyLoader("Downloading Data...")
         try {
-            const data = await getBTRData(payload)
-            DownloadExcelMTA(data?.data?.data ,data?.data?.data?.fileName )
+            // const data = await getBTRData(payload)
+            let filename = "";
+            if (page === "on-hand") {
+                filename = "On_Hand_Inventory";
+              } else {
+                filename = "Pipeline_Inventory";
+              }
+            await CsvExportMTA(payload, filename);
             notifySuccess(`Data Exported Successfully`);
         }
         catch(error) {

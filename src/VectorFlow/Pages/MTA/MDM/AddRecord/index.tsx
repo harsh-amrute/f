@@ -18,11 +18,12 @@ import VFOverlay from "../../../../../components/VectorFLOW/commons/VFOverlay";
 import { GridFilterWrapper ,TextBtn} from "../../../MTO/Common/VFPagination/styles";
 import { useUserData } from "../../../../../context";
 import {getUploadModalRadioButtons } from "../../../../../helpers/utils";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { TOGGLE_SELECT_MASTER_SCREEN } from "../../../../../redux/actions/MDM";
 
 import { MDMMasterState,Field } from "../../../../types/MDM";
 import { useLocation } from "react-router";
+import { RootState } from "../../../../../redux/store/store";
 
 const AddRecord = () => {
 
@@ -89,6 +90,9 @@ const AddRecord = () => {
         isSubmitDisabled
     } = useAdd()
     
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig); 
+    const ADDRECORD_PAGE = EnvConfig['ADDRECORD_PAGE'];  
+    const RECORD_UPLOAD_LIMIT = EnvConfig['RECORD_UPLOAD_LIMIT']; 
     useEffect(()=>{
       if(ref.current && ref.current.api){
         if(isTableDataLoading){
@@ -198,7 +202,7 @@ const AddRecord = () => {
                     selectedRows={selectedRowsCount} 
                     totalRows={recordCount} 
                     currentPage={currentPage} 
-                    rowsPerPage={parseInt(process.env.REACT_APP_ADDRECORD_PAGE  || '100')} 
+                    rowsPerPage={parseInt(ADDRECORD_PAGE  || '100')} 
                     handleChangePage={(e)=>handleChangePage(e)}  
                   />
               }
@@ -226,8 +230,8 @@ const AddRecord = () => {
                 ref.current?.api.exportDataAsExcel({fileName:downloadFileName ==='' ? currentMaster.name : downloadFileName,columnKeys:downloadableColumnKeys});
               }
             }}
-            onUpload={()=>{
-              onUploadMaster()
+            onUpload={async ()=>{
+              await onUploadMaster(RECORD_UPLOAD_LIMIT)
             }}
             inputText={downloadFileName}
             setInputText={setDownloadFileName}
@@ -261,7 +265,7 @@ const AddRecord = () => {
           <div style={{zoom:'var(--nms-filter-zoom)'}}>
             <VFTaskBar
               disableSubmit={isSubmitDisabled}
-              showSubmittedExportError={errorCount>0}
+              showSubmittedExportError={activeMaster?.rowData.length > 0 && errorCount>0}
               enableEditOnlineReset={false}
               disableResumeSeasonality={()=>false}
               disableStopSeasonality={()=>false}

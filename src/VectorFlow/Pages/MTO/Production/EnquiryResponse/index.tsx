@@ -35,6 +35,7 @@ import { UIGridCode } from "../../Common/Enum";
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import OverlayLoader from "../../Common/Loader";
 import { format } from "date-fns";
+import { ExcelExportName } from "../../Common/Enum";
 const tabOptions = [{ label: "RM Not Available", value: "RM Not Available" }, { label: "RM Available", value: "RM Available" }];
 
 
@@ -598,7 +599,6 @@ const EnquiryResponse = () => {
         setUserPageSize(pageSize);
           setCurrentPage(1)
           handleSaveClick(undefined, pageSize);
-          getData({data, pageSize,currentPage});
         } else {
           notifyError("Invalide page size");
       }
@@ -716,7 +716,8 @@ const EnquiryResponse = () => {
  
     
   const ExcelExport =()=>{
-    gridRef.current?.api?.exportDataAsExcel({ fileName: `Enquiry_Response_${format(Date.now(), "dd/MM/yyyy")}` })
+    const exportName = ExcelExportName.Enquiry_Response
+    gridRef.current?.api?.exportDataAsExcel({ fileName: exportName,sheetName: exportName })
   }
   return (
     <EnquiryWrapper>

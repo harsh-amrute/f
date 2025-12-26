@@ -40,7 +40,8 @@ const NavbarItem = ({
   const { user, isSideBarOpen, toggleSideBar } = useUserData();
   const permission: any = user?.roles?.permission;
   const { currentView, currentCategory } = useSelector((state: RootState) => state.mta.planning)
-  const analyticsPaths: Array<string> = ["/supply-chain-intelligence-hub/bpr", "/insights-and-trends/research-insights", "/insights-and-trends/buffer-trend-report", "/insights-and-trends/buffer-trends"]
+  // const analyticsPaths: Array<string> = ["/mta/supply-chain-intelligence-hub/bpr", "/mta/insights-and-trends/research-insights", "/mta/insights-and-trends/buffer-trend-report", "/mta/insights-and-trends/buffer-trends"]
+  const analyticsPaths: Array<string> = ["/mta/supply-chain-intelligence-hub/bpr"]
   const themeUi = user?.user?.theme_ui;
   const navigate = useNavigate();
   const location = useLocation();
@@ -114,21 +115,17 @@ const NavbarItem = ({
 
 
   const renderAnalyticsGrid = useCallback(() => {
+    // if (location.pathname === "/mta/supply-chain-intelligence-hub/planning") {
 
-    if (location.pathname === "/supply-chain-intelligence-hub/planning") {
-
-      if (currentView !== 'chart' && currentCategory !== "") {
-        return true
-      }
-      if (currentCategory === "") {
-        return true
-      }
-    }
-    if (analyticsPaths.includes(pathname)) {
-      return true
-    }
-    return false
-  }, [location.pathname, currentCategory, currentView])
+    //   if (currentView !== 'chart' && currentCategory !== "") {
+    //     return true
+    //   }
+    //   if (currentCategory === "") {
+    //     return true
+    //   }
+    // }
+    return analyticsPaths.includes(pathname);
+  }, [pathname]);
 
 
   const renderListMenuChild = (listChild: any, status: boolean) => {
@@ -253,62 +250,62 @@ const NavbarItem = ({
           />
         )}
 
-        {isHide && pathname === '/logistics/intransit-whereabouts' && menuItem.id === 9 && (
+        {/* {isHide && pathname === '/mta/logistics/intransit-whereabouts' && menuItem.id === 9 && (
           <InTransitAnalytics />
-        )}
+        )} */}
 
-        {isHide && pathname === '/procurement/material-coverage-open-sales' && menuItem.id === 19 && (
+        {isHide && pathname === '/mto/procurement/material-coverage-open-sales' && menuItem.id === 19 && (
           <AnalyticalScreen pageName="MaterialSO" />
         )}
 
-        {isHide && pathname === '/production-planning-and-scheduling/due-date-quotation' && menuItem.id === 10 && (
+        {isHide && pathname === '/mto/production-planning-and-scheduling/due-date-quotation' && menuItem.id === 10 && (
           <DDQAnalytics />
         )}
 
-        {isHide && pathname === '/production-planning-scheduling/overall-bm-report' && menuItem.id === 10 && (
+        {isHide && pathname === '/mto/production-planning-scheduling/overall-bm-report' && menuItem.id === 10 && (
           <DeptWiseAnalytics />
         )}
 
-        {isHide && pathname === '/production-planning-scheduling/full-kit-assignment' && menuItem.id === 10 && (
+        {isHide && pathname === '/mto/production-planning-scheduling/full-kit-assignment' && menuItem.id === 10 && (
           <AnalyticalScreen pageName="Fullkit assignment" />
         )}
-        {isHide && pathname === '/production-planning-scheduling/dynamic-release-mangement' && menuItem.id === 10 && (
+        {isHide && pathname === '/mto/production-planning-scheduling/dynamic-release-mangement' && menuItem.id === 10 && (
           <DRMAnalytics />
         )}
 
-        {isHide && pathname === '/production-planning-scheduling/deptwise-bm-report' && menuItem.id === 10 && (
+        {isHide && pathname === '/mto/production-planning-scheduling/deptwise-bm-report' && menuItem.id === 10 && (
           <DeptWiseAnalytics />
         )}
 
-        {isHide && pathname === '/planning/simulative-fullkit' && menuItem.id === 19 && (
+        {isHide && pathname === '/mto/planning/simulative-fullkit' && menuItem.id === 19 && (
           <SimAnalyticalScreen />
         )}
 
-        {isHide && pathname === '/procurement-planning/planning' && menuItem.id === 19 && (
+        {isHide && pathname === '/mto/procurement-planning/planning' && menuItem.id === 19 && (
           <ProcAnalytics />
         )}
 
 
 
-        {isHide && pathname === '/procurement/insights-and-trends/day-wise-coverage' && menuItem.id === 19 && (
+        {isHide && pathname === '/mto/procurement/insights-and-trends/day-wise-coverage' && menuItem.id === 19 && (
           <DaywiseCoverageAnalytics />
         )}
 
-        {isHide && pathname === '/supply-chain-intelligence-hub/rrr' && menuItem.id === 9 && (
+        {/* {isHide && pathname === '/mta/supply-chain-intelligence-hub/rrr' && menuItem.id === 9 && (
           <RRRAnalytics />
         )}
 
-        {isHide && pathname === '/supply-chain-intelligence-hub/bor' && menuItem.id === 9 && (
+        {isHide && pathname === '/mta/supply-chain-intelligence-hub/bor' && menuItem.id === 9 && (
           <BORAnalytics />
         )}
 
-        {isHide && pathname === "/dbm/dbm-norm-suggestions" && menuItem.id === 9 && (
+        {isHide && pathname === "/mta/dbm/dbm-norm-suggestions" && menuItem.id === 9 && (
           <DBMAnalytics />
         )}
 
-        {isHide && pathname === '/supply-chain-intelligence-hub/open-expediting-requests' && menuItem.id === 9 && (
+        {isHide && pathname === '/mta/supply-chain-intelligence-hub/open-expediting-requests' && menuItem.id === 9 && (
           <OpenExpediteAnalytics />
-        )}
+        )} */}
 
         {isHide && pathname === "/ist-forced-closure" && menuItem.id === 6 && (
           <ParticularForced themeUi={themeUi} />
@@ -326,10 +323,10 @@ const NavbarItem = ({
           <ParticularAvai themeUi={themeUi} />
         )}
 
-        {isHide && pathname === '/poogi/reasons-for-delayed-orders' && menuItem.id === 11 && (
+        {isHide && pathname === '/mto/poogi/reasons-for-delayed-orders' && menuItem.id === 11 && (
           <ReasonsOrderAnalyticalScreen />
         )}
-        {isHide && pathname === '/poogi/insight-and-trends/resource-utilization-wip-profile' && menuItem.id === 11 && (
+        {isHide && pathname === '/mto/poogi/insight-and-trends/resource-utilization-wip-profile' && menuItem.id === 11 && (
           <ResourceUtilAnalytics />
         )}
 

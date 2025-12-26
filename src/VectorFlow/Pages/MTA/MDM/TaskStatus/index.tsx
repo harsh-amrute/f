@@ -14,6 +14,8 @@ import {  differenceInSeconds} from "date-fns"
 import { useUserData } from "../../../../../context"
 
 import * as globalStyles from '../../../../../styles/global'
+import { useSelector } from "react-redux"
+import { RootState } from "../../../../../redux/store/store"
 
 
 const TaskStatus = ()=>{
@@ -32,7 +34,9 @@ const TaskStatus = ()=>{
     const [tempAgGridRowData,setTempAgridRowData] = useState<any>([])
     const [currentMasterName,setCurrentMasterName] = useState<string>('')
     const [tempAgGridColDefs,setTempAgGridColDefs] = useState<ColDef[]>([])
-    const [tempDownloadData,setTempDownloadData] = useState<boolean>(false);
+    const [tempDownloadData,setTempDownloadData] = useState<boolean>(false); 
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const TASKSTATUS_PAGE = EnvConfig['TASKSTATUS_PAGE'];  
     
     const tempAgGridProps:AgGridReactProps = {
         columnDefs:tempAgGridColDefs,
@@ -81,12 +85,21 @@ const TaskStatus = ()=>{
             return
         }
        
-        if(currentMasterFields){
-          setCurrentMasterName(currentMasterFields.name)
-          const existingColumns = getExistingColumns(payload.Actiontype==2?JSON.parse(currentTaskMaster.data[0].new):currentTaskMaster.data[0])
-          const existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields.fields)
-          setTempAgGridColDefs(mapMasterToTaskStatusColumnGroupDefs(existingColumnFields,currentTaskMasterId,actionName))
-          setTempAgridRowData(mapTaskStatusDataToRowData(currentTaskMaster.data,existingColumnFields,actionName))
+         if(currentMasterFields) {
+            setCurrentMasterName(currentMasterFields.name);
+            let dataToAnalyze = currentTaskMaster.data[0];
+            if (payload.Actiontype == 2 && dataToAnalyze.new) {
+                dataToAnalyze = typeof dataToAnalyze.new === 'string'
+                    ? JSON.parse(dataToAnalyze.new)
+                    : dataToAnalyze.new;
+            }
+        const existingColumns = getExistingColumns(dataToAnalyze);
+        let existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields.fields)
+          if(actionName === "remove") {
+            existingColumnFields = existingColumnFields.filter(field => field?.isDelete);
+          }
+          setTempAgGridColDefs(mapMasterToTaskStatusColumnGroupDefs(currentTaskMasterId,existingColumnFields,currentTaskMasterId,actionName))
+          setTempAgridRowData(mapTaskStatusDataToRowData(currentTaskMasterId,currentTaskMaster.data,existingColumnFields,actionName))
           setTempDownloadData(true)
         }
        }catch(error:any){
@@ -221,7 +234,7 @@ const TaskStatus = ()=>{
                 ],globalStyles.chooseThemeColor[themeUi].color4)}
                 pagination
                 // paginationPageSize={10}            
-                paginationPageSize={parseInt(process.env.REACT_APP_TASKSTATUS_PAGE || '200')}  
+                paginationPageSize={parseInt(TASKSTATUS_PAGE || '200')}  
                 height={"100%"}          
 
             />

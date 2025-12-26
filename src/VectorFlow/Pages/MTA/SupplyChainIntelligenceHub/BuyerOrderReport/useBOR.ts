@@ -1,6 +1,6 @@
 import { useBORData, useBORDataCount,useSubmitBORRemark,useGetBORRemarkHistory } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport"
 import {useGetDailyData} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
-import { convertUiConfigToOptions, MainMenuItemsCustomization, getColumnDefinationsMTA  } from "../../../../../helpers/utils"
+import { convertUiConfigToOptions, MainMenuItemsCustomization, getColumnDefinationsMTA , CsvExportMTA } from "../../../../../helpers/utils"
 import { useState,useMemo, useEffect,useRef, CSSProperties } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import {DispatchColorCellRenderer} from "./CellRenderer"
@@ -82,7 +82,10 @@ export const useBOR =()=>{
      const showNormChangeHistoryTable = useSelector((state:RootState) => state.mta.showNormChangeHistoryTable);
      const dailyData = useSelector((state:RootState) => state.mta.dailyData);
     //  const rowsPerPage=50;
-     const rowsPerPage = parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100');
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const BOR_ROWS_PER_PAGE = EnvConfig['BOR_ROWS_PER_PAGE'];   
+     const rowsPerPage = parseInt(BOR_ROWS_PER_PAGE || '100');
+    const [userPageSize , setUserPageSize]  = useState<number>(BOR_ROWS_PER_PAGE?parseInt(BOR_ROWS_PER_PAGE):50)  
      const handleChangePage = async (pageNo:any) => {
          setCurrentPage(pageNo);
          loadGridData(pageNo,currFilter);
@@ -265,10 +268,10 @@ export const useBOR =()=>{
   const [initialColumnState, setInitialColumnState] = useState<any>(undefined);
   const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
 
-  useEffect(() => {
-    fetchData();
-    getBORUiConfig();
-  }, []);
+  // useEffect(() => {
+  //   fetchData();
+  //   getBORUiConfig();
+  // }, []);
 
   const fetchData = async () => {
     await getRecordsCount();
@@ -410,21 +413,21 @@ export const useBOR =()=>{
              paginationParameter: {
         pageNumber: currentPage,
         // recordPerPage:20
-    recordsPerPage: parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100')
+    recordsPerPage: parseInt(BOR_ROWS_PER_PAGE || '100')
     }
         }
         const resultCount=await getBorDataCount(payload);
         setRecordCount(resultCount?.data?.recordCount);
       }
     
-    const loadGridData = async (pageNo:any,filter?:any)=> {
+    const loadGridData = async (pageNo:any,filter?:any , pageSize?:any)=> {
 
       try {
         
           notifyLoader("loading Grid Data")
           const payload={
             filters:filter || {},
-            paginationParameter:{pageNumber:pageNo,recordsPerPage:rowsPerPage}
+            paginationParameter:{pageNumber:pageNo,recordsPerPage:pageSize || userPageSize ||rowsPerPage || 100}
         }
         const result = await getBorData(payload);
         setRowData(result.data.data || [])
@@ -439,6 +442,7 @@ export const useBOR =()=>{
     }
 
     const onApplyFilter = async(filter:any)=>{
+      await getBORUiConfig();
       await getRecordsCount(filter)
       await loadGridData(1,filter)
       setCurrFilter(filter)
@@ -476,7 +480,7 @@ export const useBOR =()=>{
         enableBrowserTooltips:true,
         enableFillHandle: true,
         getMainMenuItems: MainMenuItemsCustomization,
-        paginationPageSize:parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100'),
+        paginationPageSize:parseInt(BOR_ROWS_PER_PAGE || '100'),
         gridOptions:{
             rowHeight:50,
             getRowStyle: (params: any) => {
@@ -538,15 +542,30 @@ export const useBOR =()=>{
     },[ref,tempDownloadData])
 
       const onExportToExcelCallBack=async(pageNumber:number)=>{
-        const data =  await getBorData({
-            filters:currFilter,
-            paginationParameter:{
-                pageNumber:pageNumber,
-                recordsPerPage:5000
-            }
-        })
-        
-        return data.data.data
+        const payload = {
+          id: 1,
+          name: '',
+          fields: [],
+          filters: currFilter,
+          paginationParameter: {
+              pageNumber: pageNumber,
+              recordsPerPage: 5000
+          },
+          ISExport:"1",
+          reportName:"BOR",
+          stream:1,
+          responseType: `arraybuffer`
+      }
+      notifyLoader("Downloading Data...")
+      try {
+          await CsvExportMTA(payload, "BuyerOrderReport");
+          notifySuccess(`Data Exported Successfully`);
+      }
+      catch(error) {
+          console.log(error);
+          notifyError("Error Exporting Excel")
+          throw error;
+      }
     }
 
 
@@ -604,6 +623,10 @@ export const useBOR =()=>{
     },
   }
   
+    const savePageSize = async( pageSize:number)=>{
+        setUserPageSize(pageSize)
+        await loadGridData(currentPage,currFilter, pageSize);
+    }
      return {   
         ref,    
         isLoading :isUIConfigLoading || isBORDataLoading || isBORCountLoading,      
@@ -646,7 +669,9 @@ export const useBOR =()=>{
         onCloseRemarkHistory,
         onCloseSubmitRemark,
         onResetCallback,
-       lastRunDate
+       lastRunDate,
+       savePageSize,
+        userPageSize
 
     }
 }

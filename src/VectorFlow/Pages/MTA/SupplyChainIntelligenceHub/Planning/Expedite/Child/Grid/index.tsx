@@ -11,6 +11,8 @@ import RequestExpeditingModal from '../../../../BPR/RequestExpeditingModal';
 import { useSubmitOpenExpediteRequest } from '../../../../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/Planning';
 import { notifyError, notifyLoader, notifySuccess } from '../../../../../../../../helpers/notify';
 import { toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../../../../../../redux/store/store';
 
 const ExpediteChildGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCategory,currentTab}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any,currentCategory:string,currentTab:string})=>{
 
@@ -19,6 +21,16 @@ const ExpediteChildGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCat
     const [activeRow,setActiveRow] = useState<any>();
     const [isSubGridOpen,toggleSubGrid] = useState<any>(true);
     const {mutateAsync:submitRemark} = useSubmitOpenExpediteRequest()
+
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const PRODUCT_PERMISSION_L1 = EnvConfig['PRODUCT_PERMISSION_L1']; 
+    const PRODUCT_PERMISSION_L2 = EnvConfig['PRODUCT_PERMISSION_L2']; 
+    const PRODUCT_PERMISSION_L3 = EnvConfig['PRODUCT_PERMISSION_L3']; 
+    
+    const LOCATION_PERMISSION_L1 = EnvConfig['LOCATION_PERMISSION_L1']; 
+    const LOCATION_PERMISSION_L2 = EnvConfig['LOCATION_PERMISSION_L2']; 
+    const LOCATION_PERMISSION_L3 = EnvConfig['LOCATION_PERMISSION_L3']; 
+
     const submitOpenExpediteRemark = async(remark:string)=>{
         if(remark.length===0){
             notifyError('Message cannot be empty')
@@ -41,7 +53,7 @@ const ExpediteChildGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCat
                 ]
             })
         toast.dismiss()
-        notifySuccess('Request Submitted sucessfully')
+        notifySuccess('Request Submitted successfully')
         }catch(err:any){
             notifyError(err)
         }finally{
@@ -160,7 +172,7 @@ const ExpediteChildGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCat
                 return tagsColDef
             }
 
-            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
+            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{} , PRODUCT_PERMISSION_L1 , PRODUCT_PERMISSION_L2 , PRODUCT_PERMISSION_L3 , LOCATION_PERMISSION_L1 , LOCATION_PERMISSION_L2 , LOCATION_PERMISSION_L3); 
             if(customColdef) return customColdef;
             return {
                 field:column['colCode'],

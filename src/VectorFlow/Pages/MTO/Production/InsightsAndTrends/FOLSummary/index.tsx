@@ -17,7 +17,7 @@ import FullkitCellRenderer from "../../../Common/FullKitCellRenderer/FullkitCell
 // import { valueContainerCSS } from "react-select/dist/declarations/src/components/containers";
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import OverlayLoader from "../../../Common/Loader";
-import { UIGridCode } from "../../../Common/Enum";
+import { ExcelExportName, UIGridCode } from "../../../Common/Enum";
 import { format } from "date-fns";
 
 
@@ -50,12 +50,11 @@ const FOLSummary = () => {
 
   const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
   const [userPageSize, setUserPageSize] = useState<any>();
-  const [currentPage, setCurrentPage] = useState<number>(1)
-  const [totalRow, setTotalRow] = useState<number>(0)
+  const [isPivot, setIsPivot] = useState<any>(false);
 
 
   // const { data } = useGetEnquiryResData() || {};
-  const { data } = useGetEnquiryResData() || {};
+  const { data: FOLSummaryData } = useGetEnquiryResData() || {};
 
 
 
@@ -483,7 +482,6 @@ const FOLSummary = () => {
   const getEnquiryData = (data: any) => {
     try {
       setTableData(data?.data?.data);
-      setTotalRow(data?.data?.data.length);
     } catch (e) {
       console.log(e);
       notifyError('Failed to set Enquiry data!');
@@ -492,24 +490,21 @@ const FOLSummary = () => {
   
   useEffect(() => {
     notifyLoader("Loading Grid Data");
-    if (data?.data?.data && userConfigFetched) {
-      getEnquiryData(data);
+    if (FOLSummaryData?.data?.data && userConfigFetched) {
+      getEnquiryData(FOLSummaryData);
     }
     toast.dismiss();
-  }, [data, userConfigFetched]);
+  }, [FOLSummaryData, userConfigFetched]);
   
   
   const savePageSize = (pageSize: any) => {
     if (pageSize) {
       setUserPageSize(pageSize);
-        setCurrentPage(1)
-        handleSaveClick(undefined, pageSize);
-        getEnquiryData({data, pageSize,currentPage});
-      } else {
-        notifyError("Invalide page size");
-    }
-    
-}
+      handleSaveClick(undefined, pageSize);
+    } else {
+      notifyError("Invalide page size");
+    } 
+  }
 
   const getUserColumnConfig = async () => {
     try {
@@ -518,10 +513,11 @@ const FOLSummary = () => {
         rn_id: UIGridCode.ProdFolSummary
       });
 
-      setUserConfigFetched(true)
       const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
       setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
       setColumnState(newConfig.cs);
+      setIsPivot(newConfig.pivot);
+      setUserConfigFetched(true)
 
       if (!data) {
         console.error('Failed to apply column state');
@@ -535,17 +531,17 @@ const FOLSummary = () => {
   const handleSaveClick = async (coldefs?: any, page_size?: any) => {
     try {
       if (coldefs) {
-        const fullConfig = { cs: coldefs, pageSize: userPageSize };
+        const fullConfig = { pivot: false, cs: coldefs, pageSize: userPageSize };
         const payload = {
           un: user.user.name,
           rn_id: UIGridCode.ProdFolSummary,
           cs: JSON.stringify(fullConfig),
         };  
         await updateUserUIReportConfigData([payload]);
-        setColumnState([...coldefs]); 
-  
+        setColumnState([...coldefs]);
+        setIsPivot(false);
       } else if (page_size) {
-        const fullConfig = { cs: columnState, pageSize: page_size };
+        const fullConfig = { pivot: isPivot, cs: columnState, pageSize: page_size };
         const payload = {
           un: user.user.name,
           rn_id: UIGridCode.ProdFolSummary,
@@ -555,8 +551,9 @@ const FOLSummary = () => {
   
       } else {
         if (currentGridRef?.current?.api) {
-          const config = currentGridRef.current.api.getColumnState();
-          const fullConfig = { cs: config, pageSize: userPageSize };
+          const config = currentGridRef.current?.api.getColumnState();
+          const isPivot = currentGridRef.current?.api.isPivotMode();
+          const fullConfig = { pivot: isPivot, cs: config, pageSize: userPageSize };
           const payload = {
             un: user.user.name,
             rn_id: UIGridCode.ProdFolSummary,
@@ -592,15 +589,14 @@ const FOLSummary = () => {
 
   useEffect(() => {
     notifyLoader("Loading Grid Data")
-    if (data?.data?.data && userConfigFetched) {
-      setCurrentPage(1);
-      setTableData(data?.data?.data);
+    if (FOLSummaryData?.data?.data && userConfigFetched) {
+      setTableData(FOLSummaryData?.data?.data);
     }
     toast.dismiss()
-  }, [data, userConfigFetched]);
+  }, [FOLSummaryData, userConfigFetched]);
 
   useEffect(() => {
-    setFilterData(data?.data?.data);
+    setFilterData(FOLSummaryData?.data?.data);
   }, [tableData]);
 
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
@@ -634,8 +630,13 @@ const FOLSummary = () => {
     }
   }, [HeaderData])
 
-  const onExcelExport = ()=>{
-    gridRef.current?.api?.exportDataAsExcel({ fileName: `FOL_Summary_${format(Date.now(), "dd/MM/yyyy")}` })
+  const onExcelExport = () => {
+    // const exportName = `FOL_Summary_${format(Date.now(), "dd-MM-yyyy")}`;
+    const exportName = ExcelExportName.FOL_Summary
+    gridRef.current?.api?.exportDataAsExcel({
+      fileName: exportName,
+      sheetName: exportName 
+    });
   }
 
   return (
@@ -669,6 +670,7 @@ const FOLSummary = () => {
           columnState={columnState}
           savePageSize={savePageSize}
           userPageSize={userPageSize}
+          isPivot={isPivot}
         />
       </BTRAllomentSection>
 

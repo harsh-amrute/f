@@ -12,7 +12,7 @@ import VFButtonOutline from '../../../../../components/VectorFLOW/commons/VFButt
 import { useGetRouteDetails, useUpdateBuffRouteCCREstDate } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
 import _ from 'lodash';
-import { add, format, max } from 'date-fns';
+import { add, addDays, format, max } from 'date-fns';
 import Tooltip from '../../Common/Tooltip';
 import { notifyError, notifyErrorWithoutAutoClose, notifySuccess } from '../../../../../helpers/notify';
 import * as globalStyles from "../../../../../styles/global";
@@ -230,7 +230,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
     }
 
 
-    const [chartData, setChartData] = useState<any>([])
+    const [chartData, setChartData] = useState<any>([]);
     const [maxFolinDays, setMaxFolInDays] = useState(1);
 
     const interval = useMemo(() => {
@@ -241,21 +241,73 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
         return i
     }, [maxFolinDays])
 
+    const barColors = {
+        "ccrFolWithHoliday": "black",
+        "orderLoad": "#3874FF",
+        "fol_gap": "#FF8A00"
+    }
+
+    const tooltipValues = (value: any) => {
+        return `${value} ${value == 1 ? " day" : " days"}`
+    }
+
+    function TooltipRenderer({ datum, xKey }: any) {
+        return `
+        <div style="background:#6C696A; style="transform: translateX(120px)" >
+        <div  style=" color: white; padding: 10px 10px 4px;background-color: #6C696A; display: flex; justify-content: center; align-items: center; border-bottom: 1px dashed white">
+            ${datum[xKey]}
+        </div>
+        <div style="color: white; background-color: #6C696A; padding: 10px;">
+          <div style="display: flex; align-items: center;">
+            <div style="margin-right: 10px; height: 3px; width: 15px; background-color: ${barColors["ccrFolWithHoliday"]}"></div>
+            FOL with holidays: ${tooltipValues(datum["ccrFolWithHoliday"])} (FOL- ${tooltipValues(datum["FOL"])}, Holidays- ${tooltipValues(datum["holidays"])} )
+          </div>
+          <div style="display: flex; align-items: center;">
+            <div style="margin-right: 10px; height: 3px; width: 15px; background-color: ${barColors["orderLoad"]}"></div>
+            SOL: ${tooltipValues(datum["orderLoad"])}
+          </div>
+        </div>
+        </div>`;
+    
+        // dont remove below code require for fol gap phase 2
+        {/*<div style="display: flex; align-items: center;">
+            <div style="margin-right: 10px; height: 3px; width: 15px; background-color: ${barColors["fol_gap"]}"></div>
+            FOL Gap: ${tooltipValues(datum["fol_gap"])}
+          </div>*/}
+      }
+
     const chartOptions: any = {
         data: chartData,
+        tooltip: {
+            mode: "single",
+        },
         series: [
             {
                 type: "bar",
                 direction: "horizontal",
                 xKey: "ccr_name",
-                yKey: "ccrFolInDays",
+                yKey: "ccrFolWithHoliday",
                 yName: "FOL",
                 stacked: true,
-                fill: "black",
-                // tooltip: {
-                //   renderer: TooltipRenderer,
-                // },
+                fill: barColors["ccrFolWithHoliday"],
+                tooltip: {
+                    position: { placement: "right" },  // anchor to bar
+                    renderer: TooltipRenderer
+                }
             },
+            // {
+            //     type: "bar",
+            //     direction: "horizontal",
+            //     xKey: "ccr_name",
+            //     yKey: "fol_gap",
+            //     yName: "FOL Gap",
+            //     stacked: true,
+            //     fill: barColors["fol_gap"],
+            //     tooltip: {
+            //         position: { placement: "right" },  // anchor to bar
+            //         renderer: TooltipRenderer
+            //     }
+            // },
             {
                 type: "bar",
                 direction: "horizontal",
@@ -263,10 +315,13 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                 yKey: "orderLoad",
                 yName: "SOL",
                 stacked: true,
-                fill: "#3874FF",
+                fill: barColors["orderLoad"],
+                tooltip: {
+                    position: { placement: "right" },  // anchor to bar
+                    renderer: TooltipRenderer
+                }
             },
         ],
-
         axes: [
             {
                 type: "category",
@@ -284,21 +339,20 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                 type: "number",
                 position: "bottom",
                 line: { enabled: true },
-                // interval: 1,
+                interval: { step: interval },
                 tick: {
-                    interval: interval,
+                    enabled: true,
                 },
                 label: {
                     fontSize: 10,
                     color: "black",
                     formatter: labelFormatter,
                     rotation: -45,
-                    //   avoidCollisions: true
+                    avoidCollisions: true
                 },
                 gridLine: {
                     enabled: false,
                 },
-
             },
         ],
 
@@ -453,8 +507,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                         // console.log("order.pcqty", order.pcQty)
 
                         const lineCCRPendingQty = lineCCR[order.ok]?.[ccrId]?.pcqty || 0;
-                        const orderPendingCCRQty = order.pcqty || 0
-
+                        const orderPendingCCRQty = order.pcqty || 0;
 
                         if (lineCCRPendingQty !== null && lineCCRPendingQty < 0 && lineCCRPendingQty === undefined) {
                             if (!orderPendingCCRQty) {
@@ -557,7 +610,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                     // const crddFlag = 0;
                     let maxDate;
 
-                    if (crddFlag?.value===1) {
+                    if (crddFlag?.value == 1) {
                         maxDate = max([folDD, bufferDD, crDD]);
                     } else {
                         maxDate = max([folDD, bufferDD]);
@@ -752,40 +805,49 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                     const ccrWorkingHoursPerDay = ccr.working_hours_per_day || "1";
                     // ccrWorkingHoursPerDay = parseInt(ccrWorkingHoursPerDay);
 
-
-
                     const ccrItemTypeMapping = masters?.CCRItemTypeMappingMaster.find((ccr: any) => ccr.ccrId === ccrId && ccr.it == order.itid)
                     // console.log(JSON.parse(JSON.stringify(orderLoadOfCcrs)))
 
                     const orderLoadInDays = ((orderLoadOfCCRs[ccrId]?.orderLoad || 0) * 1.0) + ((ccrItemTypeMapping?.tt || 1) * order.pcqty) / (ccrWorkingHoursPerDay * 60);
 
                     const ccrFolInDays = masters.FOL[ccrId]?.fol;
-
+                    
                     const today: any = new Date();
                     today.setHours(0, 0, 0, 0);
 
                     // TODO: Check if plant id is also to be matched
                     const latestWorkingDayLno = masters.WorkingCalender.find((data: any) => {
-                        return new Date(data.wd) >= today && data.ccrId == ccrId
+                        return new Date(data.wd) >= today && data.ccrId == ccrId && data.PlId == order.plid
+                        // return new Date(data.wd) >= today && data.ccrId == ccrId
                     })?.lno;
-
-                    const folIndex = latestWorkingDayLno + ccrFolInDays - 1;
-
+                    
+                    const folIndex = Math.ceil(latestWorkingDayLno + ccrFolInDays - 1);
+                    const maxFOLIndex = Math.max(latestWorkingDayLno, folIndex);
                     const folDD: any = masters.WorkingCalender.find((data: any) => {
-                        return data.lno == folIndex && data.ccrId == ccrId
+                        return data.lno == maxFOLIndex && data.ccrId == ccrId && data.PlId == order.plid
                     })?.wd;
+                    const formatedFOLDate = new Date(folDD);
+                    formatedFOLDate.setHours(0, 0, 0, 0);
 
+                    let diffDays: any = dateDiffInDays(today, formatedFOLDate);
 
+                    // Added - 1 only if the dates are different for graph to consider todays date in graph
+                    if (diffDays !== 0) {
+                        diffDays += 1;
+                    }
+                    
+                    const FOLGap = masters.FOL[ccrId]?.fol_gap || 0;
 
-                    const diffDays: any = dateDiffInDays(today, new Date(folDD));
-
-                    maxFol = Math.max(diffDays, maxFol);
+                    maxFol = Math.max(diffDays, maxFol, FOLGap);
 
                     orderLoadOfCCRs[ccrId] = {
                         ccrId,
                         ccr_name: ccr.ccr_name,
                         orderLoad: orderLoadInDays,
-                        ccrFolInDays: diffDays
+                        ccrFolWithHoliday: diffDays,
+                        fol_gap: FOLGap,
+                        FOL: ccrFolInDays,
+                        holidays: diffDays - Math.ceil(ccrFolInDays),
                     }
                 })
             });
@@ -797,6 +859,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
             setChartData(Object.values(orderLoadOfCCRs).map((order: any) => {
                 return { ...order, orderLoad: Math.ceil(order.orderLoad) }
             }))
+
         }
         catch (err) {
             console.error(err);
@@ -811,11 +874,12 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
 
     // Label formatter function
     function labelFormatter(params: any) {
-        try {
+        try {            
             const today = new Date();
-            const value = parseInt(params.value);
 
-            // console.log(today)
+            today.setDate(today.getDate() - 1); // should consider todays also in graph so -1 added
+            
+            const value = parseInt(params.value);
 
             if (value == 0) {
                 return format(today, "dd MMM yy");  // Returns today's date
@@ -832,10 +896,13 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
         }
     }
 
-
-
-
     function dateDiffInDays(date1: any, date2: any) {
+        //if fol date is not valid then return date diff as 0
+        if (!(date1 instanceof Date) || isNaN(date1.getTime()) ||
+            !(date2 instanceof Date) || isNaN(date2.getTime())) {
+            return 0;
+        }
+
         // One day in milliseconds
         const oneDay = 1000 * 60 * 60 * 24;
 
@@ -1205,6 +1272,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                             ccrGroupMaster={ccrGroups}
                                             selectedRoutes={selectedRoute}
                                             setSelectedRoutes={setSelectedRoute}
+                                            isCCRGroupEditable = {true}
                                         />
                                     </div>
                                     <div style={{ flex: "1" }}>

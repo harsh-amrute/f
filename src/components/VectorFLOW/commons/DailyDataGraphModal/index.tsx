@@ -237,6 +237,10 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                 normGreen:normBand,
                 normYellow:normBand,
                 normBlue:normBlue,
+                rrs:newadjustedChartData[index]['rrs'] > 0 ? newadjustedChartData[index]['rrs'] : 0,
+                grs:newadjustedChartData[index]['grs'] > 0 ? newadjustedChartData[index]['grs'] : 0,
+                rrc:newadjustedChartData[index]['rrc'] > 0 ? newadjustedChartData[index]['rrc'] : 0,
+                grc:newadjustedChartData[index]['grc'] > 0 ? newadjustedChartData[index]['grc'] : 0,
                 upwardStockBasedNorm:newadjustedChartData[index]['rrs'] > 0 ? data.norm : 0,
                 downwardStockBasedNorm:newadjustedChartData[index]['grs'] > 0 ? data.norm : 0,
                 upwardConsumptionBasedNorm:newadjustedChartData[index]['rrc'] > 0 ? data.norm : 0,
@@ -341,6 +345,20 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
         `
 
         function renderer(params: any) {
+          let inputRRS = 0;
+          let inputGRS = 0;
+          let inputRRC = 0;
+          let inputGRC = 0;
+
+          if (suspensionType === 'upwardStockBased') {
+            inputRRS = params.datum.rrs;
+          } else if (suspensionType === 'downwardStockBased') {
+              inputGRS = params.datum.grs;
+          } else if (suspensionType === 'upwardConsumptionBased') {
+              inputRRC = params.datum.rrc;
+          } else if (suspensionType === 'downwardConsumptionBased') {
+              inputGRC = params.datum.grc;
+          }
           
           const suggestionObject = suggestionData.find((data:any)=>new Date(data['sdate']).getTime() === new Date(params.datum['date']).getTime())
           const dailyDataObject = missingData.find((data:any)=>new Date(data['dt']).getTime() === new Date(params.datum['date']).getTime())
@@ -361,7 +379,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
             return " " ; 
           }
 
-          const suspensionReasons = generateSuspensionReasons(params.datum.upwardStockBasedNorm,params.datum.downwardStockBasedNorm,params.datum.upwardConsumptionBasedNorm,params.datum.downwardConsumptionBasedNorm)
+          const suspensionReasons = generateSuspensionReasons(inputRRS, inputGRS, inputRRC, inputGRC);
        
           let tooltip = `
             <div style="text-align:center;font-family:Roboto;font-weight:700;padding:5px;border-bottom:1px dashed #777777;">
@@ -755,10 +773,10 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                         <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData?.['gcp'] !== undefined && masterData?.['gcp'] !== null ? masterData['gcp'] : ""}</SCText>
                       </SCDataNode>
                     </SCDataRow>
-                    <SCHorizontalDivider/>
-                    <div style={{display:'flex',alignItems:'center',gap:'5px'}}>
-                      <SCText fontWeight={300} fontSize={16}>Monitoring Date :</SCText>
-                      <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{getMonitoringDate()}</SCText>
+                    {/* <SCHorizontalDivider/>
+                    <div style={{display:'flex',alignItems:'center',gap:'5px'}}> */}
+                      {/* <SCText fontWeight={300} fontSize={16}>Monitoring Date :</SCText> */}
+                      {/* <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{getMonitoringDate()}</SCText> */}
                       {/* <SCDataNode>
                         <SCText fontWeight={300} fontSize={16}>Monitoring Date :</SCText>
                         <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{'5'}</SCText>
@@ -768,7 +786,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                         <SCText fontWeight={300} fontSize={16}>Total Receipt :</SCText>
                         <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{3}</SCText>
                       </SCDataNode> */}
-                    </div>
+                    {/* </div> */}
                   </SCSeasonalityDetailsBody>           
                 </SCSeasonalityStatusDetails>
             </SCSeasonalityContainer>

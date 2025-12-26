@@ -22,12 +22,13 @@ const FilterSelectDropdown = ({ placeholder, options, hideDropdownArrow, onChang
                 height: '39px',
                 borderRadius: ' 20px 20px 20px 20px',
                 background: '#F2F2F2 0% 0% no-repeat padding-box',
-                border: 'none',
+                // border: 'none',
                 cursor: 'pointer',
                 display: 'flex',
                 justifyContent: 'center',
 
 
+                border: '1px solid rgb(204, 204, 204)'
 
             }
         ),
@@ -143,9 +144,11 @@ const FilterSelectDropdown = ({ placeholder, options, hideDropdownArrow, onChang
         />
     )
 }
+
 const FilterTextInput = ({ placeholder, onChange, disabled = false, value }: any) => {
     return (
-        <input type="number" disabled={disabled} style={{ width: '100%', height: '38px', background: '#F2F2F2 0% 0% no-repeat padding-box', borderRadius: '20px', outline: 'none', color: '#313131', fontFamily: 'Roboto', fontWeight: '300', fontSize: '16px', textAlign: 'center', border: 'none' }} placeholder={placeholder} onChange={onChange} value={value} />
+        <input type="number" disabled={disabled} style={{ width: '100%', height: '38px', background: '#F2F2F2 0% 0% no-repeat padding-box', borderRadius: '20px', outline: 'none', color: '#313131', fontFamily: 'Roboto', fontWeight: '300', fontSize: '16px', textAlign: 'center', border:'1px solid rgb(204, 204, 204)'
+        }} placeholder={placeholder} onChange={onChange} value={value} />
     )
 }
 
@@ -163,11 +166,7 @@ interface IFilterModalProps {
 }
 
 
-const AvailabilityFilter = ({ header, filterId, handleFolChange }: any) => {
-
-
-
-
+const AvailabilityFilter = ({ header, filterId, handleFolChange, selectedOptions }: any) => {
     const comparisionOptions = [
         { value: 'equalto', label: 'Equal to' },
         { value: 'notequalto', label: 'Not Equal to' },
@@ -177,16 +176,8 @@ const AvailabilityFilter = ({ header, filterId, handleFolChange }: any) => {
         { value: 'smallerthanequalto', label: '<=' },
     ]
 
-
-
-
-    const [folFilterSymbol, setfolFilterSymbol] = useState("");
-    const [folFilterValue, setFolFilterValue] = useState("");
-
-    useEffect(() => {
-        handleFolChange(folFilterSymbol, folFilterValue)
-    }, [folFilterSymbol, folFilterValue])
-
+    const [folFilterSymbol, setfolFilterSymbol] = useState(selectedOptions?.folfilter?.symbol || "");
+    const [folFilterValue, setFolFilterValue] = useState(selectedOptions?.folfilter?.value || "");
 
     return (
         <>
@@ -199,10 +190,29 @@ const AvailabilityFilter = ({ header, filterId, handleFolChange }: any) => {
 
 
                 <SelectDropdownComponent data-testid="BPR-filter-dropdown">
-                    <FilterSelectDropdown className="custom-scrollbar" placeholder={folFilterSymbol} options={comparisionOptions} hideDropdownArrow onChange={(e: any) => { console.log("filter val,", e), setfolFilterSymbol(e.label) }} filterId={filterId} value={folFilterSymbol} />
+                    <FilterSelectDropdown
+                        className="custom-scrollbar"
+                        placeholder={folFilterSymbol}
+                        options={comparisionOptions}
+                        hideDropdownArrow
+                        onChange={(e: any) => {
+                            setfolFilterSymbol(e.label),
+                            handleFolChange(e.label, folFilterValue)
+                        }}
+                        filterId={filterId}
+                        value={folFilterSymbol}
+                    />
                 </SelectDropdownComponent>
                 <SelectDropdownComponent data-testid="BPR-filter-dropdown">
-                    <FilterTextInput placeholder={folFilterValue} onChange={(e: any) => { setFolFilterValue(e.target.value) }} header={header} value={folFilterValue} />
+                    <FilterTextInput
+                        placeholder={folFilterValue}
+                        onChange={(e: any) => {
+                            setFolFilterValue(e.target.value),
+                            handleFolChange(folFilterSymbol, e.target.value)
+                        }}
+                        header={header}
+                        value={folFilterValue}
+                    />
                 </SelectDropdownComponent>
             </DropdownGroupWrapper>
         </>
@@ -266,8 +276,6 @@ const FilterModal = (props: IFilterModalProps) => {
             setActiveAccordian(key);
         }
     }
-
-    const [folValue, setFolValue] = useState("");
 
     return (
         <VFModalCard
@@ -360,7 +368,15 @@ const FilterModal = (props: IFilterModalProps) => {
                             })
                         }
                         <FilterComponent style={{ borderTop: '0.5px solid #E1E2E8', padding: '15px' }} >
-                            <AvailabilityFilter handleFolChange={handleFolChange} placeholder={"FOL"} value={folValue} onChange={(e: any) => { setFolValue(e.target.value) }} header="Location Filter" filterId={'LF1'} filterState={filters}></AvailabilityFilter>
+                            <AvailabilityFilter
+                                handleFolChange={handleFolChange}
+                                header="Location Filter"
+                                filterId={'LF1'}
+                                filterState={filters}
+                                selectedOptions={selectedOptions}
+                            />
+                                
+                                
                         </FilterComponent>
                     </FilterAccordianWrapper>
 

@@ -9,8 +9,9 @@ import {
 import {
   convertUiConfigToOptions,
   getColumnDefinationsMTA,
+  CsvExportMTA,
 } from "../../../../../helpers/utils";
-import { notifyError } from "../../../../../helpers/notify";
+import { notifyError, notifyLoader, notifySuccess} from "../../../../../helpers/notify"
 // import { toast } from "react-toastify";
 
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
@@ -24,7 +25,7 @@ import { ColDef } from "ag-grid-enterprise";
 
 import { TextToTextColorMapper } from "../BPR/BPRCellRenderers";
 import { type DailyDataGraph } from "../../../../types/MTA";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   TOGGLE_GRAPH_MODAL,
   UPDATE_DAILY_DATA,
@@ -36,6 +37,7 @@ import {
 } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/RRRColorBandWise";
 import { useGetUIConfigData } from "../../../../Services/MTA/Common/UIConfig";
 import { UIColumnConfigName, UserUIColumnConfigName } from "../../../../../helpers/Enum";
+import { RootState } from "../../../../../redux/store/store";
 
 const useRRRColorBandwise = () => {
   const [internalRef, setInternalRef] = useState<any>();
@@ -87,21 +89,25 @@ const useRRRColorBandwise = () => {
 
   const { mutateAsync: getDataCount , isLoading: isCountDataLoading} = useGetRRRColorBandWiseRecordCount();
 
+  const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+  const RRR_COLORBANDWISE_ROWS_PER_PAGE = EnvConfig['RRR_COLORBANDWISE_ROWS_PER_PAGE']
   const rowsPerPage = parseInt(
-    process.env.REACT_APP_BOR_ROWS_PER_PAGE || "100"
+    RRR_COLORBANDWISE_ROWS_PER_PAGE || "100"
   );
+
+  const [userPageSize , setUserPageSize]  = useState<number>(RRR_COLORBANDWISE_ROWS_PER_PAGE?parseInt(RRR_COLORBANDWISE_ROWS_PER_PAGE):50)  
 
   const [initialColumnState, setInitialColumnState] = useState<any>(undefined);
   const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      await handleGetRecordsCount();
-      await getRRRColorBandWiseUiConfig();
-      await loadGridData(currentPage);
-    };
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     await handleGetRecordsCount();
+  //     await getRRRColorBandWiseUiConfig();
+  //     await loadGridData(currentPage);
+  //   };
+  //   fetchData();
+  // }, []);
 
   const getRRRColorBandWiseUiConfig = async () => {
     try {
@@ -183,19 +189,17 @@ const useRRRColorBandwise = () => {
       paginationParameter: {
         pageNumber: currentPage,
         // recordPerPage:20
-        recordsPerPage: parseInt(
-          process.env.REACT_APP_RRR_COLORBANDWISE_ROWS_PER_PAGE || "100"
-        ),
+        recordsPerPage: parseInt( RRR_COLORBANDWISE_ROWS_PER_PAGE || "100" ),
       },
     };
     const resultCount = await getDataCount(payload);
     setRecordsCount(resultCount?.data?.data[0]?.count || 0);
   };
 
-  const loadGridData = async (pageNo: any, filter?: any) => {
+    const loadGridData = async (pageNo:any,filter?:any , pageSize?:any)=>{
     const payload = {
       filters: filter || currFilter,
-      paginationParameter: { pageNumber: pageNo, recordsPerPage: rowsPerPage },
+      paginationParameter: { pageNumber: pageNo, recordsPerPage: pageSize || userPageSize || rowsPerPage || 100 },
     };
     const result = await getData(payload);
     setRowData(result?.data.data);
@@ -242,6 +246,7 @@ const useRRRColorBandwise = () => {
   }
 
   const onApplyFilter = async (filter: any) => {
+    await getRRRColorBandWiseUiConfig();
     await handleGetRecordsCount(filter);
     await loadGridData(1, filter);
     setCurrFilter(filter);
@@ -282,7 +287,7 @@ const useRRRColorBandwise = () => {
       // overlayLoadingTemplate:'<object style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%) scale(2)" type="image/svg+xml" data="/assets/img/VectorFLOW/loaderMedium.svg" aria-label="loading"></object>',
       // rowSelection:'multiple',
       paginationPageSize: parseInt(
-        process.env.REACT_APP_RRR_ROWS_PER_PAGE || "200"
+        RRR_COLORBANDWISE_ROWS_PER_PAGE || "200"
       ),
       suppressRowClickSelection: true,
       components: customCellRenderers,
@@ -293,15 +298,15 @@ const useRRRColorBandwise = () => {
         // tooltipComponent:'remarksToolTipComponent',
         cellStyle: {
           "textAlign": "center",
-          "height": "50px",
-          "fontStyle": "normal",
-          "fontVariant": "normal",
-          "fontWeight": "300",
-          "fontSize": "20px",
-          "fontFamily": "Roboto",
-          "display": "block",
-          "textOverflow": "ellipsis",
-          "whiteSpace": "nowrap",
+          // "height": "50px",
+          // "fontStyle": "normal",
+          // "fontVariant": "normal",
+          // "fontWeight": "300",
+          // "fontSize": "20px",
+          // "fontFamily": "Roboto",
+          // "display": "block",
+          // "textOverflow": "ellipsis",
+          // "whiteSpace": "nowrap",
         },
         // ,
         // onCellClicked:(params:any)=>{
@@ -332,20 +337,47 @@ const useRRRColorBandwise = () => {
   }
 }, [tempDownloadData]);
 
-  const onExportToExcelCallBack = async (pageNumber: number) => {
-    const data = await getData({
+const onExportToExcelCallBack=async(pageNumber:number)=>{
+  const payload = {
+      id: 1,
+      name: '',
+      fields: [],
       filters: currFilter,
       paginationParameter: {
-        pageNumber: pageNumber,
-        recordsPerPage: 5000,
+          pageNumber: pageNumber,
+          recordsPerPage: 5000
       },
-    });
-    return data.data.data;
-  };
+      ISExport:"1",
+      reportName:"RRROA",
+      stream:1,
+      responseType: `arraybuffer`
+  }
+  notifyLoader("Downloading Data...")
+  try {
+      await CsvExportMTA(payload, "RRRColorBandwiseReport");
+      notifySuccess(`Data Exported Successfully`);
+  }
+  catch(error) {
+      console.log(error);
+      notifyError("Error Exporting Excel")
+      throw error;
+  }
+}
 
   const generalFilterOptions = useMemo(() => {
     return convertUiConfigToOptions(RRRColorBandWiseColumns);
   }, [RRRColorBandWiseColumns]);
+
+  
+    const savePageSize = async( pageSize:number)=>{
+        setUserPageSize(pageSize)
+        await loadGridData(currentPage,currFilter, pageSize);
+    }
+
+    const getRRRBandwiseRowData = async (pageNumber: any, pageSize: any) => {
+    setCurrentPage(pageNumber);
+    await loadGridData(pageNumber, currFilter, pageSize);
+  };
 
   return {
     isSideBarOpen,
@@ -364,7 +396,7 @@ const useRRRColorBandwise = () => {
     exportExcelColumns,
     setExportExcelColumns,
     onExportToExcelCallBack,
-    // getRRRBandwiseRowData,
+    getRRRBandwiseRowData,
     onApplyFilter,
     currFilter,
     setCurrFilter,
@@ -373,7 +405,9 @@ const useRRRColorBandwise = () => {
     ref,
     generalFilterOptions,
     setCurrentPage,
-    onResetCallback
+    onResetCallback,
+    savePageSize,
+    userPageSize
   };
 };
 

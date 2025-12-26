@@ -1,45 +1,47 @@
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import moment from 'moment';
 import Calendar, { CalendarProps } from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { useUserData } from "../../../../../context/index";
-import {
-  DatePickerWrapper,
-  ImageWrapper,
-  StyledCalendar,
-  ButtonWrapper,
-  TextInputWrapper
-} from "./styles";
-import ReactDOM from "react-dom";
 import VFDatePicker from '../../Common/VFDatePicker';
+import _ from 'lodash';
+import { useGetHolidaysForMaxFolCCROfOrder } from '../../../../../VectorFlow/Services/MTO/Production/OrderRescheduling';
+import { notifyError } from '../../../../../helpers/notify';
+import OverlayLoader from "../../Common/Loader";
 
 type Value = CalendarProps['value'];
 
 const DueDateCellRenderer = (params: any) => {
-  const [currDate, setCurrDate] = useState(params.data.dd);
+
+  const [currDate, setCurrDate] = useState(() => {
+    if (!_.isEmpty(params.data)) {
+      return params.data.dd;
+    }
+  });
   const [showCalendar, setShowCalendar] = useState(false);
   const format2 = "YYYY-MM-DD";
   const [minDate] = useState(new Date());
 
   const inputRef = useRef<HTMLInputElement>(null);
   const calendarRef = useRef<HTMLDivElement>(null); 
-  const [calendarPosition, setCalendarPosition] = useState({ top: 0, left: 0 });
+
+  const [isLoading, setIsLoading] = useState(false);
+  const {mutateAsync:getHolidaysForMaxFolCCROfOrder}=useGetHolidaysForMaxFolCCROfOrder()
 
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
 
   useEffect(() => {
-    if (!params.node.selected) {
-      params.data.dd = params.data.oldDate;
-      setCurrDate(params.data.oldDate);
-      setShowCalendar(false);
-    }
+    if (!params.node.selected && !_.isEmpty(params.data)) {
+        params.data.dd = params.data.oldDate;
+        setCurrDate(params.data.oldDate);
+        setShowCalendar(false);
+      }
   }, [params.node.selected]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
-      console.log(calendarRef?.current?.contains(target))
       if (
         //if user is inside calendar
         showCalendar &&
@@ -57,21 +59,8 @@ const DueDateCellRenderer = (params: any) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showCalendar]);
 
-  const toggleCalendar = () => {
-    if (params.node.selected) {
-      const rect = inputRef.current?.getBoundingClientRect();
-      if (rect) {
-        setCalendarPosition({
-          top: rect.bottom + window.scrollY,
-          left: rect.left + window.scrollX
-        });
-      }
-      setShowCalendar((prev) => !prev);
-    }
-  };
-
   const handleDateChange = (value: Value) => {
-    if (value && !(value instanceof Array)) {
+    if (value && !(value instanceof Array) && !_.isEmpty(params.data)) {
       const formattedDate = moment(value).format(format2);
       setCurrDate(formattedDate);
       params.data.dd = formattedDate;
@@ -79,71 +68,74 @@ const DueDateCellRenderer = (params: any) => {
     }
   };
 
+  if (_.isEmpty(params.data)) {
+    return <></>
+  }
+
+  const [holidayDates, setHolidayDates] = useState<any>([])
+  const [forceOpenCalendar, setForceOpenCalendar] = useState(false);
+  const [maxDate, setMaxDate] = useState<Date | undefined>(undefined);
+
+  const handleCalendarIconClick = async (rowData: any) => {
+    try {
+      setForceOpenCalendar(false); 
+      setIsLoading(true)
+      const data = await getHolidaysForMaxFolCCROfOrder(rowData.odk);
+      setHolidayDates(data.data.data.holidays || []);
+      setMaxDate(data.data.data.schhor?  new Date(data.data.data.schhor): undefined);
+  
+      if (data.status == 200) {
+        setTimeout(() => {
+          setIsLoading(false)
+          setForceOpenCalendar(true);
+        },500)
+
+      }
+      else {
+        setIsLoading(false)
+        setForceOpenCalendar(false);
+        notifyError("Failed to fetch holidays")
+      } 
+  
+    } catch (error) {
+      setIsLoading(false)
+      setForceOpenCalendar(false);
+      notifyError("Failed to fetch holidays");
+    }
+  };
+
+  const tileDisabled = ({ date }:any) => {
+    const formattedDate = moment(date).format('YYYY-MM-DD');
+      return holidayDates.includes(formattedDate);
+    }
+
+  
+
   return (
-    <DatePickerWrapper>
-      <TextInputWrapper
-        ref={inputRef}
-        type="text"
-        value={!params.node.selected ? params.data.oldDate : currDate}
-        placeholder="DD-MM-YYYY"
-        readOnly
-        onClick={toggleCalendar}
-        style={{
-          background:'transparent',
-          paddingLeft:'-10px',
-          color: params.data.oldDate===currDate? 'black' : '#BC3D81',
-        }}
+    <>
+    {(isLoading ) && (
+      <OverlayLoader />
+    )}
+
+    <VFDatePicker
+      dateInputStyle={{
+        background: 'transparent',
+        paddingLeft: '-10px',
+        color: params.data.oldDate === currDate ? 'black' : '#BC3D81',
+      }}
+      themeUi={themeUi}
+      enableIconClick={true}
+      onDateChange={handleDateChange}
+      date={!params.node.selected ? params.data.oldDate : currDate}
+      minDate={minDate}
+      maxDate={maxDate}
+      onClick={() => handleCalendarIconClick(params.data)}
+      showCalendarIcon={params.node.selected}
+      forceOpenCalendar={forceOpenCalendar}
+      tileDisabled={tileDisabled}
       />
-
-      {params.node.selected && (
-      <>
-        <ButtonWrapper type="button" onClick={toggleCalendar}>
-          <ImageWrapper
-          src={
-            themeUi === "REGALBLAZE"
-              ? "/assets/img/mto/OrderRescheduling/edit-calendar-yellow.svg"
-              : "/assets/img/mto/OrderRescheduling/edit-calendar.svg"
-          }
-          alt="calendar-icon"
-          />
-        </ButtonWrapper>
-
-      {params.node.selected && showCalendar &&
-        ReactDOM.createPortal(
-          <div
-            ref={calendarRef}
-            style={{
-              position: "absolute",
-              top: calendarPosition.top,
-              left: calendarPosition.left,
-              zIndex: 9999,
-              backgroundColor: "white",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.3)"
-            }}
-          >
-        <StyledCalendar
-          themeUi={themeUi}
-          onChange={handleDateChange}
-          value={new Date(currDate)}
-          minDate={minDate}
-      />
-    </div>,
-    document.body
-  )}
-
-        </>
-      )}
-      </DatePickerWrapper>
-    // <VFDatePicker
-    // //  style={{fontSize:'12px', fontWeight:'normal'}}
-    // //  imgStyle={{height:'20px', width:'20px'}}
-    //   themeUi={themeUi}
-    //   onDateChange={handleDateChange}
-    //   date={new Date(currDate)}
-    //   minDate={minDate}
-    
-    // ></VFDatePicker>
+    </>
   );
 };
 
-export default DueDateCellRenderer;
+export default React.memo(DueDateCellRenderer);

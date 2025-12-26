@@ -10,7 +10,8 @@ import { MainService } from './api'
 export const QUERY_KEYS = {
   useGetAllRoles: ['MainService.useGetAllRoles'],
   useGetAllUsers: ['MainService.useGetAllUsers'],
-  useGetAllPermissions: ['MainService.useGetAllPermissions']
+  useGetAllPermissions: ['MainService.useGetAllPermissions'],
+  useGetUserPermissions: ['MainService.useGetUserPermissions'],
 }
 
 export const useChangePassword = () => {
@@ -31,9 +32,22 @@ export const useGetAllUsers = () => {
   })
 }
 
+export const useGetUserPermissions = () => {
+  return useMutation(async (applicationId: any) => {
+    return await MainService.getUserPermissions(applicationId)
+  })
+}
+
+
 export const useGetAllPermissions = () => {
   return useQuery(QUERY_KEYS.useGetAllPermissions, async () => {
     return await MainService.getAllPermissions()
+  })
+}
+
+export const useGetRoles = () => {
+  return useQuery(QUERY_KEYS.useGetAllRoles, async () => {
+    return await MainService.getAllRoles()
   })
 }
 
@@ -75,5 +89,16 @@ export const useChangeThemeUser = () => {
 export const useGetHeadersData = () => {
   return useMutation(async () => {
     return await MainService.getHeadersData()
+  })
+}
+
+export const usePostUsersDataForValidations = () => {
+  return useMutation(async (data: any) => {
+    return await MainService.postUsersDataForValidation(data)
+  })
+}
+export const usePostBulkUploadUsers = () => {
+  return useMutation(async (data: any) => {
+    return await MainService.postBulkUploadUsers(data)
   })
 }

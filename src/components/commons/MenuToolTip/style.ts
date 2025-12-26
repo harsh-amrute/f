@@ -9,6 +9,7 @@ export const WrapToolTip = styled.div<{left?: number}>`
     top: 0 !important;
     left: ${props => props?.left}px !important;
     opacity: 1;
+    z-index: 900000;
     // visibility: hidden;
     // transition: 100ms visibility ease-in;
     &.react-tooltip__show {
@@ -18,15 +19,18 @@ export const WrapToolTip = styled.div<{left?: number}>`
 `;
 
 
-
-
 export const TooltipContainer = styled.div`
   color: ${globalStyles.black};
   text-align: left;
   cursor: pointer;
   // max-height:300px;
   max-height: ${props => props.style?.maxHeight || "200px"};
-  overflow-y:auto;
+  overflow:hidden;
+    // min-width: 300px;
+    position: absolute;
+    margin-left:-16px;
+    border-radius:5px !important;
+
   @media (min-width: ${gridSystem
     .size.desktop}) {
     max-height:550px;
@@ -36,6 +40,7 @@ export const TooltipContainer = styled.div`
 export const TooltipTitle = styled.div`
   font-size: 1.8rem;
   border-bottom: 1px solid #929292;
+   position: sticky;
   padding: 8px 10px;
   @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
     .size.laptopL}) {

@@ -1,9 +1,9 @@
 import { useState,useMemo,useEffect,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
-import { useGetDBMData,useGetDBMDataCount,useGetDBMApplySelectedNorm} from "../../../../Services/MTA/DBM"
+import { useGetDBMData,useGetDBMDataCount,useGetDBMApplySelectedNorm, useGetDBMUpdateSleepTbl} from "../../../../Services/MTA/DBM"
 import { convertUiConfigToOptions, getColumnDefinationsMTA  } from "../../../../../helpers/utils"
 //import { useRef } from "react"
-import {DBMSleepCellRenderer} from "./Sleep"
+// import {DBMSleepCellRenderer} from "./Sleep"
 import BPRGraphCellRenderer from "../../SupplyChainIntelligenceHub/BPR/BPRGraphCellRenderer"
 import {DBMTickCellRenderer} from "./dbmTick"
 import { GridRef } from "../../../../../VectorFlow/types/MDM"
@@ -49,6 +49,7 @@ const useDBM =()=>{
     
     const {mutateAsync:getDBMData, isLoading: isDBMDataLoading} =useGetDBMData();
     const {mutateAsync:getDBMApplySelectedNorm} =useGetDBMApplySelectedNorm();
+    const {mutateAsync: getDBMUpdateSleepTbl} = useGetDBMUpdateSleepTbl();
     const {mutateAsync:getDBMDataCount, isLoading: isDBMDataCountLoading}=useGetDBMDataCount();
 
     const showDailyDataGraphModal = useSelector((state:RootState) => state.mta.showDailyDataGraphModal);
@@ -62,8 +63,11 @@ const useDBM =()=>{
 
 
     const dispatch = useDispatch();
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const DBM_ROWS_PER_PAGE = EnvConfig['DBM_ROWS_PER_PAGE']; 
 
-    const recordsPerPage = parseInt(process.env.REACT_APP_DBM_ROWS_PER_PAGE || '50');
+    const recordsPerPage = parseInt(DBM_ROWS_PER_PAGE || '50');
+    const [userPageSize , setUserPageSize]  = useState<number>(DBM_ROWS_PER_PAGE?parseInt(DBM_ROWS_PER_PAGE):50) 
     const columnsToBeExcluded = ['checkbox', 'dailydatagraph', '0', 'Sleep']
     const [initialColumnState, setInitialColumnState] = useState<any>(undefined);
     const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
@@ -73,7 +77,6 @@ const useDBM =()=>{
     const customCellRenderers = useMemo(() => ({
         tickCellRenderer:DBMTickCellRenderer,
         grapCellRenderer:BPRGraphCellRenderer,
-        sleepCellRenderer:DBMSleepCellRenderer,
         suggestionCategoryCellRenderer:SuggestionCategoryCellRenderer
       }), []);
 
@@ -236,18 +239,18 @@ const useDBM =()=>{
             headerTooltip: "Daily Data Graph",
 
         },
-        Sleep: {
-            lockPosition: true,
-            cellRenderer: 'sleepCellRenderer',
-            cellRendererParams: {
-                callBack: refetchAfter
-            },
-            floatingFilter: false,
-            minWidth: 100,
-            maxWidth: 100,
-            pinned: 'left',
-            suppressMenu: true
-        },
+        // Sleep: {
+        //     lockPosition: true,
+        //     cellRenderer: 'sleepCellRenderer',
+        //     cellRendererParams: {
+        //         callBack: refetchAfter
+        //     },
+        //     floatingFilter: false,
+        //     minWidth: 100,
+        //     maxWidth: 100,
+        //     pinned: 'left',
+        //     suppressMenu: true
+        // },
         Suggestions: {
             lockPosition: true,
             cellRenderer: 'suggestionCategoryCellRenderer',
@@ -268,17 +271,16 @@ const useDBM =()=>{
 
      const handleGoButton =  async(pageNo:any)=>{
         notifyLoader("Submitting Norms")
-        console.debug(pageNo)
-        // const handleGoButton =  ()=>{
         const selectedRows = gridRef.current?.api.getSelectedRows();
-        //console.log(selectedRows)
-        if (!selectedRows || selectedRows.length === 0) { toast.dismiss();return;}
+        if (!selectedRows || selectedRows?.length === 0) { 
+            notifyError("No Rows Selected.");
+            return;
+        }
         const extractedData:any = selectedRows?.map (items => ({
             SKUCode:items.SKUCode,
             WHCode:items.LocCode
         }));
 
-        //const rowData:any =await getDBMApplySelectedNorm({
             await getDBMApplySelectedNorm({
                 data:extractedData,
                 filters:[],
@@ -290,9 +292,28 @@ const useDBM =()=>{
         toast.dismiss()
         notifySuccess("Submitted Successfully")
         refetchAfter()
-        //console.log(rowData)
    }
 
+   const handleGoButtonForSleep =  async(pageNo:any)=>{
+        notifyLoader("Submitting Norms")
+        const selectedRows = gridRef.current?.api.getSelectedRows();
+        if (!selectedRows || selectedRows?.length === 0) { 
+            notifyError("No Rows Selected.");
+            return;
+        }
+        const extractedDataForSleep:any = selectedRows?.map (items => ({
+            SKUCode:items.SKUCode,
+            WHCode:items.LocCode
+        }));
+
+            await getDBMUpdateSleepTbl({
+                data:extractedDataForSleep,
+            });
+
+        toast.dismiss();
+        notifySuccess("Submitted Successfully");
+        refetchAfter();
+   }
 
     useEffect(()=>{       
         getDataCount(currentFilter);
@@ -340,13 +361,13 @@ const useDBM =()=>{
         setDBMDataCount(rowDataCount?.data?.recordCount)
     }
 
-    const getDBMRowData= async(filter:any,pageNo:any)=>{
+    const getDBMRowData= async(filter:any,pageNo:any, pageSize?:number)=>{
         notifyLoader("Loading Grid Data")
         const rowData =await getDBMData({
             filters:filter,
             paginationParameter:{
                 pageNumber:pageNo,
-                recordsPerPage:recordsPerPage
+                recordsPerPage:pageSize || userPageSize || recordsPerPage
             }
         })
         toast.dismiss()
@@ -356,9 +377,11 @@ const useDBM =()=>{
     }
 
     const handleApplyFilter = async(filter:any)=>{
+        setCurrentPage(1)
         setCurrentFilter(filter)
         await getDataCount(filter)
         await getDBMRowData(filter,1)
+        getDBMUiConfig()
     }
 
     const onDeleteFilter = async(parentId:any, filterId:any, value:any)=>{
@@ -374,6 +397,8 @@ const useDBM =()=>{
                 recordsPerPage:5000
             }
         })
+
+        getDBMUiConfig()
         // console.log(rowData.data.data)
         return rowData.data.data
     }
@@ -418,7 +443,10 @@ const useDBM =()=>{
         }
     },[])
 
-    
+    const savePageSize = async( pageSize:number)=>{
+        setUserPageSize(pageSize)
+        await getDBMRowData(currentFilter , currentPage,pageSize)
+    }
 
     return {
         DBMColumns,
@@ -431,6 +459,7 @@ const useDBM =()=>{
         DBMDataCount,
         currentPage,
         handleGoButton,
+        handleGoButtonForSleep,
         showDailyDataGraphModal,
         showNormChangeHistoryTable,
         dailyData,
@@ -450,7 +479,9 @@ const useDBM =()=>{
         recordsPerPage,
         generalFilterOptions,
         onResetCallback,
-        lastRunDate
+        lastRunDate,
+        savePageSize,
+        userPageSize
     }
 }
 

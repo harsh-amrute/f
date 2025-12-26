@@ -1,14 +1,24 @@
 import styled from 'styled-components'
 
-export const VFHeaderWrapper = styled.div<{headerBgColor:string | undefined}>`
-display:flex;
-flex-direction:row;
-justify-content:space-between;
-align-items:center;
-width:100%;
-height:40px;
-border-radius:0px 0px 12px 12px;
-background-color:${props => props.headerBgColor ? props.headerBgColor : '#FFFFFF'}
+export const VFHeaderWrapper = styled.div<{headerBgColor:string | undefined, absolute:boolean | undefined}>`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: ${(props) => (props.absolute ? '44px' : '40px')};
+  border-radius: ${(props) => (props.absolute ? '12px 12px 0 0' : '0 0 12px 12px')};
+  background-color: ${(props) => props.headerBgColor || '#FFFFFF'};
+  padding: ${(props) => (props.absolute ? '0 12px' : '0')};
+
+  ${(props) =>
+    props.absolute &&
+    `
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+  `}
 `;
 
 export const SCModalContent = styled.div`
@@ -23,7 +33,6 @@ export const SCModalContent = styled.div`
 
 export const SCTextTitle = styled.span<{headerTextColor:string | undefined}>`
   display: flex;
-  padding-top:3px;
   justify-content: center;
   width: 100%;
   flex-direction:row;
@@ -31,7 +40,7 @@ export const SCTextTitle = styled.span<{headerTextColor:string | undefined}>`
   font-style:normal;
   font-variant:normal;
   font-weight:500;
-  font-size:18px;
+  // font-size:14px;
   line-height:21px;
   font-family:Roboto;
   letter-spacing: 0px;
@@ -53,6 +62,7 @@ export const SCWrapperContent = styled.div<{paddingLeftAndRight:number | undefin
   background-color:${props => props.backgroundColor ? props.backgroundColor :'white'};
   // border-radius:inherit;
   border-radius: 0px 0px 12px 12px;
+
 `;
 
 export const SCHeader = styled.div`

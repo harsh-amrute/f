@@ -61,6 +61,12 @@ const Header = (props:HeaderProps) => {
       hideLogo()
     }, 300);
   }
+ 
+const CLIENT_LOGO_PATH = "/client/logo.svg";
+
+  
+  const CLIENT_NAME = user?.config_data?.CLIENT_NAME
+ 
 
   const renderHeader = () => {
     if (location.pathname === '/ist-status') {
@@ -139,21 +145,24 @@ const Header = (props:HeaderProps) => {
 
     return (
       <>
-        <HeaderStyled.SCHeaderBox
-          style={{
-            position: 'sticky',
-            top: 0,
-            zIndex: 2,
-            paddingTop: 15
-          }}
-        >
-          <HeaderStyled.SCHeaderText>
-            {renderNamePage()}
-          </HeaderStyled.SCHeaderText>
-        </HeaderStyled.SCHeaderBox>
-
+        {
+          !urlExcludeHeader.includes(location.pathname) &&
+          <HeaderStyled.SCHeaderBox
+            style={{
+              position: 'sticky',
+              top: 0,
+              zIndex: 2,
+              paddingTop: 15
+            }}
+          >
+            <HeaderStyled.SCHeaderText>
+              {renderNamePage()}
+            </HeaderStyled.SCHeaderText>
+          </HeaderStyled.SCHeaderBox>
+        }
+        
         <HeaderStyled.SCWrapperImg isHideLogo={isHideLogo} onMouseEnter={onMouseEnterLogo} onMouseLeave={onMouseLeaveLogo} style={{ display: 'flex', alignItems: 'center' }}>
-          {!process.env.REACT_APP_CLIENT_LOGO && !process.env.REACT_APP_CLIENT_NAME &&
+          {!CLIENT_LOGO_PATH && !CLIENT_NAME &&
             <HeaderStyled.SCImg
               marginLeft={"20px"}
               src="/assets/img/header/VectorFlowLogoBlackNew.svg"
@@ -161,16 +170,28 @@ const Header = (props:HeaderProps) => {
               isHideLogo={isHideLogo}
             />
           }
-          {process.env.REACT_APP_CLIENT_LOGO && (
+          {!CLIENT_LOGO_PATH && (
             <HeaderStyled.SCImg
-              src={process.env.REACT_APP_CLIENT_LOGO.toString()}
+            marginLeft={"20px"}
+            src="/assets/img/header/VectorFlowLogoBlackNew.svg"
+            alt="logo"
+            isHideLogo={isHideLogo}
+          />
+          )
+          }
+          {CLIENT_LOGO_PATH && (
+            <HeaderStyled.SCImg
+              src={CLIENT_LOGO_PATH}
               alt="logo"
               isHideLogo={isHideLogo}
+              onError={(e: any) => {
+                e.currentTarget.src = "/assets/img/header/VectorFlowLogoBlackNew.svg";
+              }}
             />
           )}
-          {process.env.REACT_APP_CLIENT_NAME && (
-            <HeaderStyled.ClientNameText marginLeft={!process.env.REACT_APP_CLIENT_LOGO && "15px"} isHideLogo={isHideLogo}>
-              {process.env.REACT_APP_CLIENT_NAME}
+          {CLIENT_NAME && (
+            <HeaderStyled.ClientNameText marginLeft={!CLIENT_LOGO_PATH && "15px"} isHideLogo={isHideLogo}>
+              {CLIENT_NAME}
             </HeaderStyled.ClientNameText>
           )}
         </HeaderStyled.SCWrapperImg>

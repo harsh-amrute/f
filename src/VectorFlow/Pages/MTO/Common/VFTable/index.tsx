@@ -5,11 +5,18 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import './styles.css'
 import { useUserData } from "../../../../../context";
+import { FillOperationParams } from "ag-grid-enterprise";
 
 interface VFTableProps extends AgGridReactProps {
   height?: string;
   disableZoomScaling?: boolean;
   hideStatusBar?: boolean; 
+  cellSelection?: {
+    handle: {
+      mode: string;
+      setFillValue: (params: FillOperationParams) => void;
+    };
+  };
 }
 
 const VFTable = forwardRef((props: VFTableProps, ref: any) => {
@@ -37,7 +44,7 @@ const VFTable = forwardRef((props: VFTableProps, ref: any) => {
       filter: "agTextColumnFilter",
       floatingFilterComponentParams: { suppressFilterButton: false },
       floatingFilter: true,
-      
+      enableRowGroup: true,
     },
     sideBar: {
       toolPanels: [
@@ -49,6 +56,9 @@ const VFTable = forwardRef((props: VFTableProps, ref: any) => {
           toolPanel: "agColumnsToolPanel",
         },
       ],
+    },
+    autoGroupColumnDef: {
+      minWidth: 250,
     },
   };
 
@@ -67,7 +77,13 @@ const VFTable = forwardRef((props: VFTableProps, ref: any) => {
       { statusPanel: "agTotalRowCountComponent" },
       { statusPanel: "agFilteredRowCountComponent" },
       { statusPanel: "agSelectedRowCountComponent" },
-      { statusPanel: "agAggregationComponent" },
+
+      {
+        statusPanel: "agAggregationComponent",
+        statusPanelParams: {
+            aggFuncs: ["avg", "sum", "min", "max", "count"],
+        },
+    },
     ],
   };
 

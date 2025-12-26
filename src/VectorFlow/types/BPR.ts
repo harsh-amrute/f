@@ -22,6 +22,12 @@ export interface BPRDataPayload{
     }
 }
 
+export interface AnalyticsDataPayload{
+    id: number,
+  name: string,
+  fields: Array<any>,
+    filters:any
+}
 
 export interface BORDataPayload{
     id: number,
@@ -56,6 +62,13 @@ export interface SubmitBPRRemarkPayload{
     skucode:string
 }
 
+export interface SubmitDueDatePayload{
+    skucode: string;
+    whcode: string;
+    orderid: string;
+    duedate: string;
+}
+
 export interface SubmitBORRemarkPayload extends SubmitBPRRemarkPayload{
     spc:string
 }
@@ -88,6 +101,8 @@ export interface BPRFilterState{
     coverageFilter:BPRFilterGroup
     colorFilter:BPRFilterGroup
     generalFilter:BPRFilterGroup
+    customAttributeFilter:BPRFilterGroup,
+    horizonFilter:BPRFilterGroup,
 }
 
 

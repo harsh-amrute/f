@@ -21,8 +21,16 @@ import { useGetUserUIConfigData, useUpdateUserUIConfigData } from "../../../../.
 import { useUserData } from "../../../../../context"
 import useColDef from "../../../../../hooks/useColDef";
 import { notifyError, notifySuccess } from "../../../../../helpers/notify";
+import _ from "lodash";
 
 const getRows = (params: ProcessRowGroupForExportParams) => {
+    
+    const children = params.node.data?.children;
+
+    if (!children || !Array.isArray(children)) {
+        return [];
+    }
+
     const rows: ExcelRow[] = [
         {
             outlineLevel: 1,
@@ -207,18 +215,20 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
         ColorPriority: {
             cellRenderer: 'coloPriority',
             tooltipValueGetter: (params: any) => {
-                const cpData = params.data.cp[0];
-                const keysToPrint = ["B", "R", "Y", "G", "W", "Bl"];
-                let tooltipText = '';
-                keysToPrint.forEach((key) => {
-                    if (Object.prototype.hasOwnProperty.call(cpData, key)) {
-                        if (tooltipText !== '') {
-                            tooltipText += ' | ';
+                if (!_.isEmpty(params.data)) {
+                    const cpData = params.data.cp[0];
+                    const keysToPrint = ["B", "R", "Y", "G", "W", "Bl"];
+                    let tooltipText = '';
+                    keysToPrint.forEach((key) => {
+                        if (Object.prototype.hasOwnProperty.call(cpData, key)) {
+                            if (tooltipText !== '') {
+                                tooltipText += ' | ';
+                            }
+                            tooltipText += `${key}: ${cpData[key]}`;
                         }
-                        tooltipText += `${key}: ${cpData[key]}`;
-                    }
-                });
-                return tooltipText;
+                    });
+                    return tooltipText;
+                }
             },
             tooltipComponent: "availabilityToolTip",
             initialWidth: 200, //160
@@ -227,7 +237,7 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
 
         },
         "net_r": {
-            valueFormatter: (params: any) => Math.max(0, Number(params.data.net_r))
+            valueFormatter: (params: any) => !_.isEmpty(params.data) ? Math.max(0, Number(params.data.net_r)) : undefined
         }
 
     }
@@ -291,15 +301,37 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
 
         const formatedFilters = formatFilterJSON(appliedFilters);
         if (isExcelExport) {
-            const headersdata = currentGridRef?.current?.api.getColumnState();
-            const body = getBodyForExcelExport({ headersdata: headersdata, filterData: formatedFilters, colDefMap })
-            
-            const response = await getMaterialRequirementDataDayWise({ releaseDate: releaseDate, body, isExcelExport: 1, report_name: FilterPageName.Proc_Material_Requirement })
-            if (response.status === 200) {
-                DownloadExcel(response, FilterPageName.Proc_Material_Requirement)
-                notifySuccess("Excel exported successfully")
-            } else {
-                notifyError("Failed to export excel")
+
+            const gridApi = currentGridRef?.current?.api;
+
+            if(!gridApi){
+                notifyError("The grid is not ready");
+                return;
+            }
+
+            const isPivotMode = gridApi.isPivotMode();
+            const isRowGroupingActive = gridApi.getRowGroupColumns().length > 0;
+            const isValueActive =  gridApi.getValueColumns().length > 0;
+
+            if (isPivotMode || isRowGroupingActive || isValueActive) {
+                                
+                 const exportName = `${FilterPageName.Proc_Material_Requirement}_${moment().format("DD-MM-YYYY")}`;
+                 gridApi.exportDataAsExcel({
+                 fileName: exportName,
+                 sheetName: exportName
+                 });
+            }
+            else{
+                const headersdata = currentGridRef?.current?.api.getColumnState();
+                const body = getBodyForExcelExport({ headersdata: headersdata, filterData: formatedFilters, colDefMap })
+                
+                const response = await getMaterialRequirementDataDayWise({ releaseDate: releaseDate, body, isExcelExport: 1, report_name: FilterPageName.Proc_Material_Requirement })
+                if (response.status === 200) {
+                    DownloadExcel(response, FilterPageName.Proc_Material_Requirement)
+                    notifySuccess("Excel exported successfully")
+                } else {
+                    notifyError("Failed to export excel")
+                }
             }
         } else {
 
@@ -514,11 +546,6 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
                                     setCurrentGridRef(gridRef);
                                 }}
                                 pagination={false}
-                                statusBar={{
-                                    statusPanels: [
-                                        { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                                    ]
-                                }}
                                 maintainColumnOrder
                                onFilterChanged={()=>{Object.keys((gridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
 
@@ -559,11 +586,7 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
                 
                                     setCurrentGridRef(gridRef);
                                 }}
-                                statusBar={{
-                                    statusPanels: [
-                                        { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                                    ]
-                                }}
+
                                 maintainColumnOrder
                                onFilterChanged={()=>{Object.keys((gridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
 

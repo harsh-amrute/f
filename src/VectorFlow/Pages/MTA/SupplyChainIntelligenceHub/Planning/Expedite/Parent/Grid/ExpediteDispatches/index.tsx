@@ -29,18 +29,18 @@ const ExpediteParentExpediteDispatchesGrid = ({data,paginationProps,onOpenDailyD
     const submitOpenExpediteRemark = async(remark:string)=>{
         notifyLoader('Submiting request')
         try{
-            const tempEta:string = currentRowData.eta.substring(0,10).replaceAll('-','/')
+            const tempEta:string = currentRowData.eta
             await submitRemark(
                     {
-                        "skuCode": currentRowData.sc,
-                        "whCode":currentRowData.wc,
-                        "parentWhCode":currentRowData.pl,
+                        "skuCode": currentRowData[0].skucode,
+                        "whCode":currentRowData[0].whcode,
+                        "parentWhCode":currentRowData[0].pl,
                         "request":remark,
                         "eta":tempEta
                       }
                 )
         toast.dismiss()
-        notifySuccess('Request Submitted sucessfully')
+        notifySuccess('Request Submitted successfully')
         }catch(err:any){
             console.log(err)
             notifyError(err)
@@ -64,8 +64,8 @@ const ExpediteParentExpediteDispatchesGrid = ({data,paginationProps,onOpenDailyD
                 setSelectedStockData(transitDataExists);
             }
         }
-        if (transitDataExists || stockDataExists) {
-            setCurrentRowData(params.data)
+        if (stockDataExists) {
+            setCurrentRowData(stockDataExists)
             toggleSubGrid(true)
         }
 

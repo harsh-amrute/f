@@ -14,12 +14,10 @@ export const TextInputWrapper = styled.input`
   width: 80%;
   height: 100%;
   text-align: center;
-  font: 24px;
   letter-spacing: 0px;
   opacity: 1;
-  font-size: 18px;
+  font-size: 12px;
   padding: 4px;
-  font-weight: bold;
   font-family: Roboto;
   border: none;
   pointer-events: none;
@@ -38,8 +36,8 @@ export const ButtonWrapper = styled.button`
 
 export const ImageWrapper = styled.img`
   cursor: pointer;
-  height: 25px;
-  width: 25px;
+  height: 15px;
+  width:15px;
 `;
 
 // Extended CalendarProps with themeUi for custom propss
@@ -109,4 +107,11 @@ export const StyledCalendar = styled(Calendar)<StyledCalendarProps>`
   .react-calendar__navigation button:hover {
     background-color: ${(props) => props.themeUi === "REGALBLAZE" ? "#fee3b7" : "rgba(188, 61, 129, 0.2)"};  
   }
+
+.react-calendar__month-view__days__day--neighboringMonth,
+.react-calendar__month-view__days__day--neighboringMonth.react-calendar__tile--weekend {
+  color: #757575 !important;
+}
+
+
 `;

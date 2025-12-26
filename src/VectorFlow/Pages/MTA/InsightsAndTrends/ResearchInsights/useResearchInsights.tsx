@@ -77,8 +77,9 @@ const useResearchInsights = () => {
     const dailyData = useSelector((state:RootState) => state.mta.dailyData);
     const [initialColumnState, setInitialColumnState] = useState<any>(undefined);
     const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
-    
-
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const RESEARCHINSIGHT_ROWS_PER_PAGE = EnvConfig['RESEARCHINSIGHT_ROWS_PER_PAGE'];
+    const [userPageSize , setUserPageSize]  = useState<number>(RESEARCHINSIGHT_ROWS_PER_PAGE?parseInt(RESEARCHINSIGHT_ROWS_PER_PAGE):50) 
     const [graphs, setGraphs] = useState<Array<ReseachInsightsGraphState>>([
         {
             type: { label: 'Self', value: 'Self' },
@@ -232,7 +233,7 @@ const useResearchInsights = () => {
             sideBar:defaultAgGridSideBarForBPR,
             // paginationPageSize:25,
             getMainMenuItems: MainMenuItemsCustomization,
-            paginationPageSize:parseInt(process.env.REACT_APP_RESEARCHINSIGHT_ROWS_PER_PAGE || '100'),
+            paginationPageSize:parseInt(RESEARCHINSIGHT_ROWS_PER_PAGE || '100'),
             suppressRowClickSelection:true,
             components:customCellRenderers,
             defaultColDef:defaultColDefObject,
@@ -256,14 +257,14 @@ const useResearchInsights = () => {
             filters: filter,
             paginationParameter: {
                 pageNumber: 1,
-                recordsPerPage: parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50')
+                recordsPerPage: parseInt(RESEARCHINSIGHT_ROWS_PER_PAGE || '50')
             }
         })
 
         setRecordCount(countData.data.recordCount)
     }
 
-    const getRowData = async (filter: any, pageNo: number) => {
+    const getRowData = async (filter: any, pageNo: number , pageSize?:number) => {
         notifyLoader("Loading Grid Data")
         const rowData = await getBPRData({
             id: 1,
@@ -272,7 +273,7 @@ const useResearchInsights = () => {
             filters: filter,
             paginationParameter: {
                 pageNumber: pageNo,
-                recordsPerPage: parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50')
+                recordsPerPage: pageSize || userPageSize|| parseInt(RESEARCHINSIGHT_ROWS_PER_PAGE || '50')
             }
         })
         toast.dismiss()
@@ -314,6 +315,11 @@ const useResearchInsights = () => {
         return doesExist?doesExist.color:'gray'
     }
 
+    const savePageSize = async( pageSize:number)=>{
+        setUserPageSize(pageSize)
+        await getRowData(currentFilter , currGridPage,pageSize)
+    }
+
     function getColorValues(jsonData: any) {
 
         const colorValues = [];
@@ -330,13 +336,14 @@ const useResearchInsights = () => {
     }
 
     function convertToObjects(colorArray: Array<string>) {
-        const today = new Date();
+
+        const today = new Date(lastRunDate);
         const result = [];
         // Loop through each color in the array
         for (let i = 0; i < colorArray.length; i++) {
             const daysBeforeToday = colorArray.length - i;
             const date = new Date(today);
-            date.setDate(today.getDate() - daysBeforeToday + 1); // Adding 1 to start from 1 day ago
+            date.setDate(today.getDate() - daysBeforeToday+2); // Adding 1 to start from 1 day ago
 
             const dateString = date.toISOString().slice(0, 10); // Get date in YYYY-MM-DD format
 
@@ -677,7 +684,7 @@ const useResearchInsights = () => {
             sortable:false,
 
         },
-        Tags: {
+        tags: {
             cellRenderer: 'tagsCellRenderer',
             width: 100,
             minWidth: 100,
@@ -689,7 +696,7 @@ const useResearchInsights = () => {
         }
     }
 
-    const rowsPerPage = useMemo(() => parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'), [])
+    const rowsPerPage = useMemo(() => parseInt(RESEARCHINSIGHT_ROWS_PER_PAGE|| '50'), [])
 
     return {
         ref,
@@ -750,7 +757,9 @@ const useResearchInsights = () => {
         continuousWhite,
         generalFilterOptions,
         onResetCallback,
-        lastRunDate
+        lastRunDate,
+        savePageSize,
+        userPageSize
     }
 }
 

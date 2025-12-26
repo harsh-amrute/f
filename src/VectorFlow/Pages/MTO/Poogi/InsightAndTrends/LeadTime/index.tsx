@@ -15,6 +15,7 @@ import useFilter from '../../../../../../hooks/useFilter'
 import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter'
 import useColDef from '../../../../../../hooks/useColDef';
 import BPPRenderer from '../../../Common/BPRRenderer/BPPRenderer';
+import moment from 'moment';
 
 const APIFilterConfig = {
     filSecVisConfig: {
@@ -156,15 +157,39 @@ const LeadTime = () => {
 
   const getGridData = async (isExcelExport = false) => {
     if (isExcelExport) {
-      const headersdata = currentGridRef?.current?.api?.getColumnState();
-      const formatedFilters = formatFilterJSON(appliedFilters)
-      const body = getBodyForExcelExport({ headersdata, appliedFilters: formatedFilters, colDefMap })
-      try {
-        const response = await getLeadTimeExcelData({ body, isExcelExport: 1, report_name: FilterPageName.Poogi_Lead_Time })
-        DownloadExcel(response, FilterPageName.Poogi_Lead_Time)
-      } catch (error) {
-        console.log(error);
+
+      const gridApi = currentGridRef?.current?.api;
+
+      if(!gridApi){
+        notifyError("Grid API not available for export.");
+        return
       }
+      
+                  const isPivot = gridApi.isPivotMode(); 
+                  const isValue = gridApi.getValueColumns().length > 0;
+                  const isRowGroup = gridApi.getRowGroupColumns().length > 0;
+      
+                  if(isPivot || isValue || isRowGroup){
+                      const exportName = `${FilterPageName.Poogi_Lead_Time}_${moment().format("DD-MM-YYYY")}`;
+                      
+                      gridApi.exportDataAsExcel({
+                          fileName: exportName,
+                          sheetName: exportName
+                      })
+
+                    } 
+
+         else {
+           const headersdata = currentGridRef?.current?.api?.getColumnState();
+           const formatedFilters = formatFilterJSON(appliedFilters)
+           const body = getBodyForExcelExport({ headersdata, appliedFilters: formatedFilters, colDefMap })
+           try {
+             const response = await getLeadTimeExcelData({ body, isExcelExport: 1, report_name: FilterPageName.Poogi_Lead_Time })
+             DownloadExcel(response, FilterPageName.Poogi_Lead_Time)
+            } catch (error) {
+              console.log(error);
+            }
+          }           
     } else {
 
       try {
@@ -245,7 +270,7 @@ const LeadTime = () => {
         handleSaveClick={handleSaveClick}
         handleResetClick={handleResetClick}
         handleGoBack={() => { setIsGridView(false) }}
-        isGoBackButton={isGridView}
+        // isGoBackButton={isGridView}
         themeUi={themeUi}
         isChartGridToggle
         isGridView={isGridView}

@@ -20,6 +20,7 @@ export interface SplitViewProps{
     isLocked:boolean
     toggleLockMode:(value:boolean)=>void
     themeUi:string
+    initialColumnState:any
 }
 
 const HorizontalSplitView = (props:SplitViewProps)=>{
@@ -29,7 +30,8 @@ const HorizontalSplitView = (props:SplitViewProps)=>{
         ecoTable,
         isLocked,
         toggleLockMode,
-        themeUi
+        themeUi,
+        initialColumnState
     } = props
 
     const ref1 = useRef<AgGridReact>(null)
@@ -137,12 +139,14 @@ const HorizontalSplitView = (props:SplitViewProps)=>{
                             />
     
               
-
-          <div style={{zoom:0.7,margin:'0px -15px 20px -15px'}}>
-                            <VFPagination 
-                                {...techTable.paginationProps} isClearGridFilter={false}
-                            />
-                         </div>
+                {
+                    initialColumnState &&
+                <div style={{zoom:0.7,margin:'0px -15px 20px -15px'}}>
+                                    <VFPagination 
+                                        {...techTable.paginationProps} isClearGridFilter={false}
+                                    />
+                                </div>
+                }
                     </BTRAllomentSection>
                 </Allotment.Pane>
                 
@@ -173,12 +177,14 @@ const HorizontalSplitView = (props:SplitViewProps)=>{
                                 
                             />
     
-              
+                  {
+                    initialColumnState &&
                          <div style={{zoom:0.7,margin:'0px -15px 20px -15px'}}>
                             <VFPagination 
                                 {...ecoTable.paginationProps} isClearGridFilter={false}
                             />
                          </div>
+                    }   
                     </BTRAllomentSection>
                 </Allotment.Pane>
             </Allotment>

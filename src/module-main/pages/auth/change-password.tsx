@@ -1,84 +1,100 @@
 import { useTranslation } from "react-i18next";
-import { ContainerRight, CircleForgotPassword, IputLogin, SCButtonLogin, SignInArea, SignInContainer, Tittle, FormArea, ButtonSubmit, ButtonSubmitText, ArrowArea, InputArea, InputGroup, LogoAreaForgotPsw, ContainerLeft, SuccessArea, SuccessIcon, SuccessText } from "./styles";
+
+import { ContainerRight, CircleForgotPassword, IputLogin, SCButtonLogin, SignInArea, SignInContainer, Tittle, FormArea, ButtonSubmit, ButtonSubmitText, ArrowArea, InputArea, InputGroup, LogoAreaForgotPsw, ContainerLeft, SuccessArea, SuccessIcon, SuccessText,CaptchaContainer,CaptchaReload,RecaptchaInput, } from "./styles";
+
 import { Errors } from "../../../components";
 import { useForm } from "react-hook-form";
 import { useChangePassword } from "../../services";
 import { useNavigate } from "react-router";
 import { notifyError, notifySuccess } from "../../../helpers/notify";
 import WelcomeBoard from "./welcome-board";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import LoadingSpinner from "../../../components/commons/LoadingSpinner";
-// eslint-disable-next-line import/no-named-as-default
-import ReCAPTCHA from "react-google-recaptcha";
-import { SITE_KEY} from "../../../helpers/constants";
+import {
+  loadCaptchaEnginge,
+  LoadCanvasTemplateNoReload,
+  validateCaptcha,
+} from "react-simple-captcha";
 import VFLoader from "../../../components/VectorFLOW/commons/VFLoader";
 
 function ChangePasswordContainer() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const params = new URLSearchParams(window.location.search);
-  const token = params.get('token');
-  const userId = params.get('userId');
+  const token = params.get("token");
+  const userId = params.get("userId");
+
   const [requestSend, setRequestSend] = useState(false);
   const [loading, setLoading] = useState(false);
-  const recaptchaRef: any = useRef();
+  const [captchaInput, setCaptchaInput] = useState("");
 
   useEffect(() => {
     if (!token || !userId) {
-      navigate('/login', { replace: true })
+      navigate("/login", { replace: true });
     }
-  }, [token, userId])
+    loadCaptchaEnginge(6);
+    const interval = setInterval(() => {
+      loadCaptchaEnginge(6);
+    }, 120000);
+    return () => clearInterval(interval);
+  }, [token, userId, navigate]);
 
-  const form = useForm<{ new_password: string, confirm_password: string, token: string, uid: string }>({
-    mode:"onTouched",
+  const form = useForm<{
+    new_password: string;
+    confirm_password: string;
+    token: string;
+    uid: string;
+  }>({
+    mode: "onTouched",
     defaultValues: {
-      new_password: '',
-      confirm_password: ''
-    }
-  })
+      new_password: "",
+      confirm_password: "",
+    },
+  });
   const {
     register,
     handleSubmit,
     getValues,
-    formState: { errors }
-  } = form
+    formState: { errors },
+  } = form;
 
-  const { mutateAsync: mutateForgotPassword } = useChangePassword()
+  const { mutateAsync: mutateForgotPassword } = useChangePassword();
 
   const onSave = () => {
-    const recaptchaValue = recaptchaRef.current.getValue();
-    const recaptcha = localStorage.getItem("_grecaptcha");
-
-    if (recaptchaValue || recaptcha) {
-
-      setLoading(true)
-      let formData = getValues()
-      formData = {
-        ...formData,
-        token: token || '',
-        uid: userId || ''
-      }
-      mutateForgotPassword(formData, {
-        onSuccess: (data: any) => {
-          if (data?.status === 400) {
-            notifyError(data?.response?.msg)
-            setLoading(false)
-            return
-          }
-          notifySuccess(data?.data?.msg)
-          setRequestSend(true)
-          setLoading(false)
-        },
-        onError: () => {
-          notifyError('Something wrong !')
-          setLoading(false)
-        }
-      })
-    } else {
-      // recaptchaRef.current?.reload();
-      notifyError(t("loginPage.notify.completeReCaptcha"));
+    if (!captchaInput || !validateCaptcha(captchaInput)) {
+      notifyError("Invalid Captcha. Please try again.");
+      setCaptchaInput("");
+      return;
     }
-  }
+
+    setLoading(true);
+    let formData = getValues();
+    formData = {
+      ...formData,
+      token: token || "",
+      uid: userId || "",
+    };
+    mutateForgotPassword(formData, {
+      onSuccess: (data: any) => {
+        if (data?.status === 400) {
+          notifyError(data?.response?.msg);
+          loadCaptchaEnginge(6);
+          setCaptchaInput("");
+          setLoading(false);
+          return;
+        }
+        notifySuccess(data?.data?.msg || "Password changed successfully");
+        setRequestSend(true);
+        setLoading(false);
+      },
+      onError: () => {
+        notifyError("Something went wrong!");
+        loadCaptchaEnginge(6);
+        setCaptchaInput("");
+        setLoading(false);
+      },
+    });
+  };
 
   return (
     <SignInArea>
@@ -114,13 +130,9 @@ function ChangePasswordContainer() {
             </SuccessArea>
           ) : (
             <>
-              {/* <LogoArvind src="/assets/img/logoArvind.png" alt="logo" /> */}
               <Tittle>{t("changePasswordPage.title")}</Tittle>
               <FormArea onSubmit={handleSubmit(onSave)}>
-                <InputArea
-                  error={errors.new_password}
-                  errorLength={errors.new_password?.message?.length}
-                >
+                <InputArea error={errors.new_password}>
                   <InputGroup>
                     <img src="/assets/img/auth/password.svg" />
                     <IputLogin
@@ -129,18 +141,13 @@ function ChangePasswordContainer() {
                         required: true,
                         pattern: {
                           value:
-                            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()\-_=+{}[\]|;:'",.<>/?])(?=.*[a-zA-Z]).{8,}$/,
+                            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()\-_=+{}[\]|;:'",.<>/?]).{8,}$/,
                           message: t("changePasswordPage.validate.password"),
                         },
-                        validate: (value) => {
-                          if (value.includes(" ")) {
-                            return (
-                              t("loginPage.validate.includeSpace") ||
-                              "Password mush not contain spaces."
-                            );
-                          }
-                          return true;
-                        },
+                        validate: (value) =>
+                          value.includes(" ")
+                            ? (t("loginPage.validate.includeSpace") as string)
+                            : true,
                       })}
                       placeholder={t("changePasswordPage.placeholder.password")}
                     />
@@ -148,33 +155,19 @@ function ChangePasswordContainer() {
                   <Errors errors={errors} name="new_password" />
                 </InputArea>
 
-                <InputArea
-                  error={errors.confirm_password}
-                  errorLength={errors.confirm_password?.message?.length}
-                >
+                <InputArea error={errors.confirm_password}>
                   <InputGroup>
                     <img src="/assets/img/auth/password.svg" />
                     <IputLogin
                       type="password"
                       {...register("confirm_password", {
                         required: true,
-                        pattern: {
-                          value:
-                            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()\-_=+{}[\]|;:'",.<>/?])(?=.*[a-zA-Z]).{8,}$/,
-                          message: t(
-                            "changePasswordPage.validate.confirmPassword"
-                          ),
-                        },
-                        validate: (value) => {
-                          if (value !== getValues("new_password")) {
-                            return (
-                              t(
+                        validate: (value) =>
+                          value !== getValues("new_password")
+                            ? (t(
                                 "changePasswordPage.validate.confirmPassword"
-                              ) || "Passwords must match"
-                            );
-                          }
-                          return true;
-                        },
+                              ) as string)
+                            : true,
                       })}
                       placeholder={t(
                         "changePasswordPage.placeholder.confirmPassword"
@@ -184,14 +177,35 @@ function ChangePasswordContainer() {
                   <Errors errors={errors} name="confirm_password" />
                 </InputArea>
 
-                <ReCAPTCHA
-                  className="recaptcha"
-                  ref={recaptchaRef}
-                  // sitekey={process.env.REACT_APP_ENV === 'test' ? TEST_SITE_KEY : SITE_KEY}
-                  sitekey={SITE_KEY}
+                <CaptchaContainer>
+                  <LoadCanvasTemplateNoReload />
+                  <CaptchaReload
+                    type="button"
+                    onClick={() => {
+                      loadCaptchaEnginge(6);
+                      setCaptchaInput("");
+                    }}
+                  >
+                    <img src="/assets/img/reload.svg" alt="Reload" />
+                  </CaptchaReload>
+                </CaptchaContainer>
+
+                <RecaptchaInput
+                  type="text"
+                  placeholder="Enter the text here"
+                  value={captchaInput}
+                  onChange={(e: any) => setCaptchaInput(e.target.value)}
+                  onKeyDown={(e: any) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleSubmit(onSave)();
+                    }
+                  }}
                 />
 
-                <SCButtonLogin disabled={loading || Object.keys(errors).length > 0}>
+                <SCButtonLogin
+                  disabled={loading || Object.keys(errors).length > 0}
+                >
                   <ButtonSubmit>
                     {loading ? (
                       <>

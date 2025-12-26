@@ -91,7 +91,7 @@ describe("useProcPlanning Component", () => {
 
     it("renders VFTable with Complete Available Data when the current tab is 'ca'", async () => {
         mockUseProcPlanning.mockReturnValueOnce({
-            ...mockUseProcPlanning( "", {}),
+            ...mockUseProcPlanning({}),
             toggleCurrentTab: jest.fn(({ id }) => {
                 if (id === 'ca') {
                     return <div data-testid="VFTable">Mock VFTable</div>;
@@ -99,7 +99,7 @@ describe("useProcPlanning Component", () => {
             }),
         });
 
-        const { toggleCurrentTab, renderView } = useProcPlanning( "", {});
+        const { toggleCurrentTab, renderView } = useProcPlanning({});
         toggleCurrentTab({ id: 'ca', label: 'Completely Available', value: 'ca' });
 
         render(contextWrapper(renderView(), store));
@@ -110,7 +110,7 @@ describe("useProcPlanning Component", () => {
 
     it("renders VFTable with Shortage Data when the current tab is 'short'", async () => {
         mockUseProcPlanning.mockReturnValueOnce({
-            ...mockUseProcPlanning( "", {}),
+            ...mockUseProcPlanning({}),
             toggleCurrentTab: jest.fn(({ id }) => {
                 if (id === 'short') {
                     return <div data-testid="VFTable">Mock VFTable</div>;
@@ -118,7 +118,7 @@ describe("useProcPlanning Component", () => {
             }),
         });
 
-        const { toggleCurrentTab, renderView } = useProcPlanning( "", {});
+        const { toggleCurrentTab, renderView } = useProcPlanning({});
         toggleCurrentTab({ id: 'short', label: 'Shortage', value: 'short' });
 
         render(contextWrapper(renderView(), store));

@@ -1,15 +1,15 @@
 
 
 // const {addRow, handleCancel} = useViewModify('modify');
-import _, { clone } from 'lodash';
+import _ from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { notifyError } from '../../../../../helpers/notify';
 import { UPDATE_COLDEFS, UPDATE_ROW_DATA } from '../../../../../redux/actions/MDM';
 import { SET_BUFFER_MODIFY_DATA, SET_CCR_MODIFY_DATA, SET_POOGI_INITIAL_DATA, SET_POOGI_MODIFY_DATA } from '../../../../../redux/actions/MTO';
 import type { RootState } from '../../../../../redux/store/store';
-import { BUFFER_VALIDATION_SCHEMA, CALENDAR_VALIDATION_SCHEMA, CCR_VALIDATION_SCHEMA } from './MDMJoiValidations';
-import { useState } from 'react';
+import { CALENDAR_VALIDATION_SCHEMA } from './MDMJoiValidations';
 import { useLocation } from 'react-router';
+import { validateBuffer, validateCCR } from './CommonUtils';
 
 
 const AddRemoveCellRenderer = (params: any) => {
@@ -33,49 +33,6 @@ const AddRemoveCellRenderer = (params: any) => {
     (state: any) => state.mto.poogiIntialData
   );
 
-
-  const validateCCR = () => {
-    const { error } = CCR_VALIDATION_SCHEMA.validate(params.data, {
-      abortEarly: false,
-    });
-
-    if (error) {
-      const fieldOrders = activeMaster.colDefs
-        .filter((item: any) => item.field !== "actions")
-        .map((item: any) => item.field);
-
-      const orderedErrors = fieldOrders.flatMap((key) =>
-        error.details.filter((err: any) => err.path[0] === key)
-      );
-
-      notifyError(orderedErrors[0]?.message);
-      return false;
-    }
-
-
-    ccrInitialData.forEach((e: any) => {
-      if (e.ccd === params.data.ccd) {
-        notifyError("CCR Code must be unique!");
-        return false;
-      }
-    });
-
-    if(params.data.fh< params.data.sh){
-      notifyError("FOL Horizon cannot be less than scheduling horizon!");
-      return false;
-    }
-
-    // const tempData = _.cloneDeep(activeMaster.rowData);
-    // tempData.shift();
-
-    if (ccrModifyData?.some((ccr: any) => ccr.ccd === params.data.ccd)) {
-      notifyError("CCR Code already exists in the master CCR!");
-      return false;
-    }
-
-    return true;
-  };
-
   // Function to add a new row
   const addNewRow = (rowData: any, id: any) => {
     const cloneRowData = _.cloneDeep(rowData);
@@ -85,7 +42,7 @@ const AddRemoveCellRenderer = (params: any) => {
       if (item.id === id) {
         const row = {
           ...item,
-          isEditing: false,
+          editable: false,
         };
         newRowData.push(row);
         newRow = row;
@@ -104,57 +61,14 @@ const AddRemoveCellRenderer = (params: any) => {
     // Check if the entered Buffer type is unique
 
     if (activeMaster.id === 501) {
-      const { error } = BUFFER_VALIDATION_SCHEMA.validate(params.data, {
-        abortEarly: false,
-      });
-
-      if (error) {
-        const fieldOrders = activeMaster.colDefs
-          .filter((item: any) => item.field !== "actions")
-          .map((item: any) => item.field);
-
-        const orderedErrors = fieldOrders.flatMap((key) =>
-          error.details.filter((err) => err.path[0] === key)
-        );
-
-        return notifyError(orderedErrors[0]?.message);
-      }
-
-      let isValid = true;
-
-      bufferInitialData?.forEach((e: any) => {
-        if (e.bsz == params.data.bsz && e.bt === params.data.bt) {
-          notifyError("Buffer size must be unique!.");
-          isValid = false;
-          return;
-        }
-      });
-      bufferModifyData?.forEach((e: any) => {
-        if (e.bsz == params.data.bsz && e.bt === params.data.bt) {
-          notifyError("Buffer size must be unique!.");
-          isValid = false;
-          return;
-        }
-      });
-      bufferInitialData?.forEach((e: any) => {
-        if (e.bcd === params.data.bcd) {
-          notifyError("Buffer code must be unique!.");
-          isValid = false;
-          return;
-        }
-      });
-      bufferModifyData?.forEach((e: any) => {
-        if (e.bcd === params.data.bcd) {
-          notifyError("Buffer code must be unique!.");
-          isValid = false;
-          return;
-        }
-      });
-      if (isValid) {
+      const result = validateBuffer(params.data, activeMaster, bufferInitialData, bufferModifyData, params.bufferTypeData);
+      if (result.error !== "") {
+        notifyError(result.error);
+      } else {
         const newColDefs: any = [];
         activeMaster.colDefs.forEach((ele: any) => {
           const newColDef = { ...ele };
-          if (!params.data.isEditing) {
+          if (!params.data.ia) {
             delete newColDef.editable;
           }
           newColDefs.push(newColDef);
@@ -168,12 +82,14 @@ const AddRemoveCellRenderer = (params: any) => {
         dispatch(UPDATE_COLDEFS(newColDefs));
       }
     } else if (activeMaster.id === 502) {
-      const result = validateCCR();
-      if (result) {
+      const result = validateCCR(params.data, activeMaster, ccrInitialData, ccrModifyData, params.CCRGroupMaterSetRef, params.plantMaster, params.deptMaster);
+      if (result.error !== "") {
+        notifyError(result.error);
+      } else {
         const newColDefs: any = [];
         activeMaster.colDefs.forEach((ele: any) => {
           const newColDef = { ...ele };
-          if (!params.data.isEditing) {
+          if (!params.data.ia) {
             delete newColDef.editable;
           }
           newColDefs.push(newColDef);
@@ -399,7 +315,7 @@ const AddRemoveCellRenderer = (params: any) => {
   ) => {
     const newRowData = rowData.map((item: any) => {
       if (item.id === id) {
-        return { ...item, isEditing: true };
+        return { ...item, editable: true };
       }
       return item;
     });
@@ -457,7 +373,7 @@ const AddRemoveCellRenderer = (params: any) => {
     dispatch(SET_MODIFY_DATA(newModifiedData));
   };
 
-  if (params.data.ia && params.data.isEditing && activeMaster.id !== 503 && activeMaster.id !== 504) {
+  if (params.data.ia && params.data.editable && activeMaster.id !== 503 && activeMaster.id !== 504) {
     return (
       <div
         style={{
@@ -491,7 +407,7 @@ const AddRemoveCellRenderer = (params: any) => {
         </div>
       </div>
     );
-  } else if (!params.data.isEditing && params.data.ia && activeMaster.id !== 503 && activeMaster.id !== 504) {
+  } else if (params.data.ia && !params.data.editable && activeMaster.id !== 503 && activeMaster.id !== 504) {
     return (
       <div
         style={{

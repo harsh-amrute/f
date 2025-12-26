@@ -2,9 +2,9 @@ import { VFFilterDustbinIcon, VFFilterInputField, VFFilterSeperator, VFFilterWra
 import Select from 'react-select'
 import {type Option, type Filter} from '../../../../VectorFlow/types/MDM';
 import { useDispatch, useSelector } from 'react-redux';
-import { SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_FILTER } from "../../../../redux/actions/MDM";
+import { UPDATE_FILTER_VALUE } from "../../../../redux/actions/MDM";
 import { useUserData } from "../../../../context";
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import type { RootState } from '../../../../redux/store/store';
 import { operatorDataTypeMapper } from "../../../../helpers/MtoMDMConstants";
 import { Field } from "../../../../VectorFlow/types/MDM";
@@ -29,7 +29,8 @@ export interface CustomSelectProps{
 export interface CustomInputProps{
     value:string
     onChange:(e:any)=>void
-    disabled?:boolean
+    disabled?: boolean
+    type?:string
 }
 
 const VFFilter = (props:VFFilterProps)=>{
@@ -42,21 +43,33 @@ const VFFilter = (props:VFFilterProps)=>{
         isDisabled
     } = props
     
-    const [validOperators,setValidOperators] = useState(operators);
-    const activeMaster = useSelector((state:RootState) => state.mdm.activeMaster)
-    const updateOperators = (value:string) => {
-        const selectedFieldObject:any = activeMaster.fields.find((field:Field)=>field.key === value);
-        if(selectedFieldObject){ 
-            setValidOperators([...operators.filter((operator:{value:string,label:string})=>operatorDataTypeMapper[selectedFieldObject.dataType]?.includes(operator.value))])
+    
+    const activeMaster = useSelector((state: RootState) => state.mdm.activeMaster);
+    const [fieldDataType, setFieldDataType] = useState("");
+    
+    // Memoizing validOperators using useMemo to avoid frequent recalculations
+    //update operator based on dataType
+    const validOperators = useMemo(() => {
+        return operators.filter(operator =>
+            operatorDataTypeMapper[fieldDataType]?.includes(operator.value)
+        );
+    }, [fieldDataType, operators]);
+
+    //update field data type based on selected main filter type
+    const updateFieldDataType = useCallback((fieldKey: string) => {
+        const selectedField = activeMaster.fields.find((field: Field) => field.key === fieldKey);
+        if (selectedField) {
+            setFieldDataType(selectedField.dataType);
         }
-    }
+    }, [activeMaster.fields]);
 
-
-    const handleOnChange = (value:string,property:string)=>{
-       updateOperators(value);
-       dispatch(UPDATE_FILTER({value:value,property:property,filterId:currFilter.id}))
-       dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-    }
+    //Update field data type, update active master filter in redux
+    const handleOnChange = useCallback((value: string, property: string) => {
+        if (property === 'field') {
+            updateFieldDataType(value);
+        }
+        dispatch(UPDATE_FILTER_VALUE({ value, property, filterId: currFilter.id }));
+    }, [dispatch, updateFieldDataType, currFilter.id]);
 
 
     return(
@@ -75,14 +88,15 @@ const VFFilter = (props:VFFilterProps)=>{
                 placeholder="Select" 
                 onChange={(e:any)=>handleOnChange(e.value,'operator')} 
                 options={validOperators}
-                value={validOperators.find((field)=>field.value === currFilter.operator)}
+                value={validOperators.find((field) => field.value === currFilter.operator) ?? ""}
                 isDisabled={isDisabled}
             />
             <VFFilterSeperator/>
-            <CustomInput 
+            <CustomInput
                 value={currFilter.text} 
                 onChange={(e:any)=>handleOnChange(e.target.value,'text')}
-                disabled={isDisabled}
+                disabled={isDisabled || fieldDataType === ""}
+                type={fieldDataType}
             />
             <VFFilterSeperator/>
             <VFFilterDustbinIcon 
@@ -165,12 +179,13 @@ const CustomInput = (props:CustomInputProps)=>{
     const {
         value,
         onChange,
-        disabled = false
+        disabled = false,
+        type
     } = props
 
     return(
         <VFFilterInputField
-            type='text'
+            type={type}
             placeholder="Value"
             value={value}
             onChange={onChange}

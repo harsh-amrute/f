@@ -56,16 +56,39 @@ const useTaskPendingForReview = ()=>{
     const [TASK_ID,setTaskId] = useState<string>('')
 
     const [noDataMessage, setNoDataMessage] = useState<string>('');
+    const [colGenArgs, setColGenArgs] = useState<any>(null);
+    const [isDisabled, setIsDisabled] = useState<boolean>(false);
 
     useEffect(() => {
         if (!isViewTableOpen && ref.current?.api && detailTableRowData?.length > 0) {
-          ref.current.api.forEachNode((rowNode) => {
+        let rejectedCount = 0;
+        ref.current.api.forEachNode((rowNode) => {
             if (rowNode.data.status === "Rejected") {
-              rowNode.setSelected(true);
+                rowNode.setSelected(true)
+                rejectedCount++;
             }
-          });
-        }
-      }, [detailTableRowData]);
+        });
+        const allRowsAreRejected = rejectedCount === detailTableRowData.length;
+        setIsDisabled(allRowsAreRejected);
+    }
+}, [detailTableRowData, isViewTableOpen]);
+
+useEffect(() => {
+    if (colGenArgs) {
+        setDetailTableColDefs(
+            mapMasterToColumnGroupDefs(
+                colGenArgs.existingColumnFields,
+                colGenArgs.currentTaskMasterId,
+                themeUi,
+                colGenArgs.taskActionTypeValue,
+                toggleApproveAllModal,
+                toggleRejectAllModal,
+                actionStatus,
+                isDisabled
+            )
+        );
+    }
+}, [isDisabled, colGenArgs]); 
 
     const resetState = ()=>{
         setDetailTableColDefs([])
@@ -144,8 +167,16 @@ const useTaskPendingForReview = ()=>{
                             : currentTaskMaster?.data[0]:[]
                         );
                                        
-                        const existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields)
-                        setDetailTableColDefs(mapMasterToColumnGroupDefs(existingColumnFields,currentTaskMasterId,themeUi,getActionName(taskData.Actiontype).value,toggleApproveAllModal,toggleRejectAllModal,actionStatus))
+                        let existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields);
+                        if(taskData.Actiontype === 3){
+                            existingColumnFields = existingColumnFields.filter(field => field?.isDelete);
+                        }
+                        // setDetailTableColDefs(mapMasterToColumnGroupDefs(existingColumnFields,currentTaskMasterId,themeUi,getActionName(taskData.Actiontype).value,toggleApproveAllModal,toggleRejectAllModal,actionStatus,isDisabled))
+                        setColGenArgs({
+                            existingColumnFields: existingColumnFields,
+                            currentTaskMasterId: currentTaskMasterId,
+                            taskActionTypeValue: getActionName(taskData.Actiontype).value
+                        });
                         setDetailTableRowData(mapNewAndOldMasterRowDataToCustomRowData(currentTaskMaster.data,existingColumnFields,getActionName(taskData.Actiontype).value,currentTaskMasterId))
                         // dispatch(SET_RECORD_COUNT(currentTaskMaster.data.length));
                     }

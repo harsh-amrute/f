@@ -139,7 +139,7 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
       const { filters } = emptyFilterState[key];
       for (let i = 0; i < (filters?.length); i++) {
         const { attributeName, options } = filters[i];
-        filters[i].value = attributeName === 'ms' ? [...options] : [];
+        filters[i].value = [];
       }
     }
 
@@ -213,6 +213,9 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
                     </FilterHeader>
                     <FilterWrapper className="drop-down-options">
                       {filterState[category as keyof FilterState]?.filters?.map((filter: Filter) => {
+                       if (filter.attributeName === "ms" && (filter.options.length === 0)) {
+                        return null; 
+                      }
                       if (
                         (filter?.type === InputTypes.TextCompare || filter?.type === InputTypes.NumberCompare) && hasRenderedComponent
                       ) {

@@ -29,6 +29,7 @@ import {
     DateTitle,
     DateValue,
     VFSelectedFilterLabel,
+    AddFilterWrapper
 } from './styles';
 import moment from 'moment';
 import { ReactElement } from 'react';
@@ -130,9 +131,7 @@ const MTOActionToolBar = ({
     }
 
 
-    const format2 = "yyyy-MM-dd"
-    const d = new Date();
-    const datetime = moment(d).format(format2); 
+    const format2 = "yyyy-MM-dd";
     
     const newFilters = getSelectedFilters(multiFilter, isMfgSelected);
 
@@ -202,7 +201,13 @@ const MTOActionToolBar = ({
                 <p>Release Date Till</p>
                 &nbsp;
                 &nbsp;
-                <VFDatePicker  date={date ? new Date(date) : null} minDate={datetime} onDateChange={onDateChange} />
+                <VFDatePicker  
+                    date={date ? new Date(date) : null} 
+                    onDateChange={onDateChange} 
+                    dateInputStyle = {{fontSize:"18px",fontWeight:"bold"}}
+                    imgStyle={{height:'25px', width:'25px'}}
+                    showCalendarIcon={true}
+                />
                             
                 &nbsp;
                 {/* <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -371,21 +376,33 @@ const MTOActionToolBar = ({
                 {utilityBtns && <div style={{ display: "flex", justifyContent: "center", alignItems: "center", fontSize: "1.8rem", gap: "1.5rem", marginRight: "10px" }}>
                     {utilityBtns}
                 </div>}
-                {isAddFilterButton && (onAddFilter ?
-                    <VFButton onClick={() => onAddFilter()}
-                        themeUi={themeUi}
-                        disabled={false}
-                        width={110}
-                    >{(selectedFilters || newFilters) && (selectedFilters?.length || Object.keys(newFilters).length) ?
-                        <p style={{ padding: '2px' }}>Edit Filter</p>
-                        :
-                        <p style={{ padding: '2px' }}>+ Add Filter</p>}
-                    </VFButton>
-                    :
-                    <SCButton>
-                        <p >+ Add Filter</p>
-                    </SCButton>)
-                }
+               
+                    {isAddFilterButton && (
+                        onAddFilter ? (
+                            <AddFilterWrapper>
+                            <VFButton
+                                onClick={() => onAddFilter()}
+                                themeUi={themeUi}
+                                disabled={false}
+                                width={110}
+                            >
+                                {(selectedFilters || newFilters) &&
+                                (selectedFilters?.length || Object.keys(newFilters).length) ? (
+                                <p style={{ padding: "2px" }}>Edit Filter</p>
+                                ) : (
+                                <p style={{ padding: "2px" }}>+ Add Filter</p>
+                                )}
+                            </VFButton>
+                            </AddFilterWrapper>
+                        ) : (
+                            <AddFilterWrapper>
+                            <SCButton>
+                                <p>+ Add Filter</p>
+                            </SCButton>
+                            </AddFilterWrapper>
+                        )
+                 )}
+
                 <>
                     {isExcelExport && <>
                         <SCVerticalDivider  />

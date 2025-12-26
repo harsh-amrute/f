@@ -7,6 +7,7 @@ import { BPRColorCellRendererWrapper,
     BPRColorCellRendererIcon,
     BPRSubmitRemarkInput
 } from "./styles"
+import { useUserData } from "../../../../../context";
 
 
 // interface BPRSubmitRemarkCellRendererProps extends ICellRendererParams{
@@ -95,7 +96,7 @@ const colorMapper =(color:string)=> {
             }
         case "Grey":{
             return {
-                "bg":"grey",
+                "bg":"#D3D3D3",
                 "text":"black"
             }
         }
@@ -114,7 +115,6 @@ const colorMapper =(color:string)=> {
 }
 
 export const BPRTechColorCellRenderer = (params:any)=>{
-    
     const techColor = params?.data?.TechColor;
     // console.log("techColor", params.data)
     const cellColor = colorMapper(params?.data?.TechColor)
@@ -130,11 +130,17 @@ export const BPRTechColorCellRenderer = (params:any)=>{
 
     if(params.data.TechPen== null){
         return (
-            <BPRColorCellRendererWrapper onClick={()=>console.log(params)} style={{backgroundColor:"white",maxWidth:90}}>
+            <BPRColorCellRendererWrapper onClick={()=>console.log(params)} style={{backgroundColor:cellColor.bg,maxWidth:90}}>
             </BPRColorCellRendererWrapper>        
             )
     }
-
+    if(params.data.TechPen == "") {
+        return(
+            <BPRColorCellRendererWrapper onClick={()=>console.log(params)} style={{backgroundColor:cellColor.bg,color:cellColor.text,maxWidth:90}}>
+                {params.data.TechPen}
+            </BPRColorCellRendererWrapper>
+        )
+    }
     return(
         <BPRColorCellRendererWrapper onClick={()=>console.log(params)} style={{backgroundColor:cellColor.bg,color:cellColor.text,maxWidth:90}}>
             {params.data.TechPen}%
@@ -170,7 +176,7 @@ export const BPREcoColorCellRenderer = (params:any)=>{
 
     if(params.data.EcoPen == null){
         return (
-            <BPRColorCellRendererWrapper onClick={()=>console.log(params)} style={{backgroundColor:"white",maxWidth:90}}>
+            <BPRColorCellRendererWrapper onClick={()=>console.log(params)} style={{backgroundColor:cellColor.bg,maxWidth:90}}>
             </BPRColorCellRendererWrapper>        
             )
     }
@@ -183,11 +189,13 @@ export const BPREcoColorCellRenderer = (params:any)=>{
 }
 
 export const BPRTagsCellRenderer = (params:any)=>{
+    const { user } = useUserData();
+
     if(!params.value ||  params.value.length===0){
         return null
     }
     return(
-        <BPRTagsCellRendererWrapper>
+        <BPRTagsCellRendererWrapper theme={user.user.theme_ui} style={{height:18,padding:"0px 3px",fontSize:9,width:55}}>
             {params.value}
         </BPRTagsCellRendererWrapper>
     )

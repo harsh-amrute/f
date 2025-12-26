@@ -54,6 +54,43 @@ export const CircleForgotPassword = styled.div`
   top: -65%;
   left: 0;
 `;
+export const CaptchaContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  width: fit-content;
+  margin-top: 20px;
+`;
+
+export const CaptchaReload = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ac3072;   /* your brand pink/purple */
+  border: none;
+  border-radius: 6px;
+  padding: 6px;
+  cursor: pointer;
+  transition: 0.3s ease;
+
+  &:hover {
+    background: #820f4c;
+  }
+
+  img {
+    width: 20px;
+    height: 20px;
+    filter: brightness(0) invert(1); /* makes icon white */
+  }
+`;
+
+
+
+
 
 export const ContainerRight: any = styled.div`
   display: flex;
@@ -101,6 +138,28 @@ export const IputLogin: any = styled.input`
     -webkit-text-fill-color: #707070 !important;
   }
 `;
+ 
+export const RecaptchaInput: any = styled.input`
+  margin-top: 12px;
+  padding: 10px;
+  width: 50%;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  font-family: "Roboto", sans-serif;
+  color: #707070;
+
+  &::placeholder {
+    color: #aaa;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: #ac3072;
+  }
+`;
+
+
 
 export const KeepSingIn: any = styled.div`
   display: flex;
@@ -223,7 +282,7 @@ export const ArrowArea: any = styled.div`
 `;
 
 export const InputArea: any = styled.div<{ error: true | false , errorLength: number }>`
-  border: ${(props) => (props.error ? "2px solid red" : "none")};
+  border: ${(props) => (props.error ? "2px solid red" : "none")}; 
   margin-top: 6vh;
   background: transparent linear-gradient(278deg, #f2f3f6 0%, #e5e6ec 100%) 0%
     0% no-repeat padding-box;

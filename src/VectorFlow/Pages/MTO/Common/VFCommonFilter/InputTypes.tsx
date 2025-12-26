@@ -30,6 +30,8 @@ const FilterCheckboxAccordian = ({
   setOpenStatus,
   children,
 }: any) => {
+
+
   
   const openStatusReducer = (prevStatus: any) => {
     Object.keys(prevStatus).forEach((filterType) => {
@@ -203,7 +205,9 @@ const Checkbox = ({
   );
 };
 
+
 const FilterSelectDropdown = ({
+  
   placeholder,
   options,
   hideDropdownArrow,
@@ -213,79 +217,89 @@ const FilterSelectDropdown = ({
   resetKey,
   disabled=false,
 }: any) => {
+
+  const { user } = useUserData();
+  const themeUi = user.user.theme_ui;
   const customStylesClose = {
-    control: (baseStyles: any) => ({
+    control: (baseStyles:any) => ({
       ...baseStyles,
       height: "39px",
-      borderRadius: " 20px 20px 20px 20px",
-      background: "#F2F2F2 0% 0% no-repeat padding-box",
-      border: "none",
+      borderRadius: "20px",
+      background: "#F2F2F2",
       cursor: "pointer",
       display: "flex",
       justifyContent: "center",
+      border: "1px solid #ccc",
     }),
-    indicatorsContainer: () => ({
-      paddingRight: "10px",
-    }),
-    option: (baseStyles: any) => ({
+  
+    // OPTION STYLE
+    option: (baseStyles:any, state:any) => ({
       ...baseStyles,
-      color: "#313131",
+      // color: "#313131",
       fontFamily: "Roboto",
-      fontWeight: "300",
+      fontWeight: 300,
       fontSize: "12px",
-      paddingTop: "3px",
-      paddingBottom: "3px",
+      paddingTop: "6px",
+      paddingBottom: "6px",
       cursor: "pointer",
-      borderTop: "1px solid #B7B7B7",
+      background: state.isSelected
+      ? themeUi === "REGEALBLAZE"
+        ? "rgb(252, 163, 17)"
+        : "rgb(188, 61, 129)"
+        : undefined,
+      color:state.isSelected?'white':'black',
+      borderBottom: "1px solid #F1F1F1",
+      padding:'8px',
+      ":hover": {
+        background:themeUi==='REGALBLAZE' ? '#fee3b7': '#ebc4d9',
+      },
     }),
-    menuList: (baseStyles: any) => ({
+  
+    // MENU LIST (scroll, height limit)
+    menuList: (baseStyles:any) => ({
       ...baseStyles,
-      borderRadius: "0px 0px 20px 20px",
-      background: "#F2F2F2 0% 0% no-repeat padding-box",
+      background: "#FFFFFF",
+      borderRadius: "0 0 20px 20px",
       paddingLeft: "5px",
       marginTop: "0px",
-      overflowY: "overlay",
+      maxHeight: "150px", 
+      overflowY: "auto",
       overflowX: "hidden",
 
+      width: 'max-content',
+
+  
       "&::-webkit-scrollbar": {
         width: "7px",
       },
-      "&::-webkit-scrollbar-track": {
-        borderRadius: "30px",
-        opacity: 1,
-      },
       "&::-webkit-scrollbar-thumb": {
-        width: "7px",
-        background: "#D1D1D1 0% 0% no-repeat padding-box",
-        boxShadow: "0px 6px 9px #F8F8F8",
-        borderRadius: "30px",
-        opacity: 1,
+        background: "#D1D1D1",
       },
     }),
-    placeholder: (baseStyles: any) => ({
+    indicatorsContainer: () => ({
+          paddingRight: "10px",
+        }),
+  
+    placeholder: (baseStyles:any) => ({
       ...baseStyles,
-      // marginLeft:hideDropdownArrow ? '' : '23px',
       color: "#313131",
       fontFamily: "Roboto",
-      fontWeight: "300",
+      fontWeight: 300,
       fontSize: "12px",
-      textAlign: hideDropdownArrow ? "center" : "",
+      textAlign: "center",
       padding: "0 5px",
-      boxSizing: "border-box",
     }),
-    singleValue: (baseStyles: any) => ({
+  
+    singleValue: (baseStyles:any) => ({
       ...baseStyles,
-      // marginLeft:'23px',
-      // marginRight:hideDropdownArrow ? '23px' : '23px',
       color: "#313131",
       fontFamily: "Roboto",
-      fontWeight: "300",
+      fontWeight: 300,
       fontSize: "12px",
-      textAlign: hideDropdownArrow ? "center" : "",
       padding: "0 5px",
-      boxSizing: "border-box",
     }),
   };
+  
 
   const customStylesOpen = {
     ...customStylesClose,
@@ -307,6 +321,8 @@ const FilterSelectDropdown = ({
     setCustomStyles(customStylesClose);
   };
 
+ 
+
   return (
     <Select
       options={options}
@@ -322,12 +338,14 @@ const FilterSelectDropdown = ({
       value={value}
       isDisabled={disabled}
       key={resetKey}
+      // menuPlacement="top" 
       
 
       // menuIsOpen={true}
     />
   );
 };
+
 
 const FilterTextInput = ({
   placeholder,
@@ -357,8 +375,10 @@ const FilterTextInput = ({
         fontWeight: "400",
         fontSize: "14px",
         textAlign: "center",
-        border: "none",
+        // border: "none",
+        border: '1px solid rgb(204, 204, 204)',
         cursor: 'text',
+
       }}
       placeholder={placeholder}
       onChange={onChange}
@@ -502,7 +522,7 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
   };
 
     const { user } = useUserData();
-    const themeUi = user.user.theme_ui;
+  const themeUi = user.user.theme_ui;
 
   const getFilteredHeaderOptions = (index: number) => {
 
@@ -525,12 +545,12 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
   
     return filteredOptions;
   };
-  
 
+  
 
       return (
       <>
-       {masterFilterState?.filters?.map((filter:any, index:any) => (
+      {masterFilterState?.filters?.map((filter: any, index: any) => (
       <div key={filter.id} style={{ display: "flex",  width: index === 0 ? "100%" : "90%"}}>
     
       <div style={{ display: "flex", justifyContent: "space-between", width: index === 0 ? 'calc(100% - 40px)' : '100%' }}>
@@ -578,21 +598,37 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
       </DropdownGroupWrapper>
     </div>
 
-    {index === 0 && (
-      <div style={{
+   
+  {index === 0 && (() => {
+  const filteredOptions = getFilteredHeaderOptions(index);
+  const isDisabled = filteredOptions.length === 1;
+
+  return (
+    <div
+      style={{
         width: "40px",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-      }}>
-        <SCFilterAddButton
-          onClick={addFilter}
-          src={themeUi==="REGALBLAZE" ? "/assets/img/VectorFLOW/NMS/add-filter-regal.svg"
-            :"/assets/img/VectorFLOW/NMS/add-filter.svg"}
-          data-testid="add-filter"
-        />
-      </div>
-    )}
+        opacity: isDisabled ? 0.5 : 1,
+        cursor: isDisabled ? "not-allowed" : "pointer",
+      }}
+    >
+      <SCFilterAddButton
+        onClick={isDisabled ? undefined : addFilter}
+        src={
+          themeUi === "REGALBLAZE"
+            ? "/assets/img/VectorFLOW/NMS/add-filter-regal.svg"
+            : "/assets/img/VectorFLOW/NMS/add-filter.svg"
+        }
+        data-testid="add-filter"
+      />
+    </div>
+  );
+})()}
+
+
+
   </div>
 
   

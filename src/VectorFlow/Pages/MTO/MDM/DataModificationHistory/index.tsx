@@ -4,7 +4,7 @@ import { FilterWrapper,SelectSearchWrapper,ButtonWrapper,VerticalDivider, Select
 import { useUserData } from "../../../../../context";
 import Select from 'react-select'
 import useDataModificationHistory from "./useDataModificationHistory";
-import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
+import VFTable from "../../Common/VFTable";
 
 
 const MTODataModificationHistory = ()=>{

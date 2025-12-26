@@ -12,6 +12,8 @@ import LastRunDateComponent from "../../../../../components/commons/lastRundate"
 import BPRRemarkHistoryModal from "../BPR/BPRRemarkHistoryModal";
 import OverlayLoader from "../../../MTO/Common/Loader";
 import { useState } from "react";
+import { useSelector } from "react-redux"
+import { RootState } from "../../../../../redux/store/store"
 
 
 const SupplierWiseAllocation = ()=>{
@@ -49,11 +51,14 @@ const SupplierWiseAllocation = ()=>{
         lastRunDate,
         isRemarkHistoryToolTipOpen,
         remarkHistory,
-        onCloseRemarkHistory
+        onCloseRemarkHistory,
+         savePageSize,
+        userPageSize
     } = useSupplierWiseAllocation()
 
     const [isDisabled, setIsDisabled]= useState<boolean>(true)
-    
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const SUPPLY_WISE_ALLOCATION_HUB_ROWS_PER_PAGE = EnvConfig['SUPPLY_WISE_ALLOCATION_HUB_ROWS_PER_PAGE'];  
 
     return(
       <GridStateContext.Provider
@@ -141,16 +146,21 @@ const SupplierWiseAllocation = ()=>{
                     }
                   }}
                 />
+                {rowData?.length  > 0 &&
                 <VFPagination
                   selectedRows={0}
                   totalRows={recordCount}
                   currentPage={currentPage}
-                  rowsPerPage={parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100')}
+                  rowsPerPage={userPageSize }
                   handleChangePage={handleChangePage}
                   resetGridRef={ref} 
-                  isDisabled={isDisabled}  />
-
-                <VFSaveRemark onSubmitRemarks={onSubmitRemarks} />
+                  isDisabled={isDisabled}  
+                  customPageSizeEnabled={true}
+              userPageSize={userPageSize}
+              savePageSize={savePageSize}
+                  />
+                }
+                {/* <VFSaveRemark onSubmitRemarks={onSubmitRemarks} /> */}
 
               </div>
           <div style={{ display: 'none' }}>

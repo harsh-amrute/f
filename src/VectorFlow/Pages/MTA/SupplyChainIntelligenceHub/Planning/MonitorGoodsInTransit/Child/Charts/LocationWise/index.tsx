@@ -13,6 +13,8 @@ import {convertToInt, getProductAndLocationHeirarchiesFromEnv, generateChartOpti
 import Chart from 'react-apexcharts';
 import { chartParams1 } from "./chartParams";
 import VFCharts from "../../../../../../../../../components/VectorFLOW/commons/VFCharts";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../../../../../../redux/store/store";
 
 interface MonitorGITChildLocationWiseProps{
     data:any
@@ -31,7 +33,15 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
     const [hideChart2,toggleChart2] = useState<boolean>(false);
 
     const [chartId1, setChartId1] = useState<any>("");
+
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const PRODUCT_PERMISSION_L1 = EnvConfig['PRODUCT_PERMISSION_L1']; 
+    const PRODUCT_PERMISSION_L2 = EnvConfig['PRODUCT_PERMISSION_L2']; 
+    const PRODUCT_PERMISSION_L3 = EnvConfig['PRODUCT_PERMISSION_L3']; 
     
+    const LOCATION_PERMISSION_L1 = EnvConfig['LOCATION_PERMISSION_L1']; 
+    const LOCATION_PERMISSION_L2 = EnvConfig['LOCATION_PERMISSION_L2']; 
+    const LOCATION_PERMISSION_L3 = EnvConfig['LOCATION_PERMISSION_L3']; 
 
     const seriesData = useMemo(()=>{
         if(!data)return []
@@ -87,7 +97,7 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
         ]
         
         colDefs = columns.map((column:{header:string,colCode:string})=>{
-            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
+            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{} , PRODUCT_PERMISSION_L1 , PRODUCT_PERMISSION_L2 , PRODUCT_PERMISSION_L3 , LOCATION_PERMISSION_L1 , LOCATION_PERMISSION_L2 , LOCATION_PERMISSION_L3);  
 
             if(customColdef) return customColdef
 
@@ -159,7 +169,7 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
         ]
         
         colDefs = columns.map((column:{header:string,colCode:string})=>{
-            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
+            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{} , PRODUCT_PERMISSION_L1 , PRODUCT_PERMISSION_L2 , PRODUCT_PERMISSION_L3 , LOCATION_PERMISSION_L1 , LOCATION_PERMISSION_L2 , LOCATION_PERMISSION_L3);  
 
             if(customColdef) return customColdef
 
@@ -225,7 +235,7 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
 
                 <Allotment.Pane preferredSize={'50%'}>
                         <SCChartContainer height={"95%"} style={{marginLeft:'20px'}}>
-                            <SCChartHeaderContainer>
+                            <SCChartHeaderContainer height="40px">
                                 <div style={{display:'flex',width:'100%',justifyContent:'center' , overflow:"hidden"}}><SCChartHeader style={{marginRight:10}}>Statistical Overview Of Delay Days In Transport At Receiving Locations</SCChartHeader></div>
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
                                     <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph2}/></div>
@@ -345,7 +355,7 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
                                     }}
                                     series={series} // Make sure you have defined the series data
                                     type="boxPlot"
-                                    height={265}
+                                    height={370}
 
                                 />
                                 <Xaxislegend>Receiving Location Name</Xaxislegend>

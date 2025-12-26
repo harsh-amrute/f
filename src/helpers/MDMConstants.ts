@@ -284,7 +284,7 @@ export const TaskPendingAvoidColumnsMapper:any ={
     "2":['wc'],
     "3":['sc','wc'],
     "4":['sc','spc','wc'],
-    "5":['sc'],
+    "5":['sc','spc'],
     "6":['sc','wc'],
     "7":['sc','wc'],
     "8":['sc','wc','pi'],
@@ -314,9 +314,9 @@ export const customKeys = [
 ]
 
 export const mdmRoutes = [
-    '/master-data-management/control-panel/view-modify',
-    '/master-data-management/control-panel/add',
-    '/master-data-management/control-panel/delete'
+    '/mta/master-data-management/control-panel/view-modify',
+    '/mta/master-data-management/control-panel/add',
+    '/mta/master-data-management/control-panel/delete'
 ]
 
 export const TaskPendingStopPIPOCustomColumns:Array<ColDef | ColGroupDef> = [

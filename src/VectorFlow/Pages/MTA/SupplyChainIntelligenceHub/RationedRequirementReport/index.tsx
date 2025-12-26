@@ -7,6 +7,8 @@ import LastRunDateComponent from "../../../../../components/commons/lastRundate"
 import OverlayLoader from '../../../../../VectorFlow/Pages/MTO/Common/Loader';
 import { useState } from 'react';
 import VFPagination from "../../../../../VectorFlow/Pages/MTO/Common/VFPagination"
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../../../redux/store/store';
 
 
 
@@ -38,11 +40,15 @@ const RRR = () => {
   ref,
   generalFilterOptions,
   onResetCallback,
-  lastRunDate
+  lastRunDate,
+  userPageSize,
+  savePageSize
 } = useRRR();
 
   const [isDisabled, setIsDisabled]= useState<boolean>(true)
-
+ 
+  const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+  const RRR_ROWS_PER_PAGE = EnvConfig['RRR_ROWS_PER_PAGE'];   
  
   return (
   <GridStateContext.Provider
@@ -130,16 +136,24 @@ const RRR = () => {
                     setIsDisabled(true);
                   }
                 }}
+                // onColumnVisible={(params) => params.api.sizeColumnsToFit()}
+                // onGridSizeChanged={(params) => params.api.sizeColumnsToFit()}
               />  
-              <VFPagination 
+            {
+            RRRRowData?.length  > 0 &&  
+            <VFPagination 
                 selectedRows={0} 
                 totalRows={RRRDataCount} 
                 currentPage={currentPage} 
-                rowsPerPage={parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '100')}
-                handleChangePage={(e)=>getRRRRowData(e)} 
+                rowsPerPage={userPageSize}
+                handleChangePage={(e)=>getRRRRowData(e , userPageSize)} 
                 resetGridRef={ref} 
                 isDisabled={isDisabled}
+                customPageSizeEnabled={true}
+                    userPageSize={userPageSize}
+                    savePageSize={savePageSize}
               />  
+              }
         </div>
         <div style={{display:'none'}}>                
           <VFTable

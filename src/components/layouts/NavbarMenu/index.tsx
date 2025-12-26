@@ -5,25 +5,50 @@ import { listMenuParent } from "./listMenu";
 import { MenuToolTip } from "../../../components/index";
 import { useState, useEffect } from "react";
 import { useUserData } from "../../../context";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { useGetAllReports } from '../../../VectorFlow/Services/MTA/MDM'
 import _ from 'lodash'
 import { useGetAllMTOReports } from "../../../VectorFlow/Services/MTO/Common/DownloadReports";
 import { getNestedChildren } from "../../../helpers/utils";
 import { Tooltip } from 'react-tooltip';
+import { decryptStorageData, encryptStorageData } from "../../../VectorFlow/Pages/MTO/Common/encryption";
 
-const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any) => {
+const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive, menuItem }: any) => {
   const { mutateAsync: getAllReports } = useGetAllReports();
-  const {mutateAsync: getAllMTOReports} = useGetAllMTOReports()
-  const [listMenu, setListMenu] = useState(listMenuParent);
+  const {mutateAsync: getAllMTOReports} = useGetAllMTOReports();
+  const [listMenu, setListMenu] = useState(()=>{
+    if(menuItem){
+      
+      const updatedMenu = listMenuParent.map((item: any) => ({
+        ...item,
+        status: item.id === menuItem.id,
+      }));
+      return updatedMenu;
+    } else {
+      return listMenuParent;
+    }
+  });
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   const queryClient = useQueryClient();
-  const { user } = useUserData();
+  const { user, setUser } = useUserData();
   const themeUi = user?.user?.theme_ui;
   const [activeTooltip, setActiveTooltip] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
   const [tempUrls, setTempUrls] = useState([]); //temp url is used to show downloading
   const [reportUrls, setReportUrls] = useState<string[]>([]);
+
+  const location = useLocation();       
+   useEffect(()=>{
+    setListMenu((prev:any[])=>{
+      const updatedPrev = prev.map((list)=>{
+        return {
+          ...list,
+          status : list.url === location.pathname
+        }
+      })
+      return updatedPrev
+    })
+  },[location])
 
   const getReportFields = async () => {
     try {
@@ -70,7 +95,17 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
       }
   
       // Clone the menu once and update it
-      const updatedMenu = _.cloneDeep(listMenuParent);
+      const updatedMenu = _.cloneDeep(listMenuParent).map((item: any) => {
+        if(menuItem){
+
+          return {
+            ...item,
+            status: item.id === menuItem.id,
+          };
+        }else{
+          return item;
+        }
+      });
       const targetObject = updatedMenu.find((item: any) => item.id === 8);
   
       if (targetObject) {
@@ -167,35 +202,77 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
   //   }
   //   setListMenu(extractedNewMenu);
   // }
-
-  useEffect(() => {
-    getReportFields();
   
-    if (localStorage.getItem("ListItem")) {
-      setMenuItem(JSON.parse(localStorage.getItem("ListItem") || ""))
-    }
-    if (localStorage.getItem("ListMenu")) {
-      setListMenu(JSON.parse(localStorage.getItem("ListMenu") || "[]"))
-    }
-  }, [listMenuParent])
+  useEffect(() => {
+    // Define an async function to load and decrypt data
+    const loadDataFromStorage = async () => {
+      try {
+        // --- DECRYPTING ListItem ---
+        const encryptedItem = localStorage.getItem("ListItem");
+        if (encryptedItem) {
+          // 1. Decrypt the string
+          const decryptedItemString = await decryptStorageData(encryptedItem);
+          if (decryptedItemString) {
+            // 2. Parse the decrypted string back into an object
+            setMenuItem(JSON.parse(decryptedItemString));
+          }
+        }
+  
+        // --- DECRYPTING ListMenu ---
+        const encryptedMenu = localStorage.getItem("ListMenu");
+        if (encryptedMenu) {
+          // 1. Decrypt the string
+          const decryptedMenuString = await decryptStorageData(encryptedMenu);
+          if (decryptedMenuString) {
+            // 2. Parse the decrypted string back into an array
+            setListMenu(JSON.parse(decryptedMenuString));
+          }
+        }
+      } catch (error) {
+        console.error("Failed to load or parse encrypted data from storage:", error);
+      }
+    };
+  
+    getReportFields();
+    loadDataFromStorage(); // Call the async function
+  
+  }, [listMenuParent]);
 
-  const handleClickMenu = (item: any, index: number) => {
-    if (item.name === 'navbar.listMenuParent.miscellaneousReports.title') return;
-    setMenuItem(item);
-    const newMenu = [...listMenu];
-    newMenu.forEach((itemMenu: any) => {
-      itemMenu.status = false;
-    });
-    newMenu[index].status = true;
-    localStorage.setItem("ListItem", JSON.stringify(item));
-    localStorage.setItem("ListMenu", JSON.stringify(newMenu));
-    setListMenu(newMenu);
-    handleItemLeave();
-  };
+  // Add the 'async' keyword to the function definition
+const handleClickMenu = async (item: any, index: number) => {
+  if (item.name === 'navbar.listMenuParent.miscellaneousReports.title') return;
+  setMenuItem(item);
+  const newMenu = [...listMenu];
+  newMenu.forEach((itemMenu: any) => {
+    itemMenu.status = false;
+  });
+  newMenu[index].status = true;
 
+  // --- ENCRYPTION LOGIC ---
+  // 1. Stringify the object/array first
+  const itemString = JSON.stringify(item);
+  const menuString = JSON.stringify(newMenu);
+
+  // 2. Encrypt the resulting string
+  const encryptedItem = await encryptStorageData(itemString);
+  const encryptedMenu = await encryptStorageData(menuString);
+
+  // 3. Save the encrypted string to localStorage
+  localStorage.setItem("ListItem", encryptedItem);
+  localStorage.setItem("ListMenu", encryptedMenu);
+
+  setListMenu(newMenu);
+  handleItemLeave();
+};
+
+  const navigateTo = useNavigate();
+  
   const handleLogout = async () => {
-    await MainService.logout(queryClient);
-    window.location.replace("/login");
+    const response = await MainService.logout(false, queryClient);
+    if (response?.status == 200) {
+      setUser(undefined);
+    }
+    navigateTo("/login");
   };
 
   const handleItemHover = (e: any, id: number) => {
@@ -244,7 +321,7 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
         {listMenu.map((item: any, index: number) => {
 
           const childMenu = getChild(item);
-
+          
           if (childMenu) {
             return (
               <NavStyle.SCMenuItem

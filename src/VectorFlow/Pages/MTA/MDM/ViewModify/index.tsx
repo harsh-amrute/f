@@ -22,6 +22,8 @@ import _ from "lodash";
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
 import { useLocation } from "react-router";
 import { GridFilterWrapper, TextBtn } from "../../../../../VectorFlow/Pages/MTO/Common/VFPagination/styles";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../../redux/store/store";
 
 
 
@@ -116,7 +118,8 @@ import { GridFilterWrapper, TextBtn } from "../../../../../VectorFlow/Pages/MTO/
     } = useViewModify('modify');
 
     const [isDisabled, setIsDisabled]= useState<boolean>(true)
-    
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const RECORD_UPLOAD_LIMIT = EnvConfig['RECORD_UPLOAD_LIMIT']; 
 
     useEffect(()=>{
       if(ref.current && ref.current.api){
@@ -191,7 +194,7 @@ import { GridFilterWrapper, TextBtn } from "../../../../../VectorFlow/Pages/MTO/
               newTabIcon={"/assets/img/VectorFLOW/NMS/add-circle.svg"}
               newTabHandler={addNewMaster}
               >
-                { (activeMaster.progress ==='default' || activeMaster.progress ==='view') 
+                { (activeMaster.progress ==='default' || activeMaster.progress ==='view' || activeMaster.progress ==='phaseInPhaseOut' || activeMaster.progress ==='seasonality') 
                     &&
                   <SCFilterContainer style={{zoom:'var(--nms-filter-zoom)'}}>
                     <SCFilterControls>
@@ -329,7 +332,9 @@ import { GridFilterWrapper, TextBtn } from "../../../../../VectorFlow/Pages/MTO/
             openModal={isUploadModalOpen} 
             onCloseModal={()=>{setFile(undefined);toggleUploadModal(false)}} 
             onDownload={()=>exportToExcel(true)} 
-            onUpload={onUploadMaster}
+            onUpload={async ()=>{
+              await onUploadMaster(RECORD_UPLOAD_LIMIT)
+            }}
             inputText={downloadFileName}
             setInputText={setDownloadFileName}
             file={file}
@@ -357,45 +362,46 @@ import { GridFilterWrapper, TextBtn } from "../../../../../VectorFlow/Pages/MTO/
             rowData={seasonalityRowData}
             normChangeData={normChangeData}
 
-          />
-        }
-        {
-          isOverlayVisible && (
-            <VFOverlay>
-               <div style={{backgroundColor:'white',borderRadius:'6px'}}>
-              <VFLoader/>
-              <h1 style={{backgroundColor:"white",padding:'15px',borderRadius:'8px'}}>Validating Data. Please Wait this might take some time.... {((uploadProgress==='' || parseInt(uploadProgress)===0)) ? '' : 'Progress: ' + uploadProgress + ' / ' + totalProgress}</h1>
-              </div>
-            </VFOverlay>
-          )
-        }
-        {
-          !isSelectMasterOpen && 
-          <div style={{zoom:'var(--nms-filter-zoom)'}}>
-            <VFTaskBar
-            disableStopSeasonality={()=>{
-              const flatState=_.flatMap(seasonalityActiveQuickFilter)
-              let error = false;
-              flatState.map((state:number)=>{
-                if(!validStopStatuses.includes(state)) error = true;
-              })
-              if(error) return true;
-              
-              return false;
-             
-             }}
+        />
+      }
+      {
+        isOverlayVisible && (
+          <VFOverlay>
+            <div style={{ backgroundColor: 'white', borderRadius: '6px' }}>
+              <VFLoader />
+              <h1 style={{ backgroundColor: "white", padding: '15px', borderRadius: '8px' }}>Validating Data. Please Wait this might take some time.... {((uploadProgress === '' || parseInt(uploadProgress) === 0)) ? '' : 'Progress: ' + uploadProgress + ' / ' + totalProgress}</h1>
+            </div>
+          </VFOverlay>
+        )
+      }
+      {
+        !isSelectMasterOpen &&
+        <div style={{ zoom: 'var(--nms-filter-zoom)' }}>
+          <VFTaskBar
+            disableStopSeasonality={() => {
+              const selectedRows = ref.current?.api.getSelectedRows() || [];
+              if (selectedRows.length === 0) return true;
 
-            disableResumeSeasonality={()=>{
-              const flatState=_.flatMap(seasonalityActiveQuickFilter)
               let error = false;
-              flatState.map((state:number)=>{
-                if(!validResumeStatuses.includes(state)) error = true;
-              })
-              if(error) return true;
-              
-              return false;
+              selectedRows.forEach((row: any) => {
+                if (!validStopStatuses.includes(row.sts)) error = true;
+              });
+
+              return error;
             }}
-            showSubmittedExportError={errorCount>0}
+
+            disableResumeSeasonality={() => {
+              const selectedRows = ref.current?.api.getSelectedRows() || [];
+              if (selectedRows.length === 0) return true;
+
+              let error = false;
+              selectedRows.forEach((row: any) => {
+                if (!validResumeStatuses.includes(row.sts)) error = true;
+              });
+
+              return error;
+            }}
+            showSubmittedExportError={activeMaster?.rowData.length > 0 && errorCount>0}
             masterProgress={activeMaster.progress}
             disableSubmit={activeMaster.rowData?.length===0 || isSubmitDisabled}
             enableEditOnlineReset = {enableEditOnlineReset}

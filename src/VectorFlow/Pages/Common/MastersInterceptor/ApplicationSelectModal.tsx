@@ -66,13 +66,14 @@ const ActionSelectModal = ({ redirectUrl }: any) => {
   const ref = useRef<{ appData: Array<{ text: string; icon: string; link: string }> }>({
     appData: []
   });
-  
-    const urlPermissionStr: any = localStorage.getItem('url_permission')
-    const urlPermissionArr = JSON?.parse(urlPermissionStr) || [];
+
+
+    const urlPermissionStr = user?.url_permission??[];
+    const urlPermissionArr = urlPermissionStr || [];
 
   const updateAppData = (theme: any) => {
     const allOptions = [
-      { text: 'Make to Availability (MTA)', icon: theme === "REGALBLAZE" ? '/assets/img/planning1.svg' : '/assets/img/planning.svg', link: redirectUrl },
+      { text: 'Make to Availability (MTA)', icon: theme === "REGALBLAZE" ? '/assets/img/planning1.svg' : '/assets/img/planning.svg', link:"/mta"+ redirectUrl },
       { text: 'Make to Order (MTO)', icon: theme === "REGALBLAZE" ? '/assets/img/Prod-icon1.svg' : '/assets/img/Prod-icon.svg', link: "/mto" + redirectUrl },
       { text: 'Inter Store Transfer (IST)', icon: theme === "REGALBLAZE" ? '/assets/img/IST 2.svg' : '/assets/img/IST 1.svg', link:"/ist"+ redirectUrl },
     ];

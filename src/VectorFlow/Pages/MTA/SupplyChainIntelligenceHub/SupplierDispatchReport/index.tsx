@@ -6,6 +6,8 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
 import VFPagination from "../../../../../VectorFlow/Pages/MTO/Common/VFPagination"
 import ActionToolBar from "../Planning/ActionToolBar";
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../../redux/store/store";
 
 
 const SupplierDispatchReport = () => {
@@ -34,12 +36,16 @@ const SupplierDispatchReport = () => {
     ref,
     agGridProps,
     generalFilterOptions,
-    onResetCallback
+    onResetCallback,     
+  savePageSize,
+  userPageSize
   } = useSupplierDispatchReport();
 
       const [isDisabled, setIsDisabled]= useState<boolean>(true)
   
-  
+   
+      const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+      const SUPPLIER_DISPATCH_REPORT_PER_PAGE = EnvConfig['SUPPLIER_DISPATCH_REPORT_PER_PAGE'];   
 
   
   return (
@@ -96,16 +102,21 @@ const SupplierDispatchReport = () => {
                   maintainColumnOrder
         />
         <div>
+          {
+              RowData?.length  > 0 &&
         <VFPagination 
                 selectedRows={0} 
                 totalRows={SDRCount} 
                 currentPage={currentPage} 
-                rowsPerPage={parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '100')}
+                rowsPerPage={userPageSize}
                 handleChangePage={(e)=>GetSDRData(e)} 
-
                 resetGridRef={ref} 
                 isDisabled={isDisabled}
+                customPageSizeEnabled={true}
+              userPageSize={userPageSize}
+              savePageSize={savePageSize}
               />
+               }
             </div>
         </div>
       )}

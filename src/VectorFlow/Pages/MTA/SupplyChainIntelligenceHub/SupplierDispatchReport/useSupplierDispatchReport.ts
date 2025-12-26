@@ -12,6 +12,8 @@ import { defaultAgGridSideBarForBPR } from '../../../../../helpers/BPRConstants'
 import { GridRef } from '../../../../../VectorFlow/types/MDM';
 import { useGetUIConfigData } from '../../../../Services/MTA/Common/UIConfig';
 import { UIColumnConfigName, UserUIColumnConfigName } from '../../../../../helpers/Enum';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../../../redux/store/store';
 
 const useSupplierDispatchReport= ()=>{
 
@@ -39,8 +41,12 @@ const useSupplierDispatchReport= ()=>{
     const [initialColumnState, setInitialColumnState] = useState<any>(undefined);
     const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
     const [VDRColumns,setVDRColumns] = useState<any[]>([])
-
-    const rowsPerPage = parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100');
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const SUPPLIER_DISPATCH_REPORT_PER_PAGE = EnvConfig['SUPPLIER_DISPATCH_REPORT_PER_PAGE'];   
+    const rowsPerPage = parseInt(SUPPLIER_DISPATCH_REPORT_PER_PAGE || '100');
+    const [userPageSize , setUserPageSize]  = useState<number>(SUPPLIER_DISPATCH_REPORT_PER_PAGE?parseInt(SUPPLIER_DISPATCH_REPORT_PER_PAGE):100) 
+     
+ 
 
     const customCellRenderers = useMemo(() => (
         {
@@ -143,7 +149,7 @@ const useSupplierDispatchReport= ()=>{
 
     
 
-    const GetSDRData= async (PageNo:any)=>{
+    const GetSDRData= async (PageNo:any ,  pageSize?:number) =>{
         try{
             if(SDRCount===0){
                 await GetDataCount(currFilter);
@@ -153,7 +159,7 @@ const useSupplierDispatchReport= ()=>{
                 filters:currFilter,
                 paginationParameter:{
                     pageNumber:PageNo,
-                    recordsPerPage:rowsPerPage
+                    recordsPerPage:pageSize  || userPageSize || rowsPerPage
                 }
             })
             setRowData(VDRData.data.data);
@@ -185,9 +191,7 @@ const useSupplierDispatchReport= ()=>{
 
     const agGridProps: AgGridReactProps = useMemo(() => {
         return {
-            paginationPageSize: parseInt(
-                process.env.REACT_APP_GUIDEDINSIGHT_ROWS_PER_PAGE || "50"
-            ),
+            paginationPageSize: userPageSize,
     
             suppressRowTransform: true,
             tooltipShowDelay: 0.3,
@@ -265,7 +269,7 @@ const useSupplierDispatchReport= ()=>{
                 filters:filter ,
                 paginationParameter:{
                     pageNumber:1,
-                    recordsPerPage:parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '100')
+                    recordsPerPage:userPageSize || parseInt(SUPPLIER_DISPATCH_REPORT_PER_PAGE || '100')
                 }
             })
             setSDRCount(DataCount.data.data[0].count);
@@ -274,7 +278,7 @@ const useSupplierDispatchReport= ()=>{
                 filters:filter ,
                 paginationParameter:{
                     pageNumber:1,
-                    recordsPerPage:parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '100')
+                    recordsPerPage:userPageSize || parseInt(SUPPLIER_DISPATCH_REPORT_PER_PAGE || '100')
                 }
             })
             
@@ -296,7 +300,11 @@ const useSupplierDispatchReport= ()=>{
         const updatedFilter = onDelete(parentId,filterId,value)
         onApplyFilter(updatedFilter)
     }
-        
+       
+    const savePageSize = async( pageSize:number)=>{
+        setUserPageSize(pageSize)
+      await GetSDRData(currentPage , pageSize)
+    }
 
     return{
         VDRColumns,
@@ -324,7 +332,9 @@ const useSupplierDispatchReport= ()=>{
         agGridProps,
         ref,
         generalFilterOptions,
-        onResetCallback
+        onResetCallback,
+        savePageSize,
+        userPageSize
     }
     
 

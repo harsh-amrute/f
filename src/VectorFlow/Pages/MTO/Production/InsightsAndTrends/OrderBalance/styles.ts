@@ -19,7 +19,7 @@ export const HorizontalViewWrapper = styled.div`
     //   display:flex;
       width:100%;
       height:100%;
-      & .ag-theme-alpine{
+      & > .ag-theme-alpine{
         height: 100%;
       }
       & div[data-testid="vf_pagination"]{

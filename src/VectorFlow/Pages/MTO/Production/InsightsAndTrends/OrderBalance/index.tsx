@@ -22,11 +22,13 @@ import {
 import OverlayLoader from '../../../Common/Loader';
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
-import { FilterPageName, pagination, UIGridCode } from "../../../Common/Enum";
+import { ExcelExportName, FilterPageName, pagination, UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 import useColDef from "../../../../../../hooks/useColDef";
 import BPPRenderer from "../../../Common/BPRRenderer/BPPRenderer";
 import GridView from "../OrderAtRisk/GridView";
+import { useGetDate } from "../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting";
+import { format } from "date-fns";
 
 
 const APIFilterConfig = {
@@ -81,6 +83,9 @@ const OrderBalance = () => {
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [gridData, setGridData] = useState([]);
 
+  const { data: apiResponseData } = useGetDate();
+ 
+  const lastRunDate = new Date(apiResponseData?.data?.data).toString() !== "Invalid Date" ? format(new Date(apiResponseData?.data?.data), 'dd MMM yyyy') : '';
   
   const colDefCustomizations = {
     BPP: {
@@ -106,16 +111,37 @@ const OrderBalance = () => {
   const getGraphData = async (params: any,pageSize?:any) => {
     if(params.isExcelExport){
       try {
-        const headersdata = currentGridRef?.current?.api.getColumnState();
-        const formattedFilters = formatFilterJSON(appliedFilters);
-        const body = getBodyForExcelExport({headersdata,filterData :formattedFilters,colDefMap})
-        const response = await getOrderBalanceGraphDataExcelExport({body , report_name : FilterPageName.Prod_Order_Balance , isExcelExport : 1})
-        if(response.status === 200){
+
+        const gridAPi = currentGridRef?.current?.api;
+
+        if (!gridAPi) {
+          notifyError("Grid is not ready for export");
+          return;
+        }
+
+        const isPivotMode = gridAPi.isPivotMode();
+        const isRowGroupingActive = gridAPi.getRowGroupColumns().length > 0;
+        const isValueActive =  gridAPi.getValueColumns().length > 0;
+
+          if (isPivotMode || isRowGroupingActive || isValueActive) {                 
+                                        //  const exportName = `${FilterPageName.Prod_Order_Balance}_${moment().format("DD-MM-YYYY")}`;
+                                        const exportName = ExcelExportName.Order_Balance
+                                        gridAPi.exportDataAsExcel({
+                                         fileName: exportName,
+                                         sheetName: exportName
+                                         });
+          }else {            
+            const headersdata = currentGridRef?.current?.api.getColumnState();
+            const formattedFilters = formatFilterJSON(appliedFilters);
+            const body = getBodyForExcelExport({headersdata,filterData :formattedFilters,colDefMap})
+            const response = await getOrderBalanceGraphDataExcelExport({body , report_name : FilterPageName.Prod_Order_Balance , isExcelExport : 1})
+            if(response.status === 200){
           DownloadExcel(response,FilterPageName.Prod_Order_Balance)
           notifySuccess("Excel data exported successfully")
         }else{
           notifyError("Failed to export Excel data")
         }
+      }
       } catch (error) {
          notifyError(" An error has occurred")
          console.log(error)
@@ -356,7 +382,7 @@ const OrderBalance = () => {
             <Allotment vertical={false} separator={false}>
               <Allotment.Pane preferredSize={"50%"}>
                 <BTRAllomentSection>
-                  <TrailDeptCount graphData={graphData} />
+                  <TrailDeptCount graphData={graphData} lastRunDate={lastRunDate} />
                 </BTRAllomentSection>
               </Allotment.Pane>
 
@@ -368,6 +394,7 @@ const OrderBalance = () => {
                   orderOptions={orderOptions}
                   handleChange={handleChange}
                   orderType={orderType}
+                  lastRunDate={lastRunDate} 
                   />
                 </BTRAllomentSection>
               </Allotment.Pane>

@@ -4,7 +4,7 @@ import { AgGridReactProps } from "ag-grid-react"
 import { useGetRRRData,useGetRRRDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/RRR"
 import { useUserData } from "../../../../../context"
 import { RRREcoColorCellRenderer,RRRTechColorCellRenderer,RRRDispatchColorCellRenderer } from "./RRRCellRenderers"
-import { convertUiConfigToOptions, MainMenuItemsCustomization, getColumnDefinationsMTA} from "../../../../../helpers/utils"
+import { convertUiConfigToOptions, MainMenuItemsCustomization, getColumnDefinationsMTA, CsvExportMTA} from "../../../../../helpers/utils"
 import { notifyError, notifyLoader, notifySuccess} from "../../../../../helpers/notify"
 import { toast } from "react-toastify";
 
@@ -15,8 +15,11 @@ import { GridRef } from "../../../../../VectorFlow/types/MDM"
 import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
 import { useGetUIConfigData } from "../../../../Services/MTA/Common/UIConfig"
 import { UIColumnConfigName, UserUIColumnConfigName } from "../../../../../helpers/Enum"
+import { useSelector } from "react-redux"
+import { RootState } from "../../../../../redux/store/store"
 
-
+ 
+  
 const useRRR =()=>{
 
     const [internalRef,setInternalRef] = useState<any>()
@@ -49,6 +52,7 @@ const useRRR =()=>{
 
     const [initialColumnState, setInitialColumnState] = useState<any>(undefined);
     const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
+    const [hasSavedConfig, setHasSavedConfig] = useState<boolean>(false);
 
           
     const getRRRUiConfig = async () => {
@@ -62,20 +66,22 @@ const useRRR =()=>{
 
 
     // const [rowData,setRowData] = useState([]);
-
-    const rowsPerPage = parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100');
-
+     
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const RRR_ROWS_PER_PAGE = EnvConfig['RRR_ROWS_PER_PAGE'];   
+    const rowsPerPage = parseInt(RRR_ROWS_PER_PAGE || '100');
+    const [userPageSize , setUserPageSize]  = useState<number>(RRR_ROWS_PER_PAGE?parseInt(RRR_ROWS_PER_PAGE):50)  
     const {date:lastRunDate} = useGetLastRunData()
   
-    useEffect(()=>{       
-        const fetchData = async () => {
-            await getDataCount();
-            await getRRRRowData(currentPage);
-            await getRRRUiConfig();
-            setGeneralFilterOptions(convertUiConfigToOptions(initialColumnState))
-        };
-        fetchData();
-    }, []);
+    // useEffect(()=>{       
+    //     const fetchData = async () => {
+    //         await getDataCount();
+    //         await getRRRRowData(currentPage);
+    //         await getRRRUiConfig();
+    //         setGeneralFilterOptions(convertUiConfigToOptions(initialColumnState))
+    //     };
+    //     fetchData();
+    // }, []);
 
     useEffect(() => {
         const getTableState = async () => {
@@ -91,7 +97,7 @@ const useRRR =()=>{
                 getUserColumnConfig();
             } catch (err: any) {
                 console.log(err)
-                
+
             }
         }
         if (initialColumnState !== undefined) {
@@ -111,27 +117,38 @@ const useRRR =()=>{
         const stateData = await getState({ "reportname": UserUIColumnConfigName.RRR })
         if (stateData.data.data.length !== 0) {
             const parsedContent = JSON.parse(stateData.data.data)
-                
             setGridState({
                 charts: parsedContent.charts,
                 columns: parsedContent.columns,
                 pivot: parsedContent.pivot,
             })
+            setHasSavedConfig(true);
           
         } else {
+            setHasSavedConfig(false);
             console.log("Data not available");
         }
     }
-  
+
     useEffect(() => {
-        if (internalRef && gridState && gridState.columns) {
-            const result = internalRef.api.applyColumnState({ state: gridState.columns, applyOrder: true });
-            internalRef?.api.sizeColumnsToFit();
-            if (!result) {
-                console.error("Failed to apply column state", result);
-            }
+    if (internalRef && gridState && gridState.columns) {
+        const result = internalRef?.api.applyColumnState({ 
+            state: gridState.columns, 
+            applyOrder: true 
+        });
+        internalRef?.api.sizeColumnsToFit();
+        
+        if (hasSavedConfig && result) {
+            setTimeout(() => {
+                internalRef?.api.applyColumnState({ 
+                    state: gridState.columns, 
+                    applyOrder: true 
+                });
+            }, 0);
         }
-    }, [internalRef, gridState]);
+    }
+}, [internalRef, gridState, hasSavedConfig]);
+
     
     // const getRecordsCount=async(filter?:any)=>{
     //     const payload={
@@ -175,7 +192,7 @@ const useRRR =()=>{
         setRRRDataCount(rowDataCount?.data?.recordCount)
     }
 
-    const getRRRRowData= async(pageNo:any)=>{
+    const getRRRRowData= async(pageNo:any , pageSize?:number)=>{
         try{
             if(RRRDataCount===0){
                 await getDataCount(currFilter);
@@ -185,10 +202,9 @@ const useRRR =()=>{
                 filters:currFilter,
                 paginationParameter:{
                     pageNumber:pageNo,
-                    recordsPerPage:parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '100')
+                    recordsPerPage:pageSize ||parseInt(RRR_ROWS_PER_PAGE || '100')
                 }
-            })
-            
+            }) 
         
         // setRecordCount(rowData.data.recordCount)
             setCurrentPage(pageNo)
@@ -209,12 +225,13 @@ const useRRR =()=>{
             paginationParameter: {
               pageNumber: 1,
               recordsPerPage: parseInt(
-                process.env.REACT_APP_RRR_ROWS_PER_PAGE || "100"
+                userPageSize || RRR_ROWS_PER_PAGE || "100"
               ),
             },
           });
 
           // setRecordCount(rowData.data.recordCount)
+          await getRRRUiConfig();
           setCurrFilter(filter);
           setCurrentPage(1);
           if(rowData.data.data && Array.isArray(rowData.data.data))setRRRRowData(rowData?.data?.data);
@@ -268,13 +285,20 @@ const useRRR =()=>{
         },
     }
   },[])
-  
-
+    
     const agGridProps:AgGridReactProps = useMemo(()=>{
         return{
             tooltipShowDelay:0,
             tooltipTrigger:"focus",
             readOnlyEdit:true,
+            suppressRowClickSelection:true,
+            suppressRowTransform:true,
+            components:customCellRenderers,
+            enableBrowserTooltips:true,
+            enableFillHandle: true,
+            enableColResize:true,
+            getMainMenuItems: MainMenuItemsCustomization,
+            paginationPageSize:parseInt(RRR_ROWS_PER_PAGE|| '200'),
             gridOptions:{
                 rowHeight:50,
                 getRowStyle: (params: any) => {
@@ -286,16 +310,11 @@ const useRRR =()=>{
             },
             // onColumnVisible: onColumnVisible,
             pagination:false,
-            sideBar:defaultAgGridSideBarForBPR,       
-            getMainMenuItems: MainMenuItemsCustomization,
-            paginationPageSize:parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '200'),
-            suppressRowClickSelection:true,
-            components:customCellRenderers,
-            enableBrowserTooltips:true,
+            sideBar:defaultAgGridSideBarForBPR,      
             defaultColDef:defaultColDefObject,
-            onGridReady:(params)=>setInternalRef(params)      
+            onGridReady:(params)=>setInternalRef(params),
         }
-    
+   
     },[])
     // const getRRRrowData=async(filter:BPRFilterState)=>{
     //     setActiveRow({})
@@ -330,17 +349,36 @@ const useRRR =()=>{
       
 
     const onExportToExcelCallBack=async(pageNumber:number)=>{
-        const data =  await getRRRData({
-            filters:currFilter,
-            paginationParameter:{
-                pageNumber:pageNumber,
-                recordsPerPage:5000
-            }
-        })
-        
-        return data.data.data
+        const payload = {
+            id: 1,
+            name: '',
+            fields: [],
+            filters: currFilter,
+            paginationParameter: {
+                pageNumber: pageNumber,
+                recordsPerPage: 5000
+            },
+            ISExport:"1",
+            reportName:"RRR",
+            stream:1,
+            responseType: `arraybuffer`
+        }
+        notifyLoader("Downloading Data...")
+        try {
+            await CsvExportMTA(payload, "RationedRequirementReport");
+            notifySuccess(`Data Exported Successfully`);
+        }
+        catch(error) {
+            console.log(error);
+            notifyError("Error Exporting Excel")
+            throw error;
+        }
     }
 
+    const savePageSize = async( pageSize:number)=>{
+        setUserPageSize(pageSize)
+        await getRRRRowData(currentPage,pageSize)
+    }
     return {
         isSideBarOpen,
         RRRColumns,
@@ -367,7 +405,9 @@ const useRRR =()=>{
         ref,
         generalFilterOptions,
         onResetCallback,
-        lastRunDate
+        lastRunDate,
+        savePageSize,
+        userPageSize
     }
 }
 

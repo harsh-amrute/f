@@ -149,6 +149,8 @@ justify-content:flex-end;
 flex-direction:row;
 align-items:center;
 background-color:#F4F4F4;
+
+border-radius:0px 0px 12px 12px;
 `
 
 export const ButtonContainer = styled.div`
@@ -172,6 +174,10 @@ export const Option = styled.div`
     font-size: 16px;
     letter-spacing: 0px;
     color:#313131;
+
+    &:hover{
+    background-color:rgb(249, 249, 249)
+    }
 `;
 
 export const AccordianContainer = styled.div`

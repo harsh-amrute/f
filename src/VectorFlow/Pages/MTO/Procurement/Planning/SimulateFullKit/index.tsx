@@ -20,7 +20,7 @@ const SimulateFullKit = () => {
                 onExcelExportClick={ExcelExportData}
                 isGoBackButton
                 handleGoBack={() => {
-                    navigate('/procurement-planning/planning')
+                    navigate('/mto/procurement-planning/planning')
                 }}
                 themeUi={themeUi}
                 comp={'Procurement Planning'}

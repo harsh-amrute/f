@@ -70,7 +70,9 @@ export enum UIGridCode {
         "ProdStplAndFullKit" = 210,
         "ProdElapsedTime" = 211,
         "ProdOrderAtRisk" = 212,
-        "ProdOrderBalance" = 213,
+    "ProdOrderBalance" = 213,
+        
+    "prodFutureLoadChart" = 214,
 
     // POOGI
         "PoogiReasonForDelayedOrders" = 300,
@@ -81,32 +83,49 @@ export enum UIGridCode {
 }   
 
 export enum FilterPageName {
-    Proc_Material_Coverage_For_OpenSO= "Proc_Material_Coverage_For_OpenSO",
-    Proc_Procurement_Planning= "Proc_Procurement_Planning",
+    Proc_Material_Coverage_For_OpenSO= "Material_Coverage_For_OpenSO",
+    Proc_Procurement_Planning= "Procurement_Planning",
     Proc_Material_Requirement="Proc_Material_Requirement",
-    Proc_Day_Wise_Coverage= "Proc_Day_Wise_Coverage",
-    Proc_RM_PM_OrderWise="Proc_RM_PM_OrderWise",
-    Proc_RM_PM_BufferTrend= "Proc_RM_PM_BufferTrend",
-    Proc_Expediting_RM_And_Suppliers= "Proc_Expediting_RM_And_Suppliers",
+    Proc_Day_Wise_Coverage= "Day_Wise_Coverage",
+    Proc_RM_PM_OrderWise="RM_PM_OrderWise",
+    Proc_RM_PM_BufferTrend= "RM_PM_BufferTrend",
+    Proc_Expediting_RM_And_Suppliers= "Expediting_RM_And_Suppliers",
     Proc_MaterialCoverageforOpenSalesOrder_Child= "MaterialCoverageforOpenSalesOrder_Child",
 
-    Prod_DDQ= "Prod_DDQ",
-    Prod_FullKit_Assignment="Prod_FullKit_Assignment",
-    Prod_Dynamic_Release_Management="Prod_Dynamic_Release_Management",
-    Prod_OverAll_BMReport="Prod_OverAll_BMReport",
-    Prod_Dept_Wise_BM_Report= "Prod_Dept_Wise_BM_Report",
-    Prod_STPL_And_FullKits="Prod_STPL_And_FullKits",
-    Prod_Order_Balance="Prod_Order_Balance",
-    Prod_Order_At_Risk="Prod_Order_At_Risk",
-    Prod_Order_Rescheduling="Prod_Order_Rescheduling",
+    Prod_DDQ= "DDQ",
+    Prod_FullKit_Assignment="FullKit_Assignment",
+    Prod_Dynamic_Release_Management="Dynamic_Release_Management",
+    Prod_OverAll_BMReport="OverAll_BMReport",
+    Prod_Dept_Wise_BM_Report= "Dept_Wise_BM_Report",
+    Prod_STPL_And_FullKits="STPL_And_FullKits",
+    Prod_Order_Balance="Order_Balance",
+    Prod_Order_At_Risk="Order_At_Risk",
+    Prod_Order_Rescheduling = "Order_Rescheduling",
+    
+    Future_Order_Load_Chart='Future_Order_Load_Chart',
 
-    Poogi_Reason_For_Delayed_Orders="Poogi_Reason_For_Delayed_Orders",
-    Poogi_OTIF_Analysis= "Poogi_OTIF_Analysis",
-    Poogi_OTIF_And_Analysis="Poogi_OTandIF_Analysis",
-    Poogi_Lead_Time="Poogi_Lead_Time",
-    Poogi_Top_Failure_Reasons="Poogi_Top_Failure_Reasons",
-    Poogi_Trend_Of_Failure_Reasons="Poogi_Trend_Of_Failure_Reasons",
-    Poogi_Elapsed_Time="Poogi_Elapsed_Time"
+    Poogi_Reason_For_Delayed_Orders="Reason_For_Delayed_Orders",
+    Poogi_OTIF_Analysis= "OTIF_Analysis",
+    Poogi_OTIF_And_Analysis="OTandIF_Analysis",
+    Poogi_Lead_Time="Lead_Time",
+    Poogi_Top_Failure_Reasons="Top_Failure_Reasons",
+    Poogi_Trend_Of_Failure_Reasons="Trend_Of_Failure_Reasons",
+    Poogi_Elapsed_Time="Elapsed_Time",
+
+   
+
+}
+
+export enum ExcelExportName{
+    Login_Audit_Report = "Login_Audit_Report",
+    UserData ="UserData",
+    ErrorData = "ErrorData",
+    Enquiry_Response="Enquiry_Response",
+    FOL_Summary="FOL_Summary",
+    Order_At_Risk="Order_At_Risk",
+    Order_Balance="Order_Balance",
+    OverallBMReport="OverallBMReport"
+    
 }
 
 export enum ApplicationName {

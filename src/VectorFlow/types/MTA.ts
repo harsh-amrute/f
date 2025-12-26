@@ -39,5 +39,8 @@ export interface MTAStore{
         currentTab:string
         currentCategory:string
         currentView:string
-    }
+    },
+    lastRunDate:string,
+    EnvConfig:any,
+    mtaVFMultiFilter:any
 }

@@ -19,6 +19,7 @@ import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
 import VFOverlay from "../../../../../components/VectorFLOW/commons/VFOverlay";
+import { GridFilterWrapper ,TextBtn} from "../../../MTO/Common/VFPagination/styles";
 
 
 
@@ -26,6 +27,8 @@ import { getUploadModalRadioButtons,generateOptions, getMDMTableHeight } from ".
 import { Filter } from "../../../../../VectorFlow/types/MDM";
 import { operators } from "../../../../../helpers/MDMConstants";
 import { useLocation } from "react-router";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../../redux/store/store";
 
 
 
@@ -35,6 +38,7 @@ const DeleteRecord = () => {
   const {user} = useUserData()
   const themeUi = user?.user?.theme_ui;
   const location = useLocation();
+  const [disabled,setDisabled]=useState(true);
  
 
     const {
@@ -106,7 +110,9 @@ const DeleteRecord = () => {
         isSubmitDisabled,
         errorCount
     } = useDelete();
-
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const DELETERECORD_PAGE = EnvConfig['DELETERECORD_PAGE'];  
+    const RECORD_UPLOAD_LIMIT = EnvConfig['RECORD_UPLOAD_LIMIT']; 
     useEffect(()=>{
       if(ref.current && ref.current.api){
         if(isTableDataLoading){
@@ -117,13 +123,28 @@ const DeleteRecord = () => {
         }
       }
     },[isTableDataLoading])
-    const [isDisabled, setIsDisabled]= useState<boolean>(true)
+   // const [isDisabled, setIsDisabled]= useState<boolean>(true)
     
 
     if(isLoading){
         return <VFLoader/>
     }
 
+    const clearGridFilter = () =>{
+      ref?.current?.api.setFilterModel(null);
+      setDisabled(true)
+  }
+
+ 
+  const CustomStatusPanel = () => {
+      return (
+          <GridFilterWrapper style={{marginTop:'25px'}}>
+              <TextBtn onClick={clearGridFilter} disabled={disabled} themeUi={themeUi}>
+                  Clear All Grid Filters
+              </TextBtn>  
+          </GridFilterWrapper>           
+      );
+  };
     if(isSelectMasterOpen){
       return(
           <SelectGroupedMasters  
@@ -222,9 +243,9 @@ const DeleteRecord = () => {
                     onFilterChanged={() => {
                       const filterModel = ref?.current?.api?.getFilterModel();
                       if (filterModel && Object.keys(filterModel).length > 0) {
-                        setIsDisabled(false);
+                        setDisabled(false);
                       } else {
-                        setIsDisabled(true);
+                        setDisabled(true);
                       }
                     }}
                   statusBar={{
@@ -234,6 +255,7 @@ const DeleteRecord = () => {
                       { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
                       { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
                       { statusPanel: 'agAggregationComponent', align: 'left' },
+                      { statusPanel: CustomStatusPanel, align: "right" },
                     ]:
                     [],
                   }}
@@ -246,9 +268,9 @@ const DeleteRecord = () => {
                     selectedRows={selectedRowsCount} 
                     totalRows={recordCount} 
                     currentPage={currentPage} 
-                    rowsPerPage={parseInt(process.env.REACT_APP_DELETERECORD_PAGE || '100')}
+                    rowsPerPage={parseInt(DELETERECORD_PAGE || '100')}
                     handleChangePage={(e)=>handleChangePage(e)} 
-                    isDisabled={isDisabled}
+                    isDisabled={disabled}
                   />
               }
                   <div style={{display:'none'}}>                
@@ -279,8 +301,8 @@ const DeleteRecord = () => {
             openModal={isUploadModalOpen} 
             onCloseModal={()=>{setFile(undefined);toggleUploadModal(false)}} 
             onDownload={() => exportToExcel(true)} 
-            onUpload={()=>{
-              onUploadMaster()
+            onUpload={async ()=>{
+              await onUploadMaster(RECORD_UPLOAD_LIMIT)
             }}
             inputText={downloadFileName}
             setInputText={setDownloadFileName}
@@ -313,7 +335,7 @@ const DeleteRecord = () => {
           <div style={{zoom:'var(--nms-filter-zoom)'}}>
             <VFTaskBar
               disableSubmit={isSubmitDisabled}
-              showSubmittedExportError={errorCount>0}
+              showSubmittedExportError={activeMaster?.rowData.length > 0 && errorCount>0}
               enableEditOnlineReset={enableEditOnlineReset}
               disableResumeSeasonality={()=>false}
               disableStopSeasonality={()=>false}

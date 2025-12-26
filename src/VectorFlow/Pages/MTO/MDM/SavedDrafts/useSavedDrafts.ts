@@ -16,6 +16,7 @@ import { useGetCCRGroupMaster } from "../../../../../VectorFlow/Services/MTO/Pro
 import { MDMMasterState } from "../../../../../VectorFlow/types/MDM"
 import DaysOfWeekRenderer from "../ViewModify/DaysOfWeekRenderer"
 import MTOErrorWarningCell from "../ViewModify/MTOErrorWarningCell"
+import { convertDateFormat } from "../ViewModify/CommonUtils"
 
 
 
@@ -29,11 +30,10 @@ const useSavedDrafts = ()=>{
     const {mutateAsync:deleteDraft} = useDeleteMTODraft()
     const [isDeleteModalOpen,toggleDeleteModal] = useState<boolean>(false)
     const [deleteDraftId,setDeleteDraftId] = useState<string>("");
-    const {data,isLoading} = useGetAllDrafts();
     const {mutateAsync:getDraftCount} = useGetDraftCount();
     const chunkSize = useSelector((state:RootState) => state.mdm.chunkSize)
-    const [allDrafts, setAllDrafts] = useState<any>(data?.data?.data);
-    const {mutateAsync: getMtoDrafts} = useGetMTODrafts();
+    const [allDrafts, setAllDrafts] = useState<any>([]);
+    const {mutateAsync: getMtoDrafts, isLoading} = useGetMTODrafts();
     const {mutateAsync: getDraftByIdMTO} = useGetMTODraftById();
     const {mutateAsync: getMTOMasterUIConfiguration} = useGetMTOMasterUIConfiguration();
     const closeDeleteModal =()=>toggleDeleteModal(false)
@@ -49,29 +49,12 @@ const useSavedDrafts = ()=>{
     const [ccrsData,setCcrsData] = useState<any>();
     
     const user = useUserData();
-
-
-    const convertDateFormat = (inputDate: string)=>{
-        const [date, ltime] = inputDate.split("T");
-        const time = ltime.split(".")[0];
-        const [year, month, day] = date.split("-");
-        const [hours, minutes, seconds] = time.split(":");
-        const isPM = parseInt(hours) >= 12;
-        const newHours = (parseInt(hours) % 12 || 12).toString().padStart(2, "0");
-        const period = isPM ? "PM" : "AM";
-        const newMonth = month.toString();
-        const formattedDate = `${year}/${newMonth}/${day} ${newHours}:${minutes}:${seconds} ${period}`;
-        return formattedDate;
-    }
     
     const getCombinedMTOData = async()=>{
         try{
             // TODO: change the data to userid later now data is available for this
             const response:any = await getMtoDrafts(user.user.user.id);
-            let concatedData:any = [];
-            if(data && data.data && data.data.data){
-                concatedData = [...data.data.data];
-            }
+            const draftData:any = [];
             response.data.data.forEach((draft: any)=>{
                 // const date = new Date(draft.co);
                 const newData = {
@@ -85,14 +68,14 @@ const useSavedDrafts = ()=>{
                     mid: draft.mid,
                     dnm: draft.dnm
                 }
-                concatedData.push(newData);
+                draftData.push(newData);
             })
             
-            setAllDrafts(concatedData);
+            setAllDrafts(draftData);
             
         }
         catch(error){
-            console.log(error)
+            console.error(error)
         }
     }
     
@@ -100,7 +83,7 @@ const useSavedDrafts = ()=>{
     
     useEffect(() => {
       getCombinedMTOData();
-    }, [data]);
+    }, []);
     
     const openDeleteModal = (draftId:string)=>{
         setDeleteDraftId(draftId)
@@ -163,17 +146,12 @@ const useSavedDrafts = ()=>{
               },
             };
 
-            if(col.field === 'actions'){
+            if(col.field === 'actions' || col.field === 'iv'){
               return {
                 ...col,
-                editable:false
-              }
-            }
-
-            if(col.field === 'iv'){
-              return {
-                ...col,
-                editable:false
+                editable: false,
+                filter: false,
+                floatingFilter: false,
               }
             }
 
@@ -200,7 +178,7 @@ const useSavedDrafts = ()=>{
                 cellEditor: "agRichSelectCellEditor",
                 editable: ActionType == "Modify" ? false : true,
                 cellEditorParams: {
-                  values: bufferTypeMaster?.map((item: any) => item.dsc),
+                  values: bufferTypeMaster?.map((item: any) => item.nm),
                 },
               };
             if(col.field === "dow"){
@@ -219,8 +197,13 @@ const useSavedDrafts = ()=>{
             }
             else return col;
       })
+
+      if(ActionType !== 'Modify'){
+        return colDef.filter((col:any)=> col.field !== 'iv')
+      }
+
       return colDef
-    }),[])
+    }),[plantMaster,ccrGroupMaster, bufferTypeMaster,ccrsData, deptMaster])
       
       const convertToPoogiDraftData = (data: any, page: any) => {
         const result: any[] = [];
@@ -288,11 +271,18 @@ const useSavedDrafts = ()=>{
             draftId: draftDetails.DraftId,
             mid: draftDetails.mid,
           });
-          let draftData: any = res.data.data.results;
+          let draftData: any = res.data.data;
           if(draftDetails.mid !== 503 && draftDetails.mid !== 504){
-              draftData = draftData.map((item:any)=> ({...item, isEditing:false,ia:true,isdel:false,id:uuidv4()}));
+              draftData = draftData.map((item:any)=> {
+                // this is for ccr and buffer that are already added and that dont required action buttons 
+                if(item.bid || item.cid){
+                  return item
+                }else{
+                 return {...item, editable:false,ia:true,isdel:false,id:uuidv4()}
+                }
+              });
           }
-          dispatch(SET_RECORD_COUNT(res.data.data.results.length));
+          dispatch(SET_RECORD_COUNT(draftData.length));
 
           const mastersDataRes = await getMTOMasterUIConfiguration();
           const mastersData = mastersDataRes?.data?.data?.find(
@@ -396,7 +386,7 @@ const useSavedDrafts = ()=>{
           notifySuccess("Draft Loaded Successfully");
 
         } catch (error) {
-          console.log(error);
+          console.error(error);
         }
 
         return;
