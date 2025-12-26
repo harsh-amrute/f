@@ -1291,7 +1291,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                         gap: '0.5rem',
                                         }}
                                     >
-                                        <img src="/assets/img/mto/dueDateQuotation/reset-icon.svg" />
+                                        <img src="/assets/img/mto/dueDateQuotation/reset-icon.svg" style={{opacity: !canChangeRoute ? 0.4 : 1}} />
                                         Reset
                                         </VFButtonOutline>
                                         {!canChangeRoute && (
