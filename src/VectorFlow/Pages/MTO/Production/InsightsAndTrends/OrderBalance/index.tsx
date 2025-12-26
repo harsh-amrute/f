@@ -40,7 +40,8 @@ import { useUserData } from "../../../../../../context/index";
 import useColDef from "../../../../../../hooks/useColDef";
 import BPPRenderer from "../../../Common/BPRRenderer/BPPRenderer";
 import GridView from "../OrderAtRisk/GridView";
-import moment from "moment";
+import { useGetDate } from "../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting";
+import { format } from "date-fns";
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -108,6 +109,10 @@ const OrderBalance = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [gridData, setGridData] = useState([]);
 
+  const { data: apiResponseData } = useGetDate();
+ 
+  const lastRunDate = new Date(apiResponseData?.data?.data).toString() !== "Invalid Date" ? format(new Date(apiResponseData?.data?.data), 'dd MMM yyyy') : '';
+  
   const colDefCustomizations = {
     BPP: {
       cellRenderer: BPPRenderer,
@@ -408,7 +413,7 @@ const OrderBalance = () => {
             <Allotment vertical={false} separator={false}>
               <Allotment.Pane preferredSize={"50%"}>
                 <div className={BTRAllomentSection}>
-                  <TrailDeptCount graphData={graphData} />
+                  <TrailDeptCount graphData={graphData} lastRunDate={lastRunDate} />
                 </div>
               </Allotment.Pane>
 
@@ -416,10 +421,11 @@ const OrderBalance = () => {
                 <div className={BTRAllomentSection}>
                   <TrailDeptBalance
                     graphData={graphData}
-                    // <-------------- uncomment below code to enable dropdown for orderType    --------->
-                    orderOptions={orderOptions}
-                    handleChange={handleChange}
-                    orderType={orderType}
+                  // <-------------- uncomment below code to enable dropdown for orderType    --------->
+                  orderOptions={orderOptions}
+                  handleChange={handleChange}
+                  orderType={orderType}
+                  lastRunDate={lastRunDate} 
                   />
                 </div>
               </Allotment.Pane>

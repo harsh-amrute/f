@@ -162,21 +162,21 @@ const OrderFulfillmentCustomCharts = ({
         iconKey: "columns",
         toolPanel: "agColumnsToolPanel",
         // toolPanelParams: {},
-            toolPanelParams: {
-              suppressPivots: false,
-              suppressPivotMode: false,
-              suppressRowGroups: true,
-              suppressValues: false,
-            },
-      
+        toolPanelParams: {
+          suppressPivots: false,
+          suppressPivotMode: false,
+          suppressRowGroups: true,
+          suppressValues: false,
+        },
       },
-      {
-        id: "filters",
-        labelDefault: "Filters",
-        labelKey: "filters",
-        iconKey: "filter",
-        toolPanel: "agFiltersToolPanel",
-      },
+      // },
+      // {
+      //   id: 'filters',
+      //   labelDefault: 'Filters',
+      //   labelKey: 'filters',
+      //   iconKey: 'filter',
+      //   toolPanel: 'agFiltersToolPanel',
+      // }
     ],
     defaultToolPanel: "",
   };

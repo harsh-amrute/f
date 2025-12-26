@@ -125,7 +125,7 @@ export const VFTableWrapper = style({
   // },
 });
 // ✅ global descendant rules (no :global)
-globalStyle(`${VFTableWrapper} .ag-theme-alpine`, {
+globalStyle(`${VFTableWrapper} > .ag-theme-alpine`, {
   flex: '1 !important',
 });
 

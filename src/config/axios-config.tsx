@@ -27,14 +27,21 @@ export const setupAxios = () => {
     
     config.headers['User-ID'] = decryptedUserId;
     config.headers['User-Name'] = decryptedUserName;
+
+    window.dispatchEvent(new CustomEvent('api-request-start'));
     
     return config;
   });
 
   axios.interceptors.response.use(
-    (response) => response,
+    (response) => {
+      window.dispatchEvent(new CustomEvent('api-request-end'));
+      return response;
+    },
     async (error) => {
+      window.dispatchEvent(new CustomEvent('api-request-end'));
       const originalRequest = error.config;
+
 
       if (originalRequest._skipAuthRefresh) {
         return Promise.reject(error);

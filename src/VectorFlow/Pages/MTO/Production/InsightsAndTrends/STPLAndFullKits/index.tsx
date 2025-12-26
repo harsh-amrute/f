@@ -31,6 +31,9 @@ import { useUserData } from "../../../../../../context/index";
 import { useGetFilterData } from "../../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
 import useFilter from "../../../../../../hooks/useFilter";
 import useColDef from "../../../../../../hooks/useColDef";
+import { format } from "date-fns";
+import { useGetDate } from "../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting";
+
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -91,8 +94,12 @@ const STPLAndFullKits = () => {
   const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
   const [userPageSize, setUserPageSize] = useState<any>();
   const [gridData, setGridData] = useState([]);
-  const [totalRow, setTotalRow] = useState<number>(0);
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalRow, setTotalRow] = useState<number>(0)
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  
+  const { data: apiResponseData } = useGetDate();
+   
+  const lastRunDate = new Date(apiResponseData?.data?.data).toString() !== "Invalid Date" ? format(new Date(apiResponseData?.data?.data), 'dd MMM yyyy') : '';
 
   const themeUi = user?.user?.theme_ui;
 
@@ -350,12 +357,12 @@ const STPLAndFullKits = () => {
             <Allotment vertical={false} separator={false}>
               <Allotment.Pane preferredSize="50%">
                 <div className={BTRAllomentSection}>
-                  <STPLGraph graphData={graphData?.stpl} />
+                  <STPLGraph graphData={graphData?.stpl} lastRunDate={lastRunDate} />
                 </div>
               </Allotment.Pane>
               <Allotment.Pane preferredSize="50%">
                 <div className={BTRAllomentSection}>
-                  <FullKitGraph graphData={graphData?.fk} />
+                  <FullKitGraph graphData={graphData?.fk} lastRunDate={lastRunDate} />
                 </div>
               </Allotment.Pane>
             </Allotment>

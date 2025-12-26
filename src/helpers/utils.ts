@@ -52,6 +52,7 @@ import CryptoJS from "crypto-js";
 import MTOActionRenderer from "../VectorFlow/Pages/MTO/MDM/SavedDrafts/MTOActionRenderer";
 import { decryptStorageData } from "../VectorFlow/Pages/MTO/Common/encryption";
 import "./style.css";
+import { getNumberFormat } from "./numberFormat";
 
 const keyboardCharacters = [
   // '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -1836,6 +1837,7 @@ export const mapMasterToColumnGroupDefs = (
 };
 
 export const mapMasterToTaskStatusColumnGroupDefs = (
+  currentTaskMasterId: number,
   existingColumnsFields: Field[],
   masterId: number,
   tasktype?: string
@@ -1852,6 +1854,32 @@ export const mapMasterToTaskStatusColumnGroupDefs = (
     }
 
     if (tasktype === "remove") {
+      return {
+        headerName: f.displayName,
+        field: f.key,
+        colId: f.key,
+        hide: !f.visible,
+        ...defaultColDefs,
+      };
+    }
+
+    if (
+      tasktype === "modify" &&
+      (currentTaskMasterId == 6 || currentTaskMasterId == 10)
+    ) {
+      return {
+        headerName: f.displayName,
+        field: f.key,
+        colId: f.key,
+        hide: !f.visible,
+        ...defaultColDefs,
+      };
+    }
+
+    if (
+      tasktype === "modify" &&
+      (currentTaskMasterId == 6 || currentTaskMasterId == 10)
+    ) {
       return {
         headerName: f.displayName,
         field: f.key,
@@ -1938,15 +1966,17 @@ export const mapNewAndOldMasterRowDataToCustomRowData = (
       };
     }
     const dataPrefixed1: any = {};
-    if( (masterId === 6 || masterId === 10) && taskType === 'modify'){
+    if ((masterId === 6 || masterId === 10) && taskType === "modify") {
       existingColumnFields.map((f: Field) => {
-       dataPrefixed1[f.key] = String(entry[f.key] !== undefined ? entry[f.key] : '')
-      })
+        dataPrefixed1[f.key] = String(
+          entry[f.key] !== undefined ? entry[f.key] : ""
+        );
+      });
       return {
         ...dataPrefixed1,
-         isModified:true,
-        comments:  '',
-        status: ''
+        isModified: true,
+        comments: "",
+        status: "",
       };
     }
     const data = entry;
@@ -1998,12 +2028,17 @@ export const mapNewAndOldMasterRowDataToCustomRowData = (
 };
 
 export const mapTaskStatusDataToRowData = (
+  currentTaskMasterId: number,
   dirtyRowData: any[],
   existingColumnFields: Field[],
   taskType: string
 ) => {
   return dirtyRowData.map((entry) => {
-    if (taskType === "modify") {
+    if (
+      taskType === "modify" &&
+      currentTaskMasterId != 6 &&
+      currentTaskMasterId != 10
+    ) {
       const oldData = JSON.parse(entry.old);
       const newData = JSON.parse(entry.new);
 
@@ -2869,32 +2904,30 @@ const colorNameMap: Record<string, string> = {
   "#ED1C24": "Red",
   "#FFCB05": "Yellow",
   "#418D18": "Green",
-  "#BCBCBC": "Gray",
+  "#BCBCBC": "White",
   "#355FD3": "Blue",
 };
 
-const colorKeyMap: Record<string, string> = {
-  "#000000": "b", // Black
-  "#ED1C24": "r", // Red
-  "#FFCB05": "y", // Yellow
-  "#418D18": "g", // Green
-  "#355FD3": "bl", // Blue
-  "#BCBCBC": "w", // Gray/White
-  "#fff": "w", // White (alternative)
-};
+// const colorKeyMap: Record<string, string> = {
+//   "#000000": "b", // Black
+//   "#ED1C24": "r", // Red
+//   "#FFCB05": "y", // Yellow
+//   "#418D18": "g", // Green
+//   "#355FD3": "bl", // Blue
+//   "#BCBCBC": "w", // Gray/White
+//   "#fff": "w", // White (alternative)
+// };
 
 const pieTooltip = {
   enabled: true,
   renderer: (params: any) => {
     const { datum, angleKey, fill, color } = params;
     const sliceColor = fill || color || datum.color || "#666666";
-    const key = colorKeyMap[sliceColor] || "w"; // default to white/gray
     const colorName = colorNameMap[sliceColor] || "Unknown";
-    // <div class="pie-tooltip-container" style="--slice-color: ${sliceColor};">
 
     return `
      <div class="pie-tooltip-container">
-        <div class="pie-tooltip-header slice-${key}">
+        <div class="pie-tooltip-header slice-${colorName}">
           ${colorName}
         </div>
         <div class="pie-tooltip-body">
@@ -4848,9 +4881,7 @@ export function getColumnDefinations(
         minWidth: 150,
         valueFormatter: (params: any) => {
           if (params.value) {
-            const format = (
-              process.env.REACT_APP_NUMBER_FORMAT || ""
-            ).toUpperCase();
+            const format = (getNumberFormat() || "USA").toUpperCase();
             const locale =
               format === "USA"
                 ? "en-US"

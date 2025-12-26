@@ -453,24 +453,26 @@ const ViewModify = () => {
         <div style={{ zoom: "var(--nms-filter-zoom)" }}>
           <VFTaskBar
             disableStopSeasonality={() => {
-              const flatState = _.flatMap(seasonalityActiveQuickFilter);
-              let error = false;
-              flatState.map((state: number) => {
-                if (!validStopStatuses.includes(state)) error = true;
-              });
-              if (error) return true;
+              const selectedRows = ref.current?.api.getSelectedRows() || [];
+              if (selectedRows.length === 0) return true;
 
-              return false;
+              let error = false;
+              selectedRows.forEach((row: any) => {
+                if (!validStopStatuses.includes(row.sts)) error = true;
+              });
+
+              return error;
             }}
             disableResumeSeasonality={() => {
-              const flatState = _.flatMap(seasonalityActiveQuickFilter);
-              let error = false;
-              flatState.map((state: number) => {
-                if (!validResumeStatuses.includes(state)) error = true;
-              });
-              if (error) return true;
+              const selectedRows = ref.current?.api.getSelectedRows() || [];
+              if (selectedRows.length === 0) return true;
 
-              return false;
+              let error = false;
+              selectedRows.forEach((row: any) => {
+                if (!validResumeStatuses.includes(row.sts)) error = true;
+              });
+
+              return error;
             }}
             showSubmittedExportError={
               activeMaster?.rowData.length > 0 && errorCount > 0

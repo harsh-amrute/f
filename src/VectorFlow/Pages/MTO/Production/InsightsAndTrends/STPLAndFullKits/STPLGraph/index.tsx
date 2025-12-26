@@ -1,16 +1,15 @@
-import { useEffect, useMemo, useState } from "react";
 import { AgChartOptions } from "ag-charts-community";
+import { useEffect, useMemo, useState } from "react";
 // import { APIMock } from "../StplAndFullKitsData";
-import { ProductionInsightsAndTrendsString } from "../../../../Common/String";
 import VFInfoToolTip from "../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
-import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer'
 import { getColumnDefinations } from "../../../../../../../helpers/utils";
+import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer';
+import { ProductionInsightsAndTrendsString } from "../../../../Common/String";
 import { columnConfigData } from "../ColumnData";
-import { format } from "date-fns";
 import "./style.css"
 
 const STPLGraph = (props: any) => {
-    const { graphData } = props;
+    const { graphData, lastRunDate } = props;
 
  /* const graphData:any = [
     {
@@ -59,7 +58,7 @@ const STPLGraph = (props: any) => {
       "r_wip": 1.83
     }
   ]*/
-  const [date] = useState(format(new Date(), 'd MMM yyyy'));
+
   const [rawData, setRawData] = useState([]);
   const [hideChart1, toggleChart1] = useState(false);
   const [chartLoading, setChartLoading] = useState(false);
@@ -200,7 +199,7 @@ const STPLGraph = (props: any) => {
             {`${ProductionInsightsAndTrendsString.stplWithLimits}  `}
           </span>
           <span style={{ fontWeight: 300, }}>
-            {` (${date})`}
+            {` (${lastRunDate})`}
           </span>
         </div>
         <div style={{ display: "flex" }}>

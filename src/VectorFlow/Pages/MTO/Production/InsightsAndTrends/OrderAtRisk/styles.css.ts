@@ -17,7 +17,7 @@ export const horizontalViewWrapper = style({
   // },
 });
 // descendants of horizontalViewWrapper
-globalStyle(`${horizontalViewWrapper} .ag-theme-alpine`, {
+globalStyle(`${horizontalViewWrapper} > .ag-theme-alpine`, {
   height: "100%",
   marginTop: "0",
 });
@@ -84,7 +84,7 @@ export const vfTableWrapper = style({
   },
 });
 /* descendants of vfTableWrapper */
-globalStyle(`${vfTableWrapper} .ag-theme-alpine`, { flex: 1 });
+globalStyle(`${vfTableWrapper} > .ag-theme-alpine`, { flex: '1 !important' });
 
 /* bump specificity by repeating the parent instead of "&&" */
 globalStyle(`${vfTableWrapper}${vfTableWrapper} .ag-paging-panel`, {

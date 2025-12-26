@@ -1,18 +1,17 @@
-import { useEffect, useMemo, useState } from "react";
-import "allotment/dist/style.css";
 import { AgChartOptions } from "ag-charts-community";
+import "allotment/dist/style.css";
+import { useEffect, useMemo, useState } from "react";
 // import { APIMock } from "../StplAndFullKitsData";
-import { ProductionInsightsAndTrendsString } from "../../../../Common/String";
 import VFInfoToolTip from "../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
-import SplitGraphContainer from "../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer";
-import { columnConfigData } from "../ColumnData";
 import { getColumnDefinations } from "../../../../../../../helpers/utils";
-import { format } from "date-fns";
-import "./style.css"
-const FullKitGraph = (props: any) => {
-  const { graphData } = props;
+import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer';
+import { ProductionInsightsAndTrendsString } from "../../../../Common/String";
+import { columnConfigData } from "../ColumnData";
 
-  const [date] = useState(format(new Date(), "d MMM yyyy"));
+
+const FullKitGraph = (props: any) => {
+  const { graphData, lastRunDate } = props;
+
   const [hideChart1, toggleChart1] = useState(false);
   const [chartLoading, setChartLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
@@ -121,7 +120,9 @@ const FullKitGraph = (props: any) => {
           <span style={{ fontWeight: 500 }}>
             {`${ProductionInsightsAndTrendsString.fullKitInDays}  `}
           </span>
-          <span style={{ fontWeight: 300 }}>{` (${date})`}</span>
+          <span style={{ fontWeight: 300, }}>
+            {` (${lastRunDate})`}
+          </span>
         </div>
         <div style={{ display: "flex" }}>
           <div style={{ marginLeft: 30, marginBottom: "-5px" }}>

@@ -1,15 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
-import "allotment/dist/style.css";
 import { AgChartOptions } from "ag-charts-community";
-import { ProductionInsightsAndTrendsString } from "../../../../Common/String";
-import VFInfoToolTip from "../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
-import SplitGraphContainer from "../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer";
-import { columnConfigData } from "../OrderBalanceMockData";
-import { getColumnDefinations } from "../../../../../../../helpers/utils";
-import { format } from "date-fns";
+import "allotment/dist/style.css";
+import { useEffect, useMemo, useState } from "react";
 import VFCapsule from "../../../../../../../components/VectorFLOW/commons/VFCapsule";
-import { CapsuleWrapper } from "../styles.css";
+import VFInfoToolTip from "../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
+import { getColumnDefinations } from "../../../../../../../helpers/utils";
+import SplitGraphContainer from "../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer";
+import { ProductionInsightsAndTrendsString } from "../../../../Common/String";
 import { createSeriesData, TooltipRenderer } from "../OrderBalanceCommon";
+import { columnConfigData } from "../OrderBalanceMockData";
+import { CapsuleWrapper } from "../styles.css";
 // <-------------- uncomment below code to enable dropdown for orderType    --------->
 import VFSelect from "../../../../../../../components/VectorFLOW/commons/MTO/VFSelect";
 import { useUserData } from "../../../../../../../context/index";
@@ -20,9 +19,9 @@ const TrailDeptBalance = (props: any) => {
     // <-------------- uncomment below code to enable dropdown for orderType    --------->
     orderOptions,
     handleChange,
+    lastRunDate
     //orderType
   } = props;
-  const [date] = useState(format(new Date(), "d MMM yyyy"));
   const [hideChart1, toggleChart1] = useState(false);
   const [chartLoading, setChartLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
@@ -350,24 +349,22 @@ const TrailDeptBalance = (props: any) => {
     setRawData(data);
   }, [actBtn]);
 
-  const graphTitleJSX = (
+  const graphTitleJSX = 
     <div
       data-testid="ot-if-graph"
       style={{
         fontSize: "13px",
         margin: "0 auto",
 
-        textAlign: "center",
-      }}
-    >
-      <span style={{ fontWeight: 500 }}>{`${
-        actBtn.label === "Bal To Mfg."
-          ? ProductionInsightsAndTrendsString.trailDeptMfg
-          : ProductionInsightsAndTrendsString.trailDeptDisp
-      }  `}</span>
-      <span style={{ fontWeight: 300 }}>{`(${date})`}</span>
-    </div>
-  );
+      textAlign: "center",
+    }}
+  >
+    <span style={{ fontWeight: 500 }}>{`${actBtn.label === "Bal To Mfg."
+      ? ProductionInsightsAndTrendsString.trailDeptMfg
+      : ProductionInsightsAndTrendsString.trailDeptDisp}  `}</span>
+    <span style={{ fontWeight: 300 }}>{`(${lastRunDate})`}</span>
+  </div>
+
 
   return (
     <div

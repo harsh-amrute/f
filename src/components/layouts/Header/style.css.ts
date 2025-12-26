@@ -8,7 +8,7 @@ import * as gridSystem from "../../../styles/gridSystem.css";
 export const wrapperWidthVar = createVar();
 export const imgMarginLeftVar = createVar();
 export const clientNameMarginLeftVar = createVar();
-
+export const isHideLogoWidthVar = createVar();
 
 /* Containers */
 export const SCHeaderBox = style({
@@ -137,6 +137,7 @@ export const SCWrapperImg = style({
   zIndex: 1000,
   display: 'flex',
   alignItems: 'center',
+  gap:'5px'
 });
 
 export const ClientNameText = style({
@@ -149,10 +150,13 @@ export const ClientNameText = style({
   fontSize: '1.3rem',
   fontWeight: 500,
   fontFamily: 'Roboto',
+  paddingRight:'5px'      
 });
 
 export const SCImg = style({
   height: '40px',
   zIndex: 1000,
   marginLeft: imgMarginLeftVar,
+  paddingLeft:'18px',
+  paddingRight:'8px'
 });

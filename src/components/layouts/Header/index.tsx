@@ -6,7 +6,6 @@ import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store/store";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
-
 interface HeaderProps {
   urlExcludeHeader: Array<string>;
 }
@@ -64,36 +63,18 @@ const Header = (props: HeaderProps) => {
       hideLogo();
     }, 300);
   };
-  const EnvConfig = useSelector((state: RootState) => state.mta.EnvConfig);
-  const getValidValue = (val?: string) =>
-    val && val.trim() !== "" ? val : undefined;
 
-  const CLIENT_LOGO =
-    getValidValue(EnvConfig["CLIENT_LOGO"]) ??
-    process.env.REACT_APP_CLIENT_LOGO;
+  const CLIENT_LOGO_PATH = "/client/logo.svg";
 
-  const CLIENT_NAME =
-    getValidValue(EnvConfig["CLIENT_NAME"]) ??
-    process.env.REACT_APP_CLIENT_NAME;
-
+  const CLIENT_NAME = user?.config_data?.CLIENT_NAME;
   const headerBtnClass =
     themeUi === "REGALBLAZE"
       ? H.SCHeaderButtonIstRegal
       : H.SCHeaderButtonIstGradient;
 
   const logoWrapperVars = assignInlineVars({
-    [H.wrapperWidthVar]: isHideLogo ? "176px" : "1vw",
+    [H.wrapperWidthVar]: isHideLogo ? "fit-content" : "1vw",
   });
-
-  const imgLeftVars = (ml?: string) =>
-    assignInlineVars({
-      [H.imgMarginLeftVar]: ml ?? "",
-    });
-
-  const clientNameLeftVars = (ml?: string) =>
-    assignInlineVars({
-      [H.clientNameMarginLeftVar]: ml ?? "0",
-    });
 
   const renderHeader = () => {
     if (location.pathname === "/ist-status") {
@@ -198,31 +179,49 @@ const Header = (props: HeaderProps) => {
             <p className={H.SCHeaderText}>{renderNamePage()}</p>
           </div>
         )}
-
         <div
           className={H.SCWrapperImg}
           style={{ ...logoWrapperVars, display: "flex", alignItems: "center" }}
           onMouseEnter={onMouseEnterLogo}
           onMouseLeave={onMouseLeaveLogo}
         >
-          {!CLIENT_LOGO && !CLIENT_NAME && (
+          {!CLIENT_LOGO_PATH && !CLIENT_NAME && (
             <img
               className={H.SCImg}
-              style={assignInlineVars({ [H.imgMarginLeftVar]: "20px" })}
+              style={assignInlineVars({
+                [H.imgMarginLeftVar]: "20px",
+              })}
               src="/assets/img/header/VectorFlowLogoBlackNew.svg"
               alt="logo"
             />
           )}
-
-          {CLIENT_LOGO && (
-            <img className={H.SCImg} src={CLIENT_LOGO.toString()} alt="logo" />
+          {!CLIENT_LOGO_PATH && (
+            <img
+              className={H.SCImg}
+              style={assignInlineVars({
+                [H.imgMarginLeftVar]: "20px",
+              })}
+              src="/assets/img/header/VectorFlowLogoBlackNew.svg"
+              alt="logo"
+            />
+          )}
+          {CLIENT_LOGO_PATH && (
+            <img
+              className={H.SCImg}
+              src={CLIENT_LOGO_PATH}
+              alt="logo"
+              onError={(e: any) => {
+                e.currentTarget.src =
+                  "/assets/img/header/VectorFlowLogoBlackNew.svg";
+              }}
+            />
           )}
 
           {CLIENT_NAME && (
             <div
               className={H.ClientNameText}
               style={assignInlineVars({
-                [H.imgMarginLeftVar]: !CLIENT_LOGO ? "15px" : "0px",
+                [H.imgMarginLeftVar]: !CLIENT_LOGO_PATH ? "15px" : "0px",
               })}
             >
               {CLIENT_NAME}

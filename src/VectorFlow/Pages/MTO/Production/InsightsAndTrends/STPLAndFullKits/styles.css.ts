@@ -18,7 +18,7 @@ export const Wrapper = style({
   // },
 });
 // ✅ descendants of Wrapper (plain selectors, no :global)
-globalStyle(`${Wrapper} .ag-theme-alpine`, { height: "100%" });
+globalStyle(`${Wrapper} > .ag-theme-alpine`, { height: "100%" });
 globalStyle(`${Wrapper} div[data-testid="vf_pagination"]`, { padding: "0" });
 
 

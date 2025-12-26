@@ -13,15 +13,22 @@ import moment from "moment";
 import { useGetDate } from "../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting";
 import { useUserData } from "../../../../../../../context";
 import VFButton from "../../../../../../../components/VectorFLOW/commons/VFButton";
-import "./style.css"
+import "./style.css";
 
-const BTMTO = ({ isMTO, data }: { isMTO: boolean; data: any }) => {
+const BTMTO = ({
+  isMTO,
+  data,
+  lastRunDate,
+}: {
+  isMTO: boolean;
+  data: any;
+  lastRunDate: Date;
+}) => {
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
 
   const [horizonDays, setHorizondays] = useState(14);
 
-  console.log(isMTO);
   useEffect(() => {
     setNumericData(filterDataByDaysGap(data, 0, horizonDays, false));
   }, [data]);
@@ -191,7 +198,6 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean; data: any }) => {
     </div>
   </div>
 `;
-
   }
 
   function convertDate(dateStr: string): string {
@@ -456,108 +462,96 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean; data: any }) => {
 
   const generateHeader = () => {
     return (
-      <>
+      <div className={SCChartMainContainer} style={{ zoom: 1, width: "100%" }}>
         <div
-          className={SCChartMainContainer}
-          style={{ zoom: 1, width: "100%" }}
+          className={SCChartSliderContainer}
+          style={{ zoom: 0.75, marginTop: "6px" }}
         >
-          <div
-            className={SCChartSliderContainer}
-            style={{ zoom: 0.75, marginTop: "6px" }}
+          <label
+            style={{
+              fontStyle: "normal",
+              fontVariant: "normal",
+              fontWeight: 400,
+              fontSize: 15,
+              fontFamily: "Roboto",
+              paddingLeft: "10px",
+            }}
           >
-            <label
-              style={{
-                fontStyle: "normal",
-                fontVariant: "normal",
-                fontWeight: 400,
-                fontSize: 15,
-                fontFamily: "Roboto",
-                paddingLeft: "10px",
-              }}
-            >
-              {" "}
-              <b>Select Horizon (in days): </b>
-            </label>
-            <VFRangeSlider
-              showTriangle={false}
-              min={1}
-              max={90}
-              milestones={[0, 30, 60, 90]}
-              strictMode={false}
-              width={200}
-              defaultValue={horizonDays}
-              handleChange={(e) => setHorizondays(e)}
-              labelValueFormatter={(value: number) => value.toString()}
+            {" "}
+            <b>Select Horizon (in days): </b>
+          </label>
+          <VFRangeSlider
+            showTriangle={false}
+            min={1}
+            max={90}
+            milestones={[0, 30, 60, 90]}
+            strictMode={false}
+            width={200}
+            defaultValue={horizonDays}
+            handleChange={(e) => setHorizondays(e)}
+            labelValueFormatter={(value: number) => value.toString()}
+          />
+          <VFButton
+            onClick={() => handleSubmitClick()}
+            themeUi={themeUi}
+            disabled={false}
+            style={{
+              height: "35px",
+              width: "50px",
+              borderRadius: "3px",
+            }}
+          >
+            <img
+              src="/assets/img/rightArrowHorizontal.svg"
+              height={13}
+              width={7}
             />
-            <VFButton
-              onClick={() => handleSubmitClick()}
-              themeUi={themeUi}
-              disabled={false}
-              style={{
-                height: "35px",
-                width: "50px",
-                borderRadius: "3px",
-              }}
-            >
-              <img
-                src="/assets/img/rightArrowHorizontal.svg"
-                height={13}
-                width={7}
-              />
-            </VFButton>
+          </VFButton>
+        </div>
+        <div
+          className={SCChartHeaderContainer}
+          style={{ background: "transparent" }}
+        >
+          <div className={capsuleWrapper} style={{ zoom: 0.8, padding: "4px" }}>
+            <VFCapsule
+              activeBtn={actBtn}
+              capsules={[
+                {
+                  label: "Percentage",
+                  value: "Percentage",
+                },
+                {
+                  label: "Absolute Value",
+                  value: "Absolute Value",
+                },
+              ]}
+              handleClick={() => updateGraphState()}
+            />
+          </div>
+          <div style={{ marginLeft: 30, marginBottom: "-5px" }}>
+            <VFInfoToolTip infoList={graph1} />
           </div>
           <div
-            className={SCChartHeaderContainer}
-            style={{ background: "transparent" }}
+            onClick={() => {
+              toggleChart1(!hideChart1);
+            }}
+            style={{
+              marginLeft: 10,
+              marginBottom: "-5px",
+              marginRight: "10px",
+            }}
           >
-            <div
-              className={capsuleWrapper}
-              style={{ zoom: 0.8, padding: "4px" }}
-            >
-              <VFCapsule
-                activeBtn={actBtn}
-                capsules={[
-                  {
-                    label: "Percentage",
-                    value: "Percentage",
-                  },
-                  {
-                    label: "Absolute Value",
-                    value: "Absolute Value",
-                  },
-                ]}
-                handleClick={() => updateGraphState()}
-              />
-            </div>
-            <div style={{ marginLeft: 30, marginBottom: "-5px" }}>
-              <VFInfoToolTip infoList={graph1} />
-            </div>
-            <div
-              onClick={() => {
-                toggleChart1(!hideChart1);
-              }}
-              style={{
-                marginLeft: 10,
-                marginBottom: "-5px",
-                marginRight: "10px",
-              }}
-            >
-              <img
-                src="/assets/img/VectorFLOW/BPR/minimize.svg"
-                height={13}
-                width={13}
-                color={"#CCCCCC"}
-              />
-            </div>
+            <img
+              src="/assets/img/VectorFLOW/BPR/minimize.svg"
+              height={13}
+              width={13}
+              color={"#CCCCCC"}
+            />
           </div>
         </div>
-      </>
+      </div>
     );
   };
-
-  const { data: apiResponseData /*isLoading, refetch*/ } = useGetDate();
-
-  const date = apiResponseData?.data?.data;
 
   const graphTitleJSX = (
     <div
@@ -570,9 +564,11 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean; data: any }) => {
       }}
     >
       <span style={{ fontWeight: 500 }}>RM / PM Buffer Trend- MTO</span>
-      <span style={{ fontWeight: 300 }}>{` (${moment(date)
+      <span style={{ fontWeight: 300 }}>{` (${moment(lastRunDate)
         .subtract(horizonDays - 1, "days")
-        .format("D MMM YYYY")} - ${moment(date).format("D MMM YYYY")})`}</span>
+        .format("D MMM YYYY")} - ${moment(lastRunDate).format(
+        "D MMM YYYY"
+      )})`}</span>
     </div>
   );
 
@@ -595,9 +591,11 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean; data: any }) => {
         rowData={rowData}
         graphTitle={""}
         graphTitleJSX={graphTitleJSX}
-        tableTitle={`RM / PM Buffer Trend- MTO (${moment(date)
+        tableTitle={`RM / PM Buffer Trend- MTO (${moment(lastRunDate)
           .subtract(horizonDays - 1, "days")
-          .format("D MMM YYYY")} - ${moment(date).format("D MMM YYYY")})`}
+          .format("D MMM YYYY")} - ${moment(lastRunDate).format(
+          "D MMM YYYY"
+        )})`}
         options={options}
         colDef={colDef}
         header={generateHeader}

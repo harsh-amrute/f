@@ -46,36 +46,36 @@ const MTOTaskStatus = ()=>{
         }
       };
 
-    const onDownloadTaskDetails = async(payload:any)=>{
+    // const onDownloadTaskDetails = async(payload:any)=>{
         
-       try{
-        const actionName = getActionName(payload.Actiontype).value
-        const response = await getTaskDetailDownloadData({taskId:payload.TaskID,approverId:payload.ApproverId})
-        const currentTaskMaster = response.data.data[0]
-        const currentTaskMasterId:number = currentTaskMaster.MasterId
+    //    try{
+    //     const actionName = getActionName(payload.Actiontype).value
+    //     const response = await getTaskDetailDownloadData({taskId:payload.TaskID,approverId:payload.ApproverId})
+    //     const currentTaskMaster = response.data.data[0]
+    //     const currentTaskMasterId:number = currentTaskMaster.MasterId
         
-        const uiConfigurationResponse = await getMasterUIConfiguration(actionName)
+    //     const uiConfigurationResponse = await getMasterUIConfiguration(actionName)
         
-        const masters:Master[] = uiConfigurationResponse.data.data
-        const currentMasterFields = masters.find((master:Master)=>master.id==currentTaskMasterId)
+    //     const masters:Master[] = uiConfigurationResponse.data.data
+    //     const currentMasterFields = masters.find((master:Master)=>master.id==currentTaskMasterId)
 
-        if(!currentTaskMaster.data){
-            notifyError('Task Details Can be only downloaded by the Approver');
-            return
-        }
+    //     if(!currentTaskMaster.data){
+    //         notifyError('Task Details Can be only downloaded by the Approver');
+    //         return
+    //     }
        
-        if(currentMasterFields){
-          setCurrentMasterName(currentMasterFields.name)
-          const existingColumns = getExistingColumns(payload.Actiontype==2?JSON.parse(currentTaskMaster.data[0].new):currentTaskMaster.data[0])
-          const existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields.fields)
-          setTempAgGridColDefs(mapMasterToTaskStatusColumnGroupDefs(existingColumnFields,currentTaskMasterId,actionName))
-          setTempAgridRowData(mapTaskStatusDataToRowData(currentTaskMaster.data,existingColumnFields,actionName))
-          setTempDownloadData(true)
-        }
-       }catch(error:any){
-        notifyError(error.message)
-       }
-    }
+    //     if(currentMasterFields){
+    //       setCurrentMasterName(currentMasterFields.name)
+    //       const existingColumns = getExistingColumns(payload.Actiontype==2?JSON.parse(currentTaskMaster.data[0].new):currentTaskMaster.data[0])
+    //       const existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields.fields)
+    //       setTempAgGridColDefs(mapMasterToTaskStatusColumnGroupDefs(currentTaskMasterId,existingColumnFields,currentTaskMasterId,actionName))
+    //       setTempAgridRowData(mapTaskStatusDataToRowData(currentTaskMasterId,currentTaskMaster.data,existingColumnFields,actionName))
+    //       setTempDownloadData(true)
+    //     }
+    //    }catch(error:any){
+    //     notifyError(error.message)
+    //    }
+    // }
 
     const [finalData, setFinalData] = useState<any>(undefined);
 
@@ -172,9 +172,9 @@ const MTOTaskStatus = ()=>{
             <VFTable
                 masterDetail
                 detailCellRenderer={TaskStatusMasterDetail}
-                detailCellRendererParams={{
-                    onDownload:onDownloadTaskDetails
-                }}
+                // detailCellRendererParams={{
+                //     onDownload:onDownloadTaskDetails
+                // }}
                 rowHeight={60}
                 detailRowAutoHeight
                 gridOptions={{

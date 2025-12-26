@@ -45,38 +45,38 @@ export const APIFilterConfig = {
 };
 
 const BMTrends = () => {
-  const [horizonDays, setHorizondays] = useState(14);
-  const [actBtn, setActBtn] = useState({
-    label: "Absolute Value",
-    value: "Absolute Value",
-  });
-  const [bmTrendData, setBMTrendData] = useState<BufferTrendData[]>([]);
-  // const { data: BMTrendsData } = useGetBMTrendsData() || {};
-  const [BMTrendsData, setBMTrendsData] = useState<any>();
-  const [numericData, setNumericData] = useState<BufferTrendData[]>(
-    filterDataByDaysGap(bmTrendData, 0, horizonDays, false)
-  );
-  const [hideChart1, toggleChart1] = useState(false);
-  const [rowData, setRowData] = useState(numericData);
-  const [chartLoading, setChartLoading] = useState(true);
-  const [tableLoading, setTableLoading] = useState(true);
-  const [selectedPlant, setSelectedPlant] = useState<any>();
-  const [selectOptionsPlnt, setSelectOptionsPlnt] = useState([]);
-  const { mutateAsync: getBMTrendsData, isLoading: isLoading } =
-    useGetBMTrendsData();
 
-  // const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
-  // const [filterData, setFilterData] = useState({});
-  // const  {
-  //     state: currFilter,
-  //     setState: setCurrFilter,
-  //     onFilterRemove,
-  //     isFilterOpen,
-  //     isMfgSelected,
-  //     onAddFilter,
-  //     onApplyFilter,
-  //     toggleFilter,
-  // } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_BM_Trend);
+    const [horizonDays, setHorizondays] = useState(14);
+    const [actBtn, setActBtn] = useState({
+        label: "Absolute Value",
+        value: 'Absolute Value'
+    });
+    const [bmTrendData, setBMTrendData] = useState<BufferTrendData[]>([]);
+    // const { data: BMTrendsData } = useGetBMTrendsData() || {};
+    const [BMTrendsData, setBMTrendsData] = useState<any>();
+    const [numericData, setNumericData] = useState<BufferTrendData[]>(filterDataByDaysGap(bmTrendData, 0, horizonDays, false));
+    const [hideChart1, toggleChart1] = useState(false);
+    const [rowData, setRowData] = useState(numericData);
+    const [chartLoading, setChartLoading] = useState(true);
+    const [tableLoading, setTableLoading] = useState(true);
+    const [selectedPlant, setSelectedPlant] = useState<any>();
+    const [selectOptionsPlnt, setSelectOptionsPlnt] = useState([]);
+    const { mutateAsync: getBMTrendsData, isLoading: isLoading } = useGetBMTrendsData()
+    const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
+
+    
+    // const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
+    // const [filterData, setFilterData] = useState({});
+    // const  { 
+    //     state: currFilter, 
+    //     setState: setCurrFilter, 
+    //     onFilterRemove, 
+    //     isFilterOpen, 
+    //     isMfgSelected,
+    //     onAddFilter, 
+    //     onApplyFilter, 
+    //     toggleFilter,
+    // } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_BM_Trend);
 
   const colors = [
     { label: "Black", value: "black", key: "b" },
@@ -528,20 +528,23 @@ const BMTrends = () => {
     getBMTrendData();
   }, []);
 
-  useEffect(() => {
-    if (numericData) {
-      setRowData(numericData);
-    }
-  }, [numericData]);
-
-  useEffect(() => {
-    if (BMTrendsData?.data?.data) {
-      const updatedData = convertToGraphData(BMTrendsData?.data?.data);
-      setBMTrendData(updatedData);
-      setNumericData(filterDataByDaysGap(updatedData, 0, horizonDays, false));
-      setPlantData(BMTrendsData?.data?.data?.plants || {});
-    }
-  }, [BMTrendsData]);
+    useEffect(() => {
+        if (numericData) {
+            setRowData(numericData);
+        }
+    }, [numericData]);
+    
+    useEffect(() => {
+        const trendDate = BMTrendsData?.data?.data
+        const lastRunDate = apiResponseData?.data?.data
+        
+        if (trendDate && lastRunDate) {
+            const updatedData = convertToGraphData(lastRunDate,trendDate );
+            setBMTrendData(updatedData);
+            setNumericData(filterDataByDaysGap(updatedData, 0, horizonDays, false));
+            setPlantData(trendDate?.plants  || {});
+        }
+    }, [BMTrendsData]);
 
   const getBMTrendData = async () => {
     const data = await getBMTrendsData({
@@ -553,16 +556,14 @@ const BMTrends = () => {
   const setPlantData = (plantsData: any) => {
     const newPlantOptions: any = [];
 
-    plantsData &&
-      Object.entries(plantsData)?.forEach((e: any) => {
-        const eachPlant = { value: e[0], label: e[1] };
-        newPlantOptions.push(eachPlant);
-      });
-
-    setSelectOptionsPlnt(newPlantOptions);
-  };
-
-  const { data: apiResponseData /*isLoading, refetch*/ } = useGetDate();
+        plantsData &&
+            Object.entries(plantsData)?.forEach((e: any) => {
+                const eachPlant = { value: e[0], label: e[1] }
+                newPlantOptions.push(eachPlant);
+            })
+        
+        setSelectOptionsPlnt(newPlantOptions);
+    };
 
   const date = apiResponseData?.data?.data;
 
