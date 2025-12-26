@@ -788,11 +788,7 @@ const DueDateQuotation = () => {
           </VFButton>
           
           {isScheduleDisabled && (
-            // <span className="hover-text" style={{left:80, bottom:10}}>
-            //   The logged-in user does not have access to schedule orders.
-            // </span>
-
-            <VFToolTip left={80} bottom={10}
+            <VFToolTip 
             text={'The logged-in user does not have access to schedule orders.'}
           />
           )}

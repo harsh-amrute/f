@@ -1254,7 +1254,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                         key={2}
                     >
                         <Wrapper style={{ margin: 0, filter: newSelectedRows.isAssignmentPossible ? "unset" : "blur(3px)" }} >
-                            <div ref={routeDiv} style={{ height: "100%", background: "white", boxShadow: "rgba(0, 0, 0, 0.1) 0px 2px 10px 2px", margin: "20px 10px", padding: "1rem", position: "relative", overflow: "auto" }}>
+                            <div ref={routeDiv} style={{ height: "100%", background: "white", boxShadow: "rgba(0, 0, 0, 0.1) 0px 2px 10px 2px", margin: "20px 10px", padding: "1rem", position: "relative", overflow: "visible" }}>
                                 <div style={{ display: "flex", position: "absolute", right: "1rem", gap: "0.5rem" }}>
                                  <div className="disabled-button-wrapper">
                                     <VFButton
@@ -1364,7 +1364,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                 {rowsSelectedForAssignment &&
                     <Allotment.Pane preferredSize={'33%'} key={3}>
                         <Wrapper style={{ padding: "20px 0 10px 0", margin: 0, paddingBottom: "75px" }}>
-                            <div style={{ height: "100%", overflow: "hidden", display: "flex", width: "100%" }}>
+                            <div style={{ height: "100%", overflow: "visible", display: "flex", width: "100%" }}>
                                 <div style={{ display: 'flex', flexDirection: "column", width: countOfExceedingLeadTime != 0 ? "80%" : "100%", background: "white", boxShadow: "rgba(0, 0, 0, 0.1) 0px 2px 10px 2px", margin: "0 1rem 1rem 1rem" }}>
                                     <h3 style={{ margin: "1rem", borderBottom: "1px dashed black" }}>CCR Load Chart</h3>
                                     <AgCharts options={chartOptions} />
@@ -1388,7 +1388,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                 }
                 {!rowsSelectedForAssignment &&
                     <Allotment.Pane preferredSize={"50%"} key={4}>
-                        <Wrapper style={{ justifyContent: "center", alignItems: "center", background: "white", margin: "20px 10px", height: "calc(100% - 30px)", color: "grey", boxShadow: "rgba(0, 0, 0, 0.1) 0px 2px 10px 2px", overflow: "hidden" }}>
+                        <Wrapper style={{ justifyContent: "center", alignItems: "center", background: "white", margin: "20px 10px", height: "calc(100% - 30px)", color: "grey", boxShadow: "rgba(0, 0, 0, 0.1) 0px 2px 10px 2px", overflow: "visible" }}>
                             <div style={{ fontSize: "16px" }}>No Data to Display</div>
                             <div style={{ fontSize: "12px" }}>Please Select Orders to Process</div>
                         </Wrapper>
