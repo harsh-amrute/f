@@ -75,10 +75,10 @@ export const SCHorizontalDivison = style({
 });
 
 /* ====== WithBg (customizable via CSS vars) ====== */
-const vBgRadius = createVar();
-const vBgPadding = createVar();
-const vBgMinW = createVar();
-const vBgMinH = createVar();
+export const vBgRadius = createVar();
+export const vBgPadding = createVar();
+export const vBgMinW = createVar();
+export const vBgMinH = createVar();
 
 export const SCViewContainerWithBg = style({
   display: "flex",
@@ -92,7 +92,7 @@ export const SCViewContainerWithBg = style({
   cursor: "pointer",
   vars: {
     [vBgRadius]: "5px",
-    [vBgPadding]: "5px",
+    [vBgPadding]: "1px",
     [vBgMinW]: "82px",
     [vBgMinH]: "58px",
   },

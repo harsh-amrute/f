@@ -16,7 +16,7 @@ import {
   vLeftWidth,
   vRightWidth,
   vPadLeft,
-  vZoomBase,
+  vZoom,
   vZoomLaptop,
   vZoomDesktop,
   baseCol8,
@@ -228,12 +228,6 @@ const AppLayout = () => {
     : "50px";
   // const { col1Bg, col2Bg } = themeBg(colorTheme);
   // zoom no longer needed -> force 1’s (keeps your API intact)
-  const zoomVars = {
-    [vZoomBase]: "1",
-    [vZoomLaptop]: "1",
-    [vZoomDesktop]: "1",
-  };
-
   const cx = (...classes: Array<string | false | null | undefined>) =>
     classes.filter(Boolean).join(" ");
 
@@ -300,6 +294,7 @@ const AppLayout = () => {
               [vPadLeft]: urlExcludePadding.includes(location.pathname)
                 ? "0px"
                 : "50px",
+              [vZoom]:"1"  
             })}
           >
             <ISTStatusContext.Provider

@@ -23,7 +23,7 @@ export const vColor2 = createVar();
 export const vLeftWidth = createVar();
 export const vRightWidth = createVar();
 export const vPadLeft = createVar();
-export const vZoomBase = createVar();
+export const vZoom = createVar();
 export const vZoomLaptop = createVar();
 export const vZoomDesktop = createVar();
 
@@ -108,16 +108,16 @@ export const SCCol8 = style({
   transition: "all 0.3s ease",
 
   // default zoom (disableZoomScaling === false)
-  zoom: 0.75 as unknown as string | number,
+  zoom: vZoom,
 
   "@media": {
     [mqLaptopToDesktop]: {
       paddingLeft: vPadLeft,
-      zoom: 1 as unknown as string | number,
+      zoom: vZoom,
     },
     [mqDesktopUp]: {
       paddingLeft: vPadLeft,
-      zoom: 1 as unknown as string | number,
+      zoom: vZoom,
     },
   },
 

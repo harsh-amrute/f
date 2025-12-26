@@ -88,51 +88,18 @@ export const CellBarValue = style({
 /* ====== VFTable wrapper (key bit you use) ====== */
 export const VFTableWrapper = style({
   /* sensible defaults that you can override via vars */
-  vars: {
-    [vfHeightVar]: "auto",
-    // [vfZoomMdVar]: "1", // matches your previous default when disableZoomScaling was false
-  },
-  zoom: '1 !important',
-
+  zoom: '1',
   position: "relative",
   width: "100%",
   display: "flex",
-  margin: "20px 0",
-  height: vfHeightVar, // use the var for height
-  // zoom: "1", // default zoom
-  overflow: 'hidden',
-
-  /* Flex the AG grid content */
-  // selectors: {
-  //   /* bump specificity with '&&' instead of !important */
-  //   "&& .ag-theme-alpine": {
-  //     flex: 1,
-  //   },
-
-  //   "&& .ag-paging-panel": {
-  //     zIndex: 1,
-  //     fontSize: "11px",
-  //     fontFamily: "Roboto",
-  //     position: "relative",
-  //   },
-
-  //   "&& .ag-status-bar": {
-  //     zIndex: 2,
-  //     display: "flex",
-  //     justifyContent: "space-between",
-  //     alignItems: "center",
-  //     border: "none",
-  //     width: "calc(100% - 230px)",
-  //     position: "absolute",
-  //     bottom: 0,
-  //   },
-  // },
+  margin: "20px 0px",
+  height: vfHeightVar,
 
   /* zoom scaling between laptop and desktop widths (prop-driven via var) */
   "@media": {
     [`(min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem.size.desktop})`]:
       {
-        zoom: vfZoomMdVar,
+        // zoom: vfZoomMdVar,
       },
     [`(min-width: ${gridSystem.size.desktop})`]: {
       zoom: "1",

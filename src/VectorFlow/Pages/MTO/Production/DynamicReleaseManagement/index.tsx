@@ -809,15 +809,15 @@ const DynamicReleaseManagement = () => {
         </div>
         <div class="drm-tooltip-body">
           <div class="drm-tooltip-row">
-            <div class="color-box barcolor-${barColors["Released_WIP"]}"></div>
+            <div class="drm-color-box barcolor-Released_WIP"></div>
             <div>Released WIP: ${datum["Released WIP"]}</div>
           </div>
           <div class="drm-tooltip-row">
-            <div class="color-box barcolor-${barColors["Incremental_WIP"]}"></div>
+            <div class="drm-color-box barcolor-Incremental_WIP"></div>
             <div>Incremental WIP: ${datum["Incremental WIP"]}</div>
           </div>
           <div class="drm-tooltip-row">
-            <div class="color-box barcolor-${barColors["Limit"]}"></div>
+            <div class="drm-color-box barcolor-Limit"></div>
             <div>Limit: ${datum["Limit"]}</div>
           </div>
         </div>

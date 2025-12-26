@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 import { AgGridReact, AgGridReactProps } from "ag-grid-react";
-import { VFTableWrapper, vfNoZoomScale, vHeight } from "./styles.css";
+import { VFTableWrapper, vHeight, vZoom } from "./styles.css";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "./style.css";
@@ -43,6 +43,7 @@ const VFTable = forwardRef((props: VFTableProps, ref: any) => {
       )}
       style={assignInlineVars({
         [vHeight]: props.height,
+        [vZoom]:"1"
       })}
     >
       <AgGridReact

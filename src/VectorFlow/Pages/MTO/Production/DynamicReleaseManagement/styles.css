@@ -5,6 +5,8 @@
 } */
 .drm-tooltip-container {
   background-color: #6c696a;
+  width: 100%;
+
   /* color: white;
   padding: 0 10px 10px 10px;
   border-radius: 4px;
@@ -38,18 +40,18 @@
   margin-bottom: 6px;
 }
 
-.color-box {
+.drm-color-box {
   margin-right: 10px;
   height: 3px;
   width: 15px;
   flex-shrink: 0;
 }
 .barcolor-Released_WIP {
-  background-color: "#191919";
+  background-color: #191919;
 }
 .barcolor-Incremental_WIP {
-  background-color: "#4BAAF7";
+  background-color: #4BAAF7;
 }
 .barcolor-Limit {
-  background-color: "#E53F3F";
+  background-color: #E53F3F;
 }

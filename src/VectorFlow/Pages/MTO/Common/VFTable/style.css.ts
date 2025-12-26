@@ -1,6 +1,7 @@
 import { style, createVar, globalStyle } from '@vanilla-extract/css';
 
 export const vHeight = createVar();
+export const vZoom = createVar();
 
 export const VFTableWrapper = style({
   height: vHeight,
@@ -9,13 +10,9 @@ export const VFTableWrapper = style({
   // width: '100%',     // replaces the broken width
   // minWidth: 0,
   // width: '100%',     // replaces the broken width
-  maxWidth: '100%',
-  boxSizing: 'border-box',
-  overflow: 'hidden',
-  // if inside a flex parent:
-  minWidth: 0,
 
   zoom: '1 !important',
+  // width:'1200px',
 
   // selectors: {
   //   // cover both: wrapper IS the theme element, or contains it
@@ -45,8 +42,8 @@ export const VFTableWrapper = style({
 });
 
 // descendants (scoped)
-globalStyle(`${VFTableWrapper} > .ag-theme-alpine`, { margin: 0 });
-globalStyle(`${VFTableWrapper} > .ag-theme-noir-fusion`, { margin: 0 });
+globalStyle(`${VFTableWrapper} > .ag-theme-alpine`, { margin: '0 !important' });
+globalStyle(`${VFTableWrapper} > .ag-theme-noir-fusion`, { margin:'0 !important' });
 
 globalStyle(`${VFTableWrapper} > .ag-header-cell-resize`, {
   position: 'absolute',
@@ -56,15 +53,6 @@ globalStyle(`${VFTableWrapper} > .ag-header-cell-resize`, {
   top: 0,
   cursor: 'ew-resize',
 });
-globalStyle(`${VFTableWrapper} .ag-header-cell-resize`, {
-  position: 'absolute',
-  zIndex: 0,
-  height: '100%',
-  width: '8px',
-  top: 0,
-  cursor: 'ew-resize',
-});
-
 
 /** helper to set height at runtime (defaults to 'auto') */
 // export const vfTableWrapperVars = (height?: string) =>
