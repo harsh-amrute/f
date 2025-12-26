@@ -1,9 +1,6 @@
 .ev-tooltip-wrapper {
   background: #6c696a;
-  border-radius: 6px;
-  overflow: hidden;
-  text-align: center;
-  min-width: 140px;
+  color: white;
   padding: 10px;
 }
 
@@ -11,7 +8,6 @@
   color: white;
   padding: 5px;
   text-align: center;
-  font-weight: bold;
 }
 
 .ev-tooltip-table {

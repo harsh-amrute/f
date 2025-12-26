@@ -30,12 +30,12 @@
   background-color: #6c696a;
 }
 
-.color-label {
+.color-label-btTechView {
   display: flex;
   align-items: center;
 }
 
-.color-box {
+.color-box-btTechView {
   margin-right: 10px;
   height: 10px;
   width: 15px;

@@ -181,7 +181,6 @@ const Header = (props: HeaderProps) => {
           >
             <img
               className={H.SCImg}
-              style={imgLeftVars()}
               src="/assets/VectorFlow_black.svg"
               alt="logo"
             />
@@ -189,7 +188,6 @@ const Header = (props: HeaderProps) => {
         </>
       );
     }
-
     return (
       <>
         {!urlExcludeHeader.includes(location.pathname) && (
@@ -203,32 +201,29 @@ const Header = (props: HeaderProps) => {
 
         <div
           className={H.SCWrapperImg}
-          style={logoWrapperVars}
+          style={{ ...logoWrapperVars, display: "flex", alignItems: "center" }}
           onMouseEnter={onMouseEnterLogo}
           onMouseLeave={onMouseLeaveLogo}
         >
           {!CLIENT_LOGO && !CLIENT_NAME && (
             <img
               className={H.SCImg}
-              style={imgLeftVars("20px")}
+              style={assignInlineVars({ [H.imgMarginLeftVar]: "20px" })}
               src="/assets/img/header/VectorFlowLogoBlackNew.svg"
               alt="logo"
             />
           )}
 
           {CLIENT_LOGO && (
-            <img
-              className={H.SCImg}
-              style={imgLeftVars()}
-              src={CLIENT_LOGO.toString()}
-              alt="logo"
-            />
+            <img className={H.SCImg} src={CLIENT_LOGO.toString()} alt="logo" />
           )}
 
           {CLIENT_NAME && (
             <div
               className={H.ClientNameText}
-              style={clientNameLeftVars(!CLIENT_LOGO ? "15px" : undefined)}
+              style={assignInlineVars({
+                [H.imgMarginLeftVar]: !CLIENT_LOGO ? "15px" : "0px",
+              })}
             >
               {CLIENT_NAME}
             </div>

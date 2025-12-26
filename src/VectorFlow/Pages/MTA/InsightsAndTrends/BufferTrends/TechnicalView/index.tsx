@@ -101,8 +101,8 @@ const TechnicalWise = ({
                             return `
                                 <tr>
                                     <td class="tooltip-cell-btTechView">
-                                        <div class="color-label">
-                                            <div class="color-box color-${
+                                        <div class="color-label-btTechView">
+                                            <div class="color-box-btTechView color-${
                                               color.label
                                             }"></div>
                                             ${color.label}

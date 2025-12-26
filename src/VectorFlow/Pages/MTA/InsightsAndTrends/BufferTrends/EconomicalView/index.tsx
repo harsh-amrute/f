@@ -14,7 +14,7 @@ import VFRangeSlider from "../../../../../../components/VectorFLOW/commons/VFRan
 import { AgCharts } from "ag-charts-react";
 import { AgChartOptions } from "ag-charts-community";
 import VFInfoToolTip from ".././../../../../../components/VectorFLOW/commons/VFInfoToolTip";
-
+import "./style.css";
 interface EconomicalWiseProps {
   data: any;
   currentPageTab: string;
@@ -102,7 +102,7 @@ const EconomicalWise = ({
                                 <tr>
                                   <td class="ev-tooltip-td color-label ">
                                     <div class="color-labelDiv">
-                                      <div class="color-box ev-color-value-${key}"></div>
+                                      <div class="ev-color-box ev-color-value-${key}"></div>
                                       ${color.label}
                                     </div>
                                     </td>
