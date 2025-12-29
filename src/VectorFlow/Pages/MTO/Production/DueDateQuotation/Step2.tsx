@@ -27,8 +27,6 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
 
     const user = useUserData()
     const canChangeRoute =user?.user?.feature_permission?.includes('Change_Route');
-  
-
     useEffect(() => {
         if (masters) {
             if (confirmedRows) {
@@ -1270,7 +1268,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                         {!canChangeRoute && (
                                             <VFToolTip
                                                 text={'The logged-in user does not have access to edit the routes.'}
-                                            />
+                                            /> 
                                             )}
                                     </div>
                                     

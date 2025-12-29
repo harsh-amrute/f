@@ -8,13 +8,14 @@
   bottom: 100%;            
   left: 50%;           
   transform: translateX(-50%) translateY(-8px); 
-  min-width: 180px; 
-  background: #ededed;
-  white-space: normal;  
-  color: black;
-  padding: 4px 8px;
-  font-size: 10px;
+  min-width: 300px; 
+  /* background: #ededed; */
+  background: #313131;
   border-radius: 4px;
+  white-space: normal;  
+  color: white;
+  padding: 4px 8px;
+  font-size: 16px; /*10*/
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.15s ease;
