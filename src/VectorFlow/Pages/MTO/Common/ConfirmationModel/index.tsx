@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard";
@@ -44,6 +44,13 @@ const ConfirmationModel: React.FC<ConfirmationModelProps> = ({
     }
   };
 
+  useEffect(() => {
+    if (!open) {
+      setSelectedOption(null);
+      setIsChecked(false);
+    }
+  }, [open]);
+
   return (
     <VFModalCard
       openModal={open}
@@ -53,7 +60,7 @@ const ConfirmationModel: React.FC<ConfirmationModelProps> = ({
       headerBgColor="white"
       headerTextColor="black"
       closeIcon="/assets/img/VectorFLOW/NMS/close-dark.svg"
-      paddingLeftAndRight={27}
+      paddingLeftAndRight={0}
     >
       <div
         style={{
