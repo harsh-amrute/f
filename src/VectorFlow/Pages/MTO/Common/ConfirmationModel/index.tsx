@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard";
-import VFSelect from "../../../../../../src/VectorFlow/Pages/MTO/Common/VFSelect"; 
+import VFSelect from "../../../../../components/VectorFLOW/commons/MTO/VFSelect";
 import Checkbox from "../../../../../components/VectorFLOW/commons/MTO/Checkbox";
 
 type DownloadOptionValue = "completely_available" | "shortage" | "all";
@@ -65,7 +64,7 @@ const ConfirmationModel: React.FC<ConfirmationModelProps> = ({
       <div
         style={{
           fontSize: "16px",
-          padding: "1.5rem",
+          padding: "1.5rem 8rem",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -84,8 +83,8 @@ const ConfirmationModel: React.FC<ConfirmationModelProps> = ({
             gap: "1rem"
           }}
         >
-          <span style={{ fontSize: "14px", fontWeight: 500 }}>
-            Select the excel which you want to download:
+          <span style={{ fontSize: "1.7rem", fontWeight: 400 }}>
+            Select the excel which you want to download :
           </span>
           
           <div style={{ width: "200px" }}> 
@@ -96,6 +95,10 @@ const ConfirmationModel: React.FC<ConfirmationModelProps> = ({
               onChange={(option: OptionType) => setSelectedOption(option)}
               placeholder="Select Option"
               isClearable={false}
+              styles={{
+                menuPortal: (base: any) => ({ ...base, zIndex: 99999 }),
+                menu: (base: any) => ({ ...base, zIndex: 99999 })
+              }}
             />
           </div>
         </div>
@@ -110,7 +113,7 @@ const ConfirmationModel: React.FC<ConfirmationModelProps> = ({
                 gap: "10px" 
             }}
         >
-            <span style={{ fontSize: "14px", fontWeight: 500 }}>
+            <span style={{ fontSize: "1.7rem", fontWeight: 400 }}>
             {messageText}
           </span>
             <Checkbox 

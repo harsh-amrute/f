@@ -138,7 +138,7 @@ const handleExcelConfirm = (option: string, includeDetails: boolean) => {
         onConfirm={handleExcelConfirm}
         themeUi={themeUi}
         headerText={"Excel Export"}
-        messageText={" BOM details:"}        
+        messageText={" BOM details :"}        
       />
 
       {(isLoading || getFilterdataLoading) && <OverlayLoader />}
