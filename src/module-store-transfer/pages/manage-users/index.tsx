@@ -30,6 +30,8 @@ import { useNavigate } from "react-router";
 import { notifyError } from "../../../helpers/notify";
 import { APPLICATION_NAMES } from "../../../helpers/constants";
 import { useUserData } from "../../../context";
+import SingleUserPermissionSelectionModal from "../bulk-upload/SingleUserPermissionSelectionModal";
+import VFModalCard from "../../../components/VectorFLOW/commons/VFModalCard";
 
 
 interface ManageUsersProps{
@@ -52,7 +54,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
 
   const [listRoles, setListRoles] = useState<any>([]);
   const [isOpenUser, setIsOpenUser] = useState(false);
-  const [isOpenAdvanced, setIsOpenAdvanced] = useState(false);
+  const [isPermissionModalOpen, setIsPermissionModalOpen] = useState(false);
   const [infoUser, setInfoUser] = useState<any>({
     name: "",
     email: "",
@@ -144,8 +146,8 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     setIsOpenUser(false);
   };
 
-  const onCloseModalAdvanced = () => {
-    setIsOpenAdvanced(false);
+  const onClosePermissionModal = () => {
+    setIsPermissionModalOpen(false);
   };
 
 
@@ -189,7 +191,6 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   };
 
   const fillAdvancedPermissionsModalData = (item?:any)=>{
-    //Application Ids with valid Selected Roles
     const prevPremission = storePermission
 
     const validApplications:Array<number> = [];
@@ -365,13 +366,23 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     setCurrentItem(item)
     setIsEditUser(true)
     const roles = item.role_id.map((role: any) => role.id);
+    const currentUserActiveApplications = new Set<string>();
+    listRoles.forEach((app: any) => {
+      if(roles.some((roleId: any) => app.child.some((role: any) => role.id === roleId))) {
+        currentUserActiveApplications.add(app.title);
+        console.log("app.title", app.title);
+      }
+    }
+    );
 
+    console.log("currentUserActiveApplications", currentUserActiveApplications);
     setInfoUser({
       id: item.id,
       name: item.name,
       email: item.email,
       roles: roles,
-      edit: true
+      edit: true,
+      activeApplications: currentUserActiveApplications
     });
 
     setContentModal({
@@ -414,6 +425,11 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     navigate("/profile/bulk-upload")
   }
   
+
+  useEffect(()=>{
+    console.log("infoUser", infoUser);
+    console.log("listRoles", listRoles);
+  }, [infoUser])
 
   return (
     <>
@@ -485,24 +501,13 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
         )}
       </SCProfileOverView>
 
-      {/* {isURLsDrawerOpen && (
-        <UserURLsDrawer
-        onClose={()=>toggleURLsDrawer(false)}
-        />
-        )}
-        
-        {isRolesDrawerOpen && (
-          <UserRolesDrawer
-          onClose={()=>toggleRolesDrawer(false)}
-          />
-        )} */}
 
 
       <ModalManageUsers
-        contentModal={contentModal}
+      contentModal={contentModal}
         openModal={isOpenUser}
         closeModal={onCloseModal}
-        setIsOpenAdvanced={setIsOpenAdvanced}
+        setIsOpenAdvanced={setIsPermissionModalOpen}
         infoUser={infoUser}
         setInfoUser={setInfoUser}
         listRoles={listRoles}
@@ -511,35 +516,34 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
         currentItem={currentItem}
         isEditUser={isEditUser}
         setIsEditUser={setIsEditUser}
-        />
+        />   
 
-      <ModalAdvanedPermissions
-        contentModal={contentModal}
-        openModal={isOpenAdvanced}
-        closeModal={onCloseModalAdvanced}
-        setIsOpenUser={setIsOpenUser}
-        setIsOpenAdvanced={setIsOpenAdvanced}
-        prdPermissionRef={prdPermissionRef}
-        lcPermissionRef={lcPermissionRef}
-        infoUser={infoUser}
-        refetch={refetch}
-        dataAllPermissions={dataAllPermissions}
-        valueSelect={valueSelect}
-        stepperDetails={stepperDetails}
-        activeApplication={activeApplication}
-        setActiveApplication={setActiveApplication}
-        allPermissions={allPermissions}
-        updateAllPermissions={updateAllPermissions}
-        storePermission={storePermission}
-        setStorePermission={setStorePermission}
-        setStepperDetails={setStepperDetails}
-        headers = {headers}
-        isCheckBoxRef={isCheckBoxRef}
-        />
+<VFModalCard
+            openModal={isPermissionModalOpen}
+            headerIcon={"/assets/img/profile/icon_upload.svg"}
+            closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}
+            closeModal={() => {
+              setIsPermissionModalOpen(false);
+            }}
+            headerText={<span style={{fontSize: '1.6rem'}}>
+              Set Permissions
+            </span>
+            }
+          >
 
 
+      <SingleUserPermissionSelectionModal
         
-      
+        activeApplications={[...(infoUser?.activeApplications || [])]}
+        infoUser={infoUser}
+        setInfoUser={setInfoUser}
+        closeModal={()=>{setIsPermissionModalOpen(false)}}
+        dataAllPermissions={dataAllPermissions}
+        updatePermissions={setStorePermission}
+        key={infoUser.id}
+        
+        />   
+      </VFModalCard>
     </>
   );
 };

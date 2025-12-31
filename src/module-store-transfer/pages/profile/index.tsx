@@ -4,7 +4,6 @@ import {
   SCProfileImg,
   SCProfileName,
   SCTabsWrapper,
-  // SCTabsAction
 } from './styles'
 import { useUserData } from '../../../../src/context'
 import { useState } from 'react'
@@ -13,8 +12,7 @@ import Overview from '../overview'
 import Permissions from '../permissions'
 import ManageUsers from '../manage-users'
 import { useTranslation } from 'react-i18next'
-// import VFButton from '../../../components/VectorFLOW/commons/VFButton'
-// import VFButtonOutline from '../../../components/VectorFLOW/commons/VFButtonOutline'
+
 
 const Profile = () => {
   const { t } = useTranslation()
@@ -44,43 +42,23 @@ const Profile = () => {
     setTabPanel(children)
   }
 
-  // const [isRolesDrawerOpen,toggleRolesDrawer] = useState<boolean>(false)
-
-  // const [isURLsDrawerOpen,toggleURLsDrawer] = useState<boolean>(false)
 
   return (
-    <>
+    <div style={{marginLeft: '24px'}}>
       <SCProfileOverView style={{zoom: 0.75}}>
         <SCProfilePad>
           <SCProfileImg src="/assets/img/profile/profile.svg" />
           <SCProfileName>{user?.user?.name}</SCProfileName>
         </SCProfilePad>
+      </SCProfileOverView>
+
         <SCTabsWrapper>
         <NavigationTab
           listTabs={listTabs}
           onClick={handleClickItem}
         />
-        {/* {(tabPanel === 2) && (
-          <SCTabsAction>
-            <VFButton
-              themeUi={themeUi}
-              onClick={()=>toggleRolesDrawer(true)}
-              style={{boxShadow:'none'}}
-            >
-              Manage Roles
-            </VFButton>
-            <VFButtonOutline
-              themeUi={themeUi}
-              onClick={()=>toggleURLsDrawer(true)}
-              style={{boxShadow:'none'}}
-            >
-              Manage URLs
-            </VFButtonOutline>
-          </SCTabsAction>
-        )} */}
         </SCTabsWrapper>
-      </SCProfileOverView>
-      <div style={{zoom: 0.75}}>
+      <div style={{zoom: 0.75, borderLeft: '1px solid #cecece', borderRight: '1px solid #cecece', borderBottom: '1px solid #cecece', borderRadius: '0 0 12px 12px', boxShadow: '0px 10px 20px #c4c8d066', background: '#fff'}}>
       {tabPanel === 0 && <Overview style={{zoom: 0.75}} themeUi={themeUi} />}
       {tabPanel === 1 && <Permissions roles={user.roles} />}
       {tabPanel === 2 && (
@@ -88,14 +66,10 @@ const Profile = () => {
           is_admin={isAdmin} 
           permission={permissions} 
           themeUi={themeUi} 
-          // isRolesDrawerOpen={isRolesDrawerOpen}
-          // isURLsDrawerOpen={isURLsDrawerOpen}
-          // toggleRolesDrawer={toggleRolesDrawer}
-          // toggleURLsDrawer={toggleURLsDrawer}
           />
         )}
         </div>
-    </>
+    </div>
   )
 }
 

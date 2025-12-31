@@ -23,9 +23,9 @@ const Header = (props:HeaderProps) => {
   const renderNamePage = () => {
     if (location.pathname === '/profile') {
       if (user.user.is_admin || user?.roles?.permission?.includes('IST Admin')) {
-        return <span>{t('header.userAdministration')}</span>
+        return <span style={{paddingLeft: '24px'}}>{t('header.userAdministration')}</span>
       } else {
-        return <span>{t('header.myProfile')}</span>
+        return <span style={{paddingLeft: '24px'}}>{t('header.myProfile')}</span>
       }
     }
   }

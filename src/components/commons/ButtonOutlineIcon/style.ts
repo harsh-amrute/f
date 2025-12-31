@@ -12,6 +12,13 @@ export const SCButtonOutlineIcon = styled.button<{themeUi: string,disabled:boole
   border: 1px solid ${props => globalStyles.chooseThemeColor[props.themeUi]?.color5};
   background-color: ${globalStyles.white};
   cursor:${props => props.disabled ? 'not-allowed':'pointer'};
+  display: flex;
+  align-items: center;
+  padding: 10px 16px;
+
+  : hover {
+    scale: ${props => props.disabled ? '1':'1.02'};
+    }
 `
 
 export const SCImg = styled.img`

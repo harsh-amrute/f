@@ -14,6 +14,9 @@ export const SCButtonFloat = styled.button<{ themeUi: string }>`
   border-radius: 6px;
   font-weight: 500;
   opacity: 1;
+  : hover{
+    scale: 1.02;
+  }
 `;
 
 export const SCImg = styled.img`

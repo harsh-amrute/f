@@ -4,20 +4,24 @@ import * as globalStyles from '../../../styles/global'
 export const SCProfileOverView = styled.div`
   background: ${globalStyles.white};
   margin-bottom: 20px;
-  border-radius: 6px;
+  border-radius: 12px;
+  box-shadow: 0px 10px 20px #c4c8d066;
+  border: 1px solid #cecece;
 `
 
 export const SCProfilePad = styled.div`
   display: flex;
   align-items: center;
-  padding: 28px 50px;
+  padding: 18px 50px;
 `
 
 export const SCProfileImg = styled.img`
-  border-radius: 6px;
+  border-radius: 50%;
   border: 3px solid ${globalStyles.white};
   box-shadow: 0px 10px 20px #c4c8d066;
-  width: 100%;
+  width: 70px;
+  height: 70px;
+  padding: 4px;
   max-width: 95px;
 `
 
@@ -156,6 +160,12 @@ export const SCTabsWrapper = styled.div`
   width:100%;
   display:flex;
   justify-content:space-between;
+  background: white;
+  padding: 8px;
+  border-top: 1px solid #cecece;
+  border-left: 1px solid #cecece;
+  border-right: 1px solid #cecece;
+  border-radius: 12px 12px 0px 0px;
 `
 
 export const SCTabsAction = styled.div`

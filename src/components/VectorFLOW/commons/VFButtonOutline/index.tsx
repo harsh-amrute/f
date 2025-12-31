@@ -2,7 +2,7 @@ import { SCButtonOutline } from "./styles"
 import React,{CSSProperties, ReactNode} from 'react';
 
 interface VFButtonOutlineProps{
-    onClick:() => void,
+    onClick:(e?: any) => void,
     themeUi:string,
     disabled?:boolean,
     width?:number,

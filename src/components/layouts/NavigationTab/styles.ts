@@ -6,10 +6,15 @@ export const SCTabs = styled.div`
 `
 
 export const SCTab = styled.span`
-  font-size: 1.8rem;
+  font-size: 1.4rem;
   font-weight: 500;
   margin-right: 40px;
   color: ${globalStyles.secondaryColor};
   // border-bottom: 1px solid ${globalStyles.mainColor};
   cursor: pointer;
+  : hover {
+    color: ${globalStyles.mainColor};
+    opacity: 0.7;
+    font-weight: 600;
+  }
 `
