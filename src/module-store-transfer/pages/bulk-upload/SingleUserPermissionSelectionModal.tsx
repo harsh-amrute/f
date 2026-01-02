@@ -43,7 +43,7 @@ const ChartViewToggle = ({ isChartView, setIsChartView }: any) => {
     <SCViewContainerWithBgToggle style={{ zoom: 0.5, border: '0.5px solid #cecece' }}>
       <SCViewContainer
         onClick={() => {
-          isChartView && setIsChartView && setIsChartView(!isChartView);
+          isChartView && setIsChartView?.(!isChartView);
         }}
       >
         <NewChartView theme={themeUi} view={!isChartView} />
@@ -53,7 +53,7 @@ const ChartViewToggle = ({ isChartView, setIsChartView }: any) => {
 
       <SCViewContainer
         onClick={() => {
-          !isChartView && setIsChartView && setIsChartView(!isChartView);
+          !isChartView && setIsChartView?.(!isChartView);
         }}
         style={{ paddingTop: "7px" }}
       >
@@ -84,7 +84,7 @@ const hasSelectedPermissions = (permissions: any): boolean => {
   return false; 
 };
 
-const SingleUserPermissionSelectionModal = ({dataAllPermissions,closeModal, updatePermissions, activeApplications, infoUser, setInfoUser }: { dataAllPermissions: any, closeModal: any, updatePermissions: any, activeApplications: any, infoUser: any, setInfoUser: any}) => {
+const SingleUserPermissionSelectionModal = ({dataAllPermissions,closeModal, updatePermissions, activeApplications, infoUser, setInfoUser , setPrevModal}: { dataAllPermissions: any, closeModal: any, updatePermissions: any, activeApplications: any, infoUser: any, setInfoUser: any, setPrevModal: any}) => {
   const [isChartView, setIsChartView] = React.useState(false);
   const [allApplications, setAllApplications] = useState<any>(dataAllPermissions?.map(
     (ele: any) => ele.application_name
@@ -254,7 +254,17 @@ const SingleUserPermissionSelectionModal = ({dataAllPermissions,closeModal, upda
         )}
           </div>
         <div style={{display: 'flex', justifyContent: 'space-between', marginTop: '20px', gap: '10px'}}>
-          <div>
+          <div style={{display: 'flex', gap: '20px'}}>
+
+          <VFButtonOutline
+            style={{height: '3.5rem', fontSize: '1.2rem'}}
+            themeUi={themeUi}
+            onClick={() => {
+              setPrevModal();
+              closeModal();
+            }}
+            
+            >Go back</VFButtonOutline>
           <VFButtonOutline
             style={{height: '3.5rem', fontSize: '1.2rem'}}
             themeUi={themeUi}

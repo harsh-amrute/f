@@ -541,6 +541,15 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
         dataAllPermissions={dataAllPermissions}
         updatePermissions={setStorePermission}
         key={infoUser.id}
+        setPrevModal={()=>{
+          setContentModal({
+            callApi: 1,
+            title: t("profile.tabContent.manageUsers.modal.addNewTitle"),
+            buttonSubmit: "Add User",
+          });
+          setIsOpenUser(true);
+
+        }}
         
         />   
       </VFModalCard>
