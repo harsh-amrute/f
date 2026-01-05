@@ -164,7 +164,7 @@ interface MaterialSODetailedProps {
                         setCurrentGridRef(gridRef);
                     }}
                     
-                    paginationPageSize={pagination.mtoPageSize}
+                    // paginationPageSize={pagination.mtoPageSize}
                     pagination={false}
                     maintainColumnOrder
                     onFilterChanged={()=>{Object.keys((gridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}

@@ -462,8 +462,8 @@ const useProcPlanning = ( appliedFilters: any) => {
     }
 
     useEffect(() => {
-        if (HeaderData && HeaderData.length > 0 && simulationEnable) {
-          if (currentTab?.label === 'Shortage') {
+        if (HeaderData && HeaderData.length > 0) {
+          if (currentTab?.label === 'Shortage' && simulationEnable) {
             setColDef(getColumnDefinations(HeaderData, customHeader, extras));
           } else {
             setColDef(getColumnDefinations(HeaderData, customHeader, extras, ["ExpAdd.StockToday"]));
