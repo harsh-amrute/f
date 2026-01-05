@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import {
   useGetUserUIConfigData,
   useUpdateUserUIConfigData,
@@ -333,11 +333,40 @@ function CommonGridview(props: CommonGridviewProps) {
   const [isPivot, setIsPivot] = useState<boolean>(false);
 
   const [defaultFilterState] = useState<any>(appliedFilters || {});
+  const skipNextApplyRef = useRef<boolean>(false);
 
   const gridRef = useRef<any>(null);
 
+  // --- HELPER: Apply State Logic ---
+  const applyStateToGrid = useCallback(() => {
+    if (gridRef?.current?.api && columnState?.length) {
+      try {
+        const result = gridRef.current.api.applyColumnState({
+          state: columnState,
+          applyOrder: true,
+        });
+
+        const applyPivot = gridRef.current?.api.setGridOption(
+          "pivotMode",
+          isPivot
+        );
+
+        // Handle pivot checkbox visibility
+        if (isPivot) {
+          gridRef.current.api.getColumnApi()?.setColumnVisible("chckbx", false);
+        }
+
+        if (!result ) {
+          console.warn("Column state could not be applied partially or fully");
+        }
+      } catch (error) {
+        console.error("Error applying column state:", error);
+      }
+    }
+  }, [columnState, isPivot]);
+
   // Set up column definitions
-  const setColumnDef = async () => {
+   const setColumnDef = async () => {
     try {
       const response = await getUIAndUserConfigData({
         reportName,
@@ -358,6 +387,8 @@ function CommonGridview(props: CommonGridviewProps) {
       );
       if (userWiseConfig?.cs && userWiseConfig?.cs?.length > 0) {
         getUserColumnConfig(userWiseConfig);
+      }else {
+        setUserConfigFetched(true);
       }
     } catch (e) {
       console.log(e);
@@ -439,53 +470,61 @@ function CommonGridview(props: CommonGridviewProps) {
 
   // Handle save click
   const handleSaveClick = async (coldefs?: any, page_size?: any) => {
-    try {
-      let payload: any;
-      const currentColumnState = gridRef?.current?.api?.getColumnState();
-      
-      if (coldefs) {
-        const fullConfig = {pivot: false, cs: coldefs, pageSize: userPageSize, fs: [] };
-        payload = {
-          un: user.user.name,
-          rn_id: reportNameId,
-          cs: JSON.stringify(fullConfig),
-        };
-        setColumnState([...coldefs]);
-        setIsPivot(false);
-      } else if (page_size) {
-        const fullConfig = {
-          pivot: isPivot,
-          cs: currentColumnState,
-          pageSize: page_size,
-          fs: appliedFilters || {},
-        };
-        payload = {
-          un: user.user.name,
-          rn_id: reportNameId,
-          cs: JSON.stringify(fullConfig),
-        };
-      } else if (gridRef?.current?.api) {
-        const isPivot = gridRef?.current?.api?.isPivotMode();
-        const fullConfig = {
-          pivot: isPivot,
-          cs: currentColumnState,
-          pageSize: userPageSize,
-          fs: appliedFilters || {},
-        };
-        payload = {
-          un: user.user.name,
-          rn_id: reportNameId,
-          cs: JSON.stringify(fullConfig),
-        };
+  try {
+    let payload: any;
+    const currentColumnState = gridRef?.current?.api?.getColumnState();
+
+    if (coldefs) {
+      // Apply state immediately to grid
+      if (gridRef?.current?.api) {
+        skipNextApplyRef.current = true; // Flag to prevent useEffect from re-applying
+        
+        gridRef.current.api.applyColumnState({
+          state: coldefs,
+          applyOrder: true,
+        });
+        gridRef.current.api.setGridOption("pivotMode", false);
       }
-      await updateUserUIReportConfigData([payload]);
-      if (!coldefs) {
-        setColumnState(currentColumnState);
-      }
-    } catch (error) {
-      console.error(error);
+      const fullConfig = {pivot: false, cs: coldefs, pageSize: userPageSize, fs: [] };
+      payload = {
+        un: user.user.name,
+        rn_id: reportNameId,
+        cs: JSON.stringify(fullConfig),
+      };
+      setColumnState([...coldefs]);
+      setIsPivot(false); 
+    } else if (page_size) {
+      const fullConfig = {
+        pivot: isPivot,
+        cs: currentColumnState,
+        pageSize: page_size,
+        fs: appliedFilters || {},
+      };
+      payload = {
+        un: user.user.name,
+        rn_id: reportNameId,
+        cs: JSON.stringify(fullConfig),
+      };     
+    } else if (gridRef?.current?.api) {
+      const isPivot = gridRef?.current?.api?.isPivotMode();
+      const fullConfig = {
+        pivot: isPivot,
+        cs: currentColumnState,
+        pageSize: userPageSize,
+        fs: appliedFilters || {},
+      };
+      payload = {
+        un: user.user.name,
+        rn_id: reportNameId,
+        cs: JSON.stringify(fullConfig),
+      };  
+      setColumnState(currentColumnState);
     }
-  };
+    await updateUserUIReportConfigData([payload]);  
+  } catch (error) {
+    console.error(error);
+  }
+};
 
   // Handle reset click
   const handleResetClick = () => {
@@ -550,28 +589,27 @@ function CommonGridview(props: CommonGridviewProps) {
     }
   }, [colDef, gridRef.current]);
 
-  // Apply saved column state to grid
-  useEffect(() => {
-    if (gridRef?.current && columnState?.length) {
-      try {
-        const result = gridRef.current.api.applyColumnState({
-          state: columnState,
-          applyOrder: true,
-        });
+  // Trigger 1: API Data updated (Scenario: Grid is ready, but API was slow)
+useEffect(() => {
+  if (skipNextApplyRef.current) {
+    skipNextApplyRef.current = false; 
+    return;
+  }
+  
+  if (gridRef?.current && columnState?.length) {
+    applyStateToGrid();
+  }
+}, [columnState, applyStateToGrid]);
 
-        const applyPivot = gridRef.current?.api.setGridOption(
-          "pivotMode",
-          isPivot
-        );
-
-        if (!result || !applyPivot) {
-          throw new Error("Failed to apply column state");
-        }
-      } catch (error) {
-        console.error(error);
+  // Trigger 2: Grid Columns Ready (Scenario: API was fast, but Grid was still initializing)
+  const onNewColumnsLoaded = useCallback(
+    (params: any) => {
+      if (columnState && columnState.length > 0) {
+        applyStateToGrid();
       }
-    }
-  }, [gridRef.current, columnState, rowData]);
+    },
+    [columnState, applyStateToGrid]
+  );
 
   // Initial column definition setup
   useEffect(() => {
@@ -584,7 +622,7 @@ function CommonGridview(props: CommonGridviewProps) {
       gridRef.current.api.exportDataAsExcel({
         fileName: `${
           excelExportParams?.excelExportReportName || reportName
-        }.xlsx`,
+          }.xlsx`,
         sheetName: `${excelExportParams?.excelExportSheetName || reportName}`,
       });
     }
@@ -616,12 +654,12 @@ function CommonGridview(props: CommonGridviewProps) {
         onExcelExportClick={
           excelExportParams?.isExcelExportFromBackend && !isPivot
             ? () => {
-                if (excelExportParams?.showBomExcelModal) {
-                  setShowExcelModal(true);
-                } else {
-                  getGridData({ isExcelExport: true, isChildren: 1 });
-                }
+              if (excelExportParams?.showBomExcelModal) {
+                setShowExcelModal(true);
+              } else {
+                getGridData({ isExcelExport: true, isChildren: 1 });
               }
+            }
             : excelExportFromGrid
         }
         isFilterOpen={isFilterOpen}
@@ -654,6 +692,7 @@ function CommonGridview(props: CommonGridviewProps) {
           ref={gridRef}
           maintainColumnOrder={true}
           onColumnPivotModeChanged={onPivotModeChanged}
+          onNewColumnsLoaded={onNewColumnsLoaded}
           onFilterChanged={() => {
             Object.keys(gridRef?.current?.api?.getFilterModel())?.length > 0
               ? setIsDisabled(false)
