@@ -112,7 +112,11 @@ const useProcPlanning = ( appliedFilters: any) => {
         try {
             const response = await getUIConfigData(reportName);
             getColDef(response)
-            setHeaderData(response.data.data);
+            const UIConfig = response.data.data;
+            if (UIConfig && UIConfig.length > 0) {
+                setHeaderData(UIConfig);
+                setColDef(getColumnDefinations(UIConfig, customHeader, extras, ["ExpAdd.StockToday"]));
+            }
         }
         catch (e) {
             console.log(e);
@@ -460,16 +464,6 @@ const useProcPlanning = ( appliedFilters: any) => {
             cellRenderer : ChildrenColor
           }
     }
-
-    useEffect(() => {
-        if (HeaderData && HeaderData.length > 0) {
-          if (currentTab?.label === 'Shortage' && simulationEnable) {
-            setColDef(getColumnDefinations(HeaderData, customHeader, extras));
-          } else {
-            setColDef(getColumnDefinations(HeaderData, customHeader, extras, ["ExpAdd.StockToday"]));
-          }
-        }
-      }, [HeaderData, simulationEnable]);
 
     useEffect(()=>{
         if(childHeaderData && childHeaderData.length>0){
