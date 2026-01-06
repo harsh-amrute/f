@@ -1624,6 +1624,7 @@ const useViewModify = (pageType:string) => {
           if(!error) {
             await postMasterDataChunks(selectedRows,false,status);
             // onWarningModalSuccess(true)
+            ref.current?.api.deselectAll();          
             notifySuccess("Status Updated Successfully");
           }
           
@@ -1672,6 +1673,7 @@ const useViewModify = (pageType:string) => {
         
         await postMasterDataChunks(selectedRows,false,'stop');
         // onWarningModalSuccess(true)
+        ref.current?.api.deselectAll()
         notifySuccess("Status Updated Successfully");
 
       } 
