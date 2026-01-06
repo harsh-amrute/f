@@ -66,7 +66,7 @@ const ExpediteChildCustomCharts = ({recordCount}:{recordCount:any}) => {
     },[colDefs])
     
     useEffect(()=>{
-        if(ref?.current && gridState && gridState?.columns.length>0){
+        if(ref?.current?.api && gridState && gridState?.columns.length>0){
             ref?.current?.api.applyColumnState({state:gridState.columns, applyOrder:true})
             // ref?.current?.api?.sizeColumnsToFit();
             ref?.current?.api.setGridOption('pivotMode',gridState.pivot)
