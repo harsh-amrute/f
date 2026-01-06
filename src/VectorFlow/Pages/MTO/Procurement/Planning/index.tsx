@@ -8,8 +8,7 @@ import useFilter from "../../../../../hooks/useFilter";
 import { useGetFilterData } from "../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
 import { FilterPageName } from "../../Common/Enum";
 import { useUserData } from "../../../../../context";
-import BomExcelModal from "../../Common/BomExcelModal";
-
+import ConfirmationModel from "../../Common/ConfirmationModel";
 const APIFilterConfig = {
   filSecVisConfig: {
     Proc_Procurement_Planning: {
@@ -106,39 +105,40 @@ const ProcurementPlanning = () => {
   };
 
   
-  const handleExcelConfirm = () => {
+const handleExcelConfirm = (option: string, includeDetails: boolean) => {
     setShowExcelModal(false);
+    
+    let status = currentTab?.label === "Shortage" ? "0" : "1";
+    if (option === "shortage") status = "0";
+    if (option === "completely_available") status = "1";
+
+    const excelScopeParam = option === "all" ? "all" : "";
+
+    const detailsFlag = includeDetails ? 1 : 0;
+    
+
+
     fetchData(
       selectedDate,
       1,
-      currentTab?.label === "Shortage" ? "0" : "1",
-      true,
-      1,
-      1
-    );
-  };
-  const handleExcelCancel = () => {
-    setShowExcelModal(false);
-    fetchData(
-      selectedDate,
-      1,
-      currentTab?.label === "Shortage" ? "0" : "1",
-      true,
-      0,
-      0
+      status, 
+      true,         
+      1,            
+      detailsFlag,   
+      excelScopeParam
     );
   };
 
+
   return (
     <>
-      <BomExcelModal
+      <ConfirmationModel  
         open={showExcelModal}
         onClose={() => setShowExcelModal(false)}
         onConfirm={handleExcelConfirm}
-        onCancel={handleExcelCancel}
         themeUi={themeUi}
         headerText={"Excel Export"}
-        messageText={"Do you want to download Excel with Order details?"}        
+        messageText={" BOM details :"}        
       />
 
       {(isLoading || getFilterdataLoading) && <OverlayLoader />}

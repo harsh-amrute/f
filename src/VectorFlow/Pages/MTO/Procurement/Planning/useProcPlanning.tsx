@@ -112,7 +112,11 @@ const useProcPlanning = ( appliedFilters: any) => {
         try {
             const response = await getUIConfigData(reportName);
             getColDef(response)
-            setHeaderData(response.data.data);
+            const UIConfig = response.data.data;
+            if (UIConfig && UIConfig.length > 0) {
+                setHeaderData(UIConfig);
+                setColDef(getColumnDefinations(UIConfig, customHeader, extras, ["ExpAdd.StockToday"]));
+            }
         }
         catch (e) {
             console.log(e);
@@ -286,13 +290,13 @@ const useProcPlanning = ( appliedFilters: any) => {
       }, [tempGridData]);
     
     
-    const fetchData = useCallback(async (date: string, pageNumber = 1, currentTab = '1', isExcelExport = false, pageSize?:any, isChildren?:any) => {
+    const fetchData = useCallback(async (date: string, pageNumber = 1, currentTab = '1', isExcelExport = false, pageSize?:any, isChildren?:any,excel_scope?:string) => {
         if(isExcelExport){
             try {
                 const headersdata = gridRef?.current?.api.getColumnState();
                 const formattedFilters = formatFilterJSON(appliedFilters)
                 const body = getBodyForExcelExport({headersdata, filterData : formattedFilters,colDefMap})
-                const response = await GetProcPlanningDataForExcelData({body ,ca: currentTab, isExcelExport: 1 , date , report_name : FilterPageName.Proc_Procurement_Planning,isChildren });
+                const response = await GetProcPlanningDataForExcelData({body ,ca: currentTab, isExcelExport: 1 , date , report_name : FilterPageName.Proc_Procurement_Planning,isChildren,excel_scope:excel_scope });
                 if (response.status === 200) {
                     DownloadExcel(response, FilterPageName.Proc_Procurement_Planning);
                     notifySuccess('Excel Export Successfully')
@@ -460,16 +464,6 @@ const useProcPlanning = ( appliedFilters: any) => {
             cellRenderer : ChildrenColor
           }
     }
-
-    useEffect(() => {
-        if (HeaderData && HeaderData.length > 0 && simulationEnable) {
-          if (currentTab?.label === 'Shortage') {
-            setColDef(getColumnDefinations(HeaderData, customHeader, extras));
-          } else {
-            setColDef(getColumnDefinations(HeaderData, customHeader, extras, ["ExpAdd.StockToday"]));
-          }
-        }
-      }, [HeaderData, simulationEnable]);
 
     useEffect(()=>{
         if(childHeaderData && childHeaderData.length>0){
