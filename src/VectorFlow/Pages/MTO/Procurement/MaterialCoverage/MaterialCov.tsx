@@ -62,7 +62,6 @@ const MaterialCov = () => {
   const [childColDef, setChildColDef] = useState<any>();
   
   const [isAllData, setIsAllData] = useState(false);
-  console.log(detailDataObj,"detailDataObj---")
   
     const reportName = detailDataObj?.allOrders ? "MaterialCoverageforOpenSalesAllOrders" :'MaterialCoverageforOpenSalesOrder';
     const childReportName = "MaterialCoverageforOpenSalesOrder_Child"
@@ -138,8 +137,8 @@ const MaterialCov = () => {
   }
 
   useEffect(() => {
-    getSOData();
-  }, [appliedFilters]);
+      getSOData();
+  }, []);
 
 
     const { mutateAsync: getUIAndUserConfigData  } =
@@ -186,6 +185,11 @@ const MaterialCov = () => {
               const fka = params.data.fka;
               return `${fka}/${oq} kits can be manufactured`;
           },
+      },
+      fk_status : {
+        pinned: 'right',
+        lockPinned: true,
+        suppressMovableColumns:true,
       }
   }
 
