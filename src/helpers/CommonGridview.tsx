@@ -264,6 +264,8 @@ type CommonGridviewProps = {
  *   actionToolBarProps={toolbarConfig}
  *   gridDataLoading={isLoading}
  *   VFWrapper={SCDynamicContainer}
+ *   vfWrapperStyle={ { height: '100%', width: '100%' } }
+ *   vfWrapperClassName={exampleClassName}
  * />
  */
 
@@ -327,7 +329,8 @@ function CommonGridview(props: CommonGridviewProps) {
   const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const [showExcelModal, setShowExcelModal] = useState<boolean>(false);
-  const [isPivot, setIsPivot] = useState<boolean>(false);
+
+  const isPivot = useRef(false);
 
   const [defaultFilterState] = useState<any>(appliedFilters || {});
   const skipNextApplyRef = useRef<boolean>(false);
@@ -345,11 +348,11 @@ function CommonGridview(props: CommonGridviewProps) {
 
        gridRef.current?.api.setGridOption(
           "pivotMode",
-          isPivot
+          isPivot.current
         );
 
         // Handle pivot checkbox visibility
-        if (isPivot) {
+        if (isPivot.current) {
           gridRef.current.api.getColumnApi()?.setColumnVisible("chckbx", false);
         }
 
@@ -360,7 +363,7 @@ function CommonGridview(props: CommonGridviewProps) {
         console.error("Error applying column state:", error);
       }
     }
-  }, [columnState, isPivot]);
+  }, [columnState, isPivot.current]);
 
   // Set up column definitions
    const setColumnDef = async () => {
@@ -454,7 +457,7 @@ function CommonGridview(props: CommonGridviewProps) {
       newConfig.pageSize ? Number(newConfig.pageSize) : undefined
     );
     setColumnState(newConfig.cs);
-    setIsPivot(newConfig.pivot);
+    isPivot.current = newConfig.pivot;
     if (
       setAppliedFilters &&
       setCurrentFilters &&
@@ -490,10 +493,10 @@ function CommonGridview(props: CommonGridviewProps) {
         cs: JSON.stringify(fullConfig),
       };
       setColumnState([...coldefs]);
-      setIsPivot(false); 
+      isPivot.current = false;
     } else if (page_size) {
       const fullConfig = {
-        pivot: isPivot,
+        pivot: isPivot.current,
         cs: currentColumnState,
         pageSize: page_size,
         fs: appliedFilters || {},
@@ -629,9 +632,7 @@ useEffect(() => {
   // Handle pivot mode changes to show/hide checkbox column
   const onPivotModeChanged = (event: any) => {
     const isPivotOn = event.api.isPivotMode();
-    setIsPivot(isPivotOn);
-
-    event.api.getColumnApi()?.setColumnVisible("chckbx", !isPivotOn);
+    isPivot.current = isPivotOn;
   };
 
   return (
@@ -650,7 +651,7 @@ useEffect(() => {
         handleSaveClick={handleSaveClick}
         handleResetClick={handleResetClick}
         onExcelExportClick={
-          excelExportParams?.isExcelExportFromBackend && !isPivot
+          excelExportParams?.isExcelExportFromBackend && !isPivot.current
             ? () => {
               if (excelExportParams?.showBomExcelModal) {
                 setShowExcelModal(true);
