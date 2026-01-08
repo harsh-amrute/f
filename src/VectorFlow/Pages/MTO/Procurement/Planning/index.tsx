@@ -115,8 +115,6 @@ const handleExcelConfirm = (option: string, includeDetails: boolean) => {
     const excelScopeParam = option === "all" ? "all" : "";
 
     const detailsFlag = includeDetails ? 1 : 0;
-    
-
 
     fetchData(
       selectedDate,

@@ -1,7 +1,8 @@
 import { useUserData } from "../../../../../context"
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton"
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard"
-import { ButtonWrapper, RemarkDate, RemarkModalContentWrapper, RemarkModalRemarkCelLRenderer, RemarkModalTable, RemarkModalTableCell, RemarkModalTableHeader, RemarkModalTableHeaderContainer, RemarkModalTableRow, RemarkModalTableRowContainer, RemarkText } from "../../../MTA/Logistics/InTransitWhereAbouts/styles"
+import { ButtonWrapper, RemarkDate, RemarkModalContentWrapper, RemarkModalRemarkCelLRenderer, RemarkModalTableCell, RemarkModalTableHeader, RemarkText } from "../../../MTA/Logistics/InTransitWhereAbouts/styles"
+import { RemarkModalTable, RemarkModalTableRowContainer, RemarkModalTableRow, RemarkModalTableHeaderContainer } from "../DepartmentWiseBMReport/styles"
 import UserIcon from "../../../MTA/Logistics/InTransitWhereAbouts/UserIcon";
 import { memo } from "react";
 
@@ -28,7 +29,7 @@ const MTORemarkHistoryModal = (props:RemarkModalProps)=>{
             <RemarkModalContentWrapper>
                 <RemarkModalTable className="custom-scrollbar">
                     <RemarkModalTableHeaderContainer>
-                        <RemarkModalTableHeader style={{textAlign:'center', paddingRight:'5px'}}>
+                        <RemarkModalTableHeader style={{textAlign:'center', paddingLeft:'10px'}}>
                             Name
                         </RemarkModalTableHeader>
                         <RemarkModalTableHeader>
