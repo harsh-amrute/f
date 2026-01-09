@@ -120,7 +120,7 @@ const OrderRescheduling = () => {
           isExcelExport: 1,
           report_name: FilterPageName.Prod_Order_Rescheduling,
         });
-        DownloadExcel(response);
+        DownloadExcel(response, FilterPageName.Prod_Order_Rescheduling);
       } catch (e) {
         console.log(e);
       }

@@ -295,10 +295,11 @@ const useProcPlanning = ( appliedFilters: any) => {
             try {
                 const headersdata = gridRef?.current?.api.getColumnState();
                 const formattedFilters = formatFilterJSON(appliedFilters)
-                const body = getBodyForExcelExport({headersdata, filterData : formattedFilters,colDefMap})
-                const response = await GetProcPlanningDataForExcelData({body ,ca: currentTab, isExcelExport: 1 , date , report_name : FilterPageName.Proc_Procurement_Planning,isChildren,excel_scope:excel_scope });
+                const body = getBodyForExcelExport({ headersdata, filterData: formattedFilters, colDefMap })
+                const reportName = `${FilterPageName.Proc_Procurement_Planning + "_" + (excel_scope == "all" ? excel_scope : currentTab == "1" ? "Completely_Available" : "Shortage")}`;
+                const response = await GetProcPlanningDataForExcelData({ body, ca: currentTab, isExcelExport: 1, date, report_name: reportName, isChildren, excel_scope: excel_scope });
                 if (response.status === 200) {
-                    DownloadExcel(response, FilterPageName.Proc_Procurement_Planning);
+                    DownloadExcel(response, reportName);
                     notifySuccess('Excel Export Successfully')
                 }else{
                     notifyError('Failed to export Excel')

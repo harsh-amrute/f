@@ -14,6 +14,7 @@ export const getElapsedTimeData = async ({ graphflag, page, appliedFilters, isEx
           export : isExcelExport,
           report_name
         },
+        responseType : 'blob'
       }
     )
   }

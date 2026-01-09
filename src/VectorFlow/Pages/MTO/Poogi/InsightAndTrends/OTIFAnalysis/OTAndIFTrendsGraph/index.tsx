@@ -67,6 +67,8 @@ const OTAndIFTrendsGraph = (props: any) => {
           fontSize: 8,
           fontWeight: "bold",
           color: "black",
+          rotation: -25,
+          avoidCollisions: true
         },
         gridLine: {
           enabled: false,
