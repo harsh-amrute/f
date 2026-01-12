@@ -27,6 +27,7 @@ import CryptoJS from 'crypto-js';
 import MTOActionRenderer from '../VectorFlow/Pages/MTO/MDM/SavedDrafts/MTOActionRenderer';
 import { decryptStorageData } from '../VectorFlow/Pages/MTO/Common/encryption';
 import { getNumberFormat } from './numberFormat';
+import axios from 'axios';
 
 
 const keyboardCharacters = [
@@ -4854,21 +4855,21 @@ export const DownloadExcelMTA = (response: any, filename = "ReportFile") => {
 
 export const CsvExportMTA = async ( payload: any, filename = "ReportFile") => {
   try {
-    const response = await fetch(process.env.REACT_APP_API_HOST + `api/mta/GetExportDataAsync`, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method:"post",
-      credentials:"include",
-      body:JSON.stringify(payload)
-    })  
+    const response = await axios.post(
+      process.env.REACT_APP_API_HOST + `api/mta/GetExportDataAsync`,
+      payload,
+      {
+        withCredentials: true, 
+        responseType: 'blob',  
+        headers: {
+            "Content-Type": "application/json" 
+        }
+      }
+    );
  
-    if (!response.ok) {
-      throw new Error("Failed to download file");
-    }
- 
-    const blob = await response.blob();
-    const fileExtension = getFileExtensionFromContentType(response.headers.get("Content-Type"));
+    const blob = await response.data;
+    const contentType = response.headers['content-type']; 
+    const fileExtension = getFileExtensionFromContentType(contentType);
     const downloadFileName = `${filename}__${format(Date.now(), "dd-MM-yyyy")}.${fileExtension}`;
  
     const blobUrl = window.URL.createObjectURL(blob);
