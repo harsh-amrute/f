@@ -98,7 +98,7 @@ const useMaterialSO = (data: any,  childColDef: any) => {
           defaultColDef: {
                 
                 resizable: true,
-                flex: 1,
+                initialFlex: 1,
                 filter: 'agTextColumnFilter',
                 floatingFilter: true,
                 cellStyle: {

@@ -4486,7 +4486,7 @@ export function getColumnDefinations(
       pinned: null,
       filter: filterType,
       enablePivot: true,
-      flex: 1,
+      initialFlex: 1,
       minWidth: 150,
       valueFormatter: (params: any) => {
         if (params.value) {
