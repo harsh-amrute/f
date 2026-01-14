@@ -37,7 +37,7 @@ export function AutoLogoutTimer() {
       toast.dismiss();
       setWarningVisible(false);
       const response = await MainService.logout(true, queryClient);
-      if (response?.status == 200) {
+      if (response?.status == 204) {
         setUser(undefined);
       }
       navigate('/login');
