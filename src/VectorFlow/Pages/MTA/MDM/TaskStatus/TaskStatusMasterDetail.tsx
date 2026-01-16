@@ -235,7 +235,7 @@ const TaskStatusMasterDetail = (props:TaskStatusMasterDetailProps)=>{
     const showDisplayDownloadButton = (status:string):boolean=>{
         return !approvedStatuses.includes(status)
     }
-    const gridFraction ="5fr 1fr"
+   const gridFraction ="2.4fr 0.3fr"
 
 
     return (

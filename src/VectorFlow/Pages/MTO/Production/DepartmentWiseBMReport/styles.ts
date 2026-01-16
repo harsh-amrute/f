@@ -379,3 +379,30 @@ export const BPRDailyAnalyticsTableCellIcon = styled.img`
     height:20px;
     width:20px;
 `
+export const RemarkModalTable = styled.div`
+    display:flex;
+    flex-direction:column;
+
+`
+
+export const RemarkModalTableHeaderContainer = styled.div`
+    display:grid;
+    grid-template-columns:10% 90%;
+    border-bottom:solid 1px #707070;
+    padding:0 20px;
+`
+
+export const RemarkModalTableRowContainer = styled.div`
+    display:flex;
+    flex-direction:column;
+    max-height:300px;
+    margin: 10px 0px;
+`
+
+export const RemarkModalTableRow = styled.div`
+    display:grid;
+    grid-template-columns:10% 90%;
+    width:100%;
+    margin-bottom:10px;
+    padding:5px 20px 0px;
+`

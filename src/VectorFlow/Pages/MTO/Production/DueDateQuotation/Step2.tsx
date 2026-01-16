@@ -16,6 +16,8 @@ import { add, addDays, format, max } from 'date-fns';
 import Tooltip from '../../Common/Tooltip';
 import { notifyError, notifyErrorWithoutAutoClose, notifySuccess } from '../../../../../helpers/notify';
 import * as globalStyles from "../../../../../styles/global";
+import { useUserData } from '../../../../../context';
+import VFToolTip from '../../../../../components/VectorFLOW/commons/MTO/VFToolTip';
 
 const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, masters, getMastersData, rowsSelectedForAssignment, setRowsSelectedForAssignment, confirmedRows, setConfirmedRows, lineCCR, setDisabled, columnState }: any, ref) => {
     useEffect(() => {
@@ -23,6 +25,8 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
         setRowsSelectedForAssignment(false);
     }, []);
 
+    const user = useUserData()
+    const canChangeRoute =user?.user?.feature_permission?.includes('Change_Route');
     useEffect(() => {
         if (masters) {
             if (confirmedRows) {
@@ -1074,9 +1078,6 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
  
     const ccrGroups = useMemo(calculateCCGroups, [masters, selectedPlant, newSelectedRows])
 
-
-    // const [ccrGroups, setCcrGroups] = useState([]);
-
     return (
         <>
             <Allotment vertical separator ref={allotment} snap={false} proportionalLayout={false}>
@@ -1250,18 +1251,55 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                         preferredSize={210}
                         key={2}
                     >
-                        {/* <Wrapper style={{ margin: 0, filter:"blur(3px)" }} > */}
                         <Wrapper style={{ margin: 0, filter: newSelectedRows.isAssignmentPossible ? "unset" : "blur(3px)" }} >
-                            <div ref={routeDiv} style={{ height: "100%", background: "white", boxShadow: "rgba(0, 0, 0, 0.1) 0px 2px 10px 2px", margin: "20px 10px", padding: "1rem", position: "relative", overflow: "auto" }}>
+                            <div ref={routeDiv} style={{ height: "100%", background: "white", boxShadow: "rgba(0, 0, 0, 0.1) 0px 2px 10px 2px", margin: "20px 10px", padding: "1rem", position: "relative", overflow: "visible" }}>
                                 <div style={{ display: "flex", position: "absolute", right: "1rem", gap: "0.5rem" }}>
+                                 <div className="disabled-button-wrapper">
                                     <VFButton
                                         themeUi={theme}
                                         onClick={onSave}
-                                        disabled={isEditable ? isSaveDisabled : false}
+                                        // disabled={isEditable ? isSaveDisabled : false}
+                                        disabled={!canChangeRoute || (isEditable && isSaveDisabled)}
+                                            
                                         style={{ fontSize: "10px", width: "60px", height: "20px", padding: "0 1rem", display: "flex", justifyContent: "center", alignItems: "center", gap: "1rem" }}>
                                         {isEditable ? <> <img src="/assets/img/mto/dueDateQuotation/save-icon.svg" />Save</> : <> <img src="/assets/img/mto/dueDateQuotation/edit-icon.svg" /> Edit</>}
-                                    </VFButton>
-                                    <VFButtonOutline themeUi={theme} onClick={onReset} style={{ fontSize: "10px", width: "60px", height: "20px", padding: "0 1rem", display: "flex", justifyContent: "center", alignItems: "center", gap: "0.5rem" }}><img src="/assets/img/mto/dueDateQuotation/reset-icon.svg" /> Reset</VFButtonOutline>
+                                        </VFButton>
+
+                                        {!canChangeRoute && (
+                                            <VFToolTip
+                                                text={'The logged-in user does not have access to edit the routes.'}
+                                            /> 
+                                            )}
+                                    </div>
+                                    
+                             
+                                    <div className="disabled-button-wrapper">
+                                        <VFButtonOutline
+                                        themeUi={theme}
+                                        onClick={onReset}
+                                        disabled={!canChangeRoute} 
+                                        style={{
+                                        fontSize: '10px',
+                                        width: '60px',
+                                        height: '20px',
+                                        padding: '0 1rem',
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        gap: '0.5rem',
+                                        }}
+                                    >
+                                        <img src="/assets/img/mto/dueDateQuotation/reset-icon.svg" style={{opacity: !canChangeRoute ? 0.4 : 1}} />
+                                        Reset
+                                        </VFButtonOutline>
+                                        {!canChangeRoute && (
+                                        <VFToolTip
+                                            text={'The logged-in user does not have access to reset the routes.'}
+                                        />
+                                    )}
+                                    </div>
+
+                                    
                                 </div>
                                 <div style={{ display: "flex", gap: "2rem" }}>
                                     <div style={{ flex: "2" }}>
@@ -1324,7 +1362,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                 {rowsSelectedForAssignment &&
                     <Allotment.Pane preferredSize={'33%'} key={3}>
                         <Wrapper style={{ padding: "20px 0 10px 0", margin: 0, paddingBottom: "75px" }}>
-                            <div style={{ height: "100%", overflow: "hidden", display: "flex", width: "100%" }}>
+                            <div style={{ height: "100%", overflow: "visible", display: "flex", width: "100%" }}>
                                 <div style={{ display: 'flex', flexDirection: "column", width: countOfExceedingLeadTime != 0 ? "80%" : "100%", background: "white", boxShadow: "rgba(0, 0, 0, 0.1) 0px 2px 10px 2px", margin: "0 1rem 1rem 1rem" }}>
                                     <h3 style={{ margin: "1rem", borderBottom: "1px dashed black" }}>CCR Load Chart</h3>
                                     <AgCharts options={chartOptions} />
@@ -1348,7 +1386,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                 }
                 {!rowsSelectedForAssignment &&
                     <Allotment.Pane preferredSize={"50%"} key={4}>
-                        <Wrapper style={{ justifyContent: "center", alignItems: "center", background: "white", margin: "20px 10px", height: "calc(100% - 30px)", color: "grey", boxShadow: "rgba(0, 0, 0, 0.1) 0px 2px 10px 2px", overflow: "hidden" }}>
+                        <Wrapper style={{ justifyContent: "center", alignItems: "center", background: "white", margin: "20px 10px", height: "calc(100% - 30px)", color: "grey", boxShadow: "rgba(0, 0, 0, 0.1) 0px 2px 10px 2px", overflow: "visible" }}>
                             <div style={{ fontSize: "16px" }}>No Data to Display</div>
                             <div style={{ fontSize: "12px" }}>Please Select Orders to Process</div>
                         </Wrapper>

@@ -271,6 +271,7 @@ const DayWiseCoverage = () => {
                 alignItems: "center",
                 padding: "1.6rem",
                 color: "white",
+                fontSize: "0.9rem",
               }}
             >
               {format.format(99999)}

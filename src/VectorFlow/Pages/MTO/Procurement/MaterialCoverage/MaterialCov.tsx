@@ -149,10 +149,10 @@ const MaterialCov = () => {
           rn_id: (detailDataObj?.allOrders)?UIGridCode.ProcMaterialCovOpenSalesAll:UIGridCode.ProcMaterialCovOpenSales
         });
   
-        setUserConfigFetched(true);
         const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
         setUserPageSize(newConfig.pageSize? Number(newConfig.pageSize) : undefined);
         setColumnState(newConfig.cs)
+        setUserConfigFetched(true);
 
   
         if (!data) {
@@ -397,7 +397,7 @@ const MaterialCov = () => {
            
               {isAllData &&
 
-                <VFButton style={{ marginLeft: '30%', fontSize: '10px', height: '30px', fontFamily: 'roboto' }} themeUi={themeUi} onClick={() => { handleToggleComponent(true), handleParameterData({ allOrders: true }) }}>
+                <VFButton style={{ marginLeft: '30%', fontSize: '10px', height: '30px', fontFamily: 'roboto' }} themeUi={themeUi} onClick={() => {setUserConfigFetched(false), handleToggleComponent(true), handleParameterData({ allOrders: true }) }}>
                   Show All Orders
                 </VFButton>
               }
@@ -454,6 +454,9 @@ const MaterialCov = () => {
             onDateChange={() => { console.log('') }}
             submitDate={() => { console.log('') }}
             handleGoBack={() => {
+              if (detailDataObj?.allOrders) {
+                setUserConfigFetched(false);
+              }
               handleToggleComponent(false);
               // setCurrTab("CurrentCoverage")
             }}
