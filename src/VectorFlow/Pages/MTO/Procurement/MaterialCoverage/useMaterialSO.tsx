@@ -1,121 +1,74 @@
-import { useCallback, useEffect, useMemo, useState } from "react"
-import { AgGridReactProps } from "ag-grid-react"
-import AvlCellRenderer from '../../Common/AvlCellRenderer/AvlCellRenderer';
+import { SideBarDef } from "ag-grid-enterprise";
+import { AgGridReactProps } from "ag-grid-react";
+import { useMemo } from "react";
+import { notifyError } from "../../../../../helpers/notify";
 import AvailabilityToolTip from "../../../../../VectorFlow/Pages/MTA/InsightsAndTrends/BTR/AvailabilityToolTip";
-import DetailCellRenderer from "./MaterialCellRenderer";
+import AvlCellRenderer from '../../Common/AvlCellRenderer/AvlCellRenderer';
 import ColorCellRenderer from "../../Common/ColorCellRenderer/ColorCellRenderer";
-import { useGetOpenSODetailsData, useGetOpenSODetailsDataForExcelExport } from "../../../../../VectorFlow/Services/MTO/Procurement/MaterialCoverage";
+import { pagination } from "../../Common/Enum";
 import CustomGroupCellRenderer from "./CustomGroupCellRenderer";
-import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify";
-import { toast } from "react-toastify";
-import { FilterPageName, pagination } from "../../Common/Enum";
-import { DownloadExcel, formatFilterJSON } from "../../../../../helpers/utils";
+import DetailCellRenderer from "./MaterialCellRenderer";
 
-const useMaterialSO = (data: any, appliedFilters: any, handleSaveClick: any, userConfigFetched: any, userPageSize: any, setUserPageSize: any, childColDef: any) => {
-    const [orderDetailsData, setOrderDetailsData] = useState<any>();
-    const [rowDataCount, setRowDataCount] = useState<number>(0);
-    const [currentPage, setCurrentPage] = useState<number>(1);
+const useMaterialSO = (data: any,  childColDef: any) => {
 
-    // const columnDef = mapMaterialCoverageFieldsToColDefs(HeaderData);
-    const { mutateAsync: getOpenSODetailsData } = useGetOpenSODetailsData()
-    const { mutateAsync : getOpenSODetailsDataForExcelExport } = useGetOpenSODetailsDataForExcelExport();
+  type getInitialDataQueryArgs = {
+    currPage?: number;
+    pageSize?: number;
+    isChildren?: number;
+    isExcelExport?: boolean;
+  }
 
-    useEffect(() => {
-        if (userConfigFetched) {
-            setCurrentPage(1);
-            getInitialData(1);
-        }
-    }, [appliedFilters, userConfigFetched])  
-
-  const [isLoading, setIsLoading] = useState(false);
-  
-
-  const getInitialData = async (currPage: number, isExcelExport = false, body = {}, pageSize?: any, isChildren?: any) => {
+  const getInitialDataQuery =  ({currPage,pageSize,isChildren=0,isExcelExport=false}: getInitialDataQueryArgs) => {
         try {
-            const formattedFilters = formatFilterJSON(appliedFilters);
             const colorsArray = Object.keys(data).filter((k: string) => k.startsWith('c'));
             const colorsQuery = colorsArray.map((key: string) => data[key]).join(',');
-        
+          let queryString = '';
           if (isExcelExport) {
-            let queryString = `?Color=${colorsQuery}&KitStatus=${data.kit}&S=${data.S}&E=${data.E}&isChildren=${isChildren}`;
-            if(data.allOrders ===true){
+            queryString = `?Color=${colorsQuery}&KitStatus=${data.kit}&S=${data.S}&E=${data.E}&isChildren=${isChildren}`;
+            if(data.allOrders){
               queryString = `?AOD=${true}&isChildren=${isChildren}`
             }
-            notifyLoader("Exporting data")
-            const response = await getOpenSODetailsDataForExcelExport({
-              data: queryString,
-              isExcelExport: 1,
-              body,
-              report_name: FilterPageName.Proc_Material_Coverage_For_OpenSO,
-            });
-      
-            if (response.status === 200) {        
-              const isSuccess = DownloadExcel(response, FilterPageName.Proc_Material_Coverage_For_OpenSO);
-              if(isSuccess){
-                notifySuccess("Excel Export Successfully");
-              }
-            } else {
-              notifyError("Failed to export Excel");
-              return;
-            }
+         
           } else {
-            let queryString = `?Color=${colorsQuery}&KitStatus=${data.kit}&S=${data.S}&E=${data.E}&page=${currPage}&page_size=${pageSize || userPageSize || pagination.mtoPageSize}`;
+            queryString = `?Color=${colorsQuery}&KitStatus=${data.kit}&S=${data.S}&E=${data.E}&page=${currPage}&page_size=${pageSize  || pagination.mtoPageSize}`;
         
-            if(data.allOrders ===true){
-              queryString = `?AOD=${true}&page=${currPage}&page_size=${pageSize || userPageSize || pagination.mtoPageSize}`
+            if(data.allOrders){
+              queryString = `?AOD=${true}&page=${currPage}&page_size=${pageSize || pagination.mtoPageSize}`
             }
             
-            setIsLoading(true);
-            toast.dismiss();
-            notifyLoader("Loading data...");
-      
-            const someData = await getOpenSODetailsData({ data: queryString, appliedFilters: formattedFilters });
-            const results = someData.data?.data?.results || [];
-            const output = results.map((item: any) => ({
-              ...item,
-              fkapr: ((item.fka / item.oq) * 100).toFixed(2),
-            }));
-      
-            setRowDataCount(someData.data?.data?.count || 0);
-            setOrderDetailsData(output);
-            notifySuccess("Fetched data successfully!");
+            
           }
+          return queryString;
         } catch (error) {
-          notifyError("An error occurred while fetching data.");
-        } finally {
-          setIsLoading(false);
-        }
+          notifyError(`An error occurred while fetching data : ${error}`);
+        } 
       }
 
-    const savePageSize = (pageSize: any) => {
-        if (pageSize) {
-            setCurrentPage(1)
-            setUserPageSize(pageSize);
-            handleSaveClick(undefined, pageSize);
-            getInitialData(1,false,{},pageSize);
-        } else {
-            notifyError("Invalide page size");
-        }
-        
-    }
-
-    const handlePageChangeOnHook = useCallback((currPage: number,isExcelExport:boolean,body:any,userPageSize:number) => {
-        setCurrentPage(currPage);
-        getInitialData(currPage, isExcelExport, body, userPageSize);
-        // You can add more logic here
-    }, []);
 
     const autoGroupColumnDef = useMemo(() => {
         return {
             minWidth: 250,
         };
     }, []);
-
-    const sideBar = useMemo(() => {
-        return {
-            toolPanels: ['columns'],
-        };
-    }, []);
+    const sideBar:SideBarDef = {
+              toolPanels: [
+                {
+                  id: "columns",
+                  labelDefault: "Columns",
+                  labelKey: "columns",
+                  iconKey: "columns",
+                  toolPanel: "agColumnsToolPanel",
+                  toolPanelParams: {
+                      suppressPivots: true,
+                      suppressPivotMode: true,
+                      suppressRowGroups: true,
+                      suppressValues: true,
+                    },
+                },
+              ],
+              defaultToolPanel:'',
+            }
+   
     const customCellRenderers = useMemo(() => (
         {
             "colorCellRenderer": ColorCellRenderer,
@@ -145,7 +98,7 @@ const useMaterialSO = (data: any, appliedFilters: any, handleSaveClick: any, use
           defaultColDef: {
                 
                 resizable: true,
-                flex: 1,
+                initialFlex: 1,
                 filter: 'agTextColumnFilter',
                 floatingFilter: true,
                 cellStyle: {
@@ -181,14 +134,7 @@ const useMaterialSO = (data: any, appliedFilters: any, handleSaveClick: any, use
 
     return {
         agGridProps,
-        RRRRowData: orderDetailsData,
-        isLoading,
-        rowDataCount: rowDataCount,
-        handlePageChangeOnHook,
-        currentPage: currentPage,
-        savePageSize,
-        userPageSize,
-        getInitialData
+        getInitialDataQuery,
     }
 }
 
