@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import DayWiseCoverageCalender from './DayWiseCoverageCalender';
 import DayWiseCoverageHeader from './DayWiseCoverageHeader'
 import DayWiseCoverageTable from './DayWiseCoverageTable';
@@ -60,6 +60,7 @@ const DayWiseCoverage = () => {
     const [columnState, setColumnState] = useState<any>([]);
     const [isReset, setIsReset] = useState(false);
     const [colDef, setColDef] = useState([]);
+    const [childColDef, setChildColDef] = useState([]);
     const [filterData, setFilterData] = useState({});
     const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
     const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
@@ -76,7 +77,8 @@ const DayWiseCoverage = () => {
         isMfgSelected,
         onAddFilter, 
         onApplyFilter, 
-        toggleFilter
+        toggleFilter,
+        appliedFilters
     } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_Day_Wise_Coverage);
     const { user } = useUserData();
     const reportName = "DayWiseCoverage";
@@ -226,7 +228,7 @@ const DayWiseCoverage = () => {
         if(selectedDate && selectedDate.length && currentGridRef){
             setColumnDef();
         }
-    },[selectedDate, currentGridRef])
+    },[currentGridRef])
 
     const colDefCustomizations = {
         ColorPriority: {
@@ -243,15 +245,53 @@ const DayWiseCoverage = () => {
         },
     };
 
-    const setColumnDef = async () => {
+    const childColDefCustomizations = {
+      MRQ: {
+        cellStyle: {
+          justifyContent: "center",
+          alignItems: "center",
+          display: "flex",
+        },
+        cellRenderer: (params: any) => {
+            const format = new Intl.NumberFormat('en', {
+                notation: 'compact',
+                compactDisplay: 'short',
+              });
+          return (
+            
+            <div
+              style={{
+                borderRadius: "50%",
+                background:
+                  params.data.rmq == params.data.rmal ? "#33800B" : "#E53F3F",
+                width: "30px",
+                height: "30px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                padding: "1.6rem",
+                color: "white",
+              }}
+            >
+              {format.format(99999)}
+            </div>
+          );
+        },
+      },
+    };
+
+    const setColumnDef = useCallback(async () => {
         try {
+            const childResponse = await getUIConfigData("DayWiseCoverageChild");
           const response = await getUIConfigData(reportName);
+          console.log(childResponse, 'this is child response');
+          setChildColDef(getColumnDefinations(childResponse.data.data,childColDefCustomizations))
           setColDef(getColumnDefinations(response.data.data, colDefCustomizations))
         }
         catch (e) {
           console.log(e);
         }
-    }
+    },[])
 
     const getUserColumnConfig = async () => {
         try {
@@ -382,6 +422,8 @@ const DayWiseCoverage = () => {
                         startDate={format(startOfMonth(startDate), "yyyy-MM-dd")}
                         endDate={format(endOfMonth(endDate), "yyyy-MM-dd")}
                         selectedDate={selectedDate}
+                        appliedFilters={appliedFilters}
+                        childColDef={childColDef}
                     />
                     : <AnimationWrapper>
                         <Player src={'/assets/img/VectorFLOW/BPR/swipe pointer.json'} loop autoplay style={{ height: 100, width: 100 }} />

@@ -1,11 +1,12 @@
 import { GridOptions } from "ag-grid-enterprise";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import VFTable from "../../../Common/VFTable";
 import CustomGroupCellRenderer from "./CustomGroupCellRenderer";
 import DayWiseCoverageDetailsCellRenderer from "./DayWiseCoverageDetailsCellRenderer";
 import { useGetDayWiseCoverageData } from "../../../../../../VectorFlow/Services/MTO/Procurement/DayWiseCoverage";
 import { GridFilterWrapper, TextBtn } from "../../../Common/VFPagination/styles";
 import { useUserData } from "../../../../../../context";
+import { formatFilterJSON } from "../../../../../../helpers/utils";
 
 interface IDayWiseCoverageProps {
   columnState: any,
@@ -15,7 +16,9 @@ interface IDayWiseCoverageProps {
   selectedDate: string,
   startDate: string,
   endDate: string,
-  setLoading: any
+  setLoading: any,
+  appliedFilters: any,
+  childColDef: any,
 }
 
 const DayWiseCoverageTable = ({
@@ -27,6 +30,8 @@ const DayWiseCoverageTable = ({
   startDate,
   endDate,
   setLoading,
+  appliedFilters,
+  childColDef
 }: IDayWiseCoverageProps) => {
 
   // const extra = [
@@ -45,8 +50,15 @@ const DayWiseCoverageTable = ({
 
   const getGridData = async () => {
     if (selectedDate) {
-      const data = await getData({ startDate: startDate, endDate: endDate, plannedReleaseDate: selectedDate });
-      setRowData(data?.data?.data)
+      const formattedFilters = formatFilterJSON(appliedFilters);
+      
+      const data = await getData({
+        startDate: startDate,
+        endDate: endDate,
+        plannedReleaseDate: selectedDate,
+        appliedFilters: formattedFilters,
+      });
+      setRowData(data?.data?.data);
     }
   }
 
@@ -69,18 +81,17 @@ const DayWiseCoverageTable = ({
 
   useEffect(() => {
     getGridData()
-  }, [selectedDate])
+  }, [selectedDate, appliedFilters])
 
   useEffect(() => {
     setLoading(isGridLoading)
   }, [isGridLoading])
 
-  const options: GridOptions<any> = {
-    getRowStyle: (params: any) => {
-      return {
-        background: params.node.rowIndex % 2 === 0 ? "#EBEBEB" : "#F7F7F7",
-      };
-    },
+
+  const options: GridOptions<any> = useMemo(() => ({
+    getRowStyle: (params: any) => ({
+      background: params.node.rowIndex % 2 === 0 ? "#EBEBEB" : "#F7F7F7",
+    }),
     columnDefs: colDef,
     defaultColDef: {
       filter: "agTextColumnFilter",
@@ -97,15 +108,11 @@ const DayWiseCoverageTable = ({
       initialWidth: 260,
     },
     masterDetail: true,
-    detailCellRendererParams: {
-      innerHeight: 400,
-    },
-    detailCellRenderer: DayWiseCoverageDetailsCellRenderer,
     detailRowAutoHeight: true,
     sideBar: {
       toolPanels: ["columns"],
     },
-  };
+  }), [colDef, childColDef]);
 
   useEffect(()=>{ 
     if (columnState?.length && colDef.length > 0) {
@@ -137,7 +144,11 @@ const DayWiseCoverageTable = ({
           { statusPanel: CustomStatusPanel, align: "left" },
         ],
       }} 
-    
+      detailCellRenderer={DayWiseCoverageDetailsCellRenderer}
+      detailCellRendererParams={ {
+        colDef : childColDef,
+        innerHeight: 400,
+      }}
       onGridReady={(params: any) => {
         params.api.autoSizeAllColumns();
         setCurrentGridRef(gridRef);

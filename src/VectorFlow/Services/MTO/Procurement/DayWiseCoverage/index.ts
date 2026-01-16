@@ -6,10 +6,11 @@ interface DayWiseCoverageParams{
     startDate: string, 
     endDate: string,
     plannedReleaseDate?: string,
+    appliedFilters?:any,
 }
 
 export const useGetDayWiseCoverageData = () => {
     return useMutation(async (data: DayWiseCoverageParams) => {
-        return getDayWiseCoverageData(data.startDate, data.endDate, data.plannedReleaseDate);
+        return getDayWiseCoverageData(data.startDate, data.endDate, data.plannedReleaseDate, data.appliedFilters);
     })
 }
