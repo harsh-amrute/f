@@ -83,6 +83,8 @@ interface MTOActionToolBarProps {
     handleResetClick?: () => void
     onExcelExportClick?: () => void
     ReleaseOrderHeader?: ReactElement | null;
+    saveBtnName?:string;
+    resetBtnName?:string;
     //// new props
 }
 
@@ -120,8 +122,9 @@ const MTOActionToolBar = ({
     handleSaveClick,
     handleResetClick,
     onExcelExportClick,
-    ReleaseOrderHeader
-
+    ReleaseOrderHeader,
+    saveBtnName,
+    resetBtnName,
 }: MTOActionToolBarProps) => {
 
     const handleRemoveFilter = (category: string, name: string) => {
@@ -423,11 +426,11 @@ const MTOActionToolBar = ({
 
                             <SaveSVG theme={themeUi}/>
 
-                            <p style={{padding:"5px"}}>Save Layout</p>
+                            <p style={{padding:"5px"}}>{saveBtnName ?? "Save Layout"}</p>
                         </SCViewContainerWithBg>
                         <SCViewContainerWithBg onClick={() => handleResetClick()}>
                             <ResetSVG theme={themeUi}/>
-                            <p style={{padding:"5px"}}>Reset Layout</p>
+                            <p style={{padding:"5px"}}>{resetBtnName ?? "Reset Layout"}</p>
                         </SCViewContainerWithBg>
                     </>}
 
