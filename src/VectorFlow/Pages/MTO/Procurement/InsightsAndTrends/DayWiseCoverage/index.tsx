@@ -274,7 +274,7 @@ const DayWiseCoverage = () => {
                 fontSize: "0.9rem",
               }}
             >
-              {format.format(99999)}
+              {format.format(params.value)}
             </div>
           );
         },
