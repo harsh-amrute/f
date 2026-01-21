@@ -682,6 +682,8 @@ const useResearchInsights = () => {
             suppressColumnsToolPanel: false,
             headerTooltip: "Daily Data Graph",
             sortable:false,
+            suppressMenu:true,
+            headerName:"Daily Data Graph",
 
         },
         tags: {

@@ -1076,7 +1076,9 @@ export const mapMasterToColumnDefs = (fields: Field[], masterId?: number, onShow
       checkboxSelection: true,
       headerCheckboxSelection: true,
       headerCheckboxSelectionCurrentPageOnly: true,
-      width: 50
+      width: 50,
+      resizable:false,
+      suppressMenu: true,
     }
     const seasonalityColorColDef: ColDef = {
       field: 'color',
@@ -1084,7 +1086,10 @@ export const mapMasterToColumnDefs = (fields: Field[], masterId?: number, onShow
       headerName: '',
       width: 3,
       minWidth: 3,
-      cellRenderer: 'seasonalityColorCellRenderer'
+      cellRenderer: 'seasonalityColorCellRenderer',
+      resizable:false,
+      suppressMenu: true,
+      
     }
 
     const seasonalityGraphColDef: ColDef = {
@@ -1095,7 +1100,9 @@ export const mapMasterToColumnDefs = (fields: Field[], masterId?: number, onShow
       cellRenderer: 'seasonalityGraphCellRenderer',
       cellRendererParams: {
         onShowChart: onShowChart
-      }
+      },
+        resizable:false,
+      suppressMenu: true,
     }
     return [seasonalityColorColDef, seasonalityCheckboxColDef, seasonalityGraphColDef, ...result]
   }
@@ -1108,6 +1115,8 @@ export const mapMasterToColumnDefs = (fields: Field[], masterId?: number, onShow
       checkboxSelection: true,
       headerCheckboxSelection: true,
       headerCheckboxSelectionCurrentPageOnly: true,
+      resizable:false,
+      suppressMenu: true,
       width: 50
     }
     return [PIPOCheckboxColDef, ...result]
@@ -2142,7 +2151,7 @@ export const generateSesonalityChartData = (row: any, data: any) => {
           above: 'rgba(207, 167, 187, 0.4)'
         },
         data: seasonData,
-        pointRadius: 0,
+        pointBackgroundColor: "rgba(207, 167, 187, 0.4)",
         pointStyle: 'rect',
       },
       {

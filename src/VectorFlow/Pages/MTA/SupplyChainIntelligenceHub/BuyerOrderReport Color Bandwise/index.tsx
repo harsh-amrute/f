@@ -146,6 +146,7 @@ const BuyerOrderReportColorBandwise = ()=>{
                       setIsDisabled(true);
                     }
                   }}
+                  tooltipShowDelay={500}
                 />
              { 
              rowData?.length  > 0 &&

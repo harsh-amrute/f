@@ -905,6 +905,7 @@ const useViewModify = (pageType:string) => {
 
       toggleWarningModal(true);    
       setCurrentPage(1);
+      if(activeMaster.id == 10) setSeasonalityActiveQuickFilter([])
     }
 
     const onWarningModalClose = ()=>{
