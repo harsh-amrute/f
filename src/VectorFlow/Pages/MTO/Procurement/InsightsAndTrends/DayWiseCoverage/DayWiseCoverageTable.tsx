@@ -58,7 +58,8 @@ const DayWiseCoverageTable = ({
         plannedReleaseDate: selectedDate,
         appliedFilters: formattedFilters,
       });
-      setRowData(data?.data?.data);
+      const convertToArray = !Array.isArray(data?.data?.data) ? [] : data?.data?.data;
+      setRowData(convertToArray);
     }
   }
 
