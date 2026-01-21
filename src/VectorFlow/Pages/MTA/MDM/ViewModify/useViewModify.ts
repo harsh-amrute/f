@@ -269,6 +269,9 @@ const useViewModify = (pageType:string) => {
           
           setAllMasterState(allMasterData)
           
+          const allOptions:Option[] =  generateOptions(allMasterData);
+          dispatch(FILL_OPTIONS(allOptions));
+          
         const masterIdsArray = getSelectedMasterValues();
         
           if(masterIdsArray.length > 0 ){
