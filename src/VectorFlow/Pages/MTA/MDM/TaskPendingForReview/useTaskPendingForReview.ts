@@ -155,7 +155,7 @@ useEffect(() => {
                 setNoDataMessage(''); // Clear message if we have data
                 
                     const uiConfigurationResponse = await getMasterUIConfiguration(getActionName(taskData.Actiontype).value)
-                    
+                
                     const masters:Master[] = uiConfigurationResponse.data.data
                     const currentMasterFields = masters.find((master:Master)=>master.id==currentTaskMasterId)?.fields
                     if(currentMasterFields){
@@ -169,8 +169,11 @@ useEffect(() => {
                                        
                         let existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields);
                         if(taskData.Actiontype === 3){
-                            existingColumnFields = existingColumnFields.filter(field => field?.isDelete);
+                            existingColumnFields = existingColumnFields.filter(field =>
+                                field?.isDelete || field?.key === 'sd' || field?.key === 'wd'
+                              );
                         }
+                        console.log(existingColumnFields)
                         // setDetailTableColDefs(mapMasterToColumnGroupDefs(existingColumnFields,currentTaskMasterId,themeUi,getActionName(taskData.Actiontype).value,toggleApproveAllModal,toggleRejectAllModal,actionStatus,isDisabled))
                         setColGenArgs({
                             existingColumnFields: existingColumnFields,
