@@ -22,6 +22,7 @@ import ColorCellRenderer from "../../../Common/ColorCellRenderer/ColorCellRender
 import VFLoader from '../../../../../../components/VectorFLOW/commons/VFLoader';
 import { useGetFilterData } from '../../../../../..//VectorFlow/Services/MTO/Common/CommonFilter';
 import useFilter from '../../../../../../hooks/useFilter';
+import { ITooltipParams } from 'ag-grid-enterprise';
 
 enum Colors {
     Selected = "#B93B7E",
@@ -252,6 +253,7 @@ const DayWiseCoverage = () => {
           alignItems: "center",
           display: "flex",
         },
+        tooltipValueGetter: (params: ITooltipParams) => { return `Missing RM Quantity: ${params.value}` },
         cellRenderer: (params: any) => {
             const format = new Intl.NumberFormat('en', {
                 notation: 'compact',
@@ -285,7 +287,6 @@ const DayWiseCoverage = () => {
         try {
             const childResponse = await getUIConfigData("DayWiseCoverageChild");
           const response = await getUIConfigData(reportName);
-          console.log(childResponse, 'this is child response');
           setChildColDef(getColumnDefinations(childResponse.data.data,childColDefCustomizations))
           setColDef(getColumnDefinations(response.data.data, colDefCustomizations))
         }

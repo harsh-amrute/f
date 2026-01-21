@@ -1,4 +1,4 @@
-import { GridOptions } from "ag-grid-enterprise";
+import { ExcelCell, ExcelExportParams, ExcelRow, GridOptions, ProcessRowGroupForExportParams } from "ag-grid-enterprise";
 import { useEffect, useMemo, useRef, useState } from "react";
 import VFTable from "../../../Common/VFTable";
 import CustomGroupCellRenderer from "./CustomGroupCellRenderer";
@@ -126,6 +126,61 @@ const DayWiseCoverageTable = ({
     }
   },[columnState,currentGridRef]);
 
+  const cell: (text: string, styleId?: string) => ExcelCell = (
+    text: string,
+    styleId?: string,
+  ) => {
+    return {
+      styleId: styleId,
+      data: {
+        type: /^\d+$/.test(text) ? "Number" : "String",
+        value: String(text),
+      },
+    };
+  };
+
+
+  const getRows = (params: ProcessRowGroupForExportParams) => {
+    const childData = params?.node?.data?.children;
+  
+    if (!childData || !childData.length) return [];
+  
+    const childColDefHeaders: string[] = [];
+    childColDef.forEach((col: any) => {
+      if (col?.headerName) {
+        childColDefHeaders.push(col.headerName);
+      }
+    });
+  
+    const rows = [
+      {
+        outlineLevel: 2,
+        cells: [
+          cell(""),
+          ...childColDefHeaders.map((col) => cell(col, "header")),
+        ],
+      },
+      ...childData.map((data: any) => ({
+        outlineLevel: 2,
+        cells: [
+          cell(""),
+          ...childColDef.map((col: any) => cell(data[col.field], "data")),
+        ],
+      })),
+    ];
+  
+    return rows;
+  };
+  
+
+  const defaultExcelExportParams = useMemo<ExcelExportParams>(() => {
+    return {
+      getCustomContentBelowRow: (params) => getRows(params) as ExcelRow[],
+      columnWidth: 120,
+      fileName: "ag-grid.xlsx",
+    };
+  }, [gridRef.current, childColDef, rowData]);
+
   return (
 
     
@@ -155,12 +210,13 @@ const DayWiseCoverageTable = ({
         params.api.addEventListener('filterChanged', () => {
           const filterModel = params.api.getFilterModel();
           if (Object.keys(filterModel).length > 0) {
-              setIsDisabled(false); 
+            setIsDisabled(false); 
           } else {
-              setIsDisabled(true); 
+            setIsDisabled(true); 
           }
-          });
+        });
       }}
+      defaultExcelExportParams={defaultExcelExportParams}
 
       />
       

@@ -33,6 +33,7 @@ const DayWiseCoverageDetailsCellRenderer = (params: any) => {
                     onGridReady={(params: any) => {
                         params?.api?.autoSizeAllColumns()
                     }}
+                    tooltipShowDelay={500}
                 />
             </SCDynamicContainer>        
         </div>
