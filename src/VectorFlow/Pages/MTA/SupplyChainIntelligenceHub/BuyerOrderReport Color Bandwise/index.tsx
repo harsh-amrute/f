@@ -127,6 +127,7 @@ const BuyerOrderReportColorBandwise = ()=>{
                   ref={ref}
                   enableRangeSelection={true} // Added property
                   rowSelection="multiple"
+                  enableFillHandle={true} 
                   statusBar={{
                     statusPanels: [
                       { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
