@@ -387,7 +387,7 @@ const DayWiseCoverage = () => {
 
 
     const ExcelExport =()=>{
-        currentGridRef?.current?.api?.exportDataAsExcel({ fileName: `Day_Wise_Coverage${format(Date.now(), "dd/MM/yyyy")}` })
+        currentGridRef?.current?.api?.exportDataAsExcel({ fileName: `Day_Wise_Coverage` , sheetName: 'Day Wise Coverage'});
       }
 
     return (
