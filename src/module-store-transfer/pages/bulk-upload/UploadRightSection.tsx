@@ -1,5 +1,5 @@
 import {
-  headerText,
+  headerTextStyle,
   rightSectionWrapper,
   headerTextFontSizeVar,
   headerTextFontWeightVar,
@@ -77,9 +77,9 @@ function UploadRightSection({
       <ProgressBox label={progress===100?"Uploaded Succesfully":"Uploading file..."}  progress={progress}/>
       {(progress===100) &&
       <div
-      className={headerText}
+      className={headerTextStyle}
       style={assignInlineVars({
-        [headerTextFontSizeVar]: "1.9rem",
+        [headerTextFontSizeVar]: "1.35rem",
         [headerTextFontWeightVar]: "600",
       })}
     >

@@ -3,7 +3,7 @@ import { assignInlineVars } from "@vanilla-extract/dynamic";
 import {
   fileName,
   filePanel,
-  headerText,
+  headerTextStyle,
   headerTextFontSizeVar,
   headerTextFontWeightVar,
 } from "./style.css";
@@ -31,7 +31,7 @@ function RightSectionFilePanel({
       <div className={fileName}>
         <img src={img} alt="file" style={imgStyles} />
         <div
-          className={headerText}
+          className={headerTextStyle}
           style={assignInlineVars({
             [headerTextFontSizeVar]: "1.6rem",
             [headerTextFontWeightVar]: "500",
