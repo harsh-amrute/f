@@ -1,7 +1,8 @@
 import { useUserData } from "../../../../context";
 import { SCLoaderContainer } from "../../layouts/SelectMaster/styles.css";
 import SafeLottie from "../../../../components/commons/SafeLottie";
-
+import GridLoaderRB from "../../../../lottie/Grid LoaderRoyalBlue.json"
+import GridLoader from "../../../../lottie/Grid Loader.json"
 const VFLoader = ({ styles }: any) => {
   // return(
   //     <SCLoaderContainer>
@@ -27,8 +28,8 @@ const VFLoader = ({ styles }: any) => {
       <SafeLottie
         src={
           themeUi === "REGALBLAZE"
-            ? "/assets/img/VectorFLOW/BPR/Grid LoaderRoyalBlue.json"
-            : "/assets/img/VectorFLOW/BPR/Grid Loader.json"
+            ? GridLoaderRB
+            : GridLoader
         }
         loop
         autoplay

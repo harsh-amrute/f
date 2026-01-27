@@ -1,6 +1,8 @@
 import VFOverlay from "../../../../../components/VectorFLOW/commons/VFOverlay";
 import { useUserData } from "../../../../../context";
 import SafeLottie from "../../../../../components/commons/SafeLottie";
+import GridLoaderRB from "../../../../../lottie/Grid LoaderRoyalBlue.json";
+import GridLoader from "../../../../../lottie/Grid Loader.json";
 
 interface Props {
   message?: string;
@@ -35,8 +37,8 @@ const OverlayLoader = ({ message }: Props) => {
         <SafeLottie
           src={
             themeUi === "REGALBLAZE"
-              ? "/assets/img/VectorFLOW/BPR/Grid LoaderRoyalBlue.json"
-              : "/assets/img/VectorFLOW/BPR/Grid Loader.json"
+              ? GridLoaderRB
+              : GridLoader
           }
           loop
           autoplay

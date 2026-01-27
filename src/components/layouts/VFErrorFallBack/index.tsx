@@ -10,6 +10,7 @@ import {
 } from "./styles.css";
 import SafeLottie from "../../../components/commons/SafeLottie";
 
+import CoffeeSpiling from "../../../lottie/CoffeeSpiling.json";
 const JSON_PATH = "/assets/img/VectorFLOW/BPR/CoffeeSpiling.json";
 
 const VFErrorFallBack = () => {
@@ -19,11 +20,11 @@ const VFErrorFallBack = () => {
     let cancelled = false;
     (async () => {
       try {
-        const base = process.env.PUBLIC_URL || ""; // important for CRA/public paths
-        const res = await fetch(`${base}${JSON_PATH}`);
-        if (!res.ok) throw new Error(`Failed to fetch Lottie (${res.status})`);
-        const json = await res.json();
-        if (!cancelled) setAnimationData(json);
+        // const base = process.env.PUBLIC_URL || ""; // important for CRA/public paths
+        // const res = await fetch(`${base}${JSON_PATH}`);
+        // if (!res.ok) throw new Error(`Failed to fetch Lottie (${res.status})`);
+        // const json = await res.json();
+        if (!cancelled) setAnimationData(CoffeeSpiling);
       } catch (e) {
         console.error("Lottie load error:", e);
         if (!cancelled) setAnimationData(null);
