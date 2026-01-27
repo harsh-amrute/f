@@ -110,6 +110,7 @@ const RRRColorBandwise = () => {
                   columnDefs={RRRColorBandWiseColumns}
                   rowData={rowData}
                   enableRangeSelection={true} // Added property
+                   tooltipShowDelay={500}
                 rowSelection="multiple"
                 statusBar = {{
                     statusPanels: [
@@ -130,6 +131,7 @@ const RRRColorBandwise = () => {
                     setIsDisabled(true);
                   }
                 }}
+               
               />  
               {
               rowData?.length  > 0 &&

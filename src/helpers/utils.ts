@@ -6,7 +6,7 @@ import { notifyError} from './notify'
 import { type Master, type Option, type Field, type Filter, MDMMasterState, DraftActionType,type NormHistory, type DailyData } from '../VectorFlow/types/MDM';
 import readXlsxFile,{readSheetNames} from 'read-excel-file';
 import { ColDef, ColGroupDef, CellClickedEvent } from 'ag-grid-community';
-import { defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper, taskStatusCustomColDefs, mdmRoutes, seasonalityQuickFilterData, BTRDefaultColDefs, TaskPendingStopPIPOCustomColumns } from './MDMConstants';
+import { defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper, TaskPendingAvoidColumnsMapperSpecific, taskStatusCustomColDefs, mdmRoutes, seasonalityQuickFilterData, BTRDefaultColDefs, TaskPendingStopPIPOCustomColumns } from './MDMConstants';
 import ActionRenderer from '../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRenderer';
 import { subDays, format, differenceInSeconds, parse } from 'date-fns';
 //import { formatMDMDateFromat } from './format';
@@ -1076,7 +1076,9 @@ export const mapMasterToColumnDefs = (fields: Field[], masterId?: number, onShow
       checkboxSelection: true,
       headerCheckboxSelection: true,
       headerCheckboxSelectionCurrentPageOnly: true,
-      width: 50
+      width: 50,
+      resizable:false,
+      suppressMenu: true,
     }
     const seasonalityColorColDef: ColDef = {
       field: 'color',
@@ -1084,7 +1086,10 @@ export const mapMasterToColumnDefs = (fields: Field[], masterId?: number, onShow
       headerName: '',
       width: 3,
       minWidth: 3,
-      cellRenderer: 'seasonalityColorCellRenderer'
+      cellRenderer: 'seasonalityColorCellRenderer',
+      resizable:false,
+      suppressMenu: true,
+      
     }
 
     const seasonalityGraphColDef: ColDef = {
@@ -1095,7 +1100,9 @@ export const mapMasterToColumnDefs = (fields: Field[], masterId?: number, onShow
       cellRenderer: 'seasonalityGraphCellRenderer',
       cellRendererParams: {
         onShowChart: onShowChart
-      }
+      },
+        resizable:false,
+      suppressMenu: true,
     }
     return [seasonalityColorColDef, seasonalityCheckboxColDef, seasonalityGraphColDef, ...result]
   }
@@ -1108,6 +1115,8 @@ export const mapMasterToColumnDefs = (fields: Field[], masterId?: number, onShow
       checkboxSelection: true,
       headerCheckboxSelection: true,
       headerCheckboxSelectionCurrentPageOnly: true,
+      resizable:false,
+      suppressMenu: true,
       width: 50
     }
     return [PIPOCheckboxColDef, ...result]
@@ -1322,7 +1331,9 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields: Field[], maste
     return parseInt(a.col_Position) - parseInt(b.col_Position)
   })
 
-  const colDefs = sortedFields.map((f: Field) => {
+  const colDefs = sortedFields.flatMap((f: Field) => {
+    const isReferenceColumn = TaskPendingAvoidColumnsMapperSpecific[masterId]?.includes(f.key)
+
 
     if (masterId === 10) {
       if (f.key === 'sts') {
@@ -1361,7 +1372,21 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields: Field[], maste
       }
 
     }
-
+    const descriptioncoldefs = {
+      headerName: f.displayName,
+      field: f.key,
+      colId: f.key,
+      hide: !f.visible,
+      suppressSpanHeaderHeight: true,
+      ...defaultColDefs
+    }
+    if (
+      isReferenceColumn &&
+      !((tasktype === "add" || tasktype === "modify") && (masterId === 1 || masterId === 2))
+    ) {
+      return descriptioncoldefs;
+    }
+    
     if (TaskPendingAvoidColumnsMapper[masterId].includes(f.key)) {
       return {
         headerName: f.displayName,
@@ -1453,7 +1478,7 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields: Field[], maste
       }
     }
 
-    return {
+    const modifycoldefs = {
       headerName: f.displayName,
       field: f.key,
       colId: f.key,
@@ -1496,6 +1521,11 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields: Field[], maste
       ],
       ...defaultColDefs,
 
+    }
+    if(masterId==1 || masterId==2)
+      return [descriptioncoldefs, modifycoldefs];
+    else {
+      return modifycoldefs;
     }
   })
 
@@ -1707,101 +1737,126 @@ export const mapMasterToTaskStatusColumnGroupDefs = (currentTaskMasterId: number
 }
 
 
-export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData: any[], existingColumnFields: Field[], taskType: string, masterId: number) => {
-  const response = dirtyRowData?.map(entry => {
+  export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData: any[], existingColumnFields: Field[], taskType: string, masterId: number) => {
+    const response = dirtyRowData?.map(entry => {
+      
 
-    if (((taskType === 'modify' && masterId !== 6 && masterId !== 10) || masterId === 13)) {
-      const oldData = JSON.parse(entry.old);
-      const newData = JSON.parse(entry.new);
-
-
-      const oldDataPrefixed: any = {};
-      const newDataPrefixed: any = {};
-      let isRowModified = false // A flag to check equality of the current and previous rows
-      existingColumnFields.map((f: Field) => {
-
-        if (!areValuesEqual(oldData[f.key], newData[f.key])) {
-
-          isRowModified = true
-        }
-
-        if (TaskPendingAvoidColumnsMapper[masterId].includes(f.key)) {
-          newDataPrefixed[f.key] = String(newData[f.key] !== undefined ? newData[f.key] : "")
-        }
-
-        else {
-          oldDataPrefixed[`Old${f.key}`] = String(oldData[f.key] !== undefined ? oldData[f.key] : "")
-          newDataPrefixed[`New${f.key}`] = String(newData[f.key] !== undefined ? newData[f.key] : "")
-        }
-      })
-      return {
-        ...oldDataPrefixed,
-        ...newDataPrefixed,
-        status:!isRowModified?"Rejected" :"",
-        comments: isRowModified ? '' : 'No modifications made in this record',
-        isModified: isRowModified
-      };
-    }
-    const dataPrefixed1: any = {};
-    if( (masterId === 6 || masterId === 10) && taskType === 'modify'){
-      existingColumnFields.map((f: Field) => {
-       dataPrefixed1[f.key] = String(entry[f.key] !== undefined ? entry[f.key] : '')
-      })
-      return {
-        ...dataPrefixed1,
-         isModified:true,
-        comments:  '',
-        status: ''
-      };
-    }
-    const data = entry;
+      if (((taskType === 'modify' && masterId !== 6 && masterId !== 10) || masterId === 13)) {
+        const oldData = JSON.parse(entry.old);
+        const newData = JSON.parse(entry.new);
 
 
-    const dataPrefixed: any = {};
+        const oldDataPrefixed: any = {};
+        const newDataPrefixed: any = {};
+        let isRowModified = false // A flag to check equality of the current and previous rows
+        existingColumnFields.map((f: Field) => {
+          const isReferenceException = taskType === "add" && (masterId === 1 || masterId === 2)
 
+          const isAvoidColumn =
+            !isReferenceException &&
+            (
+              TaskPendingAvoidColumnsMapper[masterId].includes(f.key) ||
+              TaskPendingAvoidColumnsMapperSpecific[masterId]?.includes(f.key)
+            )
 
+          if (!areValuesEqual(oldData[f.key], newData[f.key])) {
 
-    existingColumnFields.map((f: Field) => {
+            isRowModified = true
+          }
+          const isSdModifyReference =
+            taskType === "modify" &&
+            (masterId === 1 || masterId === 2) &&
+            (f.key === "sd" || f.key === "wd")
 
-      if (taskType === 'add') {
-        if (!TaskPendingAvoidColumnsMapper[masterId].includes(f.key)) {
-          dataPrefixed[`Add${f.key}`] = String(data[f.key] !== undefined ? data[f.key] : '')
-        }
-        else {
-          dataPrefixed[f.key] = String(data[f.key] !== undefined ? data[f.key] : '')
-        }
+          if (isAvoidColumn && !isSdModifyReference) {
+            newDataPrefixed[f.key] = String(newData[f.key] !== undefined ? newData[f.key] : "")
+          }
+
+          else {
+            oldDataPrefixed[`Old${f.key}`] = String(oldData[f.key] !== undefined ? oldData[f.key] : "")
+            newDataPrefixed[`New${f.key}`] = String(newData[f.key] !== undefined ? newData[f.key] : "")
+
+            if (isSdModifyReference) {
+              newDataPrefixed[f.key] = String(oldData[f.key] !== undefined ? oldData[f.key] : "")
+            }
+          } 
+        })
+        return {
+          ...oldDataPrefixed,
+          ...newDataPrefixed,
+          status:!isRowModified?"Rejected" :"",
+          comments: isRowModified ? '' : 'No modifications made in this record',
+          isModified: isRowModified
+        };
       }
-      else {
+      const dataPrefixed1: any = {};
+      if( (masterId === 6 || masterId === 10) && taskType === 'modify'){
+        existingColumnFields.map((f: Field) => {
+        dataPrefixed1[f.key] = String(entry[f.key] !== undefined ? entry[f.key] : '')
+        })
+        return {
+          ...dataPrefixed1,
+          isModified:true,
+          comments:  '',
+          status: ''
+        };
+      }
+      const data = entry;
 
-        if (masterId === 10) {
-          dataPrefixed[f.key] = data[f.key]
-        }
-        //delete
-        else {
-          if (!TaskPendingAvoidColumnsMapper[masterId].includes(f.key)) {
-            dataPrefixed[`Delete${f.key}`] = String(data[f.key] !== undefined ? data[f.key] : '')
+
+      const dataPrefixed: any = {};
+
+
+
+      existingColumnFields.map((f: Field) => {
+        const isReferenceException = taskType === "add" && (f.key=="sd" || f.key=="wd") && (masterId === 1 || masterId === 2)
+
+        const isAvoidColumn =
+          !isReferenceException &&
+          (
+            TaskPendingAvoidColumnsMapper[masterId].includes(f.key) ||
+            TaskPendingAvoidColumnsMapperSpecific[masterId]?.includes(f.key)
+          )
+
+        if (taskType === 'add') {
+          if (!isAvoidColumn) {
+            dataPrefixed[`Add${f.key}`] = String(data[f.key] !== undefined ? data[f.key] : '')
           }
           else {
             dataPrefixed[f.key] = String(data[f.key] !== undefined ? data[f.key] : '')
           }
         }
-      }
+        else {
+
+          if (masterId === 10) {
+            dataPrefixed[f.key] = data[f.key]
+          }
+          //delete
+          else {
+            if (!isAvoidColumn) {
+              dataPrefixed[`Delete${f.key}`] = String(data[f.key] !== undefined ? data[f.key] : '')
+            }
+            else {
+              dataPrefixed[f.key] = String(data[f.key] !== undefined ? data[f.key] : '')
+            }
+          }
+        }
+      })
+      return {
+        ...dataPrefixed,
+        isModified: true,
+        status: '',
+        comments: data.cmt ? data.cmt : ''
+      };
+
+    });
+
+    // sort the rows wrt the isModified flag
+    response?.sort((a: any, b: any) => {
+      return b.isModified - a.isModified
     })
-    return {
-      ...dataPrefixed,
-      isModified: true,
-      status: '',
-      comments: data.cmt ? data.cmt : ''
-    };
-
-  });
-
-  // sort the rows wrt the isModified flag
-  response?.sort((a: any, b: any) => {
-    return b.isModified - a.isModified
-  })
-  return response
-}
+    return response
+  }
 
 export const mapTaskStatusDataToRowData = (currentTaskMasterId: number, dirtyRowData: any[], existingColumnFields: Field[], taskType: string) => {
 
@@ -2096,7 +2151,7 @@ export const generateSesonalityChartData = (row: any, data: any) => {
           above: 'rgba(207, 167, 187, 0.4)'
         },
         data: seasonData,
-        pointRadius: 0,
+        pointBackgroundColor: "rgba(207, 167, 187, 0.4)",
         pointStyle: 'rect',
       },
       {

@@ -189,7 +189,7 @@ useEffect(()=>{
                     handleListChild={() => { setFilterButtonStatus([]) }}
                     maxToShow={3}
                     backgroundColor={'#FFFFFF'}
-                    disabled={toggledFromAddMaster()}
+                    disabled={false}
                 />
                 <Container style={{ flexDirection: 'row' }}>
                     <QuickFilterHeader>

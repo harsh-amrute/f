@@ -127,6 +127,7 @@ const BuyerOrderReportColorBandwise = ()=>{
                   ref={ref}
                   enableRangeSelection={true} // Added property
                   rowSelection="multiple"
+                  enableFillHandle={true} 
                   statusBar={{
                     statusPanels: [
                       { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
@@ -146,6 +147,7 @@ const BuyerOrderReportColorBandwise = ()=>{
                       setIsDisabled(true);
                     }
                   }}
+                  tooltipShowDelay={500}
                 />
              { 
              rowData?.length  > 0 &&

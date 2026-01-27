@@ -11,10 +11,18 @@ import {  useGetAllUIMDMConfiguration } from '../../../VectorFlow/Services/MTA/M
 import { GridRef } from '../../../VectorFlow/types/MDM'
 import { GridFilterWrapper, TextBtn } from '../../../VectorFlow/Pages/MTO/Common/VFPagination/styles'
 
-const ViewUiMDMConfig = (props:{onEdit:(data:any)=>void})=>{
+interface ViewProps {
+    onEdit: (data: any) => void;
+    savedFilters: any;
+    onSaveFilters: (filters: any) => void;
+}
+
+const ViewUiMDMConfig = (props:ViewProps)=>{
 
     const {
-        onEdit
+        onEdit,
+        savedFilters,
+        onSaveFilters
     } = props
 
     const {user} = useUserData()
@@ -41,6 +49,14 @@ const ViewUiMDMConfig = (props:{onEdit:(data:any)=>void})=>{
     useEffect(()=>{
         getAllUIMDMConfig()
     },[])
+
+    const onFirstDataRendered = (params: any) => {
+        if (savedFilters && Object.keys(savedFilters).length > 0) {
+            params.api.setFilterModel(savedFilters);
+            setIsDisabled(false);
+            params.api.onFilterChanged();
+        }
+    }
 
     const ref = useRef<GridRef>();
     const [isDisabled, setIsDisabled]= useState<boolean>(true)
@@ -85,6 +101,7 @@ const ViewUiMDMConfig = (props:{onEdit:(data:any)=>void})=>{
                 rowHeight={50}
                 height="600px"
                 rowData={rowData}
+                onFirstDataRendered={onFirstDataRendered}
                 columnDefs={[
                     { colId:"MasterId", field:"MasterId" },
                     { colId:"MasterName", field:"MasterName" },
@@ -134,13 +151,16 @@ const ViewUiMDMConfig = (props:{onEdit:(data:any)=>void})=>{
                     },                  
                 ]}
                 onFilterChanged={() => {
-                    const filterModel = ref?.current?.api?.getFilterModel();   
-                    if (filterModel && Object.keys(filterModel).length > 0) {
-                      setIsDisabled(false);
-                    } else {
-                      setIsDisabled(true);
+                    if (rowData && rowData.length > 0) {
+                        const filterModel = ref?.current?.api?.getFilterModel();
+                        onSaveFilters(filterModel);
+                        if (filterModel && Object.keys(filterModel).length > 0) {
+                            setIsDisabled(false);
+                        } else {
+                            setIsDisabled(true);
+                        }
                     }
-                  }}
+                }}
 
                   statusBar={{
                     statusPanels: !isLoading?[

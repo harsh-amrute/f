@@ -269,6 +269,9 @@ const useViewModify = (pageType:string) => {
           
           setAllMasterState(allMasterData)
           
+          const allOptions:Option[] =  generateOptions(allMasterData);
+          dispatch(FILL_OPTIONS(allOptions));
+          
         const masterIdsArray = getSelectedMasterValues();
         
           if(masterIdsArray.length > 0 ){
@@ -905,6 +908,7 @@ const useViewModify = (pageType:string) => {
 
       toggleWarningModal(true);    
       setCurrentPage(1);
+      if(activeMaster.id == 10) setSeasonalityActiveQuickFilter([])
     }
 
     const onWarningModalClose = ()=>{

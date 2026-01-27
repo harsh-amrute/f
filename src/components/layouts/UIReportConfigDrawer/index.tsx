@@ -27,6 +27,7 @@ const UIReportConfigDrawer = (props:UIReportConfigDrawerProps)=>{
 
     const [activeTab, setActiveTab] = useState(0);
 
+    const [savedFilters, setSavedFilters] = useState<any>(null);
     const onEditReportConfig = (row:any)=>{
         setCurrTab(3); 
         setCurrUIReportConfig(row)
@@ -60,6 +61,8 @@ const UIReportConfigDrawer = (props:UIReportConfigDrawerProps)=>{
                 <Content>
                     <ViewUiReportConfig
                         onEdit={onEditReportConfig}
+                        savedFilters={savedFilters}
+                        onSaveFilters={setSavedFilters}
                     />
                 </Content>
             )}          

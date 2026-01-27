@@ -565,6 +565,7 @@ const useBPR =()=>{
             headerTooltip: "Daily Data Graph",
             headerName:"Daily Data Graph",
             sortable:false,
+            suppressMenu:true,
         },
         remarks: {
             cellStyle: {

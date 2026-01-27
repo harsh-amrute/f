@@ -25,10 +25,18 @@ import { UPDATE_ENV_CONFIG } from '../../../redux/actions/MTA'
         EnvLocationPermissionArray: []
     };
     
-const ViewEnvConfig = (props:{onEdit:(data:any)=>void})=>{
+interface ViewProps {
+    onEdit: (data: any) => void;
+    savedFilters: any;
+    onSaveFilters: (filters: any) => void;
+}
+
+const ViewEnvConfig = (props:ViewProps)=>{
 
     const {
-        onEdit
+        onEdit,
+        savedFilters,    // Destructure new props
+        onSaveFilters
     } = props
 
     const {user} = useUserData()
@@ -84,7 +92,13 @@ const ViewEnvConfig = (props:{onEdit:(data:any)=>void})=>{
         getAllEnvConfig()
     },[])
 
-
+    const onFirstDataRendered = (params: any) => {
+        if (savedFilters && Object.keys(savedFilters).length > 0) {
+            params.api.setFilterModel(savedFilters);
+            setIsDisabled(false);
+            params.api.onFilterChanged();
+        }
+    }
     if(isLoading){
         return (
             <Skeleton
@@ -120,6 +134,7 @@ const ViewEnvConfig = (props:{onEdit:(data:any)=>void})=>{
                     floatingFilter: true,
                     filter: "agMultiColumnFilter"
                 }}
+                onFirstDataRendered={onFirstDataRendered}
                 rowHeight={50}
                 height="600px"
                 rowData={rowData}
@@ -171,13 +186,16 @@ const ViewEnvConfig = (props:{onEdit:(data:any)=>void})=>{
                     },                  
                 ]}
                 onFilterChanged={() => {
-                    const filterModel = ref?.current?.api?.getFilterModel();
-                    if (filterModel && Object.keys(filterModel).length > 0) {
-                      setIsDisabled(false);
-                    } else {
-                      setIsDisabled(true);
+                    if (rowData && rowData.length > 0) {
+                        const filterModel = ref?.current?.api?.getFilterModel();
+                        onSaveFilters(filterModel);
+                        if (filterModel && Object.keys(filterModel).length > 0) {
+                            setIsDisabled(false);
+                        } else {
+                            setIsDisabled(true);
+                        }
                     }
-                  }}
+                }}
             />
             </TableWrapper>
     )

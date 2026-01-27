@@ -238,7 +238,11 @@ const useRRRColorBandwise = () => {
       pinned: 'left',
       resizable: false,
       floatingFilter: false,
-      suppressColumnsToolPanel: false
+      suppressColumnsToolPanel: false,
+      suppressMenu:true,
+      headerTooltip: "Daily Data Graph",
+      headerName:"Daily Data Graph",
+      sortable: false,
     },
     DispatchColor: {
       cellRenderer: 'colorCellRenderer',
