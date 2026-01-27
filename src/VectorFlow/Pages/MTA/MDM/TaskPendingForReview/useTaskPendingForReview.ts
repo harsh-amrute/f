@@ -173,7 +173,6 @@ useEffect(() => {
                                 field?.isDelete || field?.key === 'sd' || field?.key === 'wd'
                               );
                         }
-                        console.log(existingColumnFields)
                         // setDetailTableColDefs(mapMasterToColumnGroupDefs(existingColumnFields,currentTaskMasterId,themeUi,getActionName(taskData.Actiontype).value,toggleApproveAllModal,toggleRejectAllModal,actionStatus,isDisabled))
                         setColGenArgs({
                             existingColumnFields: existingColumnFields,
