@@ -65,8 +65,8 @@ const ChartViewToggle = ({ isChartView, setIsChartView }: any) => {
       >
         <NewChartView theme={themeUi} view={!isChartView} />
       </div>
-
-      <SCHorizontalDivison />
+      
+      <div className={SCHorizontalDivison} />
 
       <div
         className={SCViewContainer}
