@@ -85,7 +85,7 @@ export const headerSection = style({
 });
 
 /* ===== Elements with per-instance vars ===== */
-export const headerText = style({
+export const headerTextStyle = style({
   fontSize: headerTextFontSizeVar,
   fontWeight: headerTextFontWeightVar as any,
   display: "flex",
@@ -99,10 +99,10 @@ export const headerTextDefaults = style({
   },
 });
 
-export const subText = style({
+export const subTextStyle = style({
   fontSize: subTextFontSizeVar,
   fontWeight: subTextFontWeightVar as any,
-  color: "#666",
+  color: "rgb(102, 102, 102)",
 });
 export const subTextDefaults = style({
   vars: {
@@ -139,7 +139,7 @@ export const svg = style({
   display: "block",
 });
 
-export const circle = style({
+export const circleStyle = style({
   transition: "stroke-dashoffset 0.5s ease",
   strokeWidth: circleStrokeWidthVar,
 });
