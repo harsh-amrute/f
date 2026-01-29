@@ -1,5 +1,6 @@
 import React from "react";
-import { svg, circle, text } from "./style.css";
+import { svg, text, circleStyle, circleStrokeWidthVar } from "./style.css";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 
 type CircularProgressProps = {
   size: number;
@@ -24,7 +25,10 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
   return (
     <svg className={svg} width={size} height={size}>
       <circle
-        className={circle}
+        className={circleStyle}
+        style={assignInlineVars({
+          [circleStrokeWidthVar] : `${strokeWidth}px`
+        })}
         cx={center}
         cy={center}
         r={radius}
@@ -33,7 +37,10 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
         fill="none"
       />
       <circle
-        className={circle}
+        className={circleStyle}
+        style={assignInlineVars({
+          [circleStrokeWidthVar] : `${strokeWidth}px`
+        })}
         cx={center}
         cy={center}
         r={radius}

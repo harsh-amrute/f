@@ -2,15 +2,15 @@ import React from "react";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
 import {
   headerSection,
-  headerText,
   leftCommonComUploadWrapper,
   leftCommonComWrapper,
   leftStep,
-  subText,
+  subTextStyle,
   headerTextFontSizeVar,
   headerTextFontWeightVar,
   subTextFontSizeVar,
   subTextFontWeightVar,
+  headerTextStyle,
 } from "./style.css";
 import ButtonFloat from "../../../../src/components/commons/ButtonFloat";
 
@@ -55,16 +55,16 @@ function LeftCommonCom({
           <img src={img} alt="" style={imgStyles} />
           <div className={headerSection}>
             <div
-              className={headerText}
+              className={headerTextStyle}
               style={assignInlineVars({
-                [headerTextFontSizeVar]: "1.9rem",
+                [headerTextFontSizeVar]: "1.35rem",
                 [headerTextFontWeightVar]: "600",
               })}
             >
               {headerText}
             </div>
             <div
-              className={subText}
+              className={subTextStyle}
               style={assignInlineVars({
                 [subTextFontSizeVar]: "1.15rem",
                 [subTextFontWeightVar]: "300",

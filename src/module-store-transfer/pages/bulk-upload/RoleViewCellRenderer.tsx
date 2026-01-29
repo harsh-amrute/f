@@ -356,4 +356,4 @@ const RoleViewCellRenderer = (params: MyCellRendererProps) => {
   );
 };
 
-export default RoleViewCellRenderer;
+export default React.memo(RoleViewCellRenderer);

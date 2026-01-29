@@ -7,17 +7,20 @@ interface ICheckboxProps extends InputHTMLAttributes<HTMLInputElement> {
   theme: string;
 }
 
-const Checkbox = ({ theme, ...rest }: ICheckboxProps) => {
+const Checkbox = ({ theme, style,...rest }: ICheckboxProps) => {
   const accent = globalStyles.chooseThemeColor[theme]?.color4 ?? "#509EE3";
 
   return (
     <input
       type="checkbox"
       className={MTOCheckBox}
-      style={assignInlineVars({
-        [accentVar]: accent,
-        [checkedBgVar]: `url(${process.env.PUBLIC_URL}/assets/img/mto/dueDateQuotation/checked.svg)`,
-      })}
+      style={{
+        ...assignInlineVars({
+          [accentVar]: accent,
+          [checkedBgVar]: `url("${process.env.PUBLIC_URL}/assets/img/mto/dueDateQuotation/checked.svg")`,
+        }),
+        ...style,
+      }}
       {...rest}
     />
   );
