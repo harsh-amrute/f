@@ -92,7 +92,7 @@ globalStyle(
   `${Wrapper} .chart-wrapper > div .ag-charts-wrapper .ag-charts-canvas > canvas`,
   { height: '100% !important' }
 );
-globalStyle(`${Wrapper} .chart-scroll`, { width: '100%', height: '95% !important' });
+globalStyle(`${Wrapper} .chart-wrapper .chart-scroll`, { width: '100%', height: '95% !important' });
 /* ==== Button (themed) ==== */
 
 export const Button = style({

@@ -392,7 +392,6 @@ const MTOActionToolBar = ({
 
         {isAddFilterButton &&
           (onAddFilter ? (
-            <div className={AddFilterWrapper}>
               <VFButton
                 onClick={() => onAddFilter()}
                 themeUi={themeUi}
@@ -406,7 +405,6 @@ const MTOActionToolBar = ({
                   <p style={{ padding: "2px" }}>+ Add Filter</p>
                 )}
               </VFButton>
-            </div>
           ) : (
             <div className={AddFilterWrapper}>
               <button className={SCButton}>

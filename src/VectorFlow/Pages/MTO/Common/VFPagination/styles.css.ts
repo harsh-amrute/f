@@ -101,6 +101,7 @@ export const statusBarWrapper = style({
   display: 'flex',
   flexDirection: 'row',
   alignItems: 'center',
+  height: '100%',
 });
 
 export const statusBarLabel = style({
@@ -171,6 +172,10 @@ const textBtnBase = style({
       cursor: 'context-menu',
     },
   },
+  paddingTop: '1px',
+  paddingBottom: '1px',
+  paddingLeft: '6px',
+  paddingRight: '6px',
 });
 
 export const textBtn = styleVariants({

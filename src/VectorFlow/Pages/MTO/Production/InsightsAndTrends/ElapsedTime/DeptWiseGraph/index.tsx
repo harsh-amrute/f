@@ -19,7 +19,7 @@ const DeptWiseGraph = ({chartTableData, chartData, alertData}: any) => {
             <>
                 <div className={scChartMainContainer} style={{ zoom: 1, width: '100%' }}>
 
-                    <div className={scChartMainContainer} style={{ width: '100%', display: 'flex', justifyContent: 'end' }}>
+                    <div className={SCChartHeaderContainer} style={{ width: '100%', display: 'flex', justifyContent: 'end' }}>
 
                         <div style={{ marginLeft: 30, marginBottom: '-5px' }}>
                             <VFInfoToolTip infoList={graph1} />
