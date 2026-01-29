@@ -7,6 +7,8 @@ import VFRangeSlider from "../../../../../components/VectorFLOW/commons/VFRangeS
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
 import * as globalStyles from "../../../../../styles/global";
+import SwipePointerRegal from "../../../../../lottie/swipe pointer regal.json"
+import SwipePointer from "../../../../../lottie/swipe pointer.json"
 
 import {
   AvailabilityTrendHeader,
@@ -358,8 +360,8 @@ const ResearchInsights = () => {
                   <SafeLottie
                     src={
                       themeUi === "REGALBLAZE"
-                        ? "/assets/img/VectorFLOW/BPR/swipe pointer regal.json"
-                        : "/assets/img/VectorFLOW/BPR/swipe pointer.json"
+                        ? SwipePointerRegal
+                        : SwipePointer
                     }
                     loop
                     autoplay
