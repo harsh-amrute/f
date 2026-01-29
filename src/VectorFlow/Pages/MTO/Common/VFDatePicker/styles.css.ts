@@ -80,7 +80,7 @@ globalStyle(`${calendarRoot} .react-calendar__navigation button:disabled`, {
 globalStyle(
   `${calendarRoot} .react-calendar__navigation button:enabled:focus`,
   {
-    backgroundColor: `var(${calFocusBgVar})`,
+    backgroundColor: calFocusBgVar,
     color: "white",
   }
 );
@@ -97,16 +97,16 @@ globalStyle(`${calendarRoot} .react-calendar__month-view__weekdays__weekday`, {
 });
 
 globalStyle(`${calendarRoot} .react-calendar__tile--now`, {
-  background: `var(${calNowBgVar})`,
+  background: calNowBgVar,
 });
 
 globalStyle(`${calendarRoot} .react-calendar__tile--active`, {
-  backgroundColor: `var(${calActiveBgVar})`,
+  backgroundColor: calActiveBgVar,
   color: "white",
 });
 
 globalStyle(`${calendarRoot} .react-calendar__tile--hasActive`, {
-  backgroundColor: `var(${calActiveBgVar})`,
+  backgroundColor: calActiveBgVar,
   color: "white",
 });
 
@@ -124,12 +124,12 @@ globalStyle(`${calendarRoot} .react-calendar__month-view__days__day--weekend`, {
 });
 
 globalStyle(`${calendarRoot} .react-calendar__tile:hover`, {
-  backgroundColor: `var(${calHoverBgVar})`,
+  backgroundColor: calHoverBgVar,
   color: "black",
 });
 
 globalStyle(`${calendarRoot} .react-calendar__navigation button:hover`, {
-  backgroundColor: `var(${calHoverBgVar})`,
+  backgroundColor: calHoverBgVar,
 });
 
 globalStyle(

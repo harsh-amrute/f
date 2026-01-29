@@ -116,7 +116,7 @@ export const vfTableWrapper = style({
   // defaults
   vars: {
     [vfTableHeightVar]: "auto",
-    [vfZoomScaleVar]: "0.75", // default scaled value
+    [vfZoomScaleVar]: "1", // default scaled value
   },
 
   "@media": {

@@ -113,7 +113,7 @@ export const SCDynamicContainer = style({
 
 /* push pagination up */
 globalStyle(`${SCDynamicContainer} > div[data-testid="vf_pagination"]`, {
-  marginTop: '0',
+  marginTop: '0px !important',
 });
 
 /* header text */
@@ -127,10 +127,10 @@ globalStyle(`${SCDynamicContainer} > .ag-theme-alpine`, {
   height: '100%',
 });
 globalStyle(`${SCDynamicContainer} > .ag-theme-alpine .ag-cell`, {
-  height: '100%',
+  height: '100% !important',
 });
 globalStyle(`${SCDynamicContainer} > .ag-theme-alpine .ag-paging-panel`, {
-  height: '24px',
+  height: '24px !important',
 });
 globalStyle(`${SCDynamicContainer} > .ag-theme-alpine .ag-side-buttons`, {
   fontSize: '10px',
@@ -139,35 +139,35 @@ globalStyle(`${SCDynamicContainer} > .ag-theme-alpine .ag-header`, {
   borderRadius: '0',
 });
 globalStyle(`${SCDynamicContainer} > .ag-theme-alpine .ag-pivot-off`, {
-  height: '47px',
-  minHeight: '47px',
+  height: '47px !important',
+  minHeight: '47px !important',
 });
 globalStyle(`${SCDynamicContainer} > .ag-theme-alpine .ag-header-cell`, {
-  minHeight: '24px',
-  height: '24px',
+  minHeight: '24px !important',
+  height: '24px !important',
 });
 globalStyle(`${SCDynamicContainer} > .ag-theme-alpine .ag-header-row`, {
-  minHeight: '20px',
-  height: '20px',
+  minHeight: '20px !important',
+  height: '20px !important',
 });
 globalStyle(`${SCDynamicContainer} > .ag-theme-alpine .ag-header-container`, {
-  minHeight: '20px',
-  height: '20px',
+  minHeight: '20px !important',
+  height: '20px !important',
 });
 globalStyle(`${SCDynamicContainer} > .ag-theme-alpine .ag-header-row-column-filter`, {
-  top: '23px',
-  height: '24px',
+  top: '23px !important',
+  height: '24px !important',
 });
 globalStyle(`${SCDynamicContainer} > .ag-theme-alpine .ag-input-field-input`, {
-  height: '14px',
-  minHeight: '10px',
-  fontSize: '12px',
+  height: '14px !important',
+  minHeight: '10px !important',
+  fontSize: '12px !important',
 });
 globalStyle(`${SCDynamicContainer} > .ag-theme-alpine .ag-column-drop`, {
   background: '#D2CECE',
 });
 globalStyle(`${SCDynamicContainer} > .ag-theme-alpine .ag-status-bar`, {
-  fontSize: '12px',
+  fontSize: '12px !important',
 });
 
 /* ===== scoped .ag-theme-planning-custom tweaks ===== */

@@ -1,5 +1,4 @@
 import { style, createVar } from "@vanilla-extract/css";
-import * as globalStyles from "../../../../styles/global";
 
 // Variant vars (replacing recipe)
 export const buttonBackgroundVar = createVar();
@@ -29,6 +28,13 @@ export const scButton = style({
   background: buttonBackgroundVar,
   opacity: buttonOpacityVar as any,
   pointerEvents: buttonPointerEventsVar,
+
+  selectors: {
+    "&:hover": {
+      transform: "scale(1.05)",
+      transition: "all 0.3s ease-in-out",
+    },
+  },
 });
 
 export const tooltipText = style({

@@ -106,7 +106,6 @@ const OTIFFailureGraph = (props: any) => {
           style={{
             fontSize: "13px",
             margin: "0 auto",
-
             textAlign: "center",
           }}
         >

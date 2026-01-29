@@ -33,6 +33,13 @@ export const agThemePlanningCustom = style({
   // },
 });
 
+globalStyle('.ag-theme-alpine', {
+  vars: {
+    '--ag-font-family': "'Roboto', sans-serif",
+    '--ag-font-size': '1.4rem',
+  },
+});
+
 /* descendant rules scoped to the hook */
 globalStyle(`${agThemePlanningCustom} .ag-tool-panel-wrapper`, {
   width: '200px',

@@ -239,7 +239,7 @@ const MTOViewModify = () => {
             >
               {(activeMaster.progress === "default" ||
                 activeMaster.progress === "view") && (
-                <div className={SCFilterContainer} style={{ zoom: 0.8}}>
+                <div className={SCFilterContainer} style={{ zoom: 0.8, display:"none"}}>
                   <div className={SCFilterControls}>
                   <legend className={SCLegend}>Filter</legend>
                     {activeMaster.filters.map((f: Filter) => {

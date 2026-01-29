@@ -162,7 +162,7 @@ const WeekWiseGraph = ({
               />
             </VFButton>
           </div>
-          <div className={scChartMainContainer}>
+          <div className={SCChartHeaderContainer}>
             <div style={{ marginLeft: 30, marginBottom: "-5px" }}>
               <VFInfoToolTip infoList={graph1} />
             </div>

@@ -1,4 +1,4 @@
-import { buttonOutlineIcon, imgStyle, bgVar, accent } from "./style.css";
+import { buttonOutlineIcon, disabled as disabledCls, imgStyle, bgVar, accent } from "./style.css";
 import { useUserData } from "../../../context";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
 import * as globalStyles from "../../../styles/global";
@@ -17,12 +17,12 @@ const ButtonOutlineIcon = ({
   disabled,
 }: ButtonOutlineIconProps) => {
   const { user } = useUserData();
-  const themeUi = user?.user?.theme_ui || "default"; // fallback if undefined
+  const themeUi = user?.user?.theme_ui || "default"; // fallback if undefined  
 
   return (
     <button
       onClick={onClick}
-      // className={buttonOutlineIcon(themeUi, disabled)}
+      className={`${buttonOutlineIcon} ${disabled ? disabledCls : ""}`}
       disabled={disabled}
       style={assignInlineVars({
         [bgVar]: globalStyles.white,

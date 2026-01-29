@@ -19,7 +19,6 @@ export const buttonFloat = style({
   borderRadius: "6px",
   fontWeight: 500,
   opacity: 1,
-  display: "inline-flex",
   alignItems: "center",
   justifyContent: "center",
 });
