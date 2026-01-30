@@ -22,7 +22,7 @@ import {
 const RoleDropdown = ({ allRoles, width, onApplyRole, currentRoles }: any) => {
   const user = useUserData();
   const themeUi = user.user.user.theme_ui;
-  const [selected, setSelected] = useState<Set<string>>(new Set(currentRoles));
+  // const [selected, setSelected] = useState<Set<string>>(new Set(currentRoles));
 
   const [selectedRoles, setSelectedRoles] = useState<Set<any>>(
     currentRoles ? currentRoles : new Set()
@@ -39,8 +39,10 @@ const RoleDropdown = ({ allRoles, width, onApplyRole, currentRoles }: any) => {
   };
 
   const handleSelectAll = () => {
-    const allSelected = allRoles.every((id: any) => selected.has(id));
-    setSelectedRoles(allSelected ? new Set() : new Set(allRoles));
+    // Tarun review is required to remove this commented code ------
+    // const allSelected = allRoles.every((id: any) => selected.has(id));
+    // setSelectedRoles(allSelected ? new Set() : new Set(allRoles));
+    setSelectedRoles(new Set(allRoles));
   };
 
   const applicationGroups = Array.from(
