@@ -1,12 +1,17 @@
 import { ColDef } from "ag-grid-enterprise";
 
-export function TooltipRenderer({ datum, xKey }: any) {
+export function TooltipRenderer({ datum, xKey }: any) { 
     return `
-<div style="width: 180px">
-<div class="ag-chart-tooltip-title" style="background-color: #6C696A; display: flex; justify-content: center; align-items: center">
+<div style="
+  width: 180px;
+  border-radius: 5px;
+  overflow: hidden;
+">
+
+<div class="ag-chart-tooltip-title" style="background-color: #3E3C3C; height:25px; display: flex; justify-content: center; align-items: center;color: white; border-bottom:1px dashed white">
     ${datum[xKey]}
 </div>
-<div class="ag-chart-tooltip-content" style="color: white; background-color: #6C696A">
+<div class="ag-chart-tooltip-content" style="color: white; background-color: #3E3C3C; padding:10px">
 
 <div>
     <div style="display: flex;">
@@ -28,11 +33,15 @@ export function TooltipRenderer({ datum, xKey }: any) {
 }
 export function TooltipRendererIF({ datum, xKey }: any) {
     return `
-<div style="width: 180px">
-<div class="ag-chart-tooltip-title" style="background-color: #6C696A; display: flex; justify-content: center; align-items: center">
+<div style="
+  width: 180px;
+  border-radius: 5px;
+  overflow: hidden;
+">
+<div class="ag-chart-tooltip-title" style="background-color: #3E3C3C; height:25px; display: flex; justify-content: center; align-items: center;color: white; border-bottom:1px dashed white">
     ${datum[xKey]}
 </div>
-<div class="ag-chart-tooltip-content" style="color: white; background-color: #6C696A">
+<div class="ag-chart-tooltip-content" style="color: white; background-color: #3E3C3C; padding:10px">
 
 <div>
     <div style="display: flex;">

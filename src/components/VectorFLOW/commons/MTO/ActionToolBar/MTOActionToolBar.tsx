@@ -86,6 +86,7 @@ interface MTOActionToolBarProps {
     saveBtnName?:string;
     resetBtnName?:string;
     //// new props
+    isExcelDisabled?: boolean; 
 }
 
  
@@ -125,6 +126,7 @@ const MTOActionToolBar = ({
     ReleaseOrderHeader,
     saveBtnName,
     resetBtnName,
+    isExcelDisabled
 }: MTOActionToolBarProps) => {
 
     const handleRemoveFilter = (category: string, name: string) => {
@@ -409,8 +411,14 @@ const MTOActionToolBar = ({
                 <>
                     {isExcelExport && <>
                         <SCVerticalDivider  />
-                        <SCViewContainerWithBg onClick={onExcelExportClick}
-                         >
+                        <SCViewContainerWithBg onClick={!isExcelDisabled ? onExcelExportClick : undefined}
+                            style={{
+                                opacity: isExcelDisabled ? 0.5 : 1,
+                                pointerEvents: isExcelDisabled ? "none" : "auto",
+                                cursor: isExcelDisabled ? "not-allowed" : "pointer",
+                            }}
+                        >
+
                             <>
                                
                                 <ExportExcelSVG theme={themeUi}/>
