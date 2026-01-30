@@ -6,8 +6,9 @@ import { useTranslation } from "react-i18next";
 import { useUserData } from "../../../context";
 import SafeLottie from "../SafeLottie";
 
+import upload_success_json from "../../../lottie/upload-success.json";
 interface ModalProps {
-  fileJson: string;
+  fileJson: string | any;
   modalTitle: string;
   modalContent: string;
   openModal: boolean;
@@ -30,7 +31,7 @@ const Modal = ({
   const themeUi = user?.user?.theme_ui;
 
   useEffect(() => {
-    if (fileJson === "/assets/img/manual/upload-success.json") {
+    if (fileJson == upload_success_json ) {
       setTimeout(() => {
         closeModal();
       }, 2000);
