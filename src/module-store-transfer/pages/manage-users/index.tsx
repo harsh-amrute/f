@@ -19,7 +19,8 @@ import {
   useGetAllUsers,
   useGetAllPermissions,
   useGetHeadersData,
-  useGetUserPermissions
+  useGetUserPermissions,
+  useRegisterUser
 } from "../../../services/profile";
 import Spinner from "../../../components/commons/Spinner";
 import { useTranslation } from "react-i18next";
@@ -27,7 +28,7 @@ import { useTranslation } from "react-i18next";
 import { generateRolesObject } from '../../../helpers/utils';
 import _ from 'lodash'
 import { useNavigate } from "react-router";
-import { notifyError } from "../../../helpers/notify";
+import { notifyError, notifySuccess } from "../../../helpers/notify";
 import { APPLICATION_NAMES } from "../../../helpers/constants";
 import { useUserData } from "../../../context";
 import SingleUserPermissionSelectionModal from "../bulk-upload/SingleUserPermissionSelectionModal";
@@ -85,7 +86,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   useEffect(() => {
     getHeaderDatafunct();
   },[])
-  const dataAllPermissions = dataPermissions?.data;
+  const dataAllPermissions = dataPermissions?.data.data;
 
   const dataAllUsers = dataFetch?.data;
 
@@ -433,6 +434,111 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     console.log("listRoles", listRoles);
   }, [infoUser])
 
+
+  const { mutateAsync: registerUser } = useRegisterUser();
+
+  const createUser = async (permissions: any) => {
+    console.log("permissions", permissions);
+
+    const payload: any = {
+      ...infoUser,
+    };
+    
+    // Ensure defaults
+    if (payload.edit === undefined) payload.edit = false;
+    if (payload.tc === undefined) payload.tc = true;
+
+    const appNames = Object.keys(permissions);
+
+    appNames.forEach((appName) => {
+      const appData = dataAllPermissions.find(
+        (d: any) => d.application_name === appName
+      );
+      if (!appData) return;
+
+      const appId = appData.application_id;
+      const appPermissions = permissions[appName];
+
+      Object.keys(appPermissions).forEach((permType) => {
+        if (!payload[permType]) payload[permType] = [];
+
+        const paths = appPermissions[permType]; // Array of paths
+        
+        // Resolve definitions
+        const defKey1 = `${permType}_ids`;
+        const defKey2 = `${permType.replace("_permission", "")}_permission_ids`;
+        const definitions = appData[defKey1] || appData[defKey2] || [];
+
+        const ids: string[] = [];
+        const prefix = permType.split("_")[0]; // e.g. location
+
+        if (Array.isArray(definitions)) {
+          paths.forEach((path: string[]) => {
+            const isIA = path[path.length - 1] === "isActive";
+            const hierarchyPath = isIA ? path.slice(0, -1) : path;
+            
+            const matchedDef = definitions.find((def: any) => {
+               // Level 1
+               const h1 = def[`${prefix}_hierarchy_1`] || def[`hierarchy_1`] || def[`${prefix}_heirarchy_1`] || def[`heirarchy_1`];
+               if (h1 !== hierarchyPath[0]) return false;
+
+               // Level 2
+               const h2 = def[`${prefix}_hierarchy_2`] || def[`hierarchy_2`] || def[`${prefix}_heirarchy_2`] || def[`heirarchy_2`];
+               if (hierarchyPath.length > 1) {
+                  if (h2 !== hierarchyPath[1]) return false;
+               } else {
+                  if (h2) return false;
+               }
+
+               // Level 3
+               const h3 = def[`${prefix}_hierarchy_3`] || def[`hierarchy_3`] || def[`${prefix}_heirarchy_3`] || def[`heirarchy_3`];
+               if (hierarchyPath.length > 2) {
+                  if (h3 !== hierarchyPath[2]) return false;
+               } else {
+                  if (!isIA && h3) return false;
+               }
+               
+               // isActive Check
+               if (isIA) {
+                  if (def.isActive !== true) return false;
+                  return true;
+               } 
+               
+               return true;
+            });
+
+            if (matchedDef) {
+              ids.push(matchedDef.hid);
+            } else {
+               // Log warning but proceed
+               console.warn(`ID not found for: ${path.join(">")}`);
+            }
+          });
+        }
+
+        // Add to Payload Array
+        let appEntry = payload[permType].find((e: any) => e.appId === appId);
+        if (!appEntry) {
+          appEntry = { appId: appId, perm: [] };
+          payload[permType].push(appEntry);
+        }
+        appEntry.perm = Array.from(new Set([...appEntry.perm, ...ids]));
+      });
+    });
+
+    try {
+      console.log("Creating User Payload:", payload);
+      await registerUser(payload);
+      notifySuccess("User created successfully");
+      setIsPermissionModalOpen(false);
+      setIsOpenUser(false);
+      refetch();
+    } catch (error) {
+      console.error(error);
+      notifyError("Failed to create user");
+    }
+  }
+
   return (
     <>
     {edit && (
@@ -541,7 +647,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
         setInfoUser={setInfoUser}
         closeModal={()=>{setIsPermissionModalOpen(false)}}
         dataAllPermissions={dataAllPermissions}
-        updatePermissions={setStorePermission}
+        createUser = {createUser}
         key={infoUser.id}
         setPrevModal={()=>{
           setContentModal({

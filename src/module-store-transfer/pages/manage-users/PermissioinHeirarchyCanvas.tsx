@@ -23,6 +23,12 @@ const ViewToggle = ({
   selectedApplication,
   setSelectedApplication,
 }: any) => {
+  const getLabel = (app: string) => {
+    // Remove _permission suffix and capitalize
+    const name = app.replace("_permission", "").replace(/_/g, " ");
+    return name.charAt(0).toUpperCase() + name.slice(1);
+  };
+
   return (
     <ToggleContainer>
       {allApplications.map((app: string) => (
@@ -31,7 +37,7 @@ const ViewToggle = ({
           active={selectedApplication === app}
           onClick={() => setSelectedApplication(app)}
         >
-          {app === "location_permission" ? "Location" : "Product"}
+          {getLabel(app)}
         </ToggleButton>
       ))}
     </ToggleContainer>
@@ -206,146 +212,88 @@ const CustomNode = ({
 
   const setTheChecked = () => {
     const currentPath = pathArray;
-    const existingPermissions = getPermissionList();
+    let existingPermissions = [...getPermissionList()];
     const currentState = getSelectionState(data.key);
 
-    const finalPermissions = [...existingPermissions];
-
     if (currentState === "unchecked") {
-        // Add to list
-        // Check if I can merge into parent? (Optional optimization, but sticky logic says we might keep distinct)
+        // Add current path
         // Simple add:
         const pStr = JSON.stringify(currentPath);
-        if (!finalPermissions.some((perm) => JSON.stringify(perm) === pStr)) {
-            finalPermissions.push(currentPath);
+        if (!existingPermissions.some((perm) => JSON.stringify(perm) === pStr)) {
+            existingPermissions.push(currentPath);
         }
-    } else if (currentState === "implicit") {
-        // Refine Selection
-        // Grey -> Pink.
-        // Remove Ancestor. Add Self.
-        // 1. Find Ancestor
-        const ancestorIndex = finalPermissions.findIndex((perm) => {
-            if (perm.length >= currentPath.length) return false;
-            return currentPath.slice(0, perm.length).every((val, idx) => val === perm[idx]);
-        });
-        
-        if (ancestorIndex !== -1) {
-            finalPermissions.splice(ancestorIndex, 1);
-        }
-        
-        // 2. Add Self
-        finalPermissions.push(currentPath);
     } else {
-        // Unchecking (Explicit -> Unchecked, or Explicit -> Implicit if ancestor exists)
-        // User Requirement: "Unchecking child... only uncheck particular child... not other sibling or parent".
-        // And "Parent must remain selected" (Pink).
-        // And "Currently... gets grey selected" (means ancestor was selecting it).
+        // Handle Uncheck (from Implicit or Explicit)
         
-        // Strategy: "Explode" any covering ancestor to isolate this child.
-        
-        // 1. Remove specific path if present
-        const explicitIndex = finalPermissions.findIndex((perm) => JSON.stringify(perm) === JSON.stringify(currentPath));
+        // 1. Remove explicit self if present
+        const explicitIndex = existingPermissions.findIndex((perm) => JSON.stringify(perm) === JSON.stringify(currentPath));
         if (explicitIndex !== -1) {
-            finalPermissions.splice(explicitIndex, 1);
+            existingPermissions.splice(explicitIndex, 1);
         }
 
-        // 2. Check for Covering Ancestors
-        // We need to find if any `perm` in `finalPermissions` is an ancestor of `currentPath`.
-        // If so, remove it, and add all its children (except the one leading to `currentPath`).
-        // Repeat this until `currentPath` is no longer covered.
-        
-        // Helper to get immediate children of a path from `nodes`
-        const getImmediateChildren = (parentPathArr: string[]) => {
-            const parentPathStr = parentPathArr.join("/");
-            return nodes.filter((n: any) => {
-                 const nPathArr = getPathArray(n.data.key);
-                 // Is exact child? Length must be parent + 1
-                 if (nPathArr.length !== parentPathArr.length + 1) return false;
-                 // Must start with parent path
-                 return parentPathArr.every((val, idx) => val === nPathArr[idx]);
-            }).map((n: any) => getPathArray(n.data.key));
-        };
-        
-        let covered = true;
-        while (covered) {
-             const coveringAncestorIndex = finalPermissions.findIndex((perm) => 
-                perm.length < currentPath.length && 
-                currentPath.slice(0, perm.length).every((val, idx) => val === perm[idx])
-             );
+        // 2. Handle Implicit (Ancestor Selected)
+        // Find ancestor
+        const coveringAncestorIndex = existingPermissions.findIndex((perm) => 
+            perm.length < currentPath.length && 
+            currentPath.slice(0, perm.length).every((val, idx) => val === perm[idx])
+        );
+
+        if (coveringAncestorIndex !== -1) {
+             const ancestorPath = existingPermissions[coveringAncestorIndex];
+             // Remove ancestor
+             existingPermissions.splice(coveringAncestorIndex, 1);
+
+             // Add all other siblings of start of branch leading to current
+             // We need to drill down from Ancestor to Current, adding siblings at each level.
              
-             if (coveringAncestorIndex === -1) {
-                 covered = false;
-                 break;
+             let walker = ancestorPath;
+             // While walker is shorter than currentPath
+             while (walker.length < currentPath.length) {
+                 // Get all children of 'walker'
+                 const children = getAllChildrenPaths(walker).filter((child: any) => {
+                    // Start of child path must match walker (guaranteed by getAllChildrenPaths)
+                    // We need immediate children: length == walker.length + 1
+                    return child.arrPath.length === walker.length + 1;
+                 });
+                 
+                 // Find which child leads to currentPath
+                 const nextStep = children.find((child: any) => {
+                     return currentPath.slice(0, child.arrPath.length).every((val:string, idx:number) => val === child.arrPath[idx]);
+                 });
+                 
+                 // Add all OTHER children
+                 children.forEach((child: any) => {
+                     if (child !== nextStep) {
+                         existingPermissions.push(child.arrPath);
+                     }
+                 });
+                 
+                 if (!nextStep) break; // Should not happen if Ancestor covers Current
+                 walker = nextStep.arrPath;
              }
-             
-             // Found covering ancestor
-             const ancestorPath = finalPermissions[coveringAncestorIndex];
-             // Remove Ancestor
-             finalPermissions.splice(coveringAncestorIndex, 1);
-             
-             // Add all immediate children of this ancestor EXCEPT the one leading to CurrentPath
-             const children = getImmediateChildren(ancestorPath);
-             children.forEach((childPath:any) => {
-                  // Check if this child leads to currentPath (or is currentPath)
-                  const leadsToCurrent = currentPath.slice(0, childPath.length).every((val, idx) => val === childPath[idx]);
-                  if (leadsToCurrent) {
-                      // Do not add this child yet (we need to drill down further in next iteration if needed, 
-                      // or if it matches currentPath exactly, we just don't add it).
-                      // If it IS currentPath, we implicitly "removed" it by not adding it.
-                      // If it's an intermediate parent, we might need to add IT to the list 
-                      // so the loop effectively "drills down" to it?
-                      // Actually, if we simply don't add it, we lose selection for that intermediate branch?
-                      // YES. If we only remove Ancestor and add Siblings, the branch leading to CurrentPath becomes Unchecked.
-                      // THIS IS GOOD for CurrentPath.
-                      // BUT `Parent` must remain selected (Pink).
-                      // If `Parent` (intermediate) has descendants (other siblings of CurrentPath?), it will stay Pink visually.
-                      // But we must ensuring other siblings of CurrentPath ARE added.
-                      // The `while` loop logic:
-                      // We removed Root. We added A, B. (Current is inside C).
-                      // We need to Drill into C?
-                      // If we don't add C, C is now Unchecked.
-                      // Logic: We need to recursively add children of the branch leading to CurrentPath UNTIL we reach CurrentPath's siblings.
-                      // Instead of `while`, let's just do recursive breakdown.
-                      
-                      // Actually, if `childPath` leads to `currentPath`, and `childPath` !== `currentPath`, 
-                      // we should probably ADD `childPath` to `finalPermissions` temporarily? 
-                      // And then let the loop find it again as the new "Covering Ancestor"?
-                      // Yes!
-                      if (childPath.length < currentPath.length) {
-                           finalPermissions.push(childPath);
-                      }
-                  } else {
-                      // Sibling (or unrelated branch), Add it.
-                      finalPermissions.push(childPath);
-                  }
-             });
         }
         
-        // 3. User says: "Unchecking a child... Parent should remain selected".
-        // If we removed the explicit `Parent` (or Ancestor), and only added siblings, `Parent` is no longer in list.
-        // But `Parent` has descendants in list (the siblings). So it renders Pink. Match!
-        // What if `Parent` has NO other children? (Only child unchecked).
-        // Then `Parent` becomes Unchecked.
-        // User wants `Parent` to remain selected.
-        // So we must explicitly add `Parent` if it becomes empty?
+        // 3. Ensure Parent Stays Selected (if it was implicit/explicit before)
+        // If we unchecked the LAST child of a parent, the parent might become "Unchecked"
+        // But user wants "Parent must remain selected".
+        // This implies: If `Parent` has NO descendants in keys, we must add `Parent` itself.
         
         const parentPath = currentPath.slice(0, -1);
         if (parentPath.length > 0) {
-             // Check if parent has any OTHER descendants left
-             // We just removed descendants (CurrentPath) via splice or explosion.
-             // We scan finalPermissions to see if *any* path is a descendant of parentPath
-             const hasRemainingDescendants = finalPermissions.some((perm) => {
-                // Must be longer than parent
-                if (perm.length <= parentPath.length) return false;
-                // Must match parent prefix
-                return perm.slice(0, parentPath.length).every((val, idx) => val === parentPath[idx]);
-             });
+             // Check if parent has any descendants in existingPermissions
+             const hasDescendants = existingPermissions.some(perm => 
+                 perm.length > parentPath.length && 
+                 perm.slice(0, parentPath.length).every((val, idx) => val === parentPath[idx])
+             );
              
-             if (!hasRemainingDescendants) {
-                 // Case: Last child unchecked.
-                 // Requirement: "All child/sibling nodes should get greySelected and parent should stay pink".
-                 // This means we explicit-select the Parent.
-                 finalPermissions.push(parentPath);
+             // Also check if parent itself is in existingPermissions (explicitly)
+             const hasParentExplicit = existingPermissions.some(perm => 
+                 JSON.stringify(perm) === JSON.stringify(parentPath)
+             );
+
+             if (!hasDescendants && !hasParentExplicit) {
+                 // Parent became empty -> Reselect Parent explicitly
+                 existingPermissions.push(parentPath);
              }
         }
     }
@@ -354,18 +302,9 @@ const CustomNode = ({
         ...prev,
         [selectedApplication]: {
           ...(prev[selectedApplication] || {}),
-          [permissionType]: finalPermissions,
+          [permissionType]: existingPermissions,
         },
     }));
-    
-    // Update checked array for legacy support if needed (or remove use of 'checked' state entirely)
-    // The previous code used 'checked' state array. We should essentially drive purely from selectedPermissions now?
-    // But 'checked' might be used for something else? "setOpened" etc.
-    // Let's keep it sync.
-    // Actually, CustomNode uses `isPermissionChecked` -> `getSelectionState`.
-    // We don't need `setChecked` logic unless `checked` array is used elsewhere.
-    // It is used in `useNodeDataContext`.
-    // Let's update `checked` array too to trigger re-renders if implicit dependency exists.
   };
 
   const setTheIndex = () => {
@@ -491,9 +430,8 @@ export default function PermissionHeirarchyCanvas({
   selectedPermissions,
   setSelectedPermissions,
 }: any) {
-  const [permissionType, setPermissionType] = useState<
-    "location_permission" | "product_permission"
-  >("location_permission");
+  const [permissionType, setPermissionType] = useState<string>("");
+  const [availablePermissionTypes, setAvailablePermissionTypes] = useState<string[]>([]);
 
   const [selectedAppAllPermissions, setSelectedApplication] = useState<any>(
     dataAllPermissions?.find(
@@ -506,13 +444,30 @@ export default function PermissionHeirarchyCanvas({
   const [selectedPermissionIds,setSelectedPermissionIds] = useState<any>([]);
 
   useEffect(() => {
-    console.log("dataAllPermissions", dataAllPermissions)
-    setSelectedApplication(
-      dataAllPermissions?.find(
-        (ele: any) => ele.application_name === selectedApplication
-      )
+    console.log("dataAllPermissions", dataAllPermissions);
+    const appData = dataAllPermissions?.find(
+      (ele: any) => ele.application_name === selectedApplication
     );
-  }, [selectedApplication,dataAllPermissions]);
+    setSelectedApplication(appData);
+
+    if (appData) {
+      // dynamically find keys ending with _permission
+      const types = Object.keys(appData).filter(
+        (key) =>
+          key.endsWith("_permission") &&
+          typeof appData[key] === "object" &&
+          !Array.isArray(appData[key]) // Assuming the permission structure is an object/map, whereas _permission_ids is array
+      );
+      
+      // Filter out null/undefined/empty objects if necessary, or just trust the key convention
+      setAvailablePermissionTypes(types);
+
+      // Set default permission type if current one is invalid
+      if (types.length > 0 && (!permissionType || !types.includes(permissionType))) {
+        setPermissionType(types[0]);
+      }
+    }
+  }, [selectedApplication, dataAllPermissions]);
 
   const [opened, setOpened] = useState<any>([]);
 
@@ -555,24 +510,22 @@ export default function PermissionHeirarchyCanvas({
       const parts = nodeId.split(">");
       const pathArray = parts.map((part) => {
         const split = part.split("_");
-        // Handle cases where value might contain underscores? 
-        // Based on previous code: part.split("_")[1]
-        // But what if value has "_"? 
-        // For now trusting existing pattern: index_value
         return split.slice(1).join("_");
       });
+      
+      const prefix = permissionType.split('_')[0];
 
       if (pathArray.length === 1) {
          return permissionIds.some((p: any) => 
-             p.hierarchy_1 === pathArray[0] && 
-             !p.hierarchy_2 && 
+             (p[`${prefix}_hierarchy_1`] === pathArray[0] || p.hierarchy_1 === pathArray[0]) && 
+             (!p[`${prefix}_hierarchy_2`] && !p.hierarchy_2) && 
              p.isActive === true
          );
       } else if (pathArray.length === 2) {
          return permissionIds.some((p: any) => 
-             p.hierarchy_1 === pathArray[0] && 
-             p.hierarchy_2 === pathArray[1] && 
-             !p.hierarchy_3 && 
+             (p[`${prefix}_hierarchy_1`] === pathArray[0] || p.hierarchy_1 === pathArray[0]) && 
+             (p[`${prefix}_hierarchy_2`] === pathArray[1] || p.hierarchy_2 === pathArray[1]) && 
+             (!p[`${prefix}_hierarchy_3`] && !p.hierarchy_3) && 
              p.isActive === true
          );
       }
@@ -610,20 +563,27 @@ export default function PermissionHeirarchyCanvas({
         const l3Items = allNodes[l1Node.key][l2Node.key];
         
         l3Items.forEach((ele: any) => {
-          const l3Prop =
-            permissionType === "location_permission"
-              ? "location_heirarchy_3"
-              : "product_hierarchy_3";
-          const l3Key = ele;
-          
-          const l3Index = l3BaseIndex + l3RelativeIndex;
-          const l3Id = `${l2Id}>${l3Index}_${l3Key}`; 
-          
-          level3.push({ id: l3Id, key: l3Key, index: l3Index });
-          childrenMap.get(l2Id)!.push(l3Id);
-          l3RelativeIndex++;
+            let l3Key = ele;
+            if (typeof ele === "object") {
+                // Dynamic key extraction
+                const prefix = permissionType.split("_")[0]; // e.g. location from location_permission
+                // Try known patterns
+                const candidateKeys = [
+                    `${prefix}_hierarchy_3`,
+                    "hierarchy_3"
+                ];
+                const foundKey = Object.keys(ele).find(k => candidateKeys.includes(k)) || Object.keys(ele)[0];
+                l3Key = ele[foundKey];
+            }
+
+            const l3Index = l3BaseIndex + l3RelativeIndex;
+            const l3Id = `${l2Id}>${l3Index}_${l3Key}`;
+
+            level3.push({ id: l3Id, key: l3Key, index: l3Index });
+            childrenMap.get(l2Id)!.push(l3Id);
+            l3RelativeIndex++;
         });
-      });
+    });
     });
     
     const finalNodes: any[] = [];
@@ -764,9 +724,9 @@ export default function PermissionHeirarchyCanvas({
                    // Add P' Node
                    // Fix: Use a key that generates a path treated as a child of the current node.
                    // Current Node Key: `childId`. Path: `path(childId)`.
-                   // We want IA Node Path: `[...path(childId), "IA"]`.
-                   // So we construct a string: `${childId}>0_IA`. (Index 0 is arbitrary, 'IA' is the key).
-                   const iaKey = `${childId}>0_IA`;
+                   // We want IA Node Path: `[...path(childId), "isActive"]`.
+                   // So we construct a string: `${childId}>0_isActive`. (Index 0 is arbitrary, 'isActive' is the key).
+                   const iaKey = `${childId}>0_isActive`;
                    
                    finalNodes.push({
                         id: `ia_${childId}`,
@@ -881,7 +841,7 @@ export default function PermissionHeirarchyCanvas({
                    
                    // Add P' Node
                    // Fix key for Root IA
-                   const iaKey = `${l1Node.id}>0_IA`;
+                   const iaKey = `${l1Node.id}>0_isActive`;
 
                    finalNodes.push({
                         id: `ia_${l1Node.id}`,
@@ -982,7 +942,7 @@ export default function PermissionHeirarchyCanvas({
      selectedAppAllPermissions[permissionType],
      permissionType,
      opened,
-     selectedAppAllPermissions?.[(permissionType=== "location_permission") ? "location_ids" : "product_ids"] || []
+     selectedAppAllPermissions?.[`${permissionType}_permission_ids`] || selectedAppAllPermissions?.[`${permissionType.replace("_permission", "")}_permission_ids`] || []
      );
      setNodes(generatedNodes);
      setEdges(generatedEdges);
@@ -1017,19 +977,20 @@ export default function PermissionHeirarchyCanvas({
 
         arr.forEach((item) => {
           allNodes[key][item].forEach((ele: any) => {
-            if (permissionType === "location_permission") {
-              level3.push(
-                `${index}_${key}>${inIndex}_${item}>${inIndex2}_${
-                  ele[permissionType.split("_")[0] + "_heirarchy_3"]
-                }`
-              );
-            } else {
-              level3.push(
-                `${index}_${key}>${inIndex}_${item}>${inIndex2}_${
-                  ele[permissionType.split("_")[0] + "_hierarchy_3"]
-                }`
-              );
-            }
+            let l3Val = ele;
+             if (typeof ele === "object") {
+                 const prefix = permissionType.split("_")[0];
+                 const candidateKeys = [
+                    `${prefix}_hierarchy_3`,
+                    "hierarchy_3"
+                ];
+                const foundKey = Object.keys(ele).find(k => candidateKeys.includes(k)) || Object.keys(ele)[0];
+                l3Val = ele[foundKey];
+             }
+
+            level3.push(
+                `${index}_${key}>${inIndex}_${item}>${inIndex2}_${l3Val}`
+            );
             inIndex2++;
           });
           inIndex++;
@@ -1068,7 +1029,7 @@ export default function PermissionHeirarchyCanvas({
         }}
       >
         <ViewToggle
-          allApplications={["location_permission", "product_permission"]}
+          allApplications={availablePermissionTypes}
           selectedApplication={permissionType}
           setSelectedApplication={setPermissionType}
         />

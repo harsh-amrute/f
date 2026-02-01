@@ -84,7 +84,7 @@ const hasSelectedPermissions = (permissions: any): boolean => {
   return false; 
 };
 
-const SingleUserPermissionSelectionModal = ({dataAllPermissions,closeModal, updatePermissions, activeApplications, infoUser, setInfoUser , setPrevModal}: { dataAllPermissions: any, closeModal: any, updatePermissions: any, activeApplications: any, infoUser: any, setInfoUser: any, setPrevModal: any}) => {
+const SingleUserPermissionSelectionModal = ({dataAllPermissions,closeModal, createUser, activeApplications, infoUser, setInfoUser , setPrevModal}: { dataAllPermissions: any, closeModal: any, createUser: any, activeApplications: any, infoUser: any, setInfoUser: any, setPrevModal: any}) => {
   const [isChartView, setIsChartView] = React.useState(false);
   const [allApplications, setAllApplications] = useState<any>(dataAllPermissions?.map(
     (ele: any) => ele.application_name
@@ -284,8 +284,8 @@ const SingleUserPermissionSelectionModal = ({dataAllPermissions,closeModal, upda
           style={{height: '3.5rem', fontSize: '1.2rem'}}
           themeUi={themeUi}
           disabled={isApplyDisabled}
-          onClick={() => {updatePermissions(selectedPermissions); closeModal()}}
-          >Apply</VFButton>
+          onClick={() => {createUser(selectedPermissions)}}
+          >Create User</VFButton>
           
           </div>
         </div>
