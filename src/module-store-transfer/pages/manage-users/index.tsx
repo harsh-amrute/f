@@ -112,6 +112,8 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
 
   const getApplicationIds = () => {
     const application_names = [APPLICATION_NAMES.MTA, APPLICATION_NAMES.MTO];
+
+    console.log("DataAllPermissions...", dataAllPermissions);
     const applicationIds = dataAllPermissions
       .filter((dataAllPermission: any) => application_names.includes(dataAllPermission.application_name))
       .map((filterItem: any) => filterItem.application_id);

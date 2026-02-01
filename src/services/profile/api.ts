@@ -28,6 +28,10 @@ export namespace MainService {
 
   export const getAllPermissions = async () => {
     return await axios.get(`${API_USER}/all-permissions/`)
+
+
+    
+    // return await axios.get(`${API_USER}/mock/`)
   }
 
   export const putDeleteUser = async (id: any) => {

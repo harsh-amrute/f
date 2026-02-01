@@ -68,6 +68,8 @@ const Overview = ({ themeUi }: any) => {
     });
   };
 
+  console.log("user.roles", user.roles);
+
   return (
     <>
       <SCProfileOverView>
@@ -96,7 +98,14 @@ const Overview = ({ themeUi }: any) => {
               {t("profile.tabContent.overview.role")}
             </SCOverviewItemTitle>
             <SCSubTitleSpan>
-              {user?.roles?.permission.toString().replace(/,/g, " | ")}
+              {user?.roles?.map((role:any,index:number)=>{
+                return (
+                <span>{role.name} {index!=(user.roles.length-1) && " | "}</span>
+               
+
+                )
+
+              })}
             </SCSubTitleSpan>
           </SCOverviewItem>
         </SCOverviewInfo>

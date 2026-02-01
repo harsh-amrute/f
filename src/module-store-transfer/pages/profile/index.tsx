@@ -21,7 +21,7 @@ const Profile = () => {
   const [tabPanel, setTabPanel] = useState<number>(0)
 
   const isAdmin = user.user.is_admin;
-  const permissions = user?.roles?.permission;
+  const permissions = user?.roles?.map((role:any)=>role.name);
   
   let listTabs
 

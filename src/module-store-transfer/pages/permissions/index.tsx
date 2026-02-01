@@ -27,6 +27,13 @@ const Permissions = ({ roles }: any) => {
   console.log(roles);
   const { t } = useTranslation();
 
+  return <>
+  </>
+
+  // TODO: User - showing current user permissions
+
+  
+
   const generateProductPermissionsList = (roles:any) => {
     const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
     const PRODUCT_PERMISSION_L1 = EnvConfig['PRODUCT_PERMISSION_L1'];   
