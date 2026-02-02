@@ -8,6 +8,7 @@ import {
   secondaryButton,
   textArea,
   focusOutlineVar,
+  primaryBgVar,
 } from "../../commons/styled/index.css";
 import { useUserData } from "../../../context";
 import { notifyError, notifySuccess } from "../../../helpers/notify";
@@ -140,6 +141,7 @@ const handleChangeValue = (
 
   const focusColor =
     globalStyles.chooseThemeColor[themeUi]?.color4 ?? "transparent";
+    const bg = globalStyles.chooseThemeColor?.[themeUi]?.color5 ?? "#1f2937";
 
   return (
     <form className={urlsForm} onSubmit={handleSubmit}>
@@ -228,7 +230,7 @@ const handleChangeValue = (
           type="button"
           disabled={!isFormValid || !isChanged}
           style={assignInlineVars({
-            [focusOutlineVar]: focusColor,
+            [primaryBgVar]: bg,
           })}
         >
           Update Env Config

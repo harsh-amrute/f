@@ -6,9 +6,8 @@ import {
   label,
   ml10,
   formActions,
-  focusOutlineVar,
 } from "./styles.css";
-import { input, primaryButton, textArea } from "../../commons/styled/index.css";
+import { input, primaryBgVar, primaryButton, textArea, focusOutlineVar } from "../../commons/styled/index.css";
 import { useUserData } from "../../../context";
 import axios from "axios";
 import { notifyError, notifySuccess } from "../../../helpers/notify";
@@ -67,6 +66,7 @@ const AddURL = (props: { cb: () => void }) => {
 
   const focusColor =
     globalStyles.chooseThemeColor[themeUi]?.color4 ?? "transparent";
+    const bg = globalStyles.chooseThemeColor?.[themeUi]?.color5 ?? "#1f2937";
 
   return (
     <form className={urlsForm} onSubmit={handleSubmit}>
@@ -143,7 +143,7 @@ const AddURL = (props: { cb: () => void }) => {
         <button
           className={primaryButton}
           style={assignInlineVars({
-            [focusOutlineVar]: focusColor,
+            [primaryBgVar]: bg,
           })}
           disabled={isSubmitting}
         >

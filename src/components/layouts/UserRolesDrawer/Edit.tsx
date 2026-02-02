@@ -15,7 +15,6 @@ import {
   searchWrapper,
   checkBoxLabel,
   urlSearch,
-  focusOutlineVar,
 } from "../UserURLsDrawer/styles.css";
 import {
   input,
@@ -23,6 +22,8 @@ import {
   secondaryButton,
   skeleton,
   textArea,
+  focusOutlineVar,
+  primaryBgVar
 } from "../../commons/styled/index.css";
 import { useUserData } from "../../../context";
 import axios from "axios";
@@ -275,6 +276,8 @@ const EditRole = (props: { data: any; cb: () => void }) => {
   }
   const focusColor =
     globalStyles.chooseThemeColor[themeUi]?.color4 ?? "transparent";
+  const bg = globalStyles.chooseThemeColor?.[themeUi]?.color5 ?? "#1f2937";
+  
 
   return (
     <form className={urlsForm} onSubmit={handleSubmit}>
@@ -410,7 +413,6 @@ const EditRole = (props: { data: any; cb: () => void }) => {
                 style={{ position: "sticky", top: 0, backgroundColor: "white" }}
               >
                 <input
-                  className={input}
                   style={{ width: 10 }}
                   type={"checkbox"}
                   name={"all"}
@@ -424,7 +426,6 @@ const EditRole = (props: { data: any; cb: () => void }) => {
                 return (
                   <div className={checkBoxWrapper} key={r.code}>
                     <input
-                      className={input}
                       style={{ width: 10 }}
                       checked={isChecked(r)}
                       type={"checkbox"}
@@ -480,7 +481,7 @@ const EditRole = (props: { data: any; cb: () => void }) => {
           className={primaryButton}
           disabled={!isFormValid}
           style={assignInlineVars({
-            [focusOutlineVar]: focusColor,
+            [primaryBgVar]: bg,
           })}
         >
           Update Role

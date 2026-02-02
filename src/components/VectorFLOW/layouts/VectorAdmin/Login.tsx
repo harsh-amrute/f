@@ -60,7 +60,7 @@ const Login = () => {
   const focusColor =
     globalStyles.chooseThemeColor["NOIRFUSION"]?.color4 ?? "#0000";
   const theme = "NOIRFUSION";
-  const bg = globalStyles.chooseThemeColor?.[theme]?.color4 ?? "#1f2937"; // fallback if theme not found
+  const bg = globalStyles.chooseThemeColor?.[theme]?.color5 ?? "#1f2937"; // fallback if theme not found
 
   return (
     <div className={LoginWrapper}>
