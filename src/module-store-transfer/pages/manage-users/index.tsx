@@ -86,7 +86,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   useEffect(() => {
     getHeaderDatafunct();
   },[])
-  const dataAllPermissions = dataPermissions?.data.data;
+  const dataAllPermissions = dataPermissions?.data;
 
   const dataAllUsers = dataFetch?.data;
 
