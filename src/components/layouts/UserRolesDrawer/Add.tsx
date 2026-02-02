@@ -15,13 +15,14 @@ import {
   checkBoxesHeaderContainer,
   searchWrapper,
   urlSearch,
-  focusOutlineVar,
 } from "../UserURLsDrawer/styles.css";
 import {
   input,
   primaryButton,
   skeleton,
   textArea,
+  focusOutlineVar,
+  primaryBgVar
 } from "../../commons/styled/index.css";
 import { useUserData } from "../../../context";
 import axios from "axios";
@@ -256,7 +257,9 @@ const AddRole = (props: { cb: () => void }) => {
   }
 
   const focusColor =
-    globalStyles.chooseThemeColor[themeUi]?.color4 ?? "transparent";
+      globalStyles.chooseThemeColor[themeUi]?.color4 ?? "#0000";
+  const bg = globalStyles.chooseThemeColor?.[themeUi]?.color5 ?? "#1f2937";
+  
 
   return (
     <form className={urlsForm} onSubmit={handleSubmit}>
@@ -442,7 +445,7 @@ const AddRole = (props: { cb: () => void }) => {
           className={primaryButton}
           disabled={isFormValid || isSubmitting}
           style={assignInlineVars({
-            [focusOutlineVar]: focusColor,
+            [primaryBgVar]: bg,
           })}
         >
           Add Role

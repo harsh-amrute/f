@@ -67,7 +67,7 @@ export const InputArea = style({
   transition: '0.3s ease',
   selectors: {
     '&:focus-within': {
-      outlineColor: `var(${inputFocusColorVar}, #0000)`,
+      outlineColor: inputFocusColorVar,
     },
   },
 });

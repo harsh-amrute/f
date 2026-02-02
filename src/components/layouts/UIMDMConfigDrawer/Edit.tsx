@@ -8,6 +8,7 @@ import {
 } from "../UserURLsDrawer/styles.css";
 import {
   input,
+  primaryBgVar,
   primaryButton,
   secondaryButton,
   textArea,
@@ -668,7 +669,7 @@ const EditUIMDMConfig = (props: { data: any; cb: () => void }) => {
           className={primaryButton}
           disabled={!isFormValid || !isChanged}
           style={assignInlineVars({
-            [focusOutlineVar]: themeColor,
+            [primaryBgVar]: themeColor,
           })}
         >
           Update UI MDM Config

@@ -37,7 +37,6 @@ export const input = style({
     },
     "&:active, &:focus": {
       outlineColor: focusOutlineVar,
-      // backgroundColor: 'white', // uncomment if you want to replicate the commented line
     },
   },
 });
@@ -101,10 +100,7 @@ export const button = buttonBase;
 export const primaryButton = style([
   buttonBase,
   {
-    width: `var(${primaryWidthVar}, auto)`,
-    height: `var(${primaryHeightVar}, 40px)`,
-    borderRadius: `var(${primaryRadiusVar}, 8px)`,
-    backgroundColor: `var(${primaryBgVar}, #333)`,
+    backgroundColor: primaryBgVar,
     color: "white",
     selectors: {
       "&:hover:not(:disabled)": { boxShadow: "0 0 0 3px rgba(0,0,0,.05)" },
