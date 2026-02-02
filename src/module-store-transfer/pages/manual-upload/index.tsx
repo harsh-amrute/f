@@ -10,6 +10,8 @@ import { handleDownload } from "../../../helpers/utils";
 import { useTranslation } from "react-i18next";
 import { useUserData } from "../../../context";
 import * as globalStyles from "../../../styles/global"; // if you have it
+import data_json from "../../../lottie/data.json"
+import upload_success_json from "../../../lottie/upload-success.json"
 declare global {
   interface Navigator {
     msSaveBlob: (blob: Blob, fileName: string) => boolean;
@@ -244,7 +246,7 @@ const ManualUpload = () => {
         })()}
       </div>
       <Modal
-        fileJson="/assets/data.json"
+        fileJson={data_json}
         modalTitle={t("manualUpload.uploadInProcess")}
         modalContent=""
         openModal={isShowPopup && !isLoading}
@@ -257,7 +259,7 @@ const ManualUpload = () => {
 
       {isShowSuccess && (
         <Modal
-          fileJson="/assets/img/manual/upload-success.json"
+          fileJson={upload_success_json}
           modalTitle={t("manualUpload.uploadedSuccessfully")}
           modalContent=""
           openModal={!isShowPopup && isShowSuccess}
