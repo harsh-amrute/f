@@ -20,7 +20,8 @@ import {
   useGetAllPermissions,
   useGetHeadersData,
   useGetUserPermissions,
-  useRegisterUser
+  useRegisterUser,
+  usePutEditUser
 } from "../../../services/profile";
 import Spinner from "../../../components/commons/Spinner";
 import { useTranslation } from "react-i18next";
@@ -67,7 +68,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   const prdPermissionRef = useRef<any>();
   const lcPermissionRef = useRef<any>();
 
-  const { data: dataFetch, refetch, isFetching } = useGetAllUsers();
+  const { data: dataFetch,refetch, isFetching } = useGetAllUsers();
   const { data: dataPermissions } = useGetAllPermissions();
   const { mutateAsync : usegetHeaderData } = useGetHeadersData();
   const [headers , setHeaders] = useState<any>();
@@ -121,6 +122,8 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     return applicationIds;
   }
 
+  const [selectedPermissions, setSelectedPermissions] = useState<any>({});
+
   const handleClickAddNewUser = () => {
     if (!getApplicationIds().length) {
       notifyError(t("profile.tabContent.manageUsers.notifyError.RoleMismatch"))
@@ -141,6 +144,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     setIsOpenUser(true);
     setIsEditUser(false)
     setStorePermission([]);
+    setSelectedPermissions({}); // Reset permissions on new user
     isCheckBoxRef.current.isPrdCheck = {},
     isCheckBoxRef.current.isLcCheck = {}
   };
@@ -148,6 +152,10 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   const onCloseModal = () => {
     setIsOpenUser(false);
   };
+ 
+  // ... (keeping existing code)
+
+
 
   const onClosePermissionModal = () => {
     setIsPermissionModalOpen(false);
@@ -242,7 +250,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
       const productPermissionAllApp:any = [];
       const locationPermissionAllApp:any = [];
 
-      item?.product_id.forEach((app:any)=>{
+      item?.product_id?.forEach((app:any)=>{
         const getProductPermissions = getPermission({
           data: app.permissions,
           txtParent: "product_hierarchy_1",
@@ -266,7 +274,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
         })
       })
 
-      item?.location_id.forEach((app:any)=>{
+      item?.location_id?.forEach((app:any)=>{
         const getLocationPermissions = getPermission({
           data: app.permissions,
           txtParent: "location_heirarchy_1",
@@ -398,10 +406,10 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     const isLcCheck: any = {};
 
     const findPermissionLength = (array: any, appId: any) =>
-      array.find((entry: any) => entry.application_id === appId)?.permissions?.length;
+      Array.isArray(array) ? array.find((entry: any) => entry.application_id === appId)?.permissions?.length : 0;
 
     const findPermissionAllLength = (array: any, appId: any, key: any) =>
-      array.find((entry: any) => entry.application_id === appId)?.[key]?.length;
+      Array.isArray(array) ? array.find((entry: any) => entry.application_id === appId)?.[key]?.length : 0;
 
     applicationIds.forEach((applicationId: any) => {
 
@@ -416,8 +424,80 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
 
     });
 
+    // }); 
+
     isCheckBoxRef.current.isPrdCheck = isPRDCheck;
     isCheckBoxRef.current.isLcCheck = isLcCheck;
+
+    // --- Populate selectedPermissions for New Permission Modal ---
+    const fetchedPermissionsArray = response.data || [];
+    const newSelectedPermissions: any = {};
+
+    if (Array.isArray(fetchedPermissionsArray) && dataAllPermissions) {
+      fetchedPermissionsArray.forEach((appPerm: any) => {
+          const appName = appPerm.application_name;
+          const appData = dataAllPermissions.find((d: any) => d.application_name === appName);
+          
+          if (appData) {
+            newSelectedPermissions[appName] = {};
+
+            // Iterate through keys (e.g., location_hids, product_hids)
+            Object.keys(appPerm).forEach((key) => {
+                if (key.endsWith('_hids')) {
+                    const hids = appPerm[key];
+                    if (!Array.isArray(hids) || hids.length === 0) return;
+
+                    const type = key.replace('_hids', '_permission'); // e.g., product_permission
+                    // Determine Definition Key (some inconsistency in naming likely, check dataAllPermissions)
+                    const defKey1 = `${type}_ids`; 
+                    const defKey2 = `${type.replace("_permission", "")}_permission_ids`;
+                    
+                    const definitions = appData[defKey1] || appData[defKey2] || [];
+                    const prefix = type.split("_")[0];
+
+                    const paths = hids.map((hid: string) => {
+                        const def = definitions.find((d: any) => d.h_id === hid);
+                        if (!def) return null;
+
+                        const h1 = def[`${prefix}_hierarchy_1`] || def[`hierarchy_1`] || def[`${prefix}_heirarchy_1`] || def[`heirarchy_1`];
+                        const h2 = def[`${prefix}_hierarchy_2`] || def[`hierarchy_2`] || def[`${prefix}_heirarchy_2`] || def[`heirarchy_2`];
+                        const h3 = def[`${prefix}_hierarchy_3`] || def[`hierarchy_3`] || def[`${prefix}_heirarchy_3`] || def[`heirarchy_3`];
+
+                        const path = [h1, h2, h3].filter(Boolean); // Filter out empty strings
+
+                        if (!isDynamicPermissions) {
+                            // Legacy Mode Logic
+                            // If it's a Node (not a Leaf), append 'isActive' to prevent cascade
+                            // Definition of Leaf: Typically 3 levels (or all levels present)
+                            // Definition of Node here: h3 is empty (or implied by data structure)
+                            // Checking if h3 from data was actually present
+                            
+                            const isLeaf = (h3 && h3 !== ""); 
+                            
+                            // If not a leaf, we assume it's a specific Node selection (isActive)
+                            if (!isLeaf) {
+                                path.push("isActive");
+                            }
+                        }
+                        
+                        return path;
+                    }).filter((p: any) => p !== null);
+
+                    if (paths.length > 0) {
+                        newSelectedPermissions[appName][type] = paths;
+                    }
+                }
+            });
+            // Clean up empty objects
+             if (Object.keys(newSelectedPermissions[appName]).length === 0) {
+                delete newSelectedPermissions[appName];
+            }
+          }
+      });
+    }
+
+    setSelectedPermissions(newSelectedPermissions);
+    // -------------------------------------------------------------
 
     setIsOpenUser(true);
   }
@@ -436,6 +516,11 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
 
 
   const { mutateAsync: registerUser } = useRegisterUser();
+  const {mutateAsync: editUser} = usePutEditUser();
+
+  const isDynamicPermissions = (user.config_data.dynamic_permissions==1) || false
+
+  console.log("isDynamicPermissions", isDynamicPermissions)
 
   const createUser = async (permissions: any) => {
     console.log("permissions", permissions);
@@ -447,6 +532,10 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     // Ensure defaults
     if (payload.edit === undefined) payload.edit = false;
     if (payload.tc === undefined) payload.tc = true;
+
+    if(payload.edit){
+      payload.id = infoUser.id
+    }
 
     const appNames = Object.keys(permissions);
 
@@ -477,41 +566,93 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
             const isIA = path[path.length - 1] === "isActive";
             const hierarchyPath = isIA ? path.slice(0, -1) : path;
             
-            const matchedDef = definitions.find((def: any) => {
-               // Level 1
-               const h1 = def[`${prefix}_hierarchy_1`] || def[`hierarchy_1`] || def[`${prefix}_heirarchy_1`] || def[`heirarchy_1`];
-               if (h1 !== hierarchyPath[0]) return false;
+            if (!isDynamicPermissions) {
+               // Logic For False (Cascade Mode)
+               const matchedDefs = definitions.filter((def: any) => {
+                  // Common Helper
+                  const h1 = def[`${prefix}_hierarchy_1`] || def[`hierarchy_1`] || def[`${prefix}_heirarchy_1`] || def[`heirarchy_1`];
+                  const h2 = def[`${prefix}_hierarchy_2`] || def[`hierarchy_2`] || def[`${prefix}_heirarchy_2`] || def[`heirarchy_2`];
+                  const h3 = def[`${prefix}_hierarchy_3`] || def[`hierarchy_3`] || def[`${prefix}_heirarchy_3`] || def[`heirarchy_3`];
 
-               // Level 2
-               const h2 = def[`${prefix}_hierarchy_2`] || def[`hierarchy_2`] || def[`${prefix}_heirarchy_2`] || def[`heirarchy_2`];
-               if (hierarchyPath.length > 1) {
-                  if (h2 !== hierarchyPath[1]) return false;
-               } else {
-                  if (h2) return false;
-               }
+                  // IA Case: Specific Match
+                  if (isIA) {
+                      // Exact path match
+                      if (h1 !== hierarchyPath[0]) return false;
+                      
+                      if (hierarchyPath.length > 1) {
+                          if (h2 !== hierarchyPath[1]) return false;
+                      } else {
+                          if (h2 && h2 !== "") return false;
+                      }
+                      
+                      if (hierarchyPath.length > 2) {
+                          if (h3 !== hierarchyPath[2]) return false;
+                      } else {
+                          if (h3 && h3 !== "") return false;
+                      }
+                      // Match Node where isActive: true
+                      if (def.isActive !== true) return false;
+                      return true;
+                  }
 
-               // Level 3
-               const h3 = def[`${prefix}_hierarchy_3`] || def[`hierarchy_3`] || def[`${prefix}_heirarchy_3`] || def[`heirarchy_3`];
-               if (hierarchyPath.length > 2) {
-                  if (h3 !== hierarchyPath[2]) return false;
-               } else {
-                  if (!isIA && h3) return false;
-               }
-               
-               // isActive Check
-               if (isIA) {
-                  if (def.isActive !== true) return false;
+                  // Standard Case (Cascade / Leaf Selection)
+                  // 1. Path Match (Prefix)
+                  if (h1 !== hierarchyPath[0]) return false;
+                  if (hierarchyPath.length > 1 && h2 !== hierarchyPath[1]) return false;
+                  if (hierarchyPath.length > 2 && h3 !== hierarchyPath[2]) return false;
+
+                  // 2. Leaf Requirement (All 3 levels must be present)
+                  if (!h1 || h1 === "") return false;
+                  if (!h2 || h2 === "") return false;
+                  if (!h3 || h3 === "") return false;
+
                   return true;
-               } 
+               });
                
-               return true;
-            });
+               if (matchedDefs.length > 0) {
+                 matchedDefs.forEach((d: any) => ids.push(d.h_id));
+               } else {
+                  console.warn(`IDs not found for: ${path.join(">")}`);
+               }
 
-            if (matchedDef) {
-              ids.push(matchedDef.hid);
             } else {
-               // Log warning but proceed
-               console.warn(`ID not found for: ${path.join(">")}`);
+               // Logic For True (Exact Match - Existing)
+                const matchedDef = definitions.find((def: any) => {
+                   // Level 1
+                   const h1 = def[`${prefix}_hierarchy_1`] || def[`hierarchy_1`] || def[`${prefix}_heirarchy_1`] || def[`heirarchy_1`];
+                   if (h1 !== hierarchyPath[0]) return false;
+
+                   // Level 2
+                   const h2 = def[`${prefix}_hierarchy_2`] || def[`hierarchy_2`] || def[`${prefix}_heirarchy_2`] || def[`heirarchy_2`];
+                   if (hierarchyPath.length > 1) {
+                      if (h2 !== hierarchyPath[1]) return false;
+                   } else {
+                      if (h2 && h2 !== "") return false;
+                   }
+
+                   // Level 3
+                   const h3 = def[`${prefix}_hierarchy_3`] || def[`hierarchy_3`] || def[`${prefix}_heirarchy_3`] || def[`heirarchy_3`];
+                   if (hierarchyPath.length > 2) {
+                      if (h3 !== hierarchyPath[2]) return false;
+                   } else {
+                      if (!isIA && h3 && h3 !== "") return false;
+                   }
+                   
+                   // isActive Check
+                   if (isIA) {
+                      if (def.isActive !== true) return false;
+                      return true;
+                   } 
+                   
+                   return true;
+                });
+
+                if (matchedDef) {
+                  ids.push(matchedDef.h_id);
+                } else {
+                   // Log warning but proceed
+                   console.warn(`ID not found for: ${path.join(">")}`);
+                }
             }
           });
         }
@@ -528,11 +669,37 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
 
     try {
       console.log("Creating User Payload:", payload);
-      await registerUser(payload);
-      notifySuccess("User created successfully");
-      setIsPermissionModalOpen(false);
-      setIsOpenUser(false);
-      refetch();
+      let response:any = null;
+      if(payload.edit){
+        response = await editUser(payload);
+           notifySuccess("User updated successfully");
+        if(response.status===200){
+          setIsPermissionModalOpen(false);
+          setIsOpenUser(false);
+          refetch()
+          notifySuccess("user updated succesfully")
+        }
+        else{
+          console.log('response', response);
+          notifyError("Failed to update user: "+response?.response?.msg);
+        }
+
+      }else{
+        response = await registerUser(payload);
+
+        notifySuccess("User created successfully");
+        if(response.status===201){
+          setIsPermissionModalOpen(false);
+          setIsOpenUser(false);
+          refetch()
+          notifySuccess("user created succesfully")
+        }
+        else{
+          console.log('response', response);
+          notifyError("Failed to create user: "+response?.response?.msg);
+        }
+      }
+
     } catch (error) {
       console.error(error);
       notifyError("Failed to create user");
@@ -649,6 +816,8 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
         dataAllPermissions={dataAllPermissions}
         createUser = {createUser}
         key={infoUser.id}
+        selectedPermissions={selectedPermissions}
+        setSelectedPermissions={setSelectedPermissions}
         setPrevModal={()=>{
           setContentModal({
             callApi: 1,

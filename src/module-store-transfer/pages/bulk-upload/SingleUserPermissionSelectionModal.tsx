@@ -84,7 +84,7 @@ const hasSelectedPermissions = (permissions: any): boolean => {
   return false; 
 };
 
-const SingleUserPermissionSelectionModal = ({dataAllPermissions,closeModal, createUser, activeApplications, infoUser, setInfoUser , setPrevModal}: { dataAllPermissions: any, closeModal: any, createUser: any, activeApplications: any, infoUser: any, setInfoUser: any, setPrevModal: any}) => {
+const SingleUserPermissionSelectionModal = ({dataAllPermissions,closeModal, createUser, activeApplications, infoUser, setInfoUser , setPrevModal, selectedPermissions, setSelectedPermissions}: { dataAllPermissions: any, closeModal: any, createUser: any, activeApplications: any, infoUser: any, setInfoUser: any, setPrevModal: any, selectedPermissions: any, setSelectedPermissions: any}) => {
   const [isChartView, setIsChartView] = React.useState(false);
   const [allApplications, setAllApplications] = useState<any>(dataAllPermissions?.map(
     (ele: any) => ele.application_name
@@ -96,8 +96,6 @@ const SingleUserPermissionSelectionModal = ({dataAllPermissions,closeModal, crea
     useEffect(()=>{
       console.log("activeApplications changed", activeApplications);
     },[activeApplications])
-  
-  const [selectedPermissions, setSelectedPermissions] = useState<any>({});
   
   const ResetPermissions = ()=>{
     // gridRef?.current?.api?.forEachNode((node: IRowNode, index: number)=>{

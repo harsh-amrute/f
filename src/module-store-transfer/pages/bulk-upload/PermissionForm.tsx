@@ -101,15 +101,15 @@ const PermissionForm = ({
            const prefix = type.split('_')[0];
            return permissionIds.some((p: any) => {
                if (level === 0) {
-                   return (p[`${prefix}_hierarchy_1`] === key || p.hierarchy_1 === key) && 
-                          (!p[`${prefix}_hierarchy_2`] && !p.hierarchy_2) && 
-                          p.isActive;
+                   const h1 = p[`${prefix}_hierarchy_1`] || p.hierarchy_1;
+                   const h2 = p[`${prefix}_hierarchy_2`] || p.hierarchy_2;
+                   return h1 === key && (!h2 || h2 === "") && p.isActive;
                } 
                if (level === 1) {
-                   return (p[`${prefix}_hierarchy_1`] === parentKey || p.hierarchy_1 === parentKey) && 
-                          (p[`${prefix}_hierarchy_2`] === key || p.hierarchy_2 === key) && 
-                          (!p[`${prefix}_hierarchy_3`] && !p.hierarchy_3) && 
-                          p.isActive;
+                   const h1 = p[`${prefix}_hierarchy_1`] || p.hierarchy_1;
+                   const h2 = p[`${prefix}_hierarchy_2`] || p.hierarchy_2;
+                   const h3 = p[`${prefix}_hierarchy_3`] || p.hierarchy_3;
+                   return h1 === parentKey && h2 === key && (!h3 || h3 === "") && p.isActive;
                }
                return false;
            });

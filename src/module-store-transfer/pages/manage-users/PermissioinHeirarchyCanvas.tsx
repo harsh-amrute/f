@@ -70,8 +70,10 @@ const CustomNode = ({
 
   const { user } = useUserData();
 
-  const getPathArray = (key: string) =>
-    key.split(">").map((part) => part.split("_").slice(1).join("_"));
+  const getPathArray = (key: string) => {
+    if (!key) return [];
+    return key.split(">").map((part) => part.split("_").slice(1).join("_"));
+  }
 
   const pathArray = getPathArray(data.key);
 
@@ -129,54 +131,7 @@ const CustomNode = ({
     return !hasSiblingSelected;
   };
 
-  const getAllChildrenPaths = (pathArray: string[]) => {
-    const currentPath = pathArray.join("/");
-    return nodes
-      .map((node: any) => ({
-        path: getPathArray(node.data.key).join("/"),
-        index: node.data.index,
-        arrPath: getPathArray(node.data.key),
-      }))
-      .filter(
-        ({ path }: { path: any }) =>
-          path.startsWith(currentPath) && path !== currentPath
-      );
-  };
 
-  const getAllParentPaths = (pathArray: string[]) => {
-    const parents: string[][] = [];
-    for (let i = 1; i < pathArray.length; i++) {
-      parents.push(pathArray.slice(0, i));
-    }
-    return parents;
-  };
-
-  function getUpdatedPermissionsOnDeselect(
-    currentPath: string[],
-    existingPermissions: string[][]
-  ): string[][] {
-    const updatedPermissions = existingPermissions.filter(
-      (perm) => !currentPath.every((val, idx) => perm[idx] === val)
-    );
-
-    const parentPath = currentPath.slice(0, -1);
-
-    const stillHasChildren = updatedPermissions.some(
-      (perm) =>
-        parentPath.every((val, idx) => perm[idx] === val) &&
-        perm.length > parentPath.length
-    );
-
-    const parentExists = updatedPermissions.some(
-      (perm) => JSON.stringify(perm) === JSON.stringify(parentPath)
-    );
-
-    if (!stillHasChildren && parentPath.length > 0 && !parentExists) {
-      updatedPermissions.push(parentPath);
-    }
-
-    return updatedPermissions;
-  }
 
   const getSelectionState = (key: string) => {
     const path = getPathArray(key);
@@ -212,7 +167,7 @@ const CustomNode = ({
 
   const setTheChecked = () => {
     const currentPath = pathArray;
-    let existingPermissions = [...getPermissionList()];
+    const existingPermissions = [...getPermissionList()];
     const currentState = getSelectionState(data.key);
 
     if (currentState === "unchecked") {
@@ -243,34 +198,8 @@ const CustomNode = ({
              // Remove ancestor
              existingPermissions.splice(coveringAncestorIndex, 1);
 
-             // Add all other siblings of start of branch leading to current
-             // We need to drill down from Ancestor to Current, adding siblings at each level.
-             
-             let walker = ancestorPath;
-             // While walker is shorter than currentPath
-             while (walker.length < currentPath.length) {
-                 // Get all children of 'walker'
-                 const children = getAllChildrenPaths(walker).filter((child: any) => {
-                    // Start of child path must match walker (guaranteed by getAllChildrenPaths)
-                    // We need immediate children: length == walker.length + 1
-                    return child.arrPath.length === walker.length + 1;
-                 });
-                 
-                 // Find which child leads to currentPath
-                 const nextStep = children.find((child: any) => {
-                     return currentPath.slice(0, child.arrPath.length).every((val:string, idx:number) => val === child.arrPath[idx]);
-                 });
-                 
-                 // Add all OTHER children
-                 children.forEach((child: any) => {
-                     if (child !== nextStep) {
-                         existingPermissions.push(child.arrPath);
-                     }
-                 });
-                 
-                 if (!nextStep) break; // Should not happen if Ancestor covers Current
-                 walker = nextStep.arrPath;
-             }
+             // Add current path (Narrowing from Ancestor to Specific Child)
+             existingPermissions.push(currentPath);
         }
         
         // 3. Ensure Parent Stays Selected (if it was implicit/explicit before)
@@ -516,18 +445,18 @@ export default function PermissionHeirarchyCanvas({
       const prefix = permissionType.split('_')[0];
 
       if (pathArray.length === 1) {
-         return permissionIds.some((p: any) => 
-             (p[`${prefix}_hierarchy_1`] === pathArray[0] || p.hierarchy_1 === pathArray[0]) && 
-             (!p[`${prefix}_hierarchy_2`] && !p.hierarchy_2) && 
-             p.isActive === true
-         );
+         return permissionIds.some((p: any) => {
+             const h1 = p[`${prefix}_hierarchy_1`] || p.hierarchy_1;
+             const h2 = p[`${prefix}_hierarchy_2`] || p.hierarchy_2;
+             return h1 === pathArray[0] && (!h2 || h2 === "") && p.isActive === true;
+         });
       } else if (pathArray.length === 2) {
-         return permissionIds.some((p: any) => 
-             (p[`${prefix}_hierarchy_1`] === pathArray[0] || p.hierarchy_1 === pathArray[0]) && 
-             (p[`${prefix}_hierarchy_2`] === pathArray[1] || p.hierarchy_2 === pathArray[1]) && 
-             (!p[`${prefix}_hierarchy_3`] && !p.hierarchy_3) && 
-             p.isActive === true
-         );
+         return permissionIds.some((p: any) => {
+             const h1 = p[`${prefix}_hierarchy_1`] || p.hierarchy_1;
+             const h2 = p[`${prefix}_hierarchy_2`] || p.hierarchy_2;
+             const h3 = p[`${prefix}_hierarchy_3`] || p.hierarchy_3;
+             return h1 === pathArray[0] && h2 === pathArray[1] && (!h3 || h3 === "") && p.isActive === true;
+         });
       }
       return false;
     };
@@ -997,8 +926,8 @@ export default function PermissionHeirarchyCanvas({
         });
       });
 
-      setOpened(Array(level1.length + level2.length + level3.length).fill(1));
-      setChecked(Array(level1.length + level2.length + level3.length).fill(1));
+      setOpened(Array(level1.length + level2.length + level3.length).fill(0));
+      setChecked(Array(level1.length + level2.length + level3.length).fill(0));
     }
   }, [selectedAppAllPermissions, permissionType]);
 
