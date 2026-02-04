@@ -70,7 +70,9 @@ const UserPermissionsView = () => {
           MainService.getUserPermissions(user.user.id),
         ]);
 
+        let allPermissionsData: any[] = [];
         if (allPermsRes.data) {
+          allPermissionsData = allPermsRes.data;
           setDataAllPermissions(allPermsRes.data);
           // Set default selected application
           if (allPermsRes.data.length > 0) {
@@ -79,22 +81,66 @@ const UserPermissionsView = () => {
         }
 
         if (userPermsRes.data) {
-           // Transform user permissions if necessary to match the expected format for the canvas/form
-           // The API usually returns the JSON structure directly.
-           // However, we need to inspect the response structure from previous tasks/conversations.
-           // Assuming standard structure based on `manage-users` usage.
-           // For `selectedPermissions` prop in canvas, it expects: { [appName]: { [permType]: [[path], ...] } }
-           // The `get-user-permissions` might return the role/permissions object.
+           const isDynamicPermissions = (user.config_data.INHERITED_ACCESS === "1") || false;
+           // Parse permissions
+           const fetchedPermissionsArray = userPermsRes.data.permissions || userPermsRes.data;
+           const newSelectedPermissions: any = {};
            
-           // Based on `manage-users/index.tsx`, `selectedPermissions` is maintained in state.
-           // We need to see how `getUserPermissions` returns data.
-           // If it returns the same structure as what we save, we can use it directly.
-           // If it returns a User object with `permissions` field, we use that.
+           if (Array.isArray(fetchedPermissionsArray) && allPermissionsData.length > 0) {
+              fetchedPermissionsArray.forEach((appPerm: any) => {
+                  const appName = appPerm.application_name;
+                  const appData = allPermissionsData.find((d: any) => d.application_name === appName);
+                  
+                  if (appData) {
+                    newSelectedPermissions[appName] = {};
+
+                    // Iterate through keys (e.g., location_hids, product_hids)
+                    Object.keys(appPerm).forEach((key) => {
+                        if (key.endsWith('_hids')) {
+                            const hids = appPerm[key];
+                            if (!Array.isArray(hids) || hids.length === 0) return;
+
+                            const type = key.replace('_hids', '_permission'); 
+                            const defKey1 = `${type}_ids`; 
+                            const defKey2 = `${type.replace("_permission", "")}_permission_ids`;
+                            
+                            const definitions = appData[defKey1] || appData[defKey2] || [];
+                            const prefix = type.split("_")[0];
+
+                            const paths = hids.map((hid: string) => {
+                                const cleanHid = hid.endsWith('_') ? hid.slice(0, -1) : hid;
+                                const def = definitions.find((d: any) => d.h_id === cleanHid || d.h_id === hid);
+                                if (!def) return null;
+
+                                const h1 = def[`${prefix}_hierarchy_1`] || def[`hierarchy_1`] || def[`${prefix}_heirarchy_1`] || def[`heirarchy_1`];
+                                const h2 = def[`${prefix}_hierarchy_2`] || def[`hierarchy_2`] || def[`${prefix}_heirarchy_2`] || def[`heirarchy_2`];
+                                const h3 = def[`${prefix}_hierarchy_3`] || def[`hierarchy_3`] || def[`${prefix}_heirarchy_3`] || def[`heirarchy_3`];
+
+                                const path = [h1, h2, h3].filter(Boolean);
+
+                                if (!isDynamicPermissions) {
+                                    const isLeaf = (h3 && h3 !== ""); 
+                                    if (!isLeaf) {
+                                        path.push("isActive");
+                                    }
+                                }
+                                
+                                return path;
+                            }).filter((p: any) => p !== null);
+
+                            if (paths.length > 0) {
+                                newSelectedPermissions[appName][type] = paths;
+                            }
+                        }
+                    });
+                     if (Object.keys(newSelectedPermissions[appName]).length === 0) {
+                        delete newSelectedPermissions[appName];
+                    }
+                  }
+              });
+           }
            
-           // Looking at `api.ts`, `getUserPermissions` calls `/api/user/get-user-permissions/?id=...`
-           // Let's assume it returns the permissions object directly or consistent with what we need.
-           // If we need to adapt, we'll debug.
-           setUserPermissions(userPermsRes.data.permissions || userPermsRes.data);
+           setUserPermissions(newSelectedPermissions);
         }
 
       } catch (error) {

@@ -530,7 +530,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   const { mutateAsync: registerUser } = useRegisterUser();
   const {mutateAsync: editUser} = usePutEditUser();
 
-  const isDynamicPermissions = (user.config_data.dynamic_permissions==1) || false
+  const isDynamicPermissions = (user.config_data.INHERITED_ACCESS==="1") || false
 
   console.log("isDynamicPermissions", isDynamicPermissions)
 
