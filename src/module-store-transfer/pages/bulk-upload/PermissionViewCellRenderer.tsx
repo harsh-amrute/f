@@ -22,13 +22,13 @@ const PermissionViewCellRenderer = (params: MyCellRendererProps) => {
 
   const user = useUserData();
   const themeUi = user.user.user.theme_ui;
-
   return (
     <>
-      {PermissionCount > 0 ? (
+      {(
         <Container>
           {
-            params.data.errorPermission ?
+            Object.keys(params.data).some((e:any)=>e=='errorPermission') && (
+              params.data.errorPermission ?
               <ImageSpan>
                 <img
                   style={{ width: "20px", height: "20px" }}
@@ -39,7 +39,8 @@ const PermissionViewCellRenderer = (params: MyCellRendererProps) => {
                 <img
                   style={{ width: "20px", height: "20px" }}
                   src="\assets\img\check_list_icon.svg" alt="" />
-              </ImageSpan>
+              </ImageSpan>)
+             
           }
           
           <VFButton
@@ -56,36 +57,10 @@ const PermissionViewCellRenderer = (params: MyCellRendererProps) => {
               }
             }}
           >
-            {"View / Edit Permissions"}
+            {PermissionCount > 0? "View / Edit Permissions": "Select Permissions"}
           </VFButton>
         </Container>
-      ) : (
-        <Container> 
-            {
-              params.data.errorPermission &&
-              <ImageSpan>
-                <img
-                  style={{ width: "20px", height: "20px" }}
-                  src="\assets\img\error_icon.svg" alt="" />
-              </ImageSpan>
-            }
-          <VFButton
-            style={{ width: "80%", height: "25px", fontSize: "1rem" }}
-            themeUi={themeUi}
-            onClick={() => {
-              if (params?.data?.roles?.size && params?.data?.roles?.size > 0) {
-                params.setRowIndex(params.node.rowIndex || 0);
-                params.setIsPermissionModalOpen?.(true);
-              }
-              else {
-                notifyWarning("select a role before selecting permissions");
-              }
-            }}
-          >
-            {"Select Permissions"}
-          </VFButton>
-        </Container>   
-      )}
+      ) }
     </>
   );
 };
