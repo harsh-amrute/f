@@ -63,6 +63,10 @@ const FileUploadTile = ({ handleFileChange, handleUploadClick, file}: any) => {
             {file?.name && (
               <div
                 className={subTextStyle}
+                style={assignInlineVars({
+                  [subTextFontSizeVar]: "1.15rem",
+                  [subTextFontWeightVar]: "300",
+                })}
               >{`Selected file :  ${file.name}`}</div>
             )}
             <div

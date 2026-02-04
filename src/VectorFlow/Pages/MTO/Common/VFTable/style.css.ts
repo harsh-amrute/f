@@ -57,3 +57,11 @@ globalStyle(`${VFTableWrapper} > .ag-header-cell-resize`, {
 /** helper to set height at runtime (defaults to 'auto') */
 // export const vfTableWrapperVars = (height?: string) =>
 //   assignInlineVars({ [vHeight]: height ?? 'auto' });
+
+globalStyle(
+  `${VFTableWrapper} .ag-theme-alpine .ag-charts-wrapper .ag-charts-aria-announcer,
+   ${VFTableWrapper} .ag-theme-alpine .ag-charts-wrapper .ag-charts-canvas-proxy`,
+  {
+    display: 'none !important',
+  }
+);
