@@ -10,7 +10,7 @@ export namespace DueDateQuotationService {
                 //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
             },
             params: {
-                report_name: reportName
+                reportName: reportName
             }
         })
     }

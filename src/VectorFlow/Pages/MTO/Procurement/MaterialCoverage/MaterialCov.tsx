@@ -1,34 +1,35 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+import { useGetOpenSODetailsData, useGetOpenSODetailsDataForExcelExport, useGetSOSummaydetails } from '../../../../../VectorFlow/Services/MTO/Procurement/MaterialCoverage';
+import ActionToolBar from "../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
+import VFFloatingTab from "../../../../../components/VectorFLOW/commons/VFFloatingTab";
+import { notifyError, notifyLoader } from '../../../../../helpers/notify';
+import useFilter from "../../../../../hooks/useFilter";
+import { MaterialCoverageString } from '../../Common/String';
 import {
+  BTRLayoutTabsWrapper,
+  ProcurementLayout,
   TextXAxis,
   TextYAxis,
-  BTRLayoutTabsWrapper,
 } from '../MaterialCoverage/styles';
-import VFFloatingTab from "../../../../../components/VectorFLOW/commons/VFFloatingTab"
-import ActionToolBar from "../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar"
-import FutureCov from './FutureCov';
-import CurrentCov from './CurrentCov';
-import { MaterialCoverageString } from '../../Common/String';
-import MaterialSODetailed from './MaterialSODetailed';
 import { DetailsObj } from './CommonFunc';
-import { useGetSOSummaydetails } from '../../../../../VectorFlow/Services/MTO/Procurement/MaterialCoverage';
-import { toast } from 'react-toastify';
-import { notifyError, notifyLoader, notifySuccess} from '../../../../../helpers/notify';
-import useFilter from "../../../../../hooks/useFilter";
-// import { APIResponseMock } from '../../Production/InsightsAndTrends/OrderBalance/OrderBalanceMockData';
+import CurrentCov from './CurrentCov';
+import FutureCov from './FutureCov';
 import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
-import OverlayLoader from '../../Common/Loader';
-import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
-import { useGetUIConfigData } from '../../../../Services/MTO/Common/UIConfig';
-import { formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from '../../../../../helpers/utils';
-import { FilterPageName, UIGridCode } from "../../Common/Enum";
-import { useUserData } from "../../../../../context/index";
-import ColorCellRenderer from "../../Common/ColorCellRenderer/ColorCellRenderer";
-import CustomGroupCellRenderer from "./CustomGroupCellRenderer";
-import useColDef from '../../../../../hooks/useColDef';
-import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
-import ChildrenColor from "../../Common/ChildrenColor/ChildrenColor";
 import { useGetDBRsettingsData } from '../../../../../VectorFlow/Services/MTO/Common/DBRSettings';
+import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
+import { useUserData } from "../../../../../context/index";
+import CommonGridview, { getExcelExportDataArgs, getRowDataArgs } from '../../../../../helpers/CommonGridview';
+import { getColumnDefinations } from '../../../../../helpers/utils';
+import useColDef from '../../../../../hooks/useColDef';
+import { useGetUIAndUserConfigData } from '../../../../Services/MTO/Common/UIConfig';
+import BomExcelModal from '../../Common/BomExcelModal';
+import ChildrenColor from "../../Common/ChildrenColor/ChildrenColor";
+import ColorCellRenderer from "../../Common/ColorCellRenderer/ColorCellRenderer";
+import { FilterPageName, UIGridCode } from "../../Common/Enum";
+import OverlayLoader from '../../Common/Loader';
+import CustomGroupCellRenderer from "./CustomGroupCellRenderer";
+import useMaterialSO from './useMaterialSO';
 
 
 
@@ -45,33 +46,25 @@ const APIFilterConfig = {
 
 const MaterialCov = () => {
   const [detailDataObj, setDetailDataObj] = useState<DetailsObj>();
-  // const [currTab, setCurrTab] = useState<string>("Current Coverage");
   const [currTab, setCurrTab] = useState<string>("CurrentCoverage");
   const [toggleComponent, setToggleComponent] = useState<boolean>(false);
   const [soData, setSOData] = useState<any>([]);
   const { mutateAsync: getSOSummaryData, isLoading, /*refetch*/ } = useGetSOSummaydetails();
   const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData();
   const [filterData, setFilterData] = useState({});
-  const [currentGridRef, setCurrentGridRef] = useState<any>(null);
-  const [columnState, setColumnState] = useState<any>([]);
-  const [isReset, setIsReset] = useState<boolean | undefined>(undefined);
-  const [colDef, setColDef] = useState<any>([]);
-  const [HeaderData, setHeaderData] = useState([]);
-  const [HeaderDataChild, setHeaderDataChild] = useState([]);
-  const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
-  const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
-  const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+  
+  const { mutateAsync: getOpenSODetailsData, isLoading: gridDataLoading} = useGetOpenSODetailsData()
+  const { mutateAsync : getOpenSODetailsDataForExcelExport } = useGetOpenSODetailsDataForExcelExport();
   const { user } = useUserData();
-  const { getColDef , colDefMap} = useColDef();
-  const [defaultColState,setDefaultColState] = useState<any>([])
+  const {  getNewColDef} = useColDef();
 
-  const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
-  const [userPageSize, setUserPageSize] = useState<any>();
   const {mutateAsync: getDBRsettingsData} = useGetDBRsettingsData();
   const [childColDef, setChildColDef] = useState<any>();
-  const [showExcelModal, setShowExcelModal] = useState(false);
-  const [excelBody, setExcelBody] = useState<any>({});
-
+  
+  const [isAllData, setIsAllData] = useState(false);
+  
+    const reportName = detailDataObj?.allOrders ? "MaterialCoverageforOpenSalesAllOrders" :'MaterialCoverageforOpenSalesOrder';
+    const childReportName = "MaterialCoverageforOpenSalesOrder_Child"
   
     const { 
     state: currFilter, 
@@ -82,11 +75,34 @@ const MaterialCov = () => {
     onAddFilter, 
     onApplyFilter, 
     toggleFilter,
-      appliedFilters,
+    appliedFilters,
+    setAppliedFilters,
   } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_Material_Coverage_For_OpenSO);
 
-    const themeUi = user?.user?.theme_ui;
+  const {
+    agGridProps,
+    getInitialDataQuery,
 
+} = useMaterialSO(detailDataObj, childColDef);
+
+
+
+    const themeUi = user?.user?.theme_ui;
+    
+    const tabs = [
+      {
+        id: "1",
+        value: 'CurrentCoverage',
+        label: "Current Coverage"
+      },
+      {
+        id: "2",
+        value: 'FutureCoverage',
+        label: "Future Coverage"
+      }
+    ]
+  
+    const defaultTab = tabs.findIndex(tab => tab.value === currTab)
 
   useEffect(() => {
     if (isLoading) {
@@ -112,8 +128,6 @@ const MaterialCov = () => {
 
   const getSOData = async () => {
     try {
-      // const formatedFilters = formatFilterJSON(appliedFilters);
-      // const response = await getSOSummaryData({ appliedFilters: formatedFilters});
       const response = await getSOSummaryData();
       setSOData(response?.data?.data || []);
     } catch (error) {
@@ -123,117 +137,35 @@ const MaterialCov = () => {
   }
 
   useEffect(() => {
-    getSOData();
-    // }, [appliedFilters])
-  }, [])
+      getSOData();
+  }, []);
 
-  const tabs = [
-    {
-      id: "1",
-      value: 'CurrentCoverage',
-      label: "Current Coverage"
-    },
-    {
-      id: "2",
-      value: 'FutureCoverage',
-      label: "Future Coverage"
-    }
-  ]
 
-  const defaultTab = tabs.findIndex(tab => tab.value === currTab)
+    const { mutateAsync: getUIAndUserConfigData  } =
+      useGetUIAndUserConfigData();
 
-  const getUserColumnConfig = async () => {
+  const setColumnDef = async () => {
       try {
-        const data = await getUserUIReportConfigData({
-          un: user.user.name,
-          rn_id: (detailDataObj?.allOrders)?UIGridCode.ProcMaterialCovOpenSalesAll:UIGridCode.ProcMaterialCovOpenSales
+        const response = await getUIAndUserConfigData({
+          reportName:childReportName,
+          userName: user.user.name,
+          reportNameId:UIGridCode.ProcMaterialCovOpenSales,
         });
+        const defaultColDef = response?.data?.data?.default_coldef;
+      
+        getNewColDef(response);
+        setChildColDef(
+          getColumnDefinations(
+            defaultColDef,
+            childCustomheader
+          )
+        );
   
-        setUserConfigFetched(true);
-        const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
-        setUserPageSize(newConfig.pageSize? Number(newConfig.pageSize) : undefined);
-        setColumnState(newConfig.cs)
-
-  
-        if (!data) {
-          console.error('Failed to apply column state');
-        }
-      } catch (error) {
-        console.error(error);
+       
+      } catch (e) {
+        console.log(e);
       }
-  }
-
-  useEffect(()=>{
-    if(colDef.length > 0 && currentGridRef?.current?.api && !defaultColState.length){
-      setDefaultColState(currentGridRef?.current?.api?.getColumnState())
-    }
-  },[colDef,currentGridRef])
-
-  
-
-  const handleSaveClick = async (isReset = false, page_size?: number) => {
-    try {
-      if (page_size) {
-        const config = columnState;
-        const fullConfig = { cs: config, pageSize: page_size };
-        const payload = {
-          un: user.user.name,
-          rn_id: (detailDataObj?.allOrders)?UIGridCode.ProcMaterialCovOpenSalesAll:UIGridCode.ProcMaterialCovOpenSales,
-          cs: JSON.stringify(fullConfig),
-        };
-        await updateUserUIReportConfigData([payload]);
-
-      } else {
-
-        const config = isReset ? defaultColState : currentGridRef.current.api.getColumnState(); 
-        
-  
-        const fullConfig = {
-          cs: config,
-          pageSize: userPageSize,
-        };
-  
-        const payload = {
-          un: user.user.name,
-          rn_id: (detailDataObj?.allOrders)?UIGridCode.ProcMaterialCovOpenSalesAll:UIGridCode.ProcMaterialCovOpenSales,
-          cs: JSON.stringify(fullConfig),
-        };
-  
-        await updateUserUIReportConfigData([payload]);
-        !isReset && notifySuccess("Saved successfully")
-    
-
-        if (!isReset) {
-          setColumnState([...config]);
-        }
-      }
-  
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  
-  const handleResetClick = () => {
-    setIsReset(true);
-  }
-
-
-
-  const reportName = 'MaterialCoverageforOpenSalesOrder';
-  const childReportName = "MaterialCoverageforOpenSalesOrder_Child"
-  const getHeaderData = async () => {
-      try {
-          const response = await getUIConfigData(reportName);
-        const childResponse = await getUIConfigData(childReportName)
-          getColDef(response)
-          setHeaderData(response.data.data);
-          setHeaderDataChild(childResponse.data.data)
-      }
-      catch (e) {
-          console.log(e);
-      }
-  }
+    };
 
 
   const customHeader =
@@ -253,6 +185,11 @@ const MaterialCov = () => {
               const fka = params.data.fka;
               return `${fka}/${oq} kits can be manufactured`;
           },
+      },
+      fk_status : {
+        pinned: 'right',
+        lockPinned: true,
+        suppressMovableColumns:true,
       }
   }
 
@@ -286,62 +223,16 @@ const MaterialCov = () => {
     }
   }
 
-  useEffect(() => {
-    const coldefs = getColumnDefinations(HeaderData, customHeader, extras);
-    const childColDefs = getColumnDefinations(HeaderDataChild,childCustomheader)
-    if(detailDataObj?.allOrders){
-      setColDef([
-        {
-          field: "fk_status",
-          headerName: "Status",
-          minWidth: 150,
-        },...coldefs]
-      )
-    }else{
-    setColDef(coldefs);
-    }
-  
-    setChildColDef(childColDefs)
-  }, [HeaderData, detailDataObj,HeaderDataChild])
 
   useEffect(() => {
-    getHeaderData();
+    // getHeaderData();
+    setColumnDef()
     getFilterData()
   }, [])
 
-  useEffect(()=>{
-    if(defaultColState && defaultColState.length){
-      getUserColumnConfig();
-    }
-
-  },[defaultColState, detailDataObj])
-
-  useEffect(() => {
-    if (isReset) {
-      setColumnState([...defaultColState])
-
-      handleSaveClick(true);
-
-      setIsReset(false) 
-      notifySuccess("Reset successfully")
-
-    }
-  }, [isReset]);
 
   
-  
-  const materialSoDetailRef = useRef<any>();
-  
-  const callExportExcel = () => {
-    const headersdata = currentGridRef?.current?.api.getColumnState();
-    const formattedFilters = formatFilterJSON(appliedFilters)
-    const body = getBodyForExcelExport({ headersdata, filterData: formattedFilters, colDefMap })
-    setExcelBody(body);
-    setShowExcelModal(true);
-  }
 
-
-  const [isAllData, setIsAllData] = useState(false);
 
   const getSettingsData = async()=>{
     const DBRSettingsData: any = await getDBRsettingsData()
@@ -357,147 +248,218 @@ const MaterialCov = () => {
   useEffect(()=>{
     getSettingsData()
   },[])
+
+  type ExportModalProps = {
+    onConfirm: () => void;
+    onCancel: () => void; 
+    onClose: () => void;
+    showExcelModal : boolean;
+  };
+  
+  const BomExcelExportModal = ({
+    onConfirm,
+    onCancel,
+    onClose,
+    showExcelModal,
+  }: ExportModalProps) => {
+    return (
+      <BomExcelModal
+        open={showExcelModal}
+        onClose={onClose}
+        onConfirm={onConfirm}
+        onCancel={onCancel}
+        themeUi={themeUi}
+        headerText="Excel Export"
+        messageText="Do you want to download Excel with RM/PM details?"
+      />
+    );
+  };
+
   return (
     <div style={{ width: "100%", height: "100%" }}>
-      {!toggleComponent ?
+      {!toggleComponent ? (
         <>
-          {
-            isLoading && (
-              <OverlayLoader />
-            )
-          }
+          {isLoading && <OverlayLoader />}
 
           <ActionToolBar
-            comp={'MaterialCov'}
+            comp={"MaterialCov"}
             themeUi={themeUi}
-            // isAddFilterButton
-            // isFilterOpen={isFilterOpen}
-            // onAddFilter={onAddFilter}
-            // toggleFilter={toggleFilter}
-            // onApplyFilter={onApplyFilter}
-            // isMfgSelected={isMfgSelected}
-            // multiFilter={currFilter}
-            // setMultiFilter={setCurrFilter}
-            // onFilterRemove={onFilterRemove}
-            // onDateChange={() => { console.log('') }}
-            // submitDate={() => { console.log('') }}
           />
-          <div >
-            <div style={{display: 'flex', justifyContent: isAllData?'right':'center', alignItems: 'center', width: '100%', padding: '0 1rem'}}>
-
-            <BTRLayoutTabsWrapper>
-              <VFFloatingTab
-                handleClick={(e) => setCurrTab(e.value)}
-                tabs={tabs}
-                defaultTab={defaultTab}
-              />
-
+          <div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: isAllData ? "right" : "center",
+                alignItems: "center",
+                width: "100%",
+                padding: "0 1rem",
+              }}
+            >
+              <BTRLayoutTabsWrapper>
+                <VFFloatingTab
+                  handleClick={(e) => setCurrTab(e.value)}
+                  tabs={tabs}
+                  defaultTab={defaultTab}
+                />
               </BTRLayoutTabsWrapper>
-              
-           
-              {isAllData &&
 
-                <VFButton style={{ marginLeft: '30%', fontSize: '10px', height: '30px', fontFamily: 'roboto' }} themeUi={themeUi} onClick={() => { handleToggleComponent(true), handleParameterData({ allOrders: true }) }}>
+              {isAllData && (
+                <VFButton
+                  style={{
+                    marginLeft: "30%",
+                    fontSize: "10px",
+                    height: "30px",
+                    fontFamily: "roboto",
+                  }}
+                  themeUi={themeUi}
+                  onClick={() => {
+                    handleToggleComponent(true),
+                      handleParameterData({ allOrders: true });
+                  }}
+                >
                   Show All Orders
                 </VFButton>
-              }
-                </div>
-            <div style={{ display: 'flex', justifyContent: "center", width: "100%" }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: "center", width: "max-content", position: "relative" }}>
-                <TextXAxis style={{ height: 'max-content', position: "absolute", right: "100%" }}>
+              )}
+            </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                width: "100%",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "max-content",
+                  position: "relative",
+                }}
+              >
+                <TextXAxis
+                  style={{
+                    height: "max-content",
+                    position: "absolute",
+                    right: "100%",
+                  }}
+                >
                   {MaterialCoverageString.orderPriority}
-                  <div style={{
-                    width: "85%",
-                    border: "1px solid #000",
-                    color: "#FFFFFF",
-                    marginBottom: '10px',
-                    marginLeft: '5px'
-                  }}>
-                  </div>
+                  <div
+                    style={{
+                      width: "85%",
+                      border: "1px solid #000",
+                      color: "#FFFFFF",
+                      marginBottom: "10px",
+                      marginLeft: "5px",
+                    }}
+                  ></div>
                 </TextXAxis>
 
                 {/**code goes here */}
-                {
-                  currTab === 'FutureCoverage' ?
-                    <FutureCov handleToggleComponent={handleToggleComponent} setDetailDataObj={handleParameterData} data={soData} />
-                    :
-                    <CurrentCov handleToggleComponent={handleToggleComponent} setDetailDataObj={handleParameterData} data={soData} />
-                }
+                {currTab === "FutureCoverage" ? (
+                  <FutureCov
+                    handleToggleComponent={handleToggleComponent}
+                    setDetailDataObj={handleParameterData}
+                    data={soData}
+                  />
+                ) : (
+                  <CurrentCov
+                    handleToggleComponent={handleToggleComponent}
+                    setDetailDataObj={handleParameterData}
+                    data={soData}
+                  />
+                )}
               </div>
             </div>
 
             <div style={{ display: "flex", justifyContent: "center" }}>
               <TextYAxis style={{ width: "max-content" }}>
                 {MaterialCoverageString.statusKits}
-                <div style={{
-                  width: "85%",
-                  border: "1px solid #000",
-                  color: "#FFFFFF",
-                  marginBottom: '8px',
-                  marginLeft: '5px'
-                }}>
-                </div>
+                <div
+                  style={{
+                    width: "85%",
+                    border: "1px solid #000",
+                    color: "#FFFFFF",
+                    marginBottom: "8px",
+                    marginLeft: "5px",
+                  }}
+                ></div>
               </TextYAxis>
             </div>
           </div>
-
         </>
-        :
-        <div style={{ height: '100%', display: "flex", flexDirection: "column", paddingBottom: "2rem" }}>
-
-
-          <ActionToolBar
-            isGoBackButton
-            themeUi={themeUi}
-            isExcelExport
-            comp={'MaterialCovDetailData'}
-            onDateChange={() => { console.log('') }}
-            submitDate={() => { console.log('') }}
-            handleGoBack={() => {
-              handleToggleComponent(false);
-              // setCurrTab("CurrentCoverage")
+      ) : (
+        <div
+          style={{
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+            paddingBottom: "2rem",
+          }}
+        >
+          <CommonGridview
+            reportName={reportName}
+            columnDefinationProps={{
+              customColDef: customHeader,
+              extras: extras,
             }}
-            // disableRemoveFilter={true}
-            handleSaveClick={handleSaveClick}
-            handleResetClick={handleResetClick}
-            onExcelExportClick={callExportExcel}
-            isAddFilterButton
-            isFilterOpen={isFilterOpen}
-            onAddFilter={onAddFilter}
-            toggleFilter={toggleFilter}
-            onApplyFilter={onApplyFilter}
-            isMfgSelected={isMfgSelected}
-            multiFilter={currFilter}
-            setMultiFilter={setCurrFilter}
-            onFilterRemove={onFilterRemove}
-            // onDateChange={() => { console.log('') }}
-            // submitDate={() => { console.log('') }}
-          />
-
-          <MaterialSODetailed 
-            ref={materialSoDetailRef}
-            isUpdateUserConfig={isUpdateUserConfig}
-            isGetUserConfig={isGetUserConfig}
-            parameterData={detailDataObj}
-            colDef={colDef}
-            setCurrentGridRef={setCurrentGridRef}
-            currentGridRef={currentGridRef}
-            columnState={columnState}
+            gridDataLoading={gridDataLoading}
+            excelExportParams={{
+              isExcelExportFromBackend: true,
+              excelExportReportName: reportName,
+              showBomExcelModal: true,
+              excelExportSheetName: reportName,
+            }}
+            customGridOptions={agGridProps}
+            setAppliedFilters={setAppliedFilters}
+            setCurrentFilters={setCurrFilter}
             appliedFilters={appliedFilters}
-            handleSaveClick={handleSaveClick}
-            userConfigFetched={userConfigFetched}
-            userPageSize={userPageSize}
-            setUserPageSize={setUserPageSize}
-            childColDef={childColDef}
-            showExcelModal={showExcelModal}
-            setShowExcelModal={setShowExcelModal}
-            excelBody={excelBody}
+            reportNameId={UIGridCode.ProcMaterialCovOpenSales}
+            getExcelExportData={(params: getExcelExportDataArgs) => {
+              const queryString = getInitialDataQuery({
+                isChildren: params.isChildren,
+                isExcelExport: true,
+              });
+              return getOpenSODetailsDataForExcelExport({
+                data: queryString,
+                ...params,
+              });
+            }}
+            getRowData={(params: getRowDataArgs) => {
+              const queryString = getInitialDataQuery({
+                currPage: params.page,
+                pageSize: params.page_size,
+              });
+              return getOpenSODetailsData({
+                data: queryString,
+                appliedFilters: params?.appliedFilters,
+              });
+            }}
+            actionToolBarProps={{
+              comp: "MaterialCovDetailData",
+              isAddFilterButton: true,
+              isGoBackButton: true,
+              handleGoBack: () => {
+                handleToggleComponent(false);
+              },
+              isFilterOpen: isFilterOpen,
+              onAddFilter: onAddFilter,
+              toggleFilter: toggleFilter,
+              onApplyFilter: onApplyFilter,
+              isMfgSelected: isMfgSelected,
+              multiFilter: currFilter,
+              setMultiFilter: setCurrFilter,
+              onFilterRemove: onFilterRemove,
+            }}
+            BomExcelExport={BomExcelExportModal}
+            VFWrapper={ProcurementLayout}
+            vfWrapperStyle={{ marginLeft: '25px', flex: "1" }}
           />
+
         </div>
-
-      }
+      )}
     </div>
-
-  )
+  );
 }
 export default MaterialCov;

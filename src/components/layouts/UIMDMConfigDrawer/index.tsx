@@ -27,6 +27,9 @@ const UIMDMConfigDrawer = (props:UIMDMConfigDrawerProps)=>{
 
     const [activeTab, setActiveTab] = useState(0);
 
+    const [savedFilters, setSavedFilters] = useState<any>(null);
+
+
     const onEditRole = (row:any)=>{
         setCurrTab(3); 
         setCurrUIMDMConfig(row)
@@ -60,6 +63,8 @@ const UIMDMConfigDrawer = (props:UIMDMConfigDrawerProps)=>{
                 <Content>
                     <ViewUiMDMConfig
                         onEdit={onEditRole}
+                        savedFilters={savedFilters}
+                        onSaveFilters={setSavedFilters}
                     />
                 </Content>
             )}          

@@ -12,7 +12,7 @@ import {SeasonalityQuickFilterType, type Filter} from '../../../../types/MDM';
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
 import WarningModal from './WarningModal'
 import UploadModal from "./UploadModal";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import VFTaskBar from "./VFTaskbar";
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
 import SeasonalityChartModal from "./SeasonalityChartModal";
@@ -138,15 +138,15 @@ import { RootState } from "../../../../../redux/store/store";
         setIsDisabled(true);
   }
 
-    const CustomStatusPanel = () => {
-                  return (
-                      <GridFilterWrapper style={{marginTop:'25px'}}>
-                          <TextBtn onClick={clearGridFilter} disabled={isDisabled} themeUi={themeUi}>
-                              Clear All Grid Filters
-                          </TextBtn>  
-                      </GridFilterWrapper>           
-                  );
-              };
+const CustomStatusPanel = useMemo(() => {
+  return () => (
+    <GridFilterWrapper style={{marginTop:'25px'}}>
+      <TextBtn onClick={clearGridFilter} disabled={isDisabled} themeUi={themeUi}>
+        Clear All Grid Filters
+      </TextBtn>  
+    </GridFilterWrapper>           
+  );
+}, [isDisabled, themeUi]); // Only recreate when these dependencies change
 
 
     return (

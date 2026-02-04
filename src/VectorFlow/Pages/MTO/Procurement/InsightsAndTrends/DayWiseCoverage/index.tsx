@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import DayWiseCoverageCalender from './DayWiseCoverageCalender';
 import DayWiseCoverageHeader from './DayWiseCoverageHeader'
 import DayWiseCoverageTable from './DayWiseCoverageTable';
@@ -14,14 +14,15 @@ import VFModalCard from '../../../../../../components/VectorFLOW/commons/VFModal
 import MaterialRequirementComponent from '../../MaterialRequirement/MaterialRequirementComponent';
 import useMaterialReq from '../../MaterialRequirement/useMaterialRequirements';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
-import { UIGridCode } from "../../../Common/Enum";
+import { FilterPageName, UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import { getColumnDefinations } from "../../../../../../helpers/utils";
 import ColorCellRenderer from "../../../Common/ColorCellRenderer/ColorCellRenderer";
 import VFLoader from '../../../../../../components/VectorFLOW/commons/VFLoader';
-// import { useGetFilterData } from '../../../../../..//VectorFlow/Services/MTO/Common/CommonFilter';
-// import useFilter from '../../../../../../hooks/useFilter';
+import { useGetFilterData } from '../../../../../..//VectorFlow/Services/MTO/Common/CommonFilter';
+import useFilter from '../../../../../../hooks/useFilter';
+import { ITooltipParams } from 'ag-grid-enterprise';
 
 enum Colors {
     Selected = "#B93B7E",
@@ -30,21 +31,21 @@ enum Colors {
     Red = "#F02424"
 }
 
-// const APIFilterConfig = {
-//     filSecVisConfig: {
-//         "Proc_Day_Wise_Coverage" : {
-//             mjr : false,
-//             or: false,
-//             res: true,
-//             cus: true
-//         },
-//     }
-//   };
+const APIFilterConfig = {
+    filSecVisConfig: {
+        "Proc_Day_Wise_Coverage" : {
+            mjr : false,
+            or: false,
+            res: true,
+            cus: true
+        },
+    }
+  };
 
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
 const DayWiseCoverage = () => {
-    // const currentMonth = format(new Date(), "yyyy-MM");
+    const currentMonth = format(new Date(), "yyyy-MM");
     const minDate = useMemo(() => startOfMonth(add(new Date(), { months: -2 })), [])
     const maxDate = useMemo(() => endOfMonth(new Date()), []);
 
@@ -60,24 +61,26 @@ const DayWiseCoverage = () => {
     const [columnState, setColumnState] = useState<any>([]);
     const [isReset, setIsReset] = useState(false);
     const [colDef, setColDef] = useState([]);
-    // const [filterData, setFilterData] = useState({});
+    const [childColDef, setChildColDef] = useState([]);
+    const [filterData, setFilterData] = useState({});
     const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
     const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
     const { mutateAsync: getData, isLoading: isCalenderLoading } = useGetDayWiseCoverageData();
     const { mutateAsync: getUIConfigData } = useGetUIConfigData();
     const [masterUIConfig, setMasterUIConfig] = useState([]);
 
-    // const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
-    // const { 
-    //     state: currFilter, 
-    //     setState: setCurrFilter, 
-    //     onFilterRemove, 
-    //     isFilterOpen, 
-    //     isMfgSelected,
-    //     onAddFilter, 
-    //     onApplyFilter, 
-    //     toggleFilter
-    // } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_Day_Wise_Coverage);
+    const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
+    const { 
+        state: currFilter, 
+        setState: setCurrFilter, 
+        onFilterRemove, 
+        isFilterOpen, 
+        isMfgSelected,
+        onAddFilter, 
+        onApplyFilter, 
+        toggleFilter,
+        appliedFilters
+    } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_Day_Wise_Coverage);
     const { user } = useUserData();
     const reportName = "DayWiseCoverage";
 
@@ -226,7 +229,7 @@ const DayWiseCoverage = () => {
         if(selectedDate && selectedDate.length && currentGridRef){
             setColumnDef();
         }
-    },[selectedDate, currentGridRef])
+    },[currentGridRef])
 
     const colDefCustomizations = {
         ColorPriority: {
@@ -243,15 +246,54 @@ const DayWiseCoverage = () => {
         },
     };
 
-    const setColumnDef = async () => {
+    const childColDefCustomizations = {
+      MRQ: {
+        cellStyle: {
+          justifyContent: "center",
+          alignItems: "center",
+          display: "flex",
+        },
+        tooltipValueGetter: (params: ITooltipParams) => { return `Missing RM Quantity: ${params.value}` },
+        cellRenderer: (params: any) => {
+            const format = new Intl.NumberFormat('en', {
+                notation: 'compact',
+                compactDisplay: 'short',
+              });
+          return (
+            
+            <div
+              style={{
+                borderRadius: "50%",
+                background:
+                  params.data.rmq == params.data.rmal ? "#33800B" : "#E53F3F",
+                width: "30px",
+                height: "30px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                padding: "1.6rem",
+                color: "white",
+                fontSize: "0.9rem",
+              }}
+            >
+              {format.format(params.value)}
+            </div>
+          );
+        },
+      },
+    };
+
+    const setColumnDef = useCallback(async () => {
         try {
+            const childResponse = await getUIConfigData("DayWiseCoverageChild");
           const response = await getUIConfigData(reportName);
+          setChildColDef(getColumnDefinations(childResponse.data.data,childColDefCustomizations))
           setColDef(getColumnDefinations(response.data.data, colDefCustomizations))
         }
         catch (e) {
           console.log(e);
         }
-    }
+    },[])
 
     const getUserColumnConfig = async () => {
         try {
@@ -330,18 +372,22 @@ const DayWiseCoverage = () => {
         setShowModal(true);
     }
 
-    // const getFilterData = async () => {
-    // try {
-    //     const response = await getPageWiseFilterData({page_name: FilterPageName.Proc_Day_Wise_Coverage});
-    //     setFilterData(response?.data.data);
-    // } catch (error) {
-    //     console.error(error);
-    // }
-    // }
+    const getFilterData = async () => {
+    try {
+        const response = await getPageWiseFilterData({page_name: FilterPageName.Proc_Day_Wise_Coverage});
+        setFilterData(response?.data.data);
+    } catch (error) {
+        console.error(error);
+    }
+    }
+
+      useEffect(() => {
+        getFilterData();
+      }, []);
 
 
     const ExcelExport =()=>{
-        currentGridRef?.current?.api?.exportDataAsExcel({ fileName: `Day_Wise_Coverage${format(Date.now(), "dd/MM/yyyy")}` })
+        currentGridRef?.current?.api?.exportDataAsExcel({ fileName: `Day_Wise_Coverage` , sheetName: 'Day Wise Coverage'});
       }
 
     return (
@@ -350,15 +396,15 @@ const DayWiseCoverage = () => {
                 <MTOActionToolBar 
                     isExcelExport 
                     themeUi={themeUi}
-                    // isAddFilterButton
-                    // isFilterOpen={isFilterOpen}
-                    // onAddFilter={onAddFilter}
-                    // toggleFilter={toggleFilter}
-                    // onApplyFilter={onApplyFilter}
-                    // multiFilter={currFilter}
-                    // setMultiFilter={setCurrFilter}
-                    // onFilterRemove={onFilterRemove}
-                    // isMfgSelected={isMfgSelected}
+                    isAddFilterButton
+                    isFilterOpen={isFilterOpen}
+                    onAddFilter={onAddFilter}
+                    toggleFilter={toggleFilter}
+                    onApplyFilter={onApplyFilter}
+                    multiFilter={currFilter}
+                    setMultiFilter={setCurrFilter}
+                    onFilterRemove={onFilterRemove}
+                    isMfgSelected={isMfgSelected}
                     onExcelExportClick={ExcelExport}
                     handleSaveClick={()=>handleSaveClick()}
                     handleResetClick={handleResetClick}
@@ -378,6 +424,8 @@ const DayWiseCoverage = () => {
                         startDate={format(startOfMonth(startDate), "yyyy-MM-dd")}
                         endDate={format(endOfMonth(endDate), "yyyy-MM-dd")}
                         selectedDate={selectedDate}
+                        appliedFilters={appliedFilters}
+                        childColDef={childColDef}
                     />
                     : <AnimationWrapper>
                         <Player src={'/assets/img/VectorFLOW/BPR/swipe pointer.json'} loop autoplay style={{ height: 100, width: 100 }} />

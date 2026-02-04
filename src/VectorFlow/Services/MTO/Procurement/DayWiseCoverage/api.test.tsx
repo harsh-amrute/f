@@ -20,7 +20,7 @@ describe('Daywise Coverage', () => {
     it('Should get the data', async () => {
 
         mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
-        const response = await getDayWiseCoverageData("", "", "");
+        const response = await getDayWiseCoverageData("", "", "","");
         expect(response.status).toBe(200);
     });
 });

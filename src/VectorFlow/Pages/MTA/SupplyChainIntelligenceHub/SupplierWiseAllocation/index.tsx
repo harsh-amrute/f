@@ -145,6 +145,7 @@ const SupplierWiseAllocation = ()=>{
                       setIsDisabled(true);
                     }
                   }}
+                   tooltipShowDelay={500}
                 />
                 {rowData?.length  > 0 &&
                 <VFPagination

@@ -289,12 +289,26 @@ export const TaskPendingAvoidColumnsMapper:any ={
     "7":['sc','wc'],
     "8":['sc','wc','pi'],
     "9":['sc','wc'],
-    "10":['sc','wc','wd','skd'],
+    "10":['sc','wc'],
     "11":['sc','wc'],
     "12":['sc','wc'],
     "13":['sc','wc']
 }
-
+export const TaskPendingAvoidColumnsMapperSpecific:any ={
+    "1":["sd"],
+    "2":['wd'],
+    "3":['sd','wd'],
+    "4":['sd','wd'],
+    "5":['sd','wd'],
+    "6":['posn','ln'],
+    "7":['posn','ln'],
+    "8":['ln','posn','pisn'],
+    "9":['pisn','ln'],
+    "10":['wd','skd'],
+    "11":['skd','wd'],
+    "12":['skd','wd'],
+    "13":['sd','wd']
+}
 export const customKeys = [
     'c1',
     'c2',

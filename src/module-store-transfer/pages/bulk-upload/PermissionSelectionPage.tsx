@@ -121,6 +121,8 @@ const PermissionSelectionPage = ({
       if (node.isSelected()) {
         const userData = node.data;
         userData.roles = selectedRoles;
+        const isRoleGiven = selectedRoles && selectedRoles.size > 0;
+        userData.errorRole = !isRoleGiven;
         node.setData(userData);
        
       }
@@ -130,30 +132,66 @@ const PermissionSelectionPage = ({
   const updatePermissionsForSelected = (selectedPermissions: Set<string>) => {
     gridRef.current?.api.forEachNode((node: any) => {
       if (node.isSelected()) {
-        const userData = node.data;
-        userData.permissions = selectedPermissions;
-        node.setData(userData);
+        const updatedData = isValidPermission(
+          node,
+          selectedPermissions,
+          compulsoryPermissions
+        );
+  
+          node.setData(updatedData);
       }
     });
   };
 
   const [rowIndex, setRowIndex] = useState<number | null>(0);
 
-  const updatePermissionsForTheRow = (selectedPermissions: Set<string>) => {
-    if(rowIndex === null || rowIndex === undefined) return;
+  const updatePermissionsForTheRow = (selectedPermissions: any) => {
+    if (rowIndex == null) return;
+  
     gridRef.current?.api.forEachNode((node: any) => {
-      if (
-        node.rowIndex === rowIndex
-      ) {
-        const userData = node.data;
-
-        userData.permissions = selectedPermissions;
-        node.setData(userData);
+      if (node.rowIndex === rowIndex) {
+        const updatedData = isValidPermission(
+          node,
+          selectedPermissions,
+          compulsoryPermissions
+        );
+  
+          node.setData(updatedData);
       }
     });
+  
     setRowIndex(null);
+  };
+  
 
+  const isValidPermission = (node:any, selectedPermissions:any, compulsoryPermissions:any)=>{
+    
+      const updatedData = {
+        ...node.data,
+        permissions: selectedPermissions,
+      };
+      let isValidPermission = true;
+
+      updatedData.roles.forEach((role: any) => {
+        if (compulsoryPermissions.includes(role.application_id)) {
+          const permission = updatedData.permissions?.[role.application_name];
+          const isLocationPresent = permission?.location_permission && permission.location_permission.length > 0;
+          const isProductPresent = permission?.product_permission && permission.product_permission.length > 0;
+          if (
+            !permission ||
+            !isLocationPresent ||
+            !isProductPresent
+          ) {
+            isValidPermission = false;
+          }
+        }
+      });
+
+      updatedData.errorPermission = !isValidPermission;
+      return updatedData;
+    
   }
+  
 
     useEffect(() => {
       if (!isFinalView) {
@@ -187,8 +225,8 @@ const PermissionSelectionPage = ({
         output.users.push({
           srNo: user.srNo || "",
           id: user.id || "",
-          email: user.email || "",
-          name: user.username || "",
+          email: user.email?.toLowerCase() || "",
+          name: user.username || "",          
           pwd: user.pwd || "",
           tc: true,
           rid: currentRoleId,
@@ -357,7 +395,7 @@ const PermissionSelectionPage = ({
           const userRoles = finalData.roles[user.rid]?.roles || [];
           const userPermissions = finalData.permissions[user.perm_id] || {};
           const userLocationPermissions = userPermissions.location_permissions || [];
-        const userProductPermissions = userPermissions.product_permissions || [];
+          const userProductPermissions = userPermissions.product_permissions || [];
           
           // Get application IDs from user's permissions (both location and product)
           const userPermissionAppIdsLoc = new Set();
@@ -501,7 +539,7 @@ const PermissionSelectionPage = ({
         const finalData = optimizePermissionsAndRoles(transformUserData(userDataAll));
         const {isValid, errors, modifiedData} = validateUserPermissions({roles: listRoles, finalData, compulsorPermissions: compulsoryPermissions});
         if (!isValid) {
-          const newValidData = validUserData.map((userData:any) => {
+          const newValidData = userDataAll.map((userData:any) => {
             const error = errors.find((error: any) => error.userId === userData.id);
             if (error) {
               if (error.type === "MISSING_ROLES") {
@@ -509,10 +547,11 @@ const PermissionSelectionPage = ({
                 userData.errorPermission = true;
               } else if (error.type === "MISSING_COMPULSORY_PERMISSION"){
                 userData.errorPermission = true;
+                userData.errorRole = false;
               }
             } else {
-              delete userData.errorRole;
-              delete userData.errorPermission;
+              userData.errorRole = false;
+              userData.errorPermission = false;
             }
             return userData;
           })
