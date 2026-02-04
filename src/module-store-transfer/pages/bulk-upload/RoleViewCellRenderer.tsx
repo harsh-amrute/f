@@ -236,7 +236,9 @@ const RoleViewCellRenderer = (params: MyCellRendererProps) => {
     // }
 
     params.data.roles = selectedRoles;
-    // params.data.permissions = permissions;
+    const isValidRoles = selectedRoles.size > 0;
+    params.data.errorRole = !isValidRoles;
+     // params.data.permissions = permissions;
     params.api?.refreshCells({ rowNodes: [params.node] });
     setOpen(false);
   };

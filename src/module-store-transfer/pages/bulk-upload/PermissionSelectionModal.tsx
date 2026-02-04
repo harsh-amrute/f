@@ -186,6 +186,7 @@ const PermissionSelectionModal = ({selectedIndex, gridRef,dataAllPermissions,clo
         <div style={{display: 'flex', justifyContent: 'space-between', marginTop: '20px', gap: '10px'}}>
           <div>
           <VFButtonOutline
+            disabled={selectedPermissions && Object.keys(selectedPermissions).length ===0}
             style={{height: '3.5rem', fontSize: '1.2rem'}}
             themeUi={themeUi}
             onClick={() => {ResetPermissions()}}
