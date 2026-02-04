@@ -24,7 +24,7 @@ const TabsContainer = styled.div`
 const Tab = styled.div<{ active: boolean }>`
   padding: 8px 16px;
   cursor: pointer;
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   border-radius: 24px;
   border-bottom: 2px solid ${({ active }) => (active ? "#b02792ff" : "transparent")};
   color: ${({ active }) => (active ? "#b02790ff" : "#666")};

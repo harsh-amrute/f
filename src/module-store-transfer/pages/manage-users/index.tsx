@@ -467,7 +467,8 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
                     const prefix = type.split("_")[0];
 
                     const paths = hids.map((hid: string) => {
-                        const def = definitions.find((d: any) => d.h_id === hid);
+                        const cleanHid = hid.endsWith('_') ? hid.slice(0, -1) : hid;
+                        const def = definitions.find((d: any) => d.h_id === cleanHid || d.h_id === hid);
                         if (!def) return null;
 
                         const h1 = def[`${prefix}_hierarchy_1`] || def[`hierarchy_1`] || def[`${prefix}_heirarchy_1`] || def[`heirarchy_1`];
@@ -660,6 +661,8 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
 
                 if (matchedDef) {
                   ids.push(matchedDef.h_id);
+                  // Add underscore version if it's the specific node being selected
+                  ids.push(`${matchedDef.h_id}_`);
                 } else {
                    // Log warning but proceed
                    console.warn(`ID not found for: ${path.join(">")}`);
