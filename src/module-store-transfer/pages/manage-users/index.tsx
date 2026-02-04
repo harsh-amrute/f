@@ -62,6 +62,10 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     email: "",
     roles: [],
   });
+  
+  // Loading States
+  const [isLoadingRoles, setIsLoadingRoles] = useState(true);
+  const [isLoadingHeaders, setIsLoadingHeaders] = useState(true);
 
   const [valueSelect, setvalueSelect] = useState<any>();
 
@@ -78,11 +82,18 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   useGetAllRoles((data:any)=>{
     const dataAllRoles = data.data ? generateRolesObject(data.data) : [];
     setListRoles(dataAllRoles);
+    setIsLoadingRoles(false);
   });
   
   const getHeaderDatafunct = async() =>{
-    const reponse = await usegetHeaderData();
-    setHeaders(reponse.data);
+    try {
+        const reponse = await usegetHeaderData();
+        setHeaders(reponse.data);
+    } catch (e) {
+        console.error("Error fetching headers", e);
+    } finally {
+        setIsLoadingHeaders(false);
+    }
   }
   useEffect(() => {
     getHeaderDatafunct();
@@ -763,8 +774,10 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
           </SCSubTitlePad>
         </SCSubTitleBox>
 
-        {isFetching ? (
-          <Spinner />
+        {isFetching || isLoadingRoles || isLoadingHeaders || !dataPermissions ? (
+          <div style={{ padding: '40px', display: 'flex', justifyContent: 'center' }}>
+            <Spinner />
+          </div>
         ) : (
           <TableUserManagement
             dataAllUsers={dataAllUsers}

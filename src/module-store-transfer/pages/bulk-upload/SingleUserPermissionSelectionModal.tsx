@@ -283,7 +283,7 @@ const SingleUserPermissionSelectionModal = ({dataAllPermissions,closeModal, crea
           themeUi={themeUi}
           disabled={isApplyDisabled}
           onClick={() => {createUser(selectedPermissions)}}
-          >Create User</VFButton>
+          >{infoUser?.edit?'Update User':'Create User'}</VFButton>
           
           </div>
         </div>

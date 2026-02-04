@@ -66,6 +66,7 @@ const CustomNode = ({
     setSelectedPermissions,
     selectedApplication,
     permissionType,
+    readOnly,
   } = useNodeDataContext();
 
   const { user } = useUserData();
@@ -264,7 +265,8 @@ const CustomNode = ({
       >
         <Checkbox
           checked={getSelectionState(data.key) !== "unchecked"}
-          onChange={setTheChecked}
+          onChange={readOnly ? undefined : setTheChecked}
+          disabled={readOnly}
           theme={user.user.theme_ui}
           style={{ 
               zoom: 0.7,
@@ -358,6 +360,7 @@ export default function PermissionHeirarchyCanvas({
   selectedApplication,
   selectedPermissions,
   setSelectedPermissions,
+  readOnly = false,
 }: any) {
   const [permissionType, setPermissionType] = useState<string>("");
   const [availablePermissionTypes, setAvailablePermissionTypes] = useState<string[]>([]);
@@ -944,6 +947,7 @@ export default function PermissionHeirarchyCanvas({
         selectedApplication,
         permissionType,
         setSelectedPermissions,
+        readOnly,
       }}
     >
       <div

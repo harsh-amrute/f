@@ -10,6 +10,7 @@ const PermissionForm = ({
   selectedPermissions,
   setSelectedPermissions,
   selectedApplication,
+  readOnly = false,
 }: any) => {
 
   console.log("currentAppAllPermissions", currentAppAllPermissions)
@@ -585,19 +586,21 @@ const PermissionForm = ({
              <TitleContainer>
                  <SectionTitle>{getLabel(type)}</SectionTitle>
                  <div style={{ marginBottom: "20px", fontSize: "14px", fontWeight: 600, display: 'flex', justifyContent: 'right', alignItems: 'center'}}>
-                   <SelectAllWrapper>
-                   <Checkbox
-                               id={`selectAll_${type}`}
-                               style={{ zoom: 0.5 }}
-                               theme={themeUi}
-                               type="checkbox"
-                               checked={isSelectAll(selectedPermissions, type)}
-                               onClick={(e) => e.stopPropagation()}
-                               onChange={(e: any) => {setAllPermissions(type)}}
-                               />
-                             <label htmlFor={`selectAll_${type}`} style={{ cursor: "pointer" }}>Select All</label>
-     
-                   </SelectAllWrapper>
+                   {!readOnly && (
+                     <SelectAllWrapper>
+                     <Checkbox
+                                 id={`selectAll_${type}`}
+                                 style={{ zoom: 0.5 }}
+                                 theme={themeUi}
+                                 type="checkbox"
+                                 checked={isSelectAll(selectedPermissions, type)}
+                                 onClick={(e) => e.stopPropagation()}
+                                 onChange={(e: any) => {setAllPermissions(type)}}
+                                 />
+                               <label htmlFor={`selectAll_${type}`} style={{ cursor: "pointer" }}>Select All</label>
+       
+                     </SelectAllWrapper>
+                   )}
                  </div>
                
              </TitleContainer>
@@ -605,7 +608,7 @@ const PermissionForm = ({
                <SelectContainer>
                    <Label>{getHeaderLabel(type, 0)}</Label>
                  <SearchInputMultiple
-                   disabled={false}
+                   disabled={readOnly}
                    placeholder="Select"
                    options={options[type]?.L1 || []}
                    value={getSelectedPermissions({
@@ -630,7 +633,7 @@ const PermissionForm = ({
                  <Label>{getHeaderLabel(type, 1)}</Label>
                  <SearchInputMultiple
                    placeholder="Select"
-                   disabled={false}
+                   disabled={readOnly}
                    options={options[type]?.L2 || []}
                    value={getSelectedPermissions({
                      selectedPermissions,
@@ -654,7 +657,7 @@ const PermissionForm = ({
                  <Label>{getHeaderLabel(type, 2)}</Label>
                  <SearchInputMultiple
                    placeholder="Select"
-                   disabled={false}
+                   disabled={readOnly}
                    options={options[type]?.L3 || []}
                    value={getSelectedPermissions({
                      selectedPermissions,
