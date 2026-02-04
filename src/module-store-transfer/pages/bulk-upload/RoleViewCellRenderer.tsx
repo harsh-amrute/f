@@ -39,9 +39,6 @@ const RoleDropdown = ({ allRoles, width, onApplyRole, currentRoles }: any) => {
   };
 
   const handleSelectAll = () => {
-    // Tarun review is required to remove this commented code ------
-    // const allSelected = allRoles.every((id: any) => selected.has(id));
-    // setSelectedRoles(allSelected ? new Set() : new Set(allRoles));
     setSelectedRoles(new Set(allRoles));
   };
 
