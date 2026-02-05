@@ -160,4 +160,24 @@ export const AnalyticsCol = styled.td`
 // }
 // `
 
-
+export const TableWrapper = styled.div`
+    height: 100%;
+    flex: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    & > .ag-theme-alpine{
+        height: 100%;
+        width: 100%;
+        margin-left: 3rem;
+        margin-top: 1rem;
+        margin-bottom: 0;
+    }
+    & > div[data-testid="vf_pagination"]{
+        width: 100%;
+        margin: 0 0 0 30px;
+        // padding: 0px 15px !important;
+    }
+    
+`

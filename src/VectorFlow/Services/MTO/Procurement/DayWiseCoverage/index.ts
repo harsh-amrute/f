@@ -7,10 +7,13 @@ interface DayWiseCoverageParams{
     endDate: string,
     plannedReleaseDate?: string,
     appliedFilters?:any,
+    page?: any,
+    page_size?: any,
+    isExcelExport?: any
 }
 
 export const useGetDayWiseCoverageData = () => {
     return useMutation(async (data: DayWiseCoverageParams) => {
-        return getDayWiseCoverageData(data.startDate, data.endDate, data.plannedReleaseDate, data.appliedFilters);
+        return getDayWiseCoverageData(data.startDate, data.endDate, data.plannedReleaseDate, data.appliedFilters,data.page,data.page_size,data.isExcelExport);
     })
 }

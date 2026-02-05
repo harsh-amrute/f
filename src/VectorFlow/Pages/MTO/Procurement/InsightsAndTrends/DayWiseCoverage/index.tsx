@@ -69,6 +69,9 @@ const DayWiseCoverage = () => {
     const { mutateAsync: getUIConfigData } = useGetUIConfigData();
     const [masterUIConfig, setMasterUIConfig] = useState([]);
 
+    const [userPageSize, setUserPageSize] = useState<number>(20); 
+    const [userConfigFetched, setUserConfigFetched] = useState(false); 
+
     const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
     const { 
         state: currFilter, 
@@ -295,21 +298,29 @@ const DayWiseCoverage = () => {
         }
     },[])
 
-    const getUserColumnConfig = async () => {
+   const getUserColumnConfig = async () => {
         try {
-          const data = await getUserUIReportConfigData({
-            un: user.user.name,
-            rn_id: UIGridCode.ProcDayWiseCov
-          });
-    
-          const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
-          setColumnState(newConfig);
-    
-          if (!data) {
-            console.error('Failed to apply column state');
-          }
+            const data = await getUserUIReportConfigData({
+                un: user.user.name,
+                rn_id: UIGridCode.ProcDayWiseCov
+            });
+
+            const configData = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : {};
+            
+            // Extract column state
+            const newColState = configData.cs || []; 
+            // Extract page size (fallback to 20 if not found)
+            const savedPageSize = configData.pageSize ? Number(configData.pageSize) : 20;
+
+            setColumnState(newColState);
+            setUserPageSize(savedPageSize);
+            setUserConfigFetched(true); // Mark as fetched
+
+            if (!data) {
+                console.error('Failed to apply column state');
+            }
         } catch (error) {
-          console.error(error);
+            console.error(error);
         }
     }
     
@@ -328,34 +339,38 @@ const DayWiseCoverage = () => {
     },[masterUIConfig])
 
 
-    const handleSaveClick = async (coldefs?:any) => {
+    const handleSaveClick = async (coldefs?: any, newPageSize?: number) => {
         try {
-          if (coldefs) {
-            const payload = {
-              un: user.user.name,
-              rn_id: UIGridCode.ProcDayWiseCov,
-              cs: JSON.stringify(coldefs),
+            // Determine what to save
+            const currentCS = coldefs || currentGridRef?.current?.api.getColumnState() || [];
+            const currentSize = newPageSize || userPageSize;
+
+            // Construct the full config object
+            const fullConfig = {
+                cs: currentCS,
+                pageSize: currentSize
             };
-            await updateUserUIReportConfigData([payload]);
-            setColumnState([...coldefs]);
+
+            const payload = {
+                un: user.user.name,
+                rn_id: UIGridCode.ProcDayWiseCov,
+                cs: JSON.stringify(fullConfig), // Save the whole object
+            };
             
-          } 
-          else {
-              if (currentGridRef?.current?.api) {
-                  const config = currentGridRef.current.api.getColumnState();
-                  
-                const payload = {
-                  un: user.user.name,
-                  rn_id: UIGridCode.ProcDayWiseCov,
-                  cs: JSON.stringify(config)
-                }
-                await updateUserUIReportConfigData([payload]);
-              } 
-          }
+            await updateUserUIReportConfigData([payload]);
+            
+            // Update local state
+            if(coldefs) setColumnState(coldefs);
+            if(newPageSize) setUserPageSize(newPageSize);
+
         } catch (error) {
-          console.error(error);
+            console.error(error);
         }
-      }
+    }
+    const onPageSizeChange = (newSize: number) => {
+        setUserPageSize(newSize);
+        handleSaveClick(undefined, newSize); // Trigger save immediately
+    }
 
     const handleResetClick = () => {
         setIsReset(true);
@@ -363,7 +378,8 @@ const DayWiseCoverage = () => {
 
     useEffect(() => {
         if (isReset) {
-          handleSaveClick(masterUIConfig);
+          handleSaveClick(masterUIConfig, 20); 
+          setUserPageSize(20);
           setIsReset(false);
         }
       }, [isReset]);
@@ -426,6 +442,10 @@ const DayWiseCoverage = () => {
                         selectedDate={selectedDate}
                         appliedFilters={appliedFilters}
                         childColDef={childColDef}
+
+                        userPageSize={userPageSize}
+                        onSavePageSize={onPageSizeChange}
+                        configLoaded={userConfigFetched}
                     />
                     : <AnimationWrapper>
                         <Player src={'/assets/img/VectorFLOW/BPR/swipe pointer.json'} loop autoplay style={{ height: 100, width: 100 }} />
