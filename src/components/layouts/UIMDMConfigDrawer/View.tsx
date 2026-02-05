@@ -16,34 +16,52 @@ import {
 import { assignInlineVars } from "@vanilla-extract/dynamic";
 import * as globalStyles from "../../../styles/global"; // keep import unchanged
 
-const ViewUiMDMConfig = (props: { onEdit: (data: any) => void }) => {
-  const { onEdit } = props;
+interface ViewProps {
+    onEdit: (data: any) => void;
+    savedFilters: any;
+    onSaveFilters: (filters: any) => void;
+}
 
-  const { user } = useUserData();
+const ViewUiMDMConfig = (props:ViewProps)=>{
 
-  const themeUi = user.user.theme_ui;
+    const {
+        onEdit,
+        savedFilters,
+        onSaveFilters
+    } = props
 
-  const [rowData, setRowData] = useState<Array<any>>([]);
-  const { mutateAsync: getAllUIMDMConfiguration } =
-    useGetAllUIMDMConfiguration();
-  const getAllUIMDMConfig = useCallback(async () => {
-    try {
-      const response = await getAllUIMDMConfiguration();
-      const data = response?.data?.data;
-      setRowData(data);
-    } catch (error: any) {
-      console.error(error);
-      notifyError("Server Went Unresponsive");
-    } finally {
-      setIsLoading(false);
+    const {user} = useUserData()
+
+    const themeUi = user.user.theme_ui
+
+    const [rowData,setRowData] = useState<Array<any>>([])
+    const {mutateAsync : getAllUIMDMConfiguration} = useGetAllUIMDMConfiguration();
+    const getAllUIMDMConfig = useCallback(async()=>{
+        try{
+            const response = await getAllUIMDMConfiguration();
+            const data = response?.data?.data;
+            setRowData(data)
+        }catch(error:any){
+            console.error(error)
+            notifyError("Server Went Unresponsive")
+        }finally{
+            setIsLoading(false)
+        }
+    },[])
+
+    const [isLoading,setIsLoading] = useState<boolean>(true)
+    
+    useEffect(()=>{
+        getAllUIMDMConfig()
+    },[])
+
+    const onFirstDataRendered = (params: any) => {
+        if (savedFilters && Object.keys(savedFilters).length > 0) {
+            params.api.setFilterModel(savedFilters);
+            setIsDisabled(false);
+            params.api.onFilterChanged();
+        }
     }
-  }, []);
-
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    getAllUIMDMConfig();
-  }, []);
 
   const ref = useRef<GridRef>();
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
@@ -91,6 +109,7 @@ const ViewUiMDMConfig = (props: { onEdit: (data: any) => void }) => {
         rowHeight={50}
         height="600px"
         rowData={rowData}
+        onFirstDataRendered={onFirstDataRendered}
         columnDefs={[
           { colId: "MasterId", field: "MasterId" },
           { colId: "MasterName", field: "MasterName" },
@@ -200,11 +219,14 @@ const ViewUiMDMConfig = (props: { onEdit: (data: any) => void }) => {
           },
         ]}
         onFilterChanged={() => {
-          const filterModel = ref?.current?.api?.getFilterModel();
-          if (filterModel && Object.keys(filterModel).length > 0) {
-            setIsDisabled(false);
-          } else {
-            setIsDisabled(true);
+          if (rowData && rowData.length > 0) {
+            const filterModel = ref?.current?.api?.getFilterModel();
+            onSaveFilters(filterModel);
+            if (filterModel && Object.keys(filterModel).length > 0) {
+              setIsDisabled(false);
+            } else {
+              setIsDisabled(true);
+            }
           }
         }}
         statusBar={{

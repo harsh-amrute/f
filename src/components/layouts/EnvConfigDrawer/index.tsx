@@ -27,7 +27,9 @@ const EnvConfigDrawer = (props: EnvConfigDrawerProps) => {
 
   const [currRole, setCurrRole] = useState<any>(null);
 
-  const [activeTab, setActiveTab] = useState(0);
+    const [activeTab, setActiveTab] = useState(0);
+
+    const [savedFilters, setSavedFilters] = useState<any>(null);
 
   const onEditRole = (row: any) => {
     setCurrTab(3);
@@ -56,7 +58,10 @@ const EnvConfigDrawer = (props: EnvConfigDrawerProps) => {
     >
       {currTab === 0 && (
         <div className={content}>
-          <ViewEnvConfig onEdit={onEditRole} />
+          <ViewEnvConfig onEdit={onEditRole}
+          savedFilters={savedFilters}
+            onSaveFilters={setSavedFilters}
+          />
         </div>
       )}
       {currTab === 3 && (

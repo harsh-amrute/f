@@ -187,7 +187,8 @@ function UploadWrapperSection({
       const pwdIndex = lowerCaseHeaders.indexOf("password");
 
       return {
-        id: index + 1, // Start IDs from 1 for data rows
+        srNo: index + 1,
+        id: `${row[usernameIndex] ?? ""}_${index + 1}`,
         username: row[usernameIndex] ? String(row[usernameIndex]).trim() : "",
         email: row[emailIndex] ? String(row[emailIndex]).trim() : "",
         pwd: row[pwdIndex] ? String(row[pwdIndex]).trim() : "",
@@ -229,7 +230,7 @@ function UploadWrapperSection({
         });
 
         validData.forEach((ele: any, index: number) => {
-          ele.id = index + 1;
+          ele.srNo = index + 1;
         });
 
         setValidUserData(validData);

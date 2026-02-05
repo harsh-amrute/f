@@ -87,7 +87,7 @@ const OrderFulfillmentCustomCharts = ({
   }, [colDefs]);
 
   useEffect(() => {
-    if (ref?.current && gridState && gridState?.columns.length > 0) {
+    if (ref?.current?.api && gridState && gridState?.columns.length > 0) {
       ref?.current?.api.applyColumnState({
         state: gridState.columns,
         applyOrder: true,

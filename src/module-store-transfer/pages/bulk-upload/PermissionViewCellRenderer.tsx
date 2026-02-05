@@ -22,12 +22,13 @@ const PermissionViewCellRenderer = (params: MyCellRendererProps) => {
 
   const user = useUserData();
   const themeUi = user.user.user.theme_ui;
-
   return (
     <>
-      {PermissionCount > 0 ? (
+      {(
         <div className={container}>
-          {params.data.errorPermission ? (
+          {
+            Object.keys(params.data).some((e: any) => e == 'errorPermission') && (
+              params.data.errorPermission ? (
             <span className={ImageSpan}>
               <img
                 style={{ width: "20px", height: "20px" }}
@@ -43,7 +44,8 @@ const PermissionViewCellRenderer = (params: MyCellRendererProps) => {
                 alt=""
               />
             </span>
-          )}
+          ))}
+          
 
           <VFButton
             style={{ width: "80%", height: "25px", fontSize: "1rem" }}
@@ -57,36 +59,10 @@ const PermissionViewCellRenderer = (params: MyCellRendererProps) => {
               }
             }}
           >
-            {"View / Edit Permissions"}
+            {PermissionCount > 0? "View / Edit Permissions": "Select Permissions"}
           </VFButton>
         </div>
-      ) : (
-        <div className={container}>
-          {params.data.errorPermission && (
-            <span className={ImageSpan}>
-              <img
-                style={{ width: "20px", height: "20px" }}
-                src="\assets\img\error_icon.svg"
-                alt=""
-              />
-            </span>
-          )}
-          <VFButton
-            style={{ width: "80%", height: "25px", fontSize: "1rem" }}
-            themeUi={themeUi}
-            onClick={() => {
-              if (params?.data?.roles?.size && params?.data?.roles?.size > 0) {
-                params.setRowIndex(params.node.rowIndex || 0);
-                params.setIsPermissionModalOpen?.(true);
-              } else {
-                notifyWarning("select a role before selecting permissions");
-              }
-            }}
-          >
-            {"Select Permissions"}
-          </VFButton>
-        </div>
-      )}
+      ) }
     </>
   );
 };

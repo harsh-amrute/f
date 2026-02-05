@@ -363,6 +363,9 @@ const useViewModify = (pageType: string) => {
 
       setAllMasterState(allMasterData);
 
+      const allOptions: Option[] = generateOptions(allMasterData);
+      dispatch(FILL_OPTIONS(allOptions));
+          
       const masterIdsArray = getSelectedMasterValues();
 
       if (masterIdsArray.length > 0) {
@@ -1085,6 +1088,7 @@ const useViewModify = (pageType: string) => {
 
     toggleWarningModal(true);
     setCurrentPage(1);
+      if(activeMaster.id == 10) setSeasonalityActiveQuickFilter([])
   };
 
   const onWarningModalClose = () => {
@@ -1939,7 +1943,8 @@ const useViewModify = (pageType: string) => {
       }
       if (!error) {
         await postMasterDataChunks(selectedRows, false, status);
-        onWarningModalSuccess(true);
+        // onWarningModalSuccess(true);
+            ref.current?.api.deselectAll();          
         notifySuccess("Status Updated Successfully");
       }
     }
@@ -1988,7 +1993,8 @@ const useViewModify = (pageType: string) => {
     }
 
     await postMasterDataChunks(selectedRows, false, "stop");
-    onWarningModalSuccess(true);
+    // onWarningModalSuccess(true);
+        ref.current?.api.deselectAll()
     notifySuccess("Status Updated Successfully");
   };
 

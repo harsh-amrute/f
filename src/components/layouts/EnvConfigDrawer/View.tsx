@@ -29,10 +29,18 @@ import * as globalStyles from "../../../styles/global";
         EnvLocationPermissionArray: []
     };
     
-const ViewEnvConfig = (props:{onEdit:(data:any)=>void})=>{
+interface ViewProps {
+    onEdit: (data: any) => void;
+    savedFilters: any;
+    onSaveFilters: (filters: any) => void;
+}
+
+const ViewEnvConfig = (props:ViewProps)=>{
 
     const {
-        onEdit
+        onEdit,
+        savedFilters,    // Destructure new props
+        onSaveFilters
     } = props
 
     const {user} = useUserData()
@@ -86,7 +94,15 @@ const ViewEnvConfig = (props:{onEdit:(data:any)=>void})=>{
     
     useEffect(()=>{
         getAllEnvConfig()
-    },[])
+    }, [])
+  
+    const onFirstDataRendered = (params: any) => {
+      if (savedFilters && Object.keys(savedFilters).length > 0) {
+          params.api.setFilterModel(savedFilters);
+          setIsDisabled(false);
+          params.api.onFilterChanged();
+      }
+  }
 
   if (isLoading) {
     return <div className={skeleton} style={{ height: 400, width: "100%" }} />;
@@ -125,11 +141,12 @@ const CustomStatusPanel = () => {
           floatingFilter: true,
           filter: "agMultiColumnFilter"
         }}
+        onFirstDataRendered={onFirstDataRendered}
         rowHeight={50}
         height="600px"
         rowData={rowData}
         statusBar={{
-          statusPanels: !isLoading?[
+          statusPanels: !isLoading ? [
             { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
             { statusPanel: 'agTotalRowCountComponent', align: 'left' },
             { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
@@ -137,8 +154,8 @@ const CustomStatusPanel = () => {
             { statusPanel: 'agAggregationComponent', align: 'left' },
             { statusPanel: CustomStatusPanel, align: "right" },
 
-          ]:
-          [],
+          ] :
+            [],
         }}
         columnDefs={[
           {
@@ -157,7 +174,7 @@ const CustomStatusPanel = () => {
             colId: "edit",
             field: "edit",
             headerName: "",
-            floatingFilter:false,
+            floatingFilter: false,
             maxWidth: 80,
             cellStyle: {
               display: "flex",
@@ -184,11 +201,14 @@ const CustomStatusPanel = () => {
           },
         ]}
         onFilterChanged={() => {
-          const filterModel = ref?.current?.api?.getFilterModel();
-          if (filterModel && Object.keys(filterModel).length > 0) {
-            setIsDisabled(false);
-          } else {
-            setIsDisabled(true);
+          if (rowData && rowData.length > 0) {
+            const filterModel = ref?.current?.api?.getFilterModel();
+            onSaveFilters(filterModel);
+            if (filterModel && Object.keys(filterModel).length > 0) {
+              setIsDisabled(false);
+            } else {
+              setIsDisabled(true);
+            }
           }
         }}
 

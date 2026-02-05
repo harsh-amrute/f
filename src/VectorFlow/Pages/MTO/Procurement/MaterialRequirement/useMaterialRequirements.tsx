@@ -133,28 +133,24 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
     }
   };
 
-  const getUserColumnConfig = async () => {
-    try {
-      const data = await getUserUIReportConfigData({
-        un: user.user.name,
-        rn_id: UIGridCode.ProcMaterialRequirement,
-      });
-      setUserConfigFetched(true);
-      const newConfig = data?.data?.data[0]?.columns_settings
-        ? JSON.parse(data?.data?.data[0]?.columns_settings)
-        : [];
-      setUserPageSize(
-        newConfig.pageSize ? Number(newConfig.pageSize) : undefined
-      );
-      setColumnState(newConfig.cs);
-
-      if (!data) {
-        console.error("Failed to apply column state");
-      }
-    } catch (error) {
-      console.error(error);
+    const getUserColumnConfig = async () => {
+        try {
+            const data = await getUserUIReportConfigData({
+                un: user.user.name,
+                rn_id: UIGridCode.ProcMaterialRequirement
+            });
+            const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
+            setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
+            setColumnState(newConfig.cs);
+            setUserConfigFetched(true)
+    
+            if (!data) {
+                console.error('Failed to apply column state');
+            }
+        } catch (error) {
+            console.error(error);
+        }
     }
-  };
 
   const handleSaveClick = async (coldefs?: any, page_size?: any) => {
     try {
@@ -360,8 +356,8 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
         } else {
 
             const datWiseData = await getMaterialRequirementDataDayWise({ releaseDate: releaseDate, currPage: currPage ? currPage : currentPage, appliedFilters: formatedFilters,page_size: pageSize || userPageSize });
-            const dayWiseOutput = datWiseData.data?.data?.results;
-            setDayWiseRecordCount(datWiseData.data?.data?.count)
+            const dayWiseOutput = datWiseData.data?.data?.results ?? [];
+            setDayWiseRecordCount(datWiseData.data?.data?.count ?? 0)
             setDayWiseData(dayWiseOutput)
         }
     }
@@ -381,12 +377,13 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
         }
         else {
 
-            const cumulativeData = await getMaterialRequirementData({ releaseDate: releaseDate, currPage: currPage ? currPage : currentCumPage, appliedFilters: formatedFilters ,page_size: pageSize || userPageSize});
-            const cumulativeOutput = cumulativeData.data?.data?.results
-            setcumulativeRecordCount(cumulativeData.data?.data?.count)
+            const cumulativeData = await getMaterialRequirementData({ releaseDate: releaseDate, currPage: currPage ? currPage : currentCumPage, appliedFilters: formatedFilters ,page_size: pageSize || userPageSize});            
+            const cumulativeOutput = cumulativeData.data?.data?.results ?? [];
+            setcumulativeRecordCount(cumulativeData.data?.data?.count ?? 0);
             SetCumulativeData(cumulativeOutput)
         }
     }
+
     const savePageSize = (pageSize: any) => {
         if (pageSize) {
             setCurrentPage(1)

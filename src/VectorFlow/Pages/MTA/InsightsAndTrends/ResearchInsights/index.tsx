@@ -238,6 +238,7 @@ const ResearchInsights = () => {
                   setIsDisabled(true);
                 }
               }}
+              tooltipShowDelay={500}
             />
             {ResearchInsightsData?.length > 0 && (
               <VFPagination

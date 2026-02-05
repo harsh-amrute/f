@@ -47,6 +47,8 @@ import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Commo
 import { useNavigate } from "react-router";
 import VFWarningModal from "../../../../../components/VectorFLOW/commons/MTO/VFWarningModal";
 import BomExcelModal from "../../Common/BomExcelModal";
+import VFToolTip from '../../../../../components/VectorFLOW/commons/MTO/VFToolTip';
+
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -552,6 +554,8 @@ const DueDateQuotation = () => {
     }
   };
 
+  const canSchedule = (user?.feature_permission?.includes('Schedule_Orders'));
+  
   const renderSubmitText = () => {
     switch (step) {
       case 1: {
@@ -578,7 +582,7 @@ const DueDateQuotation = () => {
         return <> Continue</>;
       }
     }
-  };
+  };  const isScheduleDisabled = (step == 3 && canSchedule==false); 
 
   const getUpdatedFilterData = async (
     isExcelExport = false,
@@ -924,18 +928,18 @@ const DueDateQuotation = () => {
         )}
 
         <BomExcelModal
-          open={showExcelModal}
-          onClose={() => setShowExcelModal(false)}
-          onConfirm={handleExcelConfirm}
-          onCancel={handleExcelCancel}
-          themeUi={themeUi}
-          headerText={"Excel Export"}
-          messageText={"Do you want to download Excel with BOM Details?"}
+            open={showExcelModal}
+            onClose={() => setShowExcelModal(false)}
+            onConfirm={handleExcelConfirm}
+            onCancel={handleExcelCancel}
+            themeUi={themeUi}
+            headerText={"Excel Export"}
+            messageText={"Do you want to download Excel with BOM Details?"} 
         />
-
-        <VFButton
-          themeUi={themeUi}
-          disabled={disabled}
+        
+        <div className="disabled-button-wrapper">
+           <VFButton themeUi={themeUi}
+        disabled={disabled || isScheduleDisabled }
           onClick={() => {
             if (step == 1) {
               setPageCallBack(true);
@@ -968,7 +972,16 @@ const DueDateQuotation = () => {
           }}
         >
           {renderSubmitText()}
-        </VFButton>
+          </VFButton>
+          
+          {isScheduleDisabled && (
+            <VFToolTip 
+            text={'The logged-in user does not have access to schedule orders.'}
+          />
+          )}
+
+    </div>
+        
       </div>
       <VFWarningModal
         warningMsg={

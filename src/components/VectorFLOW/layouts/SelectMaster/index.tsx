@@ -225,7 +225,7 @@ const SelectMaster = ({
           }}
           maxToShow={3}
           backgroundColor="#FFFFFF"
-          disabled={toggledFromAddMaster()}
+          disabled={false}
         />
 
         <div className={Container} style={{ flexDirection: "row" }}>

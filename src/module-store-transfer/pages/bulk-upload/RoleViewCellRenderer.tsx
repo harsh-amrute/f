@@ -26,7 +26,7 @@ import { assignInlineVars } from "@vanilla-extract/dynamic";
 const RoleDropdown = ({ allRoles, width, onApplyRole, currentRoles }: any) => {
   const user = useUserData();
   const themeUi = user.user.user.theme_ui;
-  const [selected, setSelected] = useState<Set<string>>(new Set(currentRoles));
+  // const [selected, setSelected] = useState<Set<string>>(new Set(currentRoles));
 
   const [selectedRoles, setSelectedRoles] = useState<Set<any>>(
     currentRoles ? currentRoles : new Set()
@@ -43,8 +43,7 @@ const RoleDropdown = ({ allRoles, width, onApplyRole, currentRoles }: any) => {
   };
 
   const handleSelectAll = () => {
-    const allSelected = allRoles.every((id: any) => selected.has(id));
-    setSelectedRoles(allSelected ? new Set() : new Set(allRoles));
+    setSelectedRoles(new Set(allRoles));
   };
 
   const applicationGroups = Array.from(
@@ -243,7 +242,9 @@ const RoleViewCellRenderer = (params: MyCellRendererProps) => {
     // }
 
     params.data.roles = selectedRoles;
-    // params.data.permissions = permissions;
+    const isValidRoles = selectedRoles.size > 0;
+    params.data.errorRole = !isValidRoles;
+     // params.data.permissions = permissions;
     params.api?.refreshCells({ rowNodes: [params.node] });
     setOpen(false);
   };

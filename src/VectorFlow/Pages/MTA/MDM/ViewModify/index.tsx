@@ -34,7 +34,7 @@ import { SeasonalityQuickFilterType, type Filter } from "../../../../types/MDM";
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
 import WarningModal from "./WarningModal";
 import UploadModal from "./UploadModal";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import VFTaskBar from "./VFTaskbar";
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
 import SeasonalityChartModal from "./SeasonalityChartModal";
@@ -157,10 +157,10 @@ const ViewModify = () => {
     setIsDisabled(true);
   };
 
-  const CustomStatusPanel = () => {
+  const CustomStatusPanel = useMemo(() => {
     const brand = themeUi === "REGALBLAZE" ? "REGALBLAZE" : "DEFAULT";
 
-    return (
+    return ()=> (
       <div className={gridFilterWrapper} style={{ marginTop: "25px" }}>
         <button
           className={textBtn[brand]}
@@ -171,7 +171,7 @@ const ViewModify = () => {
         </button>
       </div>
     );
-  };
+  }, [isDisabled, themeUi]);
 
   return (
     <>

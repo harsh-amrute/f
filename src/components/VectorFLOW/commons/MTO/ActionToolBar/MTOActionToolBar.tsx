@@ -95,42 +95,46 @@ interface MTOActionToolBarProps {
   handleResetClick?: () => void;
   onExcelExportClick?: () => void;
   ReleaseOrderHeader?: ReactElement | null;
+  saveBtnName?:string;
+  resetBtnName?:string;
   //// new props
 }
 
 const MTOActionToolBar = ({
-  onDateChange,
-  isGridView = true,
-  setIsGridView,
-  onAddFilter,
-  selectedFilters,
-  removeFilters,
-  disableRemoveFilter,
-  isMfgSelected,
-  themeUi,
-  submitDate,
-  date,
-  handleGoBack,
-  isGoBackButton,
-  isReleaseDate,
-  isAsOnDate,
-  isAddFilterButton,
-  isExcelExport,
-  isChartGridToggle,
-  // isWIPCheckBox,
-  isFilterOpen,
-  toggleFilter,
-  multiFilter,
-  setMultiFilter,
-  onApplyFilter,
-  onFilterRemove,
-  quickFilter,
-  utilityBtns,
-  WIPFilter,
-  handleSaveClick,
-  handleResetClick,
-  onExcelExportClick,
-  ReleaseOrderHeader,
+    onDateChange,
+    isGridView = true,
+    setIsGridView,
+    onAddFilter,
+    selectedFilters,
+    removeFilters,
+    disableRemoveFilter,
+    isMfgSelected,
+    themeUi,
+    submitDate,
+    date,
+    handleGoBack,
+    isGoBackButton,
+    isReleaseDate,
+    isAsOnDate,
+    isAddFilterButton,
+    isExcelExport,
+    isChartGridToggle,
+    // isWIPCheckBox,
+    isFilterOpen,
+    toggleFilter,
+    multiFilter,
+    setMultiFilter,
+    onApplyFilter,
+    onFilterRemove,
+    quickFilter,
+    utilityBtns,
+    WIPFilter,
+    handleSaveClick,
+    handleResetClick,
+    onExcelExportClick,
+    ReleaseOrderHeader,
+    saveBtnName,
+    resetBtnName,
 }: MTOActionToolBarProps) => {
   const handleRemoveFilter = (category: string, name: string) => {
     if (removeFilters) {
@@ -437,14 +441,14 @@ const MTOActionToolBar = ({
                 onClick={() => handleSaveClick()}
               >
                 <SaveSVG theme={themeUi} />
-                <p style={{ padding: "5px" }}>Save Layout</p>
+                <p style={{ padding: "5px" }}>{saveBtnName ?? "Save Layout"}</p>
               </div>
               <div
                 className={SCViewContainerWithBg}
                 onClick={() => handleResetClick()}
               >
                 <ResetSVG theme={themeUi} />
-                <p style={{ padding: "5px" }}>Reset Layout</p>
+                <p style={{ padding: "5px" }}>{resetBtnName ?? "Reset Layout"}</p>
               </div>
             </>
           )}

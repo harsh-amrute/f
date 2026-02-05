@@ -344,7 +344,7 @@ const NavbarMenu = ({
 
   const handleLogout = async () => {
     const response = await MainService.logout(false, queryClient);
-    if (response?.status == 200) {
+    if (response?.status == 204) {
       setUser(undefined);
     }
     navigateTo("/login");

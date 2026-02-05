@@ -305,7 +305,11 @@ export const useBORColorBandwise =()=>{
       lockPosition: true,
       resizable: false,
       floatingFilter: false,
-      suppressColumnsToolPanel: false
+      suppressColumnsToolPanel: false,
+      suppressMenu:true,
+      headerTooltip: "Daily Data Graph",
+      headerName:"Daily Data Graph",
+      sortable: false,
     },
     remarks: {
       cellStyle: {

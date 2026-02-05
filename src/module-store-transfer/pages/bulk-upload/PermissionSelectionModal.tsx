@@ -226,6 +226,7 @@ const PermissionSelectionModal = ({
       >
         <div>
           <VFButtonOutline
+            disabled={selectedPermissions && Object.keys(selectedPermissions).length ===0}
             style={{ height: "3.5rem", fontSize: "1.2rem" }}
             themeUi={themeUi}
             onClick={() => {

@@ -19,6 +19,7 @@ import {
   masterIdToDeleteSchemaMapper,
   masterIdToSchemaMapper,
   TaskPendingAvoidColumnsMapper,
+  TaskPendingAvoidColumnsMapperSpecific,
   taskStatusCustomColDefs,
   mdmRoutes,
   seasonalityQuickFilterData,
@@ -53,6 +54,7 @@ import MTOActionRenderer from "../VectorFlow/Pages/MTO/MDM/SavedDrafts/MTOAction
 import { decryptStorageData } from "../VectorFlow/Pages/MTO/Common/encryption";
 import "./style.css";
 import { getNumberFormat } from "./numberFormat";
+import axios from 'axios';
 
 const keyboardCharacters = [
   // '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -1202,6 +1204,8 @@ export const mapMasterToColumnDefs = (
       headerCheckboxSelection: true,
       headerCheckboxSelectionCurrentPageOnly: true,
       width: 50,
+      resizable:false,
+      suppressMenu: true,
     };
     const seasonalityColorColDef: ColDef = {
       field: "color",
@@ -1210,6 +1214,9 @@ export const mapMasterToColumnDefs = (
       width: 3,
       minWidth: 3,
       cellRenderer: "seasonalityColorCellRenderer",
+      resizable:false,
+      suppressMenu: true,
+      
     };
 
     const seasonalityGraphColDef: ColDef = {
@@ -1221,6 +1228,8 @@ export const mapMasterToColumnDefs = (
       cellRendererParams: {
         onShowChart: onShowChart,
       },
+        resizable:false,
+      suppressMenu: true,
     };
     return [
       seasonalityColorColDef,
@@ -1238,6 +1247,8 @@ export const mapMasterToColumnDefs = (
       checkboxSelection: true,
       headerCheckboxSelection: true,
       headerCheckboxSelectionCurrentPageOnly: true,
+      resizable:false,
+      suppressMenu: true,
       width: 50,
     };
     return [PIPOCheckboxColDef, ...result];
@@ -1499,7 +1510,9 @@ export const mapMasterToColumnGroupDefs = (
     return parseInt(a.col_Position) - parseInt(b.col_Position);
   });
 
-  const colDefs = sortedFields.map((f: Field) => {
+  const colDefs = sortedFields.flatMap((f: Field) => {
+    const isReferenceColumn = TaskPendingAvoidColumnsMapperSpecific[masterId]?.includes(f.key)
+
     if (masterId === 10) {
       if (f.key === "sts") {
         return {
@@ -1540,7 +1553,21 @@ export const mapMasterToColumnGroupDefs = (
         },
       };
     }
-
+    const descriptioncoldefs = {
+      headerName: f.displayName,
+      field: f.key,
+      colId: f.key,
+      hide: !f.visible,
+      suppressSpanHeaderHeight: true,
+      ...defaultColDefs
+    }
+    if (
+      isReferenceColumn &&
+      !((tasktype === "add" || tasktype === "modify") && (masterId === 1 || masterId === 2))
+    ) {
+      return descriptioncoldefs;
+    }
+    
     if (TaskPendingAvoidColumnsMapper[masterId].includes(f.key)) {
       return {
         headerName: f.displayName,
@@ -1634,7 +1661,7 @@ export const mapMasterToColumnGroupDefs = (
       };
     }
 
-    return {
+    const modifycoldefs = {
       headerName: f.displayName,
       field: f.key,
       colId: f.key,
@@ -1696,7 +1723,12 @@ export const mapMasterToColumnGroupDefs = (
         },
       ],
       ...defaultColDefs,
-    };
+    }
+    if(masterId==1 || masterId==2)
+      return [descriptioncoldefs, modifycoldefs];
+    else {
+      return modifycoldefs;
+    }
   });
 
   const taskPendingCustomColDefs: any[] = [
@@ -1922,103 +1954,126 @@ export const mapMasterToTaskStatusColumnGroupDefs = (
   return [...colDefs, ...taskStatusCustomColDefs];
 };
 
-export const mapNewAndOldMasterRowDataToCustomRowData = (
+  export const mapNewAndOldMasterRowDataToCustomRowData = (
   dirtyRowData: any[],
   existingColumnFields: Field[],
   taskType: string,
   masterId: number
 ) => {
-  const response = dirtyRowData?.map((entry) => {
-    if (
+    const response = dirtyRowData?.map((entry) => {
+      
+      if (
       (taskType === "modify" && masterId !== 6 && masterId !== 10) ||
       masterId === 13
     ) {
-      const oldData = JSON.parse(entry.old);
-      const newData = JSON.parse(entry.new);
+        const oldData = JSON.parse(entry.old);
+        const newData = JSON.parse(entry.new);
 
-      const oldDataPrefixed: any = {};
-      const newDataPrefixed: any = {};
-      let isRowModified = false; // A flag to check equality of the current and previous rows
-      existingColumnFields.map((f: Field) => {
-        if (!areValuesEqual(oldData[f.key], newData[f.key])) {
-          isRowModified = true;
-        }
+        const oldDataPrefixed: any = {};
+        const newDataPrefixed: any = {};
+        let isRowModified = false; // A flag to check equality of the current and previous rows
+        existingColumnFields.map((f: Field) => {
+          const isReferenceException = taskType === "add" && (masterId === 1 || masterId === 2)
 
-        if (TaskPendingAvoidColumnsMapper[masterId].includes(f.key)) {
-          newDataPrefixed[f.key] = String(
+          const isAvoidColumn =
+            !isReferenceException &&
+            (
+              TaskPendingAvoidColumnsMapper[masterId].includes(f.key) ||
+              TaskPendingAvoidColumnsMapperSpecific[masterId]?.includes(f.key)
+            )
+          if (!areValuesEqual(oldData[f.key], newData[f.key])) {
+            isRowModified = true;
+          }
+          const isSdModifyReference =
+            taskType === "modify" &&
+            (masterId === 1 || masterId === 2) &&
+            (f.key === "sd" || f.key === "wd")
+
+          if (isAvoidColumn && !isSdModifyReference) {
+            newDataPrefixed[f.key] = String(
             newData[f.key] !== undefined ? newData[f.key] : ""
-          );
-        } else {
-          oldDataPrefixed[`Old${f.key}`] = String(
-            oldData[f.key] !== undefined ? oldData[f.key] : ""
-          );
-          newDataPrefixed[`New${f.key}`] = String(
-            newData[f.key] !== undefined ? newData[f.key] : ""
-          );
-        }
-      });
-      return {
-        ...oldDataPrefixed,
-        ...newDataPrefixed,
-        status: !isRowModified ? "Rejected" : "",
-        comments: isRowModified ? "" : "No modifications made in this record",
-        isModified: isRowModified,
-      };
-    }
-    const dataPrefixed1: any = {};
-    if ((masterId === 6 || masterId === 10) && taskType === "modify") {
-      existingColumnFields.map((f: Field) => {
-        dataPrefixed1[f.key] = String(
-          entry[f.key] !== undefined ? entry[f.key] : ""
-        );
-      });
-      return {
-        ...dataPrefixed1,
-        isModified: true,
-        comments: "",
-        status: "",
-      };
-    }
-    const data = entry;
-
-    const dataPrefixed: any = {};
-
-    existingColumnFields.map((f: Field) => {
-      if (taskType === "add") {
-        if (!TaskPendingAvoidColumnsMapper[masterId].includes(f.key)) {
-          dataPrefixed[`Add${f.key}`] = String(
-            data[f.key] !== undefined ? data[f.key] : ""
-          );
-        } else {
-          dataPrefixed[f.key] = String(
-            data[f.key] !== undefined ? data[f.key] : ""
-          );
-        }
-      } else {
-        if (masterId === 10) {
-          dataPrefixed[f.key] = data[f.key];
-        }
-        //delete
-        else {
-          if (!TaskPendingAvoidColumnsMapper[masterId].includes(f.key)) {
-            dataPrefixed[`Delete${f.key}`] = String(
-              data[f.key] !== undefined ? data[f.key] : ""
             );
           } else {
-            dataPrefixed[f.key] = String(
-              data[f.key] !== undefined ? data[f.key] : ""
-            );
+            oldDataPrefixed[`Old${f.key}`] = String(
+            oldData[f.key] !== undefined ? oldData[f.key] : ""
+          );
+            newDataPrefixed[`New${f.key}`] = String(
+            newData[f.key] !== undefined ? newData[f.key] : ""
+          );
+
+            if (isSdModifyReference) {
+              newDataPrefixed[f.key] = String(oldData[f.key] !== undefined ? oldData[f.key] : "")
+            }
+          } 
+        });
+        return {
+          ...oldDataPrefixed,
+          ...newDataPrefixed,
+          status: !isRowModified ? "Rejected" : "",
+          comments: isRowModified ? "" : "No modifications made in this record",
+          isModified: isRowModified,
+        };
+      }
+      const dataPrefixed1: any = {};
+      if ((masterId === 6 || masterId === 10) && taskType === "modify") {
+        existingColumnFields.map((f: Field) => {
+         dataPrefixed1[f.key] = String(
+          entry[f.key] !== undefined ? entry[f.key] : ""
+        );
+        });
+        return {
+          ...dataPrefixed1,
+         isModified: true,
+          comments: "",
+          status: "",
+        };
+      }
+      const data = entry;
+
+      const dataPrefixed: any = {};
+
+      existingColumnFields.map((f: Field) => {
+        const isReferenceException = taskType === "add" && (f.key=="sd" || f.key=="wd") && (masterId === 1 || masterId === 2)
+
+        const isAvoidColumn =
+          !isReferenceException &&
+          (
+            TaskPendingAvoidColumnsMapper[masterId].includes(f.key) ||
+            TaskPendingAvoidColumnsMapperSpecific[masterId]?.includes(f.key)
+          )
+
+        if (taskType === 'add') {
+          if (!isAvoidColumn) {
+            dataPrefixed[`Add${f.key}`] = String(data[f.key] !== undefined ? data[f.key] : '')
+          }
+          else {
+            dataPrefixed[f.key] = String(data[f.key] !== undefined ? data[f.key] : '')
           }
         }
-      }
+        else {
+
+          if (masterId === 10) {
+            dataPrefixed[f.key] = data[f.key]
+          }
+          //delete
+          else {
+            if (!isAvoidColumn) {
+              dataPrefixed[`Delete${f.key}`] = String(data[f.key] !== undefined ? data[f.key] : '')
+            }
+            else {
+              dataPrefixed[f.key] = String(data[f.key] !== undefined ? data[f.key] : '')
+            }
+          }
+        }
+      })
+      return {
+        ...dataPrefixed,
+        isModified: true,
+        status: '',
+        comments: data.cmt ? data.cmt : ''
+      };
+
     });
-    return {
-      ...dataPrefixed,
-      isModified: true,
-      status: "",
-      comments: data.cmt ? data.cmt : "",
-    };
-  });
 
   // sort the rows wrt the isModified flag
   response?.sort((a: any, b: any) => {
@@ -2337,7 +2392,7 @@ export const generateSesonalityChartData = (row: any, data: any) => {
           above: "rgba(207, 167, 187, 0.4)",
         },
         data: seasonData,
-        pointRadius: 0,
+        pointBackgroundColor: "rgba(207, 167, 187, 0.4)",
         pointStyle: "rect",
       },
       {
@@ -4877,7 +4932,7 @@ export function getColumnDefinations(
         pinned: null,
         filter: filterType,
         enablePivot: true,
-        flex: 1,
+        initialFlex: 1,
         minWidth: 150,
         valueFormatter: (params: any) => {
           if (params.value) {
@@ -5055,7 +5110,7 @@ export const getType = (attributes: any, key: any) => {
 };
 
 // Function to check values already there in Values
-export const formatFilterJSON = (filter: any) => {
+export const formatFilterJSON = (filter: any = {}) => {
   const formatFilter: any = {};
 
   for (const key in filter) {
@@ -5293,31 +5348,23 @@ export const DownloadExcelMTA = (response: any, filename = "ReportFile") => {
 
 export const CsvExportMTA = async (payload: any, filename = "ReportFile") => {
   try {
-    const response = await fetch(
+    const response = await axios.post(
       process.env.REACT_APP_API_HOST + `api/mta/GetExportDataAsync`,
+      payload,
       {
+        withCredentials: true, 
+        responseType: 'blob',  
         headers: {
-          "Content-Type": "application/json",
-        },
-        method: "post",
-        credentials: "include",
-        body: JSON.stringify(payload),
+            "Content-Type": "application/json" 
+        }
       }
     );
-
-    if (!response.ok) {
-      throw new Error("Failed to download file");
-    }
-
-    const blob = await response.blob();
-    const fileExtension = getFileExtensionFromContentType(
-      response.headers.get("Content-Type")
-    );
-    const downloadFileName = `${filename}__${format(
-      Date.now(),
-      "dd-MM-yyyy"
-    )}.${fileExtension}`;
-
+ 
+    const blob = await response.data;
+    const contentType = response.headers['content-type']; 
+    const fileExtension = getFileExtensionFromContentType(contentType);
+    const downloadFileName = `${filename}__${format(Date.now(), "dd-MM-yyyy")}.${fileExtension}`;
+ 
     const blobUrl = window.URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = blobUrl;

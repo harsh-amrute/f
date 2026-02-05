@@ -200,7 +200,8 @@ const GridViewTable = ({
                             ref={ref}
                             {...agGridProps}
                             columnDefs={agGridColDefs}
-                            rowData={agGridRowData}
+                            rowData={agGridRowData}                      
+                            enableBrowserTooltips={true}
                             maintainColumnOrder={true}
                             height={gridHeight ? gridHeight : '380px'}
                             statusBar={{
@@ -220,6 +221,7 @@ const GridViewTable = ({
                                   setIsDisabled(true);
                                 }
                             }}
+                            tooltipShowDelay={500}        
                         />
                         {paginationProps && <VFPagination {...paginationProps}
                          resetGridRef={ref} 
@@ -258,6 +260,8 @@ const GridViewTable = ({
                                       setIsDisabled(true);
                                     }
                                 }}
+                                tooltipShowDelay={500}
+                                enableBrowserTooltips={false}
                                 
                             />
                             {paginationProps &&

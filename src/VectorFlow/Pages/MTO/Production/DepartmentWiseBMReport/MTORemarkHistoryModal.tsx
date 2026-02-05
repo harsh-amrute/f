@@ -28,7 +28,7 @@ const MTORemarkHistoryModal = (props:RemarkModalProps)=>{
             <div className={RemarkModalContentWrapper}>
                 <div className={`${RemarkModalTable} custom-scrollbar`}>
                     <div className={RemarkModalTableHeaderContainer}>
-                        <p className={RemarkModalTableHeader} style={{textAlign:'center', paddingRight:'5px'}}>
+                        <p className={RemarkModalTableHeader} style={{textAlign:'center', paddingLeft:'10px'}}>
                             Name
                         </p>
                         <p className={RemarkModalTableHeader}>

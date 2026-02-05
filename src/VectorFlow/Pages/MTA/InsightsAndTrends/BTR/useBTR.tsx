@@ -526,7 +526,8 @@ const useBTR = () => {
             pinned: 'left',
             headerTooltip: "Daily Data Graph",
             sortable:false,
-            headerName:"Daily Data Graph"
+            headerName:"Daily Data Graph",
+            suppressMenu:true,
         },
         Category: {
             cellRenderer: 'categoryCellRenderer',

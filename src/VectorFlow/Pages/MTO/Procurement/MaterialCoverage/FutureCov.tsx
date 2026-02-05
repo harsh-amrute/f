@@ -498,7 +498,7 @@ const FutureCov = ({
           className={box}
           data-testid="btn_navigate"
           onClick={() =>
-            handleToggle(ColorsMTO.Blue.label, "", "", "NK", BRYSrtDt, BRYEndDt)
+            handleToggle(ColorsMTO.Blue.label, ColorsMTO.White.label, "", "NK", BRYSrtDt, BRYEndDt)
           }
         >
           <MTOMaterialSO
@@ -522,7 +522,7 @@ const FutureCov = ({
           className={box}
           data-testid="handleNavigation"
           onClick={() =>
-            handleToggle(ColorsMTO.Blue.label, "", "", "PK", secSrtDt, secEndDt)
+            handleToggle(ColorsMTO.Blue.label, ColorsMTO.White.label, "", "PK", secSrtDt, secEndDt)
           }
         >
           <MTOMaterialSO
@@ -548,7 +548,7 @@ const FutureCov = ({
           onClick={() =>
             handleToggle(
               ColorsMTO.Blue.label,
-              "",
+              ColorsMTO.White.label,
               "",
               "FK",
               thrdSrtDt,
@@ -582,7 +582,7 @@ const FutureCov = ({
           onClick={() =>
             handleToggle(
               ColorsMTO.Blue.label,
-              "",
+              ColorsMTO.White.label,
               "",
               "NK",
               frthSrtDt,
@@ -614,7 +614,7 @@ const FutureCov = ({
           onClick={() =>
             handleToggle(
               ColorsMTO.Blue.label,
-              "",
+              ColorsMTO.White.label,
               "",
               "PK",
               fifthSrtDt,
@@ -646,7 +646,7 @@ const FutureCov = ({
           onClick={() =>
             handleToggle(
               ColorsMTO.Blue.label,
-              "",
+              ColorsMTO.White.label,
               "",
               "FK",
               sxthSrtDt,
@@ -680,7 +680,7 @@ const FutureCov = ({
           onClick={() =>
             handleToggle(
               ColorsMTO.Blue.label,
-              "",
+              ColorsMTO.White.label,
               "",
               "NK",
               svthSrtDt,
@@ -711,7 +711,7 @@ const FutureCov = ({
           onClick={() =>
             handleToggle(
               ColorsMTO.Blue.label,
-              "",
+              ColorsMTO.White.label,
               "",
               "PK",
               egthSrtDt,
@@ -740,7 +740,7 @@ const FutureCov = ({
           className={box}
           data-testid="handleNavigation"
           onClick={() =>
-            handleToggle(ColorsMTO.Blue.label, "", "", "FK", nthSrtDt, nthEndDt)
+            handleToggle(ColorsMTO.Blue.label, ColorsMTO.White.label, "", "FK", nthSrtDt, nthEndDt)
           }
         >
           <MTOMaterialSO

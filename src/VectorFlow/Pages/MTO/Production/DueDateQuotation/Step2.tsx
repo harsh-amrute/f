@@ -41,6 +41,8 @@ import {
   notifySuccess,
 } from "../../../../../helpers/notify";
 import * as globalStyles from "../../../../../styles/global";
+import { useUserData } from '../../../../../context';
+import VFToolTip from '../../../../../components/VectorFLOW/commons/MTO/VFToolTip';
 import "./style.css";
 
 const Step2 = forwardRef(
@@ -67,6 +69,8 @@ const Step2 = forwardRef(
       setRowsSelectedForAssignment(false);
     }, []);
 
+    const user = useUserData()
+    const canChangeRoute =user?.user?.feature_permission?.includes('Change_Route');
     useEffect(() => {
       if (masters) {
         if (confirmedRows) {
@@ -1230,51 +1234,37 @@ const Step2 = forwardRef(
           );
         });
 
-        if (allCCRsMatch) {
-          // If all item types have the same CCRs, use the first item type's CCRs
-          const firstItemType = Array.from(itemTypes)[0];
-          return masters?.ccrGroups
-            .map((ccrGroup: any) => {
-              return {
-                ...ccrGroup,
-                ccrs: ccrGroup.ccrs.filter((ccr: any) => {
-                  return (
-                    ccr.plant_id == selectedPlant &&
-                    CCRItemTypeMappingMasterLookup.get(ccr.value)?.has(
-                      firstItemType
-                    )
-                  );
-                }),
-              };
-            })
-            ?.filter((ccrGroup: any) => ccrGroup.ccrs.length != 0);
+            if (allCCRsMatch) {
+                // If all item types have the same CCRs, use the first item type's CCRs
+                const firstItemType = Array.from(itemTypes)[0];
+                return masters?.ccrGroups.map((ccrGroup: any) => {
+                    return {
+                        ...ccrGroup, 
+                        ccrs: ccrGroup.ccrs.filter((ccr: any) => {
+                            return ccr.plant_id == selectedPlant && CCRItemTypeMappingMasterLookup.get(ccr.value)?.has(firstItemType);
+                        })
+                    }
+                })?.filter((ccrGroup: any) => ccrGroup.ccrs.length != 0)
+            }
         }
-      }
-
-      // Fallback to plant-based filtering if CCRs don't match or no item types
-      if (selectedPlant && masters) {
-        return masters?.ccrGroups
-          .map((ccrGroup: any) => {
-            return {
-              ...ccrGroup,
-              ccrs: ccrGroup.ccrs.filter((ccr: any) => {
-                return ccr.plant_id == selectedPlant;
-              }),
-            };
-          })
-          ?.filter((ccrGroup: any) => ccrGroup.ccrs.length != 0);
-      }
-
-      return [];
-    };
-
-    const ccrGroups = useMemo(calculateCCGroups, [
-      masters,
-      selectedPlant,
-      newSelectedRows,
-    ]);
-
-    // const [ccrGroups, setCcrGroups] = useState([]);
+        
+        // Fallback to plant-based filtering if CCRs don't match or no item types
+        if (selectedPlant && masters) {
+            return masters?.ccrGroups.map((ccrGroup: any) => {
+                return {
+                    ...ccrGroup, 
+                    ccrs: ccrGroup.ccrs.filter((ccr: any) => {
+                        return ccr.plant_id == selectedPlant;
+                    })
+                }
+            })?.filter((ccrGroup: any) => ccrGroup.ccrs.length != 0)
+        }
+        
+        return []
+    }
+    
+ 
+    const ccrGroups = useMemo(calculateCCGroups, [masters, selectedPlant, newSelectedRows])
 
     return (
       <>
@@ -1486,7 +1476,7 @@ const Step2 = forwardRef(
                     margin: "20px 10px",
                     padding: "1rem",
                     position: "relative",
-                    overflow: "auto",
+                    overflow: "visible",
                   }}
                 >
                   <div
@@ -1497,10 +1487,13 @@ const Step2 = forwardRef(
                       gap: "0.5rem",
                     }}
                   >
+                    <div className="disabled-button-wrapper">
                     <VFButton
                       themeUi={theme}
                       onClick={onSave}
-                      disabled={isEditable ? isSaveDisabled : false}
+                      // disabled={isEditable ? isSaveDisabled : false}
+                      disabled={!canChangeRoute || (isEditable && isSaveDisabled)}
+
                       style={{
                         fontSize: "10px",
                         width: "60px",
@@ -1525,10 +1518,18 @@ const Step2 = forwardRef(
                           Edit
                         </>
                       )}
-                    </VFButton>
+                      </VFButton>
+                      {!canChangeRoute && (
+                        <VFToolTip
+                          text={'The logged-in user does not have access to edit the routes.'}
+                        />
+                      )}
+                    </div>
+                    <div className="disabled-button-wrapper">
                     <VFButtonOutline
                       themeUi={theme}
                       onClick={onReset}
+                      disabled={!canChangeRoute}
                       style={{
                         fontSize: "10px",
                         width: "60px",
@@ -1542,7 +1543,13 @@ const Step2 = forwardRef(
                     >
                       <img src="/assets/img/mto/dueDateQuotation/reset-icon.svg" />{" "}
                       Reset
-                    </VFButtonOutline>
+                      </VFButtonOutline>
+                      {!canChangeRoute && (
+                        <VFToolTip
+                          text={'The logged-in user does not have access to reset the routes.'}
+                        />
+                      )}
+                    </div>
                   </div>
                   <div style={{ display: "flex", gap: "2rem" }}>
                     <div style={{ flex: "2" }}>
@@ -1654,7 +1661,7 @@ const Step2 = forwardRef(
                 <div
                   style={{
                     height: "100%",
-                    overflow: "hidden",
+                    overflow: "visible",
                     display: "flex",
                     width: "100%",
                   }}
@@ -1714,7 +1721,7 @@ const Step2 = forwardRef(
                   height: "calc(100% - 30px)",
                   color: "grey",
                   boxShadow: "rgba(0, 0, 0, 0.1) 0px 2px 10px 2px",
-                  overflow: "hidden",
+                  overflow: "visible",
                 }}
               >
                 <div style={{ fontSize: "16px" }}>No Data to Display</div>

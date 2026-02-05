@@ -695,9 +695,6 @@ const DptWiseBMReport = () => {
 
         };
     }, [masterSelectedRowData, gridData])
-    
-   
-    
 
     const getUpdatedFilteredData = async (page: any, pageSize?: any, isExcelExport=false, isBomExplosion=0) => {
         if (isExcelExport) {
@@ -706,7 +703,14 @@ const DptWiseBMReport = () => {
             const formatedFilters = formatFilterJSON(appliedFilters);
             const body = getBodyForExcelExport({ headersdata, filterData: formatedFilters, groupedColDefsRef })
             try {
-                const response = await getFilteredDeptWiseBMReportData({ body, page: currentPage, appliedFilters: formatedFilters,report_name:FilterPageName.Prod_Dept_Wise_BM_Report, page_size: gridDataCount, isExcelExport: 1, isBomExplosion })
+                const response = await getFilteredDeptWiseBMReportData({
+                    "wip": isWIPChecked ? 1 : 0,
+                    body,
+                    appliedFilters: formatedFilters,
+                    report_name: FilterPageName.Prod_Dept_Wise_BM_Report,
+                    isExcelExport: 1,
+                    isBomExplosion
+                });
                 if (response.status == 200) {
                     DownloadExcel(response, FilterPageName.Prod_Dept_Wise_BM_Report)
                     notifySuccess("Excel exported successfully!");

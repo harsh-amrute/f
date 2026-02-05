@@ -1,5 +1,5 @@
-import { GridOptions } from "ag-grid-enterprise";
-import { useEffect, useRef, useState } from "react";
+import { ExcelCell, ExcelExportParams, ExcelRow, GridOptions, ProcessRowGroupForExportParams } from "ag-grid-enterprise";
+import { useEffect, useMemo, useRef, useState } from "react";
 import VFTable from "../../../Common/VFTable";
 import CustomGroupCellRenderer from "./CustomGroupCellRenderer";
 import DayWiseCoverageDetailsCellRenderer from "./DayWiseCoverageDetailsCellRenderer";
@@ -9,16 +9,19 @@ import {
   textBtn,
 } from "../../../Common/VFPagination/styles.css";
 import { useUserData } from "../../../../../../context";
+import { formatFilterJSON } from "../../../../../../helpers/utils";
 
 interface IDayWiseCoverageProps {
-  columnState: any;
-  setCurrentGridRef: any;
-  colDef: any;
-  currentGridRef: any;
-  selectedDate: string;
-  startDate: string;
-  endDate: string;
-  setLoading: any;
+  columnState: any,
+  setCurrentGridRef: any,
+  colDef: any,
+  currentGridRef: any,
+  selectedDate: string,
+  startDate: string,
+  endDate: string,
+  setLoading: any,
+  appliedFilters: any,
+  childColDef: any,
 }
 
 const DayWiseCoverageTable = ({
@@ -30,6 +33,8 @@ const DayWiseCoverageTable = ({
   startDate,
   endDate,
   setLoading,
+  appliedFilters,
+  childColDef
 }: IDayWiseCoverageProps) => {
   // const extra = [
   //   {
@@ -48,12 +53,16 @@ const DayWiseCoverageTable = ({
 
   const getGridData = async () => {
     if (selectedDate) {
+      const formattedFilters = formatFilterJSON(appliedFilters);
+      
       const data = await getData({
         startDate: startDate,
         endDate: endDate,
         plannedReleaseDate: selectedDate,
+        appliedFilters: formattedFilters,
       });
-      setRowData(data?.data?.data);
+      const convertToArray = !Array.isArray(data?.data?.data) ? [] : data?.data?.data;
+      setRowData(convertToArray);
     }
   };
 
@@ -78,19 +87,18 @@ const DayWiseCoverageTable = ({
   };
 
   useEffect(() => {
-    getGridData();
-  }, [selectedDate]);
+    getGridData()
+  }, [selectedDate, appliedFilters])
 
   useEffect(() => {
     setLoading(isGridLoading);
   }, [isGridLoading]);
 
-  const options: GridOptions<any> = {
-    getRowStyle: (params: any) => {
-      return {
-        background: params.node.rowIndex % 2 === 0 ? "#EBEBEB" : "#F7F7F7",
-      };
-    },
+
+  const options: GridOptions<any> = useMemo(() => ({
+    getRowStyle: (params: any) => ({
+      background: params.node.rowIndex % 2 === 0 ? "#EBEBEB" : "#F7F7F7",
+    }),
     columnDefs: colDef,
     defaultColDef: {
       filter: "agTextColumnFilter",
@@ -107,15 +115,11 @@ const DayWiseCoverageTable = ({
       initialWidth: 260,
     },
     masterDetail: true,
-    detailCellRendererParams: {
-      innerHeight: 400,
-    },
-    detailCellRenderer: DayWiseCoverageDetailsCellRenderer,
     detailRowAutoHeight: true,
     sideBar: {
       toolPanels: ["columns"],
     },
-  };
+  }), [colDef, childColDef]);
 
   useEffect(() => {
     if (columnState?.length && colDef.length > 0) {
@@ -127,7 +131,62 @@ const DayWiseCoverageTable = ({
         console.error("Failed to apply column state");
       }
     }
-  }, [columnState, currentGridRef]);
+  },[columnState,currentGridRef]);
+
+  const cell: (text: string, styleId?: string) => ExcelCell = (
+    text: string,
+    styleId?: string,
+  ) => {
+    return {
+      styleId: styleId,
+      data: {
+        type: /^\d+$/.test(text) ? "Number" : "String",
+        value: String(text),
+      },
+    };
+  };
+
+
+  const getRows = (params: ProcessRowGroupForExportParams) => {
+    const childData = params?.node?.data?.children;
+  
+    if (!childData || !childData.length) return [];
+  
+    const childColDefHeaders: string[] = [];
+    childColDef.forEach((col: any) => {
+      if (col?.headerName) {
+        childColDefHeaders.push(col.headerName);
+      }
+    });
+  
+    const rows = [
+      {
+        outlineLevel: 2,
+        cells: [
+          cell(""),
+          ...childColDefHeaders.map((col) => cell(col, "header")),
+        ],
+      },
+      ...childData.map((data: any) => ({
+        outlineLevel: 2,
+        cells: [
+          cell(""),
+          ...childColDef.map((col: any) => cell(data[col.field], "data")),
+        ],
+      })),
+    ];
+  
+    return rows;
+  };
+  
+
+  const defaultExcelExportParams = useMemo<ExcelExportParams>(() => {
+    return {
+      getCustomContentBelowRow: (params) => getRows(params) as ExcelRow[],
+      columnWidth: 120,
+      fileName: "ag-grid.xlsx",
+    };
+  }, [gridRef.current, childColDef, rowData]);
 
   return (
     <VFTable
@@ -139,8 +198,15 @@ const DayWiseCoverageTable = ({
       columnDefs={options.columnDefs}
       rowData={rowData}
       // pagination={true}
-      statusBar={{
-        statusPanels: [{ statusPanel: CustomStatusPanel, align: "left" }],
+      statusBar = {{
+        statusPanels: [
+          { statusPanel: CustomStatusPanel, align: "left" },
+        ],
+      }} 
+      detailCellRenderer={DayWiseCoverageDetailsCellRenderer}
+      detailCellRendererParams={ {
+        colDef : childColDef,
+        innerHeight: 400,
       }}
       onGridReady={(params: any) => {
         params.api.autoSizeAllColumns();
@@ -154,7 +220,10 @@ const DayWiseCoverageTable = ({
           }
         });
       }}
-    />
+      defaultExcelExportParams={defaultExcelExportParams}
+
+      />
+      
   );
 };
 

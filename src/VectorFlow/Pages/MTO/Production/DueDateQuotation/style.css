@@ -25,11 +25,22 @@
 /* .split-view-view{
     overflow: visible !important;
 } */
+ 
+.vfwrap .ag-icon-filter{
+    color:white;
+  zoom:1.0;
+  pointer-events: none; 
+   
+}
 
-.vfwrap .ag-icon-filter {
-  color: white;
-  zoom: 1;
-  pointer-events: none;
+.allotment-module_splitViewView__MGZ6O
+ {
+  overflow: visible !important;
+}
+
+.allotment-module_splitView__view
+ { 
+  overflow: visible !important;
 }
 
 .step2-tooltip-container {

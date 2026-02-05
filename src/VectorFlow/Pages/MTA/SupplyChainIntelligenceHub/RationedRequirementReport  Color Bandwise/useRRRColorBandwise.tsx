@@ -238,7 +238,11 @@ const useRRRColorBandwise = () => {
       pinned: 'left',
       resizable: false,
       floatingFilter: false,
-      suppressColumnsToolPanel: false
+      suppressColumnsToolPanel: false,
+      suppressMenu:true,
+      headerTooltip: "Daily Data Graph",
+      headerName:"Daily Data Graph",
+      sortable: false,
     },
     DispatchColor: {
       cellRenderer: 'colorCellRenderer',
@@ -246,11 +250,26 @@ const useRRRColorBandwise = () => {
   }
 
   const onApplyFilter = async (filter: any) => {
-    await getRRRColorBandWiseUiConfig();
-    await handleGetRecordsCount(filter);
-    await loadGridData(1, filter);
-    setCurrFilter(filter);
-    setCurrentPage(1);
+    notifyLoader("Loading Grid Data");
+    try {
+      await getRRRColorBandWiseUiConfig();
+      await handleGetRecordsCount(filter);
+      const payload = {
+        filters: filter,
+        paginationParameter: {
+          pageNumber: 1,
+          recordsPerPage: userPageSize || rowsPerPage || 100,
+        },
+      };
+      const result = await getData(payload);
+      setCurrFilter(filter);
+      setCurrentPage(1);
+      setRowData(result?.data.data || []); 
+      notifySuccess("Data Loaded Successfully");
+    } catch (error) {
+      console.error(error);
+      notifyError("Failed to load data");
+    }
   };
 
   const onDeleteFilter = async (parentId: any, filterId: any, value: any) => {
