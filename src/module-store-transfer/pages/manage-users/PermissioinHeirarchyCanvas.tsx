@@ -731,11 +731,9 @@ export default function PermissionHeirarchyCanvas({
                   level3.find(n => n.id === childId))?.key || childId;
 
               // Add P' Node
-              // Fix: Use a key that generates a path treated as a child of the current node.
-              // Current Node Key: `childId`. Path: `path(childId)`.
-              // We want IA Node Path: `[...path(childId), "isActive"]`.
-              // So we construct a string: `${childId}>0_isActive`. (Index 0 is arbitrary, 'isActive' is the key).
-              const iaKey = `${childId}>0_isActive`;
+              // Use parent node (nodeId) as the base so IA node is a child of parent for selection
+              // This makes B' grey-ticked when A is selected (not when B is selected)
+              const iaKey = `${nodeId}>0_${iaNodeKey}'`;
 
               finalNodes.push({
                 id: `ia_${childId}`,
@@ -849,8 +847,9 @@ export default function PermissionHeirarchyCanvas({
           wrapperHeight += NODE_HEIGHT + 10; // Extra height for P'
 
           // Add P' Node
-          // Fix key for Root IA
-          const iaKey = `${l1Node.id}>0_isActive`;
+          // Root level IA should NOT inherit from parent A - make it a standalone sibling
+          // Use a key that is at the same level as A, not as a child of A
+          const iaKey = `0_${l1Node.key}'`;
 
           finalNodes.push({
             id: `ia_${l1Node.id}`,
