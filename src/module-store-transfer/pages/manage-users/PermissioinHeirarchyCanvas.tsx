@@ -266,19 +266,25 @@ const CustomNode = ({
             if (existingPermIndex !== -1) {
               existingPermissions.splice(existingPermIndex, 1);
             }
-            // Check if in existingPermissions there is a permission that starts with current path and remove them all as there could be multiple of them
+            // Check if in existingPermissions there is a permission that is currentPath or descendant of currentPath
+            // Use proper array comparison instead of JSON string startsWith to avoid B/B' edge case
             const filteredPermissionsWithRemovedChilds = existingPermissions.filter((perm) => {
-              const stringPerm = JSON.stringify(perm);
-              const stringCurrentPath = JSON.stringify(currentPath);
-              console.log("perm", stringPerm);
-              console.log("currentPath", stringCurrentPath);
-              return !stringPerm.startsWith(stringCurrentPath.slice(0, -1))
-            }
-            );
+              // Keep perm if it's NOT currentPath and NOT a descendant of currentPath
+              const isCurrentPath = perm.length === currentPath.length && 
+                perm.every((val, idx) => val === currentPath[idx]);
+              const isDescendant = perm.length > currentPath.length && 
+                currentPath.every((val, idx) => val === perm[idx]);
+              return !isCurrentPath && !isDescendant;
+            });
             existingPermissions = filteredPermissionsWithRemovedChilds;
 
 
-            if (!existingPermissions.some(perm => JSON.stringify(perm.slice(0, -1)) === JSON.stringify(currentPath.slice(0, -1)))) {
+            // Check if this is an IA node (path ends with prime suffix)
+            // IA nodes should not trigger parent reselection when unchecked
+            const lastElement = currentPath[currentPath.length - 1] || '';
+            const isIANode = lastElement.endsWith("'");
+
+            if (!isIANode && !existingPermissions.some(perm => JSON.stringify(perm.slice(0, -1)) === JSON.stringify(currentPath.slice(0, -1)))) {
               existingPermissions.push(currentPath.slice(0, -1));
             }
             console.log('existingPermissions', existingPermissions);
@@ -290,14 +296,15 @@ const CustomNode = ({
         }
         else {
           console.log("here4", existingPermissions)
+          // Use proper array comparison instead of JSON string startsWith to avoid B/B' edge case
           const newEP = existingPermissions.filter((perm) => {
-            const stringPerm = JSON.stringify(perm);
-            const stringCurrentPath = JSON.stringify(currentPath);
-            console.log("perm", stringPerm);
-            console.log("currentPath", stringCurrentPath);
-            return !stringPerm.startsWith(stringCurrentPath.slice(0, -1))
-          }
-          );
+            // Keep perm if it's NOT currentPath and NOT a descendant of currentPath
+            const isCurrentPath = perm.length === currentPath.length && 
+              perm.every((val, idx) => val === currentPath[idx]);
+            const isDescendant = perm.length > currentPath.length && 
+              currentPath.every((val, idx) => val === perm[idx]);
+            return !isCurrentPath && !isDescendant;
+          });
           existingPermissions = newEP;
         }
 
