@@ -288,6 +288,18 @@ const CustomNode = ({
             existingPermissions.splice(existingPermissions.findIndex((perm) => JSON.stringify(perm) === JSON.stringify(parentPath)), 1);
           }
         }
+        else {
+          console.log("here4", existingPermissions)
+          const newEP = existingPermissions.filter((perm) => {
+            const stringPerm = JSON.stringify(perm);
+            const stringCurrentPath = JSON.stringify(currentPath);
+            console.log("perm", stringPerm);
+            console.log("currentPath", stringCurrentPath);
+            return !stringPerm.startsWith(stringCurrentPath.slice(0, -1))
+          }
+          );
+          existingPermissions = newEP;
+        }
 
       }
 
