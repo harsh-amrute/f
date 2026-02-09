@@ -214,6 +214,8 @@ const PermissionSelectionPage = ({
         permissions: {},
         roles: {}
       };
+
+      const isDynamicPermissions = (user.user.config_data.INHERITED_ACCESS === "1") || false;
     
       let permIdCounter = 1;
     
@@ -239,37 +241,132 @@ const PermissionSelectionPage = ({
     
         // Set permissions
         const userPerms:any = user.permissions || {};
-        const formattedPerms:any = {
-          location_permissions: [],
-          product_permissions: []
-        };
+        const formattedPerms:any = {};
     
         for (const [appName, perms] of Object.entries(userPerms) as [string, any][]) {
-          const application_id = getAppId(appName); // You can customize this mapping
+          const application_id = getAppId(appName); 
+          const appData = dataAllPermissions.find((d: any) => d.application_name === appName);
+          
+          if (!appData) continue;
+
+          // Helper to process a permission type
+          const processPermissionType = (permType: string, paths: string[][]) => {
+              if (!paths || paths.length === 0) return [];
+
+              const prefix = permType.split("_")[0]; // location or product
+              const defKey1 = `${permType}_ids`;
+              const defKey2 = `${permType.replace("_permission", "")}_permission_ids`;
+              const definitions = appData[defKey1] || appData[defKey2] || [];
+              
+              if (!Array.isArray(definitions)) return [];
+
+              const ids: string[] = [];
+
+              paths.forEach((path: string[]) => {
+                  const isIA = path[path.length - 1] === "isActive";
+                  const hierarchyPath = isIA ? path.slice(0, -1) : path;
+                  
+                  if (!isDynamicPermissions) {
+                       // LEGACY / CASCADE MODE: Drill down to find all children
+                       const matchedDefs = definitions.filter((def: any) => {
+                          const h1 = def[`${prefix}_hierarchy_1`] || def[`hierarchy_1`] || def[`${prefix}_heirarchy_1`] || def[`heirarchy_1`];
+                          const h2 = def[`${prefix}_hierarchy_2`] || def[`hierarchy_2`] || def[`${prefix}_heirarchy_2`] || def[`heirarchy_2`];
+                          const h3 = def[`${prefix}_hierarchy_3`] || def[`hierarchy_3`] || def[`${prefix}_heirarchy_3`] || def[`heirarchy_3`];
+
+                          // IA Case
+                          if (isIA) {
+                              if (h1 !== hierarchyPath[0]) return false;
+                              if (hierarchyPath.length > 1 && h2 !== hierarchyPath[1]) return false;
+                              // IA node check
+                              if (def.isActive !== true) return false;
+                              
+                              // Level match
+                              if (hierarchyPath.length === 1 && (h2 && h2 !== "")) return false;
+                              if (hierarchyPath.length === 2 && (h3 && h3 !== "")) return false;
+                              
+                              return true;
+                          }
+
+                          // Standard Case: Cascade Drill Down
+                          if (h1 !== hierarchyPath[0]) return false;
+                          if (hierarchyPath.length > 1 && h2 !== hierarchyPath[1]) return false;
+                          if (hierarchyPath.length > 2 && h3 !== hierarchyPath[2]) return false;
+
+                          // Must be Leaf (h3 exists)
+                          if (!h3 || h3 === "") return false;
+
+                          return true;
+                       });
+
+                       matchedDefs.forEach((d: any) => ids.push(d.h_id));
+
+                  } else {
+                       // DYNAMIC MODE: Exact Match + Underscore
+                       const matchedDef = definitions.find((def: any) => {
+                           const h1 = def[`${prefix}_hierarchy_1`] || def[`hierarchy_1`] || def[`${prefix}_heirarchy_1`] || def[`heirarchy_1`];
+                           const h2 = def[`${prefix}_hierarchy_2`] || def[`hierarchy_2`] || def[`${prefix}_heirarchy_2`] || def[`heirarchy_2`];
+                           const h3 = def[`${prefix}_hierarchy_3`] || def[`hierarchy_3`] || def[`${prefix}_heirarchy_3`] || def[`heirarchy_3`];
+                           
+                           if (h1 !== hierarchyPath[0]) return false;
+                           
+                           if (hierarchyPath.length > 1) {
+                               if (h2 !== hierarchyPath[1]) return false;
+                           } else {
+                               if (h2 && h2 !== "") return false;
+                           }
+                           
+                           if (hierarchyPath.length > 2) {
+                               if (h3 !== hierarchyPath[2]) return false;
+                           } else {
+                               if (!isIA && h3 && h3 !== "") return false;
+                           }
+                           
+                           if (isIA && def.isActive !== true) return false;
+                           
+                           return true;
+                       });
+
+                       if (matchedDef) {
+                           if (isIA) {
+                               ids.push(matchedDef.h_id);
+                           } else {
+                               const h3 = matchedDef[`${prefix}_hierarchy_3`] || matchedDef[`hierarchy_3`] || matchedDef[`${prefix}_heirarchy_3`] || matchedDef[`heirarchy_3`];
+                               const isLeaf = (h3 && h3 !== "");
+                               
+                               if (isLeaf) {
+                                   ids.push(matchedDef.h_id);
+                               } else {
+                                   ids.push(`${matchedDef.h_id}_`);
+                               }
+                           }
+                       }
+                  }
+              });
+              
+              return Array.from(new Set(ids));
+          };
+
+          // Location Permissions
           if (perms?.location_permission) {
-            formattedPerms.location_permissions.push({
-              application_id,
-              permissions: perms.location_permission.map((locPath: string[]) => {
-                const obj: any = {};
-                locPath.forEach((lvl, i) => {
-                  obj[`location_heirarchy_${i + 1}`] = lvl || "";
-                });
-                return obj;
-              })
-            });
+             const ids = processPermissionType("location_permission", perms.location_permission);
+             if (ids.length > 0) {
+                 if (!formattedPerms["location_permission_hids"]) formattedPerms["location_permission_hids"] = [];
+                 formattedPerms["location_permission_hids"].push({
+                     application_id,
+                     permissions: ids
+                 });
+             }
           }
-    
+           // Product Permissions
           if (perms?.product_permission) {
-            formattedPerms.product_permissions.push({
-              application_id,
-              permissions: perms.product_permission.map((prodPath: string[]) => {
-                const obj: any = {};
-                prodPath.forEach((lvl, i) => {
-                  obj[`product_hierarchy_${i + 1}`] = lvl || "";
-                });
-                return obj;
-              })
-            });
+             const ids = processPermissionType("product_permission", perms.product_permission);
+             if (ids.length > 0) {
+                 if (!formattedPerms["product_permission_hids"]) formattedPerms["product_permission_hids"] = [];
+                 formattedPerms["product_permission_hids"].push({
+                     application_id,
+                     permissions: ids
+                 });
+             }
           }
         }
     
@@ -600,7 +697,6 @@ const PermissionSelectionPage = ({
         notifyError("Failed to register Users! Please try again!")
         console.error("Error updating roles for selected users", e);
       }
-
     }
 
 

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { ReactFlow, Handle, Position, Background, BackgroundVariant, MiniMap , PanelPosition, Controls} from "@xyflow/react";
+import { ReactFlow, Handle, Position, Background, BackgroundVariant, MiniMap, PanelPosition, Controls } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import Checkbox from "../../../components/VectorFLOW/commons/MTO/Checkbox";
 import { useUserData } from "../../../context";
@@ -95,14 +95,14 @@ const CustomNode = ({
   const shouldHavePinkShadow = (key: string) => {
     const path = getPathArray(key);
     const permissionList = getPermissionList();
-    
+
     // Check if this node itself is selected
     const isThisNodeSelected = permissionList.some((perm) =>
       JSON.stringify(perm) === JSON.stringify(path)
     );
-    
+
     if (isThisNodeSelected) return false;
-    
+
     // Check if any parent is selected
     let hasSelectedParent = false;
     for (let i = 1; i < path.length; i++) {
@@ -115,9 +115,9 @@ const CustomNode = ({
         break;
       }
     }
-    
+
     if (!hasSelectedParent) return false;
-    
+
     // Check if any sibling at the same level is selected
     const siblingPrefix = path.slice(0, -1);
     const hasSiblingSelected = permissionList.some((perm) => {
@@ -128,7 +128,7 @@ const CustomNode = ({
       // Must be a different node (different last element)
       return perm[perm.length - 1] !== path[path.length - 1];
     });
-    
+
     return !hasSiblingSelected;
   };
 
@@ -146,20 +146,20 @@ const CustomNode = ({
 
     // 2. Implicitly Selected (Ancestor is selected)
     const isImplicit = permissionList.some((perm) => {
-        // Check if perm is an ancestor of path
-        // perm length < path length
-        if (perm.length >= path.length) return false;
-        // perm must match start of path
-        return path.slice(0, perm.length).every((val, idx) => val === perm[idx]);
+      // Check if perm is an ancestor of path
+      // perm length < path length
+      if (perm.length >= path.length) return false;
+      // perm must match start of path
+      return path.slice(0, perm.length).every((val, idx) => val === perm[idx]);
     });
     if (isImplicit) return "implicit";
 
     // 3. Has Descendant Selected (Visual Pink / Bubble Up)
     const hasDescendant = permissionList.some((perm) => {
-        // perm length > path length
-        if (perm.length <= path.length) return false;
-        // path must match start of perm
-        return perm.slice(0, path.length).every((val, idx) => val === path[idx]);
+      // perm length > path length
+      if (perm.length <= path.length) return false;
+      // path must match start of perm
+      return perm.slice(0, path.length).every((val, idx) => val === path[idx]);
     });
     if (hasDescendant) return "explicit"; // Treat as explicit/pink for visual
 
@@ -168,72 +168,137 @@ const CustomNode = ({
 
   const setTheChecked = () => {
     const currentPath = pathArray;
-    const existingPermissions = [...getPermissionList()];
+    let existingPermissions = [...getPermissionList()];
     const currentState = getSelectionState(data.key);
 
+
     if (currentState === "unchecked") {
-        // Add current path
-        // Simple add:
-        const pStr = JSON.stringify(currentPath);
-        if (!existingPermissions.some((perm) => JSON.stringify(perm) === pStr)) {
-            existingPermissions.push(currentPath);
-        }
+      // Add current path
+      // Simple add:
+      const pStr = JSON.stringify(currentPath);
+      console.log("existingPermissions......", existingPermissions);
+      console.log("unchecked......", pStr)
+      if (!existingPermissions.some((perm) => JSON.stringify(perm) === pStr)) {
+        existingPermissions.push(currentPath);
+      }
+      console.log("existingPermissions after......", existingPermissions);
     } else {
-        // Handle Uncheck (from Implicit or Explicit)
-        
-        // 1. Remove explicit self if present
-        const explicitIndex = existingPermissions.findIndex((perm) => JSON.stringify(perm) === JSON.stringify(currentPath));
-        if (explicitIndex !== -1) {
-            existingPermissions.splice(explicitIndex, 1);
-        }
+      // Handle Uncheck (from Implicit or Explicit)
+      console.log("checked......", currentPath)
 
-        // 2. Handle Implicit (Ancestor Selected)
-        // Find ancestor
-        const coveringAncestorIndex = existingPermissions.findIndex((perm) => 
-            perm.length < currentPath.length && 
-            currentPath.slice(0, perm.length).every((val, idx) => val === perm[idx])
-        );
+      // 1. Remove explicit self if present
+      const explicitIndex = existingPermissions.findIndex((perm) => JSON.stringify(perm) === JSON.stringify(currentPath));
+      if (explicitIndex !== -1) {
+        existingPermissions.splice(explicitIndex, 1);
+      }
 
-        if (coveringAncestorIndex !== -1) {
-             const ancestorPath = existingPermissions[coveringAncestorIndex];
-             // Remove ancestor
-             existingPermissions.splice(coveringAncestorIndex, 1);
+      // 2. Handle Implicit (Ancestor Selected)
+      // Find ancestor
+      const coveringAncestorIndex = existingPermissions.findIndex((perm) =>
+        perm.length < currentPath.length &&
+        currentPath.slice(0, perm.length).every((val, idx) => val === perm[idx])
+      );
 
-             // Add current path (Narrowing from Ancestor to Specific Child)
-             existingPermissions.push(currentPath);
-        }
-        
-        // 3. Ensure Parent Stays Selected (if it was implicit/explicit before)
-        // If we unchecked the LAST child of a parent, the parent might become "Unchecked"
-        // But user wants "Parent must remain selected".
-        // This implies: If `Parent` has NO descendants in keys, we must add `Parent` itself.
-        
+      // This check will be true if the node is grey selected
+      if (coveringAncestorIndex !== -1) {
+
+        console.log("isGreySelected and not pink");
+
+        const ancestorPath = existingPermissions[coveringAncestorIndex];
+        // Remove ancestor
+        existingPermissions.splice(coveringAncestorIndex, 1);
+
+        // Add current path (Narrowing from Ancestor to Specific Child)
+        existingPermissions.push(currentPath);
+
+        /////////////
+
+
         const parentPath = currentPath.slice(0, -1);
         if (parentPath.length > 0) {
-             // Check if parent has any descendants in existingPermissions
-             const hasDescendants = existingPermissions.some(perm => 
-                 perm.length > parentPath.length && 
-                 perm.slice(0, parentPath.length).every((val, idx) => val === parentPath[idx])
-             );
-             
-             // Also check if parent itself is in existingPermissions (explicitly)
-             const hasParentExplicit = existingPermissions.some(perm => 
-                 JSON.stringify(perm) === JSON.stringify(parentPath)
-             );
+          // Check if parent has any descendants in existingPermissions
+          const hasDescendants = existingPermissions.some(perm =>
+            perm.length > parentPath.length &&
+            perm.slice(0, parentPath.length).every((val, idx) => val === parentPath[idx])
+          );
 
-             if (!hasDescendants && !hasParentExplicit) {
-                 // Parent became empty -> Reselect Parent explicitly
-                 existingPermissions.push(parentPath);
-             }
+          // Also check if parent itself is in existingPermissions (explicitly)
+          const hasParentExplicit = existingPermissions.some(perm =>
+            JSON.stringify(perm) === JSON.stringify(parentPath)
+          );
+
+          if (!hasDescendants && !hasParentExplicit) {
+            // Parent became empty -> Reselect Parent explicitly
+            existingPermissions.push(parentPath);
+          }
         }
+      }
+      else {
+
+        console.log("not grey selected and pink");
+        const parentPath = currentPath.slice(0, -1);
+
+        console.log("parentPath", parentPath);
+        if (parentPath.length > 0) {
+          // Check if parent has any descendants in existingPermissions
+          const hasDescendants = existingPermissions.some(perm =>
+            perm.length > parentPath.length &&
+            perm.slice(0, parentPath.length).every((val, idx) => val === parentPath[idx])
+          );
+
+          console.log("hasDescendants", hasDescendants);
+
+          // Also check if parent itself is in existingPermissions (explicitly)
+          const hasParentExplicit = existingPermissions.some(perm =>
+            JSON.stringify(perm) === JSON.stringify(parentPath)
+          );
+
+          console.log("hasParentExplicit", hasParentExplicit);
+
+          if (!hasDescendants && !hasParentExplicit) {
+            // Parent became empty -> Reselect Parent explicitly
+            console.log("here1", existingPermissions);
+            existingPermissions.push(parentPath);
+          }
+          else if (hasDescendants) {
+            console.log("here2", existingPermissions);
+            const existingPermIndex = existingPermissions.findIndex((perm) => JSON.stringify(perm) === JSON.stringify(currentPath));
+            if (existingPermIndex !== -1) {
+              existingPermissions.splice(existingPermIndex, 1);
+            }
+            // Check if in existingPermissions there is a permission that starts with current path and remove them all as there could be multiple of them
+            const filteredPermissionsWithRemovedChilds = existingPermissions.filter((perm) => {
+              const stringPerm = JSON.stringify(perm);
+              const stringCurrentPath = JSON.stringify(currentPath);
+              console.log("perm", stringPerm);
+              console.log("currentPath", stringCurrentPath);
+              return !stringPerm.startsWith(stringCurrentPath.slice(0, -1))
+            }
+            );
+            existingPermissions = filteredPermissionsWithRemovedChilds;
+
+
+            if (!existingPermissions.some(perm => JSON.stringify(perm.slice(0, -1)) === JSON.stringify(currentPath.slice(0, -1)))) {
+              existingPermissions.push(currentPath.slice(0, -1));
+            }
+            console.log('existingPermissions', existingPermissions);
+          }
+          else {
+            console.log("here3", existingPermissions);
+            existingPermissions.splice(existingPermissions.findIndex((perm) => JSON.stringify(perm) === JSON.stringify(parentPath)), 1);
+          }
+        }
+
+      }
+
     }
 
     setSelectedPermissions((prev: any) => ({
-        ...prev,
-        [selectedApplication]: {
-          ...(prev[selectedApplication] || {}),
-          [permissionType]: existingPermissions,
-        },
+      ...prev,
+      [selectedApplication]: {
+        ...(prev[selectedApplication] || {}),
+        [permissionType]: existingPermissions,
+      },
     }));
   };
 
@@ -254,8 +319,8 @@ const CustomNode = ({
         alignItems: "center",
         borderRadius: "5px",
         color: "black",
-        background: data.hasChildren?"white":"#F0E6F2",
-        border: data.hasChildren ? "1px solid #ddd": "none",
+        background: data.hasChildren ? "white" : "#F0E6F2",
+        border: data.hasChildren ? "1px solid #ddd" : "none",
         width: "140px",
         justifyContent: "space-between",
       }}
@@ -268,13 +333,13 @@ const CustomNode = ({
           onChange={readOnly ? undefined : setTheChecked}
           disabled={readOnly}
           theme={user.user.theme_ui}
-          style={{ 
-              zoom: 0.7,
-              ...(getSelectionState(data.key) === "implicit" ? { 
-                  backgroundColor: "#e8cae0ff", 
-                  borderColor: "#947484ff",
-                  filter: "grayscale(100%)" // visual tick hack
-              } : {})
+          style={{
+            zoom: 0.7,
+            ...(getSelectionState(data.key) === "implicit" ? {
+              backgroundColor: "#e8cae0ff",
+              borderColor: "#947484ff",
+              filter: "grayscale(100%)" // visual tick hack
+            } : {})
           }}
         />
         <span
@@ -327,11 +392,11 @@ const CustomNode = ({
 
 const GroupNode = ({ data }: { data: { level: string } }) => {
   return (
-    <div style={{ width: '100%', height: '104%', background: 'white',border: "1px solid #d9d9d9", borderRadius: '8px', padding: '0 10px 10px 10px', display: 'flex', flexDirection: 'column',  overflow: 'hidden', boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)'}} >
-       <div style={{ height: '30px', background: 'white', padding: '5px 10px', fontSize: '10px', color: '#888', fontWeight: 'bold' }}>
+    <div style={{ width: '100%', height: '104%', background: 'white', border: "1px solid #d9d9d9", borderRadius: '8px', padding: '0 10px 10px 10px', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)' }} >
+      <div style={{ height: '30px', background: 'white', padding: '5px 10px', fontSize: '10px', color: '#888', fontWeight: 'bold' }}>
         {data.level}
       </div>
-      <div style={{ flex: 1, background: '#F0E6F2', width: '100%', borderRadius: '8px', border: '1px solid #d9d9d9'}}>
+      <div style={{ flex: 1, background: '#F0E6F2', width: '100%', borderRadius: '8px', border: '1px solid #d9d9d9' }}>
       </div>
     </div>
   );
@@ -339,11 +404,11 @@ const GroupNode = ({ data }: { data: { level: string } }) => {
 
 const ParentGroupNode = ({ data }: { data: { level: string } }) => {
   return (
-    <div style={{ width: '100%', height: '106%', background: 'white', border: "1px solid #d9d9d9", borderRadius: '8px', padding: '0 8px 8px 8px', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)'}} >
-      <div style={{ height: '30px', background: 'white', padding: '5px 10px', fontSize: '10px', color: '#888', fontWeight: 'bold'}}>
+    <div style={{ width: '100%', height: '106%', background: 'white', border: "1px solid #d9d9d9", borderRadius: '8px', padding: '0 8px 8px 8px', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)' }} >
+      <div style={{ height: '30px', background: 'white', padding: '5px 10px', fontSize: '10px', color: '#888', fontWeight: 'bold' }}>
         {data.level}
       </div>
-      <div style={{ flex: 1, background: '#F0E6F2', width: '100%', borderRadius: '8px', border: '1px solid #d9d9d9'}}>
+      <div style={{ flex: 1, background: '#F0E6F2', width: '100%', borderRadius: '8px', border: '1px solid #d9d9d9' }}>
       </div>
     </div>
   );
@@ -371,9 +436,9 @@ export default function PermissionHeirarchyCanvas({
     )
   );
 
-  
 
-  const [selectedPermissionIds,setSelectedPermissionIds] = useState<any>([]);
+
+  const [selectedPermissionIds, setSelectedPermissionIds] = useState<any>([]);
 
   useEffect(() => {
     console.log("dataAllPermissions", dataAllPermissions);
@@ -390,7 +455,7 @@ export default function PermissionHeirarchyCanvas({
           typeof appData[key] === "object" &&
           !Array.isArray(appData[key]) // Assuming the permission structure is an object/map, whereas _permission_ids is array
       );
-      
+
       // Filter out null/undefined/empty objects if necessary, or just trust the key convention
       setAvailablePermissionTypes(types);
 
@@ -404,7 +469,7 @@ export default function PermissionHeirarchyCanvas({
   const [opened, setOpened] = useState<any>([]);
 
   const [checked, setChecked] = useState<any>([]);
-  
+
   function createEdge(sourceId: string, targetId: string) {
     return {
       id: `${sourceId}-${targetId}`,
@@ -444,22 +509,22 @@ export default function PermissionHeirarchyCanvas({
         const split = part.split("_");
         return split.slice(1).join("_");
       });
-      
+
       const prefix = permissionType.split('_')[0];
 
       if (pathArray.length === 1) {
-         return permissionIds.some((p: any) => {
-             const h1 = p[`${prefix}_hierarchy_1`] || p.hierarchy_1;
-             const h2 = p[`${prefix}_hierarchy_2`] || p.hierarchy_2;
-             return h1 === pathArray[0] && (!h2 || h2 === "") && p.isActive === true;
-         });
+        return permissionIds.some((p: any) => {
+          const h1 = p[`${prefix}_hierarchy_1`] || p.hierarchy_1;
+          const h2 = p[`${prefix}_hierarchy_2`] || p.hierarchy_2;
+          return h1 === pathArray[0] && (!h2 || h2 === "") && p.isActive === true;
+        });
       } else if (pathArray.length === 2) {
-         return permissionIds.some((p: any) => {
-             const h1 = p[`${prefix}_hierarchy_1`] || p.hierarchy_1;
-             const h2 = p[`${prefix}_hierarchy_2`] || p.hierarchy_2;
-             const h3 = p[`${prefix}_hierarchy_3`] || p.hierarchy_3;
-             return h1 === pathArray[0] && h2 === pathArray[1] && (!h3 || h3 === "") && p.isActive === true;
-         });
+        return permissionIds.some((p: any) => {
+          const h1 = p[`${prefix}_hierarchy_1`] || p.hierarchy_1;
+          const h2 = p[`${prefix}_hierarchy_2`] || p.hierarchy_2;
+          const h3 = p[`${prefix}_hierarchy_3`] || p.hierarchy_3;
+          return h1 === pathArray[0] && h2 === pathArray[1] && (!h3 || h3 === "") && p.isActive === true;
+        });
       }
       return false;
     };
@@ -467,7 +532,7 @@ export default function PermissionHeirarchyCanvas({
     let l1Index = 0;
     let l2Index = level1Keys.length;
     let l3BaseIndex = -1;
-    
+
     level1Keys.forEach((key, index) => {
       const l1Id = `${index}_${key}`;
       level1.push({ id: l1Id, key: key, index: index });
@@ -485,46 +550,46 @@ export default function PermissionHeirarchyCanvas({
         l2Index++;
       });
     });
-    
+
     l3BaseIndex = l1Index + level2.length;
     let l3RelativeIndex = 0;
-    
+
     level1.forEach((l1Node) => {
       childrenMap.get(l1Node.id)!.forEach((l2Id) => {
         const l2Node = level2.find(n => n.id === l2Id)!;
         const l3Items = allNodes[l1Node.key][l2Node.key];
-        
+
         l3Items.forEach((ele: any) => {
-            let l3Key = ele;
-            if (typeof ele === "object") {
-                // Dynamic key extraction
-                const prefix = permissionType.split("_")[0]; // e.g. location from location_permission
-                // Try known patterns
-                const candidateKeys = [
-                    `${prefix}_hierarchy_3`,
-                    "hierarchy_3"
-                ];
-                const foundKey = Object.keys(ele).find(k => candidateKeys.includes(k)) || Object.keys(ele)[0];
-                l3Key = ele[foundKey];
-            }
+          let l3Key = ele;
+          if (typeof ele === "object") {
+            // Dynamic key extraction
+            const prefix = permissionType.split("_")[0]; // e.g. location from location_permission
+            // Try known patterns
+            const candidateKeys = [
+              `${prefix}_hierarchy_3`,
+              "hierarchy_3"
+            ];
+            const foundKey = Object.keys(ele).find(k => candidateKeys.includes(k)) || Object.keys(ele)[0];
+            l3Key = ele[foundKey];
+          }
 
-            const l3Index = l3BaseIndex + l3RelativeIndex;
-            const l3Id = `${l2Id}>${l3Index}_${l3Key}`;
+          const l3Index = l3BaseIndex + l3RelativeIndex;
+          const l3Id = `${l2Id}>${l3Index}_${l3Key}`;
 
-            level3.push({ id: l3Id, key: l3Key, index: l3Index });
-            childrenMap.get(l2Id)!.push(l3Id);
-            l3RelativeIndex++;
+          level3.push({ id: l3Id, key: l3Key, index: l3Index });
+          childrenMap.get(l2Id)!.push(l3Id);
+          l3RelativeIndex++;
         });
+      });
     });
-    });
-    
+
     const finalNodes: any[] = [];
     const finalEdges: any[] = [];
-    
+
     const START_X = 100;
     const START_Y = 100;
     const HORIZONTAL_GAP = 400;
-    const NODE_HEIGHT = 50; 
+    const NODE_HEIGHT = 50;
     const SIBLING_GAP = 40;
     const GROUP_PADDING = 15;
     const GROUP_WIDTH = 180;
@@ -541,11 +606,11 @@ export default function PermissionHeirarchyCanvas({
         return positionCache.get(nodeId)!;
       }
 
-      const nodeInfo = 
-          level === 0 ? level1.find(n => n.id === nodeId) :
+      const nodeInfo =
+        level === 0 ? level1.find(n => n.id === nodeId) :
           level === 1 ? level2.find(n => n.id === nodeId) :
-          level3.find(n => n.id === nodeId);
-          
+            level3.find(n => n.id === nodeId);
+
       if (!nodeInfo) return { y: 0, yStart: 0, yEnd: 0 };
 
       const children = childrenMap.get(nodeId) || [];
@@ -562,148 +627,148 @@ export default function PermissionHeirarchyCanvas({
       } else {
         // Group if the children are leaves (have no children of their own)
         const isLeafGroup = children.every(
-            (childId) => (childrenMap.get(childId)?.length ?? 0) === 0
+          (childId) => (childrenMap.get(childId)?.length ?? 0) === 0
         );
 
         if (isLeafGroup) {
           const groupStartY = currentY;
           currentY += HEADER_HEIGHT + GROUP_PADDING;
-          
+
           let previousWasGroup = false;
 
           children.forEach((childId, idx) => {
-             const childNodeInfo = childrenMap.get(childId) ? 
-                 (level + 1 === 0 ? level1.find(n => n.id === childId) :
-                  level + 1 === 1 ? level2.find(n => n.id === childId) :
+            const childNodeInfo = childrenMap.get(childId) ?
+              (level + 1 === 0 ? level1.find(n => n.id === childId) :
+                level + 1 === 1 ? level2.find(n => n.id === childId) :
                   level3.find(n => n.id === childId)) : null;
 
-             const childHasChildren = (childrenMap.get(childId)?.length ?? 0) > 0;
-             const childIsOpened = childNodeInfo ? opened[childNodeInfo.index] === 1 : false;
-             const isGroup = childHasChildren && childIsOpened;
+            const childHasChildren = (childrenMap.get(childId)?.length ?? 0) > 0;
+            const childIsOpened = childNodeInfo ? opened[childNodeInfo.index] === 1 : false;
+            const isGroup = childHasChildren && childIsOpened;
 
-             if (idx > 0) {
-               let gap = SIBLING_GAP;
-               if (previousWasGroup) gap -= GROUP_PADDING;
-               if (isGroup) gap -= GROUP_PADDING;
-               currentY += gap;
-             }
+            if (idx > 0) {
+              let gap = SIBLING_GAP;
+              if (previousWasGroup) gap -= GROUP_PADDING;
+              if (isGroup) gap -= GROUP_PADDING;
+              currentY += gap;
+            }
 
-             calculateNodePosition(childId, level + 1);
-             previousWasGroup = isGroup;
+            calculateNodePosition(childId, level + 1);
+            previousWasGroup = isGroup;
           });
-          
+
           currentY += GROUP_PADDING;
           const groupEndY = currentY;
 
           finalNodes.push({
-             id: `group_${nodeId}`,
-             type: 'groupNode',
-             position: { 
-               x: START_X + (level + 1) * HORIZONTAL_GAP - 20, 
-               y: groupStartY 
-             },
-             style: {
-               width: GROUP_WIDTH,
-               height: groupEndY - groupStartY,
-               zIndex: -1
-             },
-             data: { label: '', level: `L${level + 2}` }
+            id: `group_${nodeId}`,
+            type: 'groupNode',
+            position: {
+              x: START_X + (level + 1) * HORIZONTAL_GAP - 20,
+              y: groupStartY
+            },
+            style: {
+              width: GROUP_WIDTH,
+              height: groupEndY - groupStartY,
+              zIndex: -1
+            },
+            data: { label: '', level: `L${level + 2}` }
           });
-  
+
           yPosition = groupStartY + (groupEndY - groupStartY) / 2 - (NODE_HEIGHT / 2);
           yStartSpan = groupStartY;
           yEndSpan = groupEndY;
         } else {
-             // Individual Wrapper Logic for Parents
-             const startSpanY = currentY;
-             
-             children.forEach((childId, idx) => {
-               if (idx > 0) {
-                 currentY += SIBLING_GAP;
-               }
-               
-               const nodeStartY = currentY;
-               
-               // Move down for Header
-               currentY += HEADER_HEIGHT;
+          // Individual Wrapper Logic for Parents
+          const startSpanY = currentY;
 
-               // Calculate position (will recurse)
-               const childPos = calculateNodePosition(childId, level + 1);
-               
-               const isIA = checkIsIA(childId);
-               let wrapperHeight = NODE_HEIGHT + (GROUP_PADDING * 2) + HEADER_HEIGHT; 
-               
-               if (isIA) {
-                   wrapperHeight += NODE_HEIGHT + 10; 
-                   // Derived Label: ParentLabel ~ ChildLabel
-                   // For a child `level1>level2_item`, the parent is `level1`. 
-                   // But `childId` is constructed as `...parentKey>index_childKey`.
-                   // We need the ACTUAL label shown on the node.
-                   // The main node has label `nodeInfo.key` (or derived from it).
-                   
-                   // Let's get the parent key. 
-                   // `nodeId` logic is complex. 
-                   // Simplified approach based on request "LL1 ~ LL1_2". 
-                   // If child is `LL1_2` and parent is `LL1`, then label is `LL1 ~ LL1_2`.
-                   
-                   // Current node being wrapped is `childId`.
-                   // `childId` corresponds to `key` in `allNodes` structure.
-                   // Let's find the nodeInfo again to get the clean key.
-                   const iaNodeKey = (level + 1 === 0 ? level1.find(n => n.id === childId) :
-                                      level + 1 === 1 ? level2.find(n => n.id === childId) :
-                                      level3.find(n => n.id === childId))?.key || childId;
-                    
-                   // Add P' Node
-                   // Fix: Use a key that generates a path treated as a child of the current node.
-                   // Current Node Key: `childId`. Path: `path(childId)`.
-                   // We want IA Node Path: `[...path(childId), "isActive"]`.
-                   // So we construct a string: `${childId}>0_isActive`. (Index 0 is arbitrary, 'isActive' is the key).
-                   const iaKey = `${childId}>0_isActive`;
-                   
-                   finalNodes.push({
-                        id: `ia_${childId}`,
-                        type: "customNode",
-                        position: { x: START_X + (level + 1) * HORIZONTAL_GAP, y: childPos.y + NODE_HEIGHT + 10 }, 
-                        data: {
-                          label: `${iaNodeKey}'`, // Simple Label
-                          key: iaKey, 
-                          isOpen: false,
-                          index: -1, 
-                          level: level + 1,
-                          hasChildren: false,
-                          isIA: true 
-                        },
-                        zIndex: 10,
-                   });
-               }
+          children.forEach((childId, idx) => {
+            if (idx > 0) {
+              currentY += SIBLING_GAP;
+            }
 
-               const wrapperTop = childPos.y - GROUP_PADDING - HEADER_HEIGHT;
-               const wrapperBottom = wrapperTop + wrapperHeight;
-               
-               // Ensure currentY accounts for the wrapper size, preventing overlap with next sibling
-               if (currentY < wrapperBottom) {
-                   currentY = wrapperBottom;
-               }
+            const nodeStartY = currentY;
 
-               finalNodes.push({
-                   id: `parent_wrapper_${childId}`,
-                   type: 'parentGroupNode',
-                   position: { 
-                       x: START_X + (level + 1) * HORIZONTAL_GAP - 20, 
-                       y: wrapperTop
-                   },
-                   style: {
-                       width: GROUP_WIDTH,
-                       height: wrapperHeight,
-                       zIndex: -1
-                   },
-                   data: { label: '', level: `L${level + 2}` } // Wrap specific parent (child). Child is at level+1.
-               });
-             });
-             
-             yPosition = startSpanY + (currentY - startSpanY) / 2 - (NODE_HEIGHT / 2); // Center parent relative to entire span
-             yStartSpan = startSpanY;
-             yEndSpan = currentY;
+            // Move down for Header
+            currentY += HEADER_HEIGHT;
+
+            // Calculate position (will recurse)
+            const childPos = calculateNodePosition(childId, level + 1);
+
+            const isIA = checkIsIA(childId);
+            let wrapperHeight = NODE_HEIGHT + (GROUP_PADDING * 2) + HEADER_HEIGHT;
+
+            if (isIA) {
+              wrapperHeight += NODE_HEIGHT + 10;
+              // Derived Label: ParentLabel ~ ChildLabel
+              // For a child `level1>level2_item`, the parent is `level1`. 
+              // But `childId` is constructed as `...parentKey>index_childKey`.
+              // We need the ACTUAL label shown on the node.
+              // The main node has label `nodeInfo.key` (or derived from it).
+
+              // Let's get the parent key. 
+              // `nodeId` logic is complex. 
+              // Simplified approach based on request "LL1 ~ LL1_2". 
+              // If child is `LL1_2` and parent is `LL1`, then label is `LL1 ~ LL1_2`.
+
+              // Current node being wrapped is `childId`.
+              // `childId` corresponds to `key` in `allNodes` structure.
+              // Let's find the nodeInfo again to get the clean key.
+              const iaNodeKey = (level + 1 === 0 ? level1.find(n => n.id === childId) :
+                level + 1 === 1 ? level2.find(n => n.id === childId) :
+                  level3.find(n => n.id === childId))?.key || childId;
+
+              // Add P' Node
+              // Fix: Use a key that generates a path treated as a child of the current node.
+              // Current Node Key: `childId`. Path: `path(childId)`.
+              // We want IA Node Path: `[...path(childId), "isActive"]`.
+              // So we construct a string: `${childId}>0_isActive`. (Index 0 is arbitrary, 'isActive' is the key).
+              const iaKey = `${childId}>0_isActive`;
+
+              finalNodes.push({
+                id: `ia_${childId}`,
+                type: "customNode",
+                position: { x: START_X + (level + 1) * HORIZONTAL_GAP, y: childPos.y + NODE_HEIGHT + 10 },
+                data: {
+                  label: `${iaNodeKey}'`, // Simple Label
+                  key: iaKey,
+                  isOpen: false,
+                  index: -1,
+                  level: level + 1,
+                  hasChildren: false,
+                  isIA: true
+                },
+                zIndex: 10,
+              });
+            }
+
+            const wrapperTop = childPos.y - GROUP_PADDING - HEADER_HEIGHT;
+            const wrapperBottom = wrapperTop + wrapperHeight;
+
+            // Ensure currentY accounts for the wrapper size, preventing overlap with next sibling
+            if (currentY < wrapperBottom) {
+              currentY = wrapperBottom;
+            }
+
+            finalNodes.push({
+              id: `parent_wrapper_${childId}`,
+              type: 'parentGroupNode',
+              position: {
+                x: START_X + (level + 1) * HORIZONTAL_GAP - 20,
+                y: wrapperTop
+              },
+              style: {
+                width: GROUP_WIDTH,
+                height: wrapperHeight,
+                zIndex: -1
+              },
+              data: { label: '', level: `L${level + 2}` } // Wrap specific parent (child). Child is at level+1.
+            });
+          });
+
+          yPosition = startSpanY + (currentY - startSpanY) / 2 - (NODE_HEIGHT / 2); // Center parent relative to entire span
+          yStartSpan = startSpanY;
+          yEndSpan = currentY;
         }
       }
 
@@ -736,106 +801,106 @@ export default function PermissionHeirarchyCanvas({
     // Top Level Grouping
     // const topGroupStartY = currentY; // Unused for grouping now
     // currentY += GROUP_PADDING; // REMOVE
-    
+
     const prevL1Group = false;
 
     level1.forEach((l1Node, idx) => {
       const childHasChildren = (childrenMap.get(l1Node.id)?.length ?? 0) > 0;
       const childIsOpened = opened[l1Node.index] === 1;
-      const isParent = childHasChildren && childIsOpened; 
+      const isParent = childHasChildren && childIsOpened;
 
       if (idx > 0) {
-         currentY += SIBLING_GAP + GROUP_VERTICAL_SPACING;
+        currentY += SIBLING_GAP + GROUP_VERTICAL_SPACING;
       }
-      
-       // Add space for header
-       currentY += HEADER_HEIGHT;
 
-       const nodePos = calculateNodePosition(l1Node.id, 0);
-       
-       // Always wrap root nodes? Or only if they are parents / leaves?
-       // Request: "root Node doesn't seem to be wrapped ... I wish to wrap it in a wrapper also"
-       
-       // Determine wrapper type
-       // If it's a leaf (no children or children not opened), use GroupNode style logic?
-       // Or just wrap everything?
-       // "node which is the parent and the leafNode i.e the root Node" 
-       
-       // Let's wrap EVERY root node.
-       if (isParent) {
-           // Wrap as Parent
-            
-            const isIA = checkIsIA(l1Node.id);
-            let wrapperHeight = NODE_HEIGHT + (GROUP_PADDING * 2) + HEADER_HEIGHT;
+      // Add space for header
+      currentY += HEADER_HEIGHT;
 
-            if (isIA) {
-                   wrapperHeight += NODE_HEIGHT + 10; // Extra height for P'
-                   
-                   // Add P' Node
-                   // Fix key for Root IA
-                   const iaKey = `${l1Node.id}>0_isActive`;
+      const nodePos = calculateNodePosition(l1Node.id, 0);
 
-                   finalNodes.push({
-                        id: `ia_${l1Node.id}`,
-                        type: "customNode",
-                        position: { x: (START_X + 0 * HORIZONTAL_GAP), y: nodePos.y + NODE_HEIGHT + 10 }, 
-                        data: {
-                          label: `${l1Node.key}'`, 
-                          key: iaKey, 
-                          isOpen: false,
-                          index: -1,
-                          level: 0,
-                          hasChildren: false,
-                          isIA: true
-                        },
-                        zIndex: 10,
-                   });
-            }
+      // Always wrap root nodes? Or only if they are parents / leaves?
+      // Request: "root Node doesn't seem to be wrapped ... I wish to wrap it in a wrapper also"
 
-            const wrapperTop = nodePos.y - GROUP_PADDING - HEADER_HEIGHT;
-            const wrapperBottom = wrapperTop + wrapperHeight;
-            
-            // Ensure currentY accounts for wrapper size
-            if (currentY < wrapperBottom) {
-                currentY = wrapperBottom;
-            }
+      // Determine wrapper type
+      // If it's a leaf (no children or children not opened), use GroupNode style logic?
+      // Or just wrap everything?
+      // "node which is the parent and the leafNode i.e the root Node" 
 
-            finalNodes.push({
-                id: `root_wrapper_${l1Node.id}`,
-                type: 'parentGroupNode',
-                position: { 
-                    x: START_X - 20, 
-                    y: wrapperTop
-                },
-               style: {
-                   width: GROUP_WIDTH,
-                   height: wrapperHeight,
-                   zIndex: -1
-               },
-               data: { label: '', level: 'L1' }
-           });
+      // Let's wrap EVERY root node.
+      if (isParent) {
+        // Wrap as Parent
+
+        const isIA = checkIsIA(l1Node.id);
+        let wrapperHeight = NODE_HEIGHT + (GROUP_PADDING * 2) + HEADER_HEIGHT;
+
+        if (isIA) {
+          wrapperHeight += NODE_HEIGHT + 10; // Extra height for P'
+
+          // Add P' Node
+          // Fix key for Root IA
+          const iaKey = `${l1Node.id}>0_isActive`;
+
+          finalNodes.push({
+            id: `ia_${l1Node.id}`,
+            type: "customNode",
+            position: { x: (START_X + 0 * HORIZONTAL_GAP), y: nodePos.y + NODE_HEIGHT + 10 },
+            data: {
+              label: `${l1Node.key}'`,
+              key: iaKey,
+              isOpen: false,
+              index: -1,
+              level: 0,
+              hasChildren: false,
+              isIA: true
+            },
+            zIndex: 10,
+          });
+        }
+
+        const wrapperTop = nodePos.y - GROUP_PADDING - HEADER_HEIGHT;
+        const wrapperBottom = wrapperTop + wrapperHeight;
+
+        // Ensure currentY accounts for wrapper size
+        if (currentY < wrapperBottom) {
+          currentY = wrapperBottom;
+        }
+
+        finalNodes.push({
+          id: `root_wrapper_${l1Node.id}`,
+          type: 'parentGroupNode',
+          position: {
+            x: START_X - 20,
+            y: wrapperTop
+          },
+          style: {
+            width: GROUP_WIDTH,
+            height: wrapperHeight,
+            zIndex: -1
+          },
+          data: { label: '', level: 'L1' }
+        });
       } else {
-          // It's a "leaf" at root level (or closed). Wrap as GroupNode (box around it)
-           const wrapperHeight = NODE_HEIGHT + (GROUP_PADDING * 2) + HEADER_HEIGHT;
-           finalNodes.push({
-               id: `root_leaf_wrapper_${l1Node.id}`,
-               type: 'groupNode', // Use the leaf style
-               position: { 
-                   x: START_X - 20, 
-                   y: nodePos.y - GROUP_PADDING - HEADER_HEIGHT
-               },
-               style: {
-                   width: GROUP_WIDTH,
-                   height: wrapperHeight,
-                   zIndex: -1
-               },
-               data: { label: '', level: 'L1' }
-           });
+        // It's a "leaf" at root level (or closed). Wrap as GroupNode (box around it)
+        const wrapperHeight = NODE_HEIGHT + (GROUP_PADDING * 2) + HEADER_HEIGHT;
+        finalNodes.push({
+          id: `root_leaf_wrapper_${l1Node.id}`,
+          type: 'groupNode', // Use the leaf style
+          position: {
+            x: START_X - 20,
+            y: nodePos.y - GROUP_PADDING - HEADER_HEIGHT
+          },
+          style: {
+            width: GROUP_WIDTH,
+            height: wrapperHeight,
+            zIndex: -1
+          },
+          data: { label: '', level: 'L1' }
+        });
       }
     });
-    
+
     // currentY += GROUP_PADDING; // REMOVE
-    
+
     // Group Box for Root Level // REMOVE
     /*
     if (level1.length > 0) {
@@ -858,7 +923,7 @@ export default function PermissionHeirarchyCanvas({
       });
     }
     */
-    
+
     return { nodes: finalNodes, edges: finalEdges };
   };
 
@@ -868,17 +933,17 @@ export default function PermissionHeirarchyCanvas({
   const [edges, setEdges] = React.useState<any>([]);
 
   useEffect(() => {
-     if (checked && checked.length && opened && opened.length&& selectedAppAllPermissions ) {
-     const { nodes: generatedNodes, edges: generatedEdges } =
-     generateTreeNodesAndEdges( 
-     selectedAppAllPermissions[permissionType],
-     permissionType,
-     opened,
-     selectedAppAllPermissions?.[`${permissionType}_permission_ids`] || selectedAppAllPermissions?.[`${permissionType.replace("_permission", "")}_permission_ids`] || []
-     );
-     setNodes(generatedNodes);
-     setEdges(generatedEdges);
-     }
+    if (checked && checked.length && opened && opened.length && selectedAppAllPermissions) {
+      const { nodes: generatedNodes, edges: generatedEdges } =
+        generateTreeNodesAndEdges(
+          selectedAppAllPermissions[permissionType],
+          permissionType,
+          opened,
+          selectedAppAllPermissions?.[`${permissionType}_permission_ids`] || selectedAppAllPermissions?.[`${permissionType.replace("_permission", "")}_permission_ids`] || []
+        );
+      setNodes(generatedNodes);
+      setEdges(generatedEdges);
+    }
   }, [opened, checked, selectedAppAllPermissions, permissionType]);
 
   useEffect(() => {
@@ -910,18 +975,18 @@ export default function PermissionHeirarchyCanvas({
         arr.forEach((item) => {
           allNodes[key][item].forEach((ele: any) => {
             let l3Val = ele;
-             if (typeof ele === "object") {
-                 const prefix = permissionType.split("_")[0];
-                 const candidateKeys = [
-                    `${prefix}_hierarchy_3`,
-                    "hierarchy_3"
-                ];
-                const foundKey = Object.keys(ele).find(k => candidateKeys.includes(k)) || Object.keys(ele)[0];
-                l3Val = ele[foundKey];
-             }
+            if (typeof ele === "object") {
+              const prefix = permissionType.split("_")[0];
+              const candidateKeys = [
+                `${prefix}_hierarchy_3`,
+                "hierarchy_3"
+              ];
+              const foundKey = Object.keys(ele).find(k => candidateKeys.includes(k)) || Object.keys(ele)[0];
+              l3Val = ele[foundKey];
+            }
 
             level3.push(
-                `${index}_${key}>${inIndex}_${item}>${inIndex2}_${l3Val}`
+              `${index}_${key}>${inIndex}_${item}>${inIndex2}_${l3Val}`
             );
             inIndex2++;
           });
@@ -975,27 +1040,27 @@ export default function PermissionHeirarchyCanvas({
           }}
         >
           <ReactFlow nodes={nodes} edges={edges} nodeTypes={nodeTypes} fitView >
-          <Background color="#ccc" variant={BackgroundVariant.Dots} bgColor={'#FAF7F7'} />
-          <Controls/>
-            </ReactFlow>
+            <Background color="#ccc" variant={BackgroundVariant.Dots} bgColor={'#FAF7F7'} />
+            <Controls />
+          </ReactFlow>
           <div style={{ position: "absolute", bottom: 5, right: 10 }}>
-            <Tooltip content={<span style={{color: '#cecece',padding: '14px', fontSize: '12px', fontFamily: 'roboto'}}>
+            <Tooltip content={<span style={{ color: '#cecece', padding: '14px', fontSize: '12px', fontFamily: 'roboto' }}>
               Expand / collapse
             </span>
-              }>
+            }>
 
-            <button style={{background: 'transparent'}} onClick={()=>{
-              const allOpened = opened.every((ele: any)=> ele === 1);
-              const newOpened = opened.map(()=> allOpened ? 0 : 1);
-              setOpened(newOpened);
-            }}>
-              {opened.some((ele: any)=> ele === 0) ? 
-                <img height={28} src="\assets\img\profile\expand.svg" alt="expand-all">
-                </img>
-               :  <img height={28} src="\assets\img\profile\shrink.svg" alt="collapse-all">
-                </img>}
-            </button>
-              </Tooltip>
+              <button style={{ background: 'transparent' }} onClick={() => {
+                const allOpened = opened.every((ele: any) => ele === 1);
+                const newOpened = opened.map(() => allOpened ? 0 : 1);
+                setOpened(newOpened);
+              }}>
+                {opened.some((ele: any) => ele === 0) ?
+                  <img height={28} src="\assets\img\profile\expand.svg" alt="expand-all">
+                  </img>
+                  : <img height={28} src="\assets\img\profile\shrink.svg" alt="collapse-all">
+                  </img>}
+              </button>
+            </Tooltip>
           </div>
         </ChartWrapper>
       </div>
