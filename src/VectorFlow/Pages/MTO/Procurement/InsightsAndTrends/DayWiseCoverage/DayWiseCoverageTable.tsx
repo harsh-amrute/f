@@ -178,46 +178,46 @@ const handlePageSizeChange = (newSize: any) => {
   };
 
 
-  const getRows = (params: ProcessRowGroupForExportParams) => {
-    const childData = params?.node?.data?.children;
+  // const getRows = (params: ProcessRowGroupForExportParams) => {
+  //   const childData = params?.node?.data?.children;
   
-    if (!childData || !childData.length) return [];
+  //   if (!childData || !childData.length) return [];
   
-    const childColDefHeaders: string[] = [];
-    childColDef.forEach((col: any) => {
-      if (col?.headerName) {
-        childColDefHeaders.push(col.headerName);
-      }
-    });
+  //   const childColDefHeaders: string[] = [];
+  //   childColDef.forEach((col: any) => {
+  //     if (col?.headerName) {
+  //       childColDefHeaders.push(col.headerName);
+  //     }
+  //   });
   
-    const rows = [
-      {
-        outlineLevel: 2,
-        cells: [
-          cell(""),
-          ...childColDefHeaders.map((col) => cell(col, "header")),
-        ],
-      },
-      ...childData.map((data: any) => ({
-        outlineLevel: 2,
-        cells: [
-          cell(""),
-          ...childColDef.map((col: any) => cell(data[col.field], "data")),
-        ],
-      })),
-    ];
+  //   const rows = [
+  //     {
+  //       outlineLevel: 2,
+  //       cells: [
+  //         cell(""),
+  //         ...childColDefHeaders.map((col) => cell(col, "header")),
+  //       ],
+  //     },
+  //     ...childData.map((data: any) => ({
+  //       outlineLevel: 2,
+  //       cells: [
+  //         cell(""),
+  //         ...childColDef.map((col: any) => cell(data[col.field], "data")),
+  //       ],
+  //     })),
+  //   ];
   
-    return rows;
-  };
+  //   return rows;
+  // };
   
 
-  const defaultExcelExportParams = useMemo<ExcelExportParams>(() => {
-    return {
-      getCustomContentBelowRow: (params) => getRows(params) as ExcelRow[],
-      columnWidth: 120,
-      fileName: "ag-grid.xlsx",
-    };
-  }, [gridRef.current, childColDef, rowData]);
+  // const defaultExcelExportParams = useMemo<ExcelExportParams>(() => {
+  //   return {
+  //     getCustomContentBelowRow: (params) => getRows(params) as ExcelRow[],
+  //     columnWidth: 120,
+  //     fileName: "ag-grid.xlsx",
+  //   };
+  // }, [gridRef.current, childColDef, rowData]);
 
   return (
     <>
@@ -240,7 +240,7 @@ const handlePageSizeChange = (newSize: any) => {
         params.api.autoSizeAllColumns();
         setCurrentGridRef(gridRef);
       }}
-      defaultExcelExportParams={defaultExcelExportParams}  
+      // defaultExcelExportParams={defaultExcelExportParams}  
       maintainColumnOrder={true}    
       />
 

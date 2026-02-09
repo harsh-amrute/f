@@ -17,12 +17,14 @@ import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../.
 import { FilterPageName, UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
-import { getColumnDefinations } from "../../../../../../helpers/utils";
+import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from "../../../../../../helpers/utils";
 import ColorCellRenderer from "../../../Common/ColorCellRenderer/ColorCellRenderer";
 import VFLoader from '../../../../../../components/VectorFLOW/commons/VFLoader';
 import { useGetFilterData } from '../../../../../..//VectorFlow/Services/MTO/Common/CommonFilter';
 import useFilter from '../../../../../../hooks/useFilter';
 import { ITooltipParams } from 'ag-grid-enterprise';
+import { notifyError } from '../../../../../../helpers/notify';
+import useColDef from '../../../../../../hooks/useColDef';
 
 enum Colors {
     Selected = "#B93B7E",
@@ -68,6 +70,9 @@ const DayWiseCoverage = () => {
     const { mutateAsync: getData, isLoading: isCalenderLoading } = useGetDayWiseCoverageData();
     const { mutateAsync: getUIConfigData } = useGetUIConfigData();
     const [masterUIConfig, setMasterUIConfig] = useState([]);
+    const { colDefMap, getColDef } = useColDef()
+
+
 
     const [userPageSize, setUserPageSize] = useState<number>(20); 
     const [userConfigFetched, setUserConfigFetched] = useState(false); 
@@ -290,6 +295,7 @@ const DayWiseCoverage = () => {
         try {
             const childResponse = await getUIConfigData("DayWiseCoverageChild");
           const response = await getUIConfigData(reportName);
+          getColDef(response);
           setChildColDef(getColumnDefinations(childResponse.data.data,childColDefCustomizations))
           setColDef(getColumnDefinations(response.data.data, colDefCustomizations))
         }
@@ -402,9 +408,43 @@ const DayWiseCoverage = () => {
       }, []);
 
 
-    const ExcelExport =()=>{
-        currentGridRef?.current?.api?.exportDataAsExcel({ fileName: `Day_Wise_Coverage` , sheetName: 'Day Wise Coverage'});
-      }
+    // const ExcelExport =()=>{
+    //     currentGridRef?.current?.api?.exportDataAsExcel({ fileName: `Day_Wise_Coverage` , sheetName: 'Day Wise Coverage'});
+    //   }
+
+    const ExcelExport = async () => {
+     try {
+        const headersdata = currentGridRef?.current?.api.getColumnState();
+        console.log("headersdata", headersdata)
+        const formattedFilters = formatFilterJSON(appliedFilters);
+
+    
+
+        const body = getBodyForExcelExport({ 
+            headersdata: headersdata, filterData: formattedFilters,colDefMap: colDefMap
+        });
+
+        console.log("Request Body for Excel Export:", body);    
+
+        const excelResponse = await getData({
+            startDate: format(startOfMonth(startDate), "yyyy-MM-dd"),
+            endDate: format(endOfMonth(endDate), "yyyy-MM-dd"),
+            plannedReleaseDate: selectedDate,
+            isExcelExport: 1,
+            body,
+            report_name: FilterPageName.Proc_Day_Wise_Coverage
+        });
+
+        if (excelResponse?.status === 200) {
+            DownloadExcel(excelResponse, "Day_Wise_Coverage_Report");
+        } else {
+            notifyError("Failed to export Excel from server");
+        }
+    } catch (error) {
+        console.error("Excel Export Error:", error);
+        notifyError("An error occurred during export");
+    }
+    };
 
     return (
         <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>

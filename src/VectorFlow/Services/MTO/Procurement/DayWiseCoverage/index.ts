@@ -10,10 +10,12 @@ interface DayWiseCoverageParams{
     page?: any,
     page_size?: any,
     isExcelExport?: any
+    body?: any,
+    report_name?:any
 }
 
 export const useGetDayWiseCoverageData = () => {
     return useMutation(async (data: DayWiseCoverageParams) => {
-        return getDayWiseCoverageData(data.startDate, data.endDate, data.plannedReleaseDate, data.appliedFilters,data.page,data.page_size,data.isExcelExport);
+        return getDayWiseCoverageData(data.startDate, data.endDate, data.plannedReleaseDate, data.appliedFilters,data.page,data.page_size,data.isExcelExport,data.body,data.report_name);
     })
 }

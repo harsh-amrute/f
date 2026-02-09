@@ -4802,9 +4802,15 @@ export const getBodyForExcelExport = ({
   colDefMap,
   groupedColDefsRef,
 }: any) => {
+  console.log(headersdata,"headersdataaa")
   const filteredHeadersData = headersdata?.filter(
-    (col: any) =>
-      col.colId !== "DropDown" && col.colId !== "Action" && col.hide !== true && !col.colId.includes('History') && (col.colId!=="Default Attribute-Remark")
+    (col: any) =>{
+      if(col.colId !== "DropDown" && col.colId !== "Action" && (col.hide !== true || col.rowGroup !== false) && !col.colId.includes('History') && (col.colId!=="Default Attribute-Remark")){
+        console.log(col,"colIdaa")
+        return true;
+      }
+      
+    }
 
   );
 
@@ -4842,9 +4848,11 @@ export const getBodyForExcelExport = ({
     else {
       const headers = filteredHeadersData
         ?.map((col: any) => {
-          const header_data = colDefMap?.current?.get(col.colId);
+          const header_data = {...colDefMap?.current?.get(col.colId), rowGroup : col.rowGroup};
+    
           return {
             ...header_data,
+            
           };
         })
         .filter(
