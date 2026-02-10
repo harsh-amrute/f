@@ -575,39 +575,53 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
 
         if (Array.isArray(definitions)) {
           paths.forEach((path: string[]) => {
-            const isIA = path[path.length - 1] === "isActive";
-            const hierarchyPath = isIA ? path.slice(0, -1) : path;
-            
-            if (!isDynamicPermissions) {
-               // Logic For False (Cascade Mode)
-               const matchedDefs = definitions.filter((def: any) => {
-                  const h1 = def[`${prefix}_hierarchy_1`] || def[`hierarchy_1`] || def[`${prefix}_heirarchy_1`] || def[`heirarchy_1`];
-                  const h2 = def[`${prefix}_hierarchy_2`] || def[`hierarchy_2`] || def[`${prefix}_heirarchy_2`] || def[`heirarchy_2`];
-                  const h3 = def[`${prefix}_hierarchy_3`] || def[`hierarchy_3`] || def[`${prefix}_heirarchy_3`] || def[`heirarchy_3`];
+            // Updated Detection Logic (Apply to BOTH modes)
+            // Detect IA node: last path element ends with prime (')
+            const lastElement = path[path.length - 1] || '';
+            const isIANode = lastElement.endsWith("'");
+            // For IA nodes, strip the prime suffix to get the real hierarchy name
+            const lookupPath = isIANode
+              ? [...path.slice(0, -1), lastElement.slice(0, -1)]
+              : path;
 
-                  // IA Case: Specific Match Only
-                  if (isIA) {
-                      if (h1 !== hierarchyPath[0]) return false;
-                      if (hierarchyPath.length > 1 && h2 !== hierarchyPath[1]) return false;
-                      // IA Node means no H3 usually, or ignoring it for H2 IA.
-                      // Ensure it matches the specific Active Node
+            console.log("Processing Path:", path, "Lookup:", lookupPath, "isIA:", isIANode, "Dynamic:", isDynamicPermissions);
+
+            if (!isDynamicPermissions) {
+              // Logic For False (Cascade Mode / Legacy)
+               const matchedDefs = definitions.filter((def: any) => {
+                 // Use ?? for correct empty string handling
+                 const h1 = def[`${prefix}_hierarchy_1`] ?? def[`hierarchy_1`] ?? def[`${prefix}_heirarchy_1`] ?? def[`heirarchy_1`] ?? '';
+                 const h2 = def[`${prefix}_hierarchy_2`] ?? def[`hierarchy_2`] ?? def[`${prefix}_heirarchy_2`] ?? def[`heirarchy_2`] ?? '';
+                 const h3 = def[`${prefix}_hierarchy_3`] ?? def[`hierarchy_3`] ?? def[`${prefix}_heirarchy_3`] ?? def[`heirarchy_3`] ?? '';
+
+                 // IA Case: Specific Match Only (isActive: true)
+                 if (isIANode) {
+                   if (h1 !== lookupPath[0]) return false;
+                   // Match level 2 if present
+                   if (lookupPath.length > 1) {
+                     if (h2 !== lookupPath[1]) return false;
+                   } else {
+                     // Only L1 provided for IA? Usually unexpected but check h2 empty
+                     if (h2 && h2 !== "") return false;
+                   }
+
+                 // For IA node, we expect isActive to be true
                       if (def.isActive !== true) return false;
-                      
-                      // Match level
-                      if (hierarchyPath.length === 1 && (h2 && h2 !== "")) return false;
-                      if (hierarchyPath.length === 2 && (h3 && h3 !== "")) return false;
 
                       return true;
                   }
 
                   // Standard Case (Cascade / Leaf Selection)
-                  // 1. Path Match (Prefix)
-                  if (h1 !== hierarchyPath[0]) return false;
-                  if (hierarchyPath.length > 1 && h2 !== hierarchyPath[1]) return false;
-                  if (hierarchyPath.length > 2 && h3 !== hierarchyPath[2]) return false;
+                 // 1. Path Match (Prefix) - Match whatever depth is provided
+                 if (h1 !== lookupPath[0]) return false;
+                 // If path has level 2, it must match
+                 if (lookupPath.length > 1 && h2 !== lookupPath[1]) return false;
+                 // If path has level 3, it must match
+                 if (lookupPath.length > 2 && h3 !== lookupPath[2]) return false;
 
-                  // 2. Leaf Requirement (All 3 levels must be present)
-                  // We only save LEAF nodes in Legacy, unless it is an IA node
+                 // 2. We want ALL leaf nodes under this path
+                 // A leaf node has all 3 levels populated (usually) OR is marked as a leaf in data
+                 // Assuming leaf = h3 present
                   if (!h1 || h1 === "") return false;
                   if (!h2 || h2 === "") return false;
                   if (!h3 || h3 === "") return false;
@@ -618,42 +632,43 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
                if (matchedDefs.length > 0) {
                  matchedDefs.forEach((d: any) => ids.push(d.h_id));
                } else {
-                  console.warn(`IDs not found for: ${path.join(">")}`);
+                 console.warn(`IDs not found for (Legacy): ${path.join(">")}`);
                }
 
             } else {
                // Logic For True (Dynamic Mode)
                 const matchedDef = definitions.find((def: any) => {
-                   const h1 = def[`${prefix}_hierarchy_1`] || def[`hierarchy_1`] || def[`${prefix}_heirarchy_1`] || def[`heirarchy_1`];
-                   const h2 = def[`${prefix}_hierarchy_2`] || def[`hierarchy_2`] || def[`${prefix}_heirarchy_2`] || def[`heirarchy_2`];
-                   const h3 = def[`${prefix}_hierarchy_3`] || def[`hierarchy_3`] || def[`${prefix}_heirarchy_3`] || def[`heirarchy_3`];
+                  // Use ?? instead of || to correctly handle empty strings
+                  const h1 = def[`${prefix}_hierarchy_1`] ?? def[`hierarchy_1`] ?? def[`${prefix}_heirarchy_1`] ?? def[`heirarchy_1`] ?? '';
+                  const h2 = def[`${prefix}_hierarchy_2`] ?? def[`hierarchy_2`] ?? def[`${prefix}_heirarchy_2`] ?? def[`heirarchy_2`] ?? '';
+                  const h3 = def[`${prefix}_hierarchy_3`] ?? def[`hierarchy_3`] ?? def[`${prefix}_heirarchy_3`] ?? def[`heirarchy_3`] ?? '';
                    
-                   if (h1 !== hierarchyPath[0]) return false;
+                  if (h1 !== lookupPath[0]) return false;
                    
-                   if (hierarchyPath.length > 1) {
-                      if (h2 !== hierarchyPath[1]) return false;
+                  if (lookupPath.length > 1) {
+                    if (h2 !== lookupPath[1]) return false;
                    } else {
                       if (h2 && h2 !== "") return false;
                    }
                    
-                   if (hierarchyPath.length > 2) {
-                      if (h3 !== hierarchyPath[2]) return false;
+                  if (lookupPath.length > 2) {
+                    if (h3 !== lookupPath[2]) return false;
                    } else {
-                      if (!isIA && h3 && h3 !== "") return false;
+                     if (!isIANode && h3 && h3 !== "") return false;
                    }
                    
-                   if (isIA && def.isActive !== true) return false;
+                  if (isIANode && def.isActive !== true) return false;
                    
                    return true;
                 });
 
                 if (matchedDef) {
-                  // IA Node
-                  if (isIA) {
+                  if (isIANode) {
+                  // IA Node (B') -> 1_2 (no trailing underscore)
                       ids.push(matchedDef.h_id);
                   } else {
                       // Standard Node
-                      const h3 = matchedDef[`${prefix}_hierarchy_3`] || matchedDef[`hierarchy_3`] || matchedDef[`${prefix}_heirarchy_3`] || matchedDef[`heirarchy_3`];
+                    const h3 = matchedDef[`${prefix}_hierarchy_3`] ?? matchedDef[`hierarchy_3`] ?? matchedDef[`${prefix}_heirarchy_3`] ?? matchedDef[`heirarchy_3`] ?? '';
                       const isLeaf = (h3 && h3 !== "");
                       
                       if (isLeaf) {
