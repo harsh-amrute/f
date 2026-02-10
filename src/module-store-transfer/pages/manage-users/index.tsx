@@ -535,7 +535,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   console.log("isDynamicPermissions", isDynamicPermissions)
 
   const createUser = async (permissions: any) => {
-    console.log("permissions", permissions);
+    console.log("permissions input to create user", permissions);
 
     const payload: any = {
       ...infoUser,
@@ -702,7 +702,6 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
       }else{
         response = await registerUser(payload);
 
-        notifySuccess("User created successfully");
         if(response.status===201){
           setIsPermissionModalOpen(false);
           setIsOpenUser(false);

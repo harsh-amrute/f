@@ -176,15 +176,11 @@ const CustomNode = ({
       // Add current path
       // Simple add:
       const pStr = JSON.stringify(currentPath);
-      console.log("existingPermissions......", existingPermissions);
-      console.log("unchecked......", pStr)
       if (!existingPermissions.some((perm) => JSON.stringify(perm) === pStr)) {
         existingPermissions.push(currentPath);
       }
-      console.log("existingPermissions after......", existingPermissions);
     } else {
       // Handle Uncheck (from Implicit or Explicit)
-      console.log("checked......", currentPath)
 
       // 1. Remove explicit self if present
       const explicitIndex = existingPermissions.findIndex((perm) => JSON.stringify(perm) === JSON.stringify(currentPath));
@@ -201,8 +197,6 @@ const CustomNode = ({
 
       // This check will be true if the node is grey selected
       if (coveringAncestorIndex !== -1) {
-
-        console.log("isGreySelected and not pink");
 
         const ancestorPath = existingPermissions[coveringAncestorIndex];
         // Remove ancestor
@@ -235,10 +229,8 @@ const CustomNode = ({
       }
       else {
 
-        console.log("not grey selected and pink");
         const parentPath = currentPath.slice(0, -1);
 
-        console.log("parentPath", parentPath);
         if (parentPath.length > 0) {
           // Check if parent has any descendants in existingPermissions
           const hasDescendants = existingPermissions.some(perm =>
@@ -246,22 +238,16 @@ const CustomNode = ({
             perm.slice(0, parentPath.length).every((val, idx) => val === parentPath[idx])
           );
 
-          console.log("hasDescendants", hasDescendants);
-
           // Also check if parent itself is in existingPermissions (explicitly)
           const hasParentExplicit = existingPermissions.some(perm =>
             JSON.stringify(perm) === JSON.stringify(parentPath)
           );
 
-          console.log("hasParentExplicit", hasParentExplicit);
-
           if (!hasDescendants && !hasParentExplicit) {
             // Parent became empty -> Reselect Parent explicitly
-            console.log("here1", existingPermissions);
             existingPermissions.push(parentPath);
           }
           else if (hasDescendants) {
-            console.log("here2", existingPermissions);
             const existingPermIndex = existingPermissions.findIndex((perm) => JSON.stringify(perm) === JSON.stringify(currentPath));
             if (existingPermIndex !== -1) {
               existingPermissions.splice(existingPermIndex, 1);
@@ -287,15 +273,12 @@ const CustomNode = ({
             if (!isIANode && !existingPermissions.some(perm => JSON.stringify(perm.slice(0, -1)) === JSON.stringify(currentPath.slice(0, -1)))) {
               existingPermissions.push(currentPath.slice(0, -1));
             }
-            console.log('existingPermissions', existingPermissions);
           }
           else {
-            console.log("here3", existingPermissions);
             existingPermissions.splice(existingPermissions.findIndex((perm) => JSON.stringify(perm) === JSON.stringify(parentPath)), 1);
           }
         }
         else {
-          console.log("here4", existingPermissions)
           // Use proper array comparison instead of JSON string startsWith to avoid B/B' edge case
           const newEP = existingPermissions.filter((perm) => {
             // Keep perm if it's NOT currentPath and NOT a descendant of currentPath
@@ -460,7 +443,6 @@ export default function PermissionHeirarchyCanvas({
   const [selectedPermissionIds, setSelectedPermissionIds] = useState<any>([]);
 
   useEffect(() => {
-    console.log("dataAllPermissions", dataAllPermissions);
     const appData = dataAllPermissions?.find(
       (ele: any) => ele.application_name === selectedApplication
     );
@@ -514,8 +496,6 @@ export default function PermissionHeirarchyCanvas({
       return { nodes: [], edges: [] };
     }
 
-    console.log("allNodes", allNodes);
-    console.log("permissionIds", permissionIds);
     const level1Keys = Object.keys(allNodes);
     const level1: { id: string; key: string; index: number }[] = [];
     const level2: { id: string; key: string; index: number }[] = [];
