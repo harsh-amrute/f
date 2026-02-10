@@ -477,19 +477,23 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
 
                         const path = [h1, h2, h3].filter(Boolean); // Filter out empty strings
 
-                        if (!isDynamicPermissions) {
-                            // Legacy Mode Logic
-                            // If it's a Node (not a Leaf), append 'isActive' to prevent cascade
-                            // Definition of Leaf: Typically 3 levels (or all levels present)
-                            // Definition of Node here: h3 is empty (or implied by data structure)
-                            // Checking if h3 from data was actually present
-                            
-                            const isLeaf = (h3 && h3 !== ""); 
-                            
-                            // If not a leaf, we assume it's a specific Node selection (isActive)
-                            if (!isLeaf) {
-                                path.push("isActive");
+                        // IA Node Logic
+                        // If def is active (IA Node definition) AND the input HID does NOT end with underscore
+                        // (Underscore implies Group/Parent selection of that node, not the IA node itself)
+                        if (def.isActive && !hid.endsWith('_')) {
+                            if (path.length > 0) {
+                                path[path.length - 1] = path[path.length - 1] + "'";
                             }
+                        } else if (!isDynamicPermissions) {
+                             // Legacy Mode Non-IA logic (if any special handling needed)
+                             // Previously we added "isActive" for non-leafs, but now we use IA nodes for that.
+                             // Validating if we need to keep any legacy behavior for non-IA non-Leafs.
+                             // The old code assumed !isLeaf -> isActive.
+                             // Now we rely on def.isActive.
+                             
+                             // If it is NOT a leaf and NOT an IA node, effectively it's a parent node selection.
+                             // In legacy, we might have treated it as isActive? 
+                             // Let's stick to the requested IA logic: 1 -> [A']
                         }
                         
                         return path;
