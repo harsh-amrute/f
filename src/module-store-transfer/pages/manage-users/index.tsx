@@ -471,30 +471,28 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
                         const def = definitions.find((d: any) => d.h_id === cleanHid || d.h_id === hid);
                         if (!def) return null;
 
-                        const h1 = def[`${prefix}_hierarchy_1`] || def[`hierarchy_1`] || def[`${prefix}_heirarchy_1`] || def[`heirarchy_1`];
-                        const h2 = def[`${prefix}_hierarchy_2`] || def[`hierarchy_2`] || def[`${prefix}_heirarchy_2`] || def[`heirarchy_2`];
-                        const h3 = def[`${prefix}_hierarchy_3`] || def[`hierarchy_3`] || def[`${prefix}_heirarchy_3`] || def[`heirarchy_3`];
+                      const h1 = def[`${prefix}_hierarchy_1`] ?? def[`hierarchy_1`] ?? def[`${prefix}_heirarchy_1`] ?? def[`heirarchy_1`] ?? '';
+                      const h2 = def[`${prefix}_hierarchy_2`] ?? def[`hierarchy_2`] ?? def[`${prefix}_heirarchy_2`] ?? def[`heirarchy_2`] ?? '';
+                      const h3 = def[`${prefix}_hierarchy_3`] ?? def[`hierarchy_3`] ?? def[`${prefix}_heirarchy_3`] ?? def[`heirarchy_3`] ?? '';
 
                         const path = [h1, h2, h3].filter(Boolean); // Filter out empty strings
 
                         // IA Node Logic
                         // If def is active (IA Node definition) AND the input HID does NOT end with underscore
                         // (Underscore implies Group/Parent selection of that node, not the IA node itself)
-                        if (def.isActive && !hid.endsWith('_')) {
+                      // AND it is NOT a leaf node (L3). Leaf nodes (L3) should never have prime suffix, they are just selected.
+                      // Assuming L3 means h3 is present.
+                      const isLeaf = (h3 && h3 !== "");
+                      if (def.isActive && !hid.endsWith('_') && !isLeaf) {
                             if (path.length > 0) {
                                 path[path.length - 1] = path[path.length - 1] + "'";
                             }
                         } else if (!isDynamicPermissions) {
-                             // Legacy Mode Non-IA logic (if any special handling needed)
-                             // Previously we added "isActive" for non-leafs, but now we use IA nodes for that.
-                             // Validating if we need to keep any legacy behavior for non-IA non-Leafs.
-                             // The old code assumed !isLeaf -> isActive.
-                             // Now we rely on def.isActive.
-                             
-                             // If it is NOT a leaf and NOT an IA node, effectively it's a parent node selection.
-                             // In legacy, we might have treated it as isActive? 
-                             // Let's stick to the requested IA logic: 1 -> [A']
+                        // Legacy Mode: No special handling needed unless we find cases where !isActive needs handling
+                        // As per current requirement, logic relies on ID format and Definition flag.
                         }
+
+                      console.log(`Mapping HID: ${hid} -> Path:`, path, "isIA:", def.isActive, "CleanHID:", cleanHid);
                         
                         return path;
                     }).filter((p: any) => p !== null);
