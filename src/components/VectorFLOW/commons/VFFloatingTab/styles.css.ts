@@ -15,7 +15,7 @@ export const VFFloatingTabWrapper = style({
   display: "inline-flex",
   alignItems: "center",
   paddingRight: "10px",
-  minWidth: "270px",
+  // minWidth: "270px",
 });
 
 export const VFFloatingTabButton = style({

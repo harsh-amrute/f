@@ -55,7 +55,6 @@ const UserManagementStepperItem = (step: StepComponentProps) => {
   const { currentState, label, isLast, themeUi } = step;
 
   const getImgSrc = (state: StepState): string => {
-    console.log(state);
     if (state === "completed") return "/assets/img/step-completed.svg";
     if (state === "active")
       return themeUi === "REGALBLAZE"

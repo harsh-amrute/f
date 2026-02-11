@@ -152,11 +152,9 @@ const VFCharts = (props: any) => {
       };
     }
 
-    console.log("FINAL AG CHART OPTIONS:", opts);
     return opts;
   })();
 
-  console.log("Final chartOptions:", chartOptions);
 
   return (
     <div

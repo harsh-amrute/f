@@ -292,7 +292,7 @@ const MTOActionToolBar = ({
               {Object.keys(newFilters)?.map((key: any) => (
                 <span className={VFSelectedFiltersChip} key={key}>
                   <div className={VFSelectedFiltersFilterLabel}>
-                    {newFilters[key]?.name}{" "}
+                    {newFilters[key]?.name}
                     <div className={SCFilterVerticalDivider} />
                   </div>
 
