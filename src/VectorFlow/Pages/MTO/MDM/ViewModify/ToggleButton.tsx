@@ -141,7 +141,7 @@ const ToggleButton: React.FC = (props: any) => {
       }}
       onClick={toggleHandler}
     >
-      {" "}
+    
       <div
         className={toggleCircleBase}
         style={assignInlineVars({
@@ -157,7 +157,7 @@ const ToggleButton: React.FC = (props: any) => {
         })}
       >
         {isActive ? "Active" : "Inactive"}
-      </span>{" "}
+      </span>
     </div>
   );
 };

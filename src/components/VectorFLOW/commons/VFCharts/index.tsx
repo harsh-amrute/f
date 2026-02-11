@@ -136,7 +136,6 @@ const VFCharts = (props: any) => {
       .querySelector<HTMLMetaElement>('meta[name="csp-nonce"]')
       ?.content?.trim();
 
-  console.log(chartProps, "chartProps");
 
   const chartOptions = (() => {
     const opts: any = {
@@ -159,11 +158,9 @@ const VFCharts = (props: any) => {
       };
     }
 
-    console.log("FINAL AG CHART OPTIONS:", opts);
     return opts;
   })();
 
-  console.log("Final chartOptions:", chartOptions);
 
   return (
     <div

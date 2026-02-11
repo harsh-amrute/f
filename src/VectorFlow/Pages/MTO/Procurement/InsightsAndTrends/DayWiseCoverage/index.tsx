@@ -476,12 +476,6 @@ const DayWiseCoverage = () => {
           />
         ) : (
           <div className={AnimationWrapper}>
-            {/* <Lottie
-              animationData={"/assets/img/VectorFLOW/BPR/swipe pointer.json"}
-              loop
-              autoplay
-              style={{ height: 100, width: 100 }}
-            /> */}
             <SafeLottie
               src={"/assets/img/VectorFLOW/BPR/swipe pointer.json"}
               loop
