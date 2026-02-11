@@ -4,7 +4,6 @@ import * as globalStyles from "../../../styles/global";
 import * as gridSystem from "../../../styles/gridSystem.css";
 
 // ---- CSS Vars ----
-export const tooltipLeftVar = createVar();
 export const tooltipMaxHeightVar = createVar();
 
 export const tooltipTextColorVar = createVar();
@@ -21,7 +20,6 @@ globalStyle(`${wrapToolTip} .tooltip_list`, {
   pointerEvents: "auto",
   background: globalStyles.white,
   top: "0",
-  left: tooltipLeftVar,
   opacity: 1,
   zIndex: 900000,
 });

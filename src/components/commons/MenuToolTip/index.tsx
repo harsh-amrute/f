@@ -13,7 +13,6 @@ import {
   tooltipBgColorVar,
   tooltipFontWeightVar,
   scIconTransformVar,
-  tooltipLeftVar,
 } from "./style.css";
 import { navigateWithPrompt } from "../../../helpers/utils";
 import { useDispatch, useSelector } from "react-redux";
@@ -63,7 +62,7 @@ const MenuToolTip = ({
     if (!tooltipElement) return;
 
     const rect = tooltipElement.getBoundingClientRect();
-    setLeft(rect.width);
+    setLeft(rect.width - 23 < 10 ? rect.width - 20 : rect.width - 23);
 
     const viewportHeight = window.innerHeight;
     const spaceBelow = viewportHeight - rect.bottom - 10;
@@ -190,8 +189,8 @@ const MenuToolTip = ({
                   isLoading && tempUrls.includes(itemChild.url)
                     ? "/assets/img/nav/loader.svg"
                     : itemChild.imgHover
-                    ? itemChild.imgHover
-                    : "/assets/img/nav/arrow_down.svg"
+                      ? itemChild.imgHover
+                      : "/assets/img/nav/arrow_down.svg"
                 }
                 alt="arrow"
                 style={assignInlineVars({
@@ -211,7 +210,6 @@ const MenuToolTip = ({
     <div ref={tooltipRef}>
       <div
         className={wrapToolTip}
-        style={assignInlineVars({ [tooltipLeftVar]: String(left) })}
       >
         <Tooltip
           id={item.name}
@@ -230,6 +228,7 @@ const MenuToolTip = ({
               background: "white",
               minWidth: "230px",
               width: "fit-content",
+              left: left
             }}
           >
             <div className={tooltipTitle}>{t(item.name)}</div>
