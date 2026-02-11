@@ -275,16 +275,16 @@ const OrderAtRisk = () => {
         <div class="insightOrderRisk-tooltip-divider"></div>
         <div class="insightOrderRisk-tooltip-row header-row">
           <span class="insightOrderRisk-tooltip-cell total-order">Total Order</span>
-          <span class="insightOrderRisk-tooltip-cell black">Black</span>
-          <span class="insightOrderRisk-tooltip-cell red">Red</span>
+          <span class="insightOrderRisk-tooltip-cell">Black</span>
+          <span class="insightOrderRisk-tooltip-cell red-order">Red</span>
         </div>
         <div class="insightOrderRisk-tooltip-divider"></div>
         <div class="insightOrderRisk-tooltip-row value-row">
           <span class="insightOrderRisk-tooltip-cell total-order">${
             (datum?.bo || 0) + (datum?.ro || 0)
           }</span>
-          <span class="insightOrderRisk-tooltip-cell black">${datum?.bo || 0}</span>
-          <span class="insightOrderRisk-tooltip-cell red">${datum?.ro || 0}</span>
+          <span class="insightOrderRisk-tooltip-cell black-order">${datum?.bo || 0}</span>
+          <span class="insightOrderRisk-tooltip-cell red-order">${datum?.ro || 0}</span>
         </div>
       </div>
     `;

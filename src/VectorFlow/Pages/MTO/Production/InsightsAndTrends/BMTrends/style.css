@@ -5,13 +5,13 @@
 }
 
 .bmtrends-tooltip-header {
+  color: white;
   padding-top: 10px;
   padding-bottom: 4px;
   background-color: #6c696a;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-weight: 700;
 }
 
 .bmtrends-tooltip-body {
@@ -27,9 +27,8 @@
 }
 
 .bmtrends-tooltip-thead {
-  border-bottom: 1px dashed white;
+  border-bottom: 1px dashed white; 
   border-top: 1px dashed white;
-  font-size: 8px;
 }
 
 .tooltip-th-label {
@@ -40,8 +39,9 @@
 }
 
 .tooltip-th-value {
+  font-size: 8px; 
   padding: 5px;
-  background-color: #6c696a;
+  background-color: #6C696A; 
   text-align: left;
 }
 
@@ -52,7 +52,6 @@
 .bmtrends-tooltip-cell {
   padding: 5px;
   background-color: #6c696a;
-  font-size: 14px;
 }
 
 .bmtrends-tooltip-label-cell {
@@ -65,10 +64,9 @@
 }
 
 .bmtrends-tooltip-color-box {
-  margin-right: 10px;
-  height: 3px;
+  margin-right: 10px; 
+  height: 3px; 
   width: 15px;
-  flex-shrink: 0;
 }
 
 .tooltip-color-b {

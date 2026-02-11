@@ -19,9 +19,9 @@ export function TooltipRenderer({ datum, xKey }: any) {
             (item) => `
           <div class="ob-tooltip-row">
             <div class="bg-color-box ${item.colorClass}"></div>
-            <div class="label-value">
+            <div class="ob-label-value">
               <div>${item.label}</div>
-              <div>${datum[item.key]}</div>
+              <div class="ob-value">${datum[item.key]}</div>
             </div>
           </div>
         `

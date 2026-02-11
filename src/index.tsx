@@ -29,6 +29,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import VFErrorFallBack from "./components/layouts/VFErrorFallBack";
 import createCache from "@emotion/cache";
 import { CacheProvider } from "@emotion/react";
+import { nonce } from "./helpers/utils";
 
 // import { StyleSheetManager } from "styled-components";
 // import '../node_modules/react-select/dist/re'
@@ -37,11 +38,6 @@ import { CacheProvider } from "@emotion/react";
 LicenseManager.setLicenseKey(AG_GRID_KEY);
 // Axios default settings and interceptors
 setupAxios();
-const nonce =
-  (window as any).__nonce__ ??
-  document
-    .querySelector<HTMLMetaElement>('meta[name="csp-nonce"]')
-    ?.content?.trim();
 
 console.log(nonce);
 const cache = createCache({

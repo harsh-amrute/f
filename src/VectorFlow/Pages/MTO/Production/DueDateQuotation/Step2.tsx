@@ -1507,13 +1507,11 @@ const Step2 = forwardRef(
                     >
                       {isEditable ? (
                         <>
-                          {" "}
                           <img src="/assets/img/mto/dueDateQuotation/save-icon.svg" />
                           Save
                         </>
                       ) : (
                         <>
-                          {" "}
                           <img src="/assets/img/mto/dueDateQuotation/edit-icon.svg" />{" "}
                           Edit
                         </>
@@ -1657,7 +1655,6 @@ const Step2 = forwardRef(
                   paddingBottom: "75px",
                 }}
               >
-                {" "}
                 <div
                   style={{
                     height: "100%",

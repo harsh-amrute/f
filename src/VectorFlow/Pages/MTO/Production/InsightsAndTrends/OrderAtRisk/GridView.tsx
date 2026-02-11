@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import VFTable from "../../../Common/VFTable";
 import { GridOptions } from "ag-grid-enterprise";
-import { assignInlineVars } from "@vanilla-extract/dynamic";
-import { vfTableWrapper, vfHeightVar, vfZoomVar } from "./styles.css";
+import { vfTableWrapper} from "./styles.css";
 import { useUserData } from "../../../../../../context/index";
 import { AgGridReact } from "ag-grid-react";
 import VFPagination from "../../../Common/VFPagination";
@@ -22,8 +21,6 @@ const GridView = ({
   currentPage,
   rowsPerPage,
   reportName,
-  height = "95%",
-  disableZoomScaling = false,
 }: any) => {
   // const gridRef = useRef();
   const gridRef = useRef<AgGridReact>(null);

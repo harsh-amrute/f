@@ -25,6 +25,7 @@ import {
   getProductAndLocationHeirarchiesFromEnv,
   downloadBase64Image,
   generateChartOptions,
+  nonce,
 } from "../../../../../../../../../helpers/utils";
 import { chartParams1 } from "./chartParams";
 import VFCharts from "../../../../../../../../..//components/VectorFLOW/commons/VFCharts";
@@ -286,10 +287,7 @@ const MonitorGITChildTransporterWiseCharts = ({
   const graph2 = [
     "This box plot graph displays the statistical distribution of delay days in transport for various transporters. Each box represents the range of delayed LRs as on today",
   ];
-  const nonce =
-  (window as any).__nonce__ ??
-  document.querySelector<HTMLMetaElement>('meta[name="csp-nonce"]')?.content?.trim();
-
+  
   return (
     <>
       <div className={SCDynamicContainer}>

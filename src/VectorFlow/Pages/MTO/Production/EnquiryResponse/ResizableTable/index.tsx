@@ -35,7 +35,6 @@ const ResizableTable = (props: IResizeTableProps) => {
     userPageSize,
     savePageSize,
     height,
-    disableZoomScaling,
   } = props;
   const gridRef = props.gridRef;
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
@@ -127,7 +126,7 @@ const ResizableTable = (props: IResizeTableProps) => {
         // [vfZoomMdVar]: disableZoomScaling ? "1" : "0.75",
       })}
     >
-            <VFTable
+    <VFTable
         ref={gridRef}
         columnDefs={colDef}
         rowData={data}

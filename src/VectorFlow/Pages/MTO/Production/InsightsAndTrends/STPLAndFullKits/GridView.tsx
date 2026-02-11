@@ -135,7 +135,7 @@ const GridView = ({
           rowData={rowData}
           tooltipHideDelay={100000}
           tooltipShowDelay={0}
-          tooltipMouseTrack
+          tooltipMouseTrack={true}
           ref={gridRef}
           onGridReady={(params: any) => {
             params.api.autoSizeAllColumns();

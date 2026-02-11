@@ -8,14 +8,6 @@ export const Wrapper = style({
   height: "85%",
   marginLeft: "2rem",
   marginTop: "2rem",
-  // selectors: {
-  //   "& .ag-theme-alpine": {
-  //     height: "100%",
-  //   },
-  //   '& div[data-testid="vf_pagination"]': {
-  //     padding: "0",
-  //   },
-  // },
 });
 // ✅ descendants of Wrapper (plain selectors, no :global)
 globalStyle(`${Wrapper} > .ag-theme-alpine`, { height: "100%" });
@@ -64,17 +56,6 @@ export const SCHorizontalDivider = style({
 export const VFChilWrapper = style({
   width: "100%",
   height: "100%",
-  // selectors: {
-  //   "& .ag-theme-alpine": {
-  //     // force header colors
-  //     "--ag-header-background-color": "rgb(255, 255, 255)",
-  //     "--ag-header-foreground-color": "rgb(0, 0, 0)",
-  //   } as any,
-  //   "& .ag-theme-noir-fusion": {
-  //     "--ag-header-background-color": "rgb(255, 255, 255)",
-  //     "--ag-header-foreground-color": "rgb(0, 0, 0)",
-  //   } as any,
-  // },
 });
 // ✅ Global AG Grid theme overrides under VFChilWrapper
 globalStyle(`${VFChilWrapper} .ag-theme-alpine`, {

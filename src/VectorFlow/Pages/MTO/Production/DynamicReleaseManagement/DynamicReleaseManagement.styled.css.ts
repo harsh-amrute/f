@@ -14,44 +14,6 @@ export const Wrapper = style({
   alignItems: "center",
   display: "flex",
   flexDirection: "column",
-
-  // selectors: {
-  //   "& .sc-gazJty": {
-  //     padding: "0 !important",
-  //     marginTop: "-22px !important",
-  //     fontSize: "10px !important",
-  //   },
-
-  //   // ❗ merged into ONE key (was duplicated before)
-  //   "& > .ag-theme-alpine": {
-  //     margin: "0 !important", // final wins
-  //     width: "100%",
-  //     flex: 1,
-  //   },
-
-  //   "& > button": { width: "max-content" },
-  //   "& > *:not(button, .toolbar-container)": {
-  //     transition: "flex 0.2s ease-in-out !important",
-  //   },
-  //   "& .toolbar-container": {
-  //     width: "100%",
-  //     marginBottom: 0,
-  //     marginTop: 20,
-  //   },
-  //   "& .ag-header-cell-text": { fontSize: 12 },
-  //   '& div[data-testid="vf_pagination"]': { margin: "0 !important" },
-
-  //   "& .chart-wrapper > div": { height: "100% !important" },
-  //   "& .chart-wrapper > div .ag-charts-wrapper": {
-  //     maxHeight: "100% !important",
-  //   },
-  //   "& .chart-wrapper > div .ag-charts-wrapper .ag-charts-canvas": {
-  //     height: "100%",
-  //   },
-  //   "& .chart-wrapper > div .ag-charts-wrapper .ag-charts-canvas > canvas": {
-  //     height: "100% !important",
-  //   },
-  // },
 });
 // descendants of Wrapper
 globalStyle(`${Wrapper} .sc-gazJty`, {
@@ -218,68 +180,9 @@ export const SCButton = style({
   background: btnBgVar,
 });
 
-// helper so TS accepts CSS custom props like --ag-grid-size
-const cssVars = (vars: Record<`--${string}`, string>) => vars;
-
 export const SCDynamicContainer = style({
   display: "flex",
   height: "100%",
-
-  // ✅ selectors only here (top level)
-  // selectors: {
-  //   "& .ag-header-cell-text": { fontSize: 12 },
-
-  //   "& > .ag-theme-alpine": {
-  //     margin: "0 !important",
-  //     flex: 1,
-  //     height: "100%",
-
-  //     // custom props (ok to spread here)
-  //     ...cssVars({
-  //       "--ag-grid-size": "3px",
-  //       "--ag-list-item-height": "20px",
-  //       "--ag-font-size": "10px",
-  //       "--ag-row-hover-color": "rgba(188, 61, 129, 0.3)",
-  //     }),
-  //   },
-
-  //   // ❌ was nested selectors under "& > .ag-theme-alpine"
-  //   // ✅ flatten them like this:
-  //   "& > .ag-theme-alpine .ag-cell": { height: "100% !important" },
-  //   "& > .ag-theme-alpine .ag-paging-panel": { height: "24px !important" },
-  //   "& > .ag-theme-alpine .ag-side-buttons": { fontSize: 10 },
-  //   "& > .ag-theme-alpine .ag-header": { borderRadius: 0 },
-  //   "& > .ag-theme-alpine .ag-pivot-off": {
-  //     height: "47px !important",
-  //     minHeight: "47px !important",
-  //   },
-  //   "& > .ag-theme-alpine .ag-header-cell": {
-  //     minHeight: "24px !important",
-  //     height: "24px !important",
-  //   },
-  //   "& > .ag-theme-alpine .ag-header-row": {
-  //     minHeight: "20px !important",
-  //     height: "20px !important",
-  //   },
-  //   "& > .ag-theme-alpine .ag-header-container": {
-  //     minHeight: "20px !important",
-  //     height: "20px !important",
-  //   },
-  //   "& > .ag-theme-alpine .ag-header-row-column-filter": {
-  //     top: "23px !important",
-  //     height: "24px !important",
-  //   },
-  //   "& > .ag-theme-alpine .ag-input-field-input": {
-  //     height: "14px !important",
-  //     minHeight: "10px !important",
-  //     fontSize: 12,
-  //   },
-  //   "& > .ag-theme-alpine .ag-column-drop": { background: "#D2CECE" },
-  //   "& > .ag-theme-alpine .ag-status-bar": {
-  //     height: "24px !important",
-  //     fontSize: 10,
-  //   },
-  // },
 });
 // SCDynamicContainer descendants
 globalStyle(`${SCDynamicContainer} .ag-header-cell-text`, { fontSize: 12 });
@@ -511,13 +414,6 @@ export const ProcurementLayout = style({
   height: "100vh",
   display: "flex",
   flexDirection: "column",
-  // selectors: {
-  //   '& div[data-testid="vf_pagination"]': {
-  //     margin: "-20px -15px !important",
-  //     marginBottom: "0px !important",
-  //   },
-  //   "& > .ag-theme-alpine": { flex: "1 !important" },
-  // },
 });
 // ProcurementLayout descendants
 globalStyle(`${ProcurementLayout} div[data-testid="vf_pagination"]`, {

@@ -9,12 +9,6 @@ export const vfZoomVar = createVar(); // zoom scale for laptop..desktop range
 export const horizontalViewWrapper = style({
   width: "100%",
   height: "90%",
-  // selectors: {
-  //   "& .ag-theme-alpine": {
-  //     height: "100%",
-  //     marginTop: "0",
-  //   },
-  // },
 });
 // descendants of horizontalViewWrapper
 globalStyle(`${horizontalViewWrapper} > .ag-theme-alpine`, {
@@ -48,31 +42,6 @@ export const vfTableWrapper = style({
   display: "flex",
   flexDirection: "column",
   margin: "20px 0px",
-
-  // selectors: {
-  //   "& .ag-theme-alpine": { flex: 1 },
-
-  //   // paging panel
-  //   "&& .ag-paging-panel": {
-  //     zIndex: 1,
-  //     fontSize: "11px",
-  //     fontFamily: "Roboto",
-  //     position: "relative",
-  //   },
-
-  //   // status bar
-  //   "&& .ag-status-bar": {
-  //     zIndex: 2,
-  //     display: "flex",
-  //     justifyContent: "space-between",
-  //     alignItems: "center",
-  //     border: "none",
-  //     position: "absolute",
-  //     bottom: 0,
-  //     backgroundColor: "white",
-  //     width: "100%",
-  //   },
-  // },
 
   "@media": {
     // laptop .. desktop => apply zoom var (0.75 by default; override via assignInlineVars)

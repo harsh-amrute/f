@@ -5,6 +5,7 @@ import { scChartMainContainer, SCChartHeaderContainer } from '../../../../Common
 import { useGetDate } from '../../../../../../Services/MTO/Production/InsightsAndTrends/RMPMExpediting'
 import BoxPlotContainer from '../../../../Common/BoxPlotContainer'
 import OverlayLoader from '../../../../../../../VectorFlow/Pages/MTO/Common/Loader'
+import { nonce } from '../../../../../../../helpers/utils'
 
 
 const ChartView = ({ chartData, chartTableData }: any) => {
@@ -48,10 +49,6 @@ const ChartView = ({ chartData, chartTableData }: any) => {
 
         )
     }
-
-    const nonce =
-    (window as any).__nonce__ ??
-    document.querySelector<HTMLMetaElement>('meta[name="csp-nonce"]')?.content?.trim();
   
     const boxChartOptions: any =
     {

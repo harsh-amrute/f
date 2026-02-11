@@ -4,6 +4,7 @@ import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VF
 import { SCChartHeaderContainer, scChartMainContainer } from '../../../../Common/SplitGraphContainer/styles.css'
 import { useGetDate } from '../../../../../../Services/MTO/Production/InsightsAndTrends/RMPMExpediting'
 import BoxPlotContainer from '../../../../Common/BoxPlotContainer'
+import { nonce } from '../../../../../../../helpers/utils'
 
 const DeptWiseGraph = ({chartTableData, chartData, alertData}: any) => {
 
@@ -38,10 +39,6 @@ const DeptWiseGraph = ({chartTableData, chartData, alertData}: any) => {
     const [chartLoading, setChartLoading] = useState(false);
     const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
     const date = apiResponseData?.data?.data;
-    const nonce =
-    (window as any).__nonce__ ??
-    document.querySelector<HTMLMetaElement>('meta[name="csp-nonce"]')?.content?.trim();
-  
     const boxChartOptions: any = {
         theme: {
             monochrome: {

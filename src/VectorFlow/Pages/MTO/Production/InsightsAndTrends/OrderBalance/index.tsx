@@ -282,7 +282,7 @@ const OrderBalance = () => {
   const savePageSize = (pageSize: any) => {
     if (pageSize) {
       setUserPageSize(pageSize);
-      handleSaveClick(false, pageSize);
+      handleSaveClick(false, pageSize, );
       getGraphData({ graphflag: 1 }, pageSize);
     } else {
       notifyError("Invalide page size");

@@ -27,12 +27,6 @@ const ExcessInventoryTrend = ({
   horizon: number;
   setHorizon: any;
 }) => {
-  const nonce =
-    (window as any).__nonce__ ??
-    document
-      .querySelector<HTMLMetaElement>('meta[name="csp-nonce"]')
-      ?.content?.trim();
-
   const [options1, setOptions1] = useState({});
   const [options2, setOptions2] = useState({});
   const EnvConfig = useSelector((state: RootState) => state.mta.EnvConfig);

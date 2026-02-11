@@ -14,23 +14,6 @@ export const Wrapper = style({
   display: "flex",
   marginLeft: "2rem",
   flexDirection: "column",
-  // selectors: {
-  //   '& > .ag-theme-alpine': {
-  //     flex: 1,
-  //     height: '100%',
-  //   },
-  //   '& > .toolbar-container, & > .ag-theme-alpine': {
-  //     margin: '10px',
-  //   },
-  //   '& > .toolbar-container': {
-  //     margin: 0,
-  //     marginTop: '20px',
-  //   },
-  //   '& > div[data-testid="vf_pagination"]': {
-  //     padding: 0,
-  //     margin: '-10px 10px 20px',
-  //   },
-  // },
 });
 
 // children/descendants of Wrapper

@@ -9,7 +9,7 @@ import { useLocation, useNavigate } from "react-router";
 import { useGetAllReports } from '../../../VectorFlow/Services/MTA/MDM'
 import _ from 'lodash'
 import { useGetAllMTOReports } from "../../../VectorFlow/Services/MTO/Common/DownloadReports";
-import { getNestedChildren } from "../../../helpers/utils";
+import { getNestedChildren, nonce } from "../../../helpers/utils";
 import { Tooltip } from "react-tooltip";
 import {
   decryptStorageData,
@@ -47,11 +47,6 @@ const NavbarMenu = ({
   setWidthResponsive,
   menuItem,
 }: any) => {
-  const nonce =
-    (window as any).__nonce__ ??
-    document
-      .querySelector<HTMLMetaElement>('meta[name="csp-nonce"]')
-      ?.content?.trim();
 
   const [tinyChartOptions] = useState<AgCartesianChartOptions>(() =>
     createTinyChartOptions(nonce)
