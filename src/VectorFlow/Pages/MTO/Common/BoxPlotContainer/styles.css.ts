@@ -1,4 +1,4 @@
-import { style, createVar } from '@vanilla-extract/css';
+import { style, createVar, globalStyle } from '@vanilla-extract/css';
 import { ColorsMTO } from '../Colors';
 
 /* ========= runtime vars & helpers ========= */
@@ -264,3 +264,10 @@ export const ViewSlider = style({
   alignItems: 'center',
   pointerEvents: 'none',
 });
+
+globalStyle(".apexcharts-tooltip, .apexcharts-tooltip-theme-dark", {
+  backgroundColor: "#6c696a !important",
+  color: "white",
+
+});
+
