@@ -204,7 +204,6 @@ const ExpeditingMTO = (props: {
                 paddingLeft: "10px",
               }}
             >
-              {" "}
               <b>Select Horizon (in days): </b>
             </label>
             <VFRangeSlider
