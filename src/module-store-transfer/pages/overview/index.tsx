@@ -24,7 +24,6 @@ import {
 } from "./styles.css";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
 import * as globalStyles from "../../../styles/global";
-import clsx from "clsx";
 import { useForm } from "react-hook-form";
 import { useChangePassword } from "../../../services/profile";
 import { useUserData } from "../../../../src/context";
@@ -248,10 +247,7 @@ const Overview = ({ themeUi }: any) => {
                   <button
                     type="submit"
                     disabled={Object.keys(errors).length > 0}
-                    className={clsx(
-                      SCChangePasswordSubmit,
-                      themeUi === "REGALBLAZE" && SCChangePasswordSubmit
-                    )}
+                    className={SCChangePasswordSubmit}
                     style={
                       themeUi === "REGALBLAZE"
                         ? assignInlineVars({

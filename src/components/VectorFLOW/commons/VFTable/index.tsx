@@ -5,7 +5,6 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "./style.css";
 import { useUserData } from "../../../../context";
-import clsx from "clsx";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
 
 interface VFTableProps extends AgGridReactProps {
@@ -35,12 +34,7 @@ const VFTable = forwardRef((props: VFTableProps, ref: any) => {
 
   return (
     <div
-      className={clsx(
-        VFTableWrapper,
-        // vfNoZoomScale,
-        getClassName(),
-        "ag-theme-alpine" // or whatever AG Grid theme you use
-      )}
+      className={`${VFTableWrapper} ${getClassName() || ""} ag-theme-alpine`.trim()}
       style={assignInlineVars({
         [vHeight]: props.height,
         [vZoom]:"1"

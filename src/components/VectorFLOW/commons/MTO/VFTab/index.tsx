@@ -19,7 +19,6 @@ import {
 import { type MDMMasterState } from "../../../../../VectorFlow/types/MDM";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/store/store";
-import clsx from 'clsx';
 
 interface VFTabProps {
   activeMaster: MDMMasterState;
@@ -64,28 +63,30 @@ const VFTab = ({
 
   return (
     <div className={sctabArea}>
-      <div className={clsx(sctabHeader, zoom08)}>
+      <div className={`${sctabHeader} ${zoom08}`}>
         <div className={sctabHeaderLeft}>
           {finMasters.map((master:any, index:any) => {
             const status = getTabStatus(master);
             const isActive = status === "active";
             const isCompleted = status === "completed";
 
-            const buttonClasses = clsx(
-              sctabButtonBase,
-              index !== 0 && sctabButtonWithMarLeft,
-              isActive && sctabButtonActiveText,
-              isCompleted && sctabButtonCompleted,
-              isActive &&
-                (isRegal
+            const buttonClasses = `
+              ${sctabButtonBase}
+              ${index !== 0 ? sctabButtonWithMarLeft : ""}
+              ${isActive ? sctabButtonActiveText : ""}
+              ${isCompleted ? sctabButtonCompleted : ""}
+              ${isActive
+                ? isRegal
                   ? sctabButtonActiveRegalblaze
-                  : sctabButtonActiveDefaultTheme)
-            );
+                  : sctabButtonActiveDefaultTheme
+                : ""
+              }
+            `.trim();
 
-            const titleClasses = clsx(
-              sctabTitleBase,
-              isActive || isCompleted ? sctabTitleLight : sctabTitleDim
-            );
+            const titleClasses = `
+              ${sctabTitleBase}
+              ${isActive || isCompleted ? sctabTitleLight : sctabTitleDim}
+            `.trim();
 
             return (
               <div

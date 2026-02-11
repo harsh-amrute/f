@@ -18,7 +18,6 @@ import {
 import { type MDMMasterState } from "../../../../VectorFlow/types/MDM";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store/store";
-import clsx from "clsx";
 const cx = (...xs: Array<string | false | null | undefined>) =>
   xs.filter(Boolean).join(" ");
 
@@ -91,7 +90,7 @@ const VFTab = ({
 
   return (
     <div className={SCTabArea}>
-      <div className={clsx(SCTabHeader, zoom08)}>
+      <div className={`${SCTabHeader} ${zoom08}`}>
         <div className={SCTabHeaderLeft}>
           {masters.map((master, index) => {
             const status = getTabStatus(master);

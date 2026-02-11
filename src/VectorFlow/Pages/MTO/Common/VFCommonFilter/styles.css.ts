@@ -163,8 +163,6 @@ export const RangeSliderComponent = style({
   flexDirection: "column",
 });
 
-/** Themed pieces — compose manually (no clsx) */
-
 /* MultiSelectCheckBoxComponent */
 export const MultiSelectCheckBoxBase = style({
   marginBottom: "16px",

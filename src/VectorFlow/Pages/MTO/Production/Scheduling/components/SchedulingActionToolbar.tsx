@@ -38,8 +38,6 @@ import {
   buttonLabelColorVar,
 } from "./styles.css";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
-import clsx from "clsx";
-import { style } from "@vanilla-extract/css";
 const gridViewIcon = (isSelected: boolean) => {
   const activeColor = "rgb(188, 61, 129)";
   const inactiveColor = "#3e3e3e";
@@ -581,10 +579,9 @@ const SchedulingActionToolbar = ({
           >
             {resourceViewIcon(currentView === "ResourceView")}
             <span
-              className={clsx(
-                ButtonLabel,
-                currentView === "ResourceView" && ButtonLabelSelected
-              )}
+              className={`${ButtonLabel} ${
+                currentView === "ResourceView" ? ButtonLabelSelected : ""
+              }`}             
             >
               Resource View
             </span>
@@ -601,10 +598,9 @@ const SchedulingActionToolbar = ({
           >
             {JobViewIcon(currentView === "JobView")}
             <span
-              className={clsx(
-                ButtonLabel,
-                currentView === "JobView" && ButtonLabelSelected
-              )}
+              className={`${ButtonLabel} ${
+                currentView === "JobView" ? ButtonLabelSelected : ""
+              }`}              
             >
               Job View
             </span>
@@ -616,12 +612,10 @@ const SchedulingActionToolbar = ({
               currentView === "GridViewR" || currentView === "GridViewJ"
             )}
             <span
-              className={clsx(
-                ButtonLabel,
-                (currentView === "GridViewR" || currentView === "GridViewJ") &&
-                  ButtonLabelSelected
-              )
-            }
+              className={`${ButtonLabel} ${["GridViewR", "GridViewJ"].includes(currentView)
+                  ? ButtonLabelSelected
+                  : ""
+                }`}
             >
               Grid View
             </span>
@@ -651,10 +645,9 @@ const SchedulingActionToolbar = ({
               >
                 {gridViewResourceIcon(currentView === "GridViewR")}
                 <span
-                  className={clsx(
-                    ButtonLabel,
-                    currentView === "GridViewR" && ButtonLabelSelected
-                  )}
+                  className={`${ButtonLabel} ${
+                    currentView === "GridViewR" ? ButtonLabelSelected : ""
+                  }`}                  
                 >
                   Resource List
                 </span>
@@ -670,10 +663,9 @@ const SchedulingActionToolbar = ({
               >
                 {gridViewJobIcon(currentView === "GridViewJ")}
                 <span
-                  className={clsx(
-                    ButtonLabel,
-                    currentView === "GridViewJ" && ButtonLabelSelected
-                  )}
+                  className={`${ButtonLabel} ${
+                    currentView === "GridViewJ" ? ButtonLabelSelected : ""
+                  }`}                  
                 >
                   Job List
                 </span>
