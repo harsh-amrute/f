@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VFInfoToolTip'
 import { scChartMainContainer, SCChartHeaderContainer } from '../../../../Common/SplitGraphContainer/styles.css'
 import { useGetDate } from '../../../../../../Services/MTO/Production/InsightsAndTrends/RMPMExpediting'
@@ -154,7 +154,7 @@ const ChartView = ({ chartData, chartTableData }: any) => {
         ,
         tooltip: {
             followCursor: false,
-            enabledOnSeries: [1]
+            enabledOnSeries: [1],
         }
     }
 

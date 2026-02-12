@@ -1,22 +1,28 @@
 .data-tooltip-container {
   width: 180px;
   font-family: "Roboto", sans-serif;
+
+  border-radius: 5px;
+  overflow: hidden;
 }
 
 .data-tooltip-title {
-  background-color: #6c696a;
+  background-color:#6c696a;
   display: flex;
   justify-content: center;
   align-items: center;
   color: white;
   padding: 8px 0;
   font-weight: 600;
+
+  border-bottom:1px dashed white
 }
 
 .data-tooltip-content {
   background-color: #6c696a;
   color: white;
-  padding: 8px;
+  padding: 10px;
+
 }
 
 .data-tooltip-row {
@@ -49,9 +55,10 @@
 }
 
 .label-value {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
+   display: flex; 
+   flex-direction: row;
+   justify-content: space-between; 
+   width: 100%; 
 }
 
 .color-0-20 {
