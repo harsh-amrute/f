@@ -1724,7 +1724,7 @@ export const mapMasterToColumnGroupDefs = (
       ],
       ...defaultColDefs,
     }
-    if(masterId==1 || masterId==2)
+    if((masterId==1 || masterId==2)&&(f.key=='sd' || f.key=='wd'))
       return [descriptioncoldefs, modifycoldefs];
     else {
       return modifycoldefs;
