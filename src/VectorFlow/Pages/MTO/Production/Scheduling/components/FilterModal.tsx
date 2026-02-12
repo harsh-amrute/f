@@ -3,7 +3,6 @@ import { useUserData } from "../../../../../../context";
 import VFButtonOutline from "../../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import VFButton from "../../../../../../components/VectorFLOW/commons/VFButton";
 import {
-  Checkbox,
   CheckboxBgImageVar,
   CheckboxColorVar,
   CloseButton,
@@ -23,8 +22,10 @@ import {
   FilterTabLayout,
   FilterWrapper,
 } from "./FilterModalStyles.css";
+
 import * as globalStyles from "../../../../../../styles/global";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
+import Checkbox from "../../../../../../components/VectorFLOW/commons/MTO/Checkbox";
 const FilterModal = ({
   setIsFilterModalOpen,
   ResourceData,
@@ -256,11 +257,11 @@ const FilterModal = ({
                     }}
                     onClick={() => onSelectValue("stages", stage)}
                   >
-                    <input
-                      className={Checkbox}
+                    <Checkbox
                       type="checkbox"
                       id={id}
                       data-theme={themeUi}
+                      theme={themeUi}
                       style={{
                         zoom: "0.5",
                         ...assignInlineVars({
@@ -305,11 +306,11 @@ const FilterModal = ({
                     }}
                     onClick={() => onSelectValue("workStations", ws)}
                   >
-                    <input
-                      className={Checkbox}
+                    <Checkbox
                       id={id}
                       style={{ zoom: 0.5 }}
                       data-theme={themeUi}
+                      theme={themeUi}
                       onClick={(e) => e.stopPropagation()}
                       onChange={() => onSelectValue("workStations", ws)}
                       checked={selectedFilters.workStations.includes(ws)}
@@ -345,11 +346,11 @@ const FilterModal = ({
                     }}
                     onClick={() => onSelectValue("jobs", job)}
                   >
-                    <input
-                      className={Checkbox}
+                    <Checkbox
                       id={id}
                       style={{ zoom: 0.5 }}
                       data-theme={themeUi}
+                      theme={themeUi}
                       onClick={(e) => e.stopPropagation()}
                       onChange={() => onSelectValue("jobs", job)}
                       checked={selectedFilters.jobs.includes(job)}
@@ -448,11 +449,11 @@ const FilterModal = ({
                     }}
                     onClick={() => onSelectValue("actionPreferences", pref)}
                   >
-                    <input
-                      className={Checkbox}
+                    <Checkbox
                       id={id}
                       style={{ zoom: 0.5 }}
                       data-theme={themeUi}
+                      theme={themeUi}
                       onClick={(e) => e.stopPropagation()}
                       onChange={() => onSelectValue("actionPreferences", pref)}
                       checked={selectedFilters.actionPreferences.includes(pref)}
