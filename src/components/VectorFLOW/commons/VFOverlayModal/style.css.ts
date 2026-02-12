@@ -23,7 +23,7 @@ export const Overlay = style({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  zIndex: 3,
+  zIndex: 2,
   borderRadius: "12px",
 });
 

@@ -26,7 +26,11 @@ const FileUploadTile: React.FC<ReportActionCardProps> = ({
   fileUploadType,
   expected_extension,
 }) => {
-  const themeUi = useUserData().user.user.themeUi;
+  const user = useUserData().user;
+  const themeUi = user.themeUi;
+  const feature_permission = user?.feature_permission || [];
+  const canTriggerRun = feature_permission.includes("Scheduler_Run_Trigger");
+
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -83,7 +87,7 @@ const FileUploadTile: React.FC<ReportActionCardProps> = ({
           )}
         </div>
       </div>
-      {fileUploadType === "UI" && (
+      {fileUploadType === "UI" && canTriggerRun && (
         <div className={ButtonsWrapper} style={{ fontSize: "1rem" }}>
           <VFButton
             themeUi={themeUi}
