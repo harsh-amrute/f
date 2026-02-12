@@ -71,12 +71,6 @@ const GridView = (props: IGridViewProps) => {
     },
   };
 
-  const nonce =
-    (window as any).__nonce__ ??
-    document
-      .querySelector<HTMLMetaElement>('meta[name="csp-nonce"]')
-      ?.content?.trim();
-
   const gridOptions: GridOptions = {
     // theme: "legacy",
     groupDefaultExpanded: 0,

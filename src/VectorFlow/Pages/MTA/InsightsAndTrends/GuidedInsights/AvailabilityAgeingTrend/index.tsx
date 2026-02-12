@@ -5,18 +5,11 @@ import { useState, useEffect } from "react";
 import VFInfoToolTip from "../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 import OverlayLoader from "../../../../../../VectorFlow/Pages/MTO/Common/Loader";
 import { chartParams1  } from "./chartParams";
-import { generateChartOptions } from "../../../../../../helpers/utils";
+import { generateChartOptions, nonce } from "../../../../../../helpers/utils";
 import VFHorizon from "../../../../../../components/VectorFLOW/commons/VFHorizon";
 
 
 const AvailabilityAgeingTrend = ({themeUi,filter, horizon, setHorizon}:{themeUi:string,filter:any, ageing:number, setAgeing:any, horizon:number, setHorizon:any}) => {
-  const nonce =
-  (window as any).__nonce__ ??
-  document
-    .querySelector<HTMLMetaElement>('meta[name="csp-nonce"]')
-    ?.content?.trim();
-
-
   const { mutateAsync: GetAvailabilityAgeing, isLoading } =useGetAvailabilityAgeing();
   const [options, setOptions] = useState({})
   const [age,setAgeing]=useState(1);

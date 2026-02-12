@@ -551,17 +551,7 @@ export const ChildrenColorCell = style({
 /* ==== Grid overrides wrapper (flattened selectors) ==== */
 
 export const SCDynamicContainer = style({
-  // selectors: {
-  //   '& .ag-header-cell-text': {
-  //     fontSize: '10px !important',
-  //     fontWeight: 'bold',
-  //   },
-  //   '& > .ag-theme-alpine .ag-cell': {
-  //     border: 'none',
-  //     height: '100% !important',
-  //     borderTop: '0.1px solid #cecece !important',
-  //   },
-  // },
+ 
 });
 /* AG Grid descendants of SCDynamicContainer */
 globalStyle(`${SCDynamicContainer} .ag-header-cell-text`, {

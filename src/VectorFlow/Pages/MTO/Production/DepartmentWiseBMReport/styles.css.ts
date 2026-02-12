@@ -203,57 +203,11 @@ export const VFWrapper = style({
   height: '100%',
   display: 'flex',
   flexDirection: 'column',
-
-  // selectors: {
-  //   '& .ag-theme-alpine': {
-  //     flex: 1,
-  //     marginTop: '0px !important',
-  //   },
-  //   '& .ag-theme-alpine .ag-header-row:nth-child(2)': {
-  //     backgroundColor: 'black',
-  //     color: 'white',
-  //   },
-  //   '& .ag-theme-alpine .ag-header-row:nth-child(1):hover': {
-  //     backgroundColor: 'black',
-  //     color: 'white',
-  //   },
-  //   '& .ag-theme-alpine .ag-header-row:nth-child(3), & .ag-theme-alpine .ag-header-row-column-filter':
-  //     {
-  //       backgroundColor: '#f7f7f7 !important',
-  //       color: 'black !important',
-  //     },
-  //   '& > div[data-testid="vf_pagination"]': {
-  //     padding: '0 !important',
-  //   },
-  //   '& .ag-header-cell-resize': {
-  //     position: 'absolute',
-  //     zIndex: '0 !important',
-  //     height: '100%',
-  //     width: 8,
-  //     top: 0,
-  //     cursor: 'ew-resize',
-  //   },
-  // },
 });
 
 export const VFChilWrapper = style({
   width: '100%',
   height: '100%',
-
-  // selectors: {
-  //   '& .ag-theme-alpine': {
-  //     ...cssVars({
-  //       '--ag-header-background-color': 'rgb(255, 255, 255) !important',
-  //       '--ag-header-foreground-color': 'rgb(0, 0, 0) !important',
-  //     }),
-  //   },
-  //   '& .ag-theme-noir-fusion': {
-  //     ...cssVars({
-  //       '--ag-header-background-color': 'rgb(255, 255, 255) !important',
-  //       '--ag-header-foreground-color': 'rgb(0, 0, 0) !important',
-  //     }),
-  //   },
-  // },
 });
 /* ---------- Global descendants and AG Grid tweaks ---------- */
 globalStyle(`${VFWrapper} .ag-theme-alpine`, {
@@ -295,16 +249,16 @@ globalStyle(`${VFWrapper} .ag-header-cell-resize`, {
 
 /* Theme vars on child wrapper */
 globalStyle(`${VFChilWrapper} .ag-theme-alpine`, {
-  ...cssVars({
-    '--ag-header-background-color': 'rgb(255, 255, 255) !important',
-    '--ag-header-foreground-color': 'rgb(0, 0, 0) !important',
+  vars: cssVars({
+    '--ag-header-background-color': 'rgb(255, 255, 255)',
+    '--ag-header-foreground-color': 'rgb(0, 0, 0)',
   }),
 });
 
 globalStyle(`${VFChilWrapper} .ag-theme-noir-fusion`, {
-  ...cssVars({
-    '--ag-header-background-color': 'rgb(255, 255, 255) !important',
-    '--ag-header-foreground-color': 'rgb(0, 0, 0) !important',
+  vars: cssVars({
+    '--ag-header-background-color': 'rgb(255, 255, 255)',
+    '--ag-header-foreground-color': 'rgb(0, 0, 0)',
   }),
 });
 
@@ -441,4 +395,31 @@ export const BPRDailyAnalyticsTableCellText = style({
 export const BPRDailyAnalyticsTableCellIcon = style({
   height: 20,
   width: 20,
+});
+
+export const RemarkModalTable = style({
+  display: 'flex',
+  flexDirection: 'column',
+});
+
+export const RemarkModalTableHeaderContainer = style({
+  display: 'grid',
+  gridTemplateColumns: '10% 90%',
+  borderBottom: 'solid 1px #707070',
+  padding: '0 20px',
+});
+
+export const RemarkModalTableRowContainer = style({
+  display: 'flex',
+  flexDirection: 'column',
+  maxHeight: '300px',
+  margin: '10px 0',
+});
+
+export const RemarkModalTableRow = style({
+  display: 'grid',
+  gridTemplateColumns: '10% 90%',
+  width: '100%',
+  marginBottom: '10px',
+  padding: '5px 20px 0',
 });

@@ -11,12 +11,6 @@ export const orderReschedulingWrapper = style({
   height: "100%",
   display: "flex",
   flexDirection: "column",
-  // selectors: {
-  //   "& .toolbar-container": {
-  //     margin: 0,
-  //     paddingTop: "20px",
-  //   },
-  // },
 });
 globalStyle(`${orderReschedulingWrapper} .toolbar-container`, {
   margin: 0,
@@ -28,15 +22,6 @@ export const vfTableWrapper = style({
   paddingLeft: "20px",
   display: "flex",
   flexDirection: "column",
-  // selectors: {
-  //   '& div[data-testid="vf_pagination"]': {
-  //     marginTop: "0 !important",
-  //   },
-  //   // was .ag-theme-noir-fusion margin override
-  //   "& .ag-theme-noir-fusion": {
-  //     margin: "0 !important",
-  //   },
-  // },
 });
 globalStyle(`${vfTableWrapper} div[data-testid="vf_pagination"]`, {
   marginTop: "0 !important",

@@ -1,38 +1,30 @@
 .ob-tooltip-title {
   background-color: #6c696a;
-  color: lightgray;
   display: flex;
   justify-content: center;
-  align-items: center;
-  padding: 8px 0;
-  font-family: "Roboto", sans-serif;
-  font-weight: 600;
+  color: white;
 }
 
 .ob-tooltip-content {
-  color: white;
-  background-color: #6c696a;
-  padding: 0 20px;
+  color: white; 
+  background-color: #6C696A; 
+  padding: 0px 20px;
   font-family: "Roboto", sans-serif;
 }
 
 .ob-tooltip-divider {
   border-top: 1px dashed lightgray;
-  margin: 8px 0;
 }
 
 .ob-tooltip-row {
   display: flex;
-  margin-bottom: 6px;
-  align-items: center;
 }
 
 .bg-color-box {
-  margin-right: 10px;
-  margin-top: 5px;
-  height: 10px;
+  margin-right: 10px; 
+  margin-top: 5px; 
+  height: 10px; 
   width: 10px;
-  flex-shrink: 0;
 }
 
 .bg-color-black {
@@ -59,8 +51,13 @@
   background-color: #e8e8e8;
 }
 
-.label-value {
+.ob-label-value {
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   width: 100%;
+}
+
+.ob-value{
+  margin-left: 20px;
 }

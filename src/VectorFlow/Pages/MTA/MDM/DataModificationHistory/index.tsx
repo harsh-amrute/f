@@ -1,5 +1,3 @@
-import { useMemo, useRef, useState } from "react";
-import { useSelect } from "downshift";
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import {

@@ -1,7 +1,8 @@
 import { useUserData } from "../../../../../context"
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton"
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard"
-import { ButtonWrapper, RemarkDate, RemarkModalContentWrapper, RemarkModalRemarkCelLRenderer, RemarkModalTable, RemarkModalTableCell, RemarkModalTableHeader, RemarkModalTableHeaderContainer, RemarkModalTableRow, RemarkModalTableRowContainer, RemarkText } from "../../../MTA/Logistics/InTransitWhereAbouts/styles.css"
+import { ButtonWrapper, RemarkDate, RemarkModalContentWrapper, RemarkModalRemarkCelLRenderer, RemarkModalTableCell, RemarkModalTableHeader, RemarkText } from "../../../MTA/Logistics/InTransitWhereAbouts/styles.css"
+import { RemarkModalTable, RemarkModalTableHeaderContainer, RemarkModalTableRow, RemarkModalTableRowContainer } from "./styles.css";
 import UserIcon from "../../../MTA/Logistics/InTransitWhereAbouts/UserIcon";
 import { memo } from "react";
 

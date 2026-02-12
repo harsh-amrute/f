@@ -33,11 +33,6 @@ export const ResizeBar = style({
 export const TableWrapper = style({
   width: '100%',
   textAlign: 'center',
-  // selectors: {
-  //   '& .ag-theme-alpine': {
-  //     margin: '20px 0',
-  //   },
-  // },
 });
 // descendants of TableWrapper
 globalStyle(`${TableWrapper} .ag-theme-alpine`, {
@@ -102,28 +97,8 @@ export const VFTableWrapper = style({
   width: '100%',
   paddingRight: '25px',
   margin: '0 20px',
-  // selectors: {
-  //   '& .ag-theme-alpine': {
-  //     flex: '1 !important',
-  //   },
-  //   '& .ag-paging-panel': {
-  //     zIndex: 1,
-  //     fontSize: '11px !important',
-  //     fontFamily: `'Roboto' !important`,
-  //     position: 'relative',
-  //   },
-  //   '& .ag-status-bar': {
-  //     zIndex: 2,
-  //     display: 'flex !important',
-  //     justifyContent: 'space-between !important',
-  //     alignItems: 'center !important',
-  //     border: 'none !important',
-  //     width: 'calc(100% - 230px) !important',
-  //     position: 'absolute',
-  //     bottom: '0 !important',
-  //   },
-  // },
 });
+
 // ✅ global descendant rules (no :global)
 globalStyle(`${VFTableWrapper} > .ag-theme-alpine`, {
   flex: '1 !important',

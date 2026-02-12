@@ -407,7 +407,6 @@ const BMTrends = () => {
                 paddingLeft: "10px",
               }}
             >
-              {" "}
               <b>Select Horizon (in days): </b>
             </label>
             <VFRangeSlider

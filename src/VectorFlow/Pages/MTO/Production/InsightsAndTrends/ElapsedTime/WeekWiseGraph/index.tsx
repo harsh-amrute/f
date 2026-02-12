@@ -134,7 +134,7 @@ const WeekWiseGraph = ({
             </div>
             <div style={{ display: "flex", alignItems: "center" }}>
               <p style={{ fontWeight: "bold", paddingRight: "5px" }}>
-                Department{" "}
+                Department
               </p>
               <RadioSelect
                 theme={themeUi}

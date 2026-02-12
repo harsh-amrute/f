@@ -37,7 +37,6 @@ import { addDays, eachDayOfInterval, format, subDays } from "date-fns";
 import { useUserData } from "../../../../context";
 import useGetLastRunData from "../../../../hooks/useGetLastRunData";
 import Tooltip from "../../../../../src/VectorFlow/Pages/MTO/Common/Tooltip";
-// import DownshiftSelectSuspension from "./DownShiftSelectSuspension";
 import "./style.css";
 
 interface DailyDataGraphModalProps {
@@ -951,15 +950,6 @@ const DailyDataGraphModal = ({
                 }}
               />
             </div>
-            {/* <DownshiftSelectSuspension
-              suspensionOptions={suspensionOptions}
-              setSuspensionType={setSuspensionType}
-              themeUi={themeUi}
-              SCText={SCText}
-              assignInlineVars={assignInlineVars}
-              textFontWeightVar={textFontWeightVar}
-              textFontSizeVar={textFontSizeVar}
-            /> */}
 
             <hr className={SCHorizontalDivider} />
 

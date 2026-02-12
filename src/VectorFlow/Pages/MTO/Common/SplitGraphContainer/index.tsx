@@ -13,6 +13,7 @@ import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCar
 import VFTable from "../../Common/VFTable";
 import { GridRef } from "../../../../../VectorFlow/types/MDM";
 import { renderToStaticMarkup } from "react-dom/server";
+import { nonce } from "../../../../../helpers/utils";
 interface SplitGrpahContainerProps {
   colDef: any;
   options: AgChartOptions;
@@ -104,9 +105,6 @@ const SplitGraphContainer = ({
       link.click();
     }
   };
-  const nonce =
-  (window as any).__nonce__ ??
-  document.querySelector<HTMLMetaElement>('meta[name="csp-nonce"]')?.content?.trim();
 
   const myCustomTheme = () => {
     switch (graphType) {

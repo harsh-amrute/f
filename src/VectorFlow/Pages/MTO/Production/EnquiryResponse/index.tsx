@@ -294,7 +294,7 @@ const EnquiryResponse = () => {
                             paddingRight: "20px",
                           }}
                         >
-                          {row.it[selectedOptions.productGroup[0]]?.proc_size}{" "}
+                          {row.it[selectedOptions.productGroup[0]]?.proc_size}
                           &nbsp; days
                         </td>
                       )}
@@ -861,7 +861,6 @@ const EnquiryResponse = () => {
                   columnState={columnState}
                   savePageSize={savePageSize}
                   userPageSize={userPageSize}
-                  height={"100%"}
                 />
               </div>
             </Allotment.Pane>

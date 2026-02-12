@@ -8,6 +8,7 @@ export const tabPaddingLeftVar = createVar();
 export const tabBgVar = createVar();
 
 export const accentVar = createVar(); // for InputCheckBox accent-color
+export const barColorVar = createVar();
 
 export const BPRViewTableHeaderTab = style({
   color: tabTextColorVar,

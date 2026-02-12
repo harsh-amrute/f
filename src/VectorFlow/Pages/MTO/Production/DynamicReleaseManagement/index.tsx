@@ -752,7 +752,7 @@ const DynamicReleaseManagement = () => {
       const item = input[key];
       const releasedWIP = item?.wip ?? 0;
       const incrementalWIP = item?.["Incremental WIP"] ?? 0;
-      const actualLimit = (item?.limit ?? 0) * (1 + WIPThresholdLimit / 100); // considered threshold in limit
+      const actualLimit = (item?.limit ?? 0) * (1 + (WIPThresholdLimit / 100)); // considered threshold in limit
 
       const totalLoad = releasedWIP + incrementalWIP;
       let loadType = "Underloaded";
@@ -823,6 +823,10 @@ const DynamicReleaseManagement = () => {
         </div>
       </div>
     `;
+    // dont remove below code require for fol gap phase 2
+    // <div style="display: flex; align-items: center;">
+    //     FOL Gap:  ${datum["FOL Gap"]}
+    //   </div>
   }
 
   const barColors = {

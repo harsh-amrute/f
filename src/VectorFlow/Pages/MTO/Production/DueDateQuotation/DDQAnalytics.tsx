@@ -11,7 +11,6 @@ import {
   BPRDailyAnalyticsWrapper,
   BPRDailyAnalyticsTableCellHeader,
 } from "./DueDateQuotation.styled.css";
-import { assignInlineVars } from "@vanilla-extract/dynamic";
 import { formatNumber } from "../../Procurement/MaterialCoverage/CommonFunc";
 import { useGetDDQAnalytics } from "../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation";
 

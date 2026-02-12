@@ -12,7 +12,7 @@ import {
 
 import VFChartTable from "../VFChartsTable";
 import { GridRef } from "../../../../VectorFlow/types/MDM";
-import { generateGridSpecificChartFromChartProps } from "../../../../helpers/utils";
+import { generateGridSpecificChartFromChartProps, nonce } from "../../../../helpers/utils";
 
 const defaultStyles = {
   headerZoom: 1,
@@ -130,12 +130,6 @@ const VFCharts = (props: any) => {
       );
     }
   }, [chartProps]);
-  const nonce =
-    (window as any).__nonce__ ??
-    document
-      .querySelector<HTMLMetaElement>('meta[name="csp-nonce"]')
-      ?.content?.trim();
-
 
   const chartOptions = (() => {
     const opts: any = {

@@ -5704,3 +5704,12 @@ export const getNestedChildren = (children: Array<any>): any => {
   }
   return result.reverse();
 };
+
+const getNonce = (): string | undefined => {
+  return (
+    (window as any).__nonce__ ??
+    document.querySelector<HTMLMetaElement>('meta[name="csp-nonce"]')?.content?.trim()
+  );
+};
+
+export const nonce = getNonce();

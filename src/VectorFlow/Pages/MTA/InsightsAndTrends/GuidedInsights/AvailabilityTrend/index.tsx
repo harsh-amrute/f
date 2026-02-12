@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 import VFInfoToolTip from "../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 import OverlayLoader from "../../../../../../VectorFlow/Pages/MTO/Common/Loader";
 import { chartParams1 } from "./chartParams";
-import { generateChartOptions } from "../../../../../../helpers/utils";
+import { generateChartOptions, nonce } from "../../../../../../helpers/utils";
 import VFHorizon from "../../../../../../components/VectorFLOW/commons/VFHorizon";
 
 const AvailabilityTrend = ({
@@ -38,12 +38,6 @@ const AvailabilityTrend = ({
   ];
 
   const [options, setOptions] = useState<any>({});
-  const nonce =
-    (window as any).__nonce__ ??
-    document
-      .querySelector<HTMLMetaElement>('meta[name="csp-nonce"]')
-      ?.content?.trim();
-
   const [locationTypeOrder, setLocationTypeOrder] = useState<string[]>([]);
   useEffect(() => {
     OnHorizonChange(horizon);

@@ -724,7 +724,7 @@ const OrderRescheduling = () => {
                 columnDefs={colDef}
                 rowData={rowData}
                 ref={refGraph1}
-                enableRangeSelection
+                enableRangeSelection={true}
                 rowSelection="multiple"
                 onFilterChanged={() => {
                   Object.keys(
@@ -749,7 +749,7 @@ const OrderRescheduling = () => {
                 handleChangePage={(page) => handlePageChangeCumulative(page)}
                 resetGridRef={currentGridRef}
                 isDisabled={isDisabled}
-                customPageSizeEnabled
+                customPageSizeEnabled = {true}
                 savePageSize={savePageSize}
                 userPageSize={userPageSize}
               />

@@ -63,11 +63,7 @@ const VFTable = forwardRef((props: VFTableProps, ref: any) => {
       minWidth: 250,
     },
   };
-  const nonce =
-  (window as any).__nonce__ ??
-  document.querySelector<HTMLMetaElement>('meta[name="csp-nonce"]')?.content?.trim();
-
-
+  
   const gridOptions: GridOptions = {
     // theme: "legacy",
     ...defaultGridOptions,

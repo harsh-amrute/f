@@ -769,7 +769,7 @@ const FullKitAssignment = () => {
 
   function TooltipRenderer({ datum, xKey }: any) {
     return `
-      <div class="fka-tooltip-container transform-translate-x">
+      <div class="fka-tooltip-container">
         <div class="fka-tooltip-header">
           ${datum[xKey]}
         </div>

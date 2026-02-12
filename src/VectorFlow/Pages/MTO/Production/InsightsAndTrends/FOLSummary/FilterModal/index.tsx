@@ -25,10 +25,7 @@ import VFMasterFieldSearch from "../../../../../../../components/VectorFLOW/comm
 import Select from "react-select";
 import Radio from "../../../../../../../components/VectorFLOW/commons/MTO/Radio";
 // import VFMasterFieldSearch from '../../../../../../components/VectorFLOW/commons/VFMasterFieldSearch';
-import {
-  type Option as MDMOption,
-  type Filter,
-} from "../../../../../../types/MDM";
+
 
 const FilterSelectDropdown = ({ placeholder, options, hideDropdownArrow, onChange, filterId, value }: any) => {
 
@@ -340,12 +337,7 @@ const FilterModal = (props: IFilterModalProps) => {
                   }
                 }
               }}
-              options={(filters[0]?.options ?? []).map(
-                (opt: string): MDMOption => ({
-                  label: opt,
-                  value: opt,
-                })
-              )}
+              options={filters[0].options}
               placeholder={"Plant"}
               handleListChild={() => null}
               maxToShow={3}

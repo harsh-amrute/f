@@ -17,6 +17,7 @@ import {
   SCViewContainerWithBg,
 } from "../../SupplyChainIntelligenceHub/Planning/ActionToolBar/styles.css";
 import "./style.css";
+import { nonce } from "../../../../../helpers/utils";
 
 interface ExpandedGraphProps {
   id: number;
@@ -93,18 +94,6 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
 
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
-
-  // --------- CSP NONCE (IMPORTANT PART) ----------
-  const nonce = useMemo(() => {
-    if (typeof window === "undefined") return undefined;
-    const winNonce = (window as any).__nonce__;
-    if (winNonce) return String(winNonce);
-    const meta = document.querySelector<HTMLMetaElement>(
-      'meta[name="csp-nonce"]'
-    );
-    return meta?.content?.trim();
-  }, []);
-  // ----------------------------------------------
 
   const yKeys =
     data && data.length > 0
