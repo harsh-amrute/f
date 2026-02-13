@@ -207,7 +207,7 @@ const useProcPlanning = ( appliedFilters: any) => {
     useEffect(() => {
 
         if (isReset) {
-            handleSaveClick(undefined,true);
+            handleSaveClick(true);
             setIsReset(false);
             setColumnState([...defaultColState]);
             setIsPivot(false);
@@ -337,14 +337,9 @@ const useProcPlanning = ( appliedFilters: any) => {
     useEffect(() => {
         if (datas && HeaderData.length) {
             const initializeData = (data: any, headerData: any) => {
-                const calculateData = data.map((item: any) => ({
-                    ...item,
-                    gap: item.req - item.soh - item.siqc - item.sit,
-                    tsfs: item.soh,
-                    children: item.children || []
-                }));
-                const ShortageData = calculateData.filter((item: any) => item.gap > 0);
-                const CompleteAvailableData = calculateData.filter((item: any) => item.gap === 0);
+                
+                const ShortageData = data
+                const CompleteAvailableData = data
 
                 const CompleteHeaderData = headerData.map((header: any) => {
                     if (header.jf === 'eas') {
