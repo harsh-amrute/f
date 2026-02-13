@@ -35,9 +35,13 @@ const useDownloadHandler = () => {
           credentials: 'include',
         });
         if (!response.ok) {
-          if (response.status == 404) {
+          if (response.status == 404 ) {
             notifyError("File not found");
-          } else {
+          }
+          else if (response.status === 410) {
+            notifyError("Report is not available please try after some time");
+          } 
+          else {
             notifyError("Error while downloading")
           }
         } else {
