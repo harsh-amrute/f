@@ -263,24 +263,28 @@ const PermissionSelectionPage = ({
               const ids: string[] = [];
 
               paths.forEach((path: string[]) => {
-                  const isIA = path[path.length - 1] === "isActive";
-                  const hierarchyPath = isIA ? path.slice(0, -1) : path;
+                // Updated IA Detection Logic: Prime Suffix
+                const lastElement = path[path.length - 1] || '';
+                const isIA = lastElement.endsWith("'");
+                const hierarchyPath = isIA
+                  ? [...path.slice(0, -1), lastElement.slice(0, -1)]
+                  : path;
                   
                   if (!isDynamicPermissions) {
                        // LEGACY / CASCADE MODE: Drill down to find all children
                        const matchedDefs = definitions.filter((def: any) => {
-                          const h1 = def[`${prefix}_hierarchy_1`] || def[`hierarchy_1`] || def[`${prefix}_heirarchy_1`] || def[`heirarchy_1`];
-                          const h2 = def[`${prefix}_hierarchy_2`] || def[`hierarchy_2`] || def[`${prefix}_heirarchy_2`] || def[`heirarchy_2`];
-                          const h3 = def[`${prefix}_hierarchy_3`] || def[`hierarchy_3`] || def[`${prefix}_heirarchy_3`] || def[`heirarchy_3`];
+                         const h1 = def[`${prefix}_hierarchy_1`] ?? def[`hierarchy_1`] ?? def[`${prefix}_heirarchy_1`] ?? def[`heirarchy_1`] ?? '';
+                         const h2 = def[`${prefix}_hierarchy_2`] ?? def[`hierarchy_2`] ?? def[`${prefix}_heirarchy_2`] ?? def[`heirarchy_2`] ?? '';
+                         const h3 = def[`${prefix}_hierarchy_3`] ?? def[`hierarchy_3`] ?? def[`${prefix}_heirarchy_3`] ?? def[`heirarchy_3`] ?? '';
 
-                          // IA Case
+                         // IA Case: Specific Match Only (isActive: true)
                           if (isIA) {
                               if (h1 !== hierarchyPath[0]) return false;
                               if (hierarchyPath.length > 1 && h2 !== hierarchyPath[1]) return false;
                               // IA node check
                               if (def.isActive !== true) return false;
                               
-                              // Level match
+                            // Level match check (ensure exact level match for IA)
                               if (hierarchyPath.length === 1 && (h2 && h2 !== "")) return false;
                               if (hierarchyPath.length === 2 && (h3 && h3 !== "")) return false;
                               
@@ -292,7 +296,10 @@ const PermissionSelectionPage = ({
                           if (hierarchyPath.length > 1 && h2 !== hierarchyPath[1]) return false;
                           if (hierarchyPath.length > 2 && h3 !== hierarchyPath[2]) return false;
 
-                          // Must be Leaf (h3 exists)
+                         // Must be Leaf (h3 exists) or specific node type
+                         // Assuming intent is to select all LEAVES under this path
+                         if (!h1 || h1 === "") return false;
+                         if (!h2 || h2 === "") return false;
                           if (!h3 || h3 === "") return false;
 
                           return true;
@@ -303,9 +310,9 @@ const PermissionSelectionPage = ({
                   } else {
                        // DYNAMIC MODE: Exact Match + Underscore
                        const matchedDef = definitions.find((def: any) => {
-                           const h1 = def[`${prefix}_hierarchy_1`] || def[`hierarchy_1`] || def[`${prefix}_heirarchy_1`] || def[`heirarchy_1`];
-                           const h2 = def[`${prefix}_hierarchy_2`] || def[`hierarchy_2`] || def[`${prefix}_heirarchy_2`] || def[`heirarchy_2`];
-                           const h3 = def[`${prefix}_hierarchy_3`] || def[`hierarchy_3`] || def[`${prefix}_heirarchy_3`] || def[`heirarchy_3`];
+                         const h1 = def[`${prefix}_hierarchy_1`] ?? def[`hierarchy_1`] ?? def[`${prefix}_heirarchy_1`] ?? def[`heirarchy_1`] ?? '';
+                         const h2 = def[`${prefix}_hierarchy_2`] ?? def[`hierarchy_2`] ?? def[`${prefix}_heirarchy_2`] ?? def[`heirarchy_2`] ?? '';
+                         const h3 = def[`${prefix}_hierarchy_3`] ?? def[`hierarchy_3`] ?? def[`${prefix}_heirarchy_3`] ?? def[`heirarchy_3`] ?? '';
                            
                            if (h1 !== hierarchyPath[0]) return false;
                            
@@ -330,7 +337,7 @@ const PermissionSelectionPage = ({
                            if (isIA) {
                                ids.push(matchedDef.h_id);
                            } else {
-                               const h3 = matchedDef[`${prefix}_hierarchy_3`] || matchedDef[`hierarchy_3`] || matchedDef[`${prefix}_heirarchy_3`] || matchedDef[`heirarchy_3`];
+                             const h3 = matchedDef[`${prefix}_hierarchy_3`] ?? matchedDef[`hierarchy_3`] ?? matchedDef[`${prefix}_heirarchy_3`] ?? matchedDef[`heirarchy_3`] ?? '';
                                const isLeaf = (h3 && h3 !== "");
                                
                                if (isLeaf) {
@@ -611,7 +618,11 @@ const PermissionSelectionPage = ({
               });
           }
       });
-      
+
+      console.log("errors", errors);
+      console.log("warnings", warnings);
+      console.log("modifiedData", modifiedFinalData);
+
       return {
           isValid: errors.length === 0,
           errors: errors,
@@ -670,6 +681,8 @@ const PermissionSelectionPage = ({
           console.error("Errors in user data:", errors);
           return;
         }
+        console.log("bulkupload final data", modifiedData)
+        return;
 
         const response = await postPostBulkUploadUsers({...modifiedData})
         if(response.status===200){
