@@ -116,14 +116,23 @@ const PermissionForm = ({
            });
       }
 
-      // L1 Options: Always all L1 (Level 0 Items) - No IA here
+      // L1 Options: Include L1 Items AND L0 IA nodes
       const l1Opts: any[] = [];
       nodes.L1.forEach(k => {
           l1Opts.push({ label: k, value: k });
+          // Check for L0 IA Node
+          if (checkIsIA(0, "", k)) {
+               // Value is now prime suffixed key: "ZoneA'"
+               l1Opts.push({ label: `${k}'`, value: `${k}'` });
+          }
       });
       
       // L2 Options: Filter based on Selected L1
-      const selectedL1Keys = Array.from(new Set(currentPerms.map((e: any) => e[0])));
+      // We only care about standard L1 selections (e.g., ZoneA) for expansion.
+      // ZoneA' (IA) does not expand.
+      const selectedL1Keys = Array.from(new Set(currentPerms
+        .filter((e: any) => e.length >= 1 && !e[0].endsWith("'"))
+        .map((e: any) => e[0])));
       
       const l2Opts: any[] = [];
       // 1. Add standard children
@@ -131,19 +140,20 @@ const PermissionForm = ({
         .filter(l2 => selectedL1Keys.some((selL1: any) => selL1 === l2.split('>')[0]))
         .forEach(l2 => {
             l2Opts.push({ label: l2, value: l2 });
+            
+            // 2. Add L1 IA nodes for these children
+            // l2 is "ZoneA>GroupB"
+            const [p, c] = l2.split('>');
+            if (checkIsIA(1, p, c)) {
+                 // Value: "ZoneA>GroupB'"
+                 l2Opts.push({ label: `${l2}'`, value: `${l2}'` });
+            }
         });
-      
-      // 2. Add IA nodes for selected Parents (L0)
-      selectedL1Keys.forEach((selL1: any) => {
-          if (checkIsIA(0, "", selL1)) {
-               // Show in L2 dropdown
-               l2Opts.push({ label: `${selL1}'`, value: `${selL1}>isActive` });
-          }
-      });
         
       // L3 Options: Filter based on Selected L2
+      // We only care about standard L2 selections.
       const selectedL2Keys = Array.from(new Set(currentPerms
-        .filter((e: any) => e.length >= 2 && e[1] !== 'isActive') // Filter out IA selections themselves
+        .filter((e: any) => e.length >= 2 && !e[1].endsWith("'") && !(e.length === 3 && e[2] === 'isActive')) // Clean up old isActive logic if present, but mainly check prime
         .map((e: any) => `${e[0]}>${e[1]}`)));
       
       const l3Opts: any[] = [];
@@ -157,14 +167,6 @@ const PermissionForm = ({
                 : l3;
              l3Opts.push({ label: label, value: l3 });
         });
-
-      // 2. Add IA nodes for selected Parents (L1)
-      selectedL2Keys.forEach((selL2: any) => {
-          const [p, c] = selL2.split('>');
-          if (checkIsIA(1, p, c)) {
-               l3Opts.push({ label: `${selL2}'`, value: `${selL2}>isActive` });
-          }
-      });
 
       newOptions[type] = { L1: l1Opts, L2: l2Opts, L3: l3Opts };
     });
@@ -199,11 +201,17 @@ const PermissionForm = ({
       val = permissionSet
         .filter((e: any) => e.length >= 1)
         .map((e: any) => {
-             // Level 0: Pure Level 0 items only
-             // IA nodes (length 2, 'isActive') are now shown in Level 1 dropdown
-             if (e.length === 2 && e[1] === 'isActive') {
-                 return null;
+             // Level 0 Dropdown: Show L1 Items AND L0 IA nodes
+             
+             // Case 1: L0 IA Node ("ZoneA'")
+             // It will be stored as ["ZoneA'"] (Length 1)
+             // Check if it ends with prime
+             if (e.length === 1 && e[0].endsWith("'")) {
+                 return { value: e[0], label: e[0] };
              }
+             
+             // Case 2: Standard L1 Item ("ZoneA")
+             // It will be stored as ["ZoneA"] (Length 1)
              return { value: e[0], label: e[0] };
         })
         .filter((e: any) => e !== null);
@@ -213,19 +221,19 @@ const PermissionForm = ({
       val = permissionSet
         .filter((e: any) => e.length >= 2)
         .map((e: any) => {
-           // Level 1: Show L1 items AND L0 IA nodes
+           // Level 1: Show L2 Items AND L1 IA nodes
            
-           // Case 1: L0 IA Node ("ZoneA>isActive")
-           if (e.length === 2 && e[1] === 'isActive') {
-               return { value: `${e[0]}>isActive`, label: `${e[0]}'` };
-           }
+           // Filter out L0 IA nodes (already handled in L0)
+           // If permission is ["ZoneA'"] it waits in Level 0. Not here.
+           // Here we see length >= 2.
            
-           // Case 2: L1 IA Node ("ZoneA>GroupB>isActive") -> Show in Level 2!
-           if (e.length === 3 && e[2] === 'isActive') {
-               return null;
+           // Case 1: L1 IA Node ("ZoneA>GroupB'")
+           // Stored as ["ZoneA", "GroupB'"]
+           if (e.length === 2 && e[1].endsWith("'")) {
+               return { value: `${e[0]}>${e[1]}`, label: `${e[0]}>${e[1]}` };
            }
 
-           // Case 3: Standard L1 Item ("ZoneA>GroupB")
+           // Case 2: Standard L2 Item ("ZoneA>GroupB")
            const joined = e.slice(0, 2).join(">");
            return { value: joined, label: joined };
         })
@@ -236,20 +244,19 @@ const PermissionForm = ({
       val = permissionSet
         .filter((e: any) => e.length >= 3)
         .map((e: any) => {
-          // Level 2: Show L2 Items AND L1 IA nodes
+          // Level 2: Show L3 Items
           
-          // Case 1: L1 IA Node ("ZoneA>GroupB>isActive")
-          if (e.length === 3 && e[2] === 'isActive') {
-              return { value: `${e[0]}>${e[1]}>isActive`, label: `${e[0]}>${e[1]}'` };
-          }
-
+          // Filter out L1 IA nodes (length 2).
+          
+          // Note: Standard L3 items are length 3.
           const joined = e.slice(0, 3).join(">");
           // Handle empty third level values
           const displayLabel = e[2] === "" 
             ? `${e[0]}>${e[1]}>` 
             : joined;
           return { value: joined, label: displayLabel };
-        });
+        })
+        .filter((e: any) => e !== null);
     }
 
     return getUniqueObjects(val, "value");
@@ -275,76 +282,116 @@ const PermissionForm = ({
     let newPerm: any[] = [];
 
     if (level === 0) {
-      // Update L0 Items (ZoneA)
-      // If ZoneA removed, remove all children AND ZoneA' (isActive node)
+      // Update L0 Items (ZoneA) AND L0 IA Nodes (ZoneA')
       
+      // Existing L0 Selections (Standard & IA)
+      // Both are length 1.
       const existingLevel0Values = Array.from(
         new Set(selectPermissions.map((perm: any) => perm[0]))
       );
       
-      const permissionsToKeep = selectPermissions.filter((perm: any) => 
-        values.includes(perm[0])
-      );
+      const permissionsToKeep = selectPermissions.filter((perm: any) => {
+        // Keep if involved in current selection
+        // OR if it's deeper level (length > 1) and its parent is NOT involved in current interaction?
+        
+        // Wait. `values` contains ALL selected itmes for this dropdown.
+        // If "ZoneA" is unchecked, it won't be in `values`.
+        // If "ZoneA'" is unchecked, it won't be in `values`.
+        
+        // Check if this permission's L0 component is in `values`.
+        if (perm.length === 1) {
+            return values.includes(perm[0]);
+        }
+        
+        // For deeper permissions (children of ZoneA), we only keep them if their parent ZoneA is still "selected" implicitly?
+        // Actually, if ZoneA is unchecked in UI, we remove all children.
+        // But ZoneA is unchecked effectively if it is NOT in values.
+        // However, `values` only contains items visible in dropdown.
+        // If ZoneA is visible, and unselected -> Remove children.
+        // If ZoneA is hidden (not possible for L0), then keep.
+        
+        // But for L0, all L0 items are visible.
+        // So if `perm[0]` is not in `values`, passing.
+        
+        // EXCEPT: ZoneA' (IA) logic.
+        // ZoneA' is distinct. Unchecking ZoneA' should remove ZoneA'.
+        // Unchecking ZoneA should remove ZoneA children.
+        
+        // Logic:
+        // `values` contains "ZoneA" and "ZoneA'".
+        
+        // If `perm` is ["ZoneA'"] (Length 1, endsWith '):
+        // It must be in `values`.
+        if (perm.length === 1 && perm[0].endsWith("'")) {
+            return values.includes(perm[0]);
+        }
+        
+        // If `perm` starts with "ZoneA" (Standard):
+        // It must carry the semantic of "ZoneA parent selected".
+        // `values` must include "ZoneA".
+        if (perm[0].endsWith("'") === false) {
+             return values.includes(perm[0]);
+        }
+        
+        return false;
+      });
       
       const newLevel0Permissions = values
         .filter((value: string) => !existingLevel0Values.includes(value))
-        .map((value: string) => [value]); // Pure L0
+        .map((value: string) => [value]); // Pure L0 or L0'
       
       newPerm = [...permissionsToKeep, ...newLevel0Permissions];
     }
   
     if (level === 1) {
-      // Update L1 Items (ZoneA>GroupB) AND L0 IA nodes (ZoneA>isActive)
+      // Update L1 Items (ZoneA>GroupB) AND L1 IA nodes (ZoneA>GroupB')
       
-      // Values can be: "ZoneA>GroupB" OR "ZoneA>isActive"
       const valMap = values; 
 
-      // Identify currently selected items visible in this dropdown (L1 items + L0 IA items)
-      // to determine what was DESELECTED.
-      
+      // Identifying visible items in THIS dropdown
       const existingVisibleCombinations = selectPermissions
         .filter((perm: any) => {
-             // Include L0 IA
-             if (perm.length === 2 && perm[1] === 'isActive') return true;
-             // Include L1 Standard
-             if (perm.length >= 2 && !(perm.length === 3 && perm[2] === 'isActive')) return true;
+             // Exclude L0 IA (Length 1, endsWith ')
+             if (perm.length === 1 && perm[0].endsWith("'")) return false;
+             
+             // Include L1 IA (Length 2, endsWith ')
+             if (perm.length === 2 && perm[1].endsWith("'")) return true;
+             
+             // Include L1 Standard (Length >= 2, no ')
+             // Note: Standard items don't have ' in path parts usually.
+             if (perm.length >= 2 && !perm[1].endsWith("'")) return true;
+             
              return false;
         })
-        .map((perm: any) => {
-             if (perm.length === 2 && perm[1] === 'isActive') return `${perm[0]}>isActive`;
-             return `${perm[0]}>${perm[1]}`;
-        });
+        .map((perm: any) => `${perm[0]}>${perm[1]}`);
       
       const permissionsToKeep = selectPermissions.filter((perm: any) => {
-        // 1. Check L0 Items (ZoneA).
-        // If we represent ZoneA (via valMap), we must REMOVE the generic Parent Node
-        // so we can replace it with specific Children.
+        // 1. Keep L0 IA nodes untouched (Length 1)
+        if (perm.length === 1 && perm[0].endsWith("'")) return true;
+        
+        // 2. Check L0 Standard Items (Parents)
+        // If we represent ZoneA (via valMap or context), we normally explode it.
+        // If we serve ZoneA options, we remove generic ZoneA parent.
         if (perm.length === 1) {
             const parentName = perm[0];
-            // Check if this Parent is involved in current values
             const isParentInvolved = valMap.some((v: string) => v.split('>')[0] === parentName);
-            if (isParentInvolved) return false; // Remove! We will add children instead.
-            return true; // Keep irrelevant parents
+            if (isParentInvolved) return false; // Replace generic parent with specific children
+            return true;
         }
         
-        // 2. Visible Items (L0 IA or L1 Standard) -> Keep if in values
-        // These are the items explicitly managed by this dropdown.
+        // 3. Visible Items (L1 IA or L1 Standard) -> Keep if in values
         const isVisible = (
-            (perm.length === 2 && perm[1] === 'isActive') ||
-            (perm.length >= 2 && !(perm.length === 3 && perm[2] === 'isActive'))
+            (perm.length === 2 && perm[1].endsWith("'")) ||
+            (perm.length >= 2 && !perm[1].endsWith("'"))
         );
         
         if (isVisible) {
-             const key = (perm.length === 2 && perm[1] === 'isActive') 
-                ? `${perm[0]}>isActive` 
-                : `${perm[0]}>${perm[1]}`;
+             const key = `${perm[0]}>${perm[1]}`;
              return values.includes(key);
         }
 
-        // 3. Deeper Items (children of L1 items) -> Keep if their L1 parent is still selected?
-        // e.g. ZoneA>GroupB>WH1. If ZoneA>GroupB is removed, then WH1 must be removed.
-        // ZoneA>GroupB is removed if it is NOT in values.
-        if (perm.length >= 3) {
+        // 4. Deeper Items (children of L1 items)
+        if (perm.length >= 3 && !perm[1].endsWith("'")) {
              const parentKey = `${perm[0]}>${perm[1]}`;
              return values.includes(parentKey);
         }
@@ -355,78 +402,50 @@ const PermissionForm = ({
       // Add New
       const newItems = valMap
         .filter((v: string) => !existingVisibleCombinations.includes(v))
-        .map((v: string) => {
-             if (v.endsWith('>isActive')) {
-                 const [p] = v.split('>');
-                 return [p, 'isActive'];
-             }
-             return v.split('>');
-        });
+        .map((v: string) => v.split('>'));
       
-      // Add back Level 0? NO.
-      // We purposefully removed Level 0 to "explode" it into siblings.
-      // We only add what is in `newItems`.
-      const level0ToAdd: any[] = [];
       newPerm = [...permissionsToKeep, ...newItems];
     }
   
     if (level === 2) {
-      // Update L2 Items AND L1 IA nodes
+      // Update L2 Items (ZoneA>GroupB>WH1)
+      // L1 IA nodes (ZoneA>GroupB') are moved to L1 dropdown.
       
-      const valMap = values; // strings like "Z>G>W" or "Z>G>isActive"
+      const valMap = values; 
       
       const existingVisibleCombinations = selectPermissions
         .filter((perm: any) => {
-             // Include L1 IA
-             if (perm.length === 3 && perm[2] === 'isActive') return true;
+             // Exclude L1 IA
+             if (perm.length === 2 && perm[1].endsWith("'")) return false;
              // Include L2 Standard
-             if (perm.length >= 3 && perm[2] !== 'isActive') return true;
+             if (perm.length >= 3) return true;
              return false;
         })
-        .map((perm: any) => {
-             if (perm.length === 3 && perm[2] === 'isActive') return `${perm[0]}>${perm[1]}>isActive`;
-             return `${perm[0]}>${perm[1]}>${perm[2] || ""}`;
-        });
+        .map((perm: any) => perm.join('>')); 
       
       const permissionsToKeep = selectPermissions.filter((perm: any) => {
-         // 1. Check Lower levels (L0, L0-IA, L1)
-         // If we represent ZoneA>GroupB (via valMap), we must REMOVE the generic Parent Node (ZoneA, ZoneA>GroupB)
-         // so we can replace it with specific Children.
-         
+         // 1. Keep Higher Level IA nodes untouched
+         if (perm.length === 1 && perm[0].endsWith("'")) return true;
+         if (perm.length === 2 && perm[1].endsWith("'")) return true;
+
+         // 2. Check Ancestors (L0, L1 Standard)
          const currentPath = valMap.find((v: string) => {
-             // Does this value cover the permission `perm`?
-             // If perm is ZoneA, and valMap has ZoneA>GroupB>WH1...
-             // We check if `perm` is an ancestor of ANY `valMap` entry.
-             // Actually, we check if `perm` is an ancestor of `val`.
              return v.split('>').slice(0, perm.length).join('>') === perm.join('>');
          });
          
-         if (perm.length === 1 && currentPath) return false; // Remove L0 implicit
-         if (perm.length === 2 && currentPath) return false; // Remove L1 implicit (if standard L1)
+         if (perm.length === 1 && currentPath) return false; 
+         if (perm.length === 2 && currentPath) return false; 
          
-         // Note: L0-IA (length 2, isActive) or L1-IA (length 3, isActive) are explicit leaf nodes usually,
-         // but if L1-IA is considered a "Parent" of L2? No.
-         // If `perm` is ZoneA>isActive. Does ZoneA>GroupB>WH1 imply it? No.
-         // So we only remove Standard Parents.
-         if (perm.length === 2 && perm[1] === 'isActive') return true; 
-
-         // 2. Visible Items (L1 IA or L2 Standard) - items in this dropdown
-         const isVisible = (
-             (perm.length === 3 && perm[2] === 'isActive') ||
-             (perm.length >= 3 && perm[2] !== 'isActive')
-         );
-         
-         if (isVisible) {
-             const key = (perm.length === 3 && perm[2] === 'isActive')
-                ? `${perm[0]}>${perm[1]}>isActive`
-                : `${perm[0]}>${perm[1]}>${perm[2] || ""}`;
-             
-             return values.some((v: string) => {
-                const vParts = v.split(">");
-                // Handle empty string L3 special case match
-                const vKey = vParts.length === 2 ? `${vParts[0]}>${vParts[1]}>` : v;
-                return vKey === key || v === key;
+         // 3. Visible Items (L3 Standard)
+         if (perm.length >= 3) {
+             const key = perm.join('>');
+             const match = values.some((v: string) => {
+                const vKey = v.endsWith('>') && v.split('>').length === 3 && v.split('>')[2] === '' 
+                    ? `${v} ` 
+                    : v;
+                return v === key;
              });
+             return match;
          }
          
          return false;
@@ -435,18 +454,11 @@ const PermissionForm = ({
       const newItems = valMap
         .filter((v: string) => !existingVisibleCombinations.includes(v))
         .map((v: string) => {
-          if (v.endsWith('>isActive')) {
-              const [p, c] = v.split('>');
-              return [p, c, 'isActive'];
-          }
           const parts = v.split(">");
           if (parts.length === 2) parts.push("");
           else if (parts.length === 3 && parts[2] === undefined) parts[2] = "";
           return parts;
         });
-      
-      // Add back L0/L1? NO.
-      // We purposefully removed them to separate selection logic.
       
       newPerm = [...permissionsToKeep, ...newItems];
     }
@@ -491,7 +503,8 @@ const PermissionForm = ({
       }
 
       const l1 = nodes.L1.map(k => [k]);
-      const l1IA = nodes.L1.filter(k => checkIsIA(0, "", k)).map(k => [k, 'isActive']);
+      // Use prime suffix for L0 IA
+      const l1IA = nodes.L1.filter(k => checkIsIA(0, "", k)).map(k => [`${k}'`]);
       
       const l2 = nodes.L2.map(k => k.split('>'));
       const l2IA = nodes.L2
@@ -501,7 +514,8 @@ const PermissionForm = ({
         })
         .map(k => {
              const [p, c] = k.split('>');
-             return [p, c, 'isActive'];
+             // Use prime suffix for L1 IA child
+             return [p, `${c}'`];
         });
       
       const l3 = nodes.L3.map(k => {
