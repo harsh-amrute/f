@@ -405,6 +405,33 @@ const PermissionForm = ({
         .map((v: string) => v.split('>'));
       
       newPerm = [...permissionsToKeep, ...newItems];
+
+      // Post-Processing: Restore Parent if Last Child Removed (Level 1)
+      const removedVisibleItems = existingVisibleCombinations.filter((comb: string) => !values.includes(comb));
+
+      removedVisibleItems.forEach((removedComb: string) => {
+        const parts = removedComb.split('>');
+        // Removed item is A>B (Length 2). Parent A (Length 1).
+
+        if (parts.length > 1) {
+          const parentParts = parts.slice(0, -1);
+          const parentKey = parentParts.join('>');
+
+          // Check if Parent is already in newPerm
+          const parentExists = newPerm.some((p: any) => p.join('>') === parentKey);
+          if (parentExists) return;
+
+          // Check if any sibling exists in newPerm
+          const siblingExists = newPerm.some((p: any) => {
+            if (p.length <= parentParts.length) return false;
+            return p.slice(0, parentParts.length).join('>') === parentKey;
+          });
+
+          if (!siblingExists) {
+            newPerm.push(parentParts);
+          }
+        }
+      });
     }
   
     if (level === 2) {
@@ -436,6 +463,11 @@ const PermissionForm = ({
          if (perm.length === 1 && currentPath) return false; 
          if (perm.length === 2 && currentPath) return false; 
          
+        // Fix: If Parent (Length 1 or 2) matches scope but has NO selected children, KEEP IT.
+        // This ensures that deselecting the last child reverts to the Parent selection (implicit all).
+        if (perm.length === 2 && !currentPath) return true;
+        if (perm.length === 1 && !currentPath) return true;
+
          // 3. Visible Items (L3 Standard)
          if (perm.length >= 3) {
              const key = perm.join('>');
@@ -461,6 +493,38 @@ const PermissionForm = ({
         });
       
       newPerm = [...permissionsToKeep, ...newItems];
+
+      // Post-Processing: Restore Parent if Last Child Removed
+      // Identify what was removed
+      const removedVisibleItems = existingVisibleCombinations.filter((comb: string) => !values.includes(comb));
+
+      removedVisibleItems.forEach((removedComb: string) => {
+        const parts = removedComb.split('>');
+        // Potential Parent is parts.slice(0, -1)
+        // If we are at L2, removed item is A>B>C (Length 3). Parent A>B (Length 2).
+        // If we are at L1, removed item is A>B (Length 2). Parent A (Length 1).
+
+        if (parts.length > 1) {
+          const parentParts = parts.slice(0, -1);
+          const parentKey = parentParts.join('>');
+
+          // Check if Parent is already in newPerm
+          const parentExists = newPerm.some((p: any) => p.join('>') === parentKey);
+          if (parentExists) return;
+
+          // Check if any sibling exists in newPerm
+          // Sibling has same parent prefix
+          const siblingExists = newPerm.some((p: any) => {
+            if (p.length <= parentParts.length) return false;
+            return p.slice(0, parentParts.length).join('>') === parentKey;
+          });
+
+          if (!siblingExists) {
+            // Restore Parent!
+            newPerm.push(parentParts);
+          }
+        }
+      });
     }
   
     // Update the selected permissions state
