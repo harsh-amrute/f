@@ -132,7 +132,25 @@ const SingleUserPermissionSelectionModal = ({dataAllPermissions,closeModal, crea
     setSelectedPermissions({});
   }
   
-  const isApplyDisabled = !hasSelectedPermissions(selectedPermissions);
+  // Check if Distribution role requires both location & product permissions
+  const hasDistributionRole = infoUser?.activeApplications?.includes("Distribution");
+  const distributionPerms = selectedPermissions?.["Distribution"] || {};
+  const hasDistLocPerm = Array.isArray(distributionPerms?.location_permission) && distributionPerms.location_permission.length > 0;
+  const hasDistProdPerm = Array.isArray(distributionPerms?.product_permission) && distributionPerms.product_permission.length > 0;
+  const isDistributionPermMissing = hasDistributionRole && (!hasDistLocPerm || !hasDistProdPerm);
+
+  const isApplyDisabled = !hasSelectedPermissions(selectedPermissions) || isDistributionPermMissing;
+
+  // Build tooltip message
+  let disabledTooltip = '';
+  if (!hasSelectedPermissions(selectedPermissions)) {
+    disabledTooltip = 'For distributions you must select at least one product and location permission.';
+  } else if (isDistributionPermMissing) {
+    const missing = [];
+    if (!hasDistLocPerm) missing.push('Location');
+    if (!hasDistProdPerm) missing.push('Product');
+    disabledTooltip = `Distribution role requires both Location and Product permissions. Missing: ${missing.join(' & ')}.`;
+  }
   
 
   const [open, setOpen] = useState(false);
@@ -278,12 +296,14 @@ const SingleUserPermissionSelectionModal = ({dataAllPermissions,closeModal, crea
             onClick={() => {clearAllPermissions()}}
             
             >Clear All</VFButtonOutline>
+          <div style={{ position: 'relative', display: 'inline-block' }} title={isApplyDisabled ? disabledTooltip : ''}>
           <VFButton
-          style={{height: '3.5rem', fontSize: '1.2rem'}}
+              style={{ height: '3.5rem', fontSize: '1.2rem', cursor: isApplyDisabled ? 'not-allowed' : 'pointer' }}
           themeUi={themeUi}
           disabled={isApplyDisabled}
           onClick={() => {createUser(selectedPermissions)}}
           >{infoUser?.edit?'Update User':'Create User'}</VFButton>
+          </div>
           
           </div>
         </div>

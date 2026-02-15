@@ -170,6 +170,13 @@ const PermissionSelectionPage = ({
         ...node.data,
         permissions: selectedPermissions,
       };
+
+    return setErrorPermissions(updatedData);
+
+  }
+
+  const setErrorPermissions = (updatedData: any) => {
+
       let isValidPermission = true;
 
       updatedData.roles.forEach((role: any) => {
@@ -498,24 +505,26 @@ const PermissionSelectionPage = ({
       finalData.users.forEach((user:any )=> {
           const userRoles = finalData.roles[user.rid]?.roles || [];
           const userPermissions = finalData.permissions[user.perm_id] || {};
-          const userLocationPermissions = userPermissions.location_permissions || [];
-          const userProductPermissions = userPermissions.product_permissions || [];
+        console.log("userPermissions", userPermissions)
+        const userLocationPermissions = userPermissions.location_permission_hids || [];
+        const userProductPermissions = userPermissions.product_permission_hids || [];
           
           // Get application IDs from user's permissions (both location and product)
           const userPermissionAppIdsLoc = new Set();
           const userPermissionAppIdsPerm = new Set();
           
+        console.log("userLocationPermission", userLocationPermissions)
           // Add application IDs from location permissions
         userLocationPermissions.forEach((perm: any) => {
           if (perm?.permissions?.length) {
-            userPermissionAppIdsLoc.add(perm.application_id);
+            userPermissionAppIdsLoc.add(Number(perm.application_id));
           }
         });
           
           // Add application IDs from product permissions
         userProductPermissions.forEach((perm: any) => {
           if (perm?.permissions?.length) {
-            userPermissionAppIdsPerm.add(perm.application_id);
+            userPermissionAppIdsPerm.add(Number(perm.application_id));
           }
         });
 
@@ -533,14 +542,15 @@ const PermissionSelectionPage = ({
           
           // Check each role assigned to the user
           userRoles.forEach((roleId:any) => {
-              const appId = roleToAppMap[roleId];
+            const appId = Number(roleToAppMap[roleId]);
               // If the role belongs to a compulsory permissions app
-              if (compulsoryPermissions.includes(appId)) {
+            const appData = dataAllPermissions.find((ele: any) => Number(ele.application_id) === appId);
+            if (appData && appData.application_name === "Distribution") {
                   // Check if user has permissions for this application
                   if (!userPermissionAppIdsLoc.has(appId) || !userPermissionAppIdsPerm.has(appId)) {
                       errors.push({
                           type: 'MISSING_COMPULSORY_PERMISSION',
-                          message: `All users with a role of application: ${dataAllPermissions.find((ele:any)=>ele.application_id===appId).application_name} must have Location and Product Permissions`,
+                        message: `All users with a role of application: ${appData.application_name} must have Location and Product Permissions`,
                           userId: user.id,
                           userName: user.name,
                           email: user.email,
@@ -570,8 +580,8 @@ const PermissionSelectionPage = ({
           );
           
           // Handle location permissions
-          if (userPermissions.location_permissions) {
-              userPermissions.location_permissions = userPermissions.location_permissions.filter((perm:any) => {
+        if (userPermissions.location_permission_hids) {
+          userPermissions.location_permission_hids = userPermissions.location_permission_hids.filter((perm: any) => {
                   const shouldKeep = userRoleAppIds.has(perm.application_id);
                   
                   if (!shouldKeep) {
@@ -594,9 +604,9 @@ const PermissionSelectionPage = ({
           }
           
           // Handle product permissions
-          if (userPermissions.product_permissions) {
-              const originalProductPermissions = [...userPermissions.product_permissions];
-              userPermissions.product_permissions = userPermissions.product_permissions.filter((perm:any) => {
+        if (userPermissions.product_permission_hids) {
+          const originalProductPermissions = [...userPermissions.product_permission_hids];
+          userPermissions.product_permission_hids = userPermissions.product_permission_hids.filter((perm: any) => {
                   const shouldKeep = userRoleAppIds.has(perm.application_id);
                   
                   if (!shouldKeep) {
@@ -618,10 +628,6 @@ const PermissionSelectionPage = ({
               });
           }
       });
-
-      console.log("errors", errors);
-      console.log("warnings", warnings);
-      console.log("modifiedData", modifiedFinalData);
 
       return {
           isValid: errors.length === 0,
@@ -681,8 +687,6 @@ const PermissionSelectionPage = ({
           console.error("Errors in user data:", errors);
           return;
         }
-        console.log("bulkupload final data", modifiedData)
-        return;
 
         const response = await postPostBulkUploadUsers({...modifiedData})
         if(response.status===200){
@@ -753,7 +757,11 @@ const PermissionSelectionPage = ({
       },
       { headerName: "Username", field: "username", suppressFillHandle: true, filter: 'agMultiColumnFilter' },
       { headerName: "Email ID", field: "email", suppressFillHandle: true, filter: 'agMultiColumnFilter' },
-      { headerName: "Password", field: "pwd", suppressFillHandle: true, filter: 'agMultiColumnFilter'},
+      {
+        headerName: "Password", field: "pwd", suppressFillHandle: true, filter: 'agMultiColumnFilter', cellRenderer: (params: any) => {
+          return "********";
+        }
+      },
       {
         headerName: "Role",
         field: "roles",
@@ -941,7 +949,7 @@ const PermissionSelectionPage = ({
                 if (params.rowNode.rowIndex === index) {                
                   const userData = node.data;
                   userData.permissions = params.initialValues[0];
-                  node.setData(userData);
+                  node.setData(setErrorPermissions(userData));
                 }
               });
             }
