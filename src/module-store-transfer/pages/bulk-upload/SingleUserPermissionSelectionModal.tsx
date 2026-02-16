@@ -143,6 +143,7 @@ const SingleUserPermissionSelectionModal = ({dataAllPermissions,closeModal, crea
 
   // Build tooltip message
   let disabledTooltip = '';
+  console.log("selectedPermissions", selectedPermissions);
   if (!hasSelectedPermissions(selectedPermissions)) {
     disabledTooltip = 'For distributions you must select at least one product and location permission.';
   } else if (isDistributionPermMissing) {

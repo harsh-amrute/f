@@ -52,7 +52,12 @@ const TableUserManagement = ({
             notifySuccess(data?.data?.msg);
           }
           setIsOpenDelete(false);
-          refetch();
+          // console.log("gridREf", gridRef.current.api)
+          gridRef.current.api.forEachNode((node: any) => {
+            if (node.data.id === idUser) {
+              gridRef?.current?.api?.applyTransaction({ remove: [node.data] })
+            }
+          })
         },
         onError: (error: any) => {
           notifyError(error.response.msg || error.message);
@@ -278,6 +283,9 @@ const TableUserManagement = ({
         ref={gridRef}
         rowData={dataAllUsers}
         columnDefs={columnDefs}
+        defaultColDef={
+          { suppressMenu: true }
+        }
         domLayout="normal"
         rowHeight={55}
         pagination={false}

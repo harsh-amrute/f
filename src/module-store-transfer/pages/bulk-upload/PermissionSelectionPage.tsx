@@ -364,10 +364,10 @@ const PermissionSelectionPage = ({
           if (perms?.location_permission) {
              const ids = processPermissionType("location_permission", perms.location_permission);
              if (ids.length > 0) {
-                 if (!formattedPerms["location_permission_hids"]) formattedPerms["location_permission_hids"] = [];
-                 formattedPerms["location_permission_hids"].push({
-                     application_id,
-                     permissions: ids
+               if (!formattedPerms["location_permission"]) formattedPerms["location_permission"] = [];
+               formattedPerms["location_permission"].push({
+                 appId: application_id,
+                 perm: ids
                  });
              }
           }
@@ -375,10 +375,10 @@ const PermissionSelectionPage = ({
           if (perms?.product_permission) {
              const ids = processPermissionType("product_permission", perms.product_permission);
              if (ids.length > 0) {
-                 if (!formattedPerms["product_permission_hids"]) formattedPerms["product_permission_hids"] = [];
-                 formattedPerms["product_permission_hids"].push({
-                     application_id,
-                     permissions: ids
+               if (!formattedPerms["product_permission"]) formattedPerms["product_permission"] = [];
+               formattedPerms["product_permission"].push({
+                 appId: application_id,
+                 perm: ids
                  });
              }
           }
@@ -506,8 +506,8 @@ const PermissionSelectionPage = ({
           const userRoles = finalData.roles[user.rid]?.roles || [];
           const userPermissions = finalData.permissions[user.perm_id] || {};
         console.log("userPermissions", userPermissions)
-        const userLocationPermissions = userPermissions.location_permission_hids || [];
-        const userProductPermissions = userPermissions.product_permission_hids || [];
+        const userLocationPermissions = userPermissions.location_permission || [];
+        const userProductPermissions = userPermissions.product_permission || [];
           
           // Get application IDs from user's permissions (both location and product)
           const userPermissionAppIdsLoc = new Set();
@@ -516,15 +516,15 @@ const PermissionSelectionPage = ({
         console.log("userLocationPermission", userLocationPermissions)
           // Add application IDs from location permissions
         userLocationPermissions.forEach((perm: any) => {
-          if (perm?.permissions?.length) {
-            userPermissionAppIdsLoc.add(Number(perm.application_id));
+          if (perm?.perm?.length) {
+            userPermissionAppIdsLoc.add(Number(perm.appId));
           }
         });
           
           // Add application IDs from product permissions
         userProductPermissions.forEach((perm: any) => {
-          if (perm?.permissions?.length) {
-            userPermissionAppIdsPerm.add(Number(perm.application_id));
+          if (perm?.perm?.length) {
+            userPermissionAppIdsPerm.add(Number(perm.appId));
           }
         });
 
@@ -580,20 +580,20 @@ const PermissionSelectionPage = ({
           );
           
           // Handle location permissions
-        if (userPermissions.location_permission_hids) {
-          userPermissions.location_permission_hids = userPermissions.location_permission_hids.filter((perm: any) => {
-                  const shouldKeep = userRoleAppIds.has(perm.application_id);
+        if (userPermissions.location_permission) {
+          userPermissions.location_permission = userPermissions.location_permission.filter((perm: any) => {
+            const shouldKeep = userRoleAppIds.has(perm.appId);
                   
                   if (!shouldKeep) {
                       warnings.push({
                           type: 'LOCATION_PERMISSION_REMOVED',
-                          message: `Location permission for application id ${perm.application_id} removed for user ${user.name} (no corresponding role)`,
+                        message: `Location permission for application id ${perm.appId} removed for user ${user.name} (no corresponding role)`,
                           srNo: user.srNo,
                           userId: user.id,
                           userName: user.name,
                           email: user.email,
                           permId: user.perm_id,
-                          removedApplicationId: perm.application_id,
+                        removedApplicationId: perm.appId,
                           removedPermission: perm,
                           permissionType: 'location'
                       });
@@ -604,21 +604,21 @@ const PermissionSelectionPage = ({
           }
           
           // Handle product permissions
-        if (userPermissions.product_permission_hids) {
-          const originalProductPermissions = [...userPermissions.product_permission_hids];
-          userPermissions.product_permission_hids = userPermissions.product_permission_hids.filter((perm: any) => {
-                  const shouldKeep = userRoleAppIds.has(perm.application_id);
+        if (userPermissions.product_permission) {
+          const originalProductPermissions = [...userPermissions.product_permission];
+          userPermissions.product_permission = userPermissions.product_permission.filter((perm: any) => {
+            const shouldKeep = userRoleAppIds.has(perm.appId);
                   
                   if (!shouldKeep) {
                       warnings.push({
                           type: 'PRODUCT_PERMISSION_REMOVED',
-                          message: `Product permission for application ${perm.application_id} removed for user ${user.name} (no corresponding role)`,
+                        message: `Product permission for application ${perm.appId} removed for user ${user.name} (no corresponding role)`,
                           srNo: user.srNo,
                           userId: user.id,
                           userName: user.name,
                           email: user.email,
                           permId: user.perm_id,
-                          removedApplicationId: perm.application_id,
+                        removedApplicationId: perm.appId,
                           removedPermission: perm,
                           permissionType: 'product'
                       });
