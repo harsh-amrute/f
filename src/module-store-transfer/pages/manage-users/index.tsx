@@ -29,11 +29,12 @@ import { useTranslation } from "react-i18next";
 import { generateRolesObject } from '../../../helpers/utils';
 import _ from 'lodash'
 import { useNavigate } from "react-router";
-import { notifyError, notifySuccess } from "../../../helpers/notify";
+import { notifyError, notifyLoader, notifySuccess } from "../../../helpers/notify";
 import { APPLICATION_NAMES } from "../../../helpers/constants";
 import { useUserData } from "../../../context";
 import SingleUserPermissionSelectionModal from "../bulk-upload/SingleUserPermissionSelectionModal";
 import VFModalCard from "../../../components/VectorFLOW/commons/VFModalCard";
+import VFLoader from "../../../components/VectorFLOW/commons/VFLoader";
 
 
 interface ManageUsersProps{
@@ -365,7 +366,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
         }
       }
     })
-    validApplicationPermissions.sort((a:any,b:any)=>a.id-b.id);
+      validApplicationPermissions.sort((a: any, b: any) => a.id - b.id);
     setStorePermission(validApplicationPermissions);
 
     setvalueSelect(_.cloneDeep(validApplicationPermissions));
@@ -377,7 +378,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   }
 
 
-  const handleClickEdit = async(initialItem: any) => {
+  const handleClickEdit = async (initialItem: any) => {
     const applicationIds = getApplicationIds();
     if (!applicationIds.length) {
       notifyError(t("profile.tabContent.manageUsers.notifyError.RoleMismatch"));
@@ -529,8 +530,8 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   }, [infoUser])
 
 
-  const { mutateAsync: registerUser } = useRegisterUser();
-  const {mutateAsync: editUser} = usePutEditUser();
+  const { mutateAsync: registerUser, isLoading: registerLoading } = useRegisterUser();
+  const { mutateAsync: editUser, isLoading: editLoading } = usePutEditUser();
 
   const isDynamicPermissions = (user.config_data.INHERITED_ACCESS==="1") || false
 
@@ -703,6 +704,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
       console.log("Creating User Payload:", payload);
       let response:any = null;
       if(payload.edit){
+
         response = await editUser(payload);
            notifySuccess("User updated successfully");
         if(response.status===200){
@@ -758,6 +760,11 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     <Spinner />
   </div>
 )}
+      {
+        editLoading || registerLoading && (
+          <VFLoader />
+        )
+      }
       <SCProfileOverView>
         <SCSubTitleBox>
           <SCSubTitlePad>
