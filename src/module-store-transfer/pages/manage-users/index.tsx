@@ -741,30 +741,26 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
 
   return (
     <>
-    {edit && (
+      {(edit || editLoading || registerLoading) && (
   <div
     style={{
-      position: "fixed",
+            position: "fixed",
       top: 0,
       left: 0,
-      width: "100%",
-      height: "100%",
+            width: "140vw",
+            height: "140vh",
+            userSelect: 'none',
       background: "rgba(255, 255, 255, 0.6)", 
       backdropFilter: "blur(3px)",            
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
-      zIndex: 2000,                           
+            zIndex: 99999,                           
     }}
   >
     <Spinner />
   </div>
-)}
-      {
-        editLoading || registerLoading && (
-          <VFLoader />
-        )
-      }
+      )}
       <SCProfileOverView>
         <SCSubTitleBox>
           <SCSubTitlePad>
@@ -851,6 +847,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
         
         activeApplications={[...(infoUser?.activeApplications || [])]}
         infoUser={infoUser}
+          isLoader={editLoading || registerLoading}
         setInfoUser={setInfoUser}
         closeModal={()=>{setIsPermissionModalOpen(false)}}
         dataAllPermissions={dataAllPermissions}

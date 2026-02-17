@@ -13,6 +13,7 @@ import VFButtonOutline from "../../../components/VectorFLOW/commons/VFButtonOutl
 import { ToggleButton, ToggleContainer } from "./style";
 import Portal from "../../../components/VectorFLOW/layouts/Portal";
 import { DropdownWrapper } from "../../../components/commons/CustomDropdown/style";
+import Spinner from "../../../components/commons/Spinner";
 
 
 const ViewToggle = ({
@@ -84,7 +85,7 @@ const hasSelectedPermissions = (permissions: any): boolean => {
   return false; 
 };
 
-const SingleUserPermissionSelectionModal = ({ dataAllPermissions, closeModal, createUser, activeApplications, infoUser, setInfoUser, setPrevModal, selectedPermissions, setSelectedPermissions, allRoles }: { dataAllPermissions: any, closeModal: any, createUser: any, activeApplications: any, infoUser: any, setInfoUser: any, setPrevModal: any, selectedPermissions: any, setSelectedPermissions: any, allRoles: any }) => {
+const SingleUserPermissionSelectionModal = ({ dataAllPermissions, closeModal, createUser, activeApplications, infoUser, setInfoUser, setPrevModal, selectedPermissions, setSelectedPermissions, allRoles, isLoader }: { dataAllPermissions: any, closeModal: any, createUser: any, activeApplications: any, infoUser: any, setInfoUser: any, setPrevModal: any, selectedPermissions: any, setSelectedPermissions: any, allRoles: any, isLoader: any }) => {
   const [isChartView, setIsChartView] = React.useState(false);
   const [allApplications, setAllApplications] = useState<any>(dataAllPermissions?.map(
     (ele: any) => ele.application_name
@@ -191,24 +192,26 @@ const SingleUserPermissionSelectionModal = ({ dataAllPermissions, closeModal, cr
     };
 
   const isCreateDisabled = (selectedPermissions: any, infoUser: any) => {
-    const distributionRoles = allRoles.find((e: any) => e.title === "Distribution")
-    const isRoleFromDistribution = infoUser.roles.some((role: any) => distributionRoles.child.some((ele: any) => ele.id === role));
+    const distributionRoles = allRoles?.find((e: any) => e.title === "Distribution");
+    if (!distributionRoles) return false; // No Distribution app defined, nothing to enforce
+
+    const isRoleFromDistribution = infoUser?.roles?.some((role: any) => distributionRoles.child?.some((ele: any) => ele.id === role));
 
     if (isRoleFromDistribution) {
-      if (selectedPermissions.Distribution?.location_permission?.length !== 0 && selectedPermissions?.Distribution?.product_permission?.length !== 0) {
+      const hasLocPerm = (selectedPermissions?.Distribution?.location_permission?.length ?? 0) > 0;
+      const hasProdPerm = (selectedPermissions?.Distribution?.product_permission?.length ?? 0) > 0;
+      if (hasLocPerm && hasProdPerm) {
         return false;
       }
+      return true; // Missing required permissions
     }
-    else {
-      return false;
-    }
-    return true;
-  }
 
-  
+    return false; // No distribution role, no restriction
+  }
 
   return (
       <div style={{ width: "80vw", height: "80vh", padding: "25px" }}>
+     
         <div
           style={{
             width: "100%",
