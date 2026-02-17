@@ -324,7 +324,7 @@ const useProcPlanning = ( appliedFilters: any) => {
             else {
                 notifyError("Failed to fetch data!");
             }
-            setTotalRows(response?.data?.data?.count)
+            setTotalRows(response?.data?.data?.count || 0)
             setData(response?.data?.data?.results || []);
 
 

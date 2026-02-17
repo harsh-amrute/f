@@ -57,6 +57,7 @@ const VFPagination = (props: VFPaginationProps) => {
     }
 
     const getTotalItemsString = () => {
+        if (totalRows === 0) return "0 to 0"; 
         if (totalRows <= rowsPerPage) return `1 to ${totalRows}`;
         if (currentPage === 1) return `1 to ${rowsPerPage}`;
         const start = (currentPage * rowsPerPage) - rowsPerPage + 1;
@@ -116,7 +117,7 @@ const VFPagination = (props: VFPaginationProps) => {
                             Page
                         </StatusBarLabelLight>
                         <StatusBarLabelBold>
-                            {currentPage}
+                            {totalRows === 0 ? 0 : currentPage}
                         </StatusBarLabelBold>
                         <StatusBarLabelLight>
                             of
