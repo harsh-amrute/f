@@ -84,7 +84,7 @@ const hasSelectedPermissions = (permissions: any): boolean => {
   return false; 
 };
 
-const SingleUserPermissionSelectionModal = ({dataAllPermissions,closeModal, createUser, activeApplications, infoUser, setInfoUser , setPrevModal, selectedPermissions, setSelectedPermissions}: { dataAllPermissions: any, closeModal: any, createUser: any, activeApplications: any, infoUser: any, setInfoUser: any, setPrevModal: any, selectedPermissions: any, setSelectedPermissions: any}) => {
+const SingleUserPermissionSelectionModal = ({ dataAllPermissions, closeModal, createUser, activeApplications, infoUser, setInfoUser, setPrevModal, selectedPermissions, setSelectedPermissions, allRoles }: { dataAllPermissions: any, closeModal: any, createUser: any, activeApplications: any, infoUser: any, setInfoUser: any, setPrevModal: any, selectedPermissions: any, setSelectedPermissions: any, allRoles: any }) => {
   const [isChartView, setIsChartView] = React.useState(false);
   const [allApplications, setAllApplications] = useState<any>(dataAllPermissions?.map(
     (ele: any) => ele.application_name
@@ -97,13 +97,17 @@ const SingleUserPermissionSelectionModal = ({dataAllPermissions,closeModal, crea
       console.log("activeApplications changed", activeApplications);
     },[activeApplications])
   
-  const ResetPermissions = ()=>{
-    // gridRef?.current?.api?.forEachNode((node: IRowNode, index: number)=>{
-    //   if(selectedIndex===index){
-    //     setSelectedPermissions(node.data.permissions || {});
-    //   }
-    // })
-    // TODO : write the reset logic here
+  // Store the initial permissions snapshot on first render
+  const initialPermissionsRef = useRef<any>(JSON.parse(JSON.stringify(selectedPermissions || {})));
+
+  const ResetPermissions = () => {
+    if (infoUser?.edit) {
+      // Edit mode: restore to the original fetched permissions
+      setSelectedPermissions(JSON.parse(JSON.stringify(initialPermissionsRef.current)));
+    } else {
+      // Create mode: clear all permissions
+      setSelectedPermissions({});
+    }
   }
 
   useEffect(()=>{
@@ -133,26 +137,10 @@ const SingleUserPermissionSelectionModal = ({dataAllPermissions,closeModal, crea
   }
   
   // Check if Distribution role requires both location & product permissions
-  const hasDistributionRole = infoUser?.activeApplications?.includes("Distribution");
-  const distributionPerms = selectedPermissions?.["Distribution"] || {};
-  const hasDistLocPerm = Array.isArray(distributionPerms?.location_permission) && distributionPerms.location_permission.length > 0;
-  const hasDistProdPerm = Array.isArray(distributionPerms?.product_permission) && distributionPerms.product_permission.length > 0;
-  const isDistributionPermMissing = hasDistributionRole && (!hasDistLocPerm || !hasDistProdPerm);
 
-  const isApplyDisabled = !hasSelectedPermissions(selectedPermissions) || isDistributionPermMissing;
+  // const isApplyDisabled = !hasSelectedPermissions(selectedPermissions) || isDistributionPermMissing;
 
   // Build tooltip message
-  let disabledTooltip = '';
-  console.log("selectedPermissions", selectedPermissions);
-  if (!hasSelectedPermissions(selectedPermissions)) {
-    disabledTooltip = 'For distributions you must select at least one product and location permission.';
-  } else if (isDistributionPermMissing) {
-    const missing = [];
-    if (!hasDistLocPerm) missing.push('Location');
-    if (!hasDistProdPerm) missing.push('Product');
-    disabledTooltip = `Distribution role requires both Location and Product permissions. Missing: ${missing.join(' & ')}.`;
-  }
-  
 
   const [open, setOpen] = useState(false);
     const [dropdownPosition, setDropdownPosition] = useState<CSSProperties>({});
@@ -201,7 +189,22 @@ const SingleUserPermissionSelectionModal = ({dataAllPermissions,closeModal, crea
       });
       setOpen(!open);
     };
-  
+
+  const isCreateDisabled = (selectedPermissions: any, infoUser: any) => {
+    const distributionRoles = allRoles.find((e: any) => e.title === "Distribution")
+    const isRoleFromDistribution = infoUser.roles.some((role: any) => distributionRoles.child.some((ele: any) => ele.id === role));
+
+    if (isRoleFromDistribution) {
+      if (selectedPermissions.Distribution?.location_permission?.length !== 0 && selectedPermissions?.Distribution?.product_permission?.length !== 0) {
+        return false;
+      }
+    }
+    else {
+      return false;
+    }
+    return true;
+  }
+
   
 
   return (
@@ -297,14 +300,15 @@ const SingleUserPermissionSelectionModal = ({dataAllPermissions,closeModal, crea
             onClick={() => {clearAllPermissions()}}
             
             >Clear All</VFButtonOutline>
-          <div style={{ position: 'relative', display: 'inline-block' }} title={isApplyDisabled ? disabledTooltip : ''}>
+          {/* <div style={{ position: 'relative', display: 'inline-block' }} title={isApplyDisabled ? disabledTooltip : ''}> */}
           <VFButton
-              style={{ height: '3.5rem', fontSize: '1.2rem', cursor: isApplyDisabled ? 'not-allowed' : 'pointer' }}
+            style={{ height: '3.5rem', fontSize: '1.2rem', cursor: 'pointer' }}
           themeUi={themeUi}
-          disabled={isApplyDisabled}
+            // disabled={isApplyDisabled}
+            disabled={isCreateDisabled(selectedPermissions, infoUser)}
           onClick={() => {createUser(selectedPermissions)}}
           >{infoUser?.edit?'Update User':'Create User'}</VFButton>
-          </div>
+          {/* </div> */}
           
           </div>
         </div>

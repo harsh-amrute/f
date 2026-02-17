@@ -858,6 +858,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
         key={infoUser.id}
         selectedPermissions={selectedPermissions}
         setSelectedPermissions={setSelectedPermissions}
+          allRoles={listRoles}
         setPrevModal={()=>{
           setContentModal({
             callApi: 1,
