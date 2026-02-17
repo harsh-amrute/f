@@ -27,7 +27,6 @@ export namespace MainService {
   }
 
   export const getAllPermissions = async () => {
-    // return await axios.get(`${API_USER}/mock/`)
     const response =  await axios.get(`${API_USER}/all-permissions/`)
     
     const fixHierarchySpelling = (data: any): any => {
@@ -46,8 +45,6 @@ export namespace MainService {
     if (response.data) {
        response.data = fixHierarchySpelling(response.data);
     }
-
-    console.log("allPermissions response",response);
     return response
 
     

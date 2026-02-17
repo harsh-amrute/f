@@ -127,7 +127,6 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   const getApplicationIds = () => {
     const application_names = [APPLICATION_NAMES.MTA, APPLICATION_NAMES.MTO];
 
-    console.log("DataAllPermissions...", dataAllPermissions);
     const applicationIds = dataAllPermissions
       .filter((dataAllPermission: any) => application_names.includes(dataAllPermission.application_name))
       .map((filterItem: any) => filterItem.application_id);
@@ -393,12 +392,10 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     listRoles.forEach((app: any) => {
       if(roles.some((roleId: any) => app.child.some((role: any) => role.id === roleId))) {
         currentUserActiveApplications.add(app.title);
-        console.log("app.title", app.title);
       }
     }
     );
 
-    console.log("currentUserActiveApplications", currentUserActiveApplications);
     setInfoUser({
       id: item.id,
       name: item.name,
@@ -488,12 +485,9 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
                             if (path.length > 0) {
                                 path[path.length - 1] = path[path.length - 1] + "'";
                             }
-                        } else if (!isDynamicPermissions) {
-                        // Legacy Mode: No special handling needed unless we find cases where !isActive needs handling
-                        // As per current requirement, logic relies on ID format and Definition flag.
+                      } else if (!isDynamicPermissions) {
                         }
 
-                      console.log(`Mapping HID: ${hid} -> Path:`, path, "isIA:", def.isActive, "CleanHID:", cleanHid);
                         
                         return path;
                     }).filter((p: any) => p !== null);
@@ -524,21 +518,14 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   }
   
 
-  useEffect(()=>{
-    console.log("infoUser", infoUser);
-    console.log("listRoles", listRoles);
-  }, [infoUser])
-
 
   const { mutateAsync: registerUser, isLoading: registerLoading } = useRegisterUser();
   const { mutateAsync: editUser, isLoading: editLoading } = usePutEditUser();
 
   const isDynamicPermissions = (user.config_data.INHERITED_ACCESS==="1") || false
 
-  console.log("isDynamicPermissions", isDynamicPermissions)
 
   const createUser = async (permissions: any) => {
-    console.log("permissions input to create user", permissions);
 
     const payload: any = {
       ...infoUser,
@@ -587,7 +574,6 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
               ? [...path.slice(0, -1), lastElement.slice(0, -1)]
               : path;
 
-            console.log("Processing Path:", path, "Lookup:", lookupPath, "isIA:", isIANode, "Dynamic:", isDynamicPermissions);
 
             if (!isDynamicPermissions) {
               // Logic For False (Cascade Mode / Legacy)
@@ -634,8 +620,6 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
                
                if (matchedDefs.length > 0) {
                  matchedDefs.forEach((d: any) => ids.push(d.h_id));
-               } else {
-                 console.warn(`IDs not found for (Legacy): ${path.join(">")}`);
                }
 
             } else {
@@ -701,20 +685,17 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     });
 
     try {
-      console.log("Creating User Payload:", payload);
       let response:any = null;
       if(payload.edit){
 
         response = await editUser(payload);
-           notifySuccess("User updated successfully");
         if(response.status===200){
           setIsPermissionModalOpen(false);
           setIsOpenUser(false);
           refetch()
           notifySuccess("user updated succesfully")
         }
-        else{
-          console.log('response', response);
+        else {
           notifyError("Failed to update user: "+response?.response?.msg);
         }
 
@@ -727,8 +708,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
           refetch()
           notifySuccess("user created succesfully")
         }
-        else{
-          console.log('response', response);
+        else {
           notifyError("Failed to create user: "+response?.response?.msg);
         }
       }

@@ -62,13 +62,11 @@ const Overview = ({ themeUi }: any) => {
         }
       },
       onError: (errors: any) => {
-        console.log("errors", errors);
         notifyError(errors.response.msg);
       },
     });
   };
 
-  console.log("user.roles", user.roles);
 
   return (
     <>

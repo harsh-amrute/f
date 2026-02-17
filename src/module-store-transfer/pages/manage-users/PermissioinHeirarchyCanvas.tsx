@@ -310,7 +310,6 @@ const CustomNode = ({
     setOpened(newArr);
   };
 
-  const hasPinkShadow = shouldHavePinkShadow(data.key);
 
   return (
     <div
