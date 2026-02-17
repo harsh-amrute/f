@@ -226,7 +226,7 @@ const SingleUserPermissionSelectionModal = ({ dataAllPermissions, closeModal, cr
             setSelectedApplication={setSelectedApplication}
             />
           <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-            <VFButtonOutline onClick={(e: any)=>{onSelectClick(e)}} themeUi={themeUi} style={{marginRight: '20px', height: '3.5rem', width: 'fit-content',padding: '0 14px', fontSize: '1.1rem'}}>
+          {/* <VFButtonOutline onClick={(e: any)=>{onSelectClick(e)}} themeUi={themeUi} style={{marginRight: '20px', height: '3.5rem', width: 'fit-content',padding: '0 14px', fontSize: '1.1rem'}}>
               Know More About Permissions ?
             </VFButtonOutline>
 
@@ -246,7 +246,7 @@ const SingleUserPermissionSelectionModal = ({ dataAllPermissions, closeModal, cr
           </div>
           </DropdownWrapper>
 
-        </Portal>)}
+        </Portal>)} */}
 
           <ChartViewToggle
             isChartView={isChartView}
