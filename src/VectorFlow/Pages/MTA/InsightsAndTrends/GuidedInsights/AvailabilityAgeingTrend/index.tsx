@@ -5,16 +5,15 @@ import { useState, useEffect } from "react";
 import VFInfoToolTip from "../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 import OverlayLoader from "../../../../../../VectorFlow/Pages/MTO/Common/Loader";
 import { chartParams1  } from "./chartParams";
-import { generateChartOptions } from "../../../../../../helpers/utils";
+import { generateChartOptions, nonce } from "../../../../../../helpers/utils";
 import VFHorizon from "../../../../../../components/VectorFLOW/commons/VFHorizon";
 
 
 const AvailabilityAgeingTrend = ({themeUi,filter, horizon, setHorizon}:{themeUi:string,filter:any, ageing:number, setAgeing:any, horizon:number, setHorizon:any}) => {
- 
-
   const { mutateAsync: GetAvailabilityAgeing, isLoading } =useGetAvailabilityAgeing();
   const [options, setOptions] = useState({})
   const [age,setAgeing]=useState(1);
+
   
   const OnHorizonChange = async (hvalue: any) => {
     setHorizon(hvalue);
@@ -23,7 +22,7 @@ const AvailabilityAgeingTrend = ({themeUi,filter, horizon, setHorizon}:{themeUi:
     const data = AvailabilityAgeing?.data?.data;
     // const customizedChartProps = generateChartOptions(data, chartParams1);
     // setOptions(customizedChartProps);
-    const customizedChartProps = generateChartOptions(data, chartParams1);
+    const customizedChartProps = generateChartOptions(data, chartParams1, nonce);
     customizedChartProps.data = data; 
     setOptions(customizedChartProps);
   };

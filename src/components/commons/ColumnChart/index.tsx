@@ -7,26 +7,38 @@ import {
   WrapperColumnGreen,
   WrapperColumnWhite,
   TextColumn,
-} from "./styles";
+  colorTextVar
+} from "./styles.css";
+import * as globalStyles from "../../../styles/global";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 
 const ColumnChart = ({ themeUi }: any) => {
   const { t } = useTranslation();
 
+  const colorText =
+    globalStyles.chooseThemeColor?.[themeUi]?.colorText ?? globalStyles.Black;
+
   return (
-    <WrapperChart>
-      <ChartRight>
-        <ChartLeft themeUi={themeUi}>{t("columnChart.textLeft")}</ChartLeft>
-        <WrapperColumnRed themeUi={themeUi}>
-          <TextColumn>{t("columnChart.red")}</TextColumn>
-        </WrapperColumnRed>
-        <WrapperColumnGreen themeUi={themeUi}>
-          <TextColumn>{t("columnChart.green")}</TextColumn>
-        </WrapperColumnGreen>
-        <WrapperColumnWhite themeUi={themeUi}>
-          <TextColumn>{t("columnChart.white")}</TextColumn>
-        </WrapperColumnWhite>
-      </ChartRight>
-    </WrapperChart>
+    <div
+      className={WrapperChart}
+      style={assignInlineVars({ [colorTextVar]: colorText })}
+    >
+      <div className={ChartRight}>
+        <div className={ChartLeft}>{t("columnChart.textLeft")}</div>
+
+        <div className={WrapperColumnRed}>
+          <span className={TextColumn}>{t("columnChart.red")}</span>
+        </div>
+
+        <div className={WrapperColumnGreen}>
+          <span className={TextColumn}>{t("columnChart.green")}</span>
+        </div>
+
+        <div className={WrapperColumnWhite}>
+          <span className={TextColumn}>{t("columnChart.white")}</span>
+        </div>
+      </div>
+    </div>
   );
 };
 

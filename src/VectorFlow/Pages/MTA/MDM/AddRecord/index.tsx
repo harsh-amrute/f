@@ -2,128 +2,130 @@ import React, { useEffect, useState } from "react";
 
 import SelectGroupedMasters from "../../../../../components/VectorFLOW/layouts/SelectGroupedMasters";
 
-
 import useViewModify from "../ViewModify/useViewModify";
 import useAdd from "./useAdd";
 
-
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
 import VFTab from "../../../../../components/VectorFLOW/commons/VFTab";
-import { SCContainer } from "../ViewModify/styles";
+import { SCContainer } from "../ViewModify/styles.css";
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
 import UploadModal from "../ViewModify/UploadModal";
 import VFTaskBar from "../ViewModify/VFTaskbar";
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
 import VFOverlay from "../../../../../components/VectorFLOW/commons/VFOverlay";
-import { GridFilterWrapper ,TextBtn} from "../../../MTO/Common/VFPagination/styles";
+import {
+  gridFilterWrapper,
+  textBtn,
+} from "../../../MTO/Common/VFPagination/styles.css";
 import { useUserData } from "../../../../../context";
-import {getUploadModalRadioButtons } from "../../../../../helpers/utils";
+import { getUploadModalRadioButtons } from "../../../../../helpers/utils";
 import { useDispatch, useSelector } from "react-redux";
 import { TOGGLE_SELECT_MASTER_SCREEN } from "../../../../../redux/actions/MDM";
 
-import { MDMMasterState,Field } from "../../../../types/MDM";
+import { MDMMasterState, Field } from "../../../../types/MDM";
 import { useLocation } from "react-router";
 import { RootState } from "../../../../../redux/store/store";
 
 const AddRecord = () => {
+  const { user } = useUserData();
+  const themeUi = user?.user?.theme_ui;
+  const [disabled, setDisabled] = useState(true);
 
-    const {user} = useUserData()
-    const themeUi = user?.user?.theme_ui;
-    const [disabled,setDisabled]=useState(true);
+  const location = useLocation();
 
-    const location = useLocation();
+  const {
+    activeMaster,
+    handleTabClose,
+    addNewMaster,
+    isLoading,
+    toggleUploadModal,
+    downloadFileName,
+    setDownloadFileName,
+    onUploadMaster,
+    file,
+    setFile,
+    isTableDataLoading,
+    isSavingToDraft,
+    exportToExcel,
+    onBackButton,
+    onBackButton1,
+    onClearExportError,
+    agGridProps,
+    ref,
+    tempRef,
+    tempAgGridProps,
+    tempGridData,
+    deleteSelected,
+    selectedRowsCount,
+    recordCount,
+    currentPage,
+    handleChangePage,
+    editOnline,
+    onEditOnline,
+    isUploadModalOpen,
+    onReset,
+    onSaveToDraft,
+    onEditOnlineSave,
+    isDataAvailableLocally,
+    isOverlayVisible,
+    onDiscardDraftCallback,
+  } = useViewModify("add");
 
-    const {
-        activeMaster,
-        handleTabClose,
-        addNewMaster,
-        isLoading,
-        toggleUploadModal,
-        downloadFileName,
-        setDownloadFileName,
-        onUploadMaster,
-        file,
-        setFile,
-        isTableDataLoading,
-        isSavingToDraft,
-        exportToExcel,
-        onBackButton,
-        onBackButton1,
-        onClearExportError,
-        agGridProps,
-        ref,
-        tempRef,
-        tempAgGridProps,
-        tempGridData,
-        deleteSelected,
-        selectedRowsCount,
-        recordCount,
-        currentPage,
-        handleChangePage,
-        editOnline,
-        onEditOnline,
-        isUploadModalOpen,
-        onReset,
-        onSaveToDraft,
-        onEditOnlineSave,
-        isDataAvailableLocally,
-        isOverlayVisible,
-        onDiscardDraftCallback
+  const {
+    isSelectMasterOpen,
+    handleSubmitSelectMaster,
+    onCancel,
+    allMasters,
+    selectedMasters,
+    handleOnClickMaster,
+    handleRadioButton,
+    handleTabChange,
+    onSubmit,
+    showMasterGroup,
+    showMaster,
+    options,
+    selectedOptions,
+    errorCount,
+    isSubmitDisabled,
+  } = useAdd();
 
-    } = useViewModify('add');
-
-    const {
-      isSelectMasterOpen,
-        handleSubmitSelectMaster,
-        onCancel,
-        allMasters,
-        selectedMasters,
-        handleOnClickMaster,
-        handleRadioButton,
-        handleTabChange,
-        onSubmit,
-        showMasterGroup,
-        showMaster,
-        options,
-        selectedOptions,
-        errorCount,
-        isSubmitDisabled
-    } = useAdd()
-    
-    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig); 
-    const ADDRECORD_PAGE = EnvConfig['ADDRECORD_PAGE'];  
-    const RECORD_UPLOAD_LIMIT = EnvConfig['RECORD_UPLOAD_LIMIT']; 
-    useEffect(()=>{
-      if(ref.current && ref.current.api){
-        if(isTableDataLoading){
-          ref.current?.api.showLoadingOverlay();
-        }
-        else{
-          ref.current?.api.hideOverlay();
-        }
+  const EnvConfig = useSelector((state: RootState) => state.mta.EnvConfig);
+  const ADDRECORD_PAGE = EnvConfig["ADDRECORD_PAGE"];
+  const RECORD_UPLOAD_LIMIT = EnvConfig["RECORD_UPLOAD_LIMIT"];
+  useEffect(() => {
+    if (ref.current && ref.current.api) {
+      if (isTableDataLoading) {
+        ref.current?.api.showLoadingOverlay();
+      } else {
+        ref.current?.api.hideOverlay();
       }
-    },[isTableDataLoading])
-
-
-    if(isLoading){
-        return <VFLoader/>
     }
+  }, [isTableDataLoading]);
 
-         const clearGridFilter = () =>{
-                  ref?.current?.api.setFilterModel(null);
-                  setDisabled(true)
-              }
-          
-             
-              const CustomStatusPanel = () => {
-                  return (
-                      <GridFilterWrapper style={{marginTop:'25px'}}>
-                          <TextBtn onClick={clearGridFilter} disabled={disabled} themeUi={themeUi}>
-                              Clear All Grid Filters
-                          </TextBtn>  
-                      </GridFilterWrapper>           
-                  );
-              };
+  if (isLoading) {
+    return <VFLoader />;
+  }
+
+  const clearGridFilter = () => {
+    ref?.current?.api.setFilterModel(null);
+    setDisabled(true);
+  };
+
+  const brand = themeUi === "REGALBLAZE" ? "REGALBLAZE" : "DEFAULT";
+
+  const CustomStatusPanel = () => {
+    return (
+      <div className={gridFilterWrapper} style={{ marginTop: "25px" }}>
+        <button
+          className={textBtn[brand]}
+          onClick={clearGridFilter}
+          disabled={disabled}
+        >
+          Clear All Grid Filters
+        </button>
+      </div>
+    );
+  };
 
 
     if(isSelectMasterOpen){
@@ -147,8 +149,8 @@ const AddRecord = () => {
     const suppressMovable = true;
     return(
         <React.Fragment>
-          <SCContainer>
-              <VFTab 
+      <div className={SCContainer}>
+      <VFTab 
                 activeMaster={activeMaster}
                 themeUi={themeUi}
                 onTabChange={handleTabChange}
@@ -206,7 +208,7 @@ const AddRecord = () => {
                     handleChangePage={(e)=>handleChangePage(e)}  
                   />
               }
-          </SCContainer>
+          </div>
           {isUploadModalOpen && 
           <UploadModal 
             header={"Addition"}
@@ -253,52 +255,59 @@ const AddRecord = () => {
 
           />
         } */}
-        {
-          isOverlayVisible && (
-            <VFOverlay>
-             <h1 style={{backgroundColor:"white",padding:'15px',borderRadius:'8px'}}>Loading....</h1>
-            </VFOverlay>
-          )
-        }
-        {
-          !isSelectMasterOpen && 
-          <div style={{zoom:'var(--nms-filter-zoom)'}}>
-            <VFTaskBar
-              disableSubmit={isSubmitDisabled}
-              showSubmittedExportError={activeMaster?.rowData.length > 0 && errorCount>0}
-              enableEditOnlineReset={false}
-              disableResumeSeasonality={()=>false}
-              disableStopSeasonality={()=>false}
-              masterProgress={activeMaster.progress}
-              onReset={onReset}
-              onSaveToDraft={onSaveToDraft}
-              isSavingToDraft={isSavingToDraft ?? false}
-              onEditOnlineSave={onEditOnlineSave}
-              editOnline={editOnline}
-              onEditOnline={()=>onEditOnline('editOnline')}
-              onBack={() => onBackButton(location?.state?.backUrl)}
-              onBack1={() => onBackButton1(location?.state?.backUrl)}
-              onClearAndExportErrors={onClearExportError}
-              onModifyData={()=>toggleUploadModal(true)}
-              onExportData={exportToExcel}
-              onSubmit={onSubmit}
-              onDeleteSelected={deleteSelected}
-              onPhaseInPhaseOutStop={()=>console.log('')}
-              onSeasonalityResume={()=>console.log('')}
-              onSeasonalityStop={()=>console.log('')}
-              onDeleteData={()=>console.log('')}
-              onDeleteOnline={()=>console.log('')}
-              onDeleteOnlineReset={()=>console.log('')}
-              onSubmitConflictData={()=>console.log('')}
-              onDeleteOnlineSubmit={()=>console.log('')}
-              masterId={activeMaster.id}
-              DataCount={activeMaster.rowData.length}
-              onDiscardDraftCallback={onDiscardDraftCallback}
-            />
-          </div>
-        }
-        </React.Fragment>
-    )
-}
+      {isOverlayVisible && (
+        <VFOverlay>
+          <h1
+            style={{
+              backgroundColor: "white",
+              padding: "15px",
+              borderRadius: "8px",
+            }}
+          >
+            Loading....
+          </h1>
+        </VFOverlay>
+      )}
+      {!isSelectMasterOpen && (
+        <div style={{ zoom: "var(--nms-filter-zoom)" }}>
+          <VFTaskBar
+            disableSubmit={isSubmitDisabled}
+            showSubmittedExportError={
+              activeMaster?.rowData.length > 0 && errorCount > 0
+            }
+            enableEditOnlineReset={false}
+            disableResumeSeasonality={() => false}
+            disableStopSeasonality={() => false}
+            masterProgress={activeMaster.progress}
+            onReset={onReset}
+            onSaveToDraft={onSaveToDraft}
+            isSavingToDraft={isSavingToDraft ?? false}
+            onEditOnlineSave={onEditOnlineSave}
+            editOnline={editOnline}
+            onEditOnline={() => onEditOnline("editOnline")}
+            onBack={() => onBackButton(location?.state?.backUrl)}
+            onBack1={() => onBackButton1(location?.state?.backUrl)}
+            onClearAndExportErrors={onClearExportError}
+            onModifyData={() => toggleUploadModal(true)}
+            onExportData={exportToExcel}
+            onSubmit={onSubmit}
+            onDeleteSelected={deleteSelected}
+            onPhaseInPhaseOutStop={() => console.log("")}
+            onSeasonalityResume={() => console.log("")}
+            onSeasonalityStop={() => console.log("")}
+            onDeleteData={() => console.log("")}
+            onDeleteOnline={() => console.log("")}
+            onDeleteOnlineReset={() => console.log("")}
+            onSubmitConflictData={() => console.log("")}
+            onDeleteOnlineSubmit={() => console.log("")}
+            masterId={activeMaster.id}
+            DataCount={activeMaster.rowData.length}
+            onDiscardDraftCallback={onDiscardDraftCallback}
+          />
+        </div>
+      )}
+    </React.Fragment>
+  );
+};
 
 export default AddRecord;

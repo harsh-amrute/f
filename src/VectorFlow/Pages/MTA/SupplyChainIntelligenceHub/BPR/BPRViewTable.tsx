@@ -1,23 +1,50 @@
-import {useState,useMemo} from 'react'
-import { ColDef } from 'ag-grid-enterprise';
-import { useUserData } from '../../../../../context';
-import BPRViewTableRequestCellRenderer from './BPRViewTableRequestCellRenderer';
-import BPRViewTableRowCellWithReadMore from './BPRViewTableRowCellWithReadMore';
-import {BPRViewTableWrapper,BPRViewTablePrefix,BPRViewTableGrid,BPRViewTableHeaderContainer,BPRViewTableRowContainer,BPRViewTableRow,BPRViewTableRowCell,BPRViewTablePrefixWrapper, BPRViewTablePrefixText, BPRViewTablePrefixIcon, BPRViewTableNoDataContainer, BPRViewTableNoDataHeader, BPRViewTableNoDataText, BPRViewTableHeaderTab, BPRViewTableAvailabilityCellRenderer} from './styles'
-import AgeingCellRenderer from './AgeingCellRenderer';
-import WhereAboutsCellRenderer from './WhereAboutsCellRenderer';
-import BPRViewTableColumnHeader from './BPRViewTableColumnHeader';
-import { getFiltersArrayFromColDefs, performNumericalOpertionsForBPRViewTableFilter, performStringOpertionsForBPRViewTableFilter } from '../../../../../helpers/utils';
+import { useState, useMemo } from "react";
+import { ColDef } from "ag-grid-enterprise";
+import { useUserData } from "../../../../../context";
+import BPRViewTableRequestCellRenderer from "./BPRViewTableRequestCellRenderer";
+import BPRViewTableRowCellWithReadMore from "./BPRViewTableRowCellWithReadMore";
+import {
+  BPRViewTableWrapper,
+  BPRViewTablePrefix,
+  BPRViewTableGrid,
+  BPRViewTableHeaderContainer,
+  BPRViewTableRowContainer,
+  BPRViewTableRow,
+  BPRViewTableRowCell,
+  BPRViewTablePrefixWrapper,
+  BPRViewTablePrefixText,
+  BPRViewTablePrefixIcon,
+  BPRViewTableNoDataContainer,
+  BPRViewTableNoDataHeader,
+  BPRViewTableNoDataText,
+  BPRViewTableHeaderTab,
+  BPRViewTableAvailabilityCellRenderer,
+  tabTextColorVar,
+  tabBgVar,
+  tabZIndexVar,
+  tabMarLeftVar,
+  tabPadLeftVar,
+} from "./styles.css";
+import AgeingCellRenderer from "./AgeingCellRenderer";
+import WhereAboutsCellRenderer from "./WhereAboutsCellRenderer";
+import BPRViewTableColumnHeader from "./BPRViewTableColumnHeader";
+import {
+  getFiltersArrayFromColDefs,
+  performNumericalOpertionsForBPRViewTableFilter,
+  performStringOpertionsForBPRViewTableFilter,
+} from "../../../../../helpers/utils";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
+import * as globalStyles from "../../../../../styles/global";
 
-export interface BPRViewTableColDef{
-    headerName: any
-    colId: string
-    field?: string
-    filter?:boolean
-    filterValue?:string
-    dataType?:string
-    onApplyFilter?:(filterString:string,query:string)=>void
-    onCellClicked?:()=>void
+export interface BPRViewTableColDef {
+  headerName: any;
+  colId: string;
+  field?: string;
+  filter?: boolean;
+  filterValue?: string;
+  dataType?: string;
+  onApplyFilter?: (filterString: string, query: string) => void;
+  onCellClicked?: () => void;
 }
 
 interface BPRViewTableProps{
@@ -82,20 +109,18 @@ const BPRViewTable = (props:BPRViewTableProps)=>{
 
         if(!filteredRows || filteredRows.length===0){
             return(
-                    <BPRViewTableNoDataContainer>
-                        <BPRViewTableNoDataHeader>
-                            No Data To Show 
-                        </BPRViewTableNoDataHeader>
-                        <BPRViewTableNoDataText>
+              <div className={BPRViewTableNoDataContainer}>
+              <p className={BPRViewTableNoDataHeader}>No Data To Show</p>
+              <p className={BPRViewTableNoDataText}>
                             Please select a row from above table to view data
-                        </BPRViewTableNoDataText>
-                    </BPRViewTableNoDataContainer>
+                        </p>
+                    </div>
             )
         }
         return(
             filteredRows && filteredRows.map((row:any,index:number)=>{
                 return(
-                    <BPRViewTableRow key={index}>
+                  <div className={BPRViewTableRow} key={index}>
                         {
                             colDefs.map((colDef:ColDef,index:number)=>{
                                 if(colDef.colId){
@@ -105,101 +130,114 @@ const BPRViewTable = (props:BPRViewTableProps)=>{
                                             return <WhereAboutsCellRenderer value={row}/>
                                         }
 
-                                        if(colDef.colId==='ag'){
-                                            return (
-                                                <AgeingCellRenderer value={row}/>
-                                            )
-                                        }
+                  if (colDef.colId === "ag") {
+                    return <AgeingCellRenderer value={row} />;
+                  }
 
-                                       if(colDef.colId==='remarks'){
-                                            return(
-                                                <BPRViewTableRowCellWithReadMore value={row[colDef.colId]} key={index}/>
-                                            )
-                                       }
-                                       if(colDef.colId==='request'){
-                                            return(
-                                                <BPRViewTableRequestCellRenderer onClick={onReq} key={index}/>
-                                            )
-                                        }
-                                        if(colDef.colId==='avail'){
-                                            return(
-                                                <BPRViewTableRowCell key={index}>
-                                                    <BPRViewTableAvailabilityCellRenderer>
-                                                        {row[colDef.colId]}
-                                                    </BPRViewTableAvailabilityCellRenderer>
-                                                </BPRViewTableRowCell>
-                                            )
-                                        }
-                                       return(
-                                        <BPRViewTableRowCell key={index}>
-                                            {row[colDef.colId]}
-                                        </BPRViewTableRowCell>
-                                    )
-                                   }
-                                   return(
-                                        <BPRViewTableRowCell key={index}>
-                                            NULL
-                                        </BPRViewTableRowCell>
-                                   )
-                                }
-                                }
-                            )
-                        }
-                    </BPRViewTableRow>
-                )
-            })
-        )
-    }
+                  if (colDef.colId === "remarks") {
+                    return (
+                      <BPRViewTableRowCellWithReadMore
+                        value={row[colDef.colId]}
+                        key={index}
+                      />
+                    );
+                  }
+                  if (colDef.colId === "request") {
+                    return (
+                      <BPRViewTableRequestCellRenderer
+                        onClick={onReq}
+                        key={index}
+                      />
+                    );
+                  }
+                  if (colDef.colId === "avail") {
+                    return (
+                      <div className={BPRViewTableRowCell} key={index}>
+                        <div className={BPRViewTableAvailabilityCellRenderer}>
+                          {row[colDef.colId]}
+                        </div>
+                      </div>
+                    );
+                  }
+                  return (
+                    <div className={BPRViewTableRowCell} key={index}>
+                      {row[colDef.colId]}
+                    </div>
+                  );
+                }
+                return (
+                  <div className={BPRViewTableRowCell} key={index}>
+                    NULL
+                  </div>
+                );
+              }
+            })}
+          </div>
+        );
+      })
+    );
+  };
 
-    return(
-        <BPRViewTableWrapper>
-            <BPRViewTablePrefixWrapper>
-                <BPRViewTablePrefix>
-                <BPRViewTableHeaderTab
-                    themeUi={theme_ui}
-                    zIndex={1}
-                    marLeft={false}
-                    status='active'
-                >
-                    <BPRViewTablePrefixText>
-                    {tableHeader}
-                    </BPRViewTablePrefixText>
-                    <BPRViewTablePrefixIcon src={tablePrefixSrc}/>
-                </BPRViewTableHeaderTab>
-                </BPRViewTablePrefix>
-            </BPRViewTablePrefixWrapper>
-            
-            <BPRViewTableGrid>
-                {/* {tableHeader && (
+  // pick colors based on your theme/status (example)
+  const isActive = true; // status === 'active'
+  const textColor = isActive ? "#000" : "#666";
+  const themeUi = user?.user?.theme_ui;
+
+  const bg =
+    themeUi === "REGALBLAZE"
+      ? globalStyles.chooseThemeColor[themeUi]?.color5
+      : "transparent linear-gradient(74deg, #820F4C 0%, #BC3D81 100%) 0% 0% no-repeat padding-box";
+  const marLeft = false;
+
+  return (
+    <div className={BPRViewTableWrapper}>
+      <div className={BPRViewTablePrefixWrapper}>
+        <div className={BPRViewTablePrefix}>
+          <div
+            className={BPRViewTableHeaderTab}
+            style={assignInlineVars({
+              [tabTextColorVar]: textColor,
+              [tabBgVar]: bg,
+              [tabZIndexVar]: String(1), // zIndex={1}
+              ...(marLeft
+                ? { [tabMarLeftVar]: "-1px", [tabPadLeftVar]: "4px" }
+                : {}),
+            })}
+          >
+            <div className={BPRViewTablePrefixText}>{tableHeader}</div>
+            <img className={BPRViewTablePrefixIcon} src={tablePrefixSrc} />
+          </div>
+        </div>
+      </div>
+
+      <div className={BPRViewTableGrid}>
+        {/* {tableHeader && (
                     <TableHeader>
                         {tableHeader}
                     </TableHeader>
                 )} */}
-                <BPRViewTableHeaderContainer>
-                    {colDefs.map((colDef,index)=>{
-                        const currFilter = filters.find((f)=>f.colId===colDef.colId)
-                        return (
-                            <BPRViewTableColumnHeader 
-                                key={index}
-                                colDef={{
-                                    ...colDef,
-                                    filterValue:currFilter?.filterValue || '',
-                                    onApplyFilter:(filterString,query)=> {
-                                    onApplyFilter(colDef.colId,filterString,query)
-                                }}}
-                                query={currFilter?.query}
-                            />
-                        )
-                    })}
-                </BPRViewTableHeaderContainer>
-                <BPRViewTableRowContainer>
-                    {renderRows()}
-                </BPRViewTableRowContainer>
-            </BPRViewTableGrid>
-        </BPRViewTableWrapper>
-    )
-}
-
-
+        <div className={BPRViewTableHeaderContainer}>
+          {colDefs.map((colDef, index) => {
+            const currFilter = filters.find((f) => f.colId === colDef.colId);
+            return (
+              <BPRViewTableColumnHeader
+                key={index}
+                colDef={{
+                  ...colDef,
+                  filterValue: currFilter?.filterValue || "",
+                  onApplyFilter: (filterString, query) => {
+                    onApplyFilter(colDef.colId, filterString, query);
+                  },
+                }}
+                query={currFilter?.query}
+              />
+            );
+          })}
+        </div>
+        <div className={BPRViewTableRowContainer}>{renderRows()}</div>
+      </div>
+    </div>
+  );
+};
 
 export default BPRViewTable;

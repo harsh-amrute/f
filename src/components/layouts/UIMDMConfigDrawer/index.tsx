@@ -1,5 +1,5 @@
 import Drawer from "../../commons/Drawer"
-import { Content,DrawerHeader} from "../UserURLsDrawer/styles"
+import { content,drawerHeader} from "../UserURLsDrawer/styles.css"
 import { useUserData } from "../../../context"
 import { useState } from "react"
 import NavigationTab from "../NavigationTab"
@@ -60,18 +60,18 @@ const UIMDMConfigDrawer = (props:UIMDMConfigDrawerProps)=>{
             
        
             {currTab === 0 && (
-                <Content>
+                <div className={content}>
                     <ViewUiMDMConfig
                         onEdit={onEditRole}
                         savedFilters={savedFilters}
                         onSaveFilters={setSavedFilters}
                     />
-                </Content>
+                </div>
             )}          
             {currTab === 3 && (
-                <Content>
+                <div className={content}>
                     <EditUIMDMConfig data={currUIMDMConfig} cb={resetTab}/>
-                </Content>
+                </div>
             )}
             
             
@@ -97,8 +97,8 @@ const Header = (props:{
 
 
     return(
-        <DrawerHeader 
-            themeUi={themeUi}
+        <div className={drawerHeader} 
+            // themeUi={themeUi}
         >
             <p>UI MDM Config</p>
             <div style={{flex:4}}>
@@ -116,7 +116,7 @@ const Header = (props:{
                 height={13}
                 width={13}
             />
-        </DrawerHeader>
+        </div>
     )
 }
 

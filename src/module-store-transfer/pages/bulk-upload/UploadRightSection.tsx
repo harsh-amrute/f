@@ -1,4 +1,10 @@
-import { HeaderText, RightSectionWrapper } from "./style";
+import {
+  headerTextStyle,
+  rightSectionWrapper,
+  headerTextFontSizeVar,
+  headerTextFontWeightVar,
+} from "./style.css";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 import ProgressBox from "./ProgressBox";
 import RightSectionFilePanel from "./RightSectionFilePanel";
 import VFTable from "../../../VectorFlow/Pages/MTO/Common/VFTable";
@@ -67,12 +73,18 @@ function UploadRightSection({
     }
   };
   return (
-    <RightSectionWrapper>
+    <div className={rightSectionWrapper}>
       <ProgressBox label={progress===100?"Uploaded Succesfully":"Uploading file..."}  progress={progress}/>
       {(progress===100) &&
-        <HeaderText>
-        {(errorData?.length && errorData.length>0) ? `${errorData.length} rows contain errors` : "No errors found"}
-      </HeaderText>
+      <div
+      className={headerTextStyle}
+      style={assignInlineVars({
+        [headerTextFontSizeVar]: "1.35rem",
+        [headerTextFontWeightVar]: "600",
+      })}
+    >
+      {(errorData?.length && errorData.length>0) ? `${errorData.length} rows contain errors` : "No errors found"}
+      </div>
       }
       <div style={{ display: "flex", flexDirection: "column", gap: "3rem" }}>
         {
@@ -118,7 +130,7 @@ function UploadRightSection({
           rowData={errorData}
         />
       </div>
-    </RightSectionWrapper>
+    </div>
   );
 }
 

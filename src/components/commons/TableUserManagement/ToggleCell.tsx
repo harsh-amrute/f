@@ -1,4 +1,4 @@
-import * as Tab from "./style";
+import * as Tab from "./style.css";
 import { ButtonOutlineStoreStatus } from "../../index";
 import { useChangeStatus } from "../../../services/profile";
 import { notifyError, notifySuccess } from "../../../helpers/notify";
@@ -50,14 +50,14 @@ const ToggleCell = ({ data, permission, is_admin }:any) => {
   }
 
   return (
-    <Tab.SCTableTdCenter>
+    <div className={Tab.tableTdCenter}>
       <ButtonOutlineStoreStatus
         labelOn={t("profile.tabContent.manageUsers.button.active")}
         labelOff={t("profile.tabContent.manageUsers.button.inactive")}
         toggled={isActive}
         onClick={changeStatus}
       />
-    </Tab.SCTableTdCenter>
+    </div>
   );
 };
 

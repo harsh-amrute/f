@@ -1,61 +1,68 @@
 import Spinner from '../../../components/commons/Spinner'
 import { SelectSearchMultiple } from '../../index'
 import {
-  SCLocationFilter,
-  SCProducFilterHeader,
-  SCProductBoxSelect,
-  SCProductFilterText,
-  SCIconLocation,
-  SCIconDown,
-  SCProductFilterImg,
-  SCProductBoxSelectItem
-} from './styles'
+  locationFilter,
+  producFilterHeader,
+  productBoxSelect,
+  productFilterText,
+  productFilterImg,
+  productBoxSelectItem,
+  iconLocationBase,
+  iconLocationTop16,
+  iconLocationTop19,
+  iconDown,
+} from './styles.css';
 import { useTranslation } from 'react-i18next'
 
 interface LocationProps {
-  locationFilter: object[]
-  width: number
-  loading: boolean
+  locationFilter: object[];
+  width: number;
+  loading: boolean;
 }
 
-const LocationFilter = ({ locationFilter, width, loading }: LocationProps) => {
+const LocationFilter = ({ locationFilter: list, width, loading }: LocationProps) => {
   const { t } = useTranslation()
   return (
-    <SCLocationFilter>
-      <SCProducFilterHeader>
-        <SCProductFilterImg src="/assets/img/ist/filter.svg" alt="filter" />
-        <SCProductFilterText>{t('filter.location.title')}</SCProductFilterText>
-      </SCProducFilterHeader>
-      <SCProductBoxSelect>
+    <div className={locationFilter}>
+      <div className={producFilterHeader}>
+        <img className={productFilterImg} src="/assets/img/ist/filter.svg" alt="filter" />
+        <p className={productFilterText}>{t('filter.location.title')}</p>
+      </div>
+
+      <div className={productBoxSelect}>
         {loading && <Spinner />}
 
         {!loading &&
-          locationFilter.map((item: any, index: number) => {
+          list.map((item: any, index: number) => {
+            const topClass = item.icon ? iconLocationTop19 : iconLocationTop16;
+
             return (
-              <SCProductBoxSelectItem key={index} width={width}>
-                <SCIconLocation
-                  className="icon_location"
+              <div
+                key={index}
+                className={productBoxSelectItem}
+                style={{ flex: `1 0 ${width}%`, maxWidth: `${width}%` }}
+              >
+                <img
+                  className={`${iconLocationBase} ${topClass}`}
                   src={item.icon ? item.icon : '/assets/img/ist/location.svg'}
                   alt="location"
-                  locationIcon={!item.icon}
                 />
+
                 <SelectSearchMultiple
                   placeholder={item.placeholder}
                   options={item.options}
                   value={item.value}
                   setValue={item.onChange}
                 />
-                <SCIconDown
-                  className="icon_location"
-                  src="/assets/img/down-icon.svg"
-                  alt="location"
-                />
-              </SCProductBoxSelectItem>
-            )
+
+                <img className={iconDown} src="/assets/img/down-icon.svg" alt="open" />
+              </div>
+            );
           })}
-      </SCProductBoxSelect>
-    </SCLocationFilter>
-  )
+      </div>
+    </div>
+  );
+
 }
 
 export default LocationFilter

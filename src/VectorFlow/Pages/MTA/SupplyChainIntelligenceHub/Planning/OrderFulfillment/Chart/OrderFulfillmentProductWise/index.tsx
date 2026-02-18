@@ -3,7 +3,7 @@ import { Allotment } from "allotment";
 import "allotment/dist/style.css";
 import "../../styles.css";
 import { ColDef } from "ag-grid-enterprise";
-import {SCDynamicContainer} from '../../styles';
+import {SCDynamicContainer} from '../../style.css';
 import VFCharts from "../../../../../../../../components/VectorFLOW/commons/VFCharts";
 import {convertToInt, getProductAndLocationHeirarchiesFromEnv,generateChartOptions} from '../../../../../../../../helpers/utils';
 import { chartParams1 , chartParams2 } from './chartParams' 
@@ -141,7 +141,7 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
      
     return(
         <>
-            <SCDynamicContainer>
+            <div className={SCDynamicContainer}>
                 <Allotment>
                     <Allotment.Pane preferredSize={'50%'}>
                         
@@ -169,7 +169,7 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
                     </Allotment.Pane>
                   
                 </Allotment>
-            </SCDynamicContainer>
+            </div>
         </>
     )
     

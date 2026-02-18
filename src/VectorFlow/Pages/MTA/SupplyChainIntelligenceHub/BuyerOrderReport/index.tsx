@@ -1,7 +1,7 @@
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
 import VFPagination from "../../../../../VectorFlow/Pages/MTO/Common/VFPagination"
 
- import { BORLayout } from "./styles"
+ import { BORLayout } from "./styles.css"
  import {useBOR} from "./useBOR"
  import ActionToolBar from "../Planning/ActionToolBar"
 import { GridStateContext } from "../../../../../context/GridStateContext";
@@ -97,7 +97,7 @@ const BuyerOrderReport = ()=>{
         {lastRunDate && (
         <LastRunDateComponent lastRunDate={lastRunDate} />
       )}
-        <BORLayout>
+        <div className={BORLayout}>
           {/* <BORTaskBar style={{width:'74%'}}>
         <VFButtonOutline
             themeUi="NOIRFUSION"
@@ -204,7 +204,7 @@ const BuyerOrderReport = ()=>{
                   />
                 </div>
 
-        </BORLayout>
+        </div>
       </GridStateContext.Provider>
     )
 }

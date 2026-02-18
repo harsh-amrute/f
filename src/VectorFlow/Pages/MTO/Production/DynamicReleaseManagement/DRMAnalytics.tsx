@@ -10,7 +10,7 @@ import {
     BPRDailyAnalyticsTableRowContainer,
     BPRDailyAnalyticsWrapper,
     BPRDailyAnalyticsTableCellHeader,
-} from './DynamicReleaseManagement.styled'
+} from './DynamicReleaseManagement.styled.css'
 // import { useSelector } from 'react-redux';
 // import { RootState } from '../../../../../../redux/store/store';
 import { formatNumber } from '../../Procurement/MaterialCoverage/CommonFunc';
@@ -69,28 +69,28 @@ const DRMAnalytics = () => {
 
 
     return (
-        <BPRDailyAnalyticsWrapper>
-            <BPRDailyAnalyticsContainer>
-                <BPRDailyAnalyticsHeader>
+        <div className={BPRDailyAnalyticsWrapper}>
+            <div className={BPRDailyAnalyticsContainer}>
+                <div className={BPRDailyAnalyticsHeader}>
                     Analytics
-                </BPRDailyAnalyticsHeader>
+                </div>
 
-                <BPRDailyAnalyticsTableContainer>
-                    <BPRDailyAnalyticsTableHeaderContainer style={{ borderTop: '1px dashed white', borderBottom: '1px dashed white' }}>
+                <div className={BPRDailyAnalyticsTableContainer}>
+                    <div className={BPRDailyAnalyticsTableHeaderContainer} style={{ borderTop: '1px dashed white', borderBottom: '1px dashed white' }}>
                         {rowData.map((data) => {
                             return (
-                                <BPRDailyAnalyticsTableHeader>
+                                <div className={BPRDailyAnalyticsTableHeader}>
                                     {data.headerName}
-                                </BPRDailyAnalyticsTableHeader>
+                                </div>
                             )
                         })
                         }
-                    </BPRDailyAnalyticsTableHeaderContainer>
-                    <BPRDailyAnalyticsTableRowContainer>
+                    </div>
+                    <div className={BPRDailyAnalyticsTableRowContainer}>
 
                         {options?.Order?.map((o: any) => {
                             return (
-                                <BPRDailyAnalyticsTableRow style={{
+                                <div className={BPRDailyAnalyticsTableRow} style={{
                                     height: 30,
                                     boxShadow: 'none',
                                     backgroundColor: 'transparent',
@@ -98,47 +98,47 @@ const DRMAnalytics = () => {
                                     borderRadius: 0
                                 }}>
 
-                                    <BPRDailyAnalyticsTableCell>
-                                        <BPRDailyAnalyticsTableCellHeader style={{ color: 'white' }}>
+                                    <div className={BPRDailyAnalyticsTableCell}>
+                                        <p className={BPRDailyAnalyticsTableCellHeader} style={{ color: 'white' }}>
                                             {o.ccr}
-                                        </BPRDailyAnalyticsTableCellHeader>
+                                        </p>
 
-                                    </BPRDailyAnalyticsTableCell>
-                                    <BPRDailyAnalyticsTableCell>
-                                        <BPRDailyAnalyticsTableCellHeader style={{ color: 'white' }}>
+                                    </div>
+                                    <div className={BPRDailyAnalyticsTableCell}>
+                                        <p className={BPRDailyAnalyticsTableCellHeader} style={{ color: 'white' }}>
                                             {formatNumber(o.RMS)}
-                                        </BPRDailyAnalyticsTableCellHeader>
+                                        </p>
 
-                                    </BPRDailyAnalyticsTableCell>
-                                    <BPRDailyAnalyticsTableCell>
-                                        <BPRDailyAnalyticsTableCellHeader style={{ color: 'white' }}>
+                                    </div>
+                                    <div className={BPRDailyAnalyticsTableCell}>
+                                        <p className={BPRDailyAnalyticsTableCellHeader} style={{ color: 'white' }}>
                                             {formatNumber(o.RMT)}
-                                        </BPRDailyAnalyticsTableCellHeader>
+                                        </p>
 
-                                    </BPRDailyAnalyticsTableCell>
-                                    <BPRDailyAnalyticsTableCell>
-                                        <BPRDailyAnalyticsTableCellHeader style={{ color: 'white' }}>
+                                    </div>
+                                    <div className={BPRDailyAnalyticsTableCell}>
+                                        <p className={BPRDailyAnalyticsTableCellHeader} style={{ color: 'white' }}>
                                             {formatNumber(o.others)}
-                                        </BPRDailyAnalyticsTableCellHeader>
+                                        </p>
 
-                                    </BPRDailyAnalyticsTableCell>
-                                    <BPRDailyAnalyticsTableCell>
-                                        <BPRDailyAnalyticsTableCellHeader style={{ color: 'white' }} >
+                                    </div>
+                                    <div className={BPRDailyAnalyticsTableCell}>
+                                        <p className={BPRDailyAnalyticsTableCellHeader} style={{ color: 'white' }} >
                                             {formatNumber(o.count)}
-                                        </BPRDailyAnalyticsTableCellHeader>
+                                        </p>
 
-                                    </BPRDailyAnalyticsTableCell>
-                                </BPRDailyAnalyticsTableRow>
+                                    </div>
+                                </div>
                             )
                         })}
 
-                    </BPRDailyAnalyticsTableRowContainer>
+                    </div>
 
-                </BPRDailyAnalyticsTableContainer>
+                </div>
 
 
-            </BPRDailyAnalyticsContainer>
-        </BPRDailyAnalyticsWrapper >
+            </div>
+        </div>
 
     )
 

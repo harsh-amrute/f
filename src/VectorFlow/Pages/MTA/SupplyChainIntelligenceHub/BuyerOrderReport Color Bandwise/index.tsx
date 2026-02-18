@@ -1,19 +1,19 @@
-import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
-import VFPagination from "../../../../../VectorFlow/Pages/MTO/Common/VFPagination"
+import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
+import VFPagination from "../../../../../VectorFlow/Pages/MTO/Common/VFPagination";
 
- import { BORLayout } from "./styles"
- import {useBORColorBandwise} from "./useBORColorBandwise"
- import ActionToolBar from "../Planning/ActionToolBar"
+import { BORLayout } from "./styles.css";
+import { useBORColorBandwise } from "./useBORColorBandwise";
+import ActionToolBar from "../Planning/ActionToolBar";
 import { GridStateContext } from "../../../../../context/GridStateContext";
 import DailyDataGraphModal from "../../../../../components/VectorFLOW/commons/DailyDataGraphModal";
 import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons/NormChangeHistoryTable";
-import VFSaveRemark from "../../../../../components/VectorFLOW/commons/VFSaveRemark"
+import VFSaveRemark from "../../../../../components/VectorFLOW/commons/VFSaveRemark";
 import LastRunDateComponent from "../../../../../components/commons/lastRundate";
 import BPRRemarkHistoryModal from "../BPR/BPRRemarkHistoryModal";
 import OverlayLoader from "../../../../../VectorFlow/Pages/MTO/Common/Loader";
 import { useState } from "react";
-import { useSelector } from "react-redux"
-import { RootState } from "../../../../../redux/store/store"
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../../redux/store/store";
 
 
 const BuyerOrderReportColorBandwise = ()=>{
@@ -56,52 +56,51 @@ const BuyerOrderReportColorBandwise = ()=>{
         userPageSize
     } = useBORColorBandwise()
 
-    const [isDisabled, setIsDisabled]= useState<boolean>(true)
-     
-    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
-    const BOR_COLORBANDWISE_ROWS_PER_PAGE = EnvConfig['BOR_COLORBANDWISE_ROWS_PER_PAGE'];   
+  const [isDisabled, setIsDisabled] = useState<boolean>(true);
 
-    return(
-      <GridStateContext.Provider
-        value={{
-          ref: ref,
-          exportExcelColumns: exportExcelColumns,
-          setExportExcelColumns: setExportExcelColumns,
-          tempDownloadData: tempDownloadData,
-          setTempDownloadData: setTempDownloadData,
-          exportExcelRowData: exportExcelRowData,
-          setExportExcelRowData: setExportExcelRowData,
-          onResetCallback:onResetCallback
-        }}
-      >
-        <div style={{ marginLeft: '10px' }}>
-          <ActionToolBar
-            view={'grid'}
-            setCurrentTab={''}
-            currCategory={'BORColorBandwise'}
-            currentTab={''}
-            tabsList={[]}
-            onApplyFilter={(e) => onApplyFilter(e)}
-            onFloatingTabChange={() => console.log('')}
-            onGoBack={() => console.log('')}
-            onViewChange={() => console.log('')}
-            genericRecordCount={recordCount}
-            onExportToExcelCallBack={onExportToExcelCallBack}
-            multiFilter={currFilter}
-            setMultiFilter={setCurrFilter}
-            disableChartAndGridViewToggle
-            lastRunDate={lastRunDate}
-            generalFilterOptions={generalFilterOptions}
-            onDelete={onDeleteFilter} 
-            onSubmitEditedRows={onSubmitRemarks}
-            disableSubmitEditedRowsBtn={editedRows.length===0}
-            />
-        </div>
-        {lastRunDate && (
-        <LastRunDateComponent lastRunDate={lastRunDate} />
-      )}
-        <BORLayout>
-          {/* <BORTaskBar style={{width:'74%'}}>
+  const EnvConfig = useSelector((state: RootState) => state.mta.EnvConfig);
+  const BOR_COLORBANDWISE_ROWS_PER_PAGE =
+    EnvConfig["BOR_COLORBANDWISE_ROWS_PER_PAGE"];
+
+  return (
+    <GridStateContext.Provider
+      value={{
+        ref: ref,
+        exportExcelColumns: exportExcelColumns,
+        setExportExcelColumns: setExportExcelColumns,
+        tempDownloadData: tempDownloadData,
+        setTempDownloadData: setTempDownloadData,
+        exportExcelRowData: exportExcelRowData,
+        setExportExcelRowData: setExportExcelRowData,
+        onResetCallback: onResetCallback,
+      }}
+    >
+      <div style={{ marginLeft: "10px" }}>
+        <ActionToolBar
+          view={"grid"}
+          setCurrentTab={""}
+          currCategory={"BORColorBandwise"}
+          currentTab={""}
+          tabsList={[]}
+          onApplyFilter={(e) => onApplyFilter(e)}
+          onFloatingTabChange={() => console.log("")}
+          onGoBack={() => console.log("")}
+          onViewChange={() => console.log("")}
+          genericRecordCount={recordCount}
+          onExportToExcelCallBack={onExportToExcelCallBack}
+          multiFilter={currFilter}
+          setMultiFilter={setCurrFilter}
+          disableChartAndGridViewToggle
+          lastRunDate={lastRunDate}
+          generalFilterOptions={generalFilterOptions}
+          onDelete={onDeleteFilter}
+          onSubmitEditedRows={onSubmitRemarks}
+          disableSubmitEditedRowsBtn={editedRows.length === 0}
+        />
+      </div>
+      {lastRunDate && <LastRunDateComponent lastRunDate={lastRunDate} />}
+      <div className={BORLayout}>
+        {/* <BORTaskBar style={{width:'74%'}}>
         <VFButtonOutline
             themeUi="NOIRFUSION"
             onClick={()=>console.log('')}
@@ -115,10 +114,24 @@ const BuyerOrderReportColorBandwise = ()=>{
             Edit Filter
         </VFButton>
     </BORTaskBar> */}
-          {(isLoading || isSavedDataLoading) && <OverlayLoader/>}
-              <div style={{ height: '78vh' }}>
-                {showDailyDataGraphModal && <DailyDataGraphModal rowData={dailyData.rowData} chartData={dailyData.chartData} normChangeData={dailyData.normChangeData} masterData={dailyData.masterData} isModalOpen={showDailyDataGraphModal} suggestionData={dailyData.suggestionData} monitoringData={dailyData.monitoringData} skuKey={'SKUCode'} whKey={'WHDescription'} />}
-                {showNormChangeHistoryTable && <NormChangeHistoryTable data={dailyData.normChangeData} />}
+        {(isLoading || isSavedDataLoading) && <OverlayLoader />}
+        <div style={{ height: "78vh" }}>
+          {showDailyDataGraphModal && (
+            <DailyDataGraphModal
+              rowData={dailyData.rowData}
+              chartData={dailyData.chartData}
+              normChangeData={dailyData.normChangeData}
+              masterData={dailyData.masterData}
+              isModalOpen={showDailyDataGraphModal}
+              suggestionData={dailyData.suggestionData}
+              monitoringData={dailyData.monitoringData}
+              skuKey={"SKUCode"}
+              whKey={"WHDescription"}
+            />
+          )}
+          {showNormChangeHistoryTable && (
+            <NormChangeHistoryTable data={dailyData.normChangeData} />
+          )}
 
                 <VFTable
                   {...agGridProps}
@@ -175,7 +188,7 @@ const BuyerOrderReportColorBandwise = ()=>{
               rowData={exportExcelRowData}
               {...tempAgGridProps} />
           </div>
-        </BORLayout>
+        </div>
         <BPRRemarkHistoryModal
                 data={remarkHistory}
                 isOpen={isRemarkHistoryToolTipOpen}
@@ -185,4 +198,4 @@ const BuyerOrderReportColorBandwise = ()=>{
     )
 }
 
-export default BuyerOrderReportColorBandwise
+export default BuyerOrderReportColorBandwise;

@@ -42,7 +42,7 @@ const RMMaterialCellRenderer = (params: any) => {
   const options: GridOptions<any> = {
     columnDefs: colDefs,
     defaultColDef: {
-      suppressMenu: true,
+      suppressHeaderMenuButton: true,
       cellStyle: {
         textAlign: "center"
       },

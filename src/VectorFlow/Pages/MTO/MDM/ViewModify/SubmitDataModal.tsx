@@ -1,7 +1,7 @@
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard"
-import {SubmitDataTextContainer, SubmitDataButtonWrapper} from './styles'
+import {SubmitDataTextContainer, SubmitDataButtonWrapper} from './styles.css'
 import { useUserData } from "../../../../../context";
 
 interface SubmitDataModalProps{
@@ -23,10 +23,10 @@ const SubmitDataModal=(props:SubmitDataModalProps)=>{
 
     return (
         <VFModalCard headerText="Submit Data" openModal={true} closeModal={onCloseModal} headerIcon={""} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
-            <SubmitDataTextContainer>
+            <div className={SubmitDataTextContainer}>
                 Are you sure you want to submit {count} records
-            </SubmitDataTextContainer>
-            <SubmitDataButtonWrapper>
+            </div>
+            <div className={SubmitDataButtonWrapper}>
                 <VFButtonOutline themeUi={user.user.theme_ui} onClick={onFailure} onHoverChild={
                 <>
                     No   
@@ -37,7 +37,7 @@ const SubmitDataModal=(props:SubmitDataModalProps)=>{
                 <VFButton themeUi={user.user.theme_ui} onClick={onSuccess}>
                     Yes
                 </VFButton>
-            </SubmitDataButtonWrapper>
+            </div>
         </VFModalCard>
     )
 }

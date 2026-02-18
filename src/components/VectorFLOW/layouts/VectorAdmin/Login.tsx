@@ -1,7 +1,13 @@
 import { useState } from "react";
 import { notifyError } from "../../../../helpers/notify";
 
-import { PrimaryButton } from "../../../../components/commons/styled";
+import {
+  primaryButton,
+  primaryBgVar,
+  primaryWidthVar,
+  primaryHeightVar,
+  primaryRadiusVar,
+} from "../../../commons/styled/index.css";
 
 import {
   FormLogo,
@@ -10,7 +16,11 @@ import {
   InputArea,
   PasswordInput,
   FormSection,
-} from "./styles";
+  inputFocusColorVar,
+} from "./styles.css";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
+import * as globalStyles from "../../../../styles/global";
+
 import { useNavigate } from "react-router";
 import { useGetAllEnvironmentConfiguration } from "../../../../VectorFlow/Services/MTA/MDM";
 import { useDispatch } from "react-redux";
@@ -47,41 +57,53 @@ const Login = () => {
       setIsLoading(false);
     }, 1000);
   };
+  const focusColor =
+    globalStyles.chooseThemeColor["NOIRFUSION"]?.color4 ?? "#0000";
+  const theme = "NOIRFUSION";
+  const bg = globalStyles.chooseThemeColor?.[theme]?.color5 ?? "#1f2937"; // fallback if theme not found
 
   return (
-    <LoginWrapper>
-      <LoginForm onSubmit={handleLogin}>
-        <FormSection style={{ flex: 4, alignItems: "start" }}>
-          <FormLogo src="/assets/VectorFlow_black.svg" />
-        </FormSection>
-        <FormSection style={{ flex: 3 }}>
-          <InputArea themeUi="NOIRFUSION">
-            <img
-              src="/assets/img/auth/password.svg"
-              style={{ height: "20px" }}
-            />
-            <PasswordInput
+    <div className={LoginWrapper}>
+      <form className={LoginForm} onSubmit={handleLogin}>
+        <div className={FormSection} style={{ flex: 4, alignItems: "start" }}>
+          <img className={FormLogo} src="/assets/VectorFlow_black.svg" />
+        </div>
+
+        <div className={FormSection} style={{ flex: 3 }}>
+          <div
+            className={InputArea}
+            style={assignInlineVars({ [inputFocusColorVar]: focusColor })}
+          >
+            <img src="/assets/img/auth/password.svg" style={{ height: 20 }} />
+            <input
+              className={PasswordInput}
               type="password"
               required
               autoFocus
               disabled={isLoading}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder={"Password"}
+              placeholder="Password"
             />
-          </InputArea>
-        </FormSection>
-        <FormSection style={{ flex: 1 }}>
-          <PrimaryButton
+          </div>
+        </div>
+
+        <div className={FormSection} style={{ flex: 1 }}>
+          <button
+            className={primaryButton}
             disabled={isLoading}
             type="submit"
-            themeUi="NOIRFUSION"
-            style={{ width: "100%", height: "40px", borderRadius: "32px" }}
+            style={assignInlineVars({
+              [primaryBgVar]: bg,
+              [primaryWidthVar]: "100%",
+              [primaryHeightVar]: "40px",
+              [primaryRadiusVar]: "32px",
+            })}
           >
             Continue
-          </PrimaryButton>
-        </FormSection>
-      </LoginForm>
-    </LoginWrapper>
+          </button>
+        </div>
+      </form>
+    </div>
   );
 };
 

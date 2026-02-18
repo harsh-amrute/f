@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import VFTable from '../../../Common/VFTable'
-import { GridWrapper } from '../SchedulingStyles';
+import { gridWrapper } from '../SchedulingStyles.css';
 import { format } from 'date-fns';
 
 // Custom cell renderer for multiple instances
@@ -231,7 +231,7 @@ const GridViewJob = ({ResourceData, setExcelGridRef}: any) => {
   }, [ResourceData]);
 
   return (
-    <GridWrapper>
+    <div className={gridWrapper}>
       <VFTable
         key={"job-grid"}
         ref={gridRef}
@@ -260,7 +260,7 @@ const GridViewJob = ({ResourceData, setExcelGridRef}: any) => {
         pagination={false}
         paginationPageSize={10}
       />
-    </GridWrapper>
+    </div>
   )
 }
 

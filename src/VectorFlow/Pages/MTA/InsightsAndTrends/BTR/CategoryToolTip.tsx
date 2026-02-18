@@ -1,41 +1,41 @@
 import {ITooltipParams} from 'ag-grid-enterprise'
 
-import {CategoryToolTipWrapper,CategoryToolTipSection,CategoryToolTipSectionHeader,CategoryToolTipSectionDescription} from './styles'
+import {CategoryToolTipWrapper,CategoryToolTipSection,CategoryToolTipSectionHeader,CategoryToolTipSectionDescription} from './styles.css'
 import { BTRCategoryMapper } from "../../../../../helpers/BPRConstants"
 
 const CategoryToolTip = (params:ITooltipParams)=>{
     const categories = params.value.split("|")
     
     return(
-        <CategoryToolTipWrapper>
+        <div className={CategoryToolTipWrapper}>
             {categories.map((c:string)=>{
                 const categoryData = BTRCategoryMapper[c]
                 if(categoryData){
                     if(c==='BR'){
                         return (
-                            <CategoryToolTipSection style={{background:'black',color:'white'}}>
-                                <CategoryToolTipSectionHeader>
+                            <div className={CategoryToolTipSection} style={{background:'black',color:'white'}}>
+                                <p className={CategoryToolTipSectionHeader}>
                                     {categoryData.toolTipHeader}
-                                </CategoryToolTipSectionHeader>
-                                <CategoryToolTipSectionDescription>
+                                </p>
+                                <div className={CategoryToolTipSectionDescription}>
                                     {categoryData.toolTipDescription}
-                                </CategoryToolTipSectionDescription>
-                            </CategoryToolTipSection>
+                                </div>
+                            </div>
                         )
                     }
                     return(
-                        <CategoryToolTipSection style={{backgroundColor:categoryData.bgColor,color:categoryData.color}}>
-                            <CategoryToolTipSectionHeader>
+                        <div className={CategoryToolTipSection} style={{backgroundColor:categoryData.bgColor,color:categoryData.color}}>
+                            <p className={CategoryToolTipSectionHeader}>
                                 {categoryData.toolTipHeader}
-                            </CategoryToolTipSectionHeader>
-                            <CategoryToolTipSectionDescription>
+                            </p>
+                            <div className={CategoryToolTipSectionDescription}>
                                 {categoryData.toolTipDescription}
-                            </CategoryToolTipSectionDescription>
-                        </CategoryToolTipSection>
+                            </div>
+                        </div>
                     )
                 }
             })}        
-        </CategoryToolTipWrapper>
+        </div>
     )
 }
 

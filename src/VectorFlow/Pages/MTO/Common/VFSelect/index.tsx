@@ -18,7 +18,7 @@ const VFSelect = ({ options, themeUi, icon, placeholder, ...rest }: any) => {
     }
     return (
         <Select
-            isSearchable={true}
+            isSearchable={false}
             components={{
                 IndicatorSeparator: () => null,
                 DropdownIndicator: icon ? SearchIcon : null

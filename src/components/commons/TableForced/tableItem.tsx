@@ -2,8 +2,29 @@ import { useState } from "react";
 import CheckboxPendingRequest from "../Checkbox/CheckboxPendingRequest";
 import Checkbox from "../Checkbox";
 import ButtonOutlineCheck from "../ButtonOutlineCheck";
-import * as Tab from "./style";
+import {
+  SCTableBox,
+  SCTableInformation,
+  SCTableList,
+  SCTableItem,
+  SCTableItemName,
+  SCTableItemValue,
+  SCButtonContact,
+  SCImgContact,
+  SCTableTab,
+  SCTableTr,
+  SCTableThItem,
+  SCTableCheckbox,
+  SCTextStyle,
+  SCTableTh,
+  SCTableTdDay,
+  SCTableTd,
+  SCButtonChecBox,
+  buttonAccentVar,
+} from "./style.css";
 import { useTranslation } from "react-i18next";
+import * as globalStyles from "../../../styles/global";
+
 const TableItem = (props: any) => {
   const { t } = useTranslation();
   const cell = [
@@ -57,24 +78,20 @@ const TableItem = (props: any) => {
     const newListData = listData.filter((item: string, index: number) => {
       return listData.indexOf(item) == index;
     });
-
     return newListData;
   };
 
-  const checkValueStatus = (item: any) => {
-    if (listRequest.includes(item.id)) {
-      return "1";
-    }
+  const checkValueStatus = (it: any) => {
+    if (listRequest.includes(it.id)) return "1";
     return "0";
   };
 
   const checkTable = (id: number) => {
-    const i = listRequest.findIndex((i: any) => i === id);
+    const i = listRequest.findIndex((v: any) => v === id);
 
     const temp: any = [...listRequest];
     if (i === -1) {
       setCheckButton(!checkButton);
-
       temp.push(id);
     } else {
       setCheckButton(!checkButton);
@@ -85,72 +102,72 @@ const TableItem = (props: any) => {
 
     const isCheckAll = item.list_items
       .map((i: any) => i.id)
-      .every((value: any) => temp.includes(value));
+      .every((v: any) => temp.includes(v));
     setListCheckAll(isCheckAll, index);
   };
 
-  const checkGit = item.list_items.find((item: any) => {
-    if (item.status === "APPROVED" || item.status === "ACCEPT") {
-      return true;
-    }
+  const checkGit = item.list_items.find((it: any) => {
+    if (it.status === "APPROVED" || it.status === "ACCEPT") return true;
   });
 
-  const CheckBoxDisabled = () => {
-    return (
-      <input
-        className="CheckboxPendingRequest_input"
-        type="text"
-        disabled={true}
-      />
-    );
-  };
+  const CheckBoxDisabled = () => (
+    <input
+      className="CheckboxPendingRequest_input"
+      type="text"
+      disabled={true}
+    />
+  );
 
   const showStatus = (status: string) => {
     let color: any = "#000000";
-    if (status === "APPROVED") {
-      color = "#7D899B";
-    } else if (status === "ACCEPT") {
-      color = "#000000";
-    } else if (status === "GIT") {
-      color = "#464E5B";
-    } else {
-      color = "#000000";
-    }
+    if (status === "APPROVED") color = "#7D899B";
+    else if (status === "ACCEPT") color = "#000000";
+    else if (status === "GIT") color = "#464E5B";
 
     return (
-      <Tab.SCTableTd>
-        <span style={{ color: color }}>{status}</span>
-      </Tab.SCTableTd>
+      <td className={SCTableTd}>
+        <span style={{ color }}>{status}</span>
+      </td>
     );
   };
 
+  const accent =
+    globalStyles.chooseThemeColor?.[themeUi]?.color5 ?? globalStyles.black; // fallback if theme missing
+
   return (
     <>
-      <Tab.SCTableBox style={{ marginBottom: 30 }}>
-        <Tab.SCTableInformation>
-          <Tab.SCTableList>
-            {information(item.product).map((item: any, index: number) => (
-              <Tab.SCTableItem key={`table_${index}`}>
-                <Tab.SCTableItemName>{item.name}</Tab.SCTableItemName>{" "}
-                <Tab.SCTableItemValue>{item.value}</Tab.SCTableItemValue>
-              </Tab.SCTableItem>
+      <div className={SCTableBox} style={{ marginBottom: 30 }}>
+        <div className={SCTableInformation}>
+          <ul className={SCTableList}>
+            {information(item.product).map((info: any, idx: number) => (
+              <li className={SCTableItem} key={`table_${idx}`}>
+                <p className={SCTableItemName}>{info.name}</p>
+                <p className={SCTableItemValue}>{info.value}</p>
+              </li>
             ))}
-          </Tab.SCTableList>
-          <Tab.SCButtonContact
+          </ul>
+
+          <button
+            className={SCButtonContact}
+            // set the CSS var for border/text color
+            style={{ [buttonAccentVar]: accent } as any}
             onClick={() => contactDetail(item.product.donor_wh_code)}
-            themeUi={themeUi}
           >
-            <Tab.SCImgContact
-              src={`/assets/img/forced/${themeUi === "REGALBLAZE" ? "contact_yellow" : "contact"
-                }.svg`}
+            <img
+              className={SCImgContact}
+              src={`/assets/img/forced/${
+                themeUi === "REGALBLAZE" ? "contact_yellow" : "contact"
+              }.svg`}
+              alt=""
             />
             {t("ISTForcedClosure.contactDetails")}
-          </Tab.SCButtonContact>
-        </Tab.SCTableInformation>
-        <Tab.SCTableTab width="100%">
-          <Tab.SCTableTr>
-            <Tab.SCTableThItem>
-              <Tab.SCTableCheckbox>
+          </button>
+        </div>
+
+        <table className={SCTableTab}>
+          <tr className={SCTableTr}>
+            <th className={SCTableThItem}>
+              <span className={SCTableCheckbox}>
                 {checkGit ? (
                   <Checkbox
                     value={item.id}
@@ -163,16 +180,20 @@ const TableItem = (props: any) => {
                 ) : (
                   <CheckBoxDisabled />
                 )}
-              </Tab.SCTableCheckbox>
-              <Tab.SCTextStyle>{t("ISTForcedClosure.age")}</Tab.SCTextStyle>
-            </Tab.SCTableThItem>
-            {cell.map((i: string) => (
-              <Tab.SCTableTh>{i}</Tab.SCTableTh>
+              </span>
+              <span className={SCTextStyle}>{t("ISTForcedClosure.age")}</span>
+            </th>
+            {cell.map((i: string, k: number) => (
+              <th key={`head_${k}`} className={SCTableTh}>
+                {i}
+              </th>
             ))}
-          </Tab.SCTableTr>
-          {item.list_items.map((i: any) => (
-            <Tab.SCTableTr>
-              <Tab.SCTableTdDay
+          </tr>
+
+          {item.list_items.map((i: any, rIdx: number) => (
+            <tr key={`row_${rIdx}`} className={SCTableTr}>
+              <td
+                className={SCTableTdDay}
                 style={{ color: `${checkColorAge(i?.ageing)}` }}
               >
                 {i?.status !== "GIT" ? (
@@ -192,30 +213,36 @@ const TableItem = (props: any) => {
                     <p>{i?.ageing + " " + t("ISTForcedClosure.days")}</p>
                   </div>
                 )}
-              </Tab.SCTableTdDay>
-              <Tab.SCTableTd>{i?.sku_code}</Tab.SCTableTd>
-              <Tab.SCTableTd>{i?.variant}</Tab.SCTableTd>
-              <Tab.SCTableTd>{i?.quantity_to_be_moved}</Tab.SCTableTd>
+              </td>
+
+              <td className={SCTableTd}>{i?.sku_code}</td>
+              <td className={SCTableTd}>{i?.variant}</td>
+              <td className={SCTableTd}>{i?.quantity_to_be_moved}</td>
               {showStatus(i?.status)}
-              <Tab.SCTableTd>
-                {i?.product_hierarchy_1 + " | " + i?.product_hierarchy_2 + " | " + i?.product_hierarchy_3}
-              </Tab.SCTableTd>
-              <Tab.SCTableTd>{i?.receiver_wh_name}</Tab.SCTableTd>
-              <Tab.SCTableTd>{i?.receiver_wh_city}</Tab.SCTableTd>
-              <Tab.SCTableTd>{i?.receiver_wh_subtype}</Tab.SCTableTd>
-              <Tab.SCTableTd>{i?.vf_ist_id}</Tab.SCTableTd>
-            </Tab.SCTableTr>
+              <td className={SCTableTd}>
+                {i?.product_hierarchy_1 +
+                  " | " +
+                  i?.product_hierarchy_2 +
+                  " | " +
+                  i?.product_hierarchy_3}
+              </td>
+              <td className={SCTableTd}>{i?.receiver_wh_name}</td>
+              <td className={SCTableTd}>{i?.receiver_wh_city}</td>
+              <td className={SCTableTd}>{i?.receiver_wh_subtype}</td>
+              <td className={SCTableTd}>{i?.vf_ist_id}</td>
+            </tr>
           ))}
-        </Tab.SCTableTab>
-        <Tab.SCButtonChecBox>
+        </table>
+
+        <div className={SCButtonChecBox}>
           <ButtonOutlineCheck
-            styles={true}
+            // styles={true}
             icon="deline"
             text={t("ISTForcedClosure.terminate")}
             onChange={() => onClickModalTerminal(index)}
           />
-        </Tab.SCButtonChecBox>
-      </Tab.SCTableBox>
+        </div>
+      </div>
     </>
   );
 };

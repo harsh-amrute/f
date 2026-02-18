@@ -1,27 +1,43 @@
-import { useUserData } from "../../../../../context"
-import { BPRViewTableRequestCellRendererImg, BPRViewTableRequestCellRendererText, BPRViewTableRequestCellRendererWrapper } from "./styles"
+import { useUserData } from "../../../../../context";
+import {
+  BPRViewTableRequestCellRendererImg,
+  BPRViewTableRequestCellRendererText,
+  BPRViewTableRequestCellRendererWrapper,
+} from "./styles.css";
 
-interface BPRViewTableRequestCellRendererProps{
-    onClick:()=>void
+interface BPRViewTableRequestCellRendererProps {
+  onClick: () => void;
 }
 
-const BPRViewTableRequestCellRenderer = (props:BPRViewTableRequestCellRendererProps)=>{
+const BPRViewTableRequestCellRenderer = (
+  props: BPRViewTableRequestCellRendererProps
+) => {
+  const { onClick } = props;
 
-    const {
-        onClick
-    } = props
+  const { user } = useUserData();
 
-    const {user} = useUserData()
+  const themeUi = user.user.theme_ui;
 
-    const themeUi = user.user.theme_ui
+  return (
+    <div className={BPRViewTableRequestCellRendererWrapper} onClick={onClick}>
+      <img
+        className={BPRViewTableRequestCellRendererImg}
+        src={
+          themeUi === "REGALBLAZE"
+            ? "/assets/img/VectorFlow/BPR/add-circle-regal.svg"
+            : "/assets/img/VectorFlow/BPR/add-circle.svg"
+        }
+      />
+      <p
+        className={BPRViewTableRequestCellRendererText}
+        style={{
+          color: themeUi === "REGALBLAZE" ? "#FCA311" : "rgb(188, 61, 129)",
+        }}
+      >
+        Request
+      </p>
+    </div>
+  );
+};
 
-    return (
-        <BPRViewTableRequestCellRendererWrapper onClick={onClick}>
-            <BPRViewTableRequestCellRendererImg src={themeUi==="REGALBLAZE"?"/assets/img/VectorFlow/BPR/add-circle-regal.svg":"/assets/img/VectorFlow/BPR/add-circle.svg"}/>
-            <BPRViewTableRequestCellRendererText style={{color:themeUi==="REGALBLAZE"?"#FCA311":"rgb(188, 61, 129)"}}>Request</BPRViewTableRequestCellRendererText>
-        </BPRViewTableRequestCellRendererWrapper>
-    )
-
-}
-
-export default BPRViewTableRequestCellRenderer
+export default BPRViewTableRequestCellRenderer;

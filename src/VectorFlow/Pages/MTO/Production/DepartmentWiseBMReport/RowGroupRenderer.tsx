@@ -3,7 +3,7 @@ import VFTable from '../../Common/VFTable';
 import { ColDef, GridOptions, IDetailCellRendererParams } from "ag-grid-enterprise";
 import {
     VFChilWrapper
-} from './styles'
+} from './styles.css'
 interface CustomColDef extends ColDef {
     field: string;
     headerName: string;
@@ -161,7 +161,7 @@ const RowGroupRenderer = (params: any) => {
     }, []);
 
     return (
-        <VFChilWrapper>
+        <div className={VFChilWrapper}>
             <VFTable
                 rowData={rowData}
                 detailRowHeight={3000}
@@ -171,9 +171,9 @@ const RowGroupRenderer = (params: any) => {
                 masterDetail={true}
                 detailCellRendererParams={detailCellRendererParams}
                 height={'90%'}
-                disableZoomScaling
+                disableZoomScaling={true}
             />
-        </VFChilWrapper>
+        </div>
     );
 };
 export default RowGroupRenderer;

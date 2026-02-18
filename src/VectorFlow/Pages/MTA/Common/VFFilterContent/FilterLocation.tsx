@@ -1,24 +1,21 @@
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import {
-  FilterGroup,
-  FilterColumn,
-  TextWrapper,
-  DropDownWrapper,
-  DropDownRow,
-  IconWrapper,
-} from "./style";
-import Select, { components } from "react-select";
+  filterGroup,
+  filterColumn,
+  textWrapper,
+  dropDownWrapper,
+  dropDownRow,
+  iconWrapper,
+  accentColorVar,
+  disabledVar,
+} from "./style.css";
+import Select, { components, CSSObjectWithLabel } from "react-select";
 import {
   useColorOptionStyles,
   useColorThemeStyles,
   useThemeStyles,
 } from "../../../../../hooks/useVFFilterContent";
-import {
-  useFilterRows,
-  stringOpertors,
-  useRowCompletion,
-  useMultiFilterChange,
-} from "./useVFFilterContent";
+import { useFilterRows, stringOpertors } from "./useVFFilterContent";
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import { useUserData } from "../../../../../context";
 import { useSelector } from "react-redux";
@@ -88,7 +85,10 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
     [rowId: number]: { column?: any; operation?: any; value?: any };
   }>({});
 
-  const { isRowComplete } = useRowCompletion(rowSelections);
+  const isRowComplete = (rowId: number) => {
+    const row = rowSelections[rowId];
+    return row && row.operation && row.value && row.value.trim() !== "";
+  };
 
   const [rowFilterIndexMap, setRowFilterIndexMap] = useState<
     Record<number, number>
@@ -260,17 +260,71 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
     setIsInitialized(true);
   }, [multiFilter?.locationFilter?.filters, setFilterRows, resetFilterRows]);
 
-  const { onFilterChange } = useMultiFilterChange({
-    parentId: "locationFilter",
-    prefix: "LF",
-    rowSelections,
-    setRowSelections,
-    multiFilter,
-    onMultiFilterChange,
-    rowFilterIndexMap,
-    setRowFilterIndexMap,
-    isUpdatingFromInternal,
-  });
+  const onFilterChange = (
+    rowId: number,
+    field: "column" | "operation" | "value",
+    selected: any
+  ) => {
+    const updatedSelections = {
+      ...rowSelections,
+      [rowId]: { ...rowSelections[rowId], [field]: selected },
+    };
+    setRowSelections(updatedSelections);
+
+    const parentId = "locationFilter";
+    const current = updatedSelections[rowId];
+
+    if (
+      current?.column &&
+      current?.operation &&
+      (current?.operation?.value === "hasvalue" ||
+        current?.operation?.value === "hasnovalue" ||
+        (current?.value !== undefined && current?.value !== ""))
+    ) {
+      const newFilter: BPRFilter = {
+        attributeName: current.column.value,
+        value:
+          current?.operation?.value === "hasvalue"
+            ? "hasvalue"
+            : current?.operation?.value === "hasnovalue"
+            ? "hasnovalue"
+            : current.value,
+        operator: current.operation.value,
+        label: current.column.label,
+        name: current.column.name,
+      };
+
+      const existingFilters = (multiFilter[parentId]?.filters ||
+        []) as BPRFilter[];
+      const operationFilters = existingFilters.filter(
+        (f) => !f.name.startsWith("LF6")
+      );
+      const locationFilters = existingFilters.filter((f) => f.name === "LF6");
+
+      const nextFilters = operationFilters.slice();
+      const idx = rowFilterIndexMap[rowId];
+
+      const newIndexMap = { ...rowFilterIndexMap };
+
+      if (typeof idx === "number" && idx >= 0 && idx < nextFilters.length) {
+        nextFilters[idx] = newFilter;
+      } else {
+        nextFilters.push(newFilter);
+        newIndexMap[rowId] = nextFilters.length - 1;
+      }
+
+      isUpdatingFromInternal.current = true;
+      onMultiFilterChange({
+        ...multiFilter,
+        [parentId]: {
+          ...multiFilter[parentId],
+          filters: [...nextFilters, ...locationFilters],
+        },
+      });
+
+      setRowFilterIndexMap(newIndexMap);
+    }
+  };
 
   const handleRemoveRowWithFilter = (rowId: number) => {
     if (isMinRows) return;
@@ -346,10 +400,13 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
     const parentId = "locationFilter";
     const existingFilters = (multiFilter[parentId]?.filters ||
       []) as BPRFilter[];
+
+    // remove old LF6 filters
     const operationFilters = existingFilters.filter(
       (f) => !f.name.startsWith("LF6")
     );
 
+    // create new LF6 filters from selection
     const newFilters = selected.map((loc) => ({
       attributeName: "Location",
       value: loc.value,
@@ -359,6 +416,7 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
     }));
 
     isUpdatingFromInternal.current = true;
+
     const updatedMultiFilter: BPRFilterState = {
       ...multiFilter,
       [parentId]: {
@@ -456,19 +514,29 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
 
   if (!isInitialized) return null;
 
-  if (!isInitialized) {
+  if (isLocationDataLoading) {
     return <VFLoader />;
   }
 
+  const brand = user.user.theme_ui === "REGALBLAZE" ? "REGALBLAZE" : "DEFAULT";
+
   return (
     <>
-      <FilterGroup>
-        <FilterColumn style={{ minWidth: "400px", maxWidth: "none" }}>
-          <TextWrapper>Select Operation</TextWrapper>
+      <div className={filterGroup}>
+        <div
+          className={filterColumn}
+          style={{ minWidth: "400px", maxWidth: "none" }}
+        >
+          <div className={textWrapper}>Select Operation</div>
           {filterRows.map((row) => (
-            <DropDownRow key={row.id} style={{ alignItems: "center" }}>
-              <DropDownWrapper>
+            <div
+              className={dropDownRow}
+              key={row.id}
+              style={{ alignItems: "center" }}
+            >
+              <div className={dropDownWrapper}>
                 <Select
+                  classNamePrefix="rs"
                   options={filterLocationOptions}
                   placeholder="Select Column"
                   styles={styles}
@@ -478,9 +546,10 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
                     onFilterChange(row.id, "column", selected)
                   }
                 />
-              </DropDownWrapper>
-              <DropDownWrapper>
+              </div>
+              <div className={dropDownWrapper}>
                 <Select
+                  // classNamePrefix="rs"
                   options={stringOpertors}
                   placeholder="Select Operation"
                   styles={styles}
@@ -491,8 +560,8 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
                     onFilterChange(row.id, "operation", selected)
                   }
                 />
-              </DropDownWrapper>
-              <DropDownWrapper>
+              </div>
+              <div className={dropDownWrapper}>
                 <input
                   placeholder="Enter value"
                   className={`filter-input ${
@@ -514,10 +583,11 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
                     rowSelections[row.id]?.operation?.value === "hasnovalue"
                   }
                 />
-              </DropDownWrapper>
+              </div>
               <div style={{ display: "flex", alignItems: "center" }}>
-                <IconWrapper
-                  theme_ui={user.user.theme_ui}
+                <div
+                  className={iconWrapper}
+                  data-theme={user.user.theme_ui}
                   style={{
                     opacity: isRowComplete(row.id) ? 0 : 1,
                     cursor: isRowComplete(row.id) ? "default" : "pointer",
@@ -526,44 +596,45 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
                   <img
                     src={"/assets/img/MTAVFMultiFilter/Error.svg"}
                     alt="error"
-                    title={
-                      isRowComplete(row.id)
-                        ? "All fields are filled"
-                        : "Must select a column."
-                    }
                   />
-                </IconWrapper>
-                <IconWrapper
-                  theme_ui={user.user.theme_ui}
-                  disabled={isMaxRows}
+                </div>
+                <div
+                  className={iconWrapper}
+                  style={{
+                    [accentColorVar]: brand,
+                    [disabledVar]: isMaxRows ? "true" : "false",
+                  }}
                   onClick={handleAddRow}
                 >
                   <img
                     src={"/assets/img/MTAVFMultiFilter/plus-sign-circle.svg"}
                     alt="add"
                   />
-                </IconWrapper>
-                <IconWrapper
-                  theme_ui={user.user.theme_ui}
-                  disabled={isMinRows}
+                </div>
+                <div
+                  className={iconWrapper}
+                  style={{
+                    [accentColorVar]: brand,
+                    [disabledVar]: isMinRows ? "true" : "false",
+                  }}
                   onClick={() => handleRemoveRowWithFilter(row.id)}
                 >
                   <img
                     src={"/assets/img/MTAVFMultiFilter/minus-sign-circle.svg"}
                     alt="remove"
                   />
-                </IconWrapper>
+                </div>
               </div>
-            </DropDownRow>
+            </div>
           ))}
-        </FilterColumn>
-      </FilterGroup>
+        </div>
+      </div>
 
-      <FilterGroup style={{ paddingTop: "10px" }}>
-        <FilterColumn>
-          <TextWrapper>Select Location</TextWrapper>
-          <DropDownRow>
-            <DropDownWrapper style={{ flex: 1 }}>
+      <div className={filterGroup} style={{ paddingTop: "10px" }}>
+        <div className={filterColumn}>
+          <div className={textWrapper}>Select Location</div>
+          <div className={dropDownRow}>
+            <div className={dropDownWrapper} style={{ flex: 1 }}>
               <Select
                 ref={selectRef}
                 placeholder={
@@ -577,11 +648,11 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
                   menu: (base) => ({
                     ...base,
                     minWidth: "620px",
-                  }),
+                  }as CSSObjectWithLabel),
                   input: (base) => ({
                     ...base,
                     color: "#333",
-                  }),
+                  }as CSSObjectWithLabel),
                 }}
                 components={{
                   Option: CustomOption,
@@ -614,7 +685,9 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
 
               <div style={{ width: 165, marginTop: -44, marginLeft: 4.5 }}>
                 <Select
+                  // classNamePrefix="rs"
                   placeholder="Location Code"
+                  classNamePrefix="rs"
                   styles={{
                     ...styles,
                     control: (base: any, state: any) => ({
@@ -652,7 +725,7 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
                   onChange={handleFilterTypeChange}
                 />
               </div>
-            </DropDownWrapper>
+            </div>
 
             {shouldShowSearchButton && (
               <VFButton
@@ -682,9 +755,9 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
                 </div>
               </VFButton>
             )}
-          </DropDownRow>
-        </FilterColumn>
-      </FilterGroup>
+          </div>
+        </div>
+      </div>
     </>
   );
 };

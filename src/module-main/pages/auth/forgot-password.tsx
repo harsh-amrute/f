@@ -1,29 +1,31 @@
-import { useEffect, useRef,useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  ContainerRight,
-  CircleForgotPassword,
-  IputLogin,
-  SCButtonLogin,
   SignInArea,
   SignInContainer,
-  Tittle,
-  FormArea,
-  ButtonSubmit,
-  ButtonSubmitText,
-  ArrowArea,
-  InputArea,
-  InputGroup,
-  LogoAreaForgotPsw,
-  ContainerLeft,
-  GoBackButton,
+  ContainerRight,
+  SuccessArea,
   SuccessIcon,
   SuccessText,
-  SuccessArea,
+  Tittle,
+  FormArea,
+  InputArea,
+  InputAreaError,
+  InputGroup,
+  IputLogin,
   CaptchaContainer,
   CaptchaReload,
   RecaptchaInput,
-} from "./styles";
+  SCButtonLogin,
+  SCButtonLoginDisabled,
+  ButtonSubmit,
+  ButtonSubmitText,
+  ArrowArea,
+  GoBackButton,
+  ContainerLeft,
+  CircleForgotPassword,
+  LogoAreaForgotPsw,
+} from "./styles.css";
 import { Errors } from "../../../components";
 import { useForm } from "react-hook-form";
 import { LoginRequest } from "../../types";
@@ -32,7 +34,11 @@ import { notifyError, notifySuccess } from "../../../helpers/notify";
 import WelcomeBoard from "./welcome-board";
 import LoadingSpinner from "../../../components/commons/LoadingSpinner";
 // eslint-disable-next-line import/no-named-as-default
-import { loadCaptchaEnginge, LoadCanvasTemplateNoReload, validateCaptcha } from 'react-simple-captcha';
+import {
+  loadCaptchaEnginge,
+  LoadCanvasTemplateNoReload,
+  validateCaptcha,
+} from "react-simple-captcha";
 import { SITE_KEY } from "../../../helpers/constants";
 
 function ForgotPasswordContainer() {
@@ -42,7 +48,7 @@ function ForgotPasswordContainer() {
   const [loading, setLoading] = useState(false);
 
   const form = useForm<LoginRequest>({
-    mode : "onChange",
+    mode: "onChange",
     defaultValues: {
       email: "",
     },
@@ -59,13 +65,12 @@ function ForgotPasswordContainer() {
   const [message, setMessage] = useState("");
   const [captchaInput, setCaptchaInput] = useState("");
 
- const onSave = () => {
+  const onSave = () => {
     if (!captchaInput || !validateCaptcha(captchaInput)) {
       notifyError("Invalid Captcha. Please try again.");
       setCaptchaInput("");
       return;
     }
-      
 
     setLoading(true);
     const formData = getValues();
@@ -94,7 +99,6 @@ function ForgotPasswordContainer() {
     });
   };
 
-
   useEffect(() => {
     loadCaptchaEnginge(6);
     const interval = setInterval(() => {
@@ -104,26 +108,32 @@ function ForgotPasswordContainer() {
     return () => clearInterval(interval);
   }, []);
 
-  
   return (
-    <SignInArea>
+    <div className={SignInArea}>
       {loading && <LoadingSpinner />}
-      <SignInContainer>
-        <ContainerRight>
+
+      {/* Right column */}
+      <div className={SignInContainer}>
+        <div className={ContainerRight}>
           {requestSend ? (
-            <SuccessArea>
-              <SuccessIcon src="/assets/img/auth/tick-circle.svg" />
-              <SuccessText>{message}</SuccessText>
-            </SuccessArea>
+            <div className={SuccessArea}>
+              <img
+                className={SuccessIcon}
+                src="/assets/img/auth/tick-circle.svg"
+              />
+              <p className={SuccessText}>{message}</p>
+            </div>
           ) : (
             <>
-              <Tittle>{t("forgotPasswordPage.title")}</Tittle>
-              <FormArea onSubmit={handleSubmit(onSave)}>
-                <InputArea error={errors.email}>
-                  <InputGroup>
+              <h1 className={Tittle}>{t("forgotPasswordPage.title")}</h1>
+
+              <form className={FormArea} onSubmit={handleSubmit(onSave)}>
+                {/* Email */}
+                <div className={errors.email ? InputAreaError : InputArea}>
+                  <div className={InputGroup}>
                     <img src="/assets/img/auth/user.svg" />
-                    <IputLogin
-                      inputType="email"
+                    <input
+                      className={IputLogin}
                       type="text"
                       {...register("email", {
                         required: true,
@@ -132,26 +142,29 @@ function ForgotPasswordContainer() {
                           message: t("loginPage.validate.emailMaxLength"),
                         },
                       })}
-                      placeholder={t("forgotPasswordPage.placeholder.email")}
-                    />
-                  </InputGroup>
+                      placeholder={t('forgotPasswordPage.placeholder.email') as string}
+                      />
+                  </div>
                   <Errors errors={errors} name="email" />
-                </InputArea>
+                </div>
 
-                <CaptchaContainer>
-                  <LoadCanvasTemplateNoReload/>
-                  <CaptchaReload
+                {/* Captcha */}
+                <div className={CaptchaContainer}>
+                  <LoadCanvasTemplateNoReload />
+                  <button
                     type="button"
+                    className={CaptchaReload}
                     onClick={() => {
                       loadCaptchaEnginge(6);
                       setCaptchaInput("");
                     }}
                   >
                     <img src="/assets/img/reload.svg" alt="Reload" />
-                  </CaptchaReload>
-                </CaptchaContainer>
+                  </button>
+                </div>
 
-                <RecaptchaInput
+                <input
+                  className={RecaptchaInput}
                   type="text"
                   placeholder="Enter the text here"
                   value={captchaInput}
@@ -164,12 +177,16 @@ function ForgotPasswordContainer() {
                   }}
                 />
 
-                <SCButtonLogin disabled={loading}>
-                  <ButtonSubmit>
-                    <ButtonSubmitText>
+                {/* Submit */}
+                <button
+                  className={loading ? SCButtonLoginDisabled : SCButtonLogin}
+                  disabled={loading}
+                >
+                  <div className={ButtonSubmit}>
+                    <span className={ButtonSubmitText}>
                       {t("forgotPasswordPage.submitBtn")}
-                    </ButtonSubmitText>
-                    <ArrowArea>
+                    </span>
+                    <div className={ArrowArea}>
                       <img
                         src="/assets/img/auth/arrow.svg"
                         className="arrow arrow-in"
@@ -178,22 +195,27 @@ function ForgotPasswordContainer() {
                         src="/assets/img/auth/arrow-hover.svg"
                         className="arrow arrow-out"
                       />
-                    </ArrowArea>
-                  </ButtonSubmit>
-                </SCButtonLogin>
+                    </div>
+                  </div>
+                </button>
 
-                <GoBackButton onClick={() => window.location.replace("/login")}>
+                <div
+                  className={GoBackButton}
+                  onClick={() => window.location.replace("/login")}
+                >
                   {t("forgotPasswordPage.goBackBtn")}
-                </GoBackButton>
-              </FormArea>
+                </div>
+              </form>
             </>
           )}
-        </ContainerRight>
-      </SignInContainer>
-      <SignInContainer>
-        <ContainerLeft>
-          <CircleForgotPassword />
-          <LogoAreaForgotPsw>
+        </div>
+      </div>
+
+      {/* Left column */}
+      <div className={SignInContainer}>
+        <div className={ContainerLeft}>
+          <div className={CircleForgotPassword} />
+          <div className={LogoAreaForgotPsw}>
             <img
               src="/assets/img/auth/forgot-left.png"
               className="icon-head left-icon"
@@ -203,10 +225,10 @@ function ForgotPasswordContainer() {
               className="icon-head right-icon"
             />
             <WelcomeBoard />
-          </LogoAreaForgotPsw>
-        </ContainerLeft>
-      </SignInContainer>
-    </SignInArea>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 

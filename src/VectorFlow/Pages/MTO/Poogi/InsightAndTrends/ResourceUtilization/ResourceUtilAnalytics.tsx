@@ -1,5 +1,12 @@
 import { useSelector } from 'react-redux';
-import { AnalyticsCol, AnalyticsRow, AnalyticsTable } from '../../../Procurement/InsightsAndTrends/DayWiseCoverage/style';
+import { AnalyticsCol, AnalyticsRow, AnalyticsTable,  headerRow,
+    headerCell,
+    bodyRow,
+    cell,
+    cellRight,
+    totalRow,
+    totalCell,
+   } from '../../../Procurement/InsightsAndTrends/DayWiseCoverage/style.css';
 
 
 const ResourceUtilAnalytics = () => {
@@ -16,73 +23,74 @@ const ResourceUtilAnalytics = () => {
     if (data?.type === 'wip') {
 
         return (
-            <AnalyticsTable style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }} >
+            <table className={AnalyticsTable} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }} >
                 <thead>
-                    <AnalyticsRow>
-                        <AnalyticsCol style={{ display: 'flex', justifyContent: 'center' }}>WIP Analytics</AnalyticsCol>
-                    </AnalyticsRow>
+                    <tr className={headerRow}>
+                    <th className={headerCell}  style={{ display: 'flex', justifyContent: 'center' }}>WIP Analytics</th>
+                    </tr>
                     <hr />
                 </thead>
                 <tbody>
-                    <AnalyticsRow style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <AnalyticsCol>Over Limit</AnalyticsCol>
-                        <AnalyticsCol>{data.ol}</AnalyticsCol>
+                    <tr className={bodyRow} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <td className={cell}>Over Limit</td>
+                    <td className={cellRight}>{data.ol}</td>
 
-                    </AnalyticsRow>
-                    <AnalyticsRow style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <AnalyticsCol>Under Limit</AnalyticsCol>
-                        <AnalyticsCol>{data.ul}</AnalyticsCol>
+                    </tr>
+                    <tr className={bodyRow} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <td className={cell}>Under Limit</td>
+                    <td className={cellRight}>{data.ul}</td>
 
-                    </AnalyticsRow>
+                    </tr>
                     <hr />
-                    <AnalyticsRow style={{ background: 'black', display: 'flex', justifyContent: 'space-between' }}>
-                        <AnalyticsCol>Total</AnalyticsCol>
-                        <AnalyticsCol>{data.ol + data.ul}</AnalyticsCol>
+                    <tr className={bodyRow} style={{ background: 'black', display: 'flex', justifyContent: 'space-between' }}>
+                    <td className={cell}>Total</td>
+                    <td className={cellRight}>{data.ol + data.ul}</td>
 
-                    </AnalyticsRow>
+                    </tr>
 
 
 
                 </tbody>
-            </AnalyticsTable>
+            </table>
         )
 
     }
     else if (data?.type === 'util') {
         return (
-            <AnalyticsTable style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }} >
-                <thead>
-                    <AnalyticsRow>
-                        <AnalyticsCol style={{ display: 'flex', justifyContent: 'center' }}>Utilization Analytics</AnalyticsCol>
-                    </AnalyticsRow>
-                    <hr />
-                </thead>
+            <table className={AnalyticsTable} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }} >
+      <thead>
+        <tr className={headerRow}>
+          <th className={headerCell} colSpan={2}>
+            WIP Analytics
+          </th>
+        </tr>
+      </thead>
                 <tbody>
-                    <AnalyticsRow style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <AnalyticsCol>{'<60%'}</AnalyticsCol>
-                        <AnalyticsCol>{data.sixty}</AnalyticsCol>
+                    <tr className={AnalyticsRow} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <td className={cell}>{'<60%'}</td>
+                        <td className={cellRight}>{data.sixty}</td>
 
-                    </AnalyticsRow>
-                    <AnalyticsRow style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <AnalyticsCol>{'60% - 80%'}</AnalyticsCol>
-                        <AnalyticsCol>{data.sixeight}</AnalyticsCol>
+                    </tr>
+                    <tr className={AnalyticsRow} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <td className={cell}>{'60% - 80%'}</td>
+                        <td className={cellRight}>{data.sixeight}</td>
 
-                    </AnalyticsRow>
-                    <AnalyticsRow style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <AnalyticsCol>{'>80%'}</AnalyticsCol>
-                        <AnalyticsCol>{data.eight}</AnalyticsCol>
-                    </AnalyticsRow>
+                    </tr>
+                    <tr className={AnalyticsRow} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <td className={cell}>{'>80%'}</td>
+                        <td className={cellRight}>{data.eight}</td>
+                    </tr>
                     <hr />
-                    <AnalyticsRow style={{ background: 'black', display: 'flex', justifyContent: 'space-between' }}>
-                        <AnalyticsCol>Total</AnalyticsCol>
-                        <AnalyticsCol>{data.sixty + data.eight + data.sixeight}</AnalyticsCol>
+                    <tr className={AnalyticsRow} style={{ background: 'black', display: 'flex', justifyContent: 'space-between' }}>
+                    <td className={cell}>Total</td>
+                        <td className={cellRight}>{data.sixty + data.eight + data.sixeight}</td>
 
-                    </AnalyticsRow>
+                    </tr>
 
 
 
                 </tbody>
-            </AnalyticsTable>
+            </table>
         )
     }
 

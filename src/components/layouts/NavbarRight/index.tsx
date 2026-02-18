@@ -13,21 +13,28 @@ import {
   SCColor,
   SCIconClose,
   SCButton,
-  SCWrapItemLeft
-} from "./styles";
+  SCWrapItemLeft,
+  SCWrapOpen,
+  SCWrapItemActive,
+  radioAccentVar,
+  colorSwatchVar,
+  buttonBgVar,
+} from "./styles.css";
 import { notifyError, notifySuccess } from "../../../helpers/notify";
 import LoadingSpinner from "../../../components/commons/LoadingSpinner";
 import { useChangeThemeUser } from "../../../services/profile";
 import OverlayPage from "../../../components/commons/OverlayPage";
 import { useUserData } from "../../../context";
 import { useTranslation } from "react-i18next";
+import * as globalStyles from "../../../styles/global";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 
 const NavbarRight = ({
   isOpenNavbarRight,
   setIsOpenNavbarRight,
   setColorTheme,
   isLoadSpinner,
-  setIsLoadSpinner
+  setIsLoadSpinner,
 }: any) => {
   const { t } = useTranslation();
   const handleClose = () => {
@@ -71,8 +78,8 @@ const NavbarRight = ({
     setTimeout(() => {
       mutateChangeTheme(formData, {
         onSuccess: (res: any) => {
-          if(res?.status === 400) {
-            notifyError(res?.response?.msg)
+          if (res?.status === 400) {
+            notifyError(res?.response?.msg);
           } else {
             notifySuccess(res?.data?.msg);
           }
@@ -89,41 +96,71 @@ const NavbarRight = ({
     }, 500);
   };
 
+  const accent = globalStyles.chooseThemeColor[themeUi]?.color5 ?? "#000";
+  const btnBg = globalStyles?.chooseThemeColor[themeUi]?.colorButton ?? "#000";
+
   return (
     <div>
-      <SCWrap isOpenNavbarRight={isOpenNavbarRight}>
-        <SCWrapTop>
-          <SCTopText>{t('theme.chooseThemeColor')}</SCTopText>
-          <SCClose onClick={handleClose}>
-            <SCIconClose src="/assets/img/navRight/icon_close.svg" />
-          </SCClose>
-        </SCWrapTop>
-        <SCWrapContent>
+      <div className={`${SCWrap} ${isOpenNavbarRight ? SCWrapOpen : ""}`}>
+        <div className={SCWrapTop}>
+          <div className={SCTopText}>{t("theme.chooseThemeColor")}</div>
+          <div className={SCClose} onClick={handleClose}>
+            <img
+              className={SCIconClose}
+              src="/assets/img/navRight/icon_close.svg"
+            />
+          </div>
+        </div>
+
+        <div className={SCWrapContent}>
           {listTheme.map((item: any, index: number) => (
-            <SCWrapItem key={index} onClick={() => handleClick(index)} isActive={item.status}>
-              <SCWrapItemLeft>
-                <SCInputRadio
+            <div
+              key={index}
+              onClick={() => handleClick(index)}
+              className={`${SCWrapItem} ${item.status ? SCWrapItemActive : ""}`}
+            >
+              <div className={SCWrapItemLeft}>
+                <input
                   type="radio"
                   checked={item.status}
                   onClick={() => handleClick(index)}
-                  themeUi={themeUi}
+                  className={SCInputRadio}
+                  style={assignInlineVars({
+                    [radioAccentVar]: accent,
+                  })}
                 />
-                <SCItemText>{item.title}</SCItemText>
-                <div style={{ margin: "0 10px" }}></div>
-              </SCWrapItemLeft>
-              <SCListColor>
-                {item.colorTheme.map((color: any) => (
-                  <SCColor color={color} key={color} />
+                <span className={SCItemText}>{item.title}</span>
+                <div style={{ margin: "0 10px" }} />
+              </div>
+
+              <div className={SCListColor}>
+                {item.colorTheme.map((color: string) => (
+                  <div
+                    className={SCColor}
+                    key={color}
+                    style={assignInlineVars({
+                      [colorSwatchVar]: color,
+                    })}
+                  />
                 ))}
-              </SCListColor>
-            </SCWrapItem>
+              </div>
+            </div>
           ))}
 
-          <div style={{display:'flex',justifyContent:'flex-end'}}>
-            <SCButton onClick={handleChangeColor} themeUi={themeUi}>{t('theme.applyTheme')}</SCButton>
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <button
+              className={SCButton}
+              style={assignInlineVars({
+                [buttonBgVar]: btnBg,
+              })}
+              onClick={handleChangeColor}
+            >
+              {t("theme.applyTheme")}
+            </button>
           </div>
-        </SCWrapContent>
-      </SCWrap>
+        </div>
+      </div>
+
       {isOpenNavbarRight && <OverlayPage onClick={handleClose} />}
       {isLoadSpinner && <LoadingSpinner />}
     </div>

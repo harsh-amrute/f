@@ -3,9 +3,20 @@ import { useUserData } from "../../../../../../context";
 import VFButton from "../../../../../../components/VectorFLOW/commons/VFButton";
 import VFButtonOutline from "../../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import { format } from "date-fns";
-import { CloseButton, DateTimeWrapper, FooterWrapper, ImageWrapper, ModalHeader, ModalWrapper, ProgressContainer, ProgressFill, ProgressMessage, ProgressWrapper } from "./RunStatusModalStyles";
-
-
+import {
+  closeButton,
+  dateTimeWrapper,
+  footerWrapper,
+  imageWrapper,
+  modalHeader,
+  modalWrapper,
+  progressContainer,
+  progressFill,
+  progressMessage,
+  progressWrapper,
+  progressWidthVar,
+} from "./RunStatusModalStyles.css";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 
 const RunStatusModal = ({
   runStatus,
@@ -14,33 +25,36 @@ const RunStatusModal = ({
   goTofinalResult,
 }: any) => {
   const themeUi = useUserData().user.user.themeUi;
-  
+
   const [isAbortConfirm, setIsAbortConfirm] = useState(false);
   const progressModal = () => {
-
     if (isAbortConfirm) {
       return (
-        <ModalWrapper style={{ width: "40vw" }}>
-          <ModalHeader>
-            <CloseButton
+        <div className={modalWrapper} style={{ width: "40vw" }}>
+          <div className={modalHeader}>
+            <button
+              className={closeButton}
               onClick={() => {
                 setIsAbortConfirm(false);
               }}
             >
               ✕
-            </CloseButton>
-          </ModalHeader>
+            </button>
+          </div>
           <p style={{ padding: "30px 20px 30px 20px", fontSize: "1.4rem" }}>
             Are you sure you want to abort the process? The run process will
             stop and the file execution will be terminated.
           </p>
-          <FooterWrapper style={{justifyContent: 'center', gap: '12px'}}>
+          <div
+            className={footerWrapper}
+            style={{ justifyContent: "center", gap: "12px" }}
+          >
             <VFButtonOutline
               style={{
                 height: "3.2rem",
                 fontSize: "1.25rem",
                 borderColor: "#b52670",
-                color: "#b52670"
+                color: "#b52670",
               }}
               themeUi={themeUi}
               onClick={() => {
@@ -59,37 +73,52 @@ const RunStatusModal = ({
             >
               Yes
             </VFButton>
-          </FooterWrapper>
-        </ModalWrapper>
+          </div>
+        </div>
       );
     }
+
+    const raw = runStatus.progress?.split("%")[0] ?? "0";
+    const numeric = isNaN(Number(raw)) ? 0 : Number(raw);
+
+    // enforce minimum 8%
+    const width = Math.max(numeric, 8);
+
     return (
-      <ModalWrapper style={{width: '58vw'}}>
-        <ImageWrapper src={"/assets/img/scheduling/run-in-progress.svg"} />
-        <ProgressWrapper>
-          <ProgressContainer>
-            <ProgressFill value={(isNaN(runStatus.progress.split('%')[0]))?0: Math.max(+runStatus.progress.split('%')[0],8)}>{runStatus.progress}</ProgressFill>
-          </ProgressContainer>
-          <ProgressMessage>{runStatus.current_step}...</ProgressMessage>
-        </ProgressWrapper>
-        <FooterWrapper>
-          <DateTimeWrapper>
+      <div className={modalWrapper} style={{ width: "58vw" }}>
+        <img
+          className={imageWrapper}
+          src={"/assets/img/scheduling/run-in-progress.svg"}
+        />
+        <div className={progressWrapper}>
+          <div className={progressContainer}>
+            <div
+              className={progressFill}
+              style={assignInlineVars({
+                [progressWidthVar]: `${width}%`,
+              })}
+            >
+              {runStatus.progress}
+            </div>
+          </div>
+          <div className={progressMessage}>{runStatus.current_step}...</div>
+        </div>
+        <div className={footerWrapper}>
+          <span className={dateTimeWrapper}>
             <img
               src="/assets/img/scheduling/calendar-date.svg"
               alt="Calendar Icon"
               style={{ width: "16px", height: "16px" }}
             />
             <p>
-              <strong>
-
-              Run Start Time:{" "}
-              </strong>
+              <strong>Run Start Time: </strong>
               {format(
                 new Date(runStatus.started_at).toString(),
                 "dd MMM yyyy, hh:mm a"
-              )}  by {runStatus.triggered_by_username}
+              )}{" "}
+              by {runStatus.triggered_by_username}
             </p>
-          </DateTimeWrapper>
+          </span>
 
           {/* Todo: uncomment after abort implementation on backend  */}
           {/* <VFButton
@@ -115,48 +144,68 @@ const RunStatusModal = ({
             />
             <p>Abort</p>
           </VFButton> */}
-        </FooterWrapper>
-      </ModalWrapper>
+        </div>
+      </div>
     );
   };
 
   const progressCompletedModal = () => {
+    const width = isNaN(runStatus.progress.split("%")[0])
+      ? 0
+      : Math.max(+runStatus.progress.split("%")[0], 8);
+
     return (
-      <ModalWrapper style={{width: '58vw'}}>
-        <ModalHeader>
-          <CloseButton onClick={closeModal}>✕</CloseButton>
-        </ModalHeader>
-        <ImageWrapper style={{height: '38vh'}} src={"/assets/img/scheduling/run-complete.svg"} />
-        <ProgressContainer>
-            <ProgressFill value={(isNaN(runStatus.progress.split('%')[0]))?0: Math.max(+runStatus.progress.split('%')[0],8)}>{runStatus.progress}</ProgressFill>
-          </ProgressContainer>
-        <ProgressMessage style={{paddingBottom: '10px'}}>
+      <div className={modalWrapper} style={{ width: "58vw" }}>
+        <div className={modalHeader}>
+          <button className={closeButton} onClick={closeModal}>
+            ✕
+          </button>
+        </div>
+        <img
+          className={imageWrapper}
+          style={{ height: "38vh" }}
+          src={"/assets/img/scheduling/run-complete.svg"}
+        />
+        <div className={progressContainer}>
+          <div
+            className={progressFill}
+            style={assignInlineVars({
+              [progressWidthVar]: `${width}%`,
+            })}
+          >
+            {runStatus.progress}
+          </div>
+        </div>
+        <div className={progressMessage} style={{ paddingBottom: "10px" }}>
           {"Run Completed Successfully"}
-        </ProgressMessage>
-        <FooterWrapper>
-          <DateTimeWrapper>
-            <img
-              src="/assets/img/scheduling/calendar-date.svg"
-              alt="Calendar Icon"
-              style={{ width: "16px", height: "16px" }}
-            />
-            <p><strong>
-              Run Start Time: &nbsp;
-              </strong>
-               {format(new Date(runStatus.started_at), "dd MMM yyyy, hh:mm a")} by {runStatus.triggered_by_username}</p>
-          </DateTimeWrapper>
-          <DateTimeWrapper>
+        </div>
+        <div className={footerWrapper}>
+          <span className={dateTimeWrapper}>
             <img
               src="/assets/img/scheduling/calendar-date.svg"
               alt="Calendar Icon"
               style={{ width: "16px", height: "16px" }}
             />
             <p>
-              <strong>
-              Run End Time: &nbsp;
-              </strong>
-              {format(new Date(runStatus.ended_at), "dd MMM yyyy, hh:mm a")}</p>
-          </DateTimeWrapper>
+              <strong>Run Start Time: &nbsp;</strong>
+              {format(
+                new Date(runStatus.started_at),
+                "dd MMM yyyy, hh:mm a"
+              )}{" "}
+              by {runStatus.triggered_by_username}
+            </p>
+          </span>
+          <span className={dateTimeWrapper}>
+            <img
+              src="/assets/img/scheduling/calendar-date.svg"
+              alt="Calendar Icon"
+              style={{ width: "16px", height: "16px" }}
+            />
+            <p>
+              <strong>Run End Time: &nbsp;</strong>
+              {format(new Date(runStatus.ended_at), "dd MMM yyyy, hh:mm a")}
+            </p>
+          </span>
           <VFButton
             style={{
               display: "flex",
@@ -168,51 +217,63 @@ const RunStatusModal = ({
               padding: "8px 18px",
               width: "fit-content",
             }}
-            onClick={()=>{goTofinalResult();closeModal();}}
+            onClick={() => {
+              goTofinalResult();
+              closeModal();
+            }}
             themeUi={themeUi}
           >
             <p>Go To Final Result</p>
           </VFButton>
-        </FooterWrapper>
-      </ModalWrapper>
+        </div>
+      </div>
     );
   };
 
   const progressAbortedModal = () => {
     return (
-      <ModalWrapper style={{width: '55vw'}}>
-        <ModalHeader>
-          <CloseButton onClick={closeModal}>✕</CloseButton>
-        </ModalHeader>
-        <ImageWrapper src={"/assets/img/scheduling/run-aborted.svg"} />
-        <ProgressMessage style={{ fontSize: "1.3rem", paddingBottom: "15px" }}>
+      <div className={modalWrapper} style={{ width: "55vw" }}>
+        <div className={modalHeader}>
+          <button className={closeButton} onClick={closeModal}>
+            ✕
+          </button>
+        </div>
+        <img
+          className={imageWrapper}
+          src={"/assets/img/scheduling/run-aborted.svg"}
+        />
+        <div
+          className={progressMessage}
+          style={{ fontSize: "1.3rem", paddingBottom: "15px" }}
+        >
           {message}
-        </ProgressMessage>
-        <FooterWrapper>
-          <DateTimeWrapper>
-            <img
-              src="/assets/img/scheduling/calendar-date.svg"
-              alt="Calendar Icon"
-              style={{ width: "16px", height: "16px" }}
-            />
-            <p><strong>
-              Run Start Time: &nbsp;
-              </strong>
-               {format(new Date(runStatus.started_at), "dd MMM yyyy, hh:mm a")}</p>
-          </DateTimeWrapper>
-          <DateTimeWrapper>
+        </div>
+        <div className={footerWrapper}>
+          <span className={dateTimeWrapper}>
             <img
               src="/assets/img/scheduling/calendar-date.svg"
               alt="Calendar Icon"
               style={{ width: "16px", height: "16px" }}
             />
             <p>
-              <strong>
-                Run Abort Time: &nbsp;
-                </strong>
-                 {format(new Date(runStatus.ended_at), "dd MMM yyyy, hh:mm a")} by {runStatus.triggered_by_username}</p>
-
-          </DateTimeWrapper>
+              <strong>Run Start Time: &nbsp;</strong>
+              {format(new Date(runStatus.started_at), "dd MMM yyyy, hh:mm a")}
+            </p>
+          </span>
+          <span className={dateTimeWrapper}>
+            <img
+              src="/assets/img/scheduling/calendar-date.svg"
+              alt="Calendar Icon"
+              style={{ width: "16px", height: "16px" }}
+            />
+            <p>
+              <strong>Run Abort Time: &nbsp;</strong>
+              {format(
+                new Date(runStatus.ended_at),
+                "dd MMM yyyy, hh:mm a"
+              )} by {runStatus.triggered_by_username}
+            </p>
+          </span>
           <VFButton
             style={{
               display: "flex",
@@ -224,52 +285,63 @@ const RunStatusModal = ({
               padding: "8px 18px",
               width: "fit-content",
             }}
-            onClick={()=>{closeModal();}}
+            onClick={() => {
+              closeModal();
+            }}
             themeUi={themeUi}
           >
             <p>Go Back</p>
           </VFButton>
-        </FooterWrapper>
-      </ModalWrapper>
+        </div>
+      </div>
     );
   };
   const progressFailedModal = () => {
     return (
-      <ModalWrapper style={{width: "65vw"}}>
-        <ModalHeader>
-          <CloseButton onClick={closeModal}>✕</CloseButton>
-        </ModalHeader>
-        <ImageWrapper src={"/assets/img/scheduling/run-failed.svg"} />
+      <div className={modalWrapper} style={{ width: "65vw" }}>
+        <div className={modalHeader}>
+          <button className={closeButton} onClick={closeModal}>
+            ✕
+          </button>
+        </div>
+        <img
+          className={imageWrapper}
+          src={"/assets/img/scheduling/run-failed.svg"}
+        />
 
-        <ProgressMessage style={{ fontSize: "1.3rem", paddingBottom: "15px" }}>
+        <div
+          className={progressMessage}
+          style={{ fontSize: "1.3rem", paddingBottom: "15px" }}
+        >
           {message}
-        </ProgressMessage>
-        <FooterWrapper>
-          <DateTimeWrapper>
-            <img
-              src="/assets/img/scheduling/calendar-date.svg"
-              alt="Calendar Icon"
-              style={{ width: "16px", height: "16px" }}
-            />
-            <p><strong>
-              Run Start Time:  
-              </strong>&nbsp;
-              {format(new Date(runStatus.started_at), "dd MMM yyyy, hh:mm a")}  by {runStatus.triggered_by_username}</p>
-          </DateTimeWrapper>
-          <DateTimeWrapper>
+        </div>
+        <div className={footerWrapper}>
+          <span className={dateTimeWrapper}>
             <img
               src="/assets/img/scheduling/calendar-date.svg"
               alt="Calendar Icon"
               style={{ width: "16px", height: "16px" }}
             />
             <p>
-              <strong>
-
-              Run Failed Time:
-              &nbsp;
-              </strong>
-               {format(new Date(runStatus.ended_at), "dd MMM yyyy, hh:mm a")}</p>
-          </DateTimeWrapper>
+              <strong>Run Start Time:</strong>&nbsp;
+              {format(
+                new Date(runStatus.started_at),
+                "dd MMM yyyy, hh:mm a"
+              )}{" "}
+              by {runStatus.triggered_by_username}
+            </p>
+          </span>
+          <span className={dateTimeWrapper}>
+            <img
+              src="/assets/img/scheduling/calendar-date.svg"
+              alt="Calendar Icon"
+              style={{ width: "16px", height: "16px" }}
+            />
+            <p>
+              <strong>Run Failed Time: &nbsp;</strong>
+              {format(new Date(runStatus.ended_at), "dd MMM yyyy, hh:mm a")}
+            </p>
+          </span>
           <VFButtonOutline
             style={{
               display: "flex",
@@ -299,23 +371,39 @@ const RunStatusModal = ({
               padding: "8px 18px",
               width: "fit-content",
             }}
-            onClick={()=>{closeModal();}}
+            onClick={() => {
+              closeModal();
+            }}
             themeUi={themeUi}
           >
             <p>Go Back</p>
           </VFButton>
-        </FooterWrapper>
-      </ModalWrapper>
+        </div>
+      </div>
     );
   };
   const progressFailedToFetch = () => {
     return (
-      <ModalWrapper style={{width: "50vw"}}>
-        <ImageWrapper src={"/assets/img/scheduling/run-failed.svg"} />
-        <ProgressMessage style={{ fontSize: "1.3rem", paddingBottom: "15px" }}>
+      <div className={modalWrapper} style={{ width: "50vw" }}>
+        <img
+          className={imageWrapper}
+          src={"/assets/img/scheduling/run-failed.svg"}
+        />
+        <div
+          className={progressMessage}
+          style={{ fontSize: "1.3rem", paddingBottom: "15px" }}
+        >
           {"Failed to fetch the run status. Please refresh to try again."}
-        </ProgressMessage>
-        <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', paddingBottom: '20px'}}>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+            paddingBottom: "20px",
+          }}
+        >
           <VFButton
             style={{
               display: "flex",
@@ -327,13 +415,15 @@ const RunStatusModal = ({
               padding: "8px 18px",
               width: "fit-content",
             }}
-            onClick={()=>{window.location.reload()}}
+            onClick={() => {
+              window.location.reload();
+            }}
             themeUi={themeUi}
           >
             <p>Refresh</p>
           </VFButton>
         </div>
-      </ModalWrapper>
+      </div>
     );
   };
 

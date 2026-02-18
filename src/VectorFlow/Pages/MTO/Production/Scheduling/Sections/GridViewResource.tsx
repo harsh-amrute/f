@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import VFTable from '../../../Common/VFTable'
-import { GridWrapper } from '../SchedulingStyles';
+import { gridWrapper } from '../SchedulingStyles.css';
 import { format } from 'date-fns';
 
 
@@ -216,7 +216,7 @@ const GridViewResource = ({ResourceData, setExcelGridRef}: any) => {
   }, [ResourceData]);
 
   return (
-    <GridWrapper>
+    <div className={gridWrapper}>
       <VFTable
         key={"resource-grid"}
         ref={gridRef}
@@ -242,7 +242,7 @@ const GridViewResource = ({ResourceData, setExcelGridRef}: any) => {
         animateRows={true}
         rowSelection="single"
       />
-    </GridWrapper>
+    </div>
   )
 }
 

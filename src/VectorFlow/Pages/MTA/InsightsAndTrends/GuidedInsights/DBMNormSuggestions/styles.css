@@ -1,3 +1,24 @@
-.bottomPanel{
-    margin-top: 13px;
+.bottomPanel {
+  margin-top: 13px;
+}
+
+.tooltip-wrapper {
+  background: #6c696a;
+  border-radius: 6px;
+  overflow: hidden;
+  text-align: center;
+  min-width: 140px;
+}
+
+.tooltip-header {
+  color: white;
+  padding: 6px 10px;
+  font-weight: bold;
+  background-color: var(--header-bg-color, black);
+}
+
+.tooltip-body {
+  color: black;
+  padding: 8px 10px;
+  background-color: #ede7e9ff;
 }
