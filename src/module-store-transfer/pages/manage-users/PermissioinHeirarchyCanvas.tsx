@@ -336,6 +336,9 @@ const CustomNode = ({
           theme={user.user.theme_ui}
           style={{
             zoom: 0.7,
+            minWidth: '18px',
+            minHeight: '18px',
+            flexShrink: 0,
             ...(getSelectionState(data.key) === "implicit" ? {
               backgroundColor: "#e8cae0ff",
               borderColor: "#947484ff",
@@ -467,6 +470,11 @@ export default function PermissionHeirarchyCanvas({
   }, [selectedApplication, dataAllPermissions]);
 
   const [opened, setOpened] = useState<any>([]);
+
+  // Cache for opened state per application + permissionType
+  const openedStateCache = React.useRef<Record<string, any[]>>({});
+  // Track previous key to save state before switching
+  const prevCacheKey = React.useRef<string>("");
 
   const [checked, setChecked] = useState<any>([]);
 
@@ -991,7 +999,22 @@ export default function PermissionHeirarchyCanvas({
         });
       });
 
-      setOpened(Array(level1.length + level2.length + level3.length).fill(0));
+      // Save current opened state to cache before resetting
+      if (prevCacheKey.current && opened.length > 0) {
+        openedStateCache.current[prevCacheKey.current] = [...opened];
+      }
+
+      const cacheKey = `${selectedApplication}_${permissionType}`;
+      prevCacheKey.current = cacheKey;
+
+      const totalLength = level1.length + level2.length + level3.length;
+      const cached = openedStateCache.current[cacheKey];
+
+      if (cached && cached.length === totalLength) {
+        setOpened(cached);
+      } else {
+        setOpened(Array(totalLength).fill(0));
+      }
       setChecked(Array(level1.length + level2.length + level3.length).fill(0));
     }
   }, [selectedAppAllPermissions, permissionType]);
