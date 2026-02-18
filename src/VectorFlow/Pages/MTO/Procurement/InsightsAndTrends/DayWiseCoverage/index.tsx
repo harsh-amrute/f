@@ -23,8 +23,9 @@ import VFLoader from '../../../../../../components/VectorFLOW/commons/VFLoader';
 import { useGetFilterData } from '../../../../../..//VectorFlow/Services/MTO/Common/CommonFilter';
 import useFilter from '../../../../../../hooks/useFilter';
 import { ITooltipParams } from 'ag-grid-enterprise';
-import { notifyError } from '../../../../../../helpers/notify';
+import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
 import useColDef from '../../../../../../hooks/useColDef';
+import BomExcelModal from '../../../Common/BomExcelModal';
 
 enum Colors {
     Selected = "#B93B7E",
@@ -76,6 +77,7 @@ const DayWiseCoverage = () => {
 
     const [userPageSize, setUserPageSize] = useState<number>(20); 
     const [userConfigFetched, setUserConfigFetched] = useState(false); 
+    const [showExcelModal, setShowExcelModal] = useState(false);
 
     const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
     const { 
@@ -412,38 +414,51 @@ const DayWiseCoverage = () => {
     //     currentGridRef?.current?.api?.exportDataAsExcel({ fileName: `Day_Wise_Coverage` , sheetName: 'Day Wise Coverage'});
     //   }
 
-    const ExcelExport = async () => {
-     try {
-        const headersdata = currentGridRef?.current?.api.getColumnState();
-        console.log("headersdata", headersdata)
-        const formattedFilters = formatFilterJSON(appliedFilters);
+  // --- Excel Export Logic ---
+    const executeExcelExport = async (isChildren = 0) => {
+        try {
+            const headersdata = currentGridRef?.current?.api.getColumnState();
+            const formattedFilters = formatFilterJSON(appliedFilters);
 
-    
+            const body = getBodyForExcelExport({
+                headersdata: headersdata, filterData: formattedFilters, colDefMap: colDefMap
+            });
 
-        const body = getBodyForExcelExport({ 
-            headersdata: headersdata, filterData: formattedFilters,colDefMap: colDefMap
-        });
 
-        console.log("Request Body for Excel Export:", body);    
+            const excelResponse = await getData({
+                startDate: format(startOfMonth(startDate), "yyyy-MM-dd"),
+                endDate: format(endOfMonth(endDate), "yyyy-MM-dd"),
+                plannedReleaseDate: selectedDate,
+                isExcelExport: 1,
+                body,
+                report_name: FilterPageName.Proc_Day_Wise_Coverage,
+                isChildren: isChildren
+            });
 
-        const excelResponse = await getData({
-            startDate: format(startOfMonth(startDate), "yyyy-MM-dd"),
-            endDate: format(endOfMonth(endDate), "yyyy-MM-dd"),
-            plannedReleaseDate: selectedDate,
-            isExcelExport: 1,
-            body,
-            report_name: FilterPageName.Proc_Day_Wise_Coverage
-        });
-
-        if (excelResponse?.status === 200) {
-            DownloadExcel(excelResponse, "Day_Wise_Coverage_Report");
-        } else {
-            notifyError("Failed to export Excel from server");
+            if (excelResponse?.status === 200) {
+                DownloadExcel(excelResponse, "Day_Wise_Coverage_Report");
+                notifySuccess("Excel exported successfully!");
+            } else {
+                notifyError("Failed to export Excel ");
+            }
+        } catch (error) {
+            console.error("Excel Export Error:", error);
+            notifyError("An error occurred during export");
         }
-    } catch (error) {
-        console.error("Excel Export Error:", error);
-        notifyError("An error occurred during export");
-    }
+    };
+
+    const onExcelExportClick = () => {
+        setShowExcelModal(true);
+    };
+
+    const handleExcelConfirm = () => {
+        setShowExcelModal(false);
+        executeExcelExport(1); 
+    };
+
+    const handleExcelCancel = () => {
+        setShowExcelModal(false);
+        executeExcelExport(0); 
     };
 
     return (
@@ -461,11 +476,12 @@ const DayWiseCoverage = () => {
                     setMultiFilter={setCurrFilter}
                     onFilterRemove={onFilterRemove}
                     isMfgSelected={isMfgSelected}
-                    onExcelExportClick={ExcelExport}
+                    onExcelExportClick={onExcelExportClick}
                     handleSaveClick={()=>handleSaveClick()}
                     handleResetClick={handleResetClick}
                 />
             </div>
+          
             <DayWiseCoverageHeader max={maxDate} min={minDate} startDate={startDate} endDate={endDate} setDateRange={setDateRange} />
             {(loading || isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />}
             <DayWiseCoverageCalender start={startDate} end={endDate} getToolTipContent={getToolTipContent} getColor={getColor} selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
@@ -504,6 +520,16 @@ const DayWiseCoverage = () => {
                 <path id="Path_10655" data-name="Path 10655" d="M19.9,1.444a.716.716,0,0,0-.135-.2c-.009-.009-.012-.022-.021-.031s-.022-.012-.031-.021A.679.679,0,0,0,19.235,1H14.894a.724.724,0,0,0,0,1.447h2.594L12.212,7.723a.723.723,0,1,0,1.023,1.023L18.512,3.47V6.064a.724.724,0,1,0,1.447,0V1.723a.716.716,0,0,0-.056-.279Z" transform="translate(-4.041 -1)" fill="#b93b7e" />
             </svg>
             </div>}
+            
+              <BomExcelModal
+                open={showExcelModal}
+                onClose={() => setShowExcelModal(false)}
+                onConfirm={handleExcelConfirm}
+                onCancel={handleExcelCancel}
+                themeUi={themeUi}
+                headerText={"Excel Export"}
+                messageText={"Do you want to download Excel with BOM Data?"}
+            />
         </div>
 
     )
