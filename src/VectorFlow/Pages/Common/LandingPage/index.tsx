@@ -16,102 +16,90 @@ import {
 import { ApplicationName } from "../../MTO/Common/Enum";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
+import { LayoutPriority } from "allotment";
 
 const LandingPage = () => {
   const { user } = useUserData();
   const [listMenu] = useState(listMenuParent);
-  const map = useRef(new Map());
   const { t } = useTranslation();
-  const [renderMap, setRenderMap] = useState(new Map());
   const navigate = useNavigate();
+  const [myMap, setMyMap] = useState<any>(null);
 
   const themeUi = user?.user?.theme_ui;
 
-  const findUrl = (item: any) => {
-    const checkUrl = user?.url_permission?.some((value: any) => {
-      return item.url == value;
-    });
-    if (checkUrl) {
-      return item.url;
-    } else if (item?.child) {
-      item.child.forEach((child: any) => {
-        const foundUrl = findUrl(child);
-        if (foundUrl) {
-          return foundUrl;
-        }
-      });
+  const permittedUrls = new Set<string>(user?.url_permission ?? []);
+
+  const findUrl = (url: any) => {
+    return permittedUrls.has(url);
+  }
+
+  const CreateMenuFunction = (item: any): string => {
+    if (findUrl(item.url)) return item.url;
+    if (!item.child?.length) return "";
+
+    for (const child of item.child) {
+      const result = findUrl(child.url)
+        ? child.url
+        : CreateMenuFunction(child);
+
+      if (result) return result;
     }
-    return null;
+
+    return "";
   };
 
-  const CreateMenuFunction = (app_id: any, item: any) => {
-    if (item?.lp_attr) {
-      const currentList = map.current.get(app_id) || [];
-      if (
-        !currentList.some(
-          (existingItem: any) => existingItem.name === item.name
-        )
-      ) {
-        const checkUrl = user?.url_permission?.some((value: any) => {
-          return item.url == value;
-        });
-        let url = undefined;
-        if (checkUrl) {
-          url = item.url;
-        } else {
-          if (item?.child) {
-            for (const child of item.child) {
-              url = findUrl(child);
-              if (url != null && url != undefined) {
-                break; // Exit the loop once URL is found
-              }
-            }
-          }
-        }
-        if (url != null && url != undefined) {
-          currentList.push({
-            name: item.name,
-            img: themeUi === "REGALBLAZE" ? item.rp_img : item.lp_img,
-            // img:item.lp_img,
-            url: url,
-          });
-        }
-        map.current.set(app_id, currentList);
-      } else {
-        const curr = currentList.find(
-          (existingItem: any) => existingItem.name == item.name
-        );
-        if (curr) {
-          curr.img = themeUi === "REGALBLAZE" ? item.rp_img : item.lp_img;
-        }
-      }
-    } else if (item?.child) {
-      item?.child.forEach((child: any) => {
-        CreateMenuFunction(app_id, child);
-      });
-    }
+
+  const pushToMap = (finMap: Map<any, any>, appId: any, node: any, url: string) => {
+    const foundItem = {
+      name: node.name,
+      img: themeUi === "REGALBLAZE" ? node.rp_img : node.lp_img,
+      url: url,
+    };
+
+    const mapArr = finMap.get(appId) || [];
+    mapArr.push(foundItem);
+    finMap.set(appId, mapArr);
   };
 
   const createMenu = () => {
+
+    const finMap = new Map();
     listMenu?.forEach((item: any) => {
-      CreateMenuFunction(item?.app_id, item);
+      if (item?.lp_attr) {
+        const urlAvailable: string = CreateMenuFunction(item);
+
+        if (urlAvailable.length > 0) {
+          pushToMap(finMap, item?.app_id, item, urlAvailable);
+        }
+      }
+      else {
+        // MTA
+        item.child.forEach((child: any) => {
+          if (child.lp_attr && findUrl(child?.url)) {
+            pushToMap(finMap, item?.app_id, child, child?.url);
+          }
+          else {
+            child?.child?.forEach((grand_child: any) => {
+              if (grand_child.lp_attr && findUrl(grand_child?.url)) {
+                pushToMap(finMap, item?.app_id, grand_child, grand_child?.url);
+              }
+            })
+          }
+        })
+
+      }
     });
+    setMyMap(finMap)
   };
 
   useEffect(() => {
     createMenu();
-    setRenderMap(new Map(map.current));
-  }, [themeUi]);
+  }, [themeUi, user?.url_permission]);
 
-  const [myMap, setMyMap] = useState<any>(null);
-  useEffect(() => {
-    setMyMap(map);
-  }, [map]);
 
-  const imageSrc =
-    themeUi === "REGALBLAZE"
-      ? "/assets/img/Clicktoview1.svg"
-      : "/assets/img/Clicktoview.svg";
+  const imageSrc = themeUi === "REGALBLAZE"
+    ? "/assets/img/Clicktoview1.svg"
+    : "/assets/img/Clicktoview.svg";
   return (
     <div className={landingContainer}>
       <h1 style={{ fontSize: "2rem" }}>
