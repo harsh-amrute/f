@@ -12,7 +12,7 @@ const Tools = ()=>{
     const navigate = useNavigate()
     const { user } = useUserData();
     const isAdmin = user?.user?.is_admin;
-    const isPermissionsManager  = user?.roles?.permission?.includes("PermissionsManager");
+    const isPermissionsManager = user?.roles?.some((e: any) => e.name == "PermissionsManager");
     
     return(
         <ToolsWrapper>
