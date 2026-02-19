@@ -1,0 +1,84 @@
+.BTMTA-tooltip-container {
+  background-color: #6c696a;
+  font-family: "Roboto", sans-serif;
+  color: white;
+  width: 100%;
+}
+
+.BTMTA-tooltip-header {
+  color: white;
+  padding: 10px 0 4px;
+  background-color: #6c696a;
+  text-align: center;
+  font-weight: bold;
+}
+
+.BTMTA-tooltip-body {
+  padding: 10px;
+  background-color: #6c696a;
+}
+
+.BTMTA-tooltip-table {
+  width: 100%;
+  color: white;
+  border-collapse: collapse;
+}
+
+.BTMTA-tooltip-table thead tr {
+  border-top: 1px dashed white;
+  border-bottom: 1px dashed white;
+}
+
+.BTMTA-empty-cell {
+  padding: 5px;
+  background-color: #6c696a;
+  width: 120px;
+  text-align: left;
+}
+
+.BTMTA-header-cell {
+  font-size: 8px;
+  padding: 5px;
+  background-color: #6c696a;
+  text-align: right;
+}
+
+.BTMTA-color-label {
+  padding: 5px;
+  background-color: #6c696a;
+  display: flex;
+  align-items: center;
+}
+
+.BTMTA-color-box {
+  margin-right: 10px;
+  height: 3px;
+  width: 15px;
+}
+
+.black {
+  background-color: black;
+}
+
+.red {
+  background-color: red;
+}
+
+.yellow {
+  background-color: yellow;
+}
+
+.green {
+  background-color: green;
+}
+
+.grey {
+  background-color: grey;
+}
+
+.BTMTA-percentage-cell,
+.BTMTA-count-cell {
+  padding: 5px;
+  background-color: #6c696a;
+  text-align: right;
+}

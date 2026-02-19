@@ -2,7 +2,7 @@ import moment from 'moment'
 import { useState } from 'react'
 import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer'
 import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VFInfoToolTip'
-import { SCChartHeaderContainer, SCChartMainContainer } from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer/styles'
+import { SCChartHeaderContainer, scChartMainContainer } from '../../../../Common/SplitGraphContainer/styles.css'
 import { AgChartOptions } from 'ag-charts-community'
 import { createSeriesDataIF, getMyColumnDefinitions, TooltipRendererIF } from '../Data'
 import { useGetDate } from '../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting'
@@ -26,7 +26,7 @@ const IFFailedGraph = (props: IFFailedGraphProps) => {
     const generateHeader = () => {
         return (
             <>
-                <SCChartMainContainer style={{ zoom: 1, width: '100%' }}>
+                <div className={scChartMainContainer} style={{ zoom: 1, width: '100%' }}>
                     <div
                         data-testid="otif-graph"
                         style={{
@@ -41,7 +41,7 @@ const IFFailedGraph = (props: IFFailedGraphProps) => {
                         <span style={{ fontWeight: 350 }}>{`(${moment(apiResponseData?.data?.data || '-').subtract(90, 'days').format('D MMM YYYY')} - ${moment(apiResponseData?.data?.data || '-').format('D MMM YYYY')})`}</span>
 
                     </div>
-                    <SCChartHeaderContainer>
+                    <div className={SCChartHeaderContainer}>
 
                         <div style={{ marginLeft: 30, marginBottom: '-5px' }}>
                             <VFInfoToolTip infoList={graph1} />
@@ -49,8 +49,8 @@ const IFFailedGraph = (props: IFFailedGraphProps) => {
                         <div onClick={() => { toggleChart1(!hideChart1) }} style={{ marginLeft: 10, marginBottom: '-5px', marginRight: '10px' }}>
                             <img src='/assets/img/VectorFLOW/BPR/minimize.svg' height={13} width={13} color={"#CCCCCC"} />
                         </div>
-                    </SCChartHeaderContainer>
-                </SCChartMainContainer>
+                    </div>
+                </div>
             </>
 
         )

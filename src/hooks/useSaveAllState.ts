@@ -5,7 +5,7 @@ import {
 } from "../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 import { GridStateContext } from "../context/GridStateContext";
 import { notifyError, notifyLoader, notifySuccess } from "../helpers/notify";
-import {toast} from 'react-toastify'
+import {toast} from "react-toastify/unstyled"
 import { GridState } from "../VectorFlow/types/BPR";
 import { handleDownloadVFReports } from "../helpers/utils";
 

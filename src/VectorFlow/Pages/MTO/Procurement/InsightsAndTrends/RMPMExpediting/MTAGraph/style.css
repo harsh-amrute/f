@@ -1,0 +1,33 @@
+.exp-mta-tooltip-container {
+  background-color: #000;
+  border-radius: 3px;
+  color: #fff;
+  padding: 8px;
+  font-family: "Roboto", sans-serif;
+}
+
+.exp-mta-tooltip-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+}
+
+.exp-mta-tooltip-label {
+  text-align: left;
+  flex: 1;
+}
+
+.exp-mta-tooltip-value {
+  text-align: right;
+  flex: 1;
+}
+
+.exp-mta-tooltip-divider {
+  border: 1px dashed #fff;
+  margin: 8px 0;
+}
+
+.exp-mta-tooltip-footer {
+  font-weight: bold;
+}

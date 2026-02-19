@@ -1,24 +1,31 @@
-import {useState} from 'react'
+import { useState } from "react";
 
-import {RemarkModalTableCell, RemarkModalUserIcon, UserToolTip,UserToolTipContent } from "./styles"
+import {
+  RemarkModalTableCell,
+  RemarkModalUserIcon,
+  UserToolTip,
+  UserToolTipContent,
+} from "./styles.css";
 
+const UserIcon = ({ data }: { data: string }) => {
+  const [isToolTipOpen, toggleToolTip] = useState<boolean>(false);
 
-const UserIcon = ({data}:{data:string})=>{
+  return (
+    <div className={RemarkModalTableCell}>
+      <div
+        className={RemarkModalUserIcon}
+        onMouseEnter={() => toggleToolTip(true)}
+        onMouseLeave={() => toggleToolTip(false)}
+      >
+        {data.slice(0, 1)}
+      </div>
+      {isToolTipOpen && (
+        <div className={UserToolTip}>
+          <p className={UserToolTipContent}>{data}</p>
+        </div>
+      )}
+    </div>
+  );
+};
 
-    const [isToolTipOpen,toggleToolTip] = useState<boolean>(false)
-
-    return(
-        <RemarkModalTableCell>
-            <RemarkModalUserIcon onMouseEnter={()=>toggleToolTip(true)} onMouseLeave={()=>toggleToolTip(false)}>
-                {data.slice(0,1)}
-            </RemarkModalUserIcon>
-            {(isToolTipOpen) && (
-                <UserToolTip >
-                    <UserToolTipContent>{data}</UserToolTipContent>
-                </UserToolTip>
-            )}
-        </RemarkModalTableCell>
-    )
-}
-
-export default UserIcon
+export default UserIcon;

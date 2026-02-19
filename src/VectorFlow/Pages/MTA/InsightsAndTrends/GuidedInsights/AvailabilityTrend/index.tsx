@@ -1,10 +1,10 @@
 import { AgCharts } from "ag-charts-react";
 import { useGetAvailabilityTrend } from "../../../../../Services/MTA/InsightsAndTrends";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import VFInfoToolTip from "../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 import OverlayLoader from "../../../../../../VectorFlow/Pages/MTO/Common/Loader";
 import { chartParams1 } from "./chartParams";
-import { generateChartOptions } from "../../../../../../helpers/utils";
+import { generateChartOptions, nonce } from "../../../../../../helpers/utils";
 import VFHorizon from "../../../../../../components/VectorFLOW/commons/VFHorizon";
 
 const AvailabilityTrend = ({
@@ -31,9 +31,13 @@ const AvailabilityTrend = ({
     "#e0e0e0",
     "#f2f2f2",
     "#1a1a1a",
+    "#4d4d4d",
+    "#e0e0e0",
+    "#f2f2f2",
+    "#1a1a1a",
   ];
 
-  const [options, setOptions] = useState({});
+  const [options, setOptions] = useState<any>({});
   const [locationTypeOrder, setLocationTypeOrder] = useState<string[]>([]);
   useEffect(() => {
     OnHorizonChange(horizon);
@@ -49,18 +53,24 @@ const AvailabilityTrend = ({
       setOptions({});
       return;
     }
-
     let locationTypes: string[] = Array.from(
       new Set<string>(data.map((d: any) => String(d.locationtype)))
     ).sort();
 
     if (locationTypeOrder.length > 0) {
-      const newTypes = locationTypes.filter((type: string) => !locationTypeOrder.includes(type));
-      locationTypes = [...locationTypeOrder.filter((type: string) => locationTypes.includes(type)), ...newTypes];
+      const newTypes = locationTypes.filter(
+        (type: string) => !locationTypeOrder.includes(type)
+      );
+      locationTypes = [
+        ...locationTypeOrder.filter((type: string) =>
+          locationTypes.includes(type)
+        ),
+        ...newTypes,
+      ];
     } else {
       setLocationTypeOrder(locationTypes);
     }
-    
+
     const series = locationTypes.map((locationType, index) => {
       const seriesData = data
         .filter((d: any) => d.locationtype === locationType)
@@ -83,8 +93,35 @@ const AvailabilityTrend = ({
     const customizedChartProps = generateChartOptions(data, chartProps);
     customizedChartProps.data = data;
     setOptions(customizedChartProps);
-
   };
+
+  // 4️⃣ EXACTLY like VFCharts: wrap options with nonce-aware theme
+  const chartOptions = useMemo(() => {
+    const opts: any = {
+      ...(options || {}),
+    };
+
+    if (!nonce) {
+      return opts;
+    }
+
+    opts.styleNonce = nonce;
+
+    const baseTheme = options?.theme ?? {};
+    opts.theme = {
+      ...baseTheme,
+      overrides: {
+        ...(baseTheme as any).overrides,
+        common: {
+          ...((baseTheme as any).overrides?.common ?? {}),
+          styleNonce: nonce,
+        },
+      },
+    };
+
+    console.log("FINAL AG CHART OPTIONS (AvailabilityTrend):", opts);
+    return opts;
+  }, [options, nonce]);
 
   if (isLoading) {
     return <OverlayLoader />;
@@ -96,7 +133,7 @@ const AvailabilityTrend = ({
         setHorizon={setHorizon}
         OnHorizonChange={OnHorizonChange}
         horizon={horizon}
-        styles={{width:'500px'}}
+        styles={{ width: "500px" }}
       />
       <div
         className="Title"
@@ -115,8 +152,10 @@ const AvailabilityTrend = ({
           <VFInfoToolTip infoList={chartParams1.graphInfo} />
         </div>
       </div>
-      <div style={{ height: "85%" , padding:'30px 0px' }}>
-        <AgCharts options={{...options, padding: { right: 20, left: 20 }}} />
+      <div style={{ height: "85%", padding: "30px 0px" }}>
+        <AgCharts
+          options={{ ...chartOptions, padding: { right: 20, left: 20 } }}
+        />
       </div>
     </div>
   );

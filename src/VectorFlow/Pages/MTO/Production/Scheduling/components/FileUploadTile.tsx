@@ -1,13 +1,13 @@
 import React, { useRef, useState } from "react";
 import VFButton from "../../../../../../components/VectorFLOW/commons/VFButton";
 import { useUserData } from "../../../../../../context";
-import * as ManualStyle from "../../../../../../module-store-transfer/pages/manual-upload/styles";
+import * as ManualStyle from "../../../../../../module-store-transfer/pages/manual-upload/styles.css";
 import {
   ButtonContentWrapper,
   ButtonsWrapper,
   Container,
   LeftSection,
-} from "./FileUploadTileStyles";
+} from "./FileUploadTileStyles.css";
 
 type ReportActionCardProps = {
   title: string;
@@ -26,10 +26,11 @@ const FileUploadTile: React.FC<ReportActionCardProps> = ({
   fileUploadType,
   expected_extension,
 }) => {
-  const { user } = useUserData();
-  const themeUi = user?.user?.theme_ui;
+  const user = useUserData().user;
+  const themeUi = user.themeUi;
   const feature_permission = user?.feature_permission || [];
   const canTriggerRun = feature_permission.includes("Scheduler_Run_Trigger");
+
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -57,12 +58,12 @@ const FileUploadTile: React.FC<ReportActionCardProps> = ({
   };
 
   return (
-    <Container
+    <div className={Container}
       style={{
         border: `1.5px dashed ${lastUpdateStatus ? "#d17ca0" : "#cecece"}`,
       }}
     >
-      <LeftSection
+      <div className={LeftSection}
         onClick={handleClick}
         style={{ cursor: fileUploadType === "UI" ? "pointer" : "default" }}
       >
@@ -72,7 +73,7 @@ const FileUploadTile: React.FC<ReportActionCardProps> = ({
         />
         <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
           {title}
-          {fileUploadType === "UI" && canTriggerRun && (
+          {fileUploadType === "UI" && (
             <p style={{ fontSize: "0.9rem", color: "#666666", margin: 0 }}>
               {file
                 ? `Selected file: ${file.name}`
@@ -85,50 +86,49 @@ const FileUploadTile: React.FC<ReportActionCardProps> = ({
             </p>
           )}
         </div>
-      </LeftSection>
-      {fileUploadType === "UI" && (
-        <ButtonsWrapper style={{ fontSize: "1rem" }}>
+      </div>
+      {fileUploadType === "UI" && canTriggerRun && (
+        <div className={ButtonsWrapper} style={{ fontSize: "1rem" }}>
           <VFButton
             themeUi={themeUi}
             onClick={() => onDownload(title, expected_extension)}
             style={{ fontSize: "0.9rem", height: "32px", width: "100px" }}
             disabled={!lastUpdateStatus}
           >
-            <ButtonContentWrapper>
+            <div className={ButtonContentWrapper}>
               <img
                 src="/assets/img/VectorFLOW/NMS/download.svg"
                 alt="Upload Icon"
                 style={{ width: "18px", height: "18px" }}
               />
               Download
-            </ButtonContentWrapper>
+            </div>
           </VFButton>
-          {canTriggerRun && (
-            <VFButton
-              themeUi={themeUi}
-              disabled={!file}
-              onClick={() => {
-                onUpload({
-                  file,
-                  file_type: expected_extension,
-                  file_name: title,
-                });
-                setFile(null);
-              }}
-              style={{ fontSize: "0.9rem", height: "32px", width: "100px" }}
-            >
-              <ButtonContentWrapper>
-                <img
-                  src="/assets/img/VectorFLOW/NMS/upload.svg"
-                  alt="Upload Icon"
-                  style={{ width: "18px", height: "18px" }}
-                />
-                Upload
-              </ButtonContentWrapper>
-            </VFButton>
-          )}
+          <VFButton
+            themeUi={themeUi}
+            disabled={!file}
+            onClick={() => {
+              onUpload({
+                file,
+                file_type: expected_extension,
+                file_name: title,
+              });
+              setFile(null);
+            }}
+            style={{ fontSize: "0.9rem", height: "32px", width: "100px" }}
+          >
+            <div className={ButtonContentWrapper}>
+              <img
+                src="/assets/img/VectorFLOW/NMS/upload.svg"
+                alt="Upload Icon"
+                style={{ width: "18px", height: "18px" }}
+              />
+              Upload
+            </div>
+          </VFButton>
 
-          <ManualStyle.SCManualUploadInput
+          <input
+            className={ManualStyle.SCManualUploadInput}
             type="file"
             accept={expected_extension}
             onChange={handleFileChange}
@@ -137,9 +137,9 @@ const FileUploadTile: React.FC<ReportActionCardProps> = ({
             style={{ display: "none" }}
             data-testid="view-modify-file-upload"
           />
-        </ButtonsWrapper>
+        </div>
       )}
-    </Container>
+    </div>
   );
 };
 

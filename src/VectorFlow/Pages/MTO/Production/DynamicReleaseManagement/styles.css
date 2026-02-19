@@ -3,3 +3,43 @@
     height: 2rem;
     accent-color: #820F4C;
 } */
+.drm-tooltip-container {
+  background-color: #6c696a;
+  /* transform: translateX(120px); */
+}
+
+.drm-tooltip-header {
+  background-color: #6c696a;
+  color: white;
+  padding: 10px 10px 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px dashed white;
+}
+
+.drm-tooltip-body {
+  color: white; 
+  background-color: #6C696A; 
+  padding: 10px;
+}
+
+.drm-tooltip-row {
+  display: flex;
+  align-items: center;
+}
+
+.drm-color-box {
+  margin-right: 10px; 
+  height: 3px; 
+  width: 15px;
+}
+.barcolor-Released_WIP {
+  background-color: #191919;
+}
+.barcolor-Incremental_WIP {
+  background-color: #4BAAF7;
+}
+.barcolor-Limit {
+  background-color: #E53F3F;
+}

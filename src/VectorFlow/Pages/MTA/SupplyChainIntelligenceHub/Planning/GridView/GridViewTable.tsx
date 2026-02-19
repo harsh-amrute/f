@@ -1,99 +1,127 @@
-import {useContext,useEffect,useState} from "react"
+import { useContext, useEffect, useState } from "react";
 
-
-import { Allotment } from "allotment"
+import { Allotment } from "allotment";
 import "allotment/dist/style.css";
-import { GridViewLayout } from "./styles";
+import { GridViewLayout } from "./styles.css";
 import { AgGridReactProps } from "ag-grid-react";
 import { ColDef } from "ag-grid-enterprise";
-import VFTable from "../../../../../../components/VectorFLOW/commons/VFTable"
-import BPRViewTable, { BPRViewTableColDef } from '../../BPR/BPRViewTable'
-import VFPagination from "../../../../../../VectorFlow/Pages/MTO/Common/VFPagination"
+import VFTable from "../../../../../../components/VectorFLOW/commons/VFTable";
+import BPRViewTable, { BPRViewTableColDef } from "../../BPR/BPRViewTable";
+import VFPagination from "../../../../../../VectorFlow/Pages/MTO/Common/VFPagination";
 import { type VFPaginationProps } from "../../../../../../components/VectorFLOW/commons/VFPagination";
 import { GridStateContext } from "../../../../../../context/GridStateContext";
 import { useGetState } from "../../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
-import { updateCommonAttributes } from '../../../../../../helpers/utils'
-import _ from 'lodash'
-import { GridFilterWrapper, TextBtn } from "../../../../../../VectorFlow/Pages/MTO/Common/VFPagination/styles";
+import { updateCommonAttributes } from "../../../../../../helpers/utils";
+import _ from "lodash";
+import {
+  gridFilterWrapper,
+  textBtn,
+} from "../../../../MTO/Common/VFPagination/styles.css";
 import { useUserData } from "../../../../../../context";
 
-
-
 interface GridViewTableProps {
-    agGridProps:AgGridReactProps,
-    agGridColDefs:ColDef[],
-    agGridRowData:any,
-    customGridRowData:any,
-    customGridColDef:Array<BPRViewTableColDef>
-    isSubGridOpen:boolean
-    showStockGrid?:boolean
-    stockGridData?:Array<any>
-    onRequestExpediting?:()=>void
-    paginationProps?:VFPaginationProps
-    currentTab:string
-    currentCategory:string,
-    gridHeight?:string,
-    tablePrefixSrc?:string,
-    tableHeader?:string,
-    ref1?:any
+  agGridProps: AgGridReactProps;
+  agGridColDefs: ColDef[];
+  agGridRowData: any;
+  customGridRowData: any;
+  customGridColDef: Array<BPRViewTableColDef>;
+  isSubGridOpen: boolean;
+  showStockGrid?: boolean;
+  stockGridData?: Array<any>;
+  onRequestExpediting?: () => void;
+  paginationProps?: VFPaginationProps;
+  currentTab: string;
+  currentCategory: string;
+  gridHeight?: string;
+  tablePrefixSrc?: string;
+  tableHeader?: string;
+  ref1?: any;
 }
 
-const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowData,customGridColDef,showStockGrid,isSubGridOpen,stockGridData,onRequestExpediting,paginationProps,gridHeight,tablePrefixSrc,tableHeader,currentCategory,currentTab, ref1}:GridViewTableProps) => {
-    const {ref} = useContext(GridStateContext)
-    const {mutateAsync:getState} = useGetState()
-    const [gridState,setGridState] = useState<any>()
-    const [isDisabled, setIsDisabled]= useState<boolean>(true)
+const GridViewTable = ({
+  agGridProps,
+  agGridColDefs,
+  agGridRowData,
+  customGridRowData,
+  customGridColDef,
+  showStockGrid,
+  isSubGridOpen,
+  stockGridData,
+  onRequestExpediting,
+  paginationProps,
+  gridHeight,
+  tablePrefixSrc,
+  tableHeader,
+  currentCategory,
+  currentTab,
+  ref1,
+}: GridViewTableProps) => {
+  const { ref } = useContext(GridStateContext);
+  const { mutateAsync: getState } = useGetState();
+  const [gridState, setGridState] = useState<any>();
+  const [isDisabled, setIsDisabled] = useState<boolean>(true);
 
-        const {user} = useUserData()
-        const theme_ui = user.user.theme_ui
-    
+  const { user } = useUserData();
+  const theme_ui = user.user.theme_ui;
 
+  const [Columns, setColumns] = useState<any[]>(_.cloneDeep(agGridColDefs));
 
-    const [Columns,setColumns] = useState<any[]>(_.cloneDeep(agGridColDefs))
-
-    useEffect(()=>{
-        if(agGridColDefs && agGridColDefs.length){
-            const getTableState = async()=>{
-                try{
-                    const data =  await getState({reportname:`${currentCategory}${currentTab}`})
-                    const parsedContent = JSON.parse(data.data.data)
-                    setGridState(parsedContent)
-                }catch(err:any){
-                    setGridState({
-                        charts:[],
-                        columns:Columns,
-                        pivot:false
-                    })
-                }
-            }
-            
-            getTableState()
+  useEffect(() => {
+    if (agGridColDefs && agGridColDefs.length) {
+      const getTableState = async () => {
+        try {
+          const data = await getState({
+            reportname: `${currentCategory}${currentTab}`,
+          });
+          const parsedContent = JSON.parse(data.data.data);
+          setGridState(parsedContent);
+        } catch (err: any) {
+          setGridState({
+            charts: [],
+            columns: Columns,
+            pivot: false,
+          });
         }
-    },[agGridColDefs])
+      };
 
-    useEffect(()=>{
-        if(gridState && Array.isArray(gridState.columns) && gridState.columns.length !== 0){
-            ref?.current?.api?.applyColumnState({state: gridState.columns,applyOrder: true});
+      getTableState();
+    }
+  }, [agGridColDefs]);
 
-        }
-    }, [gridState, agGridColDefs, agGridRowData, ref])
-    
-      
-     const clearGridFilter = () =>{
-              ref?.current?.api.setFilterModel(null);
-                setIsDisabled(true);
+  useEffect(() => {
+    if (
+      gridState &&
+      Array.isArray(gridState.columns) &&
+      gridState.columns.length !== 0
+    ) {
+      ref?.current?.api?.applyColumnState({
+        state: gridState.columns,
+        applyOrder: true,
+      });
+    }
+  }, [gridState, agGridColDefs, agGridRowData, ref]);
+
+  const clearGridFilter = () => {
+    ref?.current?.api.setFilterModel(null);
+    setIsDisabled(true);
+  };
+
+  const CustomStatusPanel = () => {
+    return (
+      <div className={gridFilterWrapper} style={{ marginTop: "25px" }}>
+        <button
+          type="button"
+          onClick={clearGridFilter}
+          disabled={isDisabled}
+          className={
+            theme_ui === "REGALBLAZE" ? textBtn.REGALBLAZE : textBtn.DEFAULT
           }
-      
-         
-          const CustomStatusPanel = () => {
-              return (
-                  <GridFilterWrapper style={{marginTop:'25px'}}>
-                      <TextBtn onClick={clearGridFilter} disabled={isDisabled} themeUi={theme_ui}>
-                          Clear All Grid Filters
-                      </TextBtn>  
-                  </GridFilterWrapper>           
-              );
-          };
+        >
+          Clear All Grid Filters
+        </button>
+      </div>
+    );
+  };
 
    
 
@@ -161,7 +189,7 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
     }
 
     return(
-        <GridViewLayout>
+      <div className={GridViewLayout}>
             <div style={{height:'90vh'}}>
                 <Allotment defaultSizes={[350,150]} vertical>
                 {
@@ -172,7 +200,8 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                             ref={ref}
                             {...agGridProps}
                             columnDefs={agGridColDefs}
-                            rowData={agGridRowData}
+                            rowData={agGridRowData}                      
+                            enableBrowserTooltips={true}
                             maintainColumnOrder={true}
                             height={gridHeight ? gridHeight : '380px'}
                             statusBar={{
@@ -192,6 +221,7 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                                   setIsDisabled(true);
                                 }
                             }}
+                            tooltipShowDelay={500}        
                         />
                         {paginationProps && <VFPagination {...paginationProps}
                          resetGridRef={ref} 
@@ -230,6 +260,8 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                                       setIsDisabled(true);
                                     }
                                 }}
+                                tooltipShowDelay={500}
+                                enableBrowserTooltips={false}
                                 
                             />
                             {paginationProps &&
@@ -251,8 +283,7 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                 </Allotment>
             </div>
             
-        </GridViewLayout>
+        </div>
     )
 }   
-
-export default GridViewTable
+export default GridViewTable;

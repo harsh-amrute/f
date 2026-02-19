@@ -1,18 +1,20 @@
-import { Dialog, Transition } from '@headlessui/react'
-import { Fragment, useEffect } from 'react'
-import { Player } from '@lottiefiles/react-lottie-player'
-import './styles.css'
-import { useTranslation } from 'react-i18next'
+import { Dialog, Transition } from "@headlessui/react";
+import { Fragment, useEffect } from "react";
+import Lottie from "lottie-react";
+import "./styles.css";
+import { useTranslation } from "react-i18next";
 import { useUserData } from "../../../context";
+import SafeLottie from "../SafeLottie";
 
+import upload_success_json from "../../../lottie/upload-success.json";
 interface ModalProps {
-  fileJson: string
-  modalTitle: string
-  modalContent: string
-  openModal: boolean
-  closeModal: () => void
-  onClickModal: () => void
-  text: string
+  fileJson: string | any;
+  modalTitle: string;
+  modalContent: string;
+  openModal: boolean;
+  closeModal: () => void;
+  onClickModal: () => void;
+  text: string;
 }
 
 const Modal = ({
@@ -22,23 +24,23 @@ const Modal = ({
   openModal,
   closeModal,
   onClickModal,
-  text
+  text,
 }: ModalProps) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
 
   useEffect(() => {
-    if(fileJson === "/assets/img/manual/upload-success.json") {      
+    if (fileJson == upload_success_json ) {
       setTimeout(() => {
         closeModal();
       }, 2000);
     }
-  },[])
+  }, []);
 
   return (
     <>
-      {text == 'MANUAL_UPLOAD' ? (
+      {text == "MANUAL_UPLOAD" ? (
         <>
           <Transition appear show={openModal} as={Fragment}>
             <Dialog as="div" className="modal-box" onClose={closeModal}>
@@ -67,27 +69,40 @@ const Modal = ({
                   >
                     <Dialog.Panel
                       className="modal-content--block"
-                      style={{ height: '350px', width: '530px' }}
+                      style={{ height: "350px", width: "530px" }}
                     >
                       {/* <img src="/assets/img/ist/warning.svg" className='warning_img' style={{ marginTop: '70px' }} /> */}
-                      <Player
-                        src={fileJson}
-                        background="transparent"
-                        style={{
-                          width: '148px',
-                          height: '148px',
-                          marginTop: '50px'
-                        }}
+                      {/* <Lottie
+                        animationData={fileJson}
                         loop
                         autoplay
-                      ></Player>
+                        style={{
+                          width: "148px",
+                          height: "148px",
+                          marginTop: "50px",
+                          background: "transparent",
+                        }}
+                      /> */}
+
+                      <SafeLottie
+                        src={fileJson}
+                        loop
+                        autoplay
+                        style={{
+                          // width: "148px",
+                          height: "148px",
+                          marginTop: "50px",
+                          background: "transparent",
+                        }}
+                      />
+
                       <Dialog.Title
                         as="h3"
                         className="modal-title"
                         style={{
-                          fontSize: '23px',
-                          fontFamily: 'Roboto',
-                          marginTop: '20px'
+                          fontSize: "23px",
+                          fontFamily: "Roboto",
+                          marginTop: "20px",
                         }}
                       >
                         {modalTitle}
@@ -106,7 +121,12 @@ const Modal = ({
         </>
       ) : (
         <Transition appear show={openModal} as={Fragment}>
-          <Dialog style={{zoom: 0.7}} as="div" className="modal-box" onClose={closeModal}>
+          <Dialog
+            style={{ zoom: 0.7 }}
+            as="div"
+            className="modal-box"
+            onClose={closeModal}
+          >
             <Transition.Child
               as={Fragment}
               enter="transition"
@@ -155,7 +175,7 @@ const Modal = ({
                         className="button_cancel"
                         onClick={closeModal}
                       >
-                        {t('pendingISTRequests.button.cancel')}
+                        {t("pendingISTRequests.button.cancel")}
                       </button>
                     </div>
                   </Dialog.Panel>
@@ -166,7 +186,7 @@ const Modal = ({
         </Transition>
       )}
     </>
-  )
-}
+  );
+};
 
-export default Modal
+export default Modal;

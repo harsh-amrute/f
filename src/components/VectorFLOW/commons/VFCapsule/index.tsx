@@ -1,49 +1,67 @@
+import { useUserData } from "../../../../context";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
+import * as globalStyles from "../../../../styles/global";
+import {
+  VFCapsuleButton as capsuleBtnCls,
+  VFCapsuleWrapper as capsuleWrapperCls,
+  wrapperBorderVar,
+  btnBgVar,
+  btnColorVar,
+} from "./styles.css";
 
-import { useUserData } from "../../../../context"
-import { VFCapsuleButton, VFCapsuleWrapper } from "./styles"
-
-interface Capsule{
-    label:string
-    value:string
+interface Capsule {
+  label: string;
+  value: string;
 }
 
-interface VFCapsuleProps{
-    activeBtn:Capsule
-    capsules:Capsule[]
-    handleClick:any
+interface VFCapsuleProps {
+  activeBtn: Capsule;
+  capsules: Capsule[];
+  handleClick: any;
 }
 
-const VFCapsule = (props:VFCapsuleProps)=>{
+const VFCapsule = (props: VFCapsuleProps) => {
+  const { activeBtn, capsules, handleClick } = props;
 
-    const {
-        activeBtn,
-        capsules,
-        handleClick
-    } = props
+  const { user } = useUserData();
 
-    
+  const onClick = (capsule: Capsule) => {
+    handleClick(capsule);
+  };
 
-    const {user} = useUserData()
+  const activeCapsule = activeBtn;
 
+  return (
+    <div
+      className={capsuleWrapperCls}
+      data-testid="vf-capsule"
+      style={assignInlineVars({
+        [wrapperBorderVar]:
+          globalStyles.chooseThemeColor[user.user.theme_ui]?.color4 ?? "#ccc",
+      })}
+    >
+      {capsules.map((c: Capsule) => {
+        const isActive = c.value === activeCapsule.value;
+        const theme = globalStyles.chooseThemeColor[user.user.theme_ui] || {};
+        const bg = isActive ? theme.color4 ?? "#000" : "#FFFFFF";
+        const fg = isActive ? "#FFFFFF" : "#8E8E8E";
 
-    const onClick = (capsule:Capsule)=>{
-        handleClick(capsule)
-        
-    }
-
-    const activeCapsule = activeBtn 
-
-    return(
-        <VFCapsuleWrapper themeUi={user.user.theme_ui} data-testid = 'vf-capsule'>
-            {capsules.map((c:Capsule)=>{
-                return(
-                    <VFCapsuleButton isActive={c.value===activeCapsule.value} onClick={()=>onClick(c)} themeUi={user.user.theme_ui} key={c.value}>
-                        {c.label}
-                    </VFCapsuleButton>
-                )
+        return (
+          <button
+            key={c.value}
+            className={capsuleBtnCls}
+            onClick={() => onClick(c)}
+            style={assignInlineVars({
+              [btnBgVar]: bg,
+              [btnColorVar]: fg,
             })}
-        </VFCapsuleWrapper>
-    )
-}
+          >
+            {c.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+};
 
-export default VFCapsule
+export default VFCapsule;

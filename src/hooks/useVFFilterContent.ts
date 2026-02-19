@@ -135,9 +135,8 @@ export const useColorThemeStyles = (props?: ColorThemeStylesProps) => {
       ...baseStyles,
       maxHeight: menuListMaxHeight || "none",
       overflowY: menuListMaxHeight ? "auto" : "visible",
-      scrollbarWidth: "thin", 
-      scrollbarColor: "#888 transparent",
-
+      scrollbarWidth: "none",
+      msOverflowStyle: "none",
       ...(gridColumns === 2 && {
         display: "grid",
         gridTemplateColumns: "repeat(2, 1fr)",
@@ -145,14 +144,7 @@ export const useColorThemeStyles = (props?: ColorThemeStylesProps) => {
         padding: gridGap,
       }),
       "&::-webkit-scrollbar": {
-        width: "6px",
-      },
-      "&::-webkit-scrollbar-thumb": {
-        backgroundColor: "#888",
-        borderRadius: "4px",
-      },
-      "&::-webkit-scrollbar-thumb:hover": {
-        backgroundColor: "#555",
+        display: "none",
       },
     }),
     option: (baseStyles: any, { isSelected, isFocused }: any) => ({
@@ -228,7 +220,10 @@ export const useColorThemeStyles = (props?: ColorThemeStylesProps) => {
       minWidth: "0",
       flex: "1 1 auto",
       scrollbarWidth: "none",
-      scrollbarColor: "none",
+      msOverflowStyle: "none",
+      "&::-webkit-scrollbar": {
+        display: "none",
+      },
       gap: "4px",
       padding: valueContainerPaddingLeft ? `2px 8px 2px ${valueContainerPaddingLeft}` : "2px 8px",
     }),

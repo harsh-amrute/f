@@ -1,0 +1,37 @@
+import { style } from '@vanilla-extract/css';
+
+export const BORLayout = style({
+  // marginTop: 20,
+  marginLeft: 15,
+});
+
+export const BORTaskBar = style({
+  position: 'fixed',
+  width: '97%',
+  right: 0,
+  top: '13vh',
+  height: 70,
+  backgroundColor: 'white',
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'flex-end',
+  alignItems: 'center',
+  gap: 20,
+  padding: 16,
+  zIndex: 2,
+  transition: '0.3s ease 0s',
+});
+
+export const BORColorCellRendererWrapper = style({
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  width: 97,
+  height: 34,
+  boxShadow: '0px 6px 12px #8D8D8D29',
+  borderRadius: 4,
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+});

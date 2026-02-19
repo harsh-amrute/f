@@ -1,7 +1,7 @@
 import { format, isSameMonth } from 'date-fns'
 import { DayProps, useNavigation } from 'react-day-picker'
 import { BPRColorMapper } from '../../../../../helpers/utils'
-import { CustomCalenderDayWrapper } from './styles'
+import { CustomCalenderDayWrapper } from './styles.css'
 
 
 interface CustomCalenderDayProps extends DayProps {
@@ -20,12 +20,12 @@ const CustomCalenderDay = (props: CustomCalenderDayProps) => {
 
     if (isDateValid) {
         return (
-            <CustomCalenderDayWrapper style={{
+            <div className={CustomCalenderDayWrapper} style={{
                 backgroundColor: currColors.bg,
                 color: currColors.text
             }}>
                 {format(props.date, 'dd')}
-            </CustomCalenderDayWrapper>
+            </div>
         )
     }
     return <></>

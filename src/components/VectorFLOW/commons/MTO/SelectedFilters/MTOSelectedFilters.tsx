@@ -1,19 +1,16 @@
-import { VFSelectedFiltersPlaceHolder, VFSelectedFiltersWrapper, VFFilterScrollBar } from './styles'
+import {
+  VFSelectedFiltersPlaceHolder,
+  VFSelectedFiltersWrapper,
+  VFFilterScrollBar,
+} from "./styles.css";
+
 const MTOSelectedFilter = () => {
+  return (
+    <div className={VFSelectedFiltersWrapper}>
+      <p className={VFSelectedFiltersPlaceHolder}>Selected Filters</p>
+      <div className={VFFilterScrollBar}>{/* content goes here */}</div>
+    </div>
+  );
+};
 
-   
-
-    return (
-        <VFSelectedFiltersWrapper>
-            <VFSelectedFiltersPlaceHolder>
-                Selected Filters
-            </VFSelectedFiltersPlaceHolder>
-            <VFFilterScrollBar>
-
-
-            </VFFilterScrollBar>
-        </VFSelectedFiltersWrapper>
-    )
-}
-
-export default MTOSelectedFilter
+export default MTOSelectedFilter;

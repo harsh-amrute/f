@@ -7,7 +7,7 @@ import { useState } from 'react';
 
 import { notifyError,notifyLoader,notifySuccess } from '../../../../../helpers/notify';
 import _ from 'lodash';
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify/unstyled";
 import { useAddMasterData,useDeleteTask,useDeleteDraft,useAddMasterDataRetail } from '../../../../../VectorFlow/Services/MTA/MDM';
 import { createErrorRowData} from '../../../../../helpers/utils'
 import { ColDef } from 'ag-grid-enterprise';

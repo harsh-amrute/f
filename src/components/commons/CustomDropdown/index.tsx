@@ -1,7 +1,7 @@
 import React, { CSSProperties, useEffect, useRef, useState } from "react";
 import Portal from "../../../components/VectorFLOW/layouts/Portal";
 import DropdowComponent from "./DropdowComponent";
-import "./styles.css";
+// import "./styles.css";
 
 const CustomDropdownRenderer = (props: any) => {
   const [selected, setSelected] = useState<string[]>([]);

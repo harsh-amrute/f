@@ -8,7 +8,7 @@ import { FILL_MASTERS, SET_DRAFT_ID,TOGGLE_UPLOAD_MODAL, SET_RECORD_COUNT, STORE
 import { createMastersStateFromDraftData, getActionName, mapMasterToMasterState } from "../../../../../helpers/utils"
 import { MDMMasterState } from "../../../../../VectorFlow/types/MDM"
 import type { RootState } from '../../../../../redux/store/store';
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify/unstyled";
 import _ from 'lodash';
 
 const useSavedDrafts = ()=>{

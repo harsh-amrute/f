@@ -19,16 +19,16 @@ const FullKitGraph = (props: any) => {
 
   function TooltipRenderer({ datum, xKey }: any) {
     return `
-    <div class="ag-chart-tooltip-title" style="background-color: #6C696A; display: flex; justify-content: center; align-items: center">
+    <div class="insightStpl-tooltip-title" >
         ${datum[xKey]}
     </div>
-    <div class="ag-chart-tooltip-content" style="color: white; background-color: #6C696A">
+    <div class="insightStpl-tooltip-content">
     
     <div>
-        <div style="display: flex;">
-            <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: gray">
+        <div class="displayFlex">
+            <div class="insightStpl-color-box color-gray">
             </div>
-            <div style="display:flex ; width: 100%; justify-content: space-between">
+            <div class="insightStpl-label-value">
                 <div>${ProductionInsightsAndTrendsString.fullKitInDays}
                 </div>
                 <div> ${datum["days"]}
@@ -93,7 +93,7 @@ const FullKitGraph = (props: any) => {
   };
 
   const colDefs = useMemo(() => {
-    return getColumnDefinations(columnConfigData?.fullkitTableColumn, {}, [])
+    return getColumnDefinations(columnConfigData?.fullkitTableColumn, {}, []);
   }, []);
 
   const generateHeader = () => {
@@ -115,8 +115,9 @@ const FullKitGraph = (props: any) => {
             fontSize: "14px",
             margin: "0 auto",
             textAlign: "center",
-          }}>
-          <span style={{ fontWeight: 500, }}>
+          }}
+        >
+          <span style={{ fontWeight: 500 }}>
             {`${ProductionInsightsAndTrendsString.fullKitInDays}  `}
           </span>
           <span style={{ fontWeight: 300, }}>
@@ -151,18 +152,25 @@ const FullKitGraph = (props: any) => {
           </div>
         </div>
       </div>
-    )
-  }
+    );
+  };
 
-  useEffect(()=>{
-    if(graphData){
+  useEffect(() => {
+    if (graphData) {
       setRawData(graphData);
     }
-  },[graphData])
+  }, [graphData]);
 
   return (
-    <div style={{ height: "100%", display: "flex", justifyContent: "left", marginLeft: '12px', paddingBottom: '10px' }}>
-
+    <div
+      style={{
+        height: "100%",
+        display: "flex",
+        justifyContent: "left",
+        marginLeft: "12px",
+        paddingBottom: "10px",
+      }}
+    >
       <SplitGraphContainer
         tableLoading={tableLoading}
         chartLoading={chartLoading}
@@ -170,7 +178,7 @@ const FullKitGraph = (props: any) => {
         setChartLoading={setChartLoading}
         data={rawData}
         rowData={options.data}
-        graphTitle={''}
+        graphTitle={""}
         tableTitle={ProductionInsightsAndTrendsString.fullKitInDays}
         options={options}
         colDef={colDefs}

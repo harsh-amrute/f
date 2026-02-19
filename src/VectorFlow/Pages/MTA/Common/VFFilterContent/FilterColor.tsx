@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
-  FilterGroup,
-  FilterColumn,
-  TextWrapper,
-  DropDownWrapper,
-  DropDownRow,
-  IconWrapper,
-} from "./style";
+  filterGroup,
+  filterColumn,
+  textWrapper,
+  dropDownWrapper,
+  dropDownRow,
+  iconWrapper,
+} from "./style.css";
 import Select from "react-select";
 import { useThemeStyles } from "../../../../../hooks/useVFFilterContent";
 import { colorFilterOptions, numericOperators } from "./useVFFilterContent";
@@ -183,16 +183,16 @@ export const ColorFilters: React.FC<FilterSectionProps> = ({
 
   return (
     <>
-      <FilterGroup>
-        <FilterColumn style={{ minWidth: "400px", maxWidth: "none" }}>
-          <TextWrapper>Color Filter</TextWrapper>
+      <div className={filterGroup}>
+        <div className={filterColumn} style={{ minWidth: "400px", maxWidth: "none" }}>
+          <div className={textWrapper}>Color Filter</div>
 
           {filterRows.map((row) => {
             const isComplete = isRowComplete(row);
 
             return (
-              <DropDownRow key={row.id} style={{ alignItems: "center" }}>
-                <DropDownWrapper>
+              <div className={dropDownRow} key={row.id} style={{ alignItems: "center" }}>
+                <div className={dropDownWrapper}>
                   <Select
                     placeholder={"Select Type"}
                     styles={styles}
@@ -208,9 +208,9 @@ export const ColorFilters: React.FC<FilterSectionProps> = ({
                       handleSelectChange(row.id, "type", selectedOption)
                     }
                   />
-                </DropDownWrapper>
+                </div>
 
-                <DropDownWrapper>
+                <div className={dropDownWrapper}>
                   <Select
                     options={colorFilterOptions}
                     placeholder={"Select Color"}
@@ -230,9 +230,9 @@ export const ColorFilters: React.FC<FilterSectionProps> = ({
                       )
                     }
                   />
-                </DropDownWrapper>
+                </div>
 
-                <DropDownWrapper>
+                <div className={dropDownWrapper}>
                   <Select
                     options={numericOperators}
                     placeholder={"Select OP"}
@@ -248,9 +248,9 @@ export const ColorFilters: React.FC<FilterSectionProps> = ({
                       handleSelectChange(row.id, "operator", selectedOption)
                     }
                   />
-                </DropDownWrapper>
+                </div>
 
-                <DropDownWrapper>
+                <div className={dropDownWrapper}>
                   <input
                     placeholder="Enter value"
                     className={`filter-input ${
@@ -263,10 +263,10 @@ export const ColorFilters: React.FC<FilterSectionProps> = ({
                       handleFilterChange(row.id, "value", e.target.value)
                     }
                   />
-                </DropDownWrapper>
+                </div>
 
-                <IconWrapper
-                  theme_ui={user.user.theme_ui}
+                <div className={iconWrapper}
+                  data-theme={user.user.theme_ui}
                   style={{
                     opacity: isComplete ? 0 : 1,
                     cursor: isComplete ? "default" : "pointer",
@@ -275,12 +275,12 @@ export const ColorFilters: React.FC<FilterSectionProps> = ({
                   <img 
                     src={"/assets/img/MTAVFMultiFilter/Error.svg"}
                     alt="error"
-                    title={isComplete ? "All fields are filled" : "Must select a column."}
+                    title={isComplete ? "All fields are filled" : "Some fields are empty"}
                   />
-                </IconWrapper>
+                </div>
 
-                <IconWrapper
-                  theme_ui={user.user.theme_ui}
+                <div className={iconWrapper}
+                  data-theme={user.user.theme_ui}
                   onClick={() => handleResetRow(row.id)}
                   style={{ cursor: "pointer" }}
                 >
@@ -289,12 +289,12 @@ export const ColorFilters: React.FC<FilterSectionProps> = ({
                     alt="refresh"
                     title="Reset this filter row"
                   />
-                </IconWrapper>
-              </DropDownRow>
+                </div>
+              </div>
             );
           })}
-        </FilterColumn>
-      </FilterGroup>
+        </div>
+      </div>
     </>
   );
 };

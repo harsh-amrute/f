@@ -7,10 +7,10 @@ import '../../../styles.css';
 import { useGetPlanningDataCustom } from "../../../../../../../../Services/MTA/SupplyChainIntelligenceHub/Planning";
 import VFLoader from "../../../../../../../../../components/VectorFLOW/commons/VFLoader";
 import { notifyLoader,notifyError,notifySuccess } from "../../../../../../../../../helpers/notify";
-import { SCDynamicContainer } from "../../../styles";
+import { SCDynamicContainer } from "../../../style.css";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../../../../../../redux/store/store";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify/unstyled";
 import { useGetState } from "../../../../../../../../Services/MTA/SupplyChainIntelligenceHub/BPR";
 import { GridStateContext } from "../../../../../../../../../context/GridStateContext";
 import { getColumnDefinationsMTA, getProductAndLocationHeirarchiesFromEnv } from '../../../../../../../../../helpers/utils';
@@ -117,7 +117,7 @@ const ExpediteParentCustomCharts = ({recordCount}:{recordCount:any}) => {
     
     return(
         <>
-        <SCDynamicContainer>
+        <div className={SCDynamicContainer}>
             <VFTable
                 ref={ref}
                 columnDefs={colDefs}
@@ -145,7 +145,7 @@ const ExpediteParentCustomCharts = ({recordCount}:{recordCount:any}) => {
                  }}
                 height={'100%'}
             />
-        </SCDynamicContainer>
+        </div>
         </>
     )
     

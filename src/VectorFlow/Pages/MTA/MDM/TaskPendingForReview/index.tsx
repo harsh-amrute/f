@@ -3,7 +3,7 @@ import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
 import { mapRowDataWithSrNo } from "../../../../../helpers/utils"
 import useTaskPendingForReview from "./useTaskPendingForReview"
 import TaskPendingTaskBar from "./TaskPendingTaskBar"
-import { TaskPendingWrapper } from "./styles"
+import { TaskPendingWrapper } from "./styles.css"
 import ApproveAllModal from "./ApproveAllModal"
 import RejectAllModal from "./RejectAllModal"
 import { useUserData } from "../../../../../context"
@@ -44,7 +44,7 @@ const TaskPendingForReview = ()=>{
     const suppressMovable = true;
         return (
           isViewTableOpen ? (
-            <TaskPendingWrapper>
+            <div className={TaskPendingWrapper}>
                     <VFTable
                     height={"100%"}
                     columnDefs={viewTableColDefs}
@@ -73,9 +73,9 @@ const TaskPendingForReview = ()=>{
                     pagination={true}
                     paginationPageSize={parseInt(TASKPENDINGFORREVIEW_PAGE || '100')}  
                 />
-                </TaskPendingWrapper>
+                </div>
           ): (
-            <TaskPendingWrapper>
+            <div className={TaskPendingWrapper}>
                 <VFTable
                     height={"85%"}
                     ref={ref}
@@ -142,7 +142,7 @@ const TaskPendingForReview = ()=>{
                     onCancel={onCancel}
                     onSubmit={onTaskSubmit}
                 />
-            </TaskPendingWrapper>
+            </div>
           )
         )   
      

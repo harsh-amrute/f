@@ -2,8 +2,8 @@ import { GridOptions } from 'ag-grid-enterprise';
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import VFTable from "../../../../Common/VFTable";
 import CustomTagTooltip from '../../../../Poogi/InsightAndTrends/OTIFAnalysis/CustomTagTooltip';
-import './styles.css'
-import { SCDynamicContainer } from './styles';
+// import './styles.css'
+import { scDynamicContainer } from './styles.css';
 import VFPagination from "../../../../Common/VFPagination";
 import { notifyError } from '../../../../../../../helpers/notify';
 import { useGetElapsedTimeData } from '../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/ElapseTime';
@@ -25,7 +25,7 @@ const GridView = forwardRef(({ colDef, setCurrentGridRef, currentGridRef, column
     }))
 
     const defaultColDef = {
-        // suppressMenu: true,
+        // suppressHeaderMenuButton: true,
         autoHeaderHeight: true,
         filter: "agTextColumnFilter",
         floatingFilter: true,
@@ -84,7 +84,7 @@ const GridView = forwardRef(({ colDef, setCurrentGridRef, currentGridRef, column
 
     return (
 
-        <SCDynamicContainer className="ag-theme-planning-custom">
+        <div className={`${scDynamicContainer} ag-theme-planning-custom`}>
             {isLoading && <OverlayLoader />}
             <VFTable
                 {...gridOptions}
@@ -119,7 +119,7 @@ const GridView = forwardRef(({ colDef, setCurrentGridRef, currentGridRef, column
                 savePageSize={savePageSize}
                 userPageSize = {userPageSize}
             />
-        </SCDynamicContainer>
+        </div>
 
     )
 })

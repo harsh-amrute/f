@@ -3,7 +3,7 @@ import { Allotment } from "allotment";
 import "allotment/dist/style.css";
 import "../../../styles.css";
 import { ColDef } from "ag-grid-enterprise";
-import { SCDynamicContainer } from "../../../styles";
+import { SCDynamicContainer } from "../../../style.css";
 import { chartParams1, chartParams2 } from "./chartParams";
 import {colDefForPie as colDefs2} from '../../../colDefs'
 import {convertToInt, getProductAndLocationHeirarchiesFromEnv, generateChartOptions} from '../../../../../../../../../helpers/utils';
@@ -198,7 +198,7 @@ const mapUIConfigToColdefs1 = (columns:Array<{header:string,colCode:string}>) =>
  
   return (
     <>
-      <SCDynamicContainer style={{height:'77vh'}}>
+      <div className={SCDynamicContainer} style={{height:'77vh'}}>
         <Allotment>
           <Allotment.Pane preferredSize={"50%"}>
                
@@ -227,7 +227,7 @@ const mapUIConfigToColdefs1 = (columns:Array<{header:string,colCode:string}>) =>
  
           </Allotment.Pane>
         </Allotment>
-      </SCDynamicContainer>
+      </div>
     </>
   );
 };

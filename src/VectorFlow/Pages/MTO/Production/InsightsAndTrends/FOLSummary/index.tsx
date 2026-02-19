@@ -5,21 +5,23 @@ import MTOActionToolBar from "../../../../../../../src/components/VectorFLOW/com
 import {
   BTRAllomentSection,
   EnquiryWrapper,
-  FilterWrapper
-} from "./styles";
+  FilterWrapper,
+} from "./styles.css";
 import { useGetEnquiryResData } from "../../../../../Services/MTO/Production/EnquiryResponse";
 import { useUserData } from "../../../../../../context/index";
 import { notifyError, notifyLoader } from "../../../../../../helpers/notify";
-import { toast } from "react-toastify"
+import { toast } from "react-toastify/unstyled";
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import { getColumnDefinations } from "../../../../../../helpers/utils";
 import FullkitCellRenderer from "../../../Common/FullKitCellRenderer/FullkitCellRenderer";
 // import { valueContainerCSS } from "react-select/dist/declarations/src/components/containers";
-import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
+import {
+  useGetUserUIConfigData,
+  useUpdateUserUIConfigData,
+} from "../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig";
 import OverlayLoader from "../../../Common/Loader";
 import { ExcelExportName, UIGridCode } from "../../../Common/Enum";
 import { format } from "date-fns";
-
 
 const FOLSummary = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -29,16 +31,20 @@ const FOLSummary = () => {
   const [currentGridRef, setCurrentGridRef] = useState<any>(null);
   const [columnState, setColumnState] = useState<any>([]);
   const [isReset, setIsReset] = useState<any>(undefined);
-  const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
-  const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
- 
+  const {
+    mutateAsync: updateUserUIReportConfigData,
+    isLoading: isUpdateUserConfig,
+  } = useUpdateUserUIConfigData();
+  const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } =
+    useGetUserUIConfigData();
+
   const [selectedOptions, setSelectedOptions] = useState<any>({
     plantName: "",
     productGroup: [],
     department: {},
     ccrGroup: {},
     ccrName: {},
-    folfilter: { symbol: '', value: '' }
+    folfilter: { symbol: "", value: "" },
   });
   const { user } = useUserData();
   // const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
@@ -52,19 +58,19 @@ const FOLSummary = () => {
   const [userPageSize, setUserPageSize] = useState<any>();
   const [isPivot, setIsPivot] = useState<any>(false);
 
-
   // const { data } = useGetEnquiryResData() || {};
   const { data: FOLSummaryData } = useGetEnquiryResData() || {};
-
-
 
   const handleNameChange = (arr: any) => {
     setSelectedOptions((prev: any) => ({ ...prev, plantName: arr }));
   };
 
   const handleFolChange = (folfilterSymbol: string, folFilterValue: string) => {
-    setSelectedOptions((prev: any) => ({ ...prev, folfilter: { symbol: folfilterSymbol, value: folFilterValue } }))
-  }
+    setSelectedOptions((prev: any) => ({
+      ...prev,
+      folfilter: { symbol: folfilterSymbol, value: folFilterValue },
+    }));
+  };
 
   const handleFilterSelect = (event: any, category: string, index: number) => {
     const { name, checked } = event.target;
@@ -111,7 +117,6 @@ const FOLSummary = () => {
       }
       setSelectedOptions((prev: any) => ({ ...prev, ccrName: { ...ccrNm } }));
     }
-
   };
 
   const handleModalToggle = () => {
@@ -135,7 +140,6 @@ const FOLSummary = () => {
     return data;
   };
 
-
   const filterByfol = (updata: any, folValues: any) => {
     const { symbol, value } = folValues;
     if (symbol.length === 0) {
@@ -148,45 +152,36 @@ const FOLSummary = () => {
     for (let i = 0; i < tableData?.length; i++) {
       const current = updata[i];
 
-      if (symbol === '<') {
-
+      if (symbol === "<") {
         if (Number(current?.fol) < Number(value)) {
           updatedData?.push(current);
         }
       }
-      if (symbol === '>') {
-
+      if (symbol === ">") {
         if (Number(current?.fol) > Number(value)) {
           updatedData?.push(current);
         }
       }
-      if (symbol === '<=') {
-
+      if (symbol === "<=") {
         if (Number(current?.fol) <= Number(value)) {
           updatedData?.push(current);
         }
       }
-      if (symbol === '>=') {
-
+      if (symbol === ">=") {
         if (Number(current?.fol) >= Number(value)) {
           updatedData?.push(current);
         }
       }
-      if (symbol === 'Equal to') {
-
+      if (symbol === "Equal to") {
         if (Number(current?.fol) === Number(value)) {
           updatedData?.push(current);
         }
       }
-      if (symbol === 'Not Equal to') {
-
+      if (symbol === "Not Equal to") {
         if (Number(current?.fol) !== Number(value)) {
           updatedData?.push(current);
         }
       }
-
-
-
     }
     return updatedData;
   };
@@ -237,7 +232,7 @@ const FOLSummary = () => {
     const filters: { label: string; values: string[] }[] = [];
 
     if (options?.plantName) {
-     const names = options.plantName.map((plantName:any)=>plantName.name)
+      const names = options.plantName.map((plantName: any) => plantName.name);
       filters.push({
         label: "Plant",
         values: [...names],
@@ -267,18 +262,17 @@ const FOLSummary = () => {
         values: [...Object.keys(options?.ccrName)],
       });
     }
-    if (options?.folfilter.value !== '') {
+    if (options?.folfilter.value !== "") {
       filters.push({
         label: "FOL",
-        values: [options.folfilter.symbol + " " + options.folfilter.value]
-      })
+        values: [options.folfilter.symbol + " " + options.folfilter.value],
+      });
     }
 
     setSelectedFilters(filters);
-  }
+  };
 
   const applyFilter = (options: any) => {
-
     let data = [];
     data = filterByPlNames(options?.plantName);
     data = filterByfol(data, options?.folfilter);
@@ -299,13 +293,10 @@ const FOLSummary = () => {
         ? filterByccrName(data, options?.ccrName)
         : data;
 
-
     updatedSelectedFilters(options);
     setFilterData(data);
     setIsModalOpen(false);
   };
-
-
 
   const productGroupOptions: any = [];
   const departmentOptions: any = [];
@@ -314,7 +305,10 @@ const FOLSummary = () => {
   const plantOptions: any = [];
   const folOptions: any = [];
 
-  function getUniqueValues<T extends Record<any, any>>(array: T[], key: any): T[] {
+  function getUniqueValues<T extends Record<any, any>>(
+    array: T[],
+    key: any
+  ): T[] {
     const uniqueArray: T[] = [];
     const uniqueValues: any[] = [];
 
@@ -330,7 +324,11 @@ const FOLSummary = () => {
   for (let i = 0; i < tableData?.length; i++) {
     const ccrObj = tableData[i];
     if (ccrObj?.plnm) {
-      plantOptions.push({ value: ccrObj.plnm, label: ccrObj.plnm, name: ccrObj.plnm });
+      plantOptions.push({
+        value: ccrObj.plnm,
+        label: ccrObj.plnm,
+        name: ccrObj.plnm,
+      });
       // plantOptions = getUniqueValues(plantOptions)
     }
     if (ccrObj?.it) {
@@ -365,38 +363,36 @@ const FOLSummary = () => {
     {
       key: "plnm",
       heading: "Plant",
-      options: getUniqueValues(plantOptions, 'value')
+      options: getUniqueValues(plantOptions, "value"),
     },
     {
-      key: 'prdGrp',
+      key: "prdGrp",
       heading: "Product Group",
       options: productGroupOptions,
     },
     {
-      key: 'dept',
+      key: "dept",
       heading: "Department",
       options: departmentOptions,
     },
     {
-      key: 'ccrGrp',
+      key: "ccrGrp",
       heading: "CCR Group",
       options: ccrGroupOptions,
     },
     {
-      key: 'ccrNm',
+      key: "ccrNm",
       heading: "CCR",
       options: ccrNameOptions,
     },
     {
-      key: 'FOL',
-      heading: 'fol Filter',
-      options: folOptions
-    }
+      key: "FOL",
+      heading: "fol Filter",
+      options: folOptions,
+    },
   ];
 
   const removeFilters = (category: string, name: string) => {
-
-
     const updtedCCRName = selectedOptions?.ccrName;
     const updtedDept = selectedOptions?.department;
     const updtedCCRGrp = selectedOptions?.ccrGroup;
@@ -405,7 +401,7 @@ const FOLSummary = () => {
     let updatedFolFilter = selectedOptions?.folfilter;
 
     if (category === "FOL") {
-      updatedFolFilter = { value: "", symbol: "" }
+      updatedFolFilter = { value: "", symbol: "" };
       setSelectedOptions((prev: any) => ({
         ...prev,
         folfilter: updatedFolFilter,
@@ -413,23 +409,22 @@ const FOLSummary = () => {
     }
 
     if (category === "Plant") {
-      updatedPlantName = updatedPlantName.filter((item: any) => item.name !== name);
+      updatedPlantName = updatedPlantName.filter(
+        (item: any) => item.name !== name
+      );
       if (updatedPlantName.length === 0) {
-
         updatedPlantName = "";
 
         setSelectedOptions((prev: any) => ({
           ...prev,
-          plantName: updatedPlantName
+          plantName: updatedPlantName,
         }));
-      }
-      else {
+      } else {
         setSelectedOptions((prev: any) => ({
           ...prev,
-          plantName: updatedPlantName
+          plantName: updatedPlantName,
         }));
       }
-
     }
     if (category === "Product Group") {
       updatedProductGrp = [];
@@ -449,7 +444,7 @@ const FOLSummary = () => {
       delete updtedCCRGrp[name];
       setSelectedOptions((prev: any) => ({
         ...prev,
-        ccrGroup: updtedCCRGrp
+        ccrGroup: updtedCCRGrp,
       }));
     }
     if (category === "CCR Name") {
@@ -473,21 +468,19 @@ const FOLSummary = () => {
       department: updtedDept,
       ccrGroup: updtedCCRGrp,
       ccrName: updtedCCRName,
-      folfilter: updatedFolFilter
+      folfilter: updatedFolFilter,
     });
   };
 
-
-  
   const getEnquiryData = (data: any) => {
     try {
       setTableData(data?.data?.data);
     } catch (e) {
       console.log(e);
-      notifyError('Failed to set Enquiry data!');
+      notifyError("Failed to set Enquiry data!");
     }
   };
-  
+
   useEffect(() => {
     notifyLoader("Loading Grid Data");
     if (FOLSummaryData?.data?.data && userConfigFetched) {
@@ -495,71 +488,84 @@ const FOLSummary = () => {
     }
     toast.dismiss();
   }, [FOLSummaryData, userConfigFetched]);
-  
-  
+
   const savePageSize = (pageSize: any) => {
     if (pageSize) {
       setUserPageSize(pageSize);
       handleSaveClick(undefined, pageSize);
     } else {
       notifyError("Invalide page size");
-    } 
-  }
+    }
+  };
 
   const getUserColumnConfig = async () => {
     try {
       const data = await getUserUIReportConfigData({
         un: user.user.name,
-        rn_id: UIGridCode.ProdFolSummary
+        rn_id: UIGridCode.ProdFolSummary,
       });
 
-      const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
-      setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
+      const newConfig = data?.data?.data[0]?.columns_settings
+        ? JSON.parse(data?.data?.data[0]?.columns_settings)
+        : [];
+      setUserPageSize(
+        newConfig.pageSize ? Number(newConfig.pageSize) : undefined
+      );
       setColumnState(newConfig.cs);
       setIsPivot(newConfig.pivot);
-      setUserConfigFetched(true)
+      setUserConfigFetched(true);
 
       if (!data) {
-        console.error('Failed to apply column state');
+        console.error("Failed to apply column state");
       }
     } catch (error) {
       console.error(error);
     }
-  }
-
+  };
 
   const handleSaveClick = async (coldefs?: any, page_size?: any) => {
     try {
       if (coldefs) {
-        const fullConfig = { pivot: false, cs: coldefs, pageSize: userPageSize };
+        const fullConfig = {
+          pivot: false,
+          cs: coldefs,
+          pageSize: userPageSize,
+        };
         const payload = {
           un: user.user.name,
           rn_id: UIGridCode.ProdFolSummary,
           cs: JSON.stringify(fullConfig),
-        };  
+        };
         await updateUserUIReportConfigData([payload]);
         setColumnState([...coldefs]);
         setIsPivot(false);
       } else if (page_size) {
-        const fullConfig = { pivot: isPivot, cs: columnState, pageSize: page_size };
+        const fullConfig = {
+          pivot: isPivot,
+          cs: columnState,
+          pageSize: page_size,
+        };
         const payload = {
           un: user.user.name,
           rn_id: UIGridCode.ProdFolSummary,
           cs: JSON.stringify(fullConfig),
-        };  
+        };
         await updateUserUIReportConfigData([payload]);
-  
       } else {
         if (currentGridRef?.current?.api) {
           const config = currentGridRef.current?.api.getColumnState();
           const isPivot = currentGridRef.current?.api.isPivotMode();
-          const fullConfig = { pivot: isPivot, cs: config, pageSize: userPageSize };
+          const fullConfig = {
+            pivot: isPivot,
+            cs: config,
+            pageSize: userPageSize,
+          };
           const payload = {
             un: user.user.name,
             rn_id: UIGridCode.ProdFolSummary,
             cs: JSON.stringify(fullConfig),
           };
-  
+
           await updateUserUIReportConfigData([payload]);
           await getUserColumnConfig();
         }
@@ -568,11 +574,10 @@ const FOLSummary = () => {
       console.error(error);
     }
   };
-  
 
   const handleResetClick = () => {
     setIsReset(true);
-  }
+  };
 
   useEffect(() => {
     if (isReset) {
@@ -588,18 +593,18 @@ const FOLSummary = () => {
   }, [myColDefs]);
 
   useEffect(() => {
-    notifyLoader("Loading Grid Data")
+    notifyLoader("Loading Grid Data");
     if (FOLSummaryData?.data?.data && userConfigFetched) {
       setTableData(FOLSummaryData?.data?.data);
     }
-    toast.dismiss()
+    toast.dismiss();
   }, [FOLSummaryData, userConfigFetched]);
 
   useEffect(() => {
     setFilterData(FOLSummaryData?.data?.data);
   }, [tableData]);
 
-  const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+  const { mutateAsync: getUIConfigData } = useGetUIConfigData();
 
   const reportName = "EnquiryResponse";
 
@@ -607,28 +612,27 @@ const FOLSummary = () => {
     try {
       const response = await getUIConfigData(reportName);
       setHeaderData(response.data.data);
-    }
-    catch (e) {
+    } catch (e) {
       console.log(e);
     }
-  }
+  };
 
   useEffect(() => {
     setColumnDef();
-  }, [])
+  }, []);
 
   const CustomHeader = {
-    'FOL(inDays)': {
-      cellRenderer: FullkitCellRenderer
-    }
-  }
+    "FOL(inDays)": {
+      cellRenderer: FullkitCellRenderer,
+    },
+  };
 
   useEffect(() => {
     if (HeaderData.length > 0) {
       setMyColDefs(getColumnDefinations(HeaderData, CustomHeader));
       getUserColumnConfig();
     }
-  }, [HeaderData])
+  }, [HeaderData]);
 
   const onExcelExport = () => {
     // const exportName = `FOL_Summary_${format(Date.now(), "dd-MM-yyyy")}`;
@@ -640,9 +644,9 @@ const FOLSummary = () => {
   }
 
   return (
-    <EnquiryWrapper>
+    <div className={EnquiryWrapper}>
       {(isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />}
-      <FilterWrapper>
+      <div className={FilterWrapper}>
         <MTOActionToolBar
           comp={"EnquiryResponse"}
           isAddFilterButton
@@ -656,14 +660,12 @@ const FOLSummary = () => {
           handleSaveClick={handleSaveClick}
           handleResetClick={handleResetClick}
         />
-      </FilterWrapper>
+      </div>
 
-      <BTRAllomentSection style={{ height: '70vh' }}>
-
-
-        <ResizableTable 
-          colDef={myColDefs} 
-          gridRef = {gridRef}
+      <div className={BTRAllomentSection} style={{ height: "70vh" }}>
+        <ResizableTable
+          colDef={myColDefs}
+          gridRef={gridRef}
           data={filterData}
           setCurrentGridRef={setCurrentGridRef}
           currentGridRef={currentGridRef}
@@ -672,9 +674,7 @@ const FOLSummary = () => {
           userPageSize={userPageSize}
           isPivot={isPivot}
         />
-      </BTRAllomentSection>
-
-
+      </div>
 
       <FilterModal
         filters={filters}
@@ -687,7 +687,7 @@ const FOLSummary = () => {
         themeUi={themeUi}
         handleFolChange={handleFolChange}
       />
-    </EnquiryWrapper>
+    </div>
   );
 };
 

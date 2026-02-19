@@ -2,7 +2,7 @@ import {useState, useEffect, useMemo} from "react";
 import { Allotment } from "allotment";
 import "allotment/dist/style.css";
 import "../../styles.css";
-import {SCDynamicContainer} from '../../styles';
+import {SCDynamicContainer} from '../../style.css';
 import {convertToInt, getProductAndLocationHeirarchiesFromEnv, generateChartOptions} from '../../../../../../../../helpers/utils';
 import VFCharts from "../../../../../../../../components/VectorFLOW/commons/VFCharts";
 import {createChartParams} from './chartParams'
@@ -127,7 +127,7 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
 
     return(
         <>
-            <SCDynamicContainer>
+            <div className={SCDynamicContainer}>
                 <Allotment>
                     <Allotment.Pane  minSize={440} preferredSize={'50%'}>
 
@@ -155,7 +155,7 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                     </Allotment.Pane>
                   
                 </Allotment>
-            </SCDynamicContainer>
+            </div>
         </>
     )
     

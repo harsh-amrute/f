@@ -38,4 +38,4 @@ function AppRouter() {
   return useRoutes(routes);
 }
 
-export default App
+export default App;

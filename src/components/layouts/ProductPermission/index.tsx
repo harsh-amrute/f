@@ -7,35 +7,57 @@ import {
   SCFlexCenter,
   SCItemTitle,
   SCItemMulSelect,
-  Checkbox
-} from "./styles";
+  checkbox as checkboxCls,
+  checkboxAccentVar,
+  itemMulWidthVar,
+} from "./styles.css";
 import { useUserData } from "../../../context";
-
+import { assignInlineVars } from "@vanilla-extract/dynamic";
+import * as globalStyles from "../../../styles/global";
 
 const ProductPermission = ({ ...props }: any) => {
-  const { title, prdPermissions, onSelectAll,isSelected } = props;
+  const { title, prdPermissions, onSelectAll, isSelected } = props;
 
-  const { user} = useUserData();
+  const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
-  
+
+  const accent =
+  globalStyles.chooseThemeColor[themeUi]?.color5 ?? "#000";
+
   return (
     <>
-      <SCSwapPermission>
-        <SCtitle>
+      <div className={SCSwapPermission}>
+        <div className={SCtitle}>
           {title}
-          <div style={{display:'flex', gap:'5px'}}>
-            <Checkbox themeUi={themeUi} checked={isSelected} type='checkbox' onClick={onSelectAll} /> 
-            <p style={{fontSize:'14px' }}>Select All</p>
+          <div style={{ display: "flex", gap: "5px" }}>
+            <input
+              type="checkbox"
+              checked={isSelected}
+              onClick={onSelectAll}
+              className={checkboxCls}
+              style={assignInlineVars({
+                [checkboxAccentVar]: accent,
+              })}
+            />
+            <p style={{ fontSize: "14px" }}>Select All</p>
           </div>
-        </SCtitle>
+        </div>
 
-        <SCSwapContent className="scroll-style">
+        <div className={`${SCSwapContent} scroll-style`}>
           {prdPermissions.map((item: any, index: number) => {
+            const width = item.width as string | undefined; // if you pass custom width
             return (
-              <SCSwapItem key={index}>
-                <SCFlexCenter>
-                  <SCItemTitle>{item.title}</SCItemTitle>
-                  <SCItemMulSelect>
+              <div className={SCSwapItem} key={index}>
+                <div className={SCFlexCenter}>
+                  <span className={SCItemTitle}>{item.title}</span>
+                  <div
+                    className={SCItemMulSelect}
+                    style={
+                      width
+                        ? assignInlineVars({ [itemMulWidthVar]: width })
+                        : undefined
+                    }
+                  >
                     <SearchInputMultiple
                       placeholder={item.placeholder}
                       options={item.options}
@@ -48,13 +70,13 @@ const ProductPermission = ({ ...props }: any) => {
                       isCheckBoxRef={item.isCheckBoxRef}
                       activeApplicationId={item.activeApplicationId}
                     />
-                  </SCItemMulSelect>
-                </SCFlexCenter>
-              </SCSwapItem>
+                  </div>
+                </div>
+              </div>
             );
           })}
-        </SCSwapContent>
-      </SCSwapPermission>
+        </div>
+      </div>
     </>
   );
 };

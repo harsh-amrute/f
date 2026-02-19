@@ -7,7 +7,7 @@ import GridViewJob from "./Sections/GridViewJob";
 import VFOverlayModal from "../../../../../components/VectorFLOW/commons/VFOverlayModal";
 import FilterModal from "./components/FilterModal";
 import _ from "lodash";
-import { FinalResultSectionWrapper } from "./SchedulingStyles";
+import { finalResultSectionWrapper } from "./SchedulingStyles.css";
 
 
 
@@ -180,7 +180,7 @@ const FinalResultSection = ({ setStep, finalResult }: any) => {
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
   return (
-    <FinalResultSectionWrapper>
+    <div className={finalResultSectionWrapper}>
       <SchedulingActionToolbar
         onGoBack={() => {
           setStep("Upload");
@@ -210,7 +210,7 @@ const FinalResultSection = ({ setStep, finalResult }: any) => {
           />
         </VFOverlayModal>
       )}
-    </FinalResultSectionWrapper>
+    </div>
   );
 };
 

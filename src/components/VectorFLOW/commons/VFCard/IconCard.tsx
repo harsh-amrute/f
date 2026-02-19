@@ -1,35 +1,46 @@
+import { assignInlineVars } from "@vanilla-extract/dynamic";
+import {
+  IconCardContainer,
+  CardText,
+  CardTextTheme,
+  CardIconWrapper,
+  bgImageVar,
+} from "./styles.css";
 
-import {  IconCardContainer, CardText ,CardIconWrapper} from "./styles"
-
-
-interface IconCardProps{
-    text:string
-    iconOnMouseIn:string
-    iconOnMouseOut:string
-    onClick:()=>void
-    themeUi:string
+interface IconCardProps {
+  text: string;
+  iconOnMouseIn: string;
+  iconOnMouseOut: string;
+  onClick: () => void;
+  themeUi: string;
 }
 
+const IconCard = (props: IconCardProps) => {
+  const { iconOnMouseOut, text, onClick, themeUi } = props;
 
-const IconCard = (props:IconCardProps)=>{
+  const themeKey = themeUi === "REGALBLAZE" ? "REGALBLAZE" : "DEFAULT";
 
+  return (
+    <div
+      className={IconCardContainer}
+      onClick={onClick}
+      data-testid="icon-card"
+      style={assignInlineVars({
+        [bgImageVar]: "url(/assets/img/VectorFLOW/NMS/card-bg.svg)",
+      })}
+    >
+      <p
+        className={`${CardText} ${CardTextTheme[themeKey]}`}
+        data-testid="icon-card"
+      >
+        {text}
+      </p>
 
-    const {
-        iconOnMouseOut,
-        text,
-        onClick,
-        themeUi
-    } = props
+      <span className={CardIconWrapper}>
+        <img data-testid="icon" src={iconOnMouseOut} alt="" />
+      </span>
+    </div>
+  );
+};
 
-
-    return(
-        <IconCardContainer imgSrc="/assets/img/VectorFLOW/NMS/card-bg.svg" onClick={onClick} data-testid={"icon-card"}>
-            <CardText themeUi={themeUi} onClick={onClick} data-testid={"icon-card"}>{text}</CardText>
-            <CardIconWrapper >
-                <img data-testid='icon' src={iconOnMouseOut}/>
-            </CardIconWrapper>
-        </IconCardContainer>
-    )
-}
-
-export default IconCard
+export default IconCard;
