@@ -116,83 +116,80 @@ const LandingPage = () => {
       <h3 style={{ color: "#707070", top: 0, marginTop: "-2%" }}>
         A seamless, end to end supply chain management system
       </h3>
-      <>
-        {myMap &&
-          Array.from(myMap?.current?.entries()).map(
-            (item: any, index: number, array: any[]) => {
-              if (item[1]?.length > 0) {
-                return (
-                  <Fragment key={index}>
-                    <div
-                      className={rectangle}
-                      data-label={ApplicationName[item[0]] ?? ""}
-                      data-theme={themeUi ?? ""}
-                    >
-                      {" "}
-                      <div className={cardContainer}>
-                        {item[1].map((subItem: any, subIndex: number) => {
-                          return (
-                            <div className={appBox} key={subIndex}>
-                              <div className={appBoxDiv}>
-                                <div
-                                  className={imageHolder}
-                                  data-theme={themeUi}
-                                >
-                                  <img
-                                    className={image}
-                                    src={subItem.img}
-                                    alt="Product"
-                                  />
-                                </div>
-                                <h3
+      {myMap &&
+        Array.from(myMap?.entries()).map(
+          (item: any, index: number, array: any[]) => {
+            if (item[1]?.length > 0) {
+              return (
+                <Fragment key={index}>
+                  <div
+                    className={rectangle}
+                    data-label={ApplicationName[item[0]] ?? ""}
+                    data-theme={themeUi ?? ""}
+                  >
+                    <div className={cardContainer}>
+                      {item[1].map((subItem: any, subIndex: number) => {
+                        return (
+                          <div className={appBox} key={subIndex}>
+                            <div className={appBoxDiv}>
+                              <div
+                                className={imageHolder}
+                                data-theme={themeUi}
+                              >
+                                <img
+                                  className={image}
+                                  src={subItem.img}
+                                  alt="Product"
+                                />
+                              </div>
+                              <h3
+                                style={{
+                                  zIndex: 4,
+                                  margin: "1.5rem 0 0.5rem 2.5rem",
+                                }}
+                              >
+                                {t(subItem.name)}
+                              </h3>
+                              <div className={appBoxDivider} />
+                              <div
+                                className={clickBox}
+                                onClick={() => {
+                                  navigate(subItem?.url);
+                                }}
+                              >
+                                <p
                                   style={{
-                                    zIndex: 4,
-                                    margin: "1.5rem 0 0.5rem 2.5rem",
+                                    color:
+                                      themeUi === "REGALBLAZE"
+                                        ? "rgb(199, 129, 14)"
+                                        : "#820F4C",
                                   }}
                                 >
-                                  {t(subItem.name)}
-                                </h3>
-                                <div className={appBoxDivider} />
-                                <div
-                                  className={clickBox}
-                                  onClick={() => {
-                                    navigate(subItem?.url);
+                                  Click to view{" "}
+                                </p>
+                                <img
+                                  style={{
+                                    position: "relative",
+                                    width: "7%",
+                                    marginLeft: "1rem",
                                   }}
-                                >
-                                  <p
-                                    style={{
-                                      color:
-                                        themeUi === "REGALBLAZE"
-                                          ? "rgb(199, 129, 14)"
-                                          : "#820F4C",
-                                    }}
-                                  >
-                                    Click to view{" "}
-                                  </p>
-                                  <img
-                                    style={{
-                                      position: "relative",
-                                      width: "7%",
-                                      marginLeft: "1rem",
-                                    }}
-                                    src={imageSrc}
-                                  />
-                                </div>
+                                  src={imageSrc}
+                                />
                               </div>
                             </div>
-                          );
-                        })}
-                      </div>
+                          </div>
+                        );
+                      })}
                     </div>
-                    {index < array.length - 1 && item.length > 0 && (
-                      <div className={landingPageDivider} />
-                    )}
-                  </Fragment>
-                );
-              }
+                  </div>
+                  {index < array.length - 1 && item.length > 0 && (
+                    <div className={landingPageDivider} />
+                  )}
+                </Fragment>
+              );
             }
-          )}
-      </>
+          }
+        )}
     </div>
   );
 };

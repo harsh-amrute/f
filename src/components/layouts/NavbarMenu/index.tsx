@@ -104,10 +104,15 @@ const NavbarMenu = ({
       const updatedPrev = prev.map((list) => {
         if (findUrlInMenu(list)) {
           setMenuItem(list)
-        }
-        return {
-          ...list,
-          status: list.url === location.pathname
+          return {
+            ...list,
+            status: true
+          }
+        } else {
+          return {
+            ...list,
+            status: false
+          }
         }
       })
       return updatedPrev
