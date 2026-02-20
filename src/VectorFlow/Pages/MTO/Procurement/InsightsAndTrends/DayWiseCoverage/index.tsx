@@ -439,7 +439,7 @@ const DayWiseCoverage = () => {
                 DownloadExcel(excelResponse, "Day_Wise_Coverage_Report");
                 notifySuccess("Excel exported successfully!");
             } else {
-                notifyError("Failed to export Excel");
+                notifyError("Failed to export Excel ");
             }
         } catch (error) {
             console.error("Excel Export Error:", error);
@@ -447,25 +447,8 @@ const DayWiseCoverage = () => {
         }
     };
 
- const onExcelExportClick = () => {
-        const gridApi = currentGridRef?.current?.api;
-
-        if (gridApi && gridApi.isPivotMode()) {
-            // --- FRONTEND EXPORT ---
-            try {
-                gridApi.exportDataAsExcel({ 
-                    fileName: `Day_Wise_Coverage_Pivot_${selectedDate || 'Report'}.xlsx`, 
-                    sheetName: 'Day Wise Coverage' 
-                });
-                notifySuccess("Excel exported successfully!");
-            } catch (error) {
-                console.error("Excel Export Error:", error);
-                notifyError("Failed to export Pivot Excel");
-            }
-        } else {
-            // --- BACKEND EXPORT ---
-            setShowExcelModal(true);
-        }
+    const onExcelExportClick = () => {
+        setShowExcelModal(true);
     };
 
     const handleExcelConfirm = () => {

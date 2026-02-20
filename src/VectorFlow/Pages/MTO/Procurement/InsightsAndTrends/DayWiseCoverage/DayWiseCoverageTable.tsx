@@ -122,7 +122,7 @@ const handlePageSizeChange = (newSize: any) => {
     setCurrentPage(1); // Reset to page 1
     getGridData(1, newSize); // Fetch new data
   };
-  
+
 
 
 
@@ -223,7 +223,7 @@ const handlePageSizeChange = (newSize: any) => {
     <>
      <TableWrapper>
     <VFTable
-      ref={gridRef}   
+      ref={gridRef}
       animateRows={true}
       gridOptions={options}
       height={"400px"}
@@ -242,8 +242,6 @@ const handlePageSizeChange = (newSize: any) => {
       }}
       // defaultExcelExportParams={defaultExcelExportParams}  
       maintainColumnOrder={true}    
-       groupLockGroupColumns={1}
-
       />
 
      <VFPagination
