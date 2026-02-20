@@ -1,19 +1,15 @@
-
-import { OrderCellRendererWrapper } from "./styles";
+import { orderCellRendererWrapper } from "./styles.css";
 
 export const OrderCellRenderer = () => {
-    return (
-        <OrderCellRendererWrapper>
-            <img
-                src="/assets/img/VectorFLOW/NMS/add-circle.svg"
-                height={28}
-                width={28}
-                data-testid="graph-icon"
-            />
-        </OrderCellRendererWrapper>
-    )
-}
-
-
-
-
+  return (
+    <div className={orderCellRendererWrapper}>
+      <img
+        src="/assets/img/VectorFLOW/NMS/add-circle.svg"
+        height={28}
+        width={28}
+        data-testid="graph-icon"
+        alt="add"
+      />
+    </div>
+  );
+};

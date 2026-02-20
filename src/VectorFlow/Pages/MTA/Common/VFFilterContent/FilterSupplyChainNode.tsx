@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import {
-  FilterGroup,
-  FilterColumn,
-  TextWrapper,
-  DropDownWrapper,
-} from "./style";
-import Select, { components } from "react-select";
+  filterGroup,
+  filterColumn,
+  textWrapper,
+  dropDownWrapper,
+} from "./style.css";
+import Select, { components, CSSObjectWithLabel } from "react-select";
 import { useColorThemeStyles } from "../../../../../hooks/useVFFilterContent";
 import useGetLocation from "../../../../../hooks/useGetLocation";
 import { useUserData } from "../../../../../context";
+import { useGetAllLocations } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 import { BPRFilter, BPRFilterState } from "../../../../../VectorFlow/types/BPR";
 import { useVFMultiFilter } from "./useVFFilterContent";
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
@@ -44,18 +45,31 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
   const { locations } = useGetLocation();
   const colorStyles = useColorThemeStyles();
 
-  const { handleSelectChange } = useVFMultiFilter({
-    multiFilter,
-    onMultiFilterChange,
-  });
+  const { handleSelectChange, getSelectedValues, setSelectedValues } =
+    useVFMultiFilter({
+      multiFilter,
+      onMultiFilterChange,
+    });
 
   const [selectedOptions, setSelectedOptions] = useState<{
     ForLocation: string[];
     ForChildren: string[];
+    ForChildrenLocationCode: string[];
   }>({
     ForLocation: [],
     ForChildren: [],
+    ForChildrenLocationCode: [],
   });
+
+  const { data: locationData, isLoading: isLocationDataLoading } =
+    useGetAllLocations();
+
+  const locationCheckboxOptions =
+    locationData?.data?.data?.map((location: any) => ({
+      label: `${location.wc} (${location.wd})`,
+      id: location.wc,
+      value: location.wc,
+    })) || [];
 
   const locationOptionsWithValue = locations.map((location: any) => ({
     label: location.label,
@@ -72,29 +86,38 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
         (f: BPRFilter) => f.name === "SCF2"
       );
 
+      const forChildrenLocationCode =
+        multiFilter.supplyChainFilter.filters.filter(
+          (f: BPRFilter) => f.name === "SCF3"
+        );
+
       setSelectedOptions((prev) => ({
         ...prev,
         ForLocation: forLocationFilters.map((f: BPRFilter) => f.value),
         ForChildren: forChildrenFilters.map((f: BPRFilter) => f.value),
+        ForChildrenLocationCode: forChildrenLocationCode.map(
+          (f: BPRFilter) => f.value
+        ),
       }));
     }
   }, [multiFilter]);
 
-  if (!locations) {
+  if (isLocationDataLoading) {
     return <VFLoader />;
   }
 
   return (
     <>
-      <FilterGroup>
-        <FilterColumn>
-          <TextWrapper>For Location</TextWrapper>
-          <DropDownWrapper style={{ gap: "20px" }}>
+      <div className={filterGroup}>
+        <div className={filterColumn}>
+          <div className={textWrapper}>For Location</div>
+          <div className={dropDownWrapper} style={{ gap: "20px" }}>
             <Select
               options={locationOptionsWithValue}
               isMulti
               closeMenuOnSelect={false}
               hideSelectedOptions={false}
+              classNamePrefix="rs"
               components={{
                 Option: CustomOption,
                 IndicatorSeparator: () => null,
@@ -105,30 +128,18 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
                 input: (base) => ({
                   ...base,
                   color: "#333",
-                }),
+                }as CSSObjectWithLabel),
                 placeholder: (base) => ({
                   ...base,
                   color: "#999",
                   display: "block",
-                }),
+                }as CSSObjectWithLabel),
                 menuList: (base) => ({
                   ...base,
                   maxHeight: 500,
                   overflowY: "auto",
-                  scrollbarWidth: "thin",
-                  scrollbarColor: "#888 transparent",
-
-                  "&::-webkit-scrollbar": {
-                    width: "6px",
-                  },
-                  "&::-webkit-scrollbar-thumb": {
-                    backgroundColor: "#888",
-                    borderRadius: "4px",
-                  },
-                  "&::-webkit-scrollbar-thumb:hover": {
-                    backgroundColor: "#555",
-                  },
-                }),
+                  scrollbarWidth: "none",
+                }as CSSObjectWithLabel),
               }}
               placeholder="Location Type"
               value={selectedOptions.ForLocation.map((option) => ({
@@ -144,14 +155,15 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
                 })
               }
             />
-          </DropDownWrapper>
-        </FilterColumn>
+          </div>
+        </div>
 
-        <FilterColumn>
-          <TextWrapper>For Children Of</TextWrapper>
-          <DropDownWrapper style={{ gap: "20px" }}>
+        <div className={filterColumn}>
+          <div className={textWrapper}>For Children</div>
+          <div className={dropDownWrapper} style={{ gap: "20px" }}>
             <Select
               options={locationOptionsWithValue}
+              // classNamePrefix="rs"
               isMulti
               closeMenuOnSelect={false}
               hideSelectedOptions={false}
@@ -165,30 +177,18 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
                 input: (base) => ({
                   ...base,
                   color: "#333",
-                }),
+                }as CSSObjectWithLabel),
                 placeholder: (base) => ({
                   ...base,
                   color: "#999",
                   display: "block",
-                }),
+                }as CSSObjectWithLabel),
                 menuList: (base) => ({
                   ...base,
                   maxHeight: 500,
                   overflowY: "auto",
-                  scrollbarWidth: "thin",
-                  scrollbarColor: "#888 transparent",
-
-                  "&::-webkit-scrollbar": {
-                    width: "6px",
-                  },
-                  "&::-webkit-scrollbar-thumb": {
-                    backgroundColor: "#888",
-                    borderRadius: "4px",
-                  },
-                  "&::-webkit-scrollbar-thumb:hover": {
-                    backgroundColor: "#555",
-                  },
-                }),
+                  scrollbarWidth: "none",
+                }as CSSObjectWithLabel),
               }}
               placeholder="Location Type"
               value={selectedOptions.ForChildren.map((option) => ({
@@ -204,9 +204,9 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
                 })
               }
             />
-          </DropDownWrapper>
-        </FilterColumn>
-      </FilterGroup>
+          </div>
+        </div>
+      </div>
     </>
   );
 };

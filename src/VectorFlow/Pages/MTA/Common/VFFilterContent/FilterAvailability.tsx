@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import {
-  FilterGroup,
-  FilterColumn,
-  TextWrapper,
-  DropDownWrapper,
-  DropDownRow,
-  IconWrapper,
-  CheckboxWrapper,
-} from "./style";
-import Select, { components } from "react-select";
+  filterGroup,
+  filterColumn,
+  textWrapper,
+  dropDownWrapper,
+  dropDownRow,
+  iconWrapper,
+  checkboxWrapper,
+} from "./style.css";
+import Select, { components, CSSObjectWithLabel } from "react-select";
 import {
   useThemeStyles,
   useColorThemeStyles,
@@ -107,7 +107,8 @@ const TagsFilter: React.FC<TagsFilterProps> = ({ name, checked, onChange }) => {
   };
 
   return (
-    <CheckboxWrapper
+    <div
+      className={checkboxWrapper}
       style={{
         alignItems: "center",
         gap: "8px",
@@ -147,7 +148,7 @@ const TagsFilter: React.FC<TagsFilterProps> = ({ name, checked, onChange }) => {
       >
         {name}
       </label>
-    </CheckboxWrapper>
+    </div>
   );
 };
 
@@ -161,7 +162,7 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
   const colorStyles = useColorThemeStyles();
   const { user } = useUserData();
   const availabilityTags = ["PIPO", "Seasonality"];
-  const { handleSelectChange} =
+  const { handleSelectChange, getSelectedValues, setSelectedValues } =
     useVFMultiFilter({
       multiFilter,
       onMultiFilterChange,
@@ -169,7 +170,7 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
   const [rowSelections, setRowSelections] = useState<{
     [columnId: string]: { operation?: any; value?: string };
   }>({});
-  
+
   const isRowComplete = (columnId: string) => {
     const row = rowSelections[columnId];
     return row && row.operation && row.value && row.value.trim() !== "";
@@ -195,7 +196,7 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
     if (
       columnInfo &&
       current?.operation &&
-      current.value?.trim() !== undefined &&
+      current?.value !== undefined &&
       current?.value !== ""
     ) {
       const newFilter: BPRFilter = {
@@ -220,22 +221,6 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
       };
 
       onMultiFilterChange(updatedMultiFilter);
-    } else if (columnInfo) {
-      const existingFilters = multiFilter[parentId]?.filters || [];
-      const filteredFilters = existingFilters.filter(
-        (f: BPRFilter) => f.name !== columnInfo.name
-      );
-
-      if (existingFilters.length !== filteredFilters.length) {
-        const updatedMultiFilter = {
-          ...multiFilter,
-          [parentId]: {
-            ...multiFilter[parentId],
-            filters: filteredFilters,
-          },
-        };
-        onMultiFilterChange(updatedMultiFilter);
-      }
     }
   };
 
@@ -369,14 +354,15 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
 
   return (
     <>
-      <FilterGroup>
-        <FilterColumn style={{ minWidth: "400px", maxWidth: "none" }}>
-          <TextWrapper>Select Operation</TextWrapper>
+      <div className={filterGroup}>
+        <div className={filterColumn} style={{ minWidth: "400px", maxWidth: "none" }}>
+          <div className={textWrapper}>Select Operation</div>
           {availabilityFilterOptions.map((column) => (
-            <DropDownRow key={column.value}>
-              <DropDownWrapper>
+            <div className={dropDownRow} key={column.value}>
+              <div className={dropDownWrapper}>
                 <Select
                   placeholder={column.label}
+                  classNamePrefix="rs"
                   styles={styles}
                   components={{
                     IndicatorSeparator: () => null,
@@ -386,10 +372,11 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
                   isDisabled={true}
                   value={{ label: column.label, value: column.value }}
                 />
-              </DropDownWrapper>
-              <DropDownWrapper>
+              </div>
+              <div className={dropDownWrapper}>
                 <Select
                   options={numericOperators}
+                  classNamePrefix="rs"
                   placeholder="Select an Operation"
                   styles={styles}
                   isSearchable={false}
@@ -399,8 +386,8 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
                     onFilterChange(column.value, "operation", selected)
                   }
                 />
-              </DropDownWrapper>
-              <DropDownWrapper>
+              </div>
+              <div className={dropDownWrapper}>
                 <input
                   placeholder="Enter value"
                   className={`filter-input ${
@@ -413,10 +400,11 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
                     onFilterChange(column.value, "value", e.target.value)
                   }
                 />
-              </DropDownWrapper>
-              
-              <IconWrapper 
-                theme_ui={user.user.theme_ui}
+              </div>
+
+              <div
+                className={iconWrapper}
+                data-theme={user.user.theme_ui}
                 style={{
                   opacity: isRowComplete(column.value) ? 0 : 1,
                   cursor: isRowComplete(column.value) ? "default" : "pointer",
@@ -425,12 +413,12 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
                 <img 
                   src="/assets/img/MTAVFMultiFilter/Error.svg" 
                   alt="error" 
-                  title={isRowComplete(column.value) ? "All fields are filled" : "Must select a column."}
+                  title={isRowComplete(column.value) ? "All fields are filled" : "Some fields are empty"}
                 />
-              </IconWrapper>
+              </div>
 
-              <IconWrapper 
-                theme_ui={user.user.theme_ui}
+              <div className={iconWrapper} 
+                data-theme={user.user.theme_ui}
                 style={{ cursor: 'pointer' }}
                 onClick={() => handleResetRow(column.value)}
               >
@@ -439,15 +427,15 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
                   alt="refresh"
                   title="Reset this filter row"
                 />
-              </IconWrapper>
-            </DropDownRow>
+              </div>
+            </div>
           ))}
-        </FilterColumn>
-      </FilterGroup>
+        </div>
+      </div>
 
       {(shouldShowColorFilters || isBTRReport) && (
-        <FilterGroup style={{ marginTop: "1px" }}>
-          <FilterColumn>
+        <div className={filterGroup} style={{ marginTop: "1px" }}>
+          <div className={filterColumn}>
             <div style={{ 
               display: "flex", 
               gap: "20px", 
@@ -460,8 +448,8 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
                   minWidth: "280px",
                   maxWidth: (currentTab === 'both') ? "calc(50% - 10px)" : "100%"
                 }}>
-                  <TextWrapper>On Hand Inventory Color</TextWrapper>
-                  <DropDownWrapper>
+                  <div className={textWrapper}>On Hand Inventory Color</div>
+                  <div className={dropDownWrapper}>
                     <Select
                       options={colorOptions}
                       isMulti
@@ -487,7 +475,7 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
                         })
                       }
                     />
-                  </DropDownWrapper>
+                  </div>
                 </div>
               )}
 
@@ -497,10 +485,11 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
                   minWidth: "280px",
                   maxWidth: (currentTab === 'both') ? "calc(50% - 10px)" : "100%"
                 }}>
-                  <TextWrapper>Pipeline Inventory Color</TextWrapper>
-                  <DropDownWrapper>
+                  <div className={textWrapper}>Pipeline Inventory Color</div>
+                  <div className={dropDownWrapper}>
                     <Select
                       options={colorOptions}
+                      classNamePrefix="rs"
                       isMulti
                       closeMenuOnSelect={false}
                       hideSelectedOptions={false}
@@ -524,19 +513,19 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
                         })
                       }
                     />
-                  </DropDownWrapper>
+                  </div>
                 </div>
               )}
             </div>
-          </FilterColumn>
-        </FilterGroup>
+          </div>
+        </div>
       )}
 
       {(shouldShowTags || (isBTRReport && (currentTab === 'both' || currentTab === 'pipeline' || currentTab === 'on-hand'))) && (
-        <FilterGroup style={{ marginTop: "1px" }}>
-          <FilterColumn>
-            <TextWrapper>Tags</TextWrapper>
-            <DropDownRow style={{ gap: "20px" }}>
+        <div className={filterGroup} style={{ marginTop: "1px" }}>
+          <div className={filterColumn}>
+            <div className={textWrapper}>Tags</div>
+            <div className={dropDownRow} style={{ gap: "20px" }}>
               {availabilityTags.map((tag) => (
                 <TagsFilter
                   key={tag}
@@ -545,18 +534,19 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
                   onChange={handleTagChange}
                 />
               ))}
-            </DropDownRow>
-          </FilterColumn>
-        </FilterGroup>
+            </div>
+          </div>
+        </div>
       )}
 
       {isBTRReport && (
-        <FilterGroup style={{ marginTop: "1px" }}>
-          <FilterColumn>
-            <TextWrapper>Category</TextWrapper>
-            <DropDownWrapper style={{ gap: "20px" }}>
+        <div className={filterGroup} style={{ marginTop: "1px" }}>
+          <div className={filterColumn}>
+            <div className={textWrapper}>Category</div>
+            <div className={dropDownWrapper} style={{ gap: "20px" }}>
               <Select
                 options={categoryOptions}
+                classNamePrefix="rs"
                 isMulti
                 closeMenuOnSelect={false}
                 hideSelectedOptions={false}
@@ -571,7 +561,7 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
                     ...base,
                     maxHeight: 150,
                     overflowY: "auto",
-                  }),
+                  }as CSSObjectWithLabel),
                 }}
                 placeholder="Select Category"
                 value={categoryOptions.filter((opt) =>
@@ -586,9 +576,9 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
                   })
                 }
               />
-            </DropDownWrapper>
-          </FilterColumn>
-        </FilterGroup>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );

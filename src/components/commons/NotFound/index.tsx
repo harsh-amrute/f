@@ -1,14 +1,11 @@
-import styled from 'styled-components'
+import { notFound } from "./styles.css";
 
 const NotFound = () => {
   return (
-    <SCNotFound>
+    <div className={notFound}>
       <h2>No results found</h2>
-    </SCNotFound>
-  )
-}
-export default NotFound
+    </div>
+  );
+};
 
-const SCNotFound = styled.div`
-  padding: 16px 20px 16px 20px;
-`
+export default NotFound;

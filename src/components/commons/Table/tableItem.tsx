@@ -1,10 +1,11 @@
-import * as Tab from "./style";
+import * as Tab from "./style.css";
 import CheckboxPendingRequest from "../Checkbox/CheckboxPendingRequest";
 import Checkbox from "../Checkbox";
 import ButtonOutlineCheck from "../ButtonOutlineCheck";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useUserData } from "../../../context";
+import { SCValuePvPA, type PvKey } from "./style.css";
 
 const TableItem = (props: any) => {
   const { t } = useTranslation();
@@ -109,92 +110,121 @@ const TableItem = (props: any) => {
     );
     return checkArray.length > 0;
   }, [item.list_items]);
+
+  const toPvKey = (v: unknown): PvKey => {
+    return v === "R" || v === "G" || v === "W" ? v : "default";
+  };
+
   return (
     <>
-      <Tab.SCTableTab width="100%">
-        <Tab.SCTableTr>
-          <Tab.SCTableTh style={{ display: "flex", alignItems: "center" }}>
-            <Tab.SCTableCheckbox>
-              {checkDisplayButtonCheck ? (
-                <Checkbox
-                  defaultChecked={listCheckAll}
-                  name="id"
-                  value={item.id}
-                  onChange={() => {
-                    checkAllTable();
-                  }}
-                ></Checkbox>
-              ) : (
-                ""
-              )}
-            </Tab.SCTableCheckbox>
-            {t("pendingISTRequests.table.itemCode")}
-          </Tab.SCTableTh>
-          <Tab.SCTableTh>
-            {t("pendingISTRequests.table.quantity")}
-          </Tab.SCTableTh>
-          <Tab.SCTableTh>
-            {t("pendingISTRequests.table.donorROSN")}
-          </Tab.SCTableTh>
-          <Tab.SCTableTh>{t("pendingISTRequests.table.PvPA")}</Tab.SCTableTh>
-          <Tab.SCTableTh>
-            {t("pendingISTRequests.table.donorLocation")}
-          </Tab.SCTableTh>
-          <Tab.SCTableTh>{t("pendingISTRequests.table.city")}</Tab.SCTableTh>
-          <Tab.SCTableTh>
-            {t("pendingISTRequests.table.locationCode")}
-          </Tab.SCTableTh>
-          <Tab.SCTableTh>
-            {t("pendingISTRequests.table.locationType")}
-          </Tab.SCTableTh>
-          <Tab.SCTableTh>{t("pendingISTRequests.table.channel")}</Tab.SCTableTh>
-          <Tab.SCTableTh>{t("pendingISTRequests.table.vfISTID")}</Tab.SCTableTh>
-        </Tab.SCTableTr>
-        {item.list_items.map((i: any) => (
-          <Tab.SCTableTr key={i.id}>
-            <Tab.SCTableTdItem
+      <table className={Tab.SCTableTab} width="100%">
+        <tbody>
+          <tr className={Tab.SCTableTr}>
+            <th
+              className={Tab.SCTableTh}
               style={{ display: "flex", alignItems: "center" }}
             >
-              <Tab.SCTableCheckbox>
-                <CheckboxPendingRequest
-                  onChange={() => {
-                    checkTable(i.id);
-                  }}
-                  valueStatus={checkValueStatus(i)}
-                  name={i.id.toString()}
-                />
-              </Tab.SCTableCheckbox>{" "}
-              <span>{i?.sku_label}</span>
-            </Tab.SCTableTdItem>
-            <Tab.SCTableTd>
-              {String(i?.quantity_to_be_moved).padStart(2, "0")}
-            </Tab.SCTableTd>
-            <Tab.SCTableTd>
-              {/* eslint-disable-next-line no-unsafe-optional-chaining */}
-              {(i?.donor_rosn).toString().slice(0, 4)}
-            </Tab.SCTableTd>
-            <Tab.SCTableTd>
-              <Tab.SCWrapPvPA>
-                <Tab.SCValuePvPA value={i?.before_col}>
-                  {i?.before_col}
-                </Tab.SCValuePvPA>
-                <Tab.SCLargerSign src="/assets/img/ist/PvPA.svg" alt="PvPA" />
-                <Tab.SCValuePvPA value={i?.after_col}>
-                  {i?.after_col}
-                </Tab.SCValuePvPA>
-              </Tab.SCWrapPvPA>
-            </Tab.SCTableTd>
-            <Tab.SCTableTd>{i?.donor_wh_name}</Tab.SCTableTd>
-            <Tab.SCTableTd>{i?.donor_wh_city}</Tab.SCTableTd>
-            <Tab.SCTableTd>{i?.donor_wh_code}</Tab.SCTableTd>
-            <Tab.SCTableTd>{i?.donor_wh_type}</Tab.SCTableTd>
-            <Tab.SCTableTd>{i?.donor_wh_subtype}</Tab.SCTableTd>
-            <Tab.SCTableTd>{i?.vf_ist_id}</Tab.SCTableTd>
-          </Tab.SCTableTr>
-        ))}
-      </Tab.SCTableTab>
+              <span className={Tab.SCTableCheckbox}>
+                {checkDisplayButtonCheck ? (
+                  <Checkbox
+                    defaultChecked={listCheckAll}
+                    name="id"
+                    value={item.id}
+                    onChange={() => {
+                      checkAllTable();
+                    }}
+                  />
+                ) : (
+                  ""
+                )}
+              </span>
+              {t("pendingISTRequests.table.itemCode")}
+            </th>
+
+            <th className={Tab.SCTableTh}>
+              {t("pendingISTRequests.table.quantity")}
+            </th>
+            <th className={Tab.SCTableTh}>
+              {t("pendingISTRequests.table.donorROSN")}
+            </th>
+            <th className={Tab.SCTableTh}>
+              {t("pendingISTRequests.table.PvPA")}
+            </th>
+            <th className={Tab.SCTableTh}>
+              {t("pendingISTRequests.table.donorLocation")}
+            </th>
+            <th className={Tab.SCTableTh}>
+              {t("pendingISTRequests.table.city")}
+            </th>
+            <th className={Tab.SCTableTh}>
+              {t("pendingISTRequests.table.locationCode")}
+            </th>
+            <th className={Tab.SCTableTh}>
+              {t("pendingISTRequests.table.locationType")}
+            </th>
+            <th className={Tab.SCTableTh}>
+              {t("pendingISTRequests.table.channel")}
+            </th>
+            <th className={Tab.SCTableTh}>
+              {t("pendingISTRequests.table.vfISTID")}
+            </th>
+          </tr>
+
+          {item.list_items.map((i: any) => (
+            <tr key={i.id} className={Tab.SCTableTr}>
+              <td
+                className={Tab.SCTableTdItem}
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <span className={Tab.SCTableCheckbox}>
+                  <CheckboxPendingRequest
+                    onChange={() => {
+                      checkTable(i.id);
+                    }}
+                    valueStatus={checkValueStatus(i)}
+                    name={i.id.toString()}
+                  />
+                </span>
+                <span>{i?.sku_label}</span>
+              </td>
+
+              <td className={Tab.SCTableTd}>
+                {String(i?.quantity_to_be_moved).padStart(2, "0")}
+              </td>
+
+              <td className={Tab.SCTableTd}>
+                {String(i?.donor_rosn).slice(0, 4)}
+              </td>
+
+              <td className={Tab.SCTableTd}>
+                <span className={Tab.SCWrapPvPA}>
+                  <span className={SCValuePvPA[toPvKey(i?.before_col)]}>
+                    {i?.before_col}
+                  </span>
+                  <img
+                    className={Tab.SCLargerSign}
+                    src="/assets/img/ist/PvPA.svg"
+                    alt="PvPA"
+                  />
+                  <span className={SCValuePvPA[toPvKey(i?.after_col)]}>
+                    {i?.after_col}
+                  </span>
+                </span>
+              </td>
+
+              <td className={Tab.SCTableTd}>{i?.donor_wh_name}</td>
+              <td className={Tab.SCTableTd}>{i?.donor_wh_city}</td>
+              <td className={Tab.SCTableTd}>{i?.donor_wh_code}</td>
+              <td className={Tab.SCTableTd}>{i?.donor_wh_type}</td>
+              <td className={Tab.SCTableTd}>{i?.donor_wh_subtype}</td>
+              <td className={Tab.SCTableTd}>{i?.vf_ist_id}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
       {item.list_items.length > 0 && checkDisplayButtonCheck ? (
-        <Tab.SCButtonChecBox>
+        <div className={Tab.SCButtonChecBox}>
           <ButtonOutlineCheck
             styles={
               listRequest.length > 0 && checkDisplayButtonCheck
@@ -206,9 +236,7 @@ const TableItem = (props: any) => {
             }
             icon="accept"
             text={t("pendingISTRequests.button.accept")}
-            onChange={() => {
-              onAcceptTable();
-            }}
+            onChange={onAcceptTable}
           />
           <ButtonOutlineCheck
             styles={
@@ -218,9 +246,7 @@ const TableItem = (props: any) => {
             }
             icon="pause"
             text={t("pendingISTRequests.button.pause")}
-            onChange={() => {
-              onPauseTable();
-            }}
+            onChange={onPauseTable}
           />
           <ButtonOutlineCheck
             styles={
@@ -230,11 +256,9 @@ const TableItem = (props: any) => {
             }
             icon="deline"
             text={t("pendingISTRequests.button.reject")}
-            onChange={() => {
-              onRejectTable();
-            }}
+            onChange={onRejectTable}
           />
-        </Tab.SCButtonChecBox>
+        </div>
       ) : (
         ""
       )}

@@ -8,13 +8,10 @@ import SplitGraphContainer from "../../../../../../../VectorFlow/Pages/MTO/Commo
 import { ProductionInsightsAndTrendsString } from "../../../../Common/String";
 import { createSeriesData, TooltipRenderer } from "../OrderBalanceCommon";
 import { columnConfigData } from "../OrderBalanceMockData";
-import { CapsuleWrapper } from "../styles";
+import { CapsuleWrapper } from "../styles.css";
 // <-------------- uncomment below code to enable dropdown for orderType    --------->
 import VFSelect from "../../../../../../../components/VectorFLOW/commons/MTO/VFSelect";
 import { useUserData } from "../../../../../../../context/index";
-
-
-
 
 const TrailDeptBalance = (props: any) => {
   const {
@@ -126,22 +123,50 @@ const TrailDeptBalance = (props: any) => {
     }),
   };*/
 
-  const   SearchIcon = () => {
+  const SearchIcon = () => {
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 20 20.002" data-testid='vfmaster-search-icon'>
-            <g id="Group_3376" data-name="Group 3376" transform="translate(-905.1 -140.058)">
-                <g id="b995a33f0790c855384b59de531e8fe3" transform="translate(905.1 140.058)">
-                    <path id="Path_90" data-name="Path 90" d="M16.352,24.4A8.152,8.152,0,1,1,24.5,16.252,8.163,8.163,0,0,1,16.352,24.4Zm0-15.093a6.982,6.982,0,1,0,6.982,6.982A6.994,6.994,0,0,0,16.352,9.312Z" transform="translate(-8.2 -8.1)" fill="#313131" />
-                    <path id="Path_91" data-name="Path 91" d="M45.786,46.664,40.1,41.02l.92-.92,5.644,5.686-.878.878" transform="translate(-26.664 -26.662)" fill="#313131" />
-                </g>
-            </g>
-        </svg>
-    )
-}
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="15"
+        height="15"
+        viewBox="0 0 20 20.002"
+        data-testid="vfmaster-search-icon"
+      >
+        <g
+          id="Group_3376"
+          data-name="Group 3376"
+          transform="translate(-905.1 -140.058)"
+        >
+          <g
+            id="b995a33f0790c855384b59de531e8fe3"
+            transform="translate(905.1 140.058)"
+          >
+            <path
+              id="Path_90"
+              data-name="Path 90"
+              d="M16.352,24.4A8.152,8.152,0,1,1,24.5,16.252,8.163,8.163,0,0,1,16.352,24.4Zm0-15.093a6.982,6.982,0,1,0,6.982,6.982A6.994,6.994,0,0,0,16.352,9.312Z"
+              transform="translate(-8.2 -8.1)"
+              fill="#313131"
+            />
+            <path
+              id="Path_91"
+              data-name="Path 91"
+              d="M45.786,46.664,40.1,41.02l.92-.92,5.644,5.686-.878.878"
+              transform="translate(-26.664 -26.662)"
+              fill="#313131"
+            />
+          </g>
+        </g>
+      </svg>
+    );
+  };
 
   const generateHeader = () => {
     // <-------------- uncomment below code to enable dropdown for orderType    --------->
-    const options = orderOptions?.map((opt: any) => ({ label: opt.desc, value: opt.order_type }))
+    const options = orderOptions?.map((opt: any) => ({
+      label: opt.desc,
+      value: opt.order_type,
+    }));
 
     return (
       <div
@@ -158,9 +183,21 @@ const TrailDeptBalance = (props: any) => {
         }}
       >
         {/* <-------------- uncomment below code to enable dropdown for orderType    ---------> */}
-        <div style={{ display: 'flex', alignItems: 'center', marginLeft: '30px' }}>
-          <p style={{ fontFamily: 'roboto', fontSize: '15px', fontWeight: '500', paddingRight: '5px', zoom: 0.75 }}>Order Type</p>
-          <div >
+        <div
+          style={{ display: "flex", alignItems: "center", marginLeft: "30px" }}
+        >
+          <p
+            style={{
+              fontFamily: "roboto",
+              fontSize: "15px",
+              fontWeight: "500",
+              paddingRight: "5px",
+              zoom: 0.75,
+            }}
+          >
+            Order Type
+          </p>
+          <div>
             <VFSelect
               themeUi={themeUi}
               placeholder={"Select Order Type"}
@@ -220,10 +257,9 @@ const TrailDeptBalance = (props: any) => {
               onChange={handleChange}
             /> */}
           </div>
-
         </div>
         <div style={{ display: "flex", alignItems: "center" }}>
-          <CapsuleWrapper style={{ zoom: 1, padding: "4px" }}>
+          <div className={CapsuleWrapper} style={{ zoom: 1, padding: "4px" }}>
             <VFCapsule
               activeBtn={actBtn}
               capsules={[
@@ -238,11 +274,12 @@ const TrailDeptBalance = (props: any) => {
               ]}
               handleClick={updateGraphState}
             />
-          </CapsuleWrapper>
+          </div>
           <div style={{ marginLeft: 30, marginBottom: "-5px" }}>
             <VFInfoToolTip
               infoList={[
-                `The graph highlights trailing department wise quantities balance to ${actBtn.label === "Bal To Mfg." ? "manufacture" : "dispatch"
+                `The graph highlights trailing department wise quantities balance to ${
+                  actBtn.label === "Bal To Mfg." ? "manufacture" : "dispatch"
                 }`,
               ]}
             />
@@ -289,10 +326,9 @@ const TrailDeptBalance = (props: any) => {
       }));
       setRawData(data);
     }
-  }, [graphData])
+  }, [graphData]);
 
   useEffect(() => {
-
     let response: any = {};
     if (actBtn.label === "Bal To Mfg.") {
       response = graphData?.mfg || {};
@@ -311,14 +347,14 @@ const TrailDeptBalance = (props: any) => {
     }));
 
     setRawData(data);
+  }, [actBtn]);
 
-  }, [actBtn])
-
-  const graphTitleJSX = <div
-    data-testid="ot-if-graph"
-    style={{
-      fontSize: "13px",
-      margin: "0 auto",
+  const graphTitleJSX = 
+    <div
+      data-testid="ot-if-graph"
+      style={{
+        fontSize: "13px",
+        margin: "0 auto",
 
       textAlign: "center",
     }}
@@ -333,9 +369,14 @@ const TrailDeptBalance = (props: any) => {
   return (
     <div
       data-testid="mfg-disp-graph"
-      style={{ height: "100%", display: "flex", justifyContent: "left", marginLeft: '12px', paddingBottom: '10px' }}
+      style={{
+        height: "100%",
+        display: "flex",
+        justifyContent: "left",
+        marginLeft: "12px",
+        paddingBottom: "10px",
+      }}
     >
-
       <SplitGraphContainer
         tableLoading={tableLoading}
         chartLoading={chartLoading}

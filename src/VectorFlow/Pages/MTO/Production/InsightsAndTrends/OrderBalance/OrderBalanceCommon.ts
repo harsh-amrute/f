@@ -1,54 +1,34 @@
+import "./style.css";
+
 export function TooltipRenderer({ datum, xKey }: any) {
   return `
-    <div class="ag-chart-tooltip-title" style="background-color: #6C696A; display: flex; justify-content: center; align-items: center">
-    ${datum[xKey]}
-</div>
-<div class="ag-chart-tooltip-content" style="color: white; background-color: #6C696A; padding: 0px 20px;">
-<div style="border-top: 1px dashed lightgray"></div>
-<div>
-    <div style="display: flex;">
-        <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #151515"></div>
-        <div style="display:flex ; width: 100%; justify-content: space-between">
-            <div>Black</div>
-            <div style="margin-left: 20px"> ${datum["b"]}</div>
-        </div>
-    </div>
-    <div style="display: flex;">
-        <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #E53F40"></div>
-        <div style="display:flex ;width: 100%; justify-content: space-between">
-            <div>Red</div>
-            <div>${datum["r"]}</div>
-        </div>
-    </div>
-    <div style="display: flex;">
-        <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #EBBF2C"></div>
-        <div style="display:flex ;width: 100%; justify-content: space-between">
-            <div>Yellow</div>
-            <div>${datum["y"]}</div>
-        </div>
-    </div>
-    <div style="display: flex;">
-        <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #418D18"></div>
-        <div style="display:flex ;width: 100%; justify-content: space-between">
-            <div>Green</div>
-            <div>${datum["g"]}</div>
-        </div>
-    </div>
-    <div style="display: flex;">
-        <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #3876FE"></div>
-        <div style="display:flex ;width: 100%; justify-content: space-between">
-            <div>Blue</div>
-            <div>${datum["bl"]}</div>
-        </div>
-    </div>
-    <div style="display: flex;">
-        <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #E8E8E8"></div>
-        <div style="display:flex ;width: 100%; justify-content: space-between">
-            <div>White</div>
-            <div>${datum["w"]}</div>
-        </div>
-    </div>
-</div>`;
+      <div class="ob-tooltip-title">
+        ${datum[xKey]}
+      </div>
+      <div class="ob-tooltip-content">
+        <div class="ob-tooltip-divider"></div>
+        ${[
+          { label: "Black", key: "b", colorClass: "bg-color-black" },
+          { label: "Red", key: "r", colorClass: "bg-color-red" },
+          { label: "Yellow", key: "y", colorClass: "bg-color-yellow" },
+          { label: "Green", key: "g", colorClass: "bg-color-green" },
+          { label: "Blue", key: "bl", colorClass: "bg-color-blue" },
+          { label: "White", key: "w", colorClass: "bg-color-white" },
+        ]
+          .map(
+            (item) => `
+          <div class="ob-tooltip-row">
+            <div class="bg-color-box ${item.colorClass}"></div>
+            <div class="ob-label-value">
+              <div>${item.label}</div>
+              <div class="ob-value">${datum[item.key]}</div>
+            </div>
+          </div>
+        `
+          )
+          .join("")}
+      </div>
+    `;
 }
 
 export function createSeriesData() {
@@ -79,4 +59,3 @@ export function createSeriesData() {
 
   return seriesData;
 }
-

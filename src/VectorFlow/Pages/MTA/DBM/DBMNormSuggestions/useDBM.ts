@@ -14,7 +14,7 @@ import { DailyDataGraph } from "../../../../types/MTA"
 import { useGetDailyData } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
 import useBPRFilter from '../../../../../hooks/useBPRFilter'
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify"
-import { toast } from "react-toastify"
+import { toast } from "react-toastify/unstyled"
 import SuggestionCategoryCellRenderer from "./SuggestionCategoryCellRendere"
 import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
 import { ColDef } from 'ag-grid-community';
@@ -212,7 +212,7 @@ const useDBM =()=>{
             headerCheckboxSelection: true,
             headerCheckboxSelectionCurrentPageOnly: true,
             resizable: false,
-            suppressMenu: true,
+            suppressHeaderMenuButton: true,
             maxWidth: 45,
             pinned: 'left',
             lockPosition: 'left',
@@ -235,7 +235,7 @@ const useDBM =()=>{
             floatingFilter: false,
             suppressColumnsToolPanel: false,
             tooltipField: "DailyDataGraph",
-            suppressMenu: true,
+            suppressHeaderMenuButton: true,
             headerTooltip: "Daily Data Graph",
 
         },

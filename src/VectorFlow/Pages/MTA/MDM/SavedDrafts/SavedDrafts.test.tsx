@@ -15,13 +15,13 @@ import { getAllDraftsMock, getDraftByIdMockData, getMasterUIConfigurationMockDat
 jest.mock("../../../../Services/MTA/MDM");
 
 
-jest.mock('react-toastify', () => ({
-  toast: {
-    error: jest.fn(),
-    success:jest.fn(),
-    dismiss:jest.fn()
-  },
-}))
+// jest.mock('react-toastify', () => ({
+//   toast: {
+//     error: jest.fn(),
+//     success:jest.fn(),
+//     dismiss:jest.fn()
+//   },
+// }))
 
 const useDeleteDraftMock = useDeleteDraft as jest.MockedFunction<
    typeof useDeleteDraft

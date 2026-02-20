@@ -3,7 +3,7 @@ import { CSSProperties,  useRef, useState } from "react"
 import Portal from "../../../../../components/VectorFLOW/layouts/Portal"
 
 
-import {ConflictErrorToolTipSection, ConflictErrorToolTipWrapper,ConflictErrorText, ToolTipTriangle} from './styles' 
+import {ConflictErrorToolTipSection, ConflictErrorToolTipWrapper,ConflictErrorText, ToolTipTriangle} from './styles.css' 
 import { useUserData } from "../../../../../context"
 
 
@@ -124,23 +124,23 @@ const ConflictErrorCellRenderer = (params:any)=>{
             </p>
            {params.data.users && isToolTipOpen && (
              <Portal wrapperId="conflict-tooltip">
-                <ConflictErrorToolTipWrapper id={'tooltipWrapper'} ref={toolTipRef} style={{...tooltipPosition}} className="custom-scrollbar">
+                <div className={`${ConflictErrorToolTipWrapper} custom-scrollbar`} id={'tooltipWrapper'} ref={toolTipRef} style={{...tooltipPosition}}>
                     {!isToolTipOverflowing && (    
-                        <ToolTipTriangle style={{top:-13}}/>
+                        <div className={ToolTipTriangle} style={{top:-13}}/>
                     )}
                     {params.data.users.map((user:any,index:number)=>{
                         return (
-                            <ConflictErrorToolTipSection key={index} style={{borderBottom:index<params.data.users.length-1?'1px solid gray':'unset'}}>
-                                <ConflictErrorText><b>User</b> : {user.user}</ConflictErrorText>
-                                <ConflictErrorText><b>{params.colDef?.headerName}</b> : {!user.data[currColumn]?"NULL":user.data[currColumn]}</ConflictErrorText>
-                            </ConflictErrorToolTipSection>
+                            <div className={ConflictErrorToolTipSection} key={index} style={{borderBottom:index<params.data.users.length-1?'1px solid gray':'unset'}}>
+                                <p className={ConflictErrorText}><b>User</b> : {user.user}</p>
+                                <p className={ConflictErrorText}><b>{params.colDef?.headerName}</b> : {!user.data[currColumn]?"NULL":user.data[currColumn]}</p>
+                            </div>
                         )
                     })}
                     {isToolTipOverflowing && (
                          
-                            <ToolTipTriangle style={{top:'unset',bottom:-14,transform:'rotate(180deg)'}}/>
+                            <div className={ToolTipTriangle} style={{top:'unset',bottom:-14,transform:'rotate(180deg)'}}/>
                     )}
-                </ConflictErrorToolTipWrapper>
+                </div>
              </Portal>
            )}
         </div>

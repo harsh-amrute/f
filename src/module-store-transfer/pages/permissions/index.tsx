@@ -1,25 +1,26 @@
 import { useTranslation } from "react-i18next";
 import {
-  SCProfileOverView,
-  SCSubTitleBox,
-  SCSubTitlePad,
-  SCSubTitleSpan,
-  SCOverviewInfo,
-  SCOverviewItem,
-  SCOverviewItemTitle,
-  SCOverViewSignItem,
-  SCIconChecked,
-  SCOverviewWrap,
-  SCOverviewFlex,
-  SCProfileOverViewCol,
-  SCSubTitleSpanItem,
-  SCOverviewItemContent,
-  SCOverviewInfoPermis,
-  SCOverviewItemPerTitle,
-  // SCOverviewItemPerTitleLoca,
-  SCOverviewWrapTitle,
-  SCOverviewWrapItem,
-} from "./styles";
+  profileOverView,
+  subTitleBox,
+  subTitlePad,
+  subTitleSpan,
+  overviewInfo,
+  overviewItem,
+  overviewItemTitle,
+  overViewSignItem,
+  iconChecked,
+  overviewWrap,
+  overviewFlex,
+  profileOverViewCol,
+  subTitleSpanItem,
+  overviewItemContent,
+  overviewInfoPermis,
+  overviewItemPerTitle,
+  overviewWrapTitle,
+  overviewWrapItem,
+  overviewWrapItemBg,
+  overviewItemBorderedFirstTwo,
+} from "./styles.css";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store/store";
 
@@ -27,19 +28,19 @@ const Permissions = ({ roles }: any) => {
   console.log(roles);
   const { t } = useTranslation();
 
-  const generateProductPermissionsList = (roles:any) => {
-    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
-    const PRODUCT_PERMISSION_L1 = EnvConfig['PRODUCT_PERMISSION_L1'];   
-    const PRODUCT_PERMISSION_L2 = EnvConfig['PRODUCT_PERMISSION_L2'];   
-    const PRODUCT_PERMISSION_L3 = EnvConfig['PRODUCT_PERMISSION_L3']; 
+  const generateProductPermissionsList = (roles: any) => {
+    const EnvConfig = useSelector((state: RootState) => state.mta.EnvConfig);
+    const PRODUCT_PERMISSION_L1 = EnvConfig["PRODUCT_PERMISSION_L1"];
+    const PRODUCT_PERMISSION_L2 = EnvConfig["PRODUCT_PERMISSION_L2"];
+    const PRODUCT_PERMISSION_L3 = EnvConfig["PRODUCT_PERMISSION_L3"];
 
-    return roles?.product_permission.map((application:any)=>{
+    return roles?.product_permission.map((application: any) => {
       const listBrand = application.product_hierarchy_1;
       const listSubBrand = application.product_hierarchy_2;
       const listCategories = application.product_hierarchy_3;
       return {
-        'application_name':application['application_name'],
-        'permissions':[
+        application_name: application["application_name"],
+        permissions: [
           {
             title: t("profile.tabContent.permissions.L1"),
             name: PRODUCT_PERMISSION_L1,
@@ -55,23 +56,23 @@ const Permissions = ({ roles }: any) => {
             name: PRODUCT_PERMISSION_L3,
             data: listCategories,
           },
-        ]
-      }
-    })
-  }
+        ],
+      };
+    });
+  };
 
-  const generateLocationPermissionsList = (roles:any) => {
-    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
-    const LOCATION_PERMISSION_L1 = EnvConfig['LOCATION_PERMISSION_L1']; 
-    const LOCATION_PERMISSION_L2 = EnvConfig['LOCATION_PERMISSION_L2']; 
-    const LOCATION_PERMISSION_L3 = EnvConfig['LOCATION_PERMISSION_L3']; 
-    return roles?.location_permission.map((application:any)=>{
+  const generateLocationPermissionsList = (roles: any) => {
+    const EnvConfig = useSelector((state: RootState) => state.mta.EnvConfig);
+    const LOCATION_PERMISSION_L1 = EnvConfig["LOCATION_PERMISSION_L1"];
+    const LOCATION_PERMISSION_L2 = EnvConfig["LOCATION_PERMISSION_L2"];
+    const LOCATION_PERMISSION_L3 = EnvConfig["LOCATION_PERMISSION_L3"];
+    return roles?.location_permission.map((application: any) => {
       const listLCRegion = application.location_heirarchy_1;
       const listLCType = application.location_heirarchy_2;
       const listLCCluster = application.location_heirarchy_3;
       return {
-        'application_name':application['application_name'],
-        'permissions':[
+        application_name: application["application_name"],
+        permissions: [
           {
             title: t("profile.tabContent.permissions.L1"),
             name: LOCATION_PERMISSION_L1,
@@ -84,118 +85,130 @@ const Permissions = ({ roles }: any) => {
           },
           {
             title: t("profile.tabContent.permissions.L3"),
-            name:LOCATION_PERMISSION_L3,
+            name: LOCATION_PERMISSION_L3,
             data: listLCCluster,
           },
-        ]
-      }
-    })
-  }
-  
+        ],
+      };
+    });
+  };
+
+  const has3Perms = roles?.permission?.length === 3;
+  const hasMoreThan2 = (roles?.permission?.length ?? 0) > 2;
+
   return (
     <>
-      <SCProfileOverView>
-        <SCSubTitleBox>
-          <SCSubTitlePad>
-            <SCSubTitleSpan>
+      <div className={profileOverView}>
+        <div className={subTitleBox}>
+          <div className={subTitlePad}>
+            <span className={subTitleSpan}>
               {t("profile.tabContent.permissions.title")}
-            </SCSubTitleSpan>
-          </SCSubTitlePad>
-        </SCSubTitleBox>
-        <SCOverviewInfo>
-          <SCOverviewWrap>
-            {/* <SCOverviewWrapTitle>
-              {t(
-                "profile.tabContent.permissions.roleAndPermissions.interStoreTransfer"
-              )}
-            </SCOverviewWrapTitle> */}
-            <SCOverviewWrapItem checkBackGround={roles?.permission?.length === 3}>
+            </span>
+          </div>
+        </div>
+
+        <div className={overviewInfo}>
+          <div className={overviewWrap}>
+            <div
+              className={[overviewWrapItem, has3Perms && overviewWrapItemBg]
+                .filter(Boolean)
+                .join(" ")}
+            >
               {roles?.permission?.map((item: any, index: number) => (
-                <SCOverviewItem
+                <div
                   key={index}
-                  checkBorderBottom={roles?.permission?.length > 2}
+                  className={[
+                    overviewItem,
+                    hasMoreThan2 && overviewItemBorderedFirstTwo,
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
                 >
-                  <SCIconChecked src="/assets/img/check/checked_black.svg" />
-                  <SCOverviewItemTitle>{item}</SCOverviewItemTitle>
-                </SCOverviewItem>
+                  <img
+                    className={iconChecked}
+                    src="/assets/img/check/checked_black.svg"
+                  />
+                  <div className={overviewItemTitle}>{item}</div>
+                </div>
               ))}
-            </SCOverviewWrapItem>
-          </SCOverviewWrap>
-        </SCOverviewInfo>
-      </SCProfileOverView>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      <SCOverviewFlex>
-        <SCProfileOverViewCol>
-          <SCSubTitleBox>
-            <SCSubTitlePad>
-              <SCSubTitleSpan>
+      <div className={overviewFlex}>
+        <div className={profileOverViewCol}>
+          <div className={subTitleBox}>
+            <div className={subTitlePad}>
+              <span className={subTitleSpan}>
                 {t("profile.tabContent.permissions.productPermission.title")}
-              </SCSubTitleSpan>
-            </SCSubTitlePad>
-          </SCSubTitleBox>
+              </span>
+            </div>
+          </div>
 
-          <SCOverviewInfoPermis>
-            {generateProductPermissionsList(roles)?.map((application:any)=>(
-              <div style={{margin:'5px'}}>
-                <SCOverviewWrapTitle>
-                  {application?.application_name}
-                </SCOverviewWrapTitle>
-                {
-                  application?.permissions?.map((dataPrd: any) => (
-                    <SCOverViewSignItem>
-                      <SCSubTitleSpan>{dataPrd?.title}</SCSubTitleSpan>
-                      <SCSubTitleSpanItem>
-                        <SCOverviewItemPerTitle>
+          <div className={overviewInfoPermis}>
+            {generateProductPermissionsList(roles)?.map(
+              (application: any, i: number) => (
+                <div key={`prd-${i}`} style={{ margin: "5px" }}>
+                  <div className={overviewWrapTitle}>
+                    {application?.application_name}
+                  </div>
+                  {application?.permissions?.map((dataPrd: any, j: number) => (
+                    <div key={`prd-line-${j}`} className={overViewSignItem}>
+                      <span className={subTitleSpan}>{dataPrd?.title}</span>
+                      <div className={subTitleSpanItem}>
+                        <div className={overviewItemPerTitle}>
                           {dataPrd?.name}
-                        </SCOverviewItemPerTitle>
-                        <SCOverviewItemContent>-</SCOverviewItemContent>
-                        <SCOverviewItemContent>
+                        </div>
+                        <div className={overviewItemContent}>-</div>
+                        <div className={overviewItemContent}>
                           {dataPrd?.data?.toString()?.replace(/,/g, " | ")}
-                        </SCOverviewItemContent>
-                      </SCSubTitleSpanItem>
-                    </SCOverViewSignItem>
-                  ))
-                }
-              </div>
-            ))}
-          </SCOverviewInfoPermis>
-        </SCProfileOverViewCol>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )
+            )}
+          </div>
+        </div>
 
-        <SCProfileOverViewCol>
-          <SCSubTitleBox>
-            <SCSubTitlePad>
-              <SCSubTitleSpan>
+        <div className={profileOverViewCol}>
+          <div className={subTitleBox}>
+            <div className={subTitlePad}>
+              <span className={subTitleSpan}>
                 {t("profile.tabContent.permissions.locationPermission.title")}
-              </SCSubTitleSpan>
-            </SCSubTitlePad>
-          </SCSubTitleBox>
-          <SCOverviewInfoPermis>
-            {generateLocationPermissionsList(roles)?.map((application:any)=>(
-              <div style={{margin:'10px 5px'}}>
-                <SCOverviewWrapTitle>
-                  {application?.application_name}
-                </SCOverviewWrapTitle>
-                {
-                  application?.permissions?.map((dataPrd: any) => (
-                    <SCOverViewSignItem>
-                      <SCSubTitleSpan>{dataPrd.title}</SCSubTitleSpan>
-                      <SCSubTitleSpanItem>
-                        <SCOverviewItemPerTitle>
+              </span>
+            </div>
+          </div>
+
+          <div className={overviewInfoPermis}>
+            {generateLocationPermissionsList(roles)?.map(
+              (application: any, i: number) => (
+                <div key={`loc-${i}`} style={{ margin: "10px 5px" }}>
+                  <div className={overviewWrapTitle}>
+                    {application?.application_name}
+                  </div>
+                  {application?.permissions?.map((dataPrd: any, j: number) => (
+                    <div key={`loc-line-${j}`} className={overViewSignItem}>
+                      <span className={subTitleSpan}>{dataPrd.title}</span>
+                      <div className={subTitleSpanItem}>
+                        <div className={overviewItemPerTitle}>
                           {dataPrd.name}
-                        </SCOverviewItemPerTitle>
-                        <SCOverviewItemContent>-</SCOverviewItemContent>
-                        <SCOverviewItemContent>
+                        </div>
+                        <div className={overviewItemContent}>-</div>
+                        <div className={overviewItemContent}>
                           {dataPrd?.data?.toString()?.replace(/,/g, " | ")}
-                        </SCOverviewItemContent>
-                      </SCSubTitleSpanItem>
-                    </SCOverViewSignItem>
-                  ))
-                }
-              </div>
-            ))}
-          </SCOverviewInfoPermis>
-        </SCProfileOverViewCol>
-      </SCOverviewFlex>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )
+            )}
+          </div>
+        </div>
+      </div>
     </>
   );
 };

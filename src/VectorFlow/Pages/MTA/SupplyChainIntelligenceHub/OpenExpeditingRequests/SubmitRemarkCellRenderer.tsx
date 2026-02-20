@@ -1,13 +1,13 @@
-import { BPRRemarksCellRendererWrapper } from "../BPR/styles";
-import { SubmitRemarkInputWrapper } from "./styles";
+import { BPRRemarksCellRendererWrapper } from "../BPR/styles.css";
+import {submitRemarkBase, SubmitRemarkInput } from "./styles.css";
 
 const SubmitRemarkCellRenderer = (params: any) => {
   return (
-    <BPRRemarksCellRendererWrapper>
-      <SubmitRemarkInputWrapper>
+    <div className={BPRRemarksCellRendererWrapper}>
+      <div className={submitRemarkBase}>
         {params.value ? params.value : params.data.remarks}
-      </SubmitRemarkInputWrapper>
-    </BPRRemarksCellRendererWrapper>
+      </div>
+    </div>
   );
 };
 export default SubmitRemarkCellRenderer;

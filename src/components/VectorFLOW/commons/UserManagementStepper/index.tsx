@@ -1,86 +1,94 @@
-import { StepIcon, StepIconWrapper, StepLabel, StepperWrapper, StepSection,StepStroke,StepStrokeWrapper,StepWrapper } from "./styles"
+import { assignInlineVars } from "@vanilla-extract/dynamic";
+import * as globalStyles from "../../../../styles/global";
+import {
+  stepIcon,
+  stepIconWrapper,
+  stepLabel,
+  stepperWrapper,
+  stepSection,
+  stepStroke,
+  stepStrokeWrapper,
+  stepWrapper,
+  stepLabelColorVar,
+} from "./styles.css";
 
-type StepState = "completed" |  "active" | "pending"
+type StepState = "completed" | "active" | "pending";
 
-interface UserManagementStepperProps{
-    list:Array<UserManagementStepperListProps>
-    themeUi:string
+interface UserManagementStepperProps {
+  list: Array<UserManagementStepperListProps>;
+  themeUi: string;
 }
 
-interface UserManagementStepperListProps{
-    label:string,
-    currentState:StepState
+interface UserManagementStepperListProps {
+  label: string;
+  currentState: StepState;
 }
 
 interface StepComponentProps {
-    label:string
-    currentState:StepState
-    isLast:boolean
-    themeUi:string
+  label: string;
+  currentState: StepState;
+  isLast: boolean;
+  themeUi: string;
 }
 
-const UserManagementStepper = (props:UserManagementStepperProps)=>{
+const UserManagementStepper = (props: UserManagementStepperProps) => {
+  const { list, themeUi } = props;
 
-    const {
-        list,
-        themeUi
-    } = props
+  return (
+    <div className={stepperWrapper}>
+      {list.map((s, index) => {
+        return (
+          <UserManagementStepperItem
+            label={s.label}
+            currentState={s.currentState}
+            isLast={index === list.length - 1}
+            themeUi={themeUi}
+            key={index}
+          />
+        );
+      })}
+    </div>
+  );
+};
 
-    return(
-        <StepperWrapper>
-            {list.map((s,index)=>{
-                return(
-                    <UserManagementStepperItem
-                        label={s.label}
-                        currentState={s.currentState}
-                        isLast={index===list.length-1}
-                        themeUi={themeUi}
-                        key={index}
-                    />
-                )
-            })}
-        </StepperWrapper>
-    )
-}
+const UserManagementStepperItem = (step: StepComponentProps) => {
+  const { currentState, label, isLast, themeUi } = step;
 
+  const getImgSrc = (state: StepState): string => {
+    if (state === "completed") return "/assets/img/step-completed.svg";
+    if (state === "active")
+      return themeUi === "REGALBLAZE"
+        ? "/assets/img/step-active-regal.svg"
+        : "/assets/img/step-active.svg";
+    return "/assets/img/step-pending.svg";
+  };
 
-const UserManagementStepperItem = (step:StepComponentProps)=>{
+  const clr = globalStyles.chooseThemeColor[themeUi]?.color4 ?? "#333";
 
-    const {
-        currentState,
-        label,
-        isLast,
-        themeUi
-    } = step
+  return (
+    <div className={stepWrapper} style={{ width: isLast ? "auto" : "100%" }}>
+      <div className={stepSection}>
+        <div className={stepIconWrapper}>
+          <img className={stepIcon} src={getImgSrc(currentState)} />
+        </div>
+      </div>
+      <div className={stepSection}>
+        <label
+          className={stepLabel}
+          style={assignInlineVars({ [stepLabelColorVar]: clr })}
+        >
+          {label}
+        </label>
+      </div>
+      {!isLast && (
+        <div className={stepSection} style={{ width: "100%" }}>
+          <div className={stepStrokeWrapper}>
+            <div className={stepStroke} />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 
-    const getImgSrc = (state:StepState):string=>{
-        console.log(state)
-        if(state==='completed') return "/assets/img/step-completed.svg"
-        if(state==='active')return themeUi==="REGALBLAZE"?"/assets/img/step-active-regal.svg":"/assets/img/step-active.svg"
-        return "/assets/img/step-pending.svg"
-    }
-
-    return(
-        <StepWrapper style={{width:isLast?"auto":"100%"}}>
-            <StepSection>
-                <StepIconWrapper>
-                    <StepIcon src={getImgSrc(currentState)}/>
-                </StepIconWrapper>
-            </StepSection>
-            <StepSection >
-                <StepLabel themeUi={themeUi}>
-                    {label}
-                </StepLabel>
-            </StepSection>
-            {!isLast && (
-                <StepSection style={{width:'100%'}}>
-                   <StepStrokeWrapper>
-                        <StepStroke/>
-                   </StepStrokeWrapper>
-                </StepSection>
-            )}
-        </StepWrapper>
-    )
-}
-
-export default UserManagementStepper
+export default UserManagementStepper;

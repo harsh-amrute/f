@@ -1,6 +1,6 @@
 import { CSSProperties, useMemo, useState,useEffect ,useRef} from "react";
 
-import {toast} from 'react-toastify'
+import {toast} from "react-toastify/unstyled"
 
 import useViewPort from "../../../../../hooks/useViewPort";
 
@@ -518,7 +518,7 @@ const useOpenExpeditingRequests = () => {
       maxWidth: 160,
       lockPosition: 'right',
       menuTabs: [],
-      suppressMenu: true,
+      suppressHeaderMenuButton: true,
       resizable: false,
       floatingFilter: false,
     },
@@ -532,7 +532,7 @@ const useOpenExpeditingRequests = () => {
       maxWidth: 120,
       lockPosition: 'right',
       menuTabs: [],
-      suppressMenu: true,
+      suppressHeaderMenuButton: true,
       resizable: false,
       floatingFilter: false,
     },

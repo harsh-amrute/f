@@ -1,10 +1,10 @@
-import { SCOverlayPage } from "./style";
+import { SCOverlayPage } from "./style.css";
 
 const OverlayPage = ({ onClick }: any) => {
   const handleClick = () => {
     onClick();
   };
-  return <SCOverlayPage onClick={handleClick}></SCOverlayPage>;
+  return <div className={SCOverlayPage} onClick={onClick} />;
 };
 
 export default OverlayPage;

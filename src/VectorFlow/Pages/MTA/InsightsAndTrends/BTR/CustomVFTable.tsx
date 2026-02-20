@@ -1,46 +1,63 @@
-
-
-import { forwardRef} from "react";
+import { forwardRef } from "react";
 import { AgGridReact, AgGridReactProps } from "ag-grid-react";
-import { VFTableWrapper } from "../../../../../components/VectorFLOW/commons/VFTable/styles";
+import {
+  VFTableWrapper,
+  vHeight,
+  // vZoomBase,
+  // vZoomLaptop,
+  // vZoomDesktop,
+} from "../../../../../components/VectorFLOW/commons/VFTable/styles.css";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import './styles.css'
-import {useUserData} from '../../../../../context'
+import "./styles.css";
+import { useUserData } from "../../../../../context";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 
 interface VFTableProps extends AgGridReactProps {
-  height?:string,
-  disableZoomScaling?:boolean
+  height?: string;
+  disableZoomScaling?: boolean;
 }
 
-
 const CustomVFTable = forwardRef((props: VFTableProps, ref: any) => {
-  const  {user} = useUserData()
+  const { user } = useUserData();
 
-  const theme = user.user.theme_ui
+  const theme = user.user.theme_ui;
 
-  const getClassName= ()=>{
-    switch(theme){
+  const getClassName = () => {
+    switch (theme) {
       case "NOIRFUSION":
-        return "ag-theme-btr-noir-fusion"
+        return "ag-theme-btr-noir-fusion";
       case "REGALBLAZE":
-        return "ag-theme-btr-regal-blaze"
+        return "ag-theme-btr-regal-blaze";
       case "PUREELEGANCE":
-        return "ag-theme-btr-pure-elegance"
+        return "ag-theme-btr-pure-elegance";
       case "CHARCOALCHIC":
-        return "ag-theme-btr-charcoal-chic"
+        return "ag-theme-btr-charcoal-chic";
       default:
-        return "ag-theme-btr-noir-fusion"
+        return "ag-theme-btr-noir-fusion";
     }
-  }
+  };
+  // const h =
+  //   typeof props.height === "number" ? `${props.height}px` : props.height;
 
+  // const zoomVars = props.disableZoomScaling
+  //   ? { [vZoomBase]: "1", [vZoomLaptop]: "1", [vZoomDesktop]: "1" }
+  //   : {};
+  const className = getClassName();
   return (
-    <VFTableWrapper style={{margin:'0px 0px 0px 0px'}} className={`${getClassName()} ag-theme-alpine`} role={"table"} height={props.height}  disableZoomScaling={props.disableZoomScaling}>
-      <AgGridReact
-        ref={ref}
-        {...props}
-      />
-    </VFTableWrapper>
+    <div
+      className={`${VFTableWrapper} ${className} ag-theme-alpine`}
+      role={"table"}
+      style={{
+        margin: "0px 0px 0px 0px",
+        ...assignInlineVars({
+          [vHeight]: props.height,
+          // ...zoomVars,
+        }),
+      }}
+    >
+      <AgGridReact ref={ref} {...props} />
+    </div>
   );
 });
 

@@ -1,4 +1,4 @@
-import {BPRColorCellRendererWrapper} from '../../SupplyChainIntelligenceHub/BPR/styles'
+import {BPRColorCellRendererWrapper} from '../../SupplyChainIntelligenceHub/BPR/styles.css'
 
 const colorMapper =(color:number)=> {
     if(color<0){
@@ -49,16 +49,16 @@ const colorMapper =(color:number)=> {
 
     if(color<=-99999999.00){
         return(
-            <BPRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text,maxWidth:85}} data-testid='color-cell'>
+            <div className={BPRColorCellRendererWrapper} style={{backgroundColor:cellColor.bg,color:cellColor.text,maxWidth:85}} data-testid='color-cell'>
                -999.99%
-            </BPRColorCellRendererWrapper>
+            </div>
         )
     }
 
     return(
-        <BPRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text,maxWidth:85}} data-testid='color-cell'>
+        <div className={BPRColorCellRendererWrapper} style={{backgroundColor:cellColor.bg,color:cellColor.text,maxWidth:85}} data-testid='color-cell'>
             {color.toFixed(2)}%
-        </BPRColorCellRendererWrapper>
+        </div>
     )
 }
 

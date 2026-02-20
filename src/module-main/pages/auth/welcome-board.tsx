@@ -1,15 +1,17 @@
 import { useTranslation } from "react-i18next";
-import { LogoIcon, WelcomeText, LogoVector } from "./styles";
-
+import { LogoIcon, WelcomeText, LogoVector } from "./styles.css";
 
 function WelcomeBoard() {
   const { t } = useTranslation();
- 
+
   return (
-    <LogoVector>
-      <LogoIcon src="/assets/img/auth/VectorFlowLogoWhite.svg" />
-      <WelcomeText>{t("loginPage.welcome")}</WelcomeText>
-    </LogoVector>
+    <div className={LogoVector}>
+      <img
+        className={LogoIcon}
+        src="/assets/img/auth/VectorFlowLogoWhite.svg"
+      />
+      <h2 className={WelcomeText}>{t("loginPage.welcome")}</h2>
+    </div>
   );
 }
 

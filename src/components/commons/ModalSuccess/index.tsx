@@ -9,8 +9,12 @@ import {
   SCTextBelow,
   SCBtnClose,
   SCBtnBack,
-} from "./styles";
+  btnGradientVar,
+  btnBackColorVar,
+} from "./styles.css";
 import { useTranslation } from "react-i18next";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
+import * as globalStyles from "../../../styles/global";
 
 interface ModalProps {
   openModal: boolean;
@@ -35,6 +39,16 @@ const ModalSuccess = ({
   const handleClose = () => {
     closeModal();
   };
+
+  const colorButton =
+    globalStyles.chooseThemeColor[
+      colorTheme as keyof typeof globalStyles.chooseThemeColor
+    ]?.colorButton;
+  const color4 =
+    globalStyles.chooseThemeColor[
+      colorTheme as keyof typeof globalStyles.chooseThemeColor
+    ]?.color4;
+
   return (
     <>
       <Transition appear show={openModal} as={Fragment}>
@@ -50,8 +64,8 @@ const ModalSuccess = ({
           >
             <div className="modal-bg inset" />
           </Transition.Child>
-          <SCModalContent>
-            <SCModalBox>
+          <div className={SCModalContent}>
+            <div className={SCModalBox}>
               <Transition.Child
                 as={Fragment}
                 enter="transition"
@@ -62,28 +76,43 @@ const ModalSuccess = ({
                 leaveTo="opacity-0 tranlate"
               >
                 <Dialog.Panel className="modal-forced--block">
-                  <SCWrapper>
-                    <SCImg
+                  <div className={SCWrapper}>
+                    <img
+                      className={SCImg}
                       src="/assets/img/reportIssue/tick-success.svg"
                       alt="tick"
                     />
-                    <SCTextAbove>
+                    <div className={SCTextAbove}>
                       {t("reportAnIssue.msgSuccessAbove")}
-                    </SCTextAbove>
-                    <SCTextBelow>
+                    </div>
+                    <div className={SCTextBelow}>
                       {t("reportAnIssue.msgSuccessBelow")}
-                    </SCTextBelow>
-                    <SCBtnClose onClick={handleClose} colorTheme={colorTheme}>
+                    </div>
+
+                    <button
+                      className={SCBtnClose}
+                      style={assignInlineVars({
+                        [btnGradientVar]: colorButton || "",
+                      })}
+                      onClick={closeModal}
+                    >
                       {t("reportAnIssue.btnClose")}
-                    </SCBtnClose>
-                    <SCBtnBack onClick={handleBack} colorTheme={colorTheme}>
+                    </button>
+
+                    <button
+                      className={SCBtnBack}
+                      style={assignInlineVars({
+                        [btnBackColorVar]: color4 || "",
+                      })}
+                      onClick={handleBack}
+                    >
                       {t("reportAnIssue.btnBack")}
-                    </SCBtnBack>
-                  </SCWrapper>
+                    </button>
+                  </div>
                 </Dialog.Panel>
               </Transition.Child>
-            </SCModalBox>
-          </SCModalContent>
+            </div>
+          </div>
         </Dialog>
       </Transition>
     </>

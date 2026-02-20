@@ -2,12 +2,20 @@ import { useEffect } from "react";
 import VFFloatingTab from "../../../../../components/VectorFLOW/commons/VFFloatingTab";
 import useBufferTrends from "./useBufferTrends";
 import ActionToolBar from "../../SupplyChainIntelligenceHub/Planning/ActionToolBar";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
+import * as globalStyles from "../../../../../styles/global"; // to fetch theme color
 
 import ChartView from "../../InsightsAndTrends/BufferTrends/ChartView";
 import BPRViewTable, {
   BPRViewTableColDef,
 } from "../../SupplyChainIntelligenceHub/BPR/BPRViewTable";
-import { AvailabilityContainer, AvailabilityContent, AvailabilityHeader, SummaryTableColumn } from "./styles";
+import {
+  AvailabilityContainer,
+  AvailabilityContent,
+  AvailabilityHeader,
+  SummaryTableColumn,
+  availabilityColorVar,
+} from "./styles.css";
 import LastRunDateComponent from "../../../../../components/commons/lastRundate";
 import OverlayLoader from "../../../../../VectorFlow/Pages/MTO/Common/Loader";
 
@@ -34,17 +42,59 @@ const BufferTrends = () => {
     setMultiFilterState,
     onDeleteFilter,
     themeUI,
-    lastRunDate
+    lastRunDate,
   } = useBufferTrends();
 
   const summaryColumnDefs: BPRViewTableColDef[] = [
     { headerName: "", colId: "category" },
-    { headerName: <SummaryTableColumn color="black">Black</SummaryTableColumn>, colId: "sumB" },
-    { headerName: <SummaryTableColumn color="red">Red</SummaryTableColumn>, colId: "sumR" },
-    { headerName: <SummaryTableColumn color="#ffbf00ff">Yellow</SummaryTableColumn>, colId: "sumY" },
-    { headerName: <SummaryTableColumn color="green">Green</SummaryTableColumn>, colId: "sumG" },
-    { headerName: <SummaryTableColumn color="blue">Blue</SummaryTableColumn>, colId: "sumBU" },
-    { headerName: <SummaryTableColumn color="gray">White</SummaryTableColumn>, colId: "sumW" },
+    {
+      headerName: (
+        <p className={SummaryTableColumn} color="black">
+          Black
+        </p>
+      ),
+      colId: "sumB",
+    },
+    {
+      headerName: (
+        <p className={SummaryTableColumn} color="red">
+          Red
+        </p>
+      ),
+      colId: "sumR",
+    },
+    {
+      headerName: (
+        <p className={SummaryTableColumn} color="#ffbf00ff">
+          Yellow
+        </p>
+      ),
+      colId: "sumY",
+    },
+    {
+      headerName: (
+        <p className={SummaryTableColumn} color="green">
+          Green
+        </p>
+      ),
+      colId: "sumG",
+    },
+    {
+      headerName: (
+        <p className={SummaryTableColumn} color="blue">
+          Blue
+        </p>
+      ),
+      colId: "sumBU",
+    },
+    {
+      headerName: (
+        <p className={SummaryTableColumn} color="gray">
+          White
+        </p>
+      ),
+      colId: "sumW",
+    },
   ];
   const renderView = () => {
     switch (currentView) {
@@ -64,26 +114,35 @@ const BufferTrends = () => {
               horizonDays={horizonDays}
             />
 
-            <div style={{height:'200px'}}>
-            
-                <div style={{zoom:0.8,margin:'0px 10px 0px 25px',display:'flex'}}>
-                  <BPRViewTable
-                    tableHeader="Summary"
-                    tablePrefixSrc=""
-                    rowData={summaryData}
-                    colDefs={summaryColumnDefs}
-                  />
-                  <AvailabilityContainer>
-                    <AvailabilityHeader>
-                        Overall Availability
-                    </AvailabilityHeader>
-                    <AvailabilityContent themeUI={themeUI}>
-                        {availability} %
-                    </AvailabilityContent>
-                  </AvailabilityContainer>
+            <div style={{ height: "200px" }}>
+              <div
+                style={{
+                  zoom: 0.8,
+                  margin: "0px 10px 0px 25px",
+                  display: "flex",
+                }}
+              >
+                <BPRViewTable
+                  tableHeader="Summary"
+                  tablePrefixSrc=""
+                  rowData={summaryData}
+                  colDefs={summaryColumnDefs}
+                />
+                <div className={AvailabilityContainer}>
+                  <div className={AvailabilityHeader}>Overall Availability</div>
+                  <div
+                    className={AvailabilityContent}
+                    style={assignInlineVars({
+                      [availabilityColorVar]:
+                        globalStyles.chooseThemeColor[themeUI].color5,
+                    })}
+                  >
+                    {availability} %
+                  </div>
                 </div>
- 
-                {/* <div style={{zoom:0.7,margin:'0px 0px 0px 40px'}}>
+              </div>
+
+              {/* <div style={{zoom:0.7,margin:'0px 0px 0px 40px'}}>
                 <BPRViewTable
                   tableHeader="Availability"
                   tablePrefixSrc="/assets/img/VectorFLOW/BTG/Availability-icon.svg"
@@ -120,9 +179,7 @@ const BufferTrends = () => {
         setMultiFilter={setMultiFilterState}
         onDelete={onDeleteFilter}
       />
-      {lastRunDate && (
-        <LastRunDateComponent lastRunDate={lastRunDate} />
-      )}
+      {lastRunDate && <LastRunDateComponent lastRunDate={lastRunDate} />}
 
       <div
         style={{

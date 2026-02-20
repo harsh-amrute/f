@@ -4,7 +4,10 @@ import VFTable from "../../../Common/VFTable";
 import CustomGroupCellRenderer from "./CustomGroupCellRenderer";
 import DayWiseCoverageDetailsCellRenderer from "./DayWiseCoverageDetailsCellRenderer";
 import { useGetDayWiseCoverageData } from "../../../../../../VectorFlow/Services/MTO/Procurement/DayWiseCoverage";
-import { GridFilterWrapper, TextBtn } from "../../../Common/VFPagination/styles";
+import {
+  gridFilterWrapper,
+  textBtn,
+} from "../../../Common/VFPagination/styles.css";
 import { useUserData } from "../../../../../../context";
 import { formatFilterJSON } from "../../../../../../helpers/utils";
 import { TableWrapper } from "./style";
@@ -44,7 +47,6 @@ const DayWiseCoverageTable = ({
   configLoaded
 
 }: IDayWiseCoverageProps) => {
-
   // const extra = [
   //   {
   //       headerName: "Action",
@@ -54,10 +56,11 @@ const DayWiseCoverageTable = ({
   // ]
   const gridRef = useRef<any>(null);
   const [rowData, setRowData] = useState([]);
-  const { mutateAsync: getData, isLoading: isGridLoading } = useGetDayWiseCoverageData();
-  const [isDisabled, setIsDisabled]= useState<boolean>(true)
+  const { mutateAsync: getData, isLoading: isGridLoading } =
+    useGetDayWiseCoverageData();
+  const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const { user } = useUserData();
-  const theme_ui = user.user.theme_ui
+  const theme_ui = user.user.theme_ui;
 
   const [currentPage, setCurrentPage] = useState<number>(1);
 const [totalRows, setTotalRows] = useState<number>(0);
@@ -82,24 +85,27 @@ const [totalRows, setTotalRows] = useState<number>(0);
       setCurrentPage(pageNumber);
       setRowData(convertToArray);
     }
-  }
+  };
 
-  
-  const clearGridFilter = () =>{
+  const clearGridFilter = () => {
     gridRef?.current?.api.setFilterModel(null);
-      setIsDisabled(true);
-}
+    setIsDisabled(true);
+  };
+  const brand = theme_ui === "REGALBLAZE" ? "REGALBLAZE" : "DEFAULT";
 
   const CustomStatusPanel = () => {
-          return (
-              <GridFilterWrapper style={{marginTop:'15px'}}>
-                  <TextBtn onClick={clearGridFilter} disabled={isDisabled} themeUi={theme_ui}>
-                      Clear All Grid Filters
-                  </TextBtn>  
-              </GridFilterWrapper>           
-          );
-      };
-      
+    return (
+      <div className={gridFilterWrapper} style={{ marginTop: "15px" }}>
+        <button
+          className={textBtn[brand]}
+          onClick={clearGridFilter}
+          disabled={isDisabled}
+        >
+          Clear All Grid Filters
+        </button>
+      </div>
+    );
+  };
 
  useEffect(() => {
     // Only fetch if config is loaded to avoid fetching with default 20 then switching to saved 50
@@ -109,8 +115,8 @@ const [totalRows, setTotalRows] = useState<number>(0);
   }, [selectedDate, appliedFilters, configLoaded]);
 
   useEffect(() => {
-    setLoading(isGridLoading)
-  }, [isGridLoading])
+    setLoading(isGridLoading);
+  }, [isGridLoading]);
 
  const handlePageChange = (pageNumber: number) => {
      setCurrentPage(pageNumber);
@@ -137,12 +143,12 @@ const handlePageSizeChange = (newSize: any) => {
       resizable: true,
       cellStyle: {
         display: "flex",
-      }
+      },
     },
     autoGroupColumnDef: {
       headerName: "Group",
       cellRenderer: CustomGroupCellRenderer,
-      suppressMenu: true,
+      suppressHeaderMenuButton: true,
       initialWidth: 260,
     },
     masterDetail: true,
@@ -152,15 +158,15 @@ const handlePageSizeChange = (newSize: any) => {
     },
   }), [colDef, childColDef]);
 
-  useEffect(()=>{ 
+  useEffect(() => {
     if (columnState?.length && colDef.length > 0) {
-        const result = currentGridRef?.current?.api.applyColumnState({
-            state: columnState,
-            applyOrder: true
-        });
-        if (!result) {
-            console.error('Failed to apply column state');
-        }
+      const result = currentGridRef?.current?.api.applyColumnState({
+        state: columnState,
+        applyOrder: true,
+      });
+      if (!result) {
+        console.error("Failed to apply column state");
+      }
     }
   },[columnState,currentGridRef]);
 
@@ -239,6 +245,14 @@ const handlePageSizeChange = (newSize: any) => {
       onGridReady={(params: any) => {
         params.api.autoSizeAllColumns();
         setCurrentGridRef(gridRef);
+        params.api.addEventListener("filterChanged", () => {
+          const filterModel = params.api.getFilterModel();
+          if (Object.keys(filterModel).length > 0) {
+            setIsDisabled(false);
+          } else {
+            setIsDisabled(true);
+          }
+        });
       }}
       // defaultExcelExportParams={defaultExcelExportParams}  
       maintainColumnOrder={true}    

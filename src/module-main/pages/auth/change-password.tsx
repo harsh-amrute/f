@@ -1,7 +1,31 @@
 import { useTranslation } from "react-i18next";
 
-import { ContainerRight, CircleForgotPassword, IputLogin, SCButtonLogin, SignInArea, SignInContainer, Tittle, FormArea, ButtonSubmit, ButtonSubmitText, ArrowArea, InputArea, InputGroup, LogoAreaForgotPsw, ContainerLeft, SuccessArea, SuccessIcon, SuccessText,CaptchaContainer,CaptchaReload,RecaptchaInput, } from "./styles";
-
+import {
+  SignInArea,
+  SignInContainer,
+  ContainerRight,
+  SuccessArea,
+  SuccessIcon,
+  SuccessText,
+  SCButtonLogin,
+  SCButtonLoginDisabled,
+  ButtonSubmit,
+  ButtonSubmitText,
+  ButtonSubmitTextLoading,
+  ArrowArea,
+  Tittle,
+  FormArea,
+  InputArea,
+  InputAreaError,
+  InputGroup,
+  IputLogin,
+  CaptchaContainer,
+  CaptchaReload,
+  RecaptchaInput,
+  ContainerLeft,
+  CircleForgotPassword,
+  LogoAreaForgotPsw,
+} from "./styles.css";
 import { Errors } from "../../../components";
 import { useForm } from "react-hook-form";
 import { useChangePassword } from "../../services";
@@ -95,27 +119,33 @@ function ChangePasswordContainer() {
       },
     });
   };
-
   return (
-    <SignInArea>
+    <div className={SignInArea}>
       {loading && <LoadingSpinner />}
-      <SignInContainer>
-        <ContainerRight>
+
+      {/* Right column */}
+      <div className={SignInContainer}>
+        <div className={ContainerRight}>
           {requestSend ? (
-            <SuccessArea>
-              <SuccessIcon src="/assets/img/auth/tick-circle.svg" />
-              <SuccessText>Password changed successfully.</SuccessText>
-              <SuccessText>
+            <div className={SuccessArea}>
+              <img
+                className={SuccessIcon}
+                src="/assets/img/auth/tick-circle.svg"
+              />
+              <p className={SuccessText}>Password changed successfully.</p>
+              <p className={SuccessText}>
                 Please login again with the new password.
-              </SuccessText>
-              <SCButtonLogin
+              </p>
+
+              <button
+                className={SCButtonLogin}
                 onClick={() => navigate("/login", { replace: true })}
               >
-                <ButtonSubmit>
-                  <ButtonSubmitText>
+                <div className={ButtonSubmit}>
+                  <span className={ButtonSubmitText}>
                     {t("changePasswordPage.loginBtn")}
-                  </ButtonSubmitText>
-                  <ArrowArea>
+                  </span>
+                  <div className={ArrowArea}>
                     <img
                       src="/assets/img/auth/arrow.svg"
                       className="arrow arrow-in"
@@ -124,24 +154,29 @@ function ChangePasswordContainer() {
                       src="/assets/img/auth/arrow-hover.svg"
                       className="arrow arrow-out"
                     />
-                  </ArrowArea>
-                </ButtonSubmit>
-              </SCButtonLogin>
-            </SuccessArea>
+                  </div>
+                </div>
+              </button>
+            </div>
           ) : (
             <>
-              <Tittle>{t("changePasswordPage.title")}</Tittle>
-              <FormArea onSubmit={handleSubmit(onSave)}>
-                <InputArea error={errors.new_password}>
-                  <InputGroup>
+              <h1 className={Tittle}>{t("changePasswordPage.title")}</h1>
+
+              <form className={FormArea} onSubmit={handleSubmit(onSave)}>
+                {/* New password */}
+                <div
+                  className={errors.new_password ? InputAreaError : InputArea}
+                >
+                  <div className={InputGroup}>
                     <img src="/assets/img/auth/password.svg" />
-                    <IputLogin
+                    <input
+                      className={IputLogin}
                       type="password"
                       {...register("new_password", {
                         required: true,
                         pattern: {
                           value:
-                            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()\-_=+{}[\]|;:'",.<>/?]).{8,}$/,
+                            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()\-=+{}[\]|;:'",.<>/?]).{8,}$/,
                           message: t("changePasswordPage.validate.password"),
                         },
                         validate: (value) =>
@@ -149,16 +184,22 @@ function ChangePasswordContainer() {
                             ? (t("loginPage.validate.includeSpace") as string)
                             : true,
                       })}
-                      placeholder={t("changePasswordPage.placeholder.password")}
+                      placeholder={t("changePasswordPage.placeholder.password") as string}
                     />
-                  </InputGroup>
+                  </div>
                   <Errors errors={errors} name="new_password" />
-                </InputArea>
+                </div>
 
-                <InputArea error={errors.confirm_password}>
-                  <InputGroup>
+                {/* Confirm password */}
+                <div
+                  className={
+                    errors.confirm_password ? InputAreaError : InputArea
+                  }
+                >
+                  <div className={InputGroup}>
                     <img src="/assets/img/auth/password.svg" />
-                    <IputLogin
+                    <input
+                      className={IputLogin}
                       type="password"
                       {...register("confirm_password", {
                         required: true,
@@ -171,26 +212,29 @@ function ChangePasswordContainer() {
                       })}
                       placeholder={t(
                         "changePasswordPage.placeholder.confirmPassword"
-                      )}
+                      ) as string}
                     />
-                  </InputGroup>
+                  </div>
                   <Errors errors={errors} name="confirm_password" />
-                </InputArea>
+                </div>
 
-                <CaptchaContainer>
+                {/* Captcha */}
+                <div className={CaptchaContainer}>
                   <LoadCanvasTemplateNoReload />
-                  <CaptchaReload
+                  <button
                     type="button"
+                    className={CaptchaReload}
                     onClick={() => {
                       loadCaptchaEnginge(6);
                       setCaptchaInput("");
                     }}
                   >
                     <img src="/assets/img/reload.svg" alt="Reload" />
-                  </CaptchaReload>
-                </CaptchaContainer>
+                  </button>
+                </div>
 
-                <RecaptchaInput
+                <input
+                  className={RecaptchaInput}
                   type="text"
                   placeholder="Enter the text here"
                   value={captchaInput}
@@ -203,13 +247,21 @@ function ChangePasswordContainer() {
                   }}
                 />
 
-                <SCButtonLogin
+                {/* Submit */}
+                <button
+                  className={
+                    loading || Object.keys(errors).length > 0
+                      ? SCButtonLoginDisabled
+                      : SCButtonLogin
+                  }
                   disabled={loading || Object.keys(errors).length > 0}
                 >
-                  <ButtonSubmit>
+                  <div className={ButtonSubmit}>
                     {loading ? (
                       <>
-                        <ButtonSubmitText>Submitting...</ButtonSubmitText>
+                        <span className={ButtonSubmitTextLoading}>
+                          Submitting...
+                        </span>
                         <div
                           style={{
                             width: "30px",
@@ -226,10 +278,10 @@ function ChangePasswordContainer() {
                       </>
                     ) : (
                       <>
-                        <ButtonSubmitText>
+                        <span className={ButtonSubmitText}>
                           {t("changePasswordPage.submitBtn")}
-                        </ButtonSubmitText>
-                        <ArrowArea>
+                        </span>
+                        <div className={ArrowArea}>
                           <img
                             src="/assets/img/auth/arrow.svg"
                             className="arrow arrow-in"
@@ -238,20 +290,22 @@ function ChangePasswordContainer() {
                             src="/assets/img/auth/arrow-hover.svg"
                             className="arrow arrow-out"
                           />
-                        </ArrowArea>
+                        </div>
                       </>
                     )}
-                  </ButtonSubmit>
-                </SCButtonLogin>
-              </FormArea>
+                  </div>
+                </button>
+              </form>
             </>
           )}
-        </ContainerRight>
-      </SignInContainer>
-      <SignInContainer>
-        <ContainerLeft>
-          <CircleForgotPassword />
-          <LogoAreaForgotPsw>
+        </div>
+      </div>
+
+      {/* Left column */}
+      <div className={SignInContainer}>
+        <div className={ContainerLeft}>
+          <div className={CircleForgotPassword} />
+          <div className={LogoAreaForgotPsw}>
             <img
               src="/assets/img/auth/forgot-left.png"
               className="icon-head left-icon"
@@ -261,10 +315,10 @@ function ChangePasswordContainer() {
               className="icon-head right-icon"
             />
             <WelcomeBoard />
-          </LogoAreaForgotPsw>
-        </ContainerLeft>
-      </SignInContainer>
-    </SignInArea>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 

@@ -1,13 +1,14 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { CSSProperties, useEffect, useRef, useState } from "react";
 import VFButton from "../../../components/VectorFLOW/commons/VFButton";
-import { CSSProperties } from "styled-components";
+// import { CSSProperties } from "styled-components";
 import Portal from "../../../components/VectorFLOW/layouts/Portal";
-import { DropdownWrapper } from "../../../components/commons/CustomDropdown/style";
-import { SCGoBackContainer, SCGoBackText } from "../../../components/VectorFLOW/commons/MTO/ActionToolBar/styles";
+import { dropdownWrapper, topVar, leftVar} from "../../../components/commons/CustomDropdown/style.css";
+import { SCGoBackContainer, SCGoBackText } from "../../../components/VectorFLOW/commons/MTO/ActionToolBar/styles.css";
 import { GridRef } from "../../../VectorFlow/types/MDM";
-import { ActionButton } from "./style";
+import { actionButton } from "./style.css";
 import { notifyWarning } from "../../../helpers/notify";
 import _ from "lodash";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 
 /**
  * Props for the BulkUploadHeader component.
@@ -133,6 +134,11 @@ const BulkUploadHeader = ({
     return true;
   };
 
+  function toCssUnit(v?: string | number) {
+    if (v === undefined || v === null) return "auto";
+    return typeof v === "number" ? `${v}px` : v;
+  }  
+
   return (
     <div
       style={{
@@ -147,16 +153,16 @@ const BulkUploadHeader = ({
     >
       {/* Go Back Section */}
       <div>
-        <SCGoBackContainer style={{ paddingLeft: "10px" }} onClick={resetState}>
+        <div className={SCGoBackContainer} style={{ paddingLeft: "10px" }} onClick={resetState}>
           <img
             src="/assets/img/VectorFLOW/BPR/goback.svg"
             alt=""
             style={{ height: "20px" }}
           />
-          <SCGoBackText style={{ fontSize: "1.5rem" }}>
+          <div className={SCGoBackText} style={{ fontSize: "1.5rem" }}>
             <b>Go Back</b>
-          </SCGoBackText>
-        </SCGoBackContainer>
+          </div>
+        </div>
       </div>
 
       {/* Action Buttons */}
@@ -186,11 +192,13 @@ const BulkUploadHeader = ({
       {/* Dropdown Menu */}
       {open && (
         <Portal wrapperId="checkbox-dropdown">
-          <DropdownWrapper
+          <div className={dropdownWrapper}
             ref={dropdownRef}
-            topPos={dropdownPosition.top + "px"}
-            leftPos={dropdownPosition.left + "px"}
-          >
+            style={assignInlineVars({
+              [topVar]: toCssUnit(dropdownPosition.top + "px"),
+              [leftVar]: toCssUnit(dropdownPosition.left + "px"),
+            })}
+                >
             <div
               style={{
                 width: "100px",
@@ -200,7 +208,7 @@ const BulkUploadHeader = ({
               }}
             >
               {/* Roles Action */}
-              <ActionButton
+              <div className={actionButton}
                 onClick={() => {
                   
                   setIsRoleModalOpen(true);
@@ -208,10 +216,10 @@ const BulkUploadHeader = ({
                 }}
               >
                 Roles
-              </ActionButton>
+              </div>
 
               {/* Permissions Action */}
-              <ActionButton
+              <div className={actionButton}
                 onClick={() => {
                   if(!areValidRoles()){
                     return;
@@ -221,9 +229,9 @@ const BulkUploadHeader = ({
                 }}
               >
                 Permissions
-              </ActionButton>
+              </div>
             </div>
-          </DropdownWrapper>
+          </div>
         </Portal>
       )}
     </div>

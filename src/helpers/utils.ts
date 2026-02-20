@@ -1,190 +1,266 @@
-
-import { ColumnHeaderConfig } from '../VectorFlow/types/ColumnHeaderConfig';
-import { type NavigateFunction } from 'react-router'
-import { LOCAL_STORAGE_KEY, ROUTES } from './constants'
-import { notifyError} from './notify'
-import { type Master, type Option, type Field, type Filter, MDMMasterState, DraftActionType,type NormHistory, type DailyData } from '../VectorFlow/types/MDM';
-import readXlsxFile,{readSheetNames} from 'read-excel-file';
-import { ColDef, ColGroupDef, CellClickedEvent } from 'ag-grid-community';
-import { defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper, TaskPendingAvoidColumnsMapperSpecific, taskStatusCustomColDefs, mdmRoutes, seasonalityQuickFilterData, BTRDefaultColDefs, TaskPendingStopPIPOCustomColumns } from './MDMConstants';
-import ActionRenderer from '../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRenderer';
-import { subDays, format, differenceInSeconds, parse } from 'date-fns';
+import { ColumnHeaderConfig } from "../VectorFlow/types/ColumnHeaderConfig";
+import { type NavigateFunction } from "react-router";
+import { LOCAL_STORAGE_KEY, ROUTES } from "./constants";
+import { notifyError } from "./notify";
+import {
+  type Master,
+  type Option,
+  type Field,
+  type Filter,
+  MDMMasterState,
+  DraftActionType,
+  type NormHistory,
+  type DailyData,
+} from "../VectorFlow/types/MDM";
+import readXlsxFile, { readSheetNames } from "read-excel-file";
+import { ColDef, ColGroupDef, CellClickedEvent } from "ag-grid-community";
+import {
+  defaultColDefs,
+  masterIdToDeleteSchemaMapper,
+  masterIdToSchemaMapper,
+  TaskPendingAvoidColumnsMapper,
+  TaskPendingAvoidColumnsMapperSpecific,
+  taskStatusCustomColDefs,
+  mdmRoutes,
+  seasonalityQuickFilterData,
+  BTRDefaultColDefs,
+  TaskPendingStopPIPOCustomColumns,
+} from "./MDMConstants";
+import ActionRenderer from "../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRenderer";
+import { subDays, format, differenceInSeconds, parse } from "date-fns";
 //import { formatMDMDateFromat } from './format';
-import { formatMDMDate } from './format';
-import TaskPendingActionHeader from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionHeader';
-import TaskPendingActionRenderer from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionRenderer';
-import { UiConfigField } from '../VectorFlow/types/UIConfigFields';
-import { BPRField, BPRViewTableFilterNumericalOperator, BPRViewTableFilterStringOperator } from '../VectorFlow/types/BPR';
-import { RRRField } from '../VectorFlow/types/RRR'
-import _ from 'lodash';
-import { DBMField } from '../VectorFlow/types/DBM';
-import { BPRViewTableHeaderFilterNumberoptions, BPRViewTableHeaderFilterStringoptions } from './BPRConstants';
-import { BPRViewTableColDef } from '../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BPR/BPRViewTable';
-import { InputTypes } from '../VectorFlow/Pages/MTO/Common/Enum';
+import { formatMDMDate } from "./format";
+import TaskPendingActionHeader from "../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionHeader";
+import TaskPendingActionRenderer from "../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionRenderer";
+import { UiConfigField } from "../VectorFlow/types/UIConfigFields";
+import {
+  BPRField,
+  BPRViewTableFilterNumericalOperator,
+  BPRViewTableFilterStringOperator,
+} from "../VectorFlow/types/BPR";
+import { RRRField } from "../VectorFlow/types/RRR";
+import _ from "lodash";
+import { DBMField } from "../VectorFlow/types/DBM";
+import {
+  BPRViewTableHeaderFilterNumberoptions,
+  BPRViewTableHeaderFilterStringoptions,
+} from "./BPRConstants";
+import { BPRViewTableColDef } from "../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BPR/BPRViewTable";
+import { InputTypes } from "../VectorFlow/Pages/MTO/Common/Enum";
 import { AgChartOptions } from "ag-charts-community";
 // clear cached token and redirect to sso login
-import CryptoJS from 'crypto-js';
-import MTOActionRenderer from '../VectorFlow/Pages/MTO/MDM/SavedDrafts/MTOActionRenderer';
-import { decryptStorageData } from '../VectorFlow/Pages/MTO/Common/encryption';
-import { getNumberFormat } from './numberFormat';
+import CryptoJS from "crypto-js";
+import MTOActionRenderer from "../VectorFlow/Pages/MTO/MDM/SavedDrafts/MTOActionRenderer";
+import { decryptStorageData } from "../VectorFlow/Pages/MTO/Common/encryption";
+import "./style.css";
+import { getNumberFormat } from "./numberFormat";
 import axios from 'axios';
-
 
 const keyboardCharacters = [
   // '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
-  'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
-  'u', 'v', 'w', 'x', 'y', 'z',
-  'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
-  'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
-  'U', 'V', 'W', 'X', 'Y', 'Z'
+  "a",
+  "b",
+  "c",
+  "d",
+  "e",
+  "f",
+  "g",
+  "h",
+  "i",
+  "j",
+  "k",
+  "l",
+  "m",
+  "n",
+  "o",
+  "p",
+  "q",
+  "r",
+  "s",
+  "t",
+  "u",
+  "v",
+  "w",
+  "x",
+  "y",
+  "z",
+  "A",
+  "B",
+  "C",
+  "D",
+  "E",
+  "F",
+  "G",
+  "H",
+  "I",
+  "J",
+  "K",
+  "L",
+  "M",
+  "N",
+  "O",
+  "P",
+  "Q",
+  "R",
+  "S",
+  "T",
+  "U",
+  "V",
+  "W",
+  "X",
+  "Y",
+  "Z",
 ];
 
 let isRedirecting = false;
 
-export const setRedirecting = () => { isRedirecting = true; }
+export const setRedirecting = () => {
+  isRedirecting = true;
+};
 export const getRedirecting = () => isRedirecting;
 
 export const loginRedirect = (navigate?: NavigateFunction) => {
-
   if (getRedirecting()) return; // prevent multiple redirects
   setRedirecting();
 
-  saveOriginalUrlBeforeLogin() 
+  saveOriginalUrlBeforeLogin();
 
-   // Safer redirect (no back navigation to protected route)
-   if (navigate) {
+  // Safer redirect (no back navigation to protected route)
+  if (navigate) {
     navigate(ROUTES.landing, { replace: true });
   } else {
     window.location.replace(ROUTES.landing);
   }
-}
+};
 
 export const login = (navigate: NavigateFunction) => {
-  const localLogin = isTrue(process.env.REACT_APP_ENABLE_LOCAL_LOGIN)
+  const localLogin = isTrue(process.env.REACT_APP_ENABLE_LOCAL_LOGIN);
 
   if (localLogin) {
-    navigate(ROUTES.internalLogin, { replace: true })
+    navigate(ROUTES.internalLogin, { replace: true });
   } else {
-    window.location.href = String(process.env.REACT_APP_SSO_LOGIN_URL)
+    window.location.href = String(process.env.REACT_APP_SSO_LOGIN_URL);
   }
-}
+};
 
 export const hashPassword = (password: string): Promise<string> => {
-  const iv = CryptoJS.lib.WordArray.random(16); 
-  const encrypted = CryptoJS.AES.encrypt(password, CryptoJS.enc.Utf8.parse(process.env.REACT_APP_SECRET_KEY), {
-    iv: iv,
-    mode: CryptoJS.mode.CTR,
-    padding: CryptoJS.pad.NoPadding,
-  });
-  const encryptedPassword = iv.concat(encrypted.ciphertext).toString(CryptoJS.enc.Base64);
+  const iv = CryptoJS.lib.WordArray.random(16);
+  const encrypted = CryptoJS.AES.encrypt(
+    password,
+    CryptoJS.enc.Utf8.parse(process.env.REACT_APP_SECRET_KEY),
+    {
+      iv: iv,
+      mode: CryptoJS.mode.CTR,
+      padding: CryptoJS.pad.NoPadding,
+    }
+  );
+  const encryptedPassword = iv
+    .concat(encrypted.ciphertext)
+    .toString(CryptoJS.enc.Base64);
   return encryptedPassword;
 };
 
 // save current url in session storage
 const saveOriginalUrlBeforeLogin = () => {
-  const pathname = window.location.pathname
+  const pathname = window.location.pathname;
   if (
-    pathname !== '/' &&
+    pathname !== "/" &&
     pathname !== ROUTES.logout &&
     pathname !== ROUTES.landing
   ) {
     sessionStorage.setItem(
-      'original_url',
+      "original_url",
       window.location.pathname + window.location.search
-    )
+    );
   }
-}
+};
 
 // navigate to the original url after user login
 export const getOriginalUrl = () => {
-  const originalUrl = sessionStorage.getItem('original_url')
-  const originalUrlType = sessionStorage.getItem('original_url_type')
+  const originalUrl = sessionStorage.getItem("original_url");
+  const originalUrlType = sessionStorage.getItem("original_url_type");
   if (originalUrl || originalUrlType) {
-    sessionStorage.removeItem('original_url')
+    sessionStorage.removeItem("original_url");
     // original_url_type for external projects
-    sessionStorage.removeItem('original_url_type')
+    sessionStorage.removeItem("original_url_type");
   }
-  return { url: originalUrl, type: originalUrlType }
-}
-
+  return { url: originalUrl, type: originalUrlType };
+};
 
 /**
  * Utilities to compare between two variables with same supported types: string | number | boolean
  */
 export const compare = <T = string | number | boolean>(a: T, b: T) => {
-  if (a === b) return 0
-  else if (a > b) return 1
-  return -1
-}
+  if (a === b) return 0;
+  else if (a > b) return 1;
+  return -1;
+};
 
 /**
  * Utilities to remove keys with value is undefined, null or empty
  * Useful for clearing parameter objects, to not display empty parameters in the url
  */
 export const cleanObject = (object?: Record<string, any>) => {
-  if (object == null) return {}
+  if (object == null) return {};
   Object.keys(object).forEach((key) => {
-    const value = object[key]
-    if (value === undefined || value === null || value === '') {
-      delete object[key]
+    const value = object[key];
+    if (value === undefined || value === null || value === "") {
+      delete object[key];
     }
-  })
-  return object
-}
+  });
+  return object;
+};
 
 export const formatUpperCaseFirstLetter = (str: string) => {
-  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
-}
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+};
 
 /*
  * Ignore operators that handled by imperva for sql injection
  */
 export const sanitizeUserSearchText = (search: string) => {
-  const value = search.trim()
+  const value = search.trim();
 
   // 1. single quote: if only one and it's at the last place, Imperva consider it's sql injection
   if (
     value.split("'").length === 2 &&
     value.substring(value.length - 1) === "'"
   ) {
-    return search.replace("'", '')
+    return search.replace("'", "");
   }
-  return search
-}
+  return search;
+};
 
 export const isTrue = (value?: string | number) => {
   return (
-    (typeof value === 'string' && value?.toUpperCase() === 'TRUE') ||
+    (typeof value === "string" && value?.toUpperCase() === "TRUE") ||
     value === 1
-  )
-}
-
+  );
+};
 
 export const mapVDRFieldsToColDefs = (fields: RRRField[]): ColDef[] => {
-
   let result: ColDef[] = [];
   result = fields?.map((f: RRRField) => {
-    if (f.Col_Code === 'DispatchPen') {
+    if (f.Col_Code === "DispatchPen") {
       return {
         colId: f.Col_Code,
         field: f.Col_Code,
         headerName: f.Header,
         hide: !f.Visible,
-        cellRenderer: 'colorDispatchRender',
+        cellRenderer: "colorDispatchRender",
         cellDataType: getCellDataType(f.DataType),
-        filter: getCellFilter(f.DataType)
-      }
+        filter: getCellFilter(f.DataType),
+      };
     }
-    if (f.Col_Code === 'WHDescription') {
+    if (f.Col_Code === "WHDescription") {
       return {
         colId: f.Col_Code,
         field: f.Col_Code,
         headerName: f.Header,
         rowGroup: false,
         cellDataType: getCellDataType(f.DataType),
-        filter: getCellFilter(f.DataType)
-      }
+        filter: getCellFilter(f.DataType),
+      };
     }
     return {
       colId: f.Col_Code,
@@ -192,233 +268,222 @@ export const mapVDRFieldsToColDefs = (fields: RRRField[]): ColDef[] => {
       headerName: f.Header,
       hide: !f.Visible,
       cellDataType: getCellDataType(f.DataType),
-      filter: getCellFilter(f.DataType)
-    }
-
-  })
+      filter: getCellFilter(f.DataType),
+    };
+  });
 
   return result;
+};
 
-}
-
-export const mapRRRColorBandWiseFieldsToColDefs = (fields:RRRField[],onOpenDailyDataGraph:any):ColDef[]=>{
-
-  if(!fields || fields.length<1){
-    return []
+export const mapRRRColorBandWiseFieldsToColDefs = (
+  fields: RRRField[],
+  onOpenDailyDataGraph: any
+): ColDef[] => {
+  if (!fields || fields.length < 1) {
+    return [];
   }
 
-  let result:ColDef[] = []
+  let result: ColDef[] = [];
 
-  const specificColumns:ColDef[] =[
+  const specificColumns: ColDef[] = [
     {
-      colId:'dailydatagraph',
-      field:'',
-      headerName:'',
-      width:40,
-      lockPosition:'left',
-      floatingFilter:false,
-      tooltipField:"DailyDataGraph",
-      cellRenderer:'grapCellRenderer',
-      cellRendererParams:{
-        onOpenDailyDataGraph:onOpenDailyDataGraph
+      colId: "dailydatagraph",
+      field: "",
+      headerName: "",
+      width: 40,
+      lockPosition: "left",
+      floatingFilter: false,
+      tooltipField: "DailyDataGraph",
+      cellRenderer: "grapCellRenderer",
+      cellRendererParams: {
+        onOpenDailyDataGraph: onOpenDailyDataGraph,
       },
-    }
-  ]
+    },
+  ];
 
-  result =  fields.map((f:RRRField)=>{
-    
-    if(f.Col_Code==='DispatchColor'){
-      return{
-        colId:f.Col_Code,
-        field:f.Col_Code,
-        headerName:f.Header,
-        hide:!f.Visible,
-        cellRenderer:'colorCellRenderer',
-        cellDataType:getCellDataType(f.DataType),
-        filter:getCellFilter(f.DataType)
-      }
+  result = fields.map((f: RRRField) => {
+    if (f.Col_Code === "DispatchColor") {
+      return {
+        colId: f.Col_Code,
+        field: f.Col_Code,
+        headerName: f.Header,
+        hide: !f.Visible,
+        cellRenderer: "colorCellRenderer",
+        cellDataType: getCellDataType(f.DataType),
+        filter: getCellFilter(f.DataType),
+      };
     }
-    return{
-      colId:f.Col_Code,
-      field:f.Col_Code,
-      headerName:f.Header,
-      hide:!f.Visible,
-      cellDataType:getCellDataType(f.DataType),
-      filter:getCellFilter(f.DataType)
-    }
-  })
-  return [...result,...specificColumns]
-}
+    return {
+      colId: f.Col_Code,
+      field: f.Col_Code,
+      headerName: f.Header,
+      hide: !f.Visible,
+      cellDataType: getCellDataType(f.DataType),
+      filter: getCellFilter(f.DataType),
+    };
+  });
+  return [...result, ...specificColumns];
+};
 
-export const mapOrderAllocationReportFieldsToColDefs = (fields:UiConfigField[],onOpenDailyDataGraph:any):ColDef[]=>{
-
-  if(!fields || fields.length<1){
-    return []
+export const mapOrderAllocationReportFieldsToColDefs = (
+  fields: UiConfigField[],
+  onOpenDailyDataGraph: any
+): ColDef[] => {
+  if (!fields || fields.length < 1) {
+    return [];
   }
 
-  let result:ColDef[] = []
+  let result: ColDef[] = [];
 
-  const BORSpecificColumns:ColDef[] =[
+  const BORSpecificColumns: ColDef[] = [
     {
-      colId:'dailydatagraph',
-      field:'',
-      headerName:'',
-      width:40,
-      lockPosition:'left',
-      floatingFilter:false,
-      tooltipField:"DailyDataGraph",
-      cellRenderer:'grapCellRenderer',
-      cellRendererParams:{
-        onOpenDailyDataGraph:onOpenDailyDataGraph
+      colId: "dailydatagraph",
+      field: "",
+      headerName: "",
+      width: 40,
+      lockPosition: "left",
+      floatingFilter: false,
+      tooltipField: "DailyDataGraph",
+      cellRenderer: "grapCellRenderer",
+      cellRendererParams: {
+        onOpenDailyDataGraph: onOpenDailyDataGraph,
       },
-      
-      
 
       // tooltipComponent:'remarksToolTipComponent'
+    },
+  ];
+
+  result = fields.map((f: UiConfigField) => {
+    if (f.Col_Code === "OrderColor") {
+      return {
+        colId: f.Col_Code,
+        field: f.Col_Code,
+        headerName: f.Header,
+        hide: !f.Visible,
+        floatingFilter: true,
+        cellRenderer: "colorCellRenderer",
+        filter: getCellFilter(f.DataType),
+        cellDataType: getCellDataType(f.DataType),
+      };
     }
-  ]
+    return {
+      colId: f.Col_Code,
+      field: f.Col_Code,
+      headerName: f.Header,
+      hide: !f.Visible,
+      floatingFilter: true,
+      filter: getCellFilter(f.DataType),
+      cellDataType: getCellDataType(f.DataType),
+    };
+  });
+  return [...result, ...BORSpecificColumns];
+};
 
-
-
-  result =  fields.map((f:UiConfigField)=>{
-
-
-    if(f.Col_Code==='OrderColor'){
-      return{
-        colId:f.Col_Code,
-        field:f.Col_Code,
-        headerName:f.Header,
-        hide:!f.Visible,
-        floatingFilter:true,
-        cellRenderer:'colorCellRenderer',
-        filter:getCellFilter(f.DataType),
-        cellDataType:getCellDataType(f.DataType)
-      }
-    }
-    return{
-      colId:f.Col_Code,
-      field:f.Col_Code,
-      headerName:f.Header,
-      hide:!f.Visible,
-      floatingFilter:true,
-      filter:getCellFilter(f.DataType),
-      cellDataType:getCellDataType(f.DataType)
-    }
-  })
-  return [...result,...BORSpecificColumns]
-}
-
-export const mapBORColorBandWiseFieldsToColDefs = (fields:UiConfigField[],onOpenDailyDataGraph:any):ColDef[]=>{
-
-  if(!fields || fields.length<1){
-    return []
+export const mapBORColorBandWiseFieldsToColDefs = (
+  fields: UiConfigField[],
+  onOpenDailyDataGraph: any
+): ColDef[] => {
+  if (!fields || fields.length < 1) {
+    return [];
   }
 
-  let result:ColDef[] = []
+  let result: ColDef[] = [];
 
-  const BORSpecificColumns:ColDef[] =[
+  const BORSpecificColumns: ColDef[] = [
     {
-      colId:'dailydatagraph',
-      field:'',
-      headerName:'',
-      width:40,
-      lockPosition:'left',
-      floatingFilter:false,
-      tooltipField:"DailyDataGraph",
-      cellRenderer:'grapCellRenderer',
-      cellRendererParams:{
-        onOpenDailyDataGraph:onOpenDailyDataGraph
+      colId: "dailydatagraph",
+      field: "",
+      headerName: "",
+      width: 40,
+      lockPosition: "left",
+      floatingFilter: false,
+      tooltipField: "DailyDataGraph",
+      cellRenderer: "grapCellRenderer",
+      cellRendererParams: {
+        onOpenDailyDataGraph: onOpenDailyDataGraph,
       },
-      
-      
 
       // tooltipComponent:'remarksToolTipComponent'
     },
     {
-      colId:'remarks',
-      field:'remarks',
-      headerName:'Remarks',
-     cellRenderer:'submitRemarkCellRenderer',
-     pinned:'right',
-     editable:true,
-     cellStyle:{
-      overflow:'visible',
-      'min-width':180,
+      colId: "remarks",
+      field: "remarks",
+      headerName: "Remarks",
+      cellRenderer: "submitRemarkCellRenderer",
+      pinned: "right",
+      editable: true,
+      cellStyle: {
+        overflow: "visible",
+        "min-width": 180,
+      },
+    },
+  ];
+
+  result = fields.map((f: UiConfigField) => {
+    if (f.Col_Code === "DispatchColor") {
+      return {
+        colId: f.Col_Code,
+        field: f.Col_Code,
+        headerName: f.Header,
+        hide: !f.Visible,
+        floatingFilter: true,
+        cellRenderer: "colorCellRenderer",
+        filter: getCellFilter(f.DataType),
+        cellDataType: getCellDataType(f.DataType),
+      };
     }
-  }
-  ]
+    return {
+      colId: f.Col_Code,
+      field: f.Col_Code,
+      headerName: f.Header,
+      hide: !f.Visible,
+      floatingFilter: true,
+      filter: getCellFilter(f.DataType),
+      cellDataType: getCellDataType(f.DataType),
+    };
+  });
+  return [...result, ...BORSpecificColumns];
+};
 
-
-
-  result =  fields.map((f:UiConfigField)=>{
-
-
-    if(f.Col_Code==='DispatchColor'){
-      return{
-        colId:f.Col_Code,
-        field:f.Col_Code,
-        headerName:f.Header,
-        hide:!f.Visible,
-        floatingFilter:true,
-        cellRenderer:'colorCellRenderer',
-        filter:getCellFilter(f.DataType),
-        cellDataType:getCellDataType(f.DataType)
-      }
-    }
-    return{
-      colId:f.Col_Code,
-      field:f.Col_Code,
-      headerName:f.Header,
-      hide:!f.Visible,
-      floatingFilter:true,
-      filter:getCellFilter(f.DataType),
-      cellDataType:getCellDataType(f.DataType)
-    }
-  })
-  return [...result,...BORSpecificColumns]
-}
-
-export const mapTotalRequirementFieldsToColDefs = (fields:RRRField[]):ColDef[]=>{
-
-  if(!fields || fields.length<1){
-    return []
+export const mapTotalRequirementFieldsToColDefs = (
+  fields: RRRField[]
+): ColDef[] => {
+  if (!fields || fields.length < 1) {
+    return [];
   }
 
-  let result:ColDef[] = []
+  let result: ColDef[] = [];
 
-  result =  fields.map((f:RRRField)=>{
-    
-    if(f.Col_Code==='DispatchColor'){
-      return{
-        colId:f.Col_Code,
-        field:f.Col_Code,
-        headerName:f.Header,
-        hide:!f.Visible,
-        cellRenderer:'colorCellRenderer',
-        cellDataType:getCellDataType(f.DataType),
-        filter:getCellFilter(f.DataType)
-      }
+  result = fields.map((f: RRRField) => {
+    if (f.Col_Code === "DispatchColor") {
+      return {
+        colId: f.Col_Code,
+        field: f.Col_Code,
+        headerName: f.Header,
+        hide: !f.Visible,
+        cellRenderer: "colorCellRenderer",
+        cellDataType: getCellDataType(f.DataType),
+        filter: getCellFilter(f.DataType),
+      };
     }
-    return{
-      colId:f.Col_Code,
-      field:f.Col_Code,
-      headerName:f.Header,
+    return {
+      colId: f.Col_Code,
+      field: f.Col_Code,
+      headerName: f.Header,
       // hide:!f.Visible,
-      cellDataType:getCellDataType(f.DataType),
-      filter:getCellFilter(f.DataType)
-    }
-  })
-  return [...result]
-}
-
+      cellDataType: getCellDataType(f.DataType),
+      filter: getCellFilter(f.DataType),
+    };
+  });
+  return [...result];
+};
 
 export const mapRRRFieldsToColDefs = (fields: RRRField[]): ColDef[] => {
-
   if (!fields || fields.length < 1) {
-    return []
+    return [];
   }
 
-  let result: ColDef[] = []
+  let result: ColDef[] = [];
 
   // const RRRSpecificColumns: ColDef[] = [
   //   {
@@ -435,40 +500,39 @@ export const mapRRRFieldsToColDefs = (fields: RRRField[]): ColDef[] => {
   // ]
 
   result = fields.map((f: RRRField) => {
-
-    if (f.Col_Code === 'TPen') {
+    if (f.Col_Code === "TPen") {
       return {
         colId: f.Col_Code,
         field: f.Col_Code,
         headerName: f.Header,
         hide: !f.Visible,
-        cellRenderer: 'colorTechCellRenderer',
+        cellRenderer: "colorTechCellRenderer",
         cellDataType: getCellDataType(f.DataType),
-        filter: getCellFilter(f.DataType)
-      }
+        filter: getCellFilter(f.DataType),
+      };
     }
-    if (f.Col_Code === 'EPen') {
+    if (f.Col_Code === "EPen") {
       return {
         colId: f.Col_Code,
         field: f.Col_Code,
         headerName: f.Header,
         hide: !f.Visible,
-        cellRenderer: 'colorEcoCellRenderer',
+        cellRenderer: "colorEcoCellRenderer",
         cellDataType: getCellDataType(f.DataType),
-        filter: getCellFilter(f.DataType)
-      }
+        filter: getCellFilter(f.DataType),
+      };
     }
 
-    if (f.Col_Code === 'DispatchPen') {
+    if (f.Col_Code === "DispatchPen") {
       return {
         colId: f.Col_Code,
         field: f.Col_Code,
         headerName: f.Header,
         hide: !f.Visible,
-        cellRenderer: 'colorDispatchRender',
+        cellRenderer: "colorDispatchRender",
         cellDataType: getCellDataType(f.DataType),
-        filter: getCellFilter(f.DataType)
-      }
+        filter: getCellFilter(f.DataType),
+      };
     }
     return {
       colId: f.Col_Code,
@@ -476,170 +540,183 @@ export const mapRRRFieldsToColDefs = (fields: RRRField[]): ColDef[] => {
       headerName: f.Header,
       hide: !f.Visible,
       cellDataType: getCellDataType(f.DataType),
-      filter: getCellFilter(f.DataType)
-    }
-  })
-  return [...result]
-}
+      filter: getCellFilter(f.DataType),
+    };
+  });
+  return [...result];
+};
 
 export const handleDownload = async (nameApi: string, nameFile: string) => {
   try {
-    const response = await fetch(`${process.env.REACT_APP_API_HOST}${nameApi}`, {
-      credentials: 'include',
-    })
+    const response = await fetch(
+      `${process.env.REACT_APP_API_HOST}${nameApi}`,
+      {
+        credentials: "include",
+      }
+    );
     // Convert response to blob object
-    const blob = await response.blob()
+    const blob = await response.blob();
     // Create download URL for blob object
-    const url = URL.createObjectURL(blob)
+    const url = URL.createObjectURL(blob);
 
     // Trigger download
-    const link = document.createElement('a')
-    link.href = url
-    if (nameFile === '') {
-      const temp = response.headers.get('content-disposition')?.split('=');
+    const link = document.createElement("a");
+    link.href = url;
+    if (nameFile === "") {
+      const temp = response.headers.get("content-disposition")?.split("=");
       if (temp) nameFile = temp[temp.length - 1];
-      link.setAttribute('download', `${nameFile}`)
+      link.setAttribute("download", `${nameFile}`);
+    } else {
+      link.setAttribute("download", `${nameFile}.csv`);
     }
-    else {
-      link.setAttribute('download', `${nameFile}.csv`)
-    }
-    document.body.appendChild(link)
-    link.click()
+    document.body.appendChild(link);
+    link.click();
     // Clean up download URL
     URL.revokeObjectURL(url);
     return true;
   } catch (error: any) {
     notifyError(error);
   }
+};
 
-}
+export const handleDownloadMTOVF = async (
+  reportName: string,
+  downloadName: string
+) => {
+  try {
+    const encryptedUserId = localStorage.getItem("User-ID");
+    const encryptedUserName = localStorage.getItem("User-Name");
+    const decryptedUserId = await decryptStorageData(encryptedUserId);
+    const decryptedUserName = await decryptStorageData(encryptedUserName);
 
-export const handleDownloadMTOVF = async (reportName: string, downloadName: string) => {
-  try{
-        const encryptedUserId = localStorage.getItem('User-ID');
-        const encryptedUserName = localStorage.getItem('User-Name');
-        const decryptedUserId = await decryptStorageData(encryptedUserId);
-        const decryptedUserName = await decryptStorageData(encryptedUserName);
-    
     const headers: Record<string, string> = {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json",
     };
-    
-    if (decryptedUserId) headers['User-ID'] = decryptedUserId;
-    if (decryptedUserName) headers['User-Name'] = decryptedUserName;
-    
-    const response = await fetch(`${process.env.REACT_APP_VF_API_HOST_MTO}/DownloadReportData/?report_name=${reportName}`, {
-      headers,
-      credentials: 'include',
-    });
+
+    if (decryptedUserId) headers["User-ID"] = decryptedUserId;
+    if (decryptedUserName) headers["User-Name"] = decryptedUserName;
+
+    const response = await fetch(
+      `${process.env.REACT_APP_VF_API_HOST_MTO}/DownloadReportData/?report_name=${reportName}`,
+      {
+        headers,
+        credentials: "include",
+      }
+    );
     if (!response.ok) {
-      notifyError("Error while downloading")
+      notifyError("Error while downloading");
     } else {
       // Convert response to blob object
-      const blob = await response.blob()
+      const blob = await response.blob();
       // Create download URL for blob object
-      const url = URL.createObjectURL(blob)
+      const url = URL.createObjectURL(blob);
 
       // Trigger download
-      const link = document.createElement('a')
-      link.href = url
+      const link = document.createElement("a");
+      link.href = url;
       if (downloadName.length !== 0) {
-        link.setAttribute('download', `${downloadName}`)
+        link.setAttribute("download", `${downloadName}`);
       } else {
-        link.setAttribute('download', `ReportFile.zip`)
+        link.setAttribute("download", `ReportFile.zip`);
       }
-      document.body.appendChild(link)
-      link.click()
+      document.body.appendChild(link);
+      link.click();
       // Clean up download URL
       URL.revokeObjectURL(url);
     }
+  } catch (err) {
+    notifyError("Error while downloading");
   }
-  catch(err){
-    notifyError('Error while downloading');
-  }
-}
+};
 
-
-export const handleDownloadVF = async (reportName: string, downloadName:string) => {
-
+export const handleDownloadVF = async (
+  reportName: string,
+  downloadName: string
+) => {
   try {
-    const response = await fetch(`${process.env.REACT_APP_API_HOST}api/mta/DownloadReports/${encodeURIComponent(reportName)}`, {
-      credentials: 'include',
-    })
+    const response = await fetch(
+      `${
+        process.env.REACT_APP_API_HOST
+      }api/mta/DownloadReports/${encodeURIComponent(reportName)}`,
+      {
+        credentials: "include",
+      }
+    );
     if (!response.ok) {
-      notifyError("Error while downloading")
+      notifyError("Error while downloading");
       return false;
     } else {
       // Convert response to blob object
-      const blob = await response.blob()
+      const blob = await response.blob();
       // Create download URL for blob object
-      const url = URL.createObjectURL(blob)
+      const url = URL.createObjectURL(blob);
 
       // Trigger download
-      const link = document.createElement('a')
-      link.href = url
+      const link = document.createElement("a");
+      link.href = url;
       if (downloadName.length !== 0) {
-        link.setAttribute('download', `${downloadName}`)
+        link.setAttribute("download", `${downloadName}`);
       } else {
-        link.setAttribute('download', `ReportFile.zip`)
+        link.setAttribute("download", `ReportFile.zip`);
       }
-      document.body.appendChild(link)
-      link.click()
+      document.body.appendChild(link);
+      link.click();
       // Clean up download URL
       URL.revokeObjectURL(url);
       return true;
     }
   } catch (error: any) {
-    notifyError('Error while downloading');
+    notifyError("Error while downloading");
     return false;
   }
-
-}
+};
 
 export const handleDataProductFilter = (data: any) => {
   const filterDuplicateValues = (listData: any) => {
     const newListData = listData.filter((item: string, index: number) => {
-      return listData.indexOf(item) == index
-    })
+      return listData.indexOf(item) == index;
+    });
 
-    return newListData
-  }
+    return newListData;
+  };
 
-  let listCategory = [] as string[]
-  let listStyle = [] as string[]
-  let listFit = [] as string[]
-  let listLaunchPeriod = [] as any[]
-  let listSubBrand = [] as any[]
-  let listBrand = [] as any[]
+  let listCategory = [] as string[];
+  let listStyle = [] as string[];
+  let listFit = [] as string[];
+  let listLaunchPeriod = [] as any[];
+  let listSubBrand = [] as any[];
+  let listBrand = [] as any[];
 
   listBrand = Object.keys(data).map((item: string) => ({
     value: item,
-    label: item
-  }))
+    label: item,
+  }));
 
   // list brand
   Object.keys(data).map((brand: any) => {
-    listSubBrand = listSubBrand.concat(Object.keys(data[brand]).map((item: string) => ({
-      value: item,
-      label: item
-    })))
+    listSubBrand = listSubBrand.concat(
+      Object.keys(data[brand]).map((item: string) => ({
+        value: item,
+        label: item,
+      }))
+    );
 
     // list subBrand
     if (data[brand]) {
       Object.keys(data[brand]).map((subBrand: any) => {
-        listCategory.push(...Object.keys(data[brand][subBrand]))
+        listCategory.push(...Object.keys(data[brand][subBrand]));
 
         // list category
         if (data[brand][subBrand]) {
           Object.keys(data[brand][subBrand]).map((category: any) => {
-            listStyle.push(...Object.keys(data[brand][subBrand][category]))
+            listStyle.push(...Object.keys(data[brand][subBrand][category]));
 
             // List style
             if (data[brand][subBrand][category]) {
               Object.keys(data[brand][subBrand][category]).map((style: any) => {
                 listFit.push(
                   ...Object.keys(data[brand][subBrand][category][style])
-                )
+                );
 
                 // list launch period
                 if (data[brand][subBrand][category][style]) {
@@ -649,34 +726,36 @@ export const handleDataProductFilter = (data: any) => {
                         ...Object.values(
                           data[brand][subBrand][category][style][fit][0]
                         )
-                      )
+                      );
                     }
-                  )
+                  );
                 }
-              })
+              });
             }
-          })
+          });
         }
-      })
+      });
     }
-  })
+  });
 
   listCategory = filterDuplicateValues(listCategory).map((item: string) => ({
     value: item,
-    label: item
-  }))
+    label: item,
+  }));
   listStyle = filterDuplicateValues(listStyle).map((item: string) => ({
     value: item,
-    label: item
-  }))
+    label: item,
+  }));
   listFit = filterDuplicateValues(listFit).map((item: string) => ({
     value: item,
-    label: item
-  }))
-  listLaunchPeriod = filterDuplicateValues(listLaunchPeriod).map((item: string) => ({
-    value: item,
-    label: item
-  }))
+    label: item,
+  }));
+  listLaunchPeriod = filterDuplicateValues(listLaunchPeriod).map(
+    (item: string) => ({
+      value: item,
+      label: item,
+    })
+  );
 
   return {
     listBrand,
@@ -684,299 +763,342 @@ export const handleDataProductFilter = (data: any) => {
     listCategory,
     listStyle,
     listFit,
-    listLaunchPeriod
-  }
-}
+    listLaunchPeriod,
+  };
+};
 
 export const format_number = (num: number) => {
   function parseNumber(numb: any) {
-    if (typeof numb === 'number') {
+    if (typeof numb === "number") {
       // If the input is already a number, return it as is
-      return numb
-    } else if (typeof numb === 'string') {
+      return numb;
+    } else if (typeof numb === "string") {
       // If the input is a string, parse it and return an integer or a float
-      if (numb.includes('.')) {
-        return parseFloat(numb)
+      if (numb.includes(".")) {
+        return parseFloat(numb);
       } else {
-        return parseInt(numb)
+        return parseInt(numb);
       }
     } else {
       // If the input is not a number or a string, return null
-      return null
+      return null;
     }
   }
 
   if (num >= 9999999999) {
     // If the number is greater than or equal to 1 crore
     return {
-      compare: '>',
+      compare: ">",
       digits: 999,
-      letter: 'Cr'
-    }
+      letter: "Cr",
+    };
   }
 
-  const num_str = String(Math.floor(num)) // Convert the number to a string
-  const num_len = num_str.length // Get the length of the string
+  const num_str = String(Math.floor(num)); // Convert the number to a string
+  const num_len = num_str.length; // Get the length of the string
 
-  let digits: any = '0'
-  let letter = ''
+  let digits: any = "0";
+  let letter = "";
   // Calculate the number of digits and the letter representation
-  if (num_str === '0') {
-    letter = ''
+  if (num_str === "0") {
+    letter = "";
   } else if ([1, 2, 3].includes(num_len)) {
-    digits = num_str
-    letter = 'R'
+    digits = num_str;
+    letter = "R";
   } else if (num_len === 4) {
-    digits = (num / 1000).toFixed(1)
-    letter = 'K'
+    digits = (num / 1000).toFixed(1);
+    letter = "K";
   } else if ([5, 6].includes(num_len)) {
-    digits = Math.round(num / 1000).toString()
-    letter = 'K'
+    digits = Math.round(num / 1000).toString();
+    letter = "K";
   } else if (num_len === 7) {
-    digits = (num / 100000).toFixed(1)
-    letter = 'L'
+    digits = (num / 100000).toFixed(1);
+    letter = "L";
   } else if (num_len === 8) {
-    digits = Math.round(num / 100000).toString()
-    letter = 'L'
+    digits = Math.round(num / 100000).toString();
+    letter = "L";
   } else if (num_len === 9) {
-    digits = (num / 10000000).toFixed(1)
-    letter = 'Cr'
+    digits = (num / 10000000).toFixed(1);
+    letter = "Cr";
   } else if (num_len === 10) {
-    digits = Math.round(num / 10000000).toString()
-    letter = 'Cr'
+    digits = Math.round(num / 10000000).toString();
+    letter = "Cr";
   }
-  digits = parseNumber(digits)
+  digits = parseNumber(digits);
   // Combine the digits and letter representation into a single string
   return {
     compare: null,
     digits,
-    letter
-  }
-}
+    letter,
+  };
+};
 
 // Helper Function to Dynamically Map Roles fetched from Backend to the Frontend as required by the ArrowList Component.
-export const 
-generateRolesObject = (roles:Array<object>) => {
+export const generateRolesObject = (roles: Array<object>) => {
   type Role = {
     id: number;
     title: string;
     status: boolean;
     child: Role[];
   };
-  
-  const rolesArray:Role [] = [];
-  
-  roles.forEach((role:any)=>{
-    const roleObj = rolesArray.find((app:Role)=>app.id===role.application_id);
-    if(roleObj){
-      roleObj.child.push(role)
-    }
-    else{
+
+  const rolesArray: Role[] = [];
+
+  roles.forEach((role: any) => {
+    const roleObj = rolesArray.find(
+      (app: Role) => app.id === role.application_id
+    );
+    if (roleObj) {
+      roleObj.child.push(role);
+    } else {
       rolesArray.push({
-        id:role.application_id,
-        title:role.application_name,
-        status:false,
-        child:[role],
-      })
+        id: role.application_id,
+        title: role.application_name,
+        status: false,
+        child: [role],
+      });
     }
-  })
+  });
 
   return rolesArray;
-}
+};
 
 //Helper Roles to Generate Options as required for react-multiselect component
 export const generateOptions = (data: Master[]) => {
   const temp: string[] = [];
   const options: Option[] = [];
-  if (!data) return options
+  if (!data) return options;
   data.forEach((master: Master) => {
-    const tempMasterFields = [...master.fields]
-    const tempFields = tempMasterFields.sort((a: Field, b: Field) => parseInt(a.col_Position) - parseInt(b.col_Position))
+    const tempMasterFields = [...master.fields];
+    const tempFields = tempMasterFields.sort(
+      (a: Field, b: Field) =>
+        parseInt(a.col_Position) - parseInt(b.col_Position)
+    );
     tempFields.forEach((field: Field) => {
       if (!temp.includes(field.displayName) && field.visible) {
         temp.push(field.displayName);
-        options.push({ value: field.key, label: field.displayName, })
+        options.push({ value: field.key, label: field.displayName });
       }
-    })
+    });
   });
   return options;
-}
+};
 
 export const generateRandomId = (length?: number) => {
   if (!length) {
-    length = 10
+    length = 10;
   }
 
-  let id = ''
+  let id = "";
   for (let index = 0; index < length; index++) {
-    id = id + keyboardCharacters[Math.floor(Math.random() * keyboardCharacters.length)]
-
+    id =
+      id +
+      keyboardCharacters[Math.floor(Math.random() * keyboardCharacters.length)];
   }
-  return id
+  return id;
+};
 
-}
-
-export const replaceKeyWithDisplayName = (message: string, master: MDMMasterState) => {
+export const replaceKeyWithDisplayName = (
+  message: string,
+  master: MDMMasterState
+) => {
   return new String(message).replaceAll(/"([^"]+)"/g, (m) => {
-    const displayName = master.fields.find((f: Field) => f.key === m.replaceAll('"', ''))?.displayName;
-    if (displayName) return displayName
+    const displayName = master.fields.find(
+      (f: Field) => f.key === m.replaceAll('"', "")
+    )?.displayName;
+    if (displayName) return displayName;
     return m;
-  })
-}
+  });
+};
 
-export const checkError = (row: any, master: MDMMasterState, pageType: string) => {
-  const masterSchema = pageType === 'remove' ? masterIdToDeleteSchemaMapper[master.id.toString()] : masterIdToSchemaMapper[master.id.toString()];
+export const checkError = (
+  row: any,
+  master: MDMMasterState,
+  pageType: string
+) => {
+  const masterSchema =
+    pageType === "remove"
+      ? masterIdToDeleteSchemaMapper[master.id.toString()]
+      : masterIdToSchemaMapper[master.id.toString()];
   let { error, warning }: any = masterSchema.validate(row, { context: row });
   if (error) error = replaceKeyWithDisplayName(error.message, master);
   if (warning) warning = replaceKeyWithDisplayName(warning.message, master);
   return { error, warning };
-}
+};
 
-export const parseExcelData = async (file: any, master: MDMMasterState, pageType: string, selectedColumns: any,RECORD_UPLOAD_LIMIT?:any) => {
-
+export const parseExcelData = async (
+  file: any,
+  master: MDMMasterState,
+  pageType: string,
+  selectedColumns: any,
+  RECORD_UPLOAD_LIMIT?: any
+) => {
   const currMasterKeys = master.fields.map((field: Field) => field.key); //array containing keys of current master fields
   const result: object[] = [];
   const buffer = await file.arrayBuffer();
 
-  let selectedKeys:any;
+  let selectedKeys: any;
 
   //Selected Columns Keys
-  if(pageType==='add'){
-    selectedKeys = master.fields.filter((field:Field)=>field.isAdd).map((field:Field)=>field.key);
+  if (pageType === "add") {
+    selectedKeys = master.fields
+      .filter((field: Field) => field.isAdd)
+      .map((field: Field) => field.key);
+  } else {
+    selectedKeys = selectedColumns.map((col: any) => col.colId);
   }
-  else{
-    selectedKeys = selectedColumns.map((col:any)=>col.colId);
-  }
-
 
   const numberOfSheets = await readSheetNames(file);
-  if(numberOfSheets.length > 1){
-    throw new Error('File cannot contain multiple sheets') 
+  if (numberOfSheets.length > 1) {
+    throw new Error("File cannot contain multiple sheets");
   }
 
-  if(numberOfSheets[0]!='ag-grid'){
-    throw new Error('Sheet Name is changed') 
+  if (numberOfSheets[0] != "ag-grid") {
+    throw new Error("Sheet Name is changed");
   }
-   
-  const data = await readXlsxFile(buffer,{
-    parseNumber: (string:any) => string
+
+  const data = await readXlsxFile(buffer, {
+    parseNumber: (string: any) => string,
   });
-  
+
   //Check if File Contains a Column that is Duplicate
-  const isDuplicateHeader = data[0].some((header:any,index:number)=>data[0].indexOf(header)!==index);
+  const isDuplicateHeader = data[0].some(
+    (header: any, index: number) => data[0].indexOf(header) !== index
+  );
 
   if (data.length > parseInt(RECORD_UPLOAD_LIMIT || "50000")) {
-    throw new Error(`Number of rows should not exceed ${RECORD_UPLOAD_LIMIT || '50000'}`);
+    throw new Error(
+      `Number of rows should not exceed ${RECORD_UPLOAD_LIMIT || "50000"}`
+    );
   }
-  
-  if(isDuplicateHeader){
-    throw new Error("File Contains Duplicate Headers")
+
+  if (isDuplicateHeader) {
+    throw new Error("File Contains Duplicate Headers");
   }
 
   //displayName to key mapper
   const headerKeys = data[0].map((headerName: any) => {
-    const fieldObj = master.fields.find((field: Field) => field.displayName === headerName);
+    const fieldObj = master.fields.find(
+      (field: Field) => field.displayName === headerName
+    );
     if (fieldObj) return fieldObj.key;
-    else return '';
-  })
+    else return "";
+  });
 
-
-
-  if(master.id===501 || master.id===502 || master.id===503 || master.id===504){
+  if (
+    master.id === 501 ||
+    master.id === 502 ||
+    master.id === 503 ||
+    master.id === 504
+  ) {
     const objKeys: string[] = [];
-    selectedColumns.forEach((ele:any)=>{
+    selectedColumns.forEach((ele: any) => {
       objKeys.push(ele.colId);
-    })
+    });
 
-    const bufferData:any = [];
-    for(let i=1; i< data.length; i++){
-      const buffData:any = {};
-      for(let j=0; j< data[i].length; j++){
-        buffData[objKeys[j]]= data[i][j];
+    const bufferData: any = [];
+    for (let i = 1; i < data.length; i++) {
+      const buffData: any = {};
+      for (let j = 0; j < data[i].length; j++) {
+        buffData[objKeys[j]] = data[i][j];
       }
-      buffData["err"]= "";
+      buffData["err"] = "";
       bufferData.push(buffData);
     }
 
     return bufferData;
   }
 
-  let headers: any = [] //Not Selected Headers
+  let headers: any = []; //Not Selected Headers
   let error = false;
 
-
-  if (pageType === 'modify') {
-
+  if (pageType === "modify") {
     //Check if File Contains a Column that is not Downloadabl;
     headerKeys.forEach((key: string) => {
-      const fieldObj = master.fields.find((field: Field) => (field.key === key) && !field.isDownload)
+      const fieldObj = master.fields.find(
+        (field: Field) => field.key === key && !field.isDownload
+      );
       if (fieldObj) {
         headers.push(fieldObj.displayName);
         error = true;
       }
-    })
+    });
 
     if (error) {
-      throw new Error(`File Contains ${headers.join(', ')} field which are not allowed to Upload.`)
+      throw new Error(
+        `File Contains ${headers.join(
+          ", "
+        )} field which are not allowed to Upload.`
+      );
     }
 
-  //Check if All Selected Keys are Present in The Uploaded
-  selectedKeys.forEach((key: string) => {
-    const fieldObj = master.fields.find((field: Field) => field.key === key)
-    if (!headerKeys.includes(key) && fieldObj?.isDownload) {
-      error = true;
-      headers.push(master.fields.find((field: Field) => field.key === key)?.displayName)
-    }
-  })
-}
+    //Check if All Selected Keys are Present in The Uploaded
+    selectedKeys.forEach((key: string) => {
+      const fieldObj = master.fields.find((field: Field) => field.key === key);
+      if (!headerKeys.includes(key) && fieldObj?.isDownload) {
+        error = true;
+        headers.push(
+          master.fields.find((field: Field) => field.key === key)?.displayName
+        );
+      }
+    });
+  }
 
   if (pageType == "add") {
     selectedKeys.forEach((key: string) => {
-      const fieldObj = master.fields.find((field: Field) => field.key === key)
+      const fieldObj = master.fields.find((field: Field) => field.key === key);
       if (!headerKeys.includes(key) && fieldObj?.isAdd) {
         error = true;
-        headers.push(master.fields.find((field: Field) => field.key === key)?.displayName)
+        headers.push(
+          master.fields.find((field: Field) => field.key === key)?.displayName
+        );
       }
-    })
+    });
   }
   if (pageType == "remove") {
     selectedKeys.forEach((key: string) => {
-      const fieldObj = master.fields.find((field: Field) => field.key === key)
-      
+      const fieldObj = master.fields.find((field: Field) => field.key === key);
+
       if (!headerKeys.includes(key) && fieldObj?.isDelete) {
         error = true;
-        headers.push(master.fields.find((field: Field) => field.key === key)?.displayName)
+        headers.push(
+          master.fields.find((field: Field) => field.key === key)?.displayName
+        );
       }
-
-    })
+    });
   }
 
   if (error) {
-    throw new Error(`File is missing the following columns: ${headers.join(', ')}`);
+    throw new Error(
+      `File is missing the following columns: ${headers.join(", ")}`
+    );
   }
 
   error = false;
   headers = [];
 
   headerKeys.forEach((key: string) => {
-
     if (!currMasterKeys.includes(key)) {
       throw new Error("Please Upload a Valid Master");
     }
     if (!selectedKeys.includes(key)) {
       error = true;
-      headers.push(master.fields.find((field: Field) => field.key === key)?.displayName)
+      headers.push(
+        master.fields.find((field: Field) => field.key === key)?.displayName
+      );
     }
-  })
+  });
 
   if (error) {
-    throw new Error(`File Contains ${headers.join(', ')} which were not selected`)
+    throw new Error(
+      `File Contains ${headers.join(", ")} which were not selected`
+    );
   }
 
   // let rowObj:any = {};
   // let temp = 0;
   if (data.slice(1).length === 0) {
-    throw new Error(`File Contains zero rows.`)
+    throw new Error(`File Contains zero rows.`);
   }
   // data.slice(1).map((row:any)=>{
 
@@ -1010,47 +1132,52 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
 
   // })
 
-
-
-
   return result;
-}
+};
 
-export const mapMasterToColumnDefs = (fields: Field[], masterId?: number, onShowChart?: any,pageType?:string) => {
-  let result: any[] = []
-  const tempFields = [...fields]
-  tempFields.sort((a: Field, b: Field) => parseInt(a.col_Position) - parseInt(b.col_Position))
+export const mapMasterToColumnDefs = (
+  fields: Field[],
+  masterId?: number,
+  onShowChart?: any,
+  pageType?: string
+) => {
+  let result: any[] = [];
+  const tempFields = [...fields];
+  tempFields.sort(
+    (a: Field, b: Field) => parseInt(a.col_Position) - parseInt(b.col_Position)
+  );
   result = tempFields.map((f: any) => {
-
-    const cellFilter = getCellFilter(f.dataType)
-    const cellDataType = getCellDataType(f.dataType)
+    const cellFilter = getCellFilter(f.dataType);
+    const cellDataType = getCellDataType(f.dataType);
 
     return {
       field: f.key,
       colId: f.key,
       headerName: f.displayName,
-      hide: pageType==='add' ? !f.isAdd : !f.visible ,
+      hide: pageType === "add" ? !f.isAdd : !f.visible,
       floatingFilter: true,
       filter: cellFilter,
       cellDataType: cellDataType,
-      tooltipComponent: 'conflictErrorToolTip',
+      tooltipComponent: "conflictErrorToolTip",
       suppressColumnsToolPanel: !f.isApplicable,
       valueFormatter: (params: any) => {
-        if(params.value == null || params.value === undefined)  return ''
-        else if (cellDataType === 'number') {
-          const format = (process.env.REACT_APP_NUMBER_FORMAT || '').toUpperCase();
-          const locale = format === 'USA' ? 'en-US' : format === 'IND' ? 'hi-IN' : undefined;
-          if(locale) return params.value.toLocaleString(locale)
-          else       return params.value.toString()
-        }
-        else return params.value.toString()
+        if (params.value == null || params.value === undefined) return "";
+        else if (cellDataType === "number") {
+          const format = (
+            process.env.REACT_APP_NUMBER_FORMAT || ""
+          ).toUpperCase();
+          const locale =
+            format === "USA" ? "en-US" : format === "IND" ? "hi-IN" : undefined;
+          if (locale) return params.value.toLocaleString(locale);
+          else return params.value.toString();
+        } else return params.value.toString();
         // return (params.value === null || params.value === undefined) ? '' : params.value.toString();
       },
       valueGetter: (params: any) => {
-        if (f.key === 'sts') {
-          const id = params.data.sts
-          return seasonalityQuickFilterData.find((s) => s.id.includes(id))?.label
-
+        if (f.key === "sts") {
+          const id = params.data.sts;
+          return seasonalityQuickFilterData.find((s) => s.id.includes(id))
+            ?.label;
         }
 
         // if (cellDataType === 'number') {
@@ -1058,117 +1185,143 @@ export const mapMasterToColumnDefs = (fields: Field[], masterId?: number, onShow
         //     ? ''
         //     : parseFloat(params.value).toLocaleString(); // Format number properly
         // }
-        if(!params.data){
-          return ''
+        if (!params.data) {
+          return "";
         }
-        return params.data[f.key]
+        return params.data[f.key];
       },
       // suppressColumnsToolPanel: f.isEdit ? false : true,
-      ...defaultColDefs
-    }
-  })
+      ...defaultColDefs,
+    };
+  });
 
   if (masterId == 10) {
     const seasonalityCheckboxColDef: ColDef = {
-      field: 'checkbox',
-      colId: 'checkbox',
-      headerName: '',
+      field: "checkbox",
+      colId: "checkbox",
+      headerName: "",
       checkboxSelection: true,
       headerCheckboxSelection: true,
       headerCheckboxSelectionCurrentPageOnly: true,
       width: 50,
       resizable:false,
       suppressMenu: true,
-    }
+    };
     const seasonalityColorColDef: ColDef = {
-      field: 'color',
-      colId: 'color',
-      headerName: '',
+      field: "color",
+      colId: "color",
+      headerName: "",
       width: 3,
       minWidth: 3,
-      cellRenderer: 'seasonalityColorCellRenderer',
+      cellRenderer: "seasonalityColorCellRenderer",
       resizable:false,
       suppressMenu: true,
       
-    }
+    };
 
     const seasonalityGraphColDef: ColDef = {
-      field: 'graph',
-      colId: 'graph',
-      headerName: '',
+      field: "graph",
+      colId: "graph",
+      headerName: "",
       width: 40,
-      cellRenderer: 'seasonalityGraphCellRenderer',
+      cellRenderer: "seasonalityGraphCellRenderer",
       cellRendererParams: {
-        onShowChart: onShowChart
+        onShowChart: onShowChart,
       },
         resizable:false,
       suppressMenu: true,
-    }
-    return [seasonalityColorColDef, seasonalityCheckboxColDef, seasonalityGraphColDef, ...result]
+    };
+    return [
+      seasonalityColorColDef,
+      seasonalityCheckboxColDef,
+      seasonalityGraphColDef,
+      ...result,
+    ];
   }
 
   if (masterId == 6) {
     const PIPOCheckboxColDef: ColDef = {
-      field: 'checkbox',
-      colId: 'checkbox',
-      headerName: '',
+      field: "checkbox",
+      colId: "checkbox",
+      headerName: "",
       checkboxSelection: true,
       headerCheckboxSelection: true,
       headerCheckboxSelectionCurrentPageOnly: true,
       resizable:false,
       suppressMenu: true,
-      width: 50
-    }
-    return [PIPOCheckboxColDef, ...result]
+      width: 50,
+    };
+    return [PIPOCheckboxColDef, ...result];
   }
   return result;
-}
+};
 
 export const areMasterFiltersValid = (masterFilters: Filter[]) => {
   for (let i = 0; i < masterFilters.length; i++) {
-    if (masterFilters[i].field === "" || masterFilters[i].operator === "" || masterFilters[i].text === "") {
-      return false
+    if (
+      masterFilters[i].field === "" ||
+      masterFilters[i].operator === "" ||
+      masterFilters[i].text === ""
+    ) {
+      return false;
     }
   }
-  return true
-}
+  return true;
+};
 
 // export const getMasterFromMasterGroupMapper=(mapper:{})=>{
 //   for (const masterGroupKey in mapper){
-//     return 
+//     return
 //   }
 // }
 
-
 export const mapStateFiltersToPayload = (filters: Filter[]) => {
-  return filters.map((filter: Filter) => ({ attributeName: filter.field, op: filter.operator, value: filter.text }))
+  return filters.map((filter: Filter) => ({
+    attributeName: filter.field,
+    op: filter.operator,
+    value: filter.text,
+  }));
+};
 
-}
-
-export const mapMasterToMasterState = (masters: any[], onShowChart?: any,pageType?:string): MDMMasterState[] => {
-
-  return  masters.map((master: Master) => ({
+export const mapMasterToMasterState = (
+  masters: any[],
+  onShowChart?: any,
+  pageType?: string
+): MDMMasterState[] => {
+  return masters.map((master: Master) => ({
     id: master.id,
     name: master.name,
-    fields: master.fields.sort((a:Field,b:Field)=>parseInt(a.col_Position) - parseInt(b.col_Position)),
+    fields: master.fields.sort(
+      (a: Field, b: Field) =>
+        parseInt(a.col_Position) - parseInt(b.col_Position)
+    ),
     filters: [
       {
         id: generateRandomId(),
         masterId: master.id,
-        field: '',
-        operator: '',
-        text: ''
-      }],
-    colDefs: mapMasterToColumnDefs(master.fields, master.id, onShowChart,pageType),
+        field: "",
+        operator: "",
+        text: "",
+      },
+    ],
+    colDefs: mapMasterToColumnDefs(
+      master.fields,
+      master.id,
+      onShowChart,
+      pageType
+    ),
     rowData: [],
-    progress: 'default',
+    progress: "default",
     isChecked: true,
-    isMTO: true
-  }))
-}
+    isMTO: true,
+  }));
+};
 
-export const mapDraftToColumnDefs = (fields: Field[], customParams?: ColDef) => {
-  let result: ColDef[] = []
+export const mapDraftToColumnDefs = (
+  fields: Field[],
+  customParams?: ColDef
+) => {
+  let result: ColDef[] = [];
   result = fields.map((f) => {
     return {
       field: f.key,
@@ -1177,44 +1330,44 @@ export const mapDraftToColumnDefs = (fields: Field[], customParams?: ColDef) => 
       minWidth: 180,
 
       cellStyle: {
-        "textAlign": "center",
+        textAlign: "center",
       },
       flex: 1,
       cellRenderer: f.key === "action" && ActionRenderer,
-      ...customParams
-    }
-  })
-  return result
-}
+      ...customParams,
+    };
+  });
+  return result;
+};
 
 export const mapTaskStatusToColDefs = (taskStatus: ColDef[], color: string) => {
-  let result: ColDef[] = []
+  let result: ColDef[] = [];
   result = taskStatus.map((t: ColDef) => {
     return {
       ...t,
       minWidth: 180,
       cellStyle: {
-        "textAlign": "center",
-        'overflow': 'hidden',
-        'textOverflow': 'ellipsis',
-        'whiteSpace': 'nowrap',
+        textAlign: "center",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        whiteSpace: "nowrap",
         // 'padding-top': '7px',
-        'fontWeight': t?.colId === 'TaskStatus' ? '500' : 'auto',
-        'color': t?.colId === 'TaskStatus' ? color : 'black',
-        'cursor': t?.colId === 'TaskStatus' ? 'pointer' : 'default'
+        fontWeight: t?.colId === "TaskStatus" ? "500" : "auto",
+        color: t?.colId === "TaskStatus" ? color : "black",
+        cursor: t?.colId === "TaskStatus" ? "pointer" : "default",
       },
       onCellClicked: (params: CellClickedEvent) => {
-        if (params.colDef.colId === 'TaskStatus') {
-          params.node.setExpanded(!params.node.expanded)
+        if (params.colDef.colId === "TaskStatus") {
+          params.node.setExpanded(!params.node.expanded);
         }
       },
       flex: 1,
       floatingFilter: true,
-      filter: "agMultiColumnFilter"
-    }
-  })
-  return result
-}
+      filter: "agMultiColumnFilter",
+    };
+  });
+  return result;
+};
 
 export const mapPendingTaskToColumnDefs = (colDefs: ColDef[]): ColDef[] => {
   return colDefs.map((colDef: ColDef) => {
@@ -1224,25 +1377,33 @@ export const mapPendingTaskToColumnDefs = (colDefs: ColDef[]): ColDef[] => {
       filter: "agMultiColumnFilter",
       minWidth: 180,
       cellStyle: (params) => {
-        if (params.colDef.colId === 'TaskName') return { "text-align": "center", 'color': 'rgb(188, 61, 129)', 'text-decoration': 'none', 'text-underline-offset': '7px', 'cursor': 'pointer', 'font-weight': '500' }
+        if (params.colDef.colId === "TaskName")
+          return {
+            "text-align": "center",
+            color: "rgb(188, 61, 129)",
+            "text-decoration": "none",
+            "text-underline-offset": "7px",
+            cursor: "pointer",
+            "font-weight": "500",
+          };
         return {
           "text-align": "center",
-          'color': 'back',
-          'text-decoration': 'none',
-          'text-underline-offset': '0px',
-          'cursor': 'auto',
-          'font-weight': '400'
-        }
+          color: "back",
+          "text-decoration": "none",
+          "text-underline-offset": "0px",
+          cursor: "auto",
+          "font-weight": "400",
+        };
       },
       flex: 1,
-    }
-  })
-}
+    };
+  });
+};
 
 export const mapRowDataWithSrNo = (rowData: any[]) => {
-  let result = []
-  if (!rowData) return []
-  result = rowData
+  let result = [];
+  if (!rowData) return [];
+  result = rowData;
 
   // result  = rowData.map((row)=>{
   //   return{
@@ -1255,67 +1416,77 @@ export const mapRowDataWithSrNo = (rowData: any[]) => {
     const date1 = parse(b.PendingSince, "dd/MM/yyyy hh:mm a", new Date());
     const date2 = parse(a.PendingSince, "dd/MM/yyyy hh:mm a", new Date());
     // console.log(differenceInSeconds("31/01/2024 05:29 PM","05/02/2024 11:38 AM"))
-    return differenceInSeconds(date1, date2)
-  })
+    return differenceInSeconds(date1, date2);
+  });
 
   result = result.map((row: any, index: number) => {
     return {
       ...row,
-      SrNo: index + 1
-    }
-  })
-  return result
-}
-
+      SrNo: index + 1,
+    };
+  });
+  return result;
+};
 
 export const mapDraftDataToTableRowData = (rowData: any[]) => {
-  let result = []
-  if (!rowData) return
+  let result = [];
+  if (!rowData) return;
   result = rowData.map((row) => {
     return {
       ...row,
-      LastModifiedDateTime: formatMDMDate(row.LastModifiedDateTime)
-    }
-  })
+      LastModifiedDateTime: formatMDMDate(row.LastModifiedDateTime),
+    };
+  });
 
   result.sort((a, b): any => {
-    return differenceInSeconds(b.LastModifiedDateTime, a.LastModifiedDateTime)
-  })
+    return differenceInSeconds(b.LastModifiedDateTime, a.LastModifiedDateTime);
+  });
 
   result = result.map((r: any, index: number) => {
-    return { ...r, sr_no: index + 1, LastModifiedDateTime: format(r.LastModifiedDateTime, 'dd/MM/yy hh:mm:ss a') }
-  })
-  return result
-}
+    return {
+      ...r,
+      sr_no: index + 1,
+      LastModifiedDateTime: format(
+        r.LastModifiedDateTime,
+        "dd/MM/yy hh:mm:ss a"
+      ),
+    };
+  });
+  return result;
+};
 
 export const getExistingColumns = (rowData: any) => {
-  return Object.keys(rowData)
-}
+  return Object.keys(rowData);
+};
 
-export const getExistingColumnFields = (columns: string[], fields: Field[]): Field[] => {
-  const updatedFields: Field[] = []
+export const getExistingColumnFields = (
+  columns: string[],
+  fields: Field[]
+): Field[] => {
+  const updatedFields: Field[] = [];
   columns.map((c: string) => {
     fields.find((f: Field) => {
-      if (f.key === c) updatedFields.push(f)
-    })
-  })
-  return updatedFields
-}
+      if (f.key === c) updatedFields.push(f);
+    });
+  });
+  return updatedFields;
+};
 
 // export const areValuesEqual = (a: any, b: any): boolean => {
 //   if (!Number.isNaN(parseInt(a)) && !Number.isNaN(parseInt(b))) {
 //     // return parseFloat(a).toFixed(0) === parseFloat(b).toFixed(0)
-//     return parseFloat(a) === parseFloat(b) 
-//   }  
+//     return parseFloat(a) === parseFloat(b)
+//   }
 //   return a === b
 // }
 export const areValuesEqual = (a: any, b: any): boolean => {
-
   const numA = Number(a);
   const numB = Number(b);
 
-  const isAValidNumber = a !== '' && a !== null && !Number.isNaN(numA) && Number.isFinite(numA);
-  const isBValidNumber = b !== '' && b !== null && !Number.isNaN(numB) && Number.isFinite(numB);
+  const isAValidNumber =
+    a !== "" && a !== null && !Number.isNaN(numA) && Number.isFinite(numA);
+  const isBValidNumber =
+    b !== "" && b !== null && !Number.isNaN(numB) && Number.isFinite(numB);
 
   if (isAValidNumber && isBValidNumber) {
     return numA === numB;
@@ -1323,36 +1494,43 @@ export const areValuesEqual = (a: any, b: any): boolean => {
 
   return a === b;
 };
-export const mapMasterToColumnGroupDefs = (existingColumnsFields: Field[], masterId: number, themeUi: string, tasktype?: string, showApproveAllModal?: any, showRejectAllModal?: any, actionStatus?: string , isDisabled?:boolean): ColGroupDef[] | ColDef[] | Array<any> => {
-
-  const textColor = themeUi === "REGALBLAZE" ? "#FCA311" : "#BC3D81"
+export const mapMasterToColumnGroupDefs = (
+  existingColumnsFields: Field[],
+  masterId: number,
+  themeUi: string,
+  tasktype?: string,
+  showApproveAllModal?: any,
+  showRejectAllModal?: any,
+  actionStatus?: string,
+  isDisabled?: boolean
+): ColGroupDef[] | ColDef[] | Array<any> => {
+  const textColor = themeUi === "REGALBLAZE" ? "#FCA311" : "#BC3D81";
 
   const sortedFields = existingColumnsFields.sort((a: Field, b: Field) => {
-    return parseInt(a.col_Position) - parseInt(b.col_Position)
-  })
+    return parseInt(a.col_Position) - parseInt(b.col_Position);
+  });
 
   const colDefs = sortedFields.flatMap((f: Field) => {
     const isReferenceColumn = TaskPendingAvoidColumnsMapperSpecific[masterId]?.includes(f.key)
 
-
     if (masterId === 10) {
-      if (f.key === 'sts') {
+      if (f.key === "sts") {
         return {
           headerName: "Requested For",
           field: f.key,
           colId: f.key,
           hide: !f.visible,
           suppressSpanHeaderHeight: true,
-          valueFormatter: () => 'Stop',
+          valueFormatter: () => "Stop",
           ...defaultColDefs,
           cellStyle: () => {
             return {
-              "color": textColor,
+              color: textColor,
               "text-align": "center",
               "border-left": "solid 1px #B9B9B9",
-            }
-          }
-        }
+            };
+          },
+        };
       }
       return {
         headerName: f.displayName,
@@ -1360,17 +1538,20 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields: Field[], maste
         colId: f.key,
         hide: !f.visible,
         suppressSpanHeaderHeight: true,
-        pinned: TaskPendingAvoidColumnsMapper[masterId].includes(f.key) ? 'left' : false,
+        pinned: TaskPendingAvoidColumnsMapper[masterId].includes(f.key)
+          ? "left"
+          : false,
         ...defaultColDefs,
         cellStyle: () => {
           return {
-            "color": !TaskPendingAvoidColumnsMapper[masterId].includes(f.key) ? textColor : 'black',
+            color: !TaskPendingAvoidColumnsMapper[masterId].includes(f.key)
+              ? textColor
+              : "black",
             "text-align": "center",
             "border-left": "solid 1px #B9B9B9",
-          }
-        }
-      }
-
+          };
+        },
+      };
     }
     const descriptioncoldefs = {
       headerName: f.displayName,
@@ -1394,9 +1575,9 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields: Field[], maste
         colId: f.key,
         hide: !f.visible,
         suppressSpanHeaderHeight: true,
-        pinned: 'left',
-        ...defaultColDefs
-      }
+        pinned: "left",
+        ...defaultColDefs,
+      };
     }
 
     if (tasktype === "add" || masterId === 6) {
@@ -1408,30 +1589,34 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields: Field[], maste
           hide: !f.visible,
           children: [
             {
-              headerName: 'New ' + f.displayName,
-              field: 'New' + f.key,
-              colId: 'New' + f.key,
+              headerName: "New " + f.displayName,
+              field: "New" + f.key,
+              colId: "New" + f.key,
               cellStyle: (params: any) => {
                 return {
-                  "color": !areValuesEqual(params.data[`New${f.key}`], params.data[`Old${f.key}`]) ? textColor : 'black',
+                  color: !areValuesEqual(
+                    params.data[`New${f.key}`],
+                    params.data[`Old${f.key}`]
+                  )
+                    ? textColor
+                    : "black",
                   "text-align": "center",
                   "border-left": "solid 1px #B9B9B9",
-                }
-              }
+                };
+              },
             },
             {
-              headerName: 'Old ' + f.displayName,
-              field: 'Old' + f.key,
-              colId: 'Old' + f.key,
+              headerName: "Old " + f.displayName,
+              field: "Old" + f.key,
+              colId: "Old" + f.key,
               cellStyle: {
                 "text-align": "center",
-                "border-right": "solid 1px #B9B9B9"
-              }
-            }
+                "border-right": "solid 1px #B9B9B9",
+              },
+            },
           ],
           ...defaultColDefs,
-
-        }
+        };
       }
       return {
         headerName: f.displayName,
@@ -1440,19 +1625,18 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields: Field[], maste
         hide: !f.visible,
         children: [
           {
-            headerName: 'Add ' + f.displayName,
-            field: 'Add' + f.key,
-            colId: 'Add' + f.key,
+            headerName: "Add " + f.displayName,
+            field: "Add" + f.key,
+            colId: "Add" + f.key,
             cellStyle: {
-              "color": textColor,
+              color: textColor,
               "text-align": "center",
               "border-left": "solid 1px #B9B9B9",
-            }
-          }
+            },
+          },
         ],
         ...defaultColDefs,
-
-      }
+      };
     }
 
     if (tasktype === "remove") {
@@ -1463,19 +1647,18 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields: Field[], maste
         hide: !f.visible,
         children: [
           {
-            headerName: 'Delete ' + f.displayName,
-            field: 'Delete' + f.key,
-            colId: 'Delete' + f.key,
+            headerName: "Delete " + f.displayName,
+            field: "Delete" + f.key,
+            colId: "Delete" + f.key,
             cellStyle: {
-              "color": textColor,
+              color: textColor,
               "text-align": "center",
               "border-left": "solid 1px #B9B9B9",
-            }
-          }
+            },
+          },
         ],
         ...defaultColDefs,
-
-      }
+      };
     }
 
     const modifycoldefs = {
@@ -1485,72 +1668,91 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields: Field[], maste
       hide: !f.visible,
       children: [
         {
-          headerName: 'New ' + f.displayName,
-          field: 'New' + f.key,
-          colId: 'New' + f.key,
+          headerName: "New " + f.displayName,
+          field: "New" + f.key,
+          colId: "New" + f.key,
           valueFormatter: (params: any) => {
-            if (areValuesEqual(params.data[`New${f.key}`], params.data[`Old${f.key}`])) {
-              return '';
+            if (
+              areValuesEqual(
+                params.data[`New${f.key}`],
+                params.data[`Old${f.key}`]
+              )
+            ) {
+              return "";
             }
             return params.value;
           },
           cellStyle: (params: any) => {
             return {
-              "color": !areValuesEqual(params.data[`New${f.key}`], params.data[`Old${f.key}`]) ? textColor : 'black',
-              "font-weight": !areValuesEqual(params.data[`New${f.key}`], params.data[`Old${f.key}`]) ? '700' : '300',
+              color: !areValuesEqual(
+                params.data[`New${f.key}`],
+                params.data[`Old${f.key}`]
+              )
+                ? textColor
+                : "black",
+              "font-weight": !areValuesEqual(
+                params.data[`New${f.key}`],
+                params.data[`Old${f.key}`]
+              )
+                ? "700"
+                : "300",
               "text-align": "center",
               "border-left": "solid 1px #B9B9B9",
-            }
-          }
+            };
+          },
         },
         {
-          headerName: 'Old ' + f.displayName,
-          field: 'Old' + f.key,
-          colId: 'Old' + f.key,
+          headerName: "Old " + f.displayName,
+          field: "Old" + f.key,
+          colId: "Old" + f.key,
           valueFormatter: (params: any) => {
-            if (areValuesEqual(params.data[`New${f.key}`], params.data[`Old${f.key}`])) {
-              return '';
+            if (
+              areValuesEqual(
+                params.data[`New${f.key}`],
+                params.data[`Old${f.key}`]
+              )
+            ) {
+              return "";
             }
             return params.value;
           },
           cellStyle: {
             "text-align": "center",
-            "border-right": "solid 1px #B9B9B9"
-          }
-        }
+            "border-right": "solid 1px #B9B9B9",
+          },
+        },
       ],
       ...defaultColDefs,
-
     }
-    if(masterId==1 || masterId==2)
+    if((masterId==1 || masterId==2)&&(f.key=='sd' || f.key=='wd'))
       return [descriptioncoldefs, modifycoldefs];
     else {
       return modifycoldefs;
     }
-  })
+  });
 
   const taskPendingCustomColDefs: any[] = [
     {
-      field: 'action',
-      colId: 'action',
-      headerName: 'Action',
+      field: "action",
+      colId: "action",
+      headerName: "Action",
       children: [
         {
           headerComponent: TaskPendingActionHeader,
           headerComponentParams: {
-            disabled:isDisabled,
+            disabled: isDisabled,
             showApproveAllModal: showApproveAllModal,
             showRejectAllModal: showRejectAllModal,
-            actionStatus: actionStatus
+            actionStatus: actionStatus,
           },
           cellRenderer: TaskPendingActionRenderer,
           width: 290,
-          resizable:false,
+          resizable: false,
           cellStyle: {
             "border-left": "solid 1px #B9B9B9",
           },
-          pinned: 'right',
-        }
+          pinned: "right",
+        },
         // {
         //     field:"reject",
         //     colId:'reject',
@@ -1564,38 +1766,38 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields: Field[], maste
         // }
       ],
       cellStyle: {
-        "text-align": "center"
+        "text-align": "center",
       },
       flex: 1,
     },
     {
-      field: 'status',
-      colId: 'status',
-      headerName: 'Status',
+      field: "status",
+      colId: "status",
+      headerName: "Status",
       suppressSpanHeaderHeight: true,
       cellStyle: {
         "border-right": "solid 1px #B9B9B9",
         "border-left": "solid 1px #B9B9B9",
-        "text-align": 'center'
+        "text-align": "center",
       },
       flex: 1,
-      minWidth: 100
+      minWidth: 100,
     },
     {
-      field: 'comments',
-      colId: 'comments',
-      headerName: 'Comments',
+      field: "comments",
+      colId: "comments",
+      headerName: "Comments",
       suppressSpanHeaderHeight: true,
       editable: (params: any) => {
-        if (tasktype !== 'modify') return true
-        if (tasktype === 'modify' && params.data.isModified) {
-          return true
+        if (tasktype !== "modify") return true;
+        if (tasktype === "modify" && params.data.isModified) {
+          return true;
         }
-        return false
+        return false;
       },
-      ...defaultColDefs
-    }
-  ]
+      ...defaultColDefs,
+    },
+  ];
 
   if (masterId === 6) {
     return [
@@ -1604,34 +1806,34 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields: Field[], maste
       {
         colId: "norm",
         headerName: "Norm",
-        field: 'norm',
+        field: "norm",
         children: [
           {
             colId: "targetNorm",
             headerName: "Target Norm",
-            field: 'targetNorm',
+            field: "targetNorm",
             cellStyle: {
               color: textColor,
               "border-left": "solid 1px #B9B9B9",
-              'text-align': 'center',
-              fontWeight: 500
-            }
+              "text-align": "center",
+              fontWeight: 500,
+            },
           },
           {
             colId: "originalNorm",
             headerName: "Original Norm",
-            field: 'originalNorm',
+            field: "originalNorm",
             cellStyle: {
               "border-right": "solid 1px #B9B9B9",
-              'text-align': 'center',
-              fontWeight: 500
-            }
-          }
-        ]
+              "text-align": "center",
+              fontWeight: 500,
+            },
+          },
+        ],
       },
       TaskPendingStopPIPOCustomColumns[2],
-      ...taskPendingCustomColDefs
-    ]
+      ...taskPendingCustomColDefs,
+    ];
   }
 
   if (masterId === 10) {
@@ -1640,15 +1842,15 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields: Field[], maste
       taskPendingCustomColDefs[0],
       taskPendingCustomColDefs[1],
       {
-        field: 'comments',
-        colId: 'comments',
-        headerName: 'Comments',
+        field: "comments",
+        colId: "comments",
+        headerName: "Comments",
         suppressSpanHeaderHeight: true,
         onCellClicked: (params: any) => console.log(params.data),
         editable: true,
-        ...defaultColDefs
-      }
-    ].filter((c) => c.colId !== 'cmt')
+        ...defaultColDefs,
+      },
+    ].filter((c) => c.colId !== "cmt");
   }
 
   return [
@@ -1661,14 +1863,18 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields: Field[], maste
     //   headerCheckboxSelectionCurrentPageOnly:true,
     //   width:10
     // }
-    ...taskPendingCustomColDefs ,...colDefs]
-}
+    ...taskPendingCustomColDefs,
+    ...colDefs,
+  ];
+};
 
-export const mapMasterToTaskStatusColumnGroupDefs = (currentTaskMasterId: number, existingColumnsFields: Field[], masterId: number, tasktype?: string): ColGroupDef[] | ColDef[] => {
-
+export const mapMasterToTaskStatusColumnGroupDefs = (
+  currentTaskMasterId: number,
+  existingColumnsFields: Field[],
+  masterId: number,
+  tasktype?: string
+): ColGroupDef[] | ColDef[] => {
   const colDefs = existingColumnsFields.map((f: Field) => {
-
-
     if (tasktype === "add") {
       return {
         headerName: f.displayName,
@@ -1676,8 +1882,7 @@ export const mapMasterToTaskStatusColumnGroupDefs = (currentTaskMasterId: number
         colId: f.key,
         hide: !f.visible,
         ...defaultColDefs,
-
-      }
+      };
     }
 
     if (tasktype === "remove") {
@@ -1687,19 +1892,33 @@ export const mapMasterToTaskStatusColumnGroupDefs = (currentTaskMasterId: number
         colId: f.key,
         hide: !f.visible,
         ...defaultColDefs,
-
-      }
+      };
     }
 
-    if (tasktype === "modify" && (currentTaskMasterId == 6 || currentTaskMasterId == 10)) {
+    if (
+      tasktype === "modify" &&
+      (currentTaskMasterId == 6 || currentTaskMasterId == 10)
+    ) {
       return {
         headerName: f.displayName,
         field: f.key,
         colId: f.key,
         hide: !f.visible,
         ...defaultColDefs,
+      };
+    }
 
-      }
+    if (
+      tasktype === "modify" &&
+      (currentTaskMasterId == 6 || currentTaskMasterId == 10)
+    ) {
+      return {
+        headerName: f.displayName,
+        field: f.key,
+        colId: f.key,
+        hide: !f.visible,
+        ...defaultColDefs,
+      };
     }
 
     return {
@@ -1709,46 +1928,50 @@ export const mapMasterToTaskStatusColumnGroupDefs = (currentTaskMasterId: number
       hide: !f.visible,
       children: [
         {
-          headerName: 'New ' + f.displayName,
-          field: 'New' + f.key,
-          colId: 'New' + f.key,
+          headerName: "New " + f.displayName,
+          field: "New" + f.key,
+          colId: "New" + f.key,
           cellStyle: {
-            "color": '#BC3D81',
+            color: "#BC3D81",
             "text-align": "center",
             "border-left": "solid 1px #B9B9B9",
-          }
+          },
         },
         {
-          headerName: 'Old ' + f.displayName,
-          field: 'Old' + f.key,
-          colId: 'Old' + f.key,
+          headerName: "Old " + f.displayName,
+          field: "Old" + f.key,
+          colId: "Old" + f.key,
           cellStyle: {
             "text-align": "center",
-            "border-right": "solid 1px #B9B9B9"
-          }
-        }
+            "border-right": "solid 1px #B9B9B9",
+          },
+        },
       ],
       ...defaultColDefs,
+    };
+  });
 
-    }
-  })
+  return [...colDefs, ...taskStatusCustomColDefs];
+};
 
-  return [...colDefs, ...taskStatusCustomColDefs]
-}
-
-
-  export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData: any[], existingColumnFields: Field[], taskType: string, masterId: number) => {
-    const response = dirtyRowData?.map(entry => {
+  export const mapNewAndOldMasterRowDataToCustomRowData = (
+  dirtyRowData: any[],
+  existingColumnFields: Field[],
+  taskType: string,
+  masterId: number
+) => {
+    const response = dirtyRowData?.map((entry) => {
       
-
-      if (((taskType === 'modify' && masterId !== 6 && masterId !== 10) || masterId === 13)) {
+      if (
+      (taskType === "modify" && masterId !== 6 && masterId !== 10) ||
+      masterId === 13
+    ) {
         const oldData = JSON.parse(entry.old);
         const newData = JSON.parse(entry.new);
 
-
         const oldDataPrefixed: any = {};
         const newDataPrefixed: any = {};
-        let isRowModified = false // A flag to check equality of the current and previous rows
+        let isRowModified = false; // A flag to check equality of the current and previous rows
         existingColumnFields.map((f: Field) => {
           const isReferenceException = taskType === "add" && (masterId === 1 || masterId === 2)
 
@@ -1758,10 +1981,8 @@ export const mapMasterToTaskStatusColumnGroupDefs = (currentTaskMasterId: number
               TaskPendingAvoidColumnsMapper[masterId].includes(f.key) ||
               TaskPendingAvoidColumnsMapperSpecific[masterId]?.includes(f.key)
             )
-
           if (!areValuesEqual(oldData[f.key], newData[f.key])) {
-
-            isRowModified = true
+            isRowModified = true;
           }
           const isSdModifyReference =
             taskType === "modify" &&
@@ -1769,44 +1990,47 @@ export const mapMasterToTaskStatusColumnGroupDefs = (currentTaskMasterId: number
             (f.key === "sd" || f.key === "wd")
 
           if (isAvoidColumn && !isSdModifyReference) {
-            newDataPrefixed[f.key] = String(newData[f.key] !== undefined ? newData[f.key] : "")
-          }
-
-          else {
-            oldDataPrefixed[`Old${f.key}`] = String(oldData[f.key] !== undefined ? oldData[f.key] : "")
-            newDataPrefixed[`New${f.key}`] = String(newData[f.key] !== undefined ? newData[f.key] : "")
+            newDataPrefixed[f.key] = String(
+            newData[f.key] !== undefined ? newData[f.key] : ""
+            );
+          } else {
+            oldDataPrefixed[`Old${f.key}`] = String(
+            oldData[f.key] !== undefined ? oldData[f.key] : ""
+          );
+            newDataPrefixed[`New${f.key}`] = String(
+            newData[f.key] !== undefined ? newData[f.key] : ""
+          );
 
             if (isSdModifyReference) {
               newDataPrefixed[f.key] = String(oldData[f.key] !== undefined ? oldData[f.key] : "")
             }
           } 
-        })
+        });
         return {
           ...oldDataPrefixed,
           ...newDataPrefixed,
-          status:!isRowModified?"Rejected" :"",
-          comments: isRowModified ? '' : 'No modifications made in this record',
-          isModified: isRowModified
+          status: !isRowModified ? "Rejected" : "",
+          comments: isRowModified ? "" : "No modifications made in this record",
+          isModified: isRowModified,
         };
       }
       const dataPrefixed1: any = {};
-      if( (masterId === 6 || masterId === 10) && taskType === 'modify'){
+      if ((masterId === 6 || masterId === 10) && taskType === "modify") {
         existingColumnFields.map((f: Field) => {
-        dataPrefixed1[f.key] = String(entry[f.key] !== undefined ? entry[f.key] : '')
-        })
+         dataPrefixed1[f.key] = String(
+          entry[f.key] !== undefined ? entry[f.key] : ""
+        );
+        });
         return {
           ...dataPrefixed1,
-          isModified:true,
-          comments:  '',
-          status: ''
+         isModified: true,
+          comments: "",
+          status: "",
         };
       }
       const data = entry;
 
-
       const dataPrefixed: any = {};
-
-
 
       existingColumnFields.map((f: Field) => {
         const isReferenceException = taskType === "add" && (f.key=="sd" || f.key=="wd") && (masterId === 1 || masterId === 2)
@@ -1851,113 +2075,112 @@ export const mapMasterToTaskStatusColumnGroupDefs = (currentTaskMasterId: number
 
     });
 
-    // sort the rows wrt the isModified flag
-    response?.sort((a: any, b: any) => {
-      return b.isModified - a.isModified
-    })
-    return response
-  }
+  // sort the rows wrt the isModified flag
+  response?.sort((a: any, b: any) => {
+    return b.isModified - a.isModified;
+  });
+  return response;
+};
 
-export const mapTaskStatusDataToRowData = (currentTaskMasterId: number, dirtyRowData: any[], existingColumnFields: Field[], taskType: string) => {
-
-  return dirtyRowData.map(entry => {
-
-    if (taskType === 'modify' && currentTaskMasterId != 6 && currentTaskMasterId!=10  ) {
-
+export const mapTaskStatusDataToRowData = (
+  currentTaskMasterId: number,
+  dirtyRowData: any[],
+  existingColumnFields: Field[],
+  taskType: string
+) => {
+  return dirtyRowData.map((entry) => {
+    if (
+      taskType === "modify" &&
+      currentTaskMasterId != 6 &&
+      currentTaskMasterId != 10
+    ) {
       const oldData = JSON.parse(entry.old);
       const newData = JSON.parse(entry.new);
-
 
       const oldDataPrefixed: any = {};
       const newDataPrefixed: any = {};
 
-
       existingColumnFields.map((f: Field) => {
-
-
-        oldDataPrefixed[`Old${f.key}`] = oldData[f.key]
-        newDataPrefixed[`New${f.key}`] = newData[f.key]
-        newDataPrefixed['status'] = oldData['Status']
-        newDataPrefixed['comments'] = oldData['Comments']
-
-      })
+        oldDataPrefixed[`Old${f.key}`] = oldData[f.key];
+        newDataPrefixed[`New${f.key}`] = newData[f.key];
+        newDataPrefixed["status"] = oldData["Status"];
+        newDataPrefixed["comments"] = oldData["Comments"];
+      });
       return {
         ...oldDataPrefixed,
-        ...newDataPrefixed
+        ...newDataPrefixed,
       };
     }
     const data = entry;
 
-
     const dataPrefixed: any = {};
 
-
-
     existingColumnFields.map((f: Field) => {
-      dataPrefixed['status'] = data['Status']
-      dataPrefixed['comments'] = data['Comments']
+      dataPrefixed["status"] = data["Status"];
+      dataPrefixed["comments"] = data["Comments"];
 
-      if (taskType === 'add') {
-
-        dataPrefixed[f.key] = data[f.key]
-
-
+      if (taskType === "add") {
+        dataPrefixed[f.key] = data[f.key];
+      } else {
+        dataPrefixed[f.key] = data[f.key];
       }
-      else {
-
-        dataPrefixed[f.key] = data[f.key]
-
-      }
-    })
+    });
     return {
-      ...dataPrefixed
+      ...dataPrefixed,
     };
-
   });
-}
-
+};
 
 export const getActionName = (id: number): DraftActionType => {
-  if (id === 1) return { id: 1, label: 'add', value: 'add' }
-  if (id === 2) return { id: 2, label: 'view-modify', value: 'modify' }
-  if (id === 3) return { id: 3, label: 'delete', value: 'remove' }
-  throw new Error('Invalid action id')
-}
+  if (id === 1) return { id: 1, label: "add", value: "add" };
+  if (id === 2) return { id: 2, label: "view-modify", value: "modify" };
+  if (id === 3) return { id: 3, label: "delete", value: "remove" };
+  throw new Error("Invalid action id");
+};
 
 export const getActionId = (actionName: string): DraftActionType => {
-  if (actionName === "add") return { id: 1, label: 'add', value: 'add' }
-  if (actionName === "view-modify" || actionName === "modify") return { id: 2, label: 'view-modify', value: 'modify' }
-  if (actionName === "delete") return { id: 3, label: 'delete', value: 'remove' }
-  throw new Error('Invalid action Name')
-}
+  if (actionName === "add") return { id: 1, label: "add", value: "add" };
+  if (actionName === "view-modify" || actionName === "modify")
+    return { id: 2, label: "view-modify", value: "modify" };
+  if (actionName === "delete")
+    return { id: 3, label: "delete", value: "remove" };
+  throw new Error("Invalid action Name");
+};
 
-export const formatAndValidateDraftRowData = (colDefs:Array<ColDef>,rowData:Array<any>):Array<any>=>{
-  const result = [...rowData]
-  
-  result.forEach((row)=>{
-    colDefs.forEach((col)=>{
-      if(col.colId && row[col.colId]){
+export const formatAndValidateDraftRowData = (
+  colDefs: Array<ColDef>,
+  rowData: Array<any>
+): Array<any> => {
+  const result = [...rowData];
+
+  result.forEach((row) => {
+    colDefs.forEach((col) => {
+      if (col.colId && row[col.colId]) {
         // if(col.cellDataType === "number"){
         //   row[col.colId] = parseFloat(row[col.colId])
         // }
       }
-    })
-  })
+    });
+  });
 
-  return result
-}
+  return result;
+};
 
-
-export const createMastersStateFromDraftData = (draftData: any[], fields: Master[]): MDMMasterState[] => {
-
-  const masters: MDMMasterState[] = []
+export const createMastersStateFromDraftData = (
+  draftData: any[],
+  fields: Master[]
+): MDMMasterState[] => {
+  const masters: MDMMasterState[] = [];
   draftData.map((master) => {
-    const existingMaster = fields.find((m: Master) => m.id == master.MasterId)
+    const existingMaster = fields.find((m: Master) => m.id == master.MasterId);
     if (existingMaster) {
-      const colDefs = master.GridState.length > 0 ? JSON.parse(master.GridState) : mapMasterToColumnDefs(existingMaster.fields, existingMaster.id)
+      const colDefs =
+        master.GridState.length > 0
+          ? JSON.parse(master.GridState)
+          : mapMasterToColumnDefs(existingMaster.fields, existingMaster.id);
       const updatedColDefs = colDefs.map((colDef: any) => {
         if (colDef.cellDataType) {
-          colDef.cellDataType = 'text';
+          colDef.cellDataType = "text";
         }
         return colDef;
       });
@@ -1966,54 +2189,58 @@ export const createMastersStateFromDraftData = (draftData: any[], fields: Master
         id: existingMaster.id,
         name: existingMaster.name,
         colDefs: updatedColDefs,
-        rowData: master.DataMaster? formatAndValidateDraftRowData(colDefs,master?.DataMaster)  : [],
+        rowData: master.DataMaster
+          ? formatAndValidateDraftRowData(colDefs, master?.DataMaster)
+          : [],
         isChecked: true,
-        filters: [{
-          id: generateRandomId(),
-          masterId: existingMaster.id,
-          field: '',
-          operator: '',
-          text: ''
-        }],
+        filters: [
+          {
+            id: generateRandomId(),
+            masterId: existingMaster.id,
+            field: "",
+            operator: "",
+            text: "",
+          },
+        ],
         progress: master.Status,
-        fields: existingMaster.fields
-      })
+        fields: existingMaster.fields,
+      });
     }
-  })
+  });
 
-  return masters
-}
+  return masters;
+};
 export const getUploadModalRadioButtons = (masterId: number) => {
   if (masterId == 11 || masterId == 12) {
     return [
       {
-        label: 'Absolute Value',
-        value: 11
+        label: "Absolute Value",
+        value: 11,
       },
       {
-        label: 'Delta Percentage',
-        value: 12
-      }
-    ]
+        label: "Delta Percentage",
+        value: 12,
+      },
+    ];
   }
   if (masterId == 7 || masterId == 8 || masterId == 9) {
     return [
       {
-        label: 'Phase Out',
-        value: 7
+        label: "Phase Out",
+        value: 7,
       },
       {
-        label: 'Phase In Phase Out',
-        value: 8
+        label: "Phase In Phase Out",
+        value: 8,
       },
       {
-        label: 'Target Norm',
-        value: 9
-      }
-    ]
+        label: "Target Norm",
+        value: 9,
+      },
+    ];
   }
-  return []
-}
+  return [];
+};
 export const getDatesBetween = (startDate: Date, endDate: Date) => {
   const currentDate = new Date(startDate.getTime());
   const dates = [];
@@ -2022,64 +2249,73 @@ export const getDatesBetween = (startDate: Date, endDate: Date) => {
     currentDate.setDate(currentDate.getDate() + 1);
   }
   return dates;
-}
+};
 
 export const getFormattedDate = (date: Date) => {
-  const splitDateArray = date.toDateString().split(' ');
-  return `${splitDateArray[2]} ${splitDateArray[1]} ${date.getFullYear()}`
-}
+  const splitDateArray = date.toDateString().split(" ");
+  return `${splitDateArray[2]} ${splitDateArray[1]} ${date.getFullYear()}`;
+};
 
 export const generateSesonalityChartData = (row: any, data: any) => {
   let maxNorm = 0;
   let maxStockAndGit = 0;
   data.norm.forEach((o: NormHistory) => {
-    const localMaxima = Math.max(+o.old_norm, +o.new_norm)
+    const localMaxima = Math.max(+o.old_norm, +o.new_norm);
     if (maxNorm < localMaxima) {
       maxNorm = localMaxima;
     }
-  })
+  });
   data.dailyData.forEach((o: DailyData) => {
-    const stockAndGit = parseInt(o.stock, 10) + parseInt(o.git, 10)
+    const stockAndGit = parseInt(o.stock, 10) + parseInt(o.git, 10);
     if (maxStockAndGit < stockAndGit) {
       maxStockAndGit = stockAndGit;
     }
-  })
+  });
   const maxQuantity = Math.max(maxNorm, maxStockAndGit);
   // const xAxisLabels = data.dailyData.map((o:DailyData)=>getFormattedDate(new Date(o.date)));
   const todaysDate = new Date();
 
-  const xAxisLabels = getDatesBetween(subDays(new Date(row.sd), Math.max(row.bd, row.r)), new Date(row.ed));
+  const xAxisLabels = getDatesBetween(
+    subDays(new Date(row.sd), Math.max(row.bd, row.r)),
+    new Date(row.ed)
+  );
 
   // const xAxisLabels = genedata.dailyData.map((o:DailyData)=>new Date(o.date));
-  const xAxisLablesFormatted = xAxisLabels.map((date: Date) => getFormattedDate(date));
+  const xAxisLablesFormatted = xAxisLabels.map((date: Date) =>
+    getFormattedDate(date)
+  );
 
   const seasonalityDates = getDatesBetween(new Date(row.sd), new Date(row.ed));
 
   // console.log("Seasonality Dates",seasonalityDates)
 
-  const buildUpDuration = getDatesBetween(subDays(new Date(row.sd), row.bd), new Date(row.sd));
+  const buildUpDuration = getDatesBetween(
+    subDays(new Date(row.sd), row.bd),
+    new Date(row.sd)
+  );
 
   const buildUpDurationData = xAxisLabels.map((date: Date) => {
     if (buildUpDuration.find((sd: Date) => +sd === +date)) return maxQuantity;
     return undefined;
-  })
+  });
 
-  const rlt = getDatesBetween(subDays(new Date(row.sd), row.r), new Date(row.sd));
+  const rlt = getDatesBetween(
+    subDays(new Date(row.sd), row.r),
+    new Date(row.sd)
+  );
 
   const rltData = xAxisLabels.map((date: Date) => {
     if (rlt.find((sd: Date) => +sd === +date)) return maxQuantity;
     return undefined;
-  })
-
+  });
 
   const seasonData = xAxisLabels.map((date: Date) => {
     if (seasonalityDates.find((sd: Date) => +sd === +date)) return maxQuantity;
-    return undefined
-  })
-
+    return undefined;
+  });
 
   // const stockData = data.dailyData.map((o:DailyData)=>{
-  //   const doesDateExist = xAxisLabels.find((date:Date)=> {    
+  //   const doesDateExist = xAxisLabels.find((date:Date)=> {
   //     return +date === +new Date(o.date)
   //   })
   //   if(doesDateExist) return parseInt(o.stock,10)
@@ -2088,20 +2324,24 @@ export const generateSesonalityChartData = (row: any, data: any) => {
   // });
 
   const stockData = xAxisLabels.map((date: Date) => {
-    const isDailyDataPresent = data.dailyData.find((d: DailyData) => +new Date(d.date) === +date);
+    const isDailyDataPresent = data.dailyData.find(
+      (d: DailyData) => +new Date(d.date) === +date
+    );
     if (isDailyDataPresent) {
-      return isDailyDataPresent.stock
+      return isDailyDataPresent.stock;
     }
     return 0;
-  })
+  });
 
   const gitData = xAxisLabels.map((date: Date) => {
-    const isDailyDataPresent = data.dailyData.find((d: DailyData) => +new Date(d.date) === +date);
+    const isDailyDataPresent = data.dailyData.find(
+      (d: DailyData) => +new Date(d.date) === +date
+    );
     if (isDailyDataPresent) {
-      return isDailyDataPresent.git
+      return isDailyDataPresent.git;
     }
     return 0;
-  })
+  });
 
   const pointRadius: any[] = [];
   let tempNorm = 0; //used for filling data when norm not changed in below function
@@ -2116,154 +2356,165 @@ export const generateSesonalityChartData = (row: any, data: any) => {
   //   return tempNorm;
   // })
 
-
   const normData = xAxisLabels.map((date: Date) => {
-    const closestNormChange: NormHistory = data.norm.find((o: NormHistory) => +(new Date(o.date)) === +(new Date(date)));
+    const closestNormChange: NormHistory = data.norm.find(
+      (o: NormHistory) => +new Date(o.date) === +new Date(date)
+    );
     if (+date > +todaysDate) return undefined;
     if (closestNormChange) {
       tempNorm = parseInt(closestNormChange.new_norm, 10);
       pointRadius.push(5);
-      return parseInt(closestNormChange.new_norm, 10)
+      return parseInt(closestNormChange.new_norm, 10);
     }
-    pointRadius.push(0)
+    pointRadius.push(0);
     return tempNorm;
-  })
+  });
 
   const chartData = {
     labels: xAxisLablesFormatted,
     datasets: [
       {
-        type: 'line' as const,
-        label: 'Norm',
-        borderColor: '#002060',
+        type: "line" as const,
+        label: "Norm",
+        borderColor: "#002060",
         borderWidth: 3,
         data: normData,
         pointBackgroundColor: "#00B0F0",
-        pointStyle: 'circle',
+        pointStyle: "circle",
         pointRadius: pointRadius,
       },
       {
-        type: 'line' as const,
-        label: 'Season',
+        type: "line" as const,
+        label: "Season",
         borderWidth: 0,
         fill: {
-          target: 'origin',
-          above: 'rgba(207, 167, 187, 0.4)'
+          target: "origin",
+          above: "rgba(207, 167, 187, 0.4)",
         },
         data: seasonData,
         pointBackgroundColor: "rgba(207, 167, 187, 0.4)",
-        pointStyle: 'rect',
+        pointStyle: "rect",
       },
       {
-        type: 'line' as const,
-        label: 'BuildUpDuration',
+        type: "line" as const,
+        label: "BuildUpDuration",
         borderWidth: 0,
         fill: {
-          target: 'origin',
-          above: 'rgba(127, 0, 255, 0.4)'
+          target: "origin",
+          above: "rgba(127, 0, 255, 0.4)",
         },
         data: buildUpDurationData,
         pointRadius: 0,
-        pointStyle: 'rect',
+        pointStyle: "rect",
         pointBackgroundColor: "rgba(127, 0, 255, 0.4)",
       },
       {
-        type: 'line' as const,
-        label: 'RLT',
+        type: "line" as const,
+        label: "RLT",
         borderWidth: 0,
         fill: {
-          target: 'origin',
-          above: 'rgba(9, 38, 53, 0.4)'
+          target: "origin",
+          above: "rgba(9, 38, 53, 0.4)",
         },
         data: rltData,
         pointRadius: 0,
-        pointStyle: 'rect',
+        pointStyle: "rect",
         pointBackgroundColor: "rgba(9, 38, 53, 0.4)",
       },
       {
-        type: 'bar' as const,
-        label: 'Stock',
-        backgroundColor: '#E33A3A',
+        type: "bar" as const,
+        label: "Stock",
+        backgroundColor: "#E33A3A",
         data: stockData,
-        stack: 'bar',
-        pointStyle: 'rect',
-        pointHitRadius: 0
+        stack: "bar",
+        pointStyle: "rect",
+        pointHitRadius: 0,
       },
       {
-        type: 'bar' as const,
-        label: 'GIT',
-        backgroundColor: '#52B735',
+        type: "bar" as const,
+        label: "GIT",
+        backgroundColor: "#52B735",
         data: gitData,
-        stack: 'bar',
-        pointStyle: 'rect',
-        pointHitRadius: 0
+        stack: "bar",
+        pointStyle: "rect",
+        pointHitRadius: 0,
       },
     ],
   };
 
   return chartData;
-}
-
+};
 
 export const createSubmitMasterPayload = (master: any, action: string) => {
   return {
     id: parseInt(master.id),
     action: action,
-    data: master.rowData
-  }
-}
+    data: master.rowData,
+  };
+};
 
 export const addPrefixToObjectKeys = (obj: any, prefix: string) => {
-
-  const newObj: any = {}
+  const newObj: any = {};
 
   Object.keys(obj).map((key) => {
-    newObj[`${prefix + key}`] = obj[key]
-  })
-  return newObj
-}
+    newObj[`${prefix + key}`] = obj[key];
+  });
+  return newObj;
+};
 
-export const createConflictRowData = (conflicts: { conflictdetails: { oldData: any, requestedData: any }[], user: string }[], masterId: any): ColDef[] => {
+export const createConflictRowData = (
+  conflicts: {
+    conflictdetails: { oldData: any; requestedData: any }[];
+    user: string;
+  }[],
+  masterId: any
+): ColDef[] => {
   // console.log(conflicts)
   // console.log(TaskPendingAvoidColumnsMapper[masterId])
-  const result: any[] = []
+  const result: any[] = [];
   conflicts.map((conflict) => {
     conflict.conflictdetails.map((conflictDetail, conflictIndex: number) => {
       const existingRowIndex = result.findIndex((row: any, index: number) => {
-        let isDuplicate = false
-        const primaryKeys: string[] = TaskPendingAvoidColumnsMapper[masterId]
+        let isDuplicate = false;
+        const primaryKeys: string[] = TaskPendingAvoidColumnsMapper[masterId];
         for (let i = 0; i < primaryKeys.length; i++) {
-
-          if (row[primaryKeys[i]] === conflictDetail.requestedData[primaryKeys[i]]) {
-            isDuplicate = true
-          }
-          else {
-            isDuplicate = false
-            break
+          if (
+            row[primaryKeys[i]] === conflictDetail.requestedData[primaryKeys[i]]
+          ) {
+            isDuplicate = true;
+          } else {
+            isDuplicate = false;
+            break;
           }
         }
-        return isDuplicate
-      })
+        return isDuplicate;
+      });
       //console.log(existingRowIndex)
 
       if (existingRowIndex === -1) {
-        result.push({ ...conflictDetail.requestedData, users: [{ user: conflict.user, data: conflictDetail.oldData }] })
+        result.push({
+          ...conflictDetail.requestedData,
+          users: [{ user: conflict.user, data: conflictDetail.oldData }],
+        });
+      } else {
+        result[existingRowIndex].users.push({
+          user: conflict.user,
+          data: conflictDetail.oldData,
+        });
       }
-      else {
-        result[existingRowIndex].users.push({ user: conflict.user, data: conflictDetail.oldData })
-      }
-    })
-  })
-  return result
+    });
+  });
+  return result;
+};
 
-
-}
-
-export const createErrorRowData = (errorConflicts: { errorData: any[], errorType: string }[], masterId: any): ColDef[] => {
+export const createErrorRowData = (
+  errorConflicts: { errorData: any[]; errorType: string }[],
+  masterId: any
+): ColDef[] => {
   //console.log(masterId)
-  const result: any[] = []
+  const result: any[] = [];
   if (Array.isArray(errorConflicts)) {
-    errorConflicts.map((currError: { errorData: any[], errorType: string }) => {
+    errorConflicts.map((currError: { errorData: any[]; errorType: string }) => {
       currError.errorData.map((errorRowData: any) => {
         const existingRowIndex = result.findIndex((row: any) => {
           // const primaryKeys:string[] = TaskPendingAvoidColumnsMapper[masterId]
@@ -2272,80 +2523,84 @@ export const createErrorRowData = (errorConflicts: { errorData: any[], errorType
           //   // return row[primaryKeys[0]]===errorRowData[primaryKeys[0]]
           // }
           // console.log(row)
-          let isDuplicate = false
-          const primaryKeys: string[] = TaskPendingAvoidColumnsMapper[masterId]
+          let isDuplicate = false;
+          const primaryKeys: string[] = TaskPendingAvoidColumnsMapper[masterId];
           if (primaryKeys instanceof Array) {
             for (let i = 0; i < primaryKeys.length; i++) {
               if (row[primaryKeys[i]] === errorRowData[primaryKeys[i]]) {
-                isDuplicate = true
-              }
-              else {
-                isDuplicate = false
-                break
+                isDuplicate = true;
+              } else {
+                isDuplicate = false;
+                break;
               }
             }
           }
-          return isDuplicate
+          return isDuplicate;
           // const omittedResultEntry = _.omit(row,['error'])
           // return JSON.stringify(omittedResultEntry)===JSON.stringify(errorRowData)
-        })
-
+        });
 
         if (existingRowIndex === -1) {
           result.push({
             ...errorRowData,
-            error: " " + currError.errorType + " ."
-          })
+            error: " " + currError.errorType + " .",
+          });
+        } else {
+          result[existingRowIndex].error += " " + currError.errorType + " .";
         }
-        else {
-          result[existingRowIndex].error += " " + currError.errorType + " ."
-        }
-      })
-    })
+      });
+    });
   }
   //console.log(result)
-  return result
-}
+  return result;
+};
 
-export const navigateWithPrompt = (onRouteChange: () => void, url: any, state: any, resetState: any) => {
-
+export const navigateWithPrompt = (
+  onRouteChange: () => void,
+  url: any,
+  state: any,
+  resetState: any
+) => {
   if (!mdmRoutes.includes(url)) {
     if (state.activeMaster.id === 0) {
       onRouteChange();
-    }
-    else {
-      if (confirm("Are you sure you want to leave this page?  All the Progress will be lost!")) {
+    } else {
+      if (
+        confirm(
+          "Are you sure you want to leave this page?  All the Progress will be lost!"
+        )
+      ) {
         onRouteChange();
-        resetState()
+        resetState();
       }
     }
-  }
-  else {
+  } else {
     onRouteChange();
   }
+};
 
-}
-
-
-export const FormatDateFunction =(dateStr:string)=>{
+export const FormatDateFunction = (dateStr: string) => {
   const date = new Date(dateStr);
 
-// Format to MM/DD/YYYY HH:mm:ss
-const formattedDate = date.toLocaleString('en-US', {
-  year: 'numeric',
-  month: '2-digit',
-  day: '2-digit',
-  hour: '2-digit',
-  minute: '2-digit',
-  second: '2-digit',
-  hour12: false
-});
-return formattedDate
-}
+  // Format to MM/DD/YYYY HH:mm:ss
+  const formattedDate = date.toLocaleString("en-US", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  });
+  return formattedDate;
+};
 
-
-export const createTaskPendingSubmitPayload = (rowData: any[], actionType: number, masterId: number): any[] => {
-  const result: any[] = []
+export const createTaskPendingSubmitPayload = (
+  rowData: any[],
+  actionType: number,
+  masterId: number
+): any[] => {
+  const result: any[] = [];
 
   rowData.forEach((item) => {
     // if((item.isModified  || actionType!==2 || masterId===6) ){
@@ -2356,8 +2611,9 @@ export const createTaskPendingSubmitPayload = (rowData: any[], actionType: numbe
     Object.entries(item).forEach(([key, value]) => {
       // Check if the key starts with "Oldc"
 
-      if (key === 'status') {
-        return newItem[key] = value === "Approved" ? "3" : value === "Rejected" ? "4" : ""
+      if (key === "status") {
+        return (newItem[key] =
+          value === "Approved" ? "3" : value === "Rejected" ? "4" : "");
       }
 
       if (actionType === 2) {
@@ -2375,77 +2631,75 @@ export const createTaskPendingSubmitPayload = (rowData: any[], actionType: numbe
             return;
           }
           newItem[key.replace("New", "")] = value;
-        }
-        else {
+        } else {
           newItem[key.replace("Add", "")] = value;
         }
       }
 
       if (actionType === 3) {
-
         newItem[key.replace("Delete", "")] = value;
       }
 
       // Remove the "Newc" prefix from the key and store the value in the new object
-
     });
 
     // Add the modified object to the result array
-    const tempRow = _.omit({ ...newItem }, ['isModified', 'cmt'])
+    const tempRow = _.omit({ ...newItem }, ["isModified", "cmt"]);
     result.push(tempRow);
     // }
   });
 
-  return result
-}
+  return result;
+};
 
-
-export const generateDailyDataGraphCell = (onOpenDailyDataGraph:any):ColDef=>{
-
+export const generateDailyDataGraphCell = (
+  onOpenDailyDataGraph: any
+): ColDef => {
   return {
-    ...createIconColumn({id:'dailydatagraph',label:'',cellRenderer:'grapCellRenderer'}),
-    cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph},
-    pinned: 'left',
-    minWidth:45,
-    resizable:false
-  }
-        // const dailyDataColDef = {...createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph}}
-}
-
-
+    ...createIconColumn({
+      id: "dailydatagraph",
+      label: "",
+      cellRenderer: "grapCellRenderer",
+    }),
+    cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph },
+    pinned: "left",
+    minWidth: 45,
+    resizable: false,
+  };
+  // const dailyDataColDef = {...createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph}}
+};
 
 export const createIconColumn = (params: any): ColDef => {
-
-  const {
-    id,
-    label,
-    cellRenderer
-  } = params
+  const { id, label, cellRenderer } = params;
 
   return {
     width: 40,
     minWidth: 40,
     colId: id,
     headerName: label,
-    filter:false,
+    filter: false,
     cellRenderer: cellRenderer,
     floatingFilter: false,
-    suppressColumnsToolPanel: false
-  }
-}
+    suppressColumnsToolPanel: false,
+  };
+};
 
-export const getCellDataType = (dataType: "Number"|"number"| "String" | "Boolean"): string => {
-  if (dataType === 'Number') return "number"
-  return 'text'
-}
+export const getCellDataType = (
+  dataType: "Number" | "number" | "String" | "Boolean"
+): string => {
+  if (dataType === "Number") return "number";
+  return "text";
+};
 
-export const getCellFilter = (dataType: "Number"| "number" | "String" | "Boolean"): string => {
-  if (dataType === 'number' || dataType==="Number") return "agNumberColumnFilter"
+export const getCellFilter = (
+  dataType: "Number" | "number" | "String" | "Boolean"
+): string => {
+  if (dataType === "number" || dataType === "Number")
+    return "agNumberColumnFilter";
   // else if(dataType==='String') return 'agTextColumnFilter'
   // else if(dataType==='Boolean') return "agSetColumnFilter"
-  return 'agMultiColumnFilter'
-}
-
+  return "agMultiColumnFilter";
+};
 
 // export const mapColumnsWithConfigs = (CurrentState:any,initialState:ColDef[]) : ColDef[] =>{
 //   // return CurrentState.map((col:any) => {
@@ -2455,113 +2709,121 @@ export const getCellFilter = (dataType: "Number"| "number" | "String" | "Boolean
 //   return CurrentState.map((col:any) => {
 //   const matchedCol = initialState.find((initCol:any) => initCol.colId === col.colId);
 //   return matchedCol ? { ...matchedCol, ...col } : col;
-// });  
+// });
 // }
 
 // return CurrentState.map((col:any) => {
 //   const matchedCol = initialState.find((initCol:any) => initCol.colId === col.colId);
 //   return matchedCol ? { ...matchedCol, ...col } : col;
-// });  
+// });
 
-export const mapColumnsWithConfigs = (CurrentState: any, initialState: ColDef[]): ColDef[] => {
+export const mapColumnsWithConfigs = (
+  CurrentState: any,
+  initialState: ColDef[]
+): ColDef[] => {
   return initialState.map((col: any) => {
-    const matchedCol = CurrentState.find((initCol: any) => initCol.colId === col.colId);
-    
+    const matchedCol = CurrentState.find(
+      (initCol: any) => initCol.colId === col.colId
+    );
+
     if (matchedCol) {
       const { hide, ...restCol } = col; // Exclude `hide` from col
-      return { ...matchedCol, ...restCol, initialHide: hide !== undefined ? hide : matchedCol.initialHide };
+      return {
+        ...matchedCol,
+        ...restCol,
+        initialHide: hide !== undefined ? hide : matchedCol.initialHide,
+      };
     }
 
     return col;
   });
 };
 
-
-export const addCheckBoxColumn = ():ColDef =>{
-  return  {
-    field:'checkbox',
-    colId:'checkbox',
-    headerName:'',
-    width:70,
-    checkboxSelection:true,
-    headerCheckboxSelection:true,
-    headerCheckboxSelectionCurrentPageOnly:true,
-    resizable:false,
-    suppressMenu: true,
+export const addCheckBoxColumn = (): ColDef => {
+  return {
+    field: "checkbox",
+    colId: "checkbox",
+    headerName: "",
+    width: 70,
+    checkboxSelection: true,
+    headerCheckboxSelection: true,
+    headerCheckboxSelectionCurrentPageOnly: true,
+    resizable: false,
+    suppressHeaderMenuButton: true,
     maxWidth: 40,
-    pinned: 'left',
-    filter: false
-  }
-}
+    pinned: "left",
+    filter: false,
+  };
+};
 
-export const getRemarkRelatedColumns = (onOpenRemarkHistory: (params: any, e: any) => void) : ColDef[] => {
+export const getRemarkRelatedColumns = (
+  onOpenRemarkHistory: (params: any, e: any) => void
+): ColDef[] => {
   return [
     {
-      colId: 'remarks',
-      field: 'remarks',
-      headerName: 'Enter new remark',
-      cellStyle:{
-        backgroundColor: 'white',
-        border: '1px solid #b9bdba',
-        color: 'black',
-        padding: '1px'
+      colId: "remarks",
+      field: "remarks",
+      headerName: "Enter new remark",
+      cellStyle: {
+        backgroundColor: "white",
+        border: "1px solid #b9bdba",
+        color: "black",
+        padding: "1px",
       },
-      pinned: 'right',
+      pinned: "right",
       editable: true,
-      minWidth:130,
-      maxWidth:160,
-      initialHide:false,
-      lockPosition:'right',
-      menuTabs: [] ,
-      suppressMenu: true,
-      resizable:false
+      minWidth: 130,
+      maxWidth: 160,
+      initialHide: false,
+      lockPosition: "right",
+      menuTabs: [],
+      suppressHeaderMenuButton: true,
+      resizable: false,
     },
     {
-      colId: 'rh',
-      field: 'rh',
-      headerName: 'Remark History',
-      cellRenderer: 'remarksCellRenderer',
+      colId: "rh",
+      field: "rh",
+      headerName: "Remark History",
+      cellRenderer: "remarksCellRenderer",
       cellRendererParams: {
-        onClick: onOpenRemarkHistory
+        onClick: onOpenRemarkHistory,
       },
-      pinned: 'right',
-      minWidth:120,
-      maxWidth:120,
-      initialHide:false,
-      lockPosition:'right',
-      menuTabs: [] ,
-      suppressMenu: true,
-      resizable:false
-    }
-  ]
-}
+      pinned: "right",
+      minWidth: 120,
+      maxWidth: 120,
+      initialHide: false,
+      lockPosition: "right",
+      menuTabs: [],
+      suppressHeaderMenuButton: true,
+      resizable: false,
+    },
+  ];
+};
 
-export const filterParams =  {
+export const filterParams = {
   filters: [
     {
-      filter: 'agTextColumnFilter',
+      filter: "agTextColumnFilter",
       filterParams: {
-        buttons: [ 'reset'],
-      }
+        buttons: ["reset"],
+      },
     },
     {
-      filter: 'agSetColumnFilter',
+      filter: "agSetColumnFilter",
       filterParams: {
-        buttons: ['reset'],
-      }
+        buttons: ["reset"],
+      },
     },
-  ]
-}
+  ],
+};
 
-
-
-export const CellRenderersMapping:any = {
-  'DispatchPen':'colorDispatchRender',
-  'TechPen':'colorTechCellRenderer',
-  'EcoPen':'colorEcoCellRenderer',
-  'TPen':'colorTechCellRenderer',
-  'EPen':'colorEcoCellRenderer'
-}
+export const CellRenderersMapping: any = {
+  DispatchPen: "colorDispatchRender",
+  TechPen: "colorTechCellRenderer",
+  EcoPen: "colorEcoCellRenderer",
+  TPen: "colorTechCellRenderer",
+  EPen: "colorEcoCellRenderer",
+};
 
 const aggridDefaultColumnProps = {
   sort: null,
@@ -2572,38 +2834,45 @@ const aggridDefaultColumnProps = {
   pivot: false,
   pivotIndex: null,
   flex: undefined,
-}
+};
 
 // function getCellRendererForKey(key:string) {
 //   const renderer = CellRenderersMapping[key];
 //   return renderer !== undefined ? renderer : 'string'; // If the renderer is undefined, return the key as string
 // }
 
-
-export const generateAndMapColumns = (reportName:string,fields:any ,includeRemarks:boolean,includeGraph:boolean,includeTags:boolean,onOpenSubmitRemark?:any,  onOpenRemarkHistory?:any, onOpenDailyDataGraph?:any) =>{
-  
+export const generateAndMapColumns = (
+  reportName: string,
+  fields: any,
+  includeRemarks: boolean,
+  includeGraph: boolean,
+  includeTags: boolean,
+  onOpenSubmitRemark?: any,
+  onOpenRemarkHistory?: any,
+  onOpenDailyDataGraph?: any
+) => {
   if (!fields || fields.length < 1) {
-    return []
+    return [];
   }
-  let Columns:ColDef[] = [];
+  let Columns: ColDef[] = [];
 
-  Columns = fields.map((f:any,index:number)=>{
-    if(f.Col_Code==='t' || f.Col_Code==='tags'){
+  Columns = fields.map((f: any, index: number) => {
+    if (f.Col_Code === "t" || f.Col_Code === "tags") {
       return {
         colId: f.Col_Code,
         field: f.Col_Code,
         headerName: f.Header,
-        cellRenderer: 'tagsCellRenderer',
+        cellRenderer: "tagsCellRenderer",
         width: 100,
-        pinned:null,
+        pinned: null,
         // hide: !f.Visible,
         initialHide: !f.Visible,
-        filter:true,
+        filter: true,
         filterParams: {
-          buttons: ['reset'], // Adds Apply and Clear buttons
+          buttons: ["reset"], // Adds Apply and Clear buttons
         },
-        ...aggridDefaultColumnProps
-      }
+        ...aggridDefaultColumnProps,
+      };
     }
     return {
       colId: f.Col_Code,
@@ -2611,61 +2880,72 @@ export const generateAndMapColumns = (reportName:string,fields:any ,includeRemar
       headerName: f.Header,
       // hide: !f.Visible,
       initialHide: !f.Visible,
-      cellRenderer: CellRenderersMapping[f.Col_Code] !== undefined ? CellRenderersMapping[f.Col_Code] : 'string' ,
+      cellRenderer:
+        CellRenderersMapping[f.Col_Code] !== undefined
+          ? CellRenderersMapping[f.Col_Code]
+          : "string",
       cellDataType: getCellDataType(f.DataType),
       filter: getCellFilter(f.DataType),
-      minWidth:180,
-      pinned:null,
+      minWidth: 180,
+      pinned: null,
       ...aggridDefaultColumnProps,
-      filterParams:filterParams
-    }
-  })
+      filterParams: filterParams,
+    };
+  });
 
-  if(reportName==='ResearchInsight'){ // Add other reportName in || condition if checkbox is required
-    Columns.push(addCheckBoxColumn())  /// required Checkbox for RI 
+  if (reportName === "ResearchInsight") {
+    // Add other reportName in || condition if checkbox is required
+    Columns.push(addCheckBoxColumn()); /// required Checkbox for RI
   }
 
-  if(includeRemarks){ // If Remark is required in any reports then provide boolean as true
-    Columns.unshift(...getRemarkRelatedColumns(onOpenRemarkHistory))
+  if (includeRemarks) {
+    // If Remark is required in any reports then provide boolean as true
+    Columns.unshift(...getRemarkRelatedColumns(onOpenRemarkHistory));
   }
 
-
-  if(includeTags && ( reportName==='BPR' || reportName==='ResearchInsight' )){
+  if (
+    includeTags &&
+    (reportName === "BPR" || reportName === "ResearchInsight")
+  ) {
     Columns.unshift({
-      colId: 'tags',
-      field: 'tags',
+      colId: "tags",
+      field: "tags",
       headerName: "Tags",
-      cellRenderer: 'tagsCellRenderer',
+      cellRenderer: "tagsCellRenderer",
       width: 100,
-      initialHide:false,
-      filter:true,
-      pinned:null,
+      initialHide: false,
+      filter: true,
+      pinned: null,
       ...aggridDefaultColumnProps,
       filterParams: {
-        buttons: ['reset'], // Adds Apply and Clear buttons
+        buttons: ["reset"], // Adds Apply and Clear buttons
       },
-    })
+    });
   }
 
-  if(includeGraph){
-    Columns.unshift(generateDailyDataGraphCell(onOpenDailyDataGraph))
+  if (includeGraph) {
+    Columns.unshift(generateDailyDataGraphCell(onOpenDailyDataGraph));
   }
 
+  return Columns;
+};
 
-  return Columns
+function classFromHex(hex: string): string {
+  return `tooltip-color-${hex.replace("#", "").toUpperCase()}`;
 }
 
 const createCommonTooltip = (seriesColor: string) => ({
   enabled: true,
   renderer: (params: any) => {
     const { datum, xKey, yKey, yName } = params;
-    
+    const colorClass = classFromHex(seriesColor);
+
     return `
-      <div style="padding: 0; background: ${seriesColor}; border-radius: 4px; min-width: 120px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
-        <div style="padding: 6px 12px; color: white; font-weight: 600; font-size: 13px;">
+    <div class="tooltip-wrapper ">
+        <div class="tooltip-header ${colorClass}">
           ${yName}
         </div>
-        <div style="padding: 8px 12px; background: white; border-radius: 0 0 4px 4px; color: #333; font-size: 13px;">
+        <div class="tooltip-body">
           ${datum[xKey]}: ${datum[yKey]}
         </div>
       </div>
@@ -2683,6 +2963,16 @@ const colorNameMap: Record<string, string> = {
   "#355FD3": "Blue",
 };
 
+// const colorKeyMap: Record<string, string> = {
+//   "#000000": "b", // Black
+//   "#ED1C24": "r", // Red
+//   "#FFCB05": "y", // Yellow
+//   "#418D18": "g", // Green
+//   "#355FD3": "bl", // Blue
+//   "#BCBCBC": "w", // Gray/White
+//   "#fff": "w", // White (alternative)
+// };
+
 const pieTooltip = {
   enabled: true,
   renderer: (params: any) => {
@@ -2691,11 +2981,11 @@ const pieTooltip = {
     const colorName = colorNameMap[sliceColor] || "Unknown";
 
     return `
-      <div style="background: #6C696A; border-radius: 6px; overflow: hidden; text-align: center; min-width: 140px;">
-        <div style="color: white; padding: 6px 10px; background-color: ${sliceColor}; font-weight: bold;">
+     <div class="pie-tooltip-container">
+        <div class="pie-tooltip-header slice-${colorName}">
           ${colorName}
         </div>
-        <div style="color: black; padding: 8px 10px; background-color: #ede7e9ff;">
+        <div class="pie-tooltip-body">
           ${datum[angleKey]}%
         </div>
       </div>
@@ -2703,107 +2993,120 @@ const pieTooltip = {
   },
 };
 
-export const generateChartOptions = (data: any, chartParams: any, isCategoryData?: string) => {
-  const { series, palette, chartKey: keys, Labels, chartType, legend } = chartParams;
+export const generateChartOptions = (
+  data: any,
+  chartParams: any,
+  isCategoryData?: string
+) => {
+  const {
+    series,
+    palette,
+    chartKey: keys,
+    Labels,
+    chartType,
+    legend,
+  } = chartParams;
 
   const seriesMapped = series.map((obj: any, index: number) => {
-    if (chartType === 'pie') {
+    if (chartType === "pie") {
       return { ...obj, tooltip: pieTooltip };
     }
-    const seriesColor = palette?.fills?.[index] || '#666666';
-    
-    return { 
-      ...obj, 
-      tooltip: createCommonTooltip(seriesColor)
+    console.log(palette?.fills?.[index], "palette");
+    const seriesColor = palette?.fills?.[index] || "#666666";
+
+    return {
+      ...obj,
+      tooltip: createCommonTooltip(seriesColor),
     };
   });
 
   if (data == null) return {};
-  
+
   const options: AgChartOptions = {
-    data: chartType === 'pie' ? addExtraColumnForLabels(data) : data.slice(0, 10),
-    theme: {
-      palette
-    },
-     tooltip: {
-    mode:"single"
-    },
+    data:
+      chartType === "pie" ? addExtraColumnForLabels(data) : data.slice(0, 10),
+    theme: { palette },
+    tooltip: { enabled: true, mode: "single" },
     series: seriesMapped,
-    ...(chartType === 'pie' ? { legend: addLabelsToPieChart } : legend !== undefined ? { legend } : {}),
-    ...(chartType != 'pie' ? createAxesForBarCharts(keys, Labels) : {}),
+    ...(chartType === "pie"
+      ? { legend: addLabelsToPieChart }
+      : legend !== undefined
+      ? { legend }
+      : {}),
+    ...(chartType !== "pie" ? createAxesForBarCharts(keys, Labels) : {}),
   };
-  
+
   return options;
 };
 
-export const createAxesForBarCharts = (keys:any,Labels:any)=>{
+export const createAxesForBarCharts = (keys: any, Labels: any) => {
   return {
-    axes:[
+    axes: [
       {
         type: "category",
         position: "bottom",
-        keys:keys.Xaxis,
-        title:{
-          enabled:true,
-          text:Labels.Xaxis,
-          fontSize:10,
-          fontFamily:'Roboto'
+        keys: keys.Xaxis,
+        title: {
+          enabled: true,
+          text: Labels.Xaxis,
+          fontSize: 10,
+          fontFamily: "Roboto",
         },
-        label:{
-          formatter:(params:any)=>{
-            if(Labels.Xaxis==='Date'){
-              return new Date(params.value).toISOString().split('T')[0]
+        label: {
+          formatter: (params: any) => {
+            if (Labels.Xaxis === "Date") {
+              return new Date(params.value).toISOString().split("T")[0];
             }
-            if(params.value.length > 10) return params.value.slice(0,10) + '...';
+            if (params.value.length > 10)
+              return params.value.slice(0, 10) + "...";
             return params.value;
           },
-          fontSize:8,
-          fontFamily:'Roboto'
-        }
+          fontSize: 8,
+          fontFamily: "Roboto",
+        },
       },
       {
-        type:'number',
-        position:"left",
-        keys:keys.Yaxis,
-        title:{
-          enabled:true,
-          text:Labels.Yaxis,
-          fontSize:10,
-          fontFamily:'Roboto'
+        type: "number",
+        position: "left",
+        keys: keys.Yaxis,
+        title: {
+          enabled: true,
+          text: Labels.Yaxis,
+          fontSize: 10,
+          fontFamily: "Roboto",
         },
-        label:{
-          fontSize:12
-        }
-      }
-    ]
-  }
-}
+        label: {
+          fontSize: 12,
+        },
+      },
+    ],
+  };
+};
 
-export const addExtraColumnForLabels = (data:any)=>{
-  const addedData = _.cloneDeep(data)
-  if(addedData.length===0) return [];
-  addedData.unshift({color:"custom",pre:-1, post:-2})
+export const addExtraColumnForLabels = (data: any) => {
+  const addedData = _.cloneDeep(data);
+  if (addedData.length === 0) return [];
+  addedData.unshift({ color: "custom", pre: -1, post: -2 });
   return addedData;
-}
+};
 
 export const addLabelsToPieChart = {
-  enabled:true,
-  item:{
-    label:{
-      formatter:(params: any) => {
-        if(params.value == -1){
-          return "PRE"
+  enabled: true,
+  item: {
+    label: {
+      formatter: (params: any) => {
+        if (params.value == -1) {
+          return "PRE";
+        } else if (params.value == -2) {
+          return "POST";
         }
-        else if (params.value == -2){
-          return "POST"
-        }
-        return params.value
-      }
-    }
-  }
-}
+        return params.value;
+      },
+    },
+  },
+};
 
-export const createTotalLegendForLineCharts = (data:any,key:string)=>{
+export const createTotalLegendForLineCharts = (data: any, key: string) => {
   const totalSeriesData = data.reduce((acc: any, current: any) => {
     const existingDate = acc.find((d: any) => d.date === current.date);
     if (existingDate) {
@@ -2815,43 +3118,46 @@ export const createTotalLegendForLineCharts = (data:any,key:string)=>{
   }, []);
   /// return series
   return {
-    type: 'line',
-    xKey: 'date',
+    type: "line",
+    xKey: "date",
     yKey: key,
-    yName: 'Total',
+    yName: "Total",
     data: totalSeriesData,
-    stroke: '#BC3D81', /// change color as per requirement
+    stroke: "#BC3D81", /// change color as per requirement
     strokeWidth: 3,
     marker: {
-        fill: '#BC3D81',
-        size: 8,
-        stroke: "#BC3D81",
-        strokeWidth: 2,
+      fill: "#BC3D81",
+      size: 8,
+      stroke: "#BC3D81",
+      strokeWidth: 2,
     },
-    visible:false
-  }
-}
+    visible: false,
+  };
+};
 
-
-export const categoryFormatter = (params:any)=>{
-  if(params.value.value.length > 10) return params.value.toString().slice(0,10) + '...';
+export const categoryFormatter = (params: any) => {
+  if (params.value.value.length > 10)
+    return params.value.toString().slice(0, 10) + "...";
   return params.value;
-}
+};
 
-export const generateGridSpecificChartFromChartProps = (options:any,downloadName:string):any =>{
-  if(options===undefined){
-    return null
+export const generateGridSpecificChartFromChartProps = (
+  options: any,
+  downloadName: string
+): any => {
+  if (options === undefined) {
+    return null;
   }
   return {
-    palette:options?.theme?.palette,
+    palette: options?.theme?.palette,
     common: {
       legend: {
         position: "bottom",
       },
-      title:{
-        enabled:true,
-        text:downloadName,
-        fontSize:10
+      title: {
+        enabled: true,
+        text: downloadName,
+        fontSize: 10,
       },
       axes: {
         category: {
@@ -2863,7 +3169,7 @@ export const generateGridSpecificChartFromChartProps = (options:any,downloadName
             fontFamily: options.axes?.[0]?.title?.fontFamily ?? "Roboto",
           },
           label: {
-            formatter:categoryFormatter,
+            formatter: categoryFormatter,
             fontSize: options.axes?.[0]?.label?.fontSize ?? 8,
             fontFamily: options.axes?.[0]?.label?.fontFamily ?? "Roboto",
           },
@@ -2881,121 +3187,124 @@ export const generateGridSpecificChartFromChartProps = (options:any,downloadName
     },
     bar: {
       series: {
-        tooltip:{
-          enabled:true,
-          renderer:(params:any)=>{
-              const datum = params.datum
-              return {
-                  title: `${params.yName}`,
-                  content: `${datum[params.xKey].value}: ${datum[params.yKey]}`,
-              }
+        tooltip: {
+          enabled: true,
+          renderer: (params: any) => {
+            const datum = params.datum;
+            return {
+              title: `${params.yName}`,
+              content: `${datum[params.xKey].value}: ${datum[params.yKey]}`,
+            };
           },
-        }
+        },
       },
     },
   };
 };
 
-
-export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (params: any, e: any) => void, onOpenRemarkHistory: (e: any, params: any) => void, onOpenDailyDataGraph: (params: any) => void): ColDef[] => {
-
+export const mapBPRFieldsToColDefs = (
+  fields: BPRField[],
+  onOpenSubmitRemark: (params: any, e: any) => void,
+  onOpenRemarkHistory: (e: any, params: any) => void,
+  onOpenDailyDataGraph: (params: any) => void
+): ColDef[] => {
   if (!fields || fields.length < 1) {
-    return []
+    return [];
   }
 
-  let result: ColDef[] = []
+  let result: ColDef[] = [];
 
   const BPRSpecificColumns: ColDef[] = [
     {
-      colId: 'remarks',
-      field: 'remarks',
-      headerName: 'Enter new remark',
+      colId: "remarks",
+      field: "remarks",
+      headerName: "Enter new remark",
       // cellRenderer: 'submitRemarkCellRenderer',
       // cellRendererParams: {
       //   onClick: onOpenSubmitRemark
       // },
-      cellStyle:{
-        backgroundColor: 'white',
-        border: '1px solid #b9bdba',
-        color: 'black',
-        padding: '1px'
+      cellStyle: {
+        backgroundColor: "white",
+        border: "1px solid #b9bdba",
+        color: "black",
+        padding: "1px",
       },
-      pinned: 'right',
+      pinned: "right",
       editable: true,
-      minWidth:130,
-      maxWidth:160,
-      lockPosition:'right',
-      menuTabs: [] ,
-      suppressMenu: true,
-      resizable:false
+      minWidth: 130,
+      maxWidth: 160,
+      lockPosition: "right",
+      menuTabs: [],
+      suppressHeaderMenuButton: true,
+      resizable: false,
     },
     {
-      colId: 'rh',
-      field: 'rh',
-      headerName: 'Remark History',
-      cellRenderer: 'remarksCellRenderer',
+      colId: "rh",
+      field: "rh",
+      headerName: "Remark History",
+      cellRenderer: "remarksCellRenderer",
       cellRendererParams: {
-        onClick: onOpenRemarkHistory
+        onClick: onOpenRemarkHistory,
       },
-      pinned: 'right',
-      minWidth:120,
-      maxWidth:120,
-      lockPosition:'right',
-      menuTabs: [] ,
-      suppressMenu: true,
-      resizable:false
-    }
-  ]
+      pinned: "right",
+      minWidth: 120,
+      maxWidth: 120,
+      lockPosition: "right",
+      menuTabs: [],
+      suppressHeaderMenuButton: true,
+      resizable: false,
+    },
+  ];
 
   const tagsColDef: ColDef = {
-    colId: 'tags',
-    field: 'tags',
+    colId: "tags",
+    field: "tags",
     headerName: "Tags",
-    cellRenderer: 'tagsCellRenderer',
+    cellRenderer: "tagsCellRenderer",
     width: 100,
-    hide:false,
-    filter:true,
+    hide: false,
+    filter: true,
     filterParams: {
-      buttons: ['reset'], // Adds Apply and Clear buttons
+      buttons: ["reset"], // Adds Apply and Clear buttons
     },
-  }
+  };
 
   result = fields.map((f: BPRField) => {
-    if (f.Col_Code === 'TechPen') {
+    if (f.Col_Code === "TechPen") {
       return {
         colId: f.Col_Code,
         field: f.Col_Code,
         headerName: f.Header,
         hide: !f.Visible,
-        cellRenderer: 'colorTechCellRenderer',
+        cellRenderer: "colorTechCellRenderer",
         // tooltipField: f.Col_Code,
-        minWidth:180,
+        minWidth: 180,
         cellDataType: getCellDataType(f.DataType),
         filter: getCellFilter(f.DataType),
-        pinned:null,
+        pinned: null,
         filterParams: {
-          buttons: ['reset'], // Adds Apply and Clear buttons
+          buttons: ["reset"], // Adds Apply and Clear buttons
           // excelMode: 'windows',
         },
-      }
+      };
     }
-    if (f.Col_Code === 'EcoPen') {
+    if (f.Col_Code === "EcoPen") {
       return {
         colId: f.Col_Code,
         field: f.Col_Code,
         headerName: f.Header,
         hide: !f.Visible,
-        cellRenderer: 'colorEcoCellRenderer',
+        cellRenderer: "colorEcoCellRenderer",
         // tooltipField: f.Col_Code,
-        minWidth:180,
+        minWidth: 180,
         cellDataType: getCellDataType(f.DataType),
         filter: getCellFilter(f.DataType),
-        pinned:null,
+        pinned: null,
         filterParams: {
-          buttons: ['reset'], // Adds Apply and Clear buttons
+          buttons: ["reset"], // Adds Apply and Clear buttons
           // excelMode: 'windows',
         },
-      }
+      };
     }
     return {
       colId: f.Col_Code,
@@ -3003,51 +3312,58 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
       headerName: f.Header,
       hide: !f.Visible,
       // tooltipField: f.Col_Code,
-      minWidth:180,
+      minWidth: 180,
       cellDataType: getCellDataType(f.DataType),
       // filter:true,
-      pinned:null,
+      pinned: null,
       filter: getCellFilter(f.DataType),
-        filterParams: {
-          filters: [
-            {
-              filter: 'agTextColumnFilter',
-              filterParams: {
-                buttons: [ 'reset'],
-              }
+      filterParams: {
+        filters: [
+          {
+            filter: "agTextColumnFilter",
+            filterParams: {
+              buttons: ["reset"],
             },
-            {
-              filter: 'agSetColumnFilter',
-              filterParams: {
-                buttons: ['reset'],
-              }
+          },
+          {
+            filter: "agSetColumnFilter",
+            filterParams: {
+              buttons: ["reset"],
             },
-          ]
-        },
+          },
+        ],
+      },
       // filterParams: {
       //   buttons: ['reset','apply'], // Adds Apply and Clear buttons
       // },
-    }
-  })
-  return [generateDailyDataGraphCell(onOpenDailyDataGraph), tagsColDef, ...result, ...BPRSpecificColumns]
-}
+    };
+  });
+  return [
+    generateDailyDataGraphCell(onOpenDailyDataGraph),
+    tagsColDef,
+    ...result,
+    ...BPRSpecificColumns,
+  ];
+};
 
-export const MainMenuItemsCustomization = (params:any) => {
+export const MainMenuItemsCustomization = (params: any) => {
   const defaultItems = params.defaultItems;
-  const conditionalItemsToRemove = ['remarks','rh']
+  const conditionalItemsToRemove = ["remarks", "rh"];
   const itemsToRemove = ["columnChooser", "resetColumns"]; // Example items to remove
-  if(conditionalItemsToRemove.includes(params.column.colId)){
+  if (conditionalItemsToRemove.includes(params.column.colId)) {
     // itemsToRemove.push()
-    itemsToRemove.push("pinSubMenu")
+    itemsToRemove.push("pinSubMenu");
   }
-  const modifiedItems = defaultItems.filter((item:any) => !itemsToRemove.includes(item));
-   
+  const modifiedItems = defaultItems.filter(
+    (item: any) => !itemsToRemove.includes(item)
+  );
+
   return modifiedItems;
-}
+};
 
 export const mapBPRRowData = (rowData: Array<any>) => {
   //Logic is breaking, doesn't show the grey color on TechColor and EcoColor
-  
+
   // return rowData.map((r) => {
   //   const tempRow = { ...r }
   //   if (r.Norm === 0) {
@@ -3056,14 +3372,12 @@ export const mapBPRRowData = (rowData: Array<any>) => {
   //     tempRow.EcoColor = null
   //     tempRow.TechColor = null
   //   }
-    
+
   //   return tempRow
   // })
-  
-  return rowData
-}
 
-
+  return rowData;
+};
 
 // export const updateCommonAttributes= (array1:any[], array2:any[], colId:string)=> {
 //   // Create a new array to store the updated objects
@@ -3073,11 +3387,11 @@ export const mapBPRRowData = (rowData: Array<any>) => {
 //   array2.forEach(obj2 => {
 //     // Find the corresponding object in array1 by colId
 //     const obj1 = array1.find(obj => obj[colId] === obj2[colId]);
-    
+
 //     if (obj1) {
 //       // Create a copy of obj2 to update it without modifying the original
 //       let updatedObj = { ...obj2 };
-      
+
 //       // Iterate over keys of obj1 (excluding colId) to find common attributes
 //       Object.keys(obj1).forEach(key => {
 //         if (key !== colId && key in obj2) {
@@ -3085,7 +3399,7 @@ export const mapBPRRowData = (rowData: Array<any>) => {
 //           updatedObj[key] = obj1[key];
 //         }
 //       });
-      
+
 //       // Push the updated obj2 to the result array
 //       updatedArray.push(updatedObj);
 //     } else {
@@ -3103,7 +3417,7 @@ export function convertStringNumToNumber(objects: any[]): any[] {
     const updatedObj = { ...obj };
 
     // Check if 'actualStock' is a string and can be converted to a number
-    if (updatedObj.sla2!==undefined && typeof updatedObj.sla2 === 'string') {
+    if (updatedObj.sla2 !== undefined && typeof updatedObj.sla2 === "string") {
       const parsedNumber = parseFloat(updatedObj.sla2);
       if (!isNaN(parsedNumber)) {
         updatedObj.sla2 = parsedNumber;
@@ -3114,50 +3428,54 @@ export function convertStringNumToNumber(objects: any[]): any[] {
   });
 }
 
-export const updateCommonAttributes=(array1:any[], array2:any[], colId:string)=> {
-
+export const updateCommonAttributes = (
+  array1: any[],
+  array2: any[],
+  colId: string
+) => {
   // Create a dictionary (map) of objects from array1 by colId
-  const array1Dict:any = {};
-  array1.forEach(obj => {
+  const array1Dict: any = {};
+  array1.forEach((obj) => {
     array1Dict[obj[colId]] = obj;
   });
 
   // Iterate through array2 and update common attributes from array1
-  array2.forEach(obj2 => {
+  array2.forEach((obj2) => {
     const obj1 = array1Dict[obj2[colId]]; // Find corresponding object in array1 by colId
 
     if (obj1) {
       // For the common object, find common keys (excluding colId)
-      Object.keys(obj1).forEach(key => {
+      Object.keys(obj1).forEach((key) => {
         if (key !== colId && key in obj2) {
           // Replace common attributes in obj2 with those from obj1
           obj2[key] = obj1[key];
         }
       });
 
-      if("hide" in obj1){
-        obj2['hide']=obj1['hide']
+      if ("hide" in obj1) {
+        obj2["hide"] = obj1["hide"];
       }
     }
   });
 
   // Return the updated array2
   return array2;
-}
+};
 
-
-export const mapResearchInsightsFieldsToColDefs = (fields: BPRField[], onOpenDailyDataGraph: any): ColDef[] => {
-
+export const mapResearchInsightsFieldsToColDefs = (
+  fields: BPRField[],
+  onOpenDailyDataGraph: any
+): ColDef[] => {
   if (!fields || fields.length < 1) {
-    return []
+    return [];
   }
 
-  let result: ColDef[] = []
+  let result: ColDef[] = [];
 
   const checkboxColDef: ColDef = {
-    field: 'checkbox',
-    colId: 'checkbox',
-    headerName: '',
+    field: "checkbox",
+    colId: "checkbox",
+    headerName: "",
     floatingFilter: false,
     checkboxSelection: true,
     headerCheckboxSelection: true,
@@ -3165,46 +3483,45 @@ export const mapResearchInsightsFieldsToColDefs = (fields: BPRField[], onOpenDai
     width: 40,
     suppressColumnsToolPanel: true,
     filter: false,
-  }
-
+  };
 
   const tagsColDef: ColDef = {
-    colId: 'tags',
-    field: 'tags',
+    colId: "tags",
+    field: "tags",
     headerName: "Tags",
-    cellRenderer: 'tagsCellRenderer',
+    cellRenderer: "tagsCellRenderer",
     filter: "agMultiColumnFilter",
-    width: 100
-  }
+    width: 100,
+  };
 
   result = fields.map((f: BPRField) => {
-    if (f.Col_Code === 'TechPen') {
+    if (f.Col_Code === "TechPen") {
       return {
         colId: f.Col_Code,
         field: f.Col_Code,
         headerName: f.Header,
         hide: !f.Visible,
-        cellRenderer: 'colorTechCellRenderer',
+        cellRenderer: "colorTechCellRenderer",
         cellStyle: {
-          'min-width': 180,
+          "min-width": 180,
         },
         cellDataType: getCellDataType(f.DataType),
-        filter: getCellFilter(f.DataType)
-      }
+        filter: getCellFilter(f.DataType),
+      };
     }
-    if (f.Col_Code === 'EcoPen') {
+    if (f.Col_Code === "EcoPen") {
       return {
         colId: f.Col_Code,
         field: f.Col_Code,
         headerName: f.Header,
         hide: !f.Visible,
-        cellRenderer: 'colorEcoCellRenderer',
+        cellRenderer: "colorEcoCellRenderer",
         cellStyle: {
-          'min-width': 180,
+          "min-width": 180,
         },
         cellDataType: getCellDataType(f.DataType),
-        filter: getCellFilter(f.DataType)
-      }
+        filter: getCellFilter(f.DataType),
+      };
     }
     return {
       colId: f.Col_Code,
@@ -3212,81 +3529,93 @@ export const mapResearchInsightsFieldsToColDefs = (fields: BPRField[], onOpenDai
       headerName: f.Header,
       hide: !f.Visible,
       cellStyle: {
-        'min-width': 180,
+        "min-width": 180,
       },
       cellDataType: getCellDataType(f.DataType),
-      filter: getCellFilter(f.DataType)
-    }
-  })
-  return [checkboxColDef, { ...createIconColumn({ id: 'dailydatagraph', label: '', cellRenderer: 'grapCellRenderer' }), cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph } }, tagsColDef, ...result]
-}
+      filter: getCellFilter(f.DataType),
+    };
+  });
+  return [
+    checkboxColDef,
+    {
+      ...createIconColumn({
+        id: "dailydatagraph",
+        label: "",
+        cellRenderer: "grapCellRenderer",
+      }),
+      cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph },
+    },
+    tagsColDef,
+    ...result,
+  ];
+};
 
-export const mapBORFieldsToColDefs = (fields:UiConfigField[], onOpenSubmitRemark: (params: any, e: any) => void, onOpenRemarkHistory: (e: any, params: any) => void, onOpenDailyDataGraph: (params: any) => void): ColDef[] => {
-
+export const mapBORFieldsToColDefs = (
+  fields: UiConfigField[],
+  onOpenSubmitRemark: (params: any, e: any) => void,
+  onOpenRemarkHistory: (e: any, params: any) => void,
+  onOpenDailyDataGraph: (params: any) => void
+): ColDef[] => {
   if (!fields || fields.length < 1) {
-    return []
+    return [];
   }
 
-  let result: ColDef[] = []
+  let result: ColDef[] = [];
 
   const BORSpecificColumns: ColDef[] = [
     {
-      colId:'remarks',
-      field:'remarks',
-      headerName:'Enter new remark',
-            // cellRenderer: 'submitRemarkCellRenderer',
+      colId: "remarks",
+      field: "remarks",
+      headerName: "Enter new remark",
+      // cellRenderer: 'submitRemarkCellRenderer',
       // cellRendererParams: {
       //   onClick: onOpenSubmitRemark
       // },
-      cellStyle:{
-        backgroundColor: 'white',
-        border: '1px solid #b9bdba',
-        color: 'black',
-        padding: '1px'
+      cellStyle: {
+        backgroundColor: "white",
+        border: "1px solid #b9bdba",
+        color: "black",
+        padding: "1px",
       },
-     pinned: 'right',
-     editable: true,
-     minWidth:130,
-     maxWidth:160,
-     lockPosition:'right',
-     menuTabs: [] ,
-     suppressMenu: true,
-     resizable:false
+      pinned: "right",
+      editable: true,
+      minWidth: 130,
+      maxWidth: 160,
+      lockPosition: "right",
+      menuTabs: [],
+      suppressHeaderMenuButton: true,
+      resizable: false,
     },
     {
-      colId:'rh',
-      field:'rh',
-      headerName:'Remark History',
-      cellRenderer:'remarksCellRenderer',
-      cellRendererParams:{
-        onClick:onOpenRemarkHistory
-       },
-       pinned: 'right',
-       minWidth:120,
-       maxWidth:120,
-       lockPosition:'right',
-       menuTabs: [] ,
-       suppressMenu: true,
-       resizable:false
-    }
-  ]
-
-
+      colId: "rh",
+      field: "rh",
+      headerName: "Remark History",
+      cellRenderer: "remarksCellRenderer",
+      cellRendererParams: {
+        onClick: onOpenRemarkHistory,
+      },
+      pinned: "right",
+      minWidth: 120,
+      maxWidth: 120,
+      lockPosition: "right",
+      menuTabs: [],
+      suppressHeaderMenuButton: true,
+      resizable: false,
+    },
+  ];
 
   result = fields.map((f: UiConfigField) => {
-
-
-    if (f.Col_Code === 'DispatchPen') {
+    if (f.Col_Code === "DispatchPen") {
       return {
         colId: f.Col_Code,
         field: f.Col_Code,
         headerName: f.Header,
         hide: !f.Visible,
         floatingFilter: true,
-        cellRenderer: 'colorDispatchCellRenderer',
+        cellRenderer: "colorDispatchCellRenderer",
         filter: getCellFilter(f.DataType),
-        cellDataType: getCellDataType(f.DataType)
-      }
+        cellDataType: getCellDataType(f.DataType),
+      };
     }
     return {
       colId: f.Col_Code,
@@ -3295,115 +3624,136 @@ export const mapBORFieldsToColDefs = (fields:UiConfigField[], onOpenSubmitRemark
       hide: !f.Visible,
       floatingFilter: true,
       filter: getCellFilter(f.DataType),
-      cellDataType: getCellDataType(f.DataType)
-    }
-  })
+      cellDataType: getCellDataType(f.DataType),
+    };
+  });
   //return [...result, ...BORSpecificColumns]
-  return [generateDailyDataGraphCell(onOpenDailyDataGraph), ...result, ...BORSpecificColumns]
-}
+  return [
+    generateDailyDataGraphCell(onOpenDailyDataGraph),
+    ...result,
+    ...BORSpecificColumns,
+  ];
+};
 
-export const BPRColorMapper = (color: string): { bg: string, text: string } => {
-
+export const BPRColorMapper = (color: string): { bg: string; text: string } => {
   switch (color) {
     case "White":
       return {
-        "bg": "white",
-        "text": "black"
-      }
+        bg: "white",
+        text: "black",
+      };
     case "Yellow":
       return {
-        "bg": "#EBBF2B",
-        "text": "white"
-      }
+        bg: "#EBBF2B",
+        text: "white",
+      };
     case "Green":
       return {
-        "bg": "#418D18",
-        "text": "white"
-      }
+        bg: "#418D18",
+        text: "white",
+      };
     case "Red":
       return {
-        "bg": "#F04D4D",
-        "text": "white"
-      }
+        bg: "#F04D4D",
+        text: "white",
+      };
     case "Black":
       return {
-        "bg": "#000000",
-        "text": "white"
-      }
+        bg: "#000000",
+        text: "white",
+      };
     case "Blue":
       return {
-        "bg": "blue",
-        "text": "white"
-      }
+        bg: "blue",
+        text: "white",
+      };
     case "default":
       return {
-        'bg':"#9c9ce7",
-        "text": "white"
-      }
-    
+        bg: "#9c9ce7",
+        text: "white",
+      };
+
     case "disabled":
-      return{
-        "bg":"#88888a",
-        "text": "white"
-      }
+      return {
+        bg: "#88888a",
+        text: "white",
+      };
 
     case "selected":
-     return{
-      "bg":"#d45293",
-      "text": "white"
-     }
-    
+      return {
+        bg: "#d45293",
+        text: "white",
+      };
+
     default:
       return {
-        "bg": "#B2B2B2",
-        "text": "white"
-      }
+        bg: "#B2B2B2",
+        text: "white",
+      };
   }
-}
+};
 
-export const mapBTRRowData = (rows: Array<any>, horizon: number): Array<any> => {
-  const columnsNotBeConverted = ['SKUCode','SKUDescription','Whcode','WhCode','LocationName','pc','pn']
+export const mapBTRRowData = (
+  rows: Array<any>,
+  horizon: number
+): Array<any> => {
+  const columnsNotBeConverted = [
+    "SKUCode",
+    "SKUDescription",
+    "Whcode",
+    "WhCode",
+    "LocationName",
+    "pc",
+    "pn",
+  ];
   return rows.map((r) => {
     const transformedRow = Object.keys(r).reduce((acc, key) => {
       let value = r[key];
-      if(value===null){
+      if (value === null) {
         value = "";
       }
-      if(columnsNotBeConverted.includes(key)){
-        acc[key]=value+"";
-      }else if (typeof value === 'string' && !isNaN(parseFloat(value))) {
+      if (columnsNotBeConverted.includes(key)) {
+        acc[key] = value + "";
+      } else if (typeof value === "string" && !isNaN(parseFloat(value))) {
         acc[key] = parseFloat(value);
       } else {
         acc[key] = value;
       }
       return acc;
     }, {} as any);
- 
- 
+
     const NewCategoryString = transformedRow.Category;
     const tempRow = { ...transformedRow, Category: NewCategoryString };
     let tempAvailabilty = 0;
     let nonBlackCount = 0;
     let EmptyCount = 0;
     for (let index = 90; index > 90 - horizon; index--) {
-      if (tempRow[`D${index}`]!== "" && parseInt(tempRow[`D${index}`]) < 100) {
+      if (tempRow[`D${index}`] !== "" && parseInt(tempRow[`D${index}`]) < 100) {
         nonBlackCount = nonBlackCount + 1;
       }
-      if (tempRow[`D${index}`]=== "") {
+      if (tempRow[`D${index}`] === "") {
         EmptyCount = EmptyCount + 1;
       }
     }
 
-    tempAvailabilty = parseFloat(((nonBlackCount / (horizon-EmptyCount)) * 100).toFixed(2))
+    tempAvailabilty = parseFloat(
+      ((nonBlackCount / (horizon - EmptyCount)) * 100).toFixed(2)
+    );
     return {
       ...tempRow,
-      Availability: tempAvailabilty
-    }
-  })
- 
-}
+      Availability: tempAvailabilty,
+    };
+  });
+};
 
-export const mapBTRRowDataToColDefs = (row: any, dateMapper: any, horizon: number, pinCatergory: boolean, excludeColumns?: Array<string>, onOpenDailyDataGraph?:any): Array<ColDef> => {
+export const mapBTRRowDataToColDefs = (
+  row: any,
+  dateMapper: any,
+  horizon: number,
+  pinCatergory: boolean,
+  excludeColumns?: Array<string>,
+  onOpenDailyDataGraph?: any
+): Array<ColDef> => {
   // const graphCellRenderer:ColDef={
   //   field:'graph',
   //   colId:'graph',
@@ -3424,299 +3774,298 @@ export const mapBTRRowDataToColDefs = (row: any, dateMapper: any, horizon: numbe
   //   flex: 1
   // }
 
-  const specificColumns:any =[
+  const specificColumns: any = [
     {
-      colId:'dailydatagraph',
-      field:'',
-      headerName:'',
-      width:40,
-      pinned: 'left',
-      floatingFilter:false,
-      position:0,
-      tooltipField:"DailyDataGraph",
-      cellRenderer:'grapCellRenderer',
-      cellRendererParams:{
-        onOpenDailyDataGraph:onOpenDailyDataGraph
+      colId: "dailydatagraph",
+      field: "",
+      headerName: "",
+      width: 40,
+      pinned: "left",
+      floatingFilter: false,
+      position: 0,
+      tooltipField: "DailyDataGraph",
+      cellRenderer: "grapCellRenderer",
+      cellRendererParams: {
+        onOpenDailyDataGraph: onOpenDailyDataGraph,
       },
-    }
-  ]
-
+    },
+  ];
 
   let result = Object.keys(row).map((key: string): ColDef => {
-
-    if (key.startsWith('D')) {
+    if (key.startsWith("D")) {
       return {
         field: key,
         colId: key,
-        headerName: format(dateMapper[key], 'PP'),
-        cellRenderer: 'colorCellRenderer',
+        headerName: format(dateMapper[key], "PP"),
+        cellRenderer: "colorCellRenderer",
         cellRendererParams: (params: any) => {
           return {
-            colorValue: params.data[key]
-          }
+            colorValue: params.data[key],
+          };
         },
 
         ...BTRDefaultColDefs,
-        minWidth: 100
-      }
+        minWidth: 100,
+      };
     }
 
-    if (key === 'Tags') {
+    if (key === "Tags") {
       return {
         field: key,
         colId: key,
         headerName: key,
-        cellRenderer: 'tagsCellRenderer',
+        cellRenderer: "tagsCellRenderer",
 
-        ...BTRDefaultColDefs
-      }
-    }
-    if (key == 'age') {
-      return {
-        field: key,
-        colId: key,
-        headerName: 'Age',
-        ...BTRDefaultColDefs
-      }
-    }
-    if (key == 'pc') {
-      return {
-        field:key,
-        colId:key,
-        headerName:'Parent Code',
-        ...BTRDefaultColDefs
-      }
-    }
-    if (key == 'pn') {
-      return {
-        field:key,
-        colId:key,
-        headerName:'Parent Name',
-        ...BTRDefaultColDefs
-      }
-    }
-    
-    if(key=='wc'){
-      return {
-        field:key,
-        colId:key,
-        headerName:'White in 30 days',
-        ...BTRDefaultColDefs
-      }
-    }
-    if(key=='bc'){
-      return {
-        field:key,
-        colId:key,
-        headerName:'Black in 30 days',
-        ...BTRDefaultColDefs
-      }
-    }
-     if(key=='blc'){
-      return {
-        field:key,
-        colId:key,
-        headerName:'Blue in 30 days',
-        ...BTRDefaultColDefs
-      }
-    }
-     if(key=='rc'){
-      return {
-        field:key,
-        colId:key,
-        headerName:'Red in 30 days',
-        ...BTRDefaultColDefs
-      }
-    }
-     if(key=='yc'){
-      return {
-        field:key,
-        colId:key,
-        headerName:'Yellow in 30 days',
-        ...BTRDefaultColDefs
-      }
-      
-    }
-     if(key=='gc'){
-      return {
-        field:key,
-        colId:key,
-        headerName:'Green in 30 days',
-        ...BTRDefaultColDefs
-      }
-    }
-
-    if (key == 'wc') {
-      return {
-        field: key,
-        colId: key,
-        headerName: 'WhiteCount',
-        ...BTRDefaultColDefs
-      }
-    }
-    if (key == 'bc') {
-      return {
-        field: key,
-        colId: key,
-        headerName: 'BlackCount',
-        ...BTRDefaultColDefs
-      }
-    }
-    if (key == 'blc') {
-      return {
-        field: key,
-        colId: key,
-        headerName: 'BlueCount',
-        ...BTRDefaultColDefs
-      }
-    }
-    if (key == 'rc') {
-      return {
-        field: key,
-        colId: key,
-        headerName: 'RedCount',
-        ...BTRDefaultColDefs
-      }
-    }
-    if (key == 'yc') {
-      return {
-        field: key,
-        colId: key,
-        headerName: 'YellowCount',
-        ...BTRDefaultColDefs
-      }
-
-    }
-    if (key == 'gc') {
-      return {
-        field: key,
-        colId: key,
-        headerName: 'GreenCount',
-        ...BTRDefaultColDefs
-      }
-    }
-
-    if (key === 'Availability') {
-      return {
-        field: key,
-        colId: key,
-        headerName: key,
-        cellRenderer: 'availabilityCellRenderer',
-        tooltipField: key,
-        tooltipComponent: 'availabilityToolTip',
-
-        ...BTRDefaultColDefs
-      }
-    }
-
-    if (key === 'Category') {
-      return {
-        field: key,
-        colId: key,
-        headerName: key,
-        cellRenderer: 'categoryCellRenderer',
-        tooltipField: key,
-        tooltipComponent: 'categoryToolTip',
-        pinned: pinCatergory ? 'left' : false,
         ...BTRDefaultColDefs,
-        width: 70
-      }
+      };
+    }
+    if (key == "age") {
+      return {
+        field: key,
+        colId: key,
+        headerName: "Age",
+        ...BTRDefaultColDefs,
+      };
+    }
+    if (key == "pc") {
+      return {
+        field: key,
+        colId: key,
+        headerName: "Parent Code",
+        ...BTRDefaultColDefs,
+      };
+    }
+    if (key == "pn") {
+      return {
+        field: key,
+        colId: key,
+        headerName: "Parent Name",
+        ...BTRDefaultColDefs,
+      };
+    }
+
+    if (key == "wc") {
+      return {
+        field: key,
+        colId: key,
+        headerName: "White in 30 days",
+        ...BTRDefaultColDefs,
+      };
+    }
+    if (key == "bc") {
+      return {
+        field: key,
+        colId: key,
+        headerName: "Black in 30 days",
+        ...BTRDefaultColDefs,
+      };
+    }
+    if (key == "blc") {
+      return {
+        field: key,
+        colId: key,
+        headerName: "Blue in 30 days",
+        ...BTRDefaultColDefs,
+      };
+    }
+    if (key == "rc") {
+      return {
+        field: key,
+        colId: key,
+        headerName: "Red in 30 days",
+        ...BTRDefaultColDefs,
+      };
+    }
+    if (key == "yc") {
+      return {
+        field: key,
+        colId: key,
+        headerName: "Yellow in 30 days",
+        ...BTRDefaultColDefs,
+      };
+    }
+    if (key == "gc") {
+      return {
+        field: key,
+        colId: key,
+        headerName: "Green in 30 days",
+        ...BTRDefaultColDefs,
+      };
+    }
+
+    if (key == "wc") {
+      return {
+        field: key,
+        colId: key,
+        headerName: "WhiteCount",
+        ...BTRDefaultColDefs,
+      };
+    }
+    if (key == "bc") {
+      return {
+        field: key,
+        colId: key,
+        headerName: "BlackCount",
+        ...BTRDefaultColDefs,
+      };
+    }
+    if (key == "blc") {
+      return {
+        field: key,
+        colId: key,
+        headerName: "BlueCount",
+        ...BTRDefaultColDefs,
+      };
+    }
+    if (key == "rc") {
+      return {
+        field: key,
+        colId: key,
+        headerName: "RedCount",
+        ...BTRDefaultColDefs,
+      };
+    }
+    if (key == "yc") {
+      return {
+        field: key,
+        colId: key,
+        headerName: "YellowCount",
+        ...BTRDefaultColDefs,
+      };
+    }
+    if (key == "gc") {
+      return {
+        field: key,
+        colId: key,
+        headerName: "GreenCount",
+        ...BTRDefaultColDefs,
+      };
+    }
+
+    if (key === "Availability") {
+      return {
+        field: key,
+        colId: key,
+        headerName: key,
+        cellRenderer: "availabilityCellRenderer",
+        tooltipField: key,
+        tooltipComponent: "availabilityToolTip",
+
+        ...BTRDefaultColDefs,
+      };
+    }
+
+    if (key === "Category") {
+      return {
+        field: key,
+        colId: key,
+        headerName: key,
+        cellRenderer: "categoryCellRenderer",
+        tooltipField: key,
+        tooltipComponent: "categoryToolTip",
+        pinned: pinCatergory ? "left" : false,
+        ...BTRDefaultColDefs,
+        width: 70,
+      };
     }
 
     return {
       field: key,
       colId: key,
       headerName: key,
-      ...BTRDefaultColDefs
-    }
-  })
+      ...BTRDefaultColDefs,
+    };
+  });
   // if(onShowChart)result = [graphCellRenderer,...result]
-  result = result.filter((r) => (!r.colId?.startsWith('D')) || (r.colId.startsWith('D') && parseInt(r.colId.slice(1)) > 90 - horizon))
- 
-  if (excludeColumns) result = result.filter((r) => r.colId && !excludeColumns.includes(r.colId))
-  return [...specificColumns,...result]
+  result = result.filter(
+    (r) =>
+      !r.colId?.startsWith("D") ||
+      (r.colId.startsWith("D") && parseInt(r.colId.slice(1)) > 90 - horizon)
+  );
 
-}
+  if (excludeColumns)
+    result = result.filter((r) => r.colId && !excludeColumns.includes(r.colId));
+  return [...specificColumns, ...result];
+};
 
-export const mapDBMFieldsToColDefs = (fields: DBMField[], onOpenDailyDataGraph: any, afterSleepCallBack: () => void): ColDef[] => {
-
-
+export const mapDBMFieldsToColDefs = (
+  fields: DBMField[],
+  onOpenDailyDataGraph: any,
+  afterSleepCallBack: () => void
+): ColDef[] => {
   if (!fields || fields.length < 1) {
-    return []
+    return [];
   }
 
   fields.sort((a: DBMField, b: DBMField) => a.Col_Position - b.Col_Position);
   // console.log(fields);
 
-  let result: ColDef[] = []
-
+  let result: ColDef[] = [];
 
   const DBMTickColumn: ColDef = {
-    field: 'checkbox',
-    colId: 'checkbox',
-    headerName: '',
+    field: "checkbox",
+    colId: "checkbox",
+    headerName: "",
     floatingFilter: false,
     checkboxSelection: true,
     headerCheckboxSelectionCurrentPageOnly: true,
     width: 45,
-    pinned: 'left',
-    lockPosition: 'left',
-    initialHide:false,
-    suppressMenu:true
-  }
+    pinned: "left",
+    lockPosition: "left",
+    initialHide: false,
+    suppressHeaderMenuButton: true,
+  };
 
   const DBMGraphColumn: ColDef[] = [
     {
-      colId: 'dailydatagraph',
-      field: '',
-      headerName: '',
+      colId: "dailydatagraph",
+      field: "",
+      headerName: "",
       width: 60,
-      minWidth:60,
-      maxWidth:70,
+      minWidth: 60,
+      maxWidth: 70,
       lockPosition: true,
       floatingFilter: false,
       tooltipField: "DailyDataGraph",
-      cellRenderer: 'grapCellRenderer',
+      cellRenderer: "grapCellRenderer",
       cellRendererParams: {
-        onOpenDailyDataGraph: onOpenDailyDataGraph
+        onOpenDailyDataGraph: onOpenDailyDataGraph,
       },
-      initialHide:false,
-      pinned:'left',
-      suppressMenu:true
-    }
-  ]
+      initialHide: false,
+      pinned: "left",
+      suppressHeaderMenuButton: true,
+    },
+  ];
 
   const DBMSleepColumn: ColDef[] = [
     {
-      colId: 'sleep',
-      headerName: 'Sleep',
+      colId: "sleep",
+      headerName: "Sleep",
       lockPosition: true,
-      cellRenderer: 'sleepCellRenderer',
+      cellRenderer: "sleepCellRenderer",
       cellRendererParams: {
-        callBack: afterSleepCallBack
+        callBack: afterSleepCallBack,
       },
       floatingFilter: false,
       minWidth: 100,
       maxWidth: 100,
-      initialHide:false,
-      pinned:'left',
-      suppressMenu:true
-    }
-  ]
+      initialHide: false,
+      pinned: "left",
+      suppressHeaderMenuButton: true,
+    },
+  ];
 
   const SuggestionCategory: ColDef = {
-    headerName: '',
+    headerName: "",
     lockPosition: true,
-    cellRenderer: 'suggestionCategoryCellRenderer',
+    cellRenderer: "suggestionCategoryCellRenderer",
     floatingFilter: false,
     minWidth: 30,
     maxWidth: 30,
-    initialHide:false,
-    pinned:'left',
-    suppressMenu:true
-  }
-
-
+    initialHide: false,
+    pinned: "left",
+    suppressHeaderMenuButton: true,
+  };
 
   result = fields.map((f: DBMField) => {
     return {
@@ -3725,361 +4074,401 @@ export const mapDBMFieldsToColDefs = (fields: DBMField[], onOpenDailyDataGraph: 
       headerName: f.Header,
       hide: !f.Visible,
       cellDataType: getCellDataType(f.DataType),
-      filter: getCellFilter(f.DataType)
-    }
-  })
+      filter: getCellFilter(f.DataType),
+    };
+  });
 
   const additionalColumns: ColDef[] = [
     {
-      colId: 'OldNormValue',
-      field: 'OldNormValue',
-      headerName: 'Old Norm',
+      colId: "OldNormValue",
+      field: "OldNormValue",
+      headerName: "Old Norm",
       hide: false,
-      cellDataType: getCellDataType('Number'),
-      filter: getCellFilter('Number')
+      cellDataType: getCellDataType("Number"),
+      filter: getCellFilter("Number"),
     },
     {
-      colId: 'NewNormValue',
-      field: 'NewNormValue',
-      headerName: 'New Norm',
+      colId: "NewNormValue",
+      field: "NewNormValue",
+      headerName: "New Norm",
       hide: false,
-      cellDataType: getCellDataType('Number'),
-      filter: getCellFilter("Number")
+      cellDataType: getCellDataType("Number"),
+      filter: getCellFilter("Number"),
     },
     {
-      colId: 'Comment',
-      field: 'Comment',
-      headerName: 'Reason',
+      colId: "Comment",
+      field: "Comment",
+      headerName: "Reason",
       hide: false,
       cellDataType: getCellDataType("String"),
-      filter: getCellFilter("String")
-    }
-  ]
+      filter: getCellFilter("String"),
+    },
+  ];
 
   const insertPosition = 4;
   result.splice(insertPosition, 0, ...additionalColumns);
 
-  return [DBMTickColumn, ...DBMGraphColumn, { ...SuggestionCategory }, ...DBMSleepColumn, ...result]
+  return [
+    DBMTickColumn,
+    ...DBMGraphColumn,
+    { ...SuggestionCategory },
+    ...DBMSleepColumn,
+    ...result,
+  ];
+};
 
-}
-
-export const mapInTransitWhereAboutsRowData = (rowData: Array<any>): Array<any> => {
-  if (!rowData || !Array.isArray(rowData)) return []
+export const mapInTransitWhereAboutsRowData = (
+  rowData: Array<any>
+): Array<any> => {
+  if (!rowData || !Array.isArray(rowData)) return [];
   // PhysicalInventoryColor
   return rowData.map((r: any) => {
-    if (!r.skuDetails || r.skuDetails.length < 1) return r
-    let legalCount = 0
+    if (!r.skuDetails || r.skuDetails.length < 1) return r;
+    let legalCount = 0;
     const colorArrayMap: any = {
-      "Black": 0,
-      "Red": 0,
-      "Yellow": 0,
-      "Green": 0,
-      "White": 0
-    }
+      Black: 0,
+      Red: 0,
+      Yellow: 0,
+      Green: 0,
+      White: 0,
+    };
     r.skuDetails.forEach((sd: any) => {
       if (sd.PhysicalInventoryColor) {
-        colorArrayMap[sd.PhysicalInventoryColor] = colorArrayMap[sd.PhysicalInventoryColor] + 1
-        legalCount += 1
+        colorArrayMap[sd.PhysicalInventoryColor] =
+          colorArrayMap[sd.PhysicalInventoryColor] + 1;
+        legalCount += 1;
       }
-
-    })
+    });
     return {
       ...r,
       on_hand_penetration: colorArrayMap,
-      count: legalCount
-    }
-  })
-
-}
+      count: legalCount,
+    };
+  });
+};
 
 export const mapSubmitRemarkData = (row: any): any => {
   return {
-
-
     OrderNo: row.OrderNo,
     SKUCode: row.SKUCode,
     WhCode: row.WhCode,
     ParentWHCode: row.SenderLocation,
     Remarks: row.action || "",
     CurrentLocation: row.CurrentLoc,
-    ETA: row.ETA.replace(/-/g, '/')
-
-
-  }
-}
-
+    ETA: row.ETA.replace(/-/g, "/"),
+  };
+};
 
 export const convertToInt = (data: any, keys: string[]) => {
   return data.map((row: any) => {
     const tempObj: any = {};
     Object.keys(row).forEach((key: string) => {
-      const value = parseFloat(row[key])
+      const value = parseFloat(row[key]);
       if (keys.includes(key) && !isNaN(value)) {
-        tempObj[key] = value
-      }
-      else {
+        tempObj[key] = value;
+      } else {
         tempObj[key] = row[key];
       }
-    })
-    return { ...tempObj }
-  })
-}
+    });
+    return { ...tempObj };
+  });
+};
 
 export const getColumnsForExcelExport = (columns: Array<ColDef>): any => {
-  const defaultColumnsToExclude = ['checkbox', 'dailydatagraph', 'sleep', 'tags', 'rh', 'remarks', 'AgeingOrder', 't']
-  return columns.filter((c: ColDef) => (c.colId !== undefined && !defaultColumnsToExclude.includes(c.colId))).map((c) => (c.colId && c.colId))
+  const defaultColumnsToExclude = [
+    "checkbox",
+    "dailydatagraph",
+    "sleep",
+    "tags",
+    "rh",
+    "remarks",
+    "AgeingOrder",
+    "t",
+  ];
+  return columns
+    .filter(
+      (c: ColDef) =>
+        c.colId !== undefined && !defaultColumnsToExclude.includes(c.colId)
+    )
+    .map((c) => c.colId && c.colId);
+};
 
-}
-
-export const getBPRViewTableHeaderFilterOptions = (dataType: string | undefined): Array<{ value: string, label: string }> => {
-  if (dataType === 'number') {
-    return BPRViewTableHeaderFilterNumberoptions
+export const getBPRViewTableHeaderFilterOptions = (
+  dataType: string | undefined
+): Array<{ value: string; label: string }> => {
+  if (dataType === "number") {
+    return BPRViewTableHeaderFilterNumberoptions;
   }
 
-  return BPRViewTableHeaderFilterStringoptions
-}
+  return BPRViewTableHeaderFilterStringoptions;
+};
 
-export const performStringOpertionsForBPRViewTableFilter = (reference: string, value: string, operator: BPRViewTableFilterStringOperator): boolean => {
+export const performStringOpertionsForBPRViewTableFilter = (
+  reference: string,
+  value: string,
+  operator: BPRViewTableFilterStringOperator
+): boolean => {
   //String operations
   switch (operator) {
-    case 'contains':
-      return reference.includes(value)
-    case 'doesNotContain':
-      return !reference.includes(value)
-    case 'equals':
-      return reference === value
-    case 'doesNotEqual':
-      return reference !== value
+    case "contains":
+      return reference.includes(value);
+    case "doesNotContain":
+      return !reference.includes(value);
+    case "equals":
+      return reference === value;
+    case "doesNotEqual":
+      return reference !== value;
     default:
-      return false
+      return false;
   }
+};
 
-}
-
-export const performNumericalOpertionsForBPRViewTableFilter = (num1: number, num2: number, operator: BPRViewTableFilterNumericalOperator): boolean => {
-
+export const performNumericalOpertionsForBPRViewTableFilter = (
+  num1: number,
+  num2: number,
+  operator: BPRViewTableFilterNumericalOperator
+): boolean => {
   switch (operator) {
-    case 'equals':
-      return num1 === num2
-    case 'doesNotEqual':
-      return num1 !== num2
-    case 'greaterThan':
-      return num2 < num1
-    case 'lessThan':
-      return num2 > num1
+    case "equals":
+      return num1 === num2;
+    case "doesNotEqual":
+      return num1 !== num2;
+    case "greaterThan":
+      return num2 < num1;
+    case "lessThan":
+      return num2 > num1;
     default:
-      return false
-  }
-
-}
-
-export const getFiltersArrayFromColDefs = (colDefs: Array<BPRViewTableColDef>): Array<any> => {
-  return colDefs.filter((c) => c.filter).map((f) => ({ colId: f.colId, filterValue: '', dataType: f.dataType, query: null }))
-}
-
-export const storeCellColors: Record<string, { color: string; backgroundColor: string, border: string }> = {
-  surplus: {
-    color: '#585757',
-    backgroundColor: '#fafafaff',
-    border: '#d0d6ceff'
-  },
-  complete: {
-    color: '#306A0F',
-    backgroundColor: '#f7fff2ff',
-    border: '#dfedd8ff'
-  },
-  incomplete: {
-    color: '#816F08',
-    backgroundColor: '#fffcedff',
-    border: '#faf7deff'
-  },
-  'very-incomplete': {
-    color: '#C61C1C',
-    backgroundColor: '#fff2f2ff',
-    border: '#e8c1beff'
-  },
-  default: {
-    color: '#585757',
-    backgroundColor: '#EBE5E5',
-    border: '#d0d6ceff'
+      return false;
   }
 };
 
-export const floatingStoreColors: Record<string, { color: string; backgroundColor: string, border: string }> = {
-  surplus: {
-    color: '#585757',
-    backgroundColor: '#fafafaff',
-    border: '#d0d6ceff'
-  },
-  complete: {
-    color: '#306A0F',
-    backgroundColor: '#f7fff2ff',
-    border: '#dfedd8ff'
-  },
-  incomplete: {
-    color: '#816F08',
-    backgroundColor: '#fffcedff',
-    border: '#faf7deff'
-  },
-  'very-incomplete': {
-    color: '#C61C1C',
-    backgroundColor: '#fff2f2ff',
-    border: '#e8c1beff'
-  },
-  default: {
-    color: '#585757',
-    backgroundColor: '#EBE5E5',
-    border: '#d0d6ceff'
-  }
+export const getFiltersArrayFromColDefs = (
+  colDefs: Array<BPRViewTableColDef>
+): Array<any> => {
+  return colDefs
+    .filter((c) => c.filter)
+    .map((f) => ({
+      colId: f.colId,
+      filterValue: "",
+      dataType: f.dataType,
+      query: null,
+    }));
 };
 
+export const storeCellColors: Record<
+  string,
+  { color: string; backgroundColor: string; border: string }
+> = {
+  surplus: {
+    color: "#585757",
+    backgroundColor: "#fafafaff",
+    border: "#d0d6ceff",
+  },
+  complete: {
+    color: "#306A0F",
+    backgroundColor: "#f7fff2ff",
+    border: "#dfedd8ff",
+  },
+  incomplete: {
+    color: "#816F08",
+    backgroundColor: "#fffcedff",
+    border: "#faf7deff",
+  },
+  "very-incomplete": {
+    color: "#C61C1C",
+    backgroundColor: "#fff2f2ff",
+    border: "#e8c1beff",
+  },
+  default: {
+    color: "#585757",
+    backgroundColor: "#EBE5E5",
+    border: "#d0d6ceff",
+  },
+};
+
+export const floatingStoreColors: Record<
+  string,
+  { color: string; backgroundColor: string; border: string }
+> = {
+  surplus: {
+    color: "#585757",
+    backgroundColor: "#fafafaff",
+    border: "#d0d6ceff",
+  },
+  complete: {
+    color: "#306A0F",
+    backgroundColor: "#f7fff2ff",
+    border: "#dfedd8ff",
+  },
+  incomplete: {
+    color: "#816F08",
+    backgroundColor: "#fffcedff",
+    border: "#faf7deff",
+  },
+  "very-incomplete": {
+    color: "#C61C1C",
+    backgroundColor: "#fff2f2ff",
+    border: "#e8c1beff",
+  },
+  default: {
+    color: "#585757",
+    backgroundColor: "#EBE5E5",
+    border: "#d0d6ceff",
+  },
+};
 
 export const getMCGridStoreImgSrc = (status: string): string => {
-  if ('surplus' === status) return '/assets/img/VectorFLOW/BPR/mc-grid-surplus.svg'
-  if ('incomplete' === status) return '/assets/img/VectorFLOW/BPR/mc-grid-deficit-incomplete.svg'
-  return '/assets/img/VectorFLOW/BPR/mc-grid-deficit-very-incomplete.svg'
-}
+  if ("surplus" === status)
+    return "/assets/img/VectorFLOW/BPR/mc-grid-surplus.svg";
+  if ("incomplete" === status)
+    return "/assets/img/VectorFLOW/BPR/mc-grid-deficit-incomplete.svg";
+  return "/assets/img/VectorFLOW/BPR/mc-grid-deficit-very-incomplete.svg";
+};
 
 export const getMCGridStoreIconColor = (status: string): string => {
-  if ('very-incomplete' === status) return '#F8416C'
-  if ('incomplete' === status) return '#ED8D3A'
-  return 'rgb(105, 105, 105)'
-}
+  if ("very-incomplete" === status) return "#F8416C";
+  if ("incomplete" === status) return "#ED8D3A";
+  return "rgb(105, 105, 105)";
+};
 
-
-export const getProductAndLocationHeirarchiesFromEnv = (column: any, extraProperties: any , PRODUCT_PERMISSION_L1:any ,PRODUCT_PERMISSION_L2:any ,PRODUCT_PERMISSION_L3:any , LOCATION_PERMISSION_L1:any , LOCATION_PERMISSION_L2 :any, LOCATION_PERMISSION_L3:any  ) => {
-  
-
-
-  if (column.colCode === 'sl1') {
+export const getProductAndLocationHeirarchiesFromEnv = (
+  column: any,
+  extraProperties: any,
+  PRODUCT_PERMISSION_L1: any,
+  PRODUCT_PERMISSION_L2: any,
+  PRODUCT_PERMISSION_L3: any,
+  LOCATION_PERMISSION_L1: any,
+  LOCATION_PERMISSION_L2: any,
+  LOCATION_PERMISSION_L3: any
+) => {
+  if (column.colCode === "sl1") {
     return {
-      field: column['colCode'],
-      colId: column['colCode'],
+      field: column["colCode"],
+      colId: column["colCode"],
       headerName: PRODUCT_PERMISSION_L1,
-      ...extraProperties
-    }
+      ...extraProperties,
+    };
   }
-  if (column.colCode === 'sl2') {
+  if (column.colCode === "sl2") {
     return {
-      field: column['colCode'],
-      colId: column['colCode'],
+      field: column["colCode"],
+      colId: column["colCode"],
       headerName: PRODUCT_PERMISSION_L2,
-      ...extraProperties
-    }
+      ...extraProperties,
+    };
   }
-  if (column.colCode === 'sl3') {
+  if (column.colCode === "sl3") {
     return {
-      field: column['colCode'],
-      colId: column['colCode'],
+      field: column["colCode"],
+      colId: column["colCode"],
       headerName: PRODUCT_PERMISSION_L3,
-      ...extraProperties
-    }
+      ...extraProperties,
+    };
   }
-  if (column.colCode === 'll1') {
+  if (column.colCode === "ll1") {
     return {
-      field: column['colCode'],
-      colId: column['colCode'],
+      field: column["colCode"],
+      colId: column["colCode"],
       headerName: LOCATION_PERMISSION_L1,
-      ...extraProperties
-    }
+      ...extraProperties,
+    };
   }
-  if (column.colCode === 'll2') {
+  if (column.colCode === "ll2") {
     return {
-      field: column['colCode'],
-      colId: column['colCode'],
+      field: column["colCode"],
+      colId: column["colCode"],
       headerName: LOCATION_PERMISSION_L2,
-      ...extraProperties
-    }
+      ...extraProperties,
+    };
   }
 
-  if (column.colCode === 'll3') {
+  if (column.colCode === "ll3") {
     return {
-      field: column['colCode'],
-      colId: column['colCode'],
+      field: column["colCode"],
+      colId: column["colCode"],
       headerName: LOCATION_PERMISSION_L3,
-      ...extraProperties
-    }
+      ...extraProperties,
+    };
   }
 
   return undefined;
-}
+};
 
-
-
-
-export const convertUiConfigToOptions = (data:any) => {
-  return data?.map((column:any)=>{
+export const convertUiConfigToOptions = (data: any) => {
+  return data?.map((column: any) => {
     return {
-      value:column.Col_Code,
-      label:column.Header
-    }
-  })
-}
+      value: column.Col_Code,
+      label: column.Header,
+    };
+  });
+};
 
-
-export const handleDownloadVFReports = async (payload:{name:string,filters:any}) => {
-
+export const handleDownloadVFReports = async (payload: {
+  name: string;
+  filters: any;
+}) => {
   try {
-    const {name} = payload
-    const response = await fetch(`${process.env.REACT_APP_API_HOST}/download-excel`, {
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      method:"post",
-      credentials:"include",
-      body:JSON.stringify(payload)
-    })  
-    if(!response.ok){
-      notifyError("Error while downloading")
-      return false; 
-    }else{
-    // Convert response to blob object
-    const blob = await response.blob()
+    const { name } = payload;
+    const response = await fetch(
+      `${process.env.REACT_APP_API_HOST}/download-excel`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "post",
+        credentials: "include",
+        body: JSON.stringify(payload),
+      }
+    );
+    if (!response.ok) {
+      notifyError("Error while downloading");
+      return false;
+    } else {
+      // Convert response to blob object
+      const blob = await response.blob();
 
-    // Create download URL for blob object
-    const url = URL.createObjectURL(blob)
-  
-    // Trigger download
-    const link = document.createElement('a')
-    link.href = url
-    if(name.length!==0){
-      link.setAttribute('download', `${name}`)
-    }else{
-      link.setAttribute('download', `ReportFile.csv`)
+      // Create download URL for blob object
+      const url = URL.createObjectURL(blob);
+
+      // Trigger download
+      const link = document.createElement("a");
+      link.href = url;
+      if (name.length !== 0) {
+        link.setAttribute("download", `${name}`);
+      } else {
+        link.setAttribute("download", `ReportFile.csv`);
+      }
+      document.body.appendChild(link);
+      link.click();
+      // Clean up download URL
+      URL.revokeObjectURL(url);
     }
-    document.body.appendChild(link)
-    link.click()
-    // Clean up download URL
-    URL.revokeObjectURL(url);
-    
-  }
-  } catch (error:any) {
-    notifyError('Error while downloading');
+  } catch (error: any) {
+    notifyError("Error while downloading");
     return false;
   }
- 
-}
-export const mapProcPlanningFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef[] => {
-
+};
+export const mapProcPlanningFieldsToColDefs = (
+  fields: ColumnHeaderConfig[]
+): ColDef[] => {
   if (!fields || fields.length < 1) {
     return [];
   }
   let result: ColDef[] = [];
-  const PPColumns: ColDef[] = [
-  ]
+  const PPColumns: ColDef[] = [];
 
   result = fields.map((f: ColumnHeaderConfig) => {
-    if (f.jf === 'ic') {
+    if (f.jf === "ic") {
       return {
         colId: f.jf,
         field: f.jf,
         headerName: f.hdr,
         hide: !f.vs,
-        cellRenderer: 'agGroupCellRenderer',
+        cellRenderer: "agGroupCellRenderer",
         initialWidth: 20,
-      }
+      };
     }
-    if (f.jf === 'cp') {
+    if (f.jf === "cp") {
       return {
         colId: f.jf,
         field: f.jf,
@@ -4089,11 +4478,11 @@ export const mapProcPlanningFieldsToColDefs = (fields: ColumnHeaderConfig[]): Co
         tooltipValueGetter: (params: any) => {
           const cpData = params.data.cp[0];
           const keysToPrint = ["B", "R", "Y", "G", "W", "Bl"];
-          let tooltipText = '';
+          let tooltipText = "";
           keysToPrint.forEach((key) => {
             if (Object.prototype.hasOwnProperty.call(cpData, key)) {
-              if (tooltipText !== '') {
-                tooltipText += ' | ';
+              if (tooltipText !== "") {
+                tooltipText += " | ";
               }
               tooltipText += `${key}: ${cpData[key]}`;
             }
@@ -4104,9 +4493,9 @@ export const mapProcPlanningFieldsToColDefs = (fields: ColumnHeaderConfig[]): Co
         initialWidth: 200, //160
         autoHeaderHeight: true,
         wrapHeaderText: true,
-      }
+      };
     }
-    if (f.jf === 'eas') {
+    if (f.jf === "eas") {
       return {
         colId: f.jf,
         field: f.jf,
@@ -4117,15 +4506,15 @@ export const mapProcPlanningFieldsToColDefs = (fields: ColumnHeaderConfig[]): Co
         autoHeaderHeight: true,
         wrapHeaderText: true,
         initialWidth: 200, //160
-        filter: 'agMultiColumnFilter',
+        filter: "agMultiColumnFilter",
         floatingFilter: true,
         cellStyle: {
-          backgroundColor: 'white',
-          border: '1px solid #b9bdba',
-          color: 'black',
-          padding: '1px',
+          backgroundColor: "white",
+          border: "1px solid #b9bdba",
+          color: "black",
+          padding: "1px",
         },
-      }
+      };
     }
 
     if (f.jf === "rmd") {
@@ -4136,9 +4525,9 @@ export const mapProcPlanningFieldsToColDefs = (fields: ColumnHeaderConfig[]): Co
         hide: !f.vs,
         tooltipField: f.jf,
         initialWidth: 300, //160
-        filter: 'agMultiColumnFilter',
+        filter: "agMultiColumnFilter",
         floatingFilter: true,
-      }
+      };
     }
 
     if (f.jf === "rm") {
@@ -4149,9 +4538,9 @@ export const mapProcPlanningFieldsToColDefs = (fields: ColumnHeaderConfig[]): Co
         hide: !f.vs,
         tooltipField: f.jf,
         initialWidth: 200, //160
-        filter: 'agMultiColumnFilter',
+        filter: "agMultiColumnFilter",
         floatingFilter: true,
-      }
+      };
     }
     return {
       colId: f.jf,
@@ -4162,49 +4551,50 @@ export const mapProcPlanningFieldsToColDefs = (fields: ColumnHeaderConfig[]): Co
       autoHeaderHeight: true,
       wrapHeaderText: true,
       initialWidth: 200, //160
-      filter: 'agMultiColumnFilter',
+      filter: "agMultiColumnFilter",
       floatingFilter: true,
-    }
-  })
+    };
+  });
 
   return [...result, ...PPColumns];
 };
-export const mapProcPlanningChildrenFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef[] => {
-
+export const mapProcPlanningChildrenFieldsToColDefs = (
+  fields: ColumnHeaderConfig[]
+): ColDef[] => {
   if (!fields || fields.length < 1) {
     return [];
   }
   let result: ColDef[] = [];
-  const PPChildrenColumns: ColDef[] = []
+  const PPChildrenColumns: ColDef[] = [];
   result = fields.map((f: ColumnHeaderConfig) => {
-    if (f.jf === 'clr') {
+    if (f.jf === "clr") {
       return {
         colId: f.jf,
         field: f.jf,
         headerName: f.hdr,
         hide: !f.vs,
-        cellRenderer: 'coloPriorityOfBall',
-        filter: 'agMultiColumnFilter',
+        cellRenderer: "coloPriorityOfBall",
+        filter: "agMultiColumnFilter",
         floatingFilter: false,
         initialWidth: 20,
         headerClass: "child-header",
         autoHeaderHeight: true,
         wrapHeaderText: true,
-      }
+      };
     }
-    if (f.jf === 'ord') {
+    if (f.jf === "ord") {
       return {
         colId: f.jf,
         field: f.jf,
         headerName: f.hdr,
-        filter: 'agMultiColumnFilter',
+        filter: "agMultiColumnFilter",
         floatingFilter: false,
         hide: !f.vs,
         headerClass: "child-header",
         // autoHeaderHeight: true,
         // wrapHeaderText: true,
         initialWidth: 300,
-      }
+      };
     }
     return {
       colId: f.jf,
@@ -4212,96 +4602,96 @@ export const mapProcPlanningChildrenFieldsToColDefs = (fields: ColumnHeaderConfi
       field: f.jf,
       headerName: f.hdr,
       hide: !f.vs,
-      filter: 'agMultiColumnFilter',
+      filter: "agMultiColumnFilter",
       floatingFilter: false,
       headerClass: "child-header",
       autoHeaderHeight: true,
       wrapHeaderText: true,
-    }
-  })
+    };
+  });
 
   return [...result, ...PPChildrenColumns];
 };
 
-export const mapSimulateProcPlanningFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef[] => {
-
+export const mapSimulateProcPlanningFieldsToColDefs = (
+  fields: ColumnHeaderConfig[]
+): ColDef[] => {
   if (!fields || fields.length < 1) {
     return [];
   }
   let result: ColDef[] = [];
-  const PPColumns: ColDef[] = [
-  ]
+  const PPColumns: ColDef[] = [];
   result = fields.map((f: ColumnHeaderConfig) => {
-    if (f.jf === 'ic') {
+    if (f.jf === "ic") {
       return {
         colId: f.jf,
         field: f.jf,
         headerName: f.hdr,
         hide: !f.vs,
 
-        cellRenderer: 'agGroupCellRenderer',
+        cellRenderer: "agGroupCellRenderer",
         cellStyle: {
           width: 50,
           maxWidth: 50,
         },
         initialWidth: 40,
-      }
+      };
     }
-    if (f.jf === 'cp') {
+    if (f.jf === "cp") {
       return {
         colId: f.jf,
         field: f.jf,
         headerName: f.hdr,
         hide: !f.vs,
         cellRenderer: "colorCellRenderer",
-        initialWidth: 200,//160
+        initialWidth: 200, //160
         autoHeaderHeight: true,
         wrapHeaderText: true,
-      }
+      };
     }
-    if (f.jf === 'fka') {
+    if (f.jf === "fka") {
       return {
         colId: f.jf,
         field: f.jf,
         headerName: f.hdr,
         hide: !f.vs,
         cellRenderer: "avlCellRenderer",
-        tooltipComponent: 'availabilityToolTip',
+        tooltipComponent: "availabilityToolTip",
         tooltipValueGetter: (params: any) => {
           const oq = params.data.oq;
           const fka = params.data.fka;
           return `${fka}/${oq} kits can be manufactured`;
         },
-        initialWidth: 200,//160
+        initialWidth: 200, //160
         autoHeaderHeight: true,
         wrapHeaderText: true,
-        filter: 'agMultiColumnFilter',
+        filter: "agMultiColumnFilter",
         floatingFilter: true,
-      }
+      };
     }
-    if (f.jf === 'item') {
+    if (f.jf === "item") {
       return {
         colId: f.jf,
         field: f.jf,
         headerName: f.hdr,
         hide: !f.vs,
         tooltipField: f.jf,
-        initialWidth: 200,//160
-        filter: 'agMultiColumnFilter',
+        initialWidth: 200, //160
+        filter: "agMultiColumnFilter",
         floatingFilter: true,
-      }
+      };
     }
-    if (f.jf === 'id') {
+    if (f.jf === "id") {
       return {
         colId: f.jf,
         field: f.jf,
         headerName: f.hdr,
         hide: !f.vs,
         tooltipField: f.jf,
-        initialWidth: 300,//160
-        filter: 'agMultiColumnFilter',
+        initialWidth: 300, //160
+        filter: "agMultiColumnFilter",
         floatingFilter: true,
-      }
+      };
     }
     return {
       colId: f.jf,
@@ -4311,26 +4701,26 @@ export const mapSimulateProcPlanningFieldsToColDefs = (fields: ColumnHeaderConfi
       hide: !f.vs,
       autoHeaderHeight: true,
       wrapHeaderText: true,
-      initialWidth: 200,//160
-      filter: 'agMultiColumnFilter',
+      initialWidth: 200, //160
+      filter: "agMultiColumnFilter",
       floatingFilter: true,
       // aggFunc: "sum"
-    }
-  })
+    };
+  });
 
   return [...result, ...PPColumns];
 };
 
-export const mapSimulateHedaerChildrenFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef[] => {
-
+export const mapSimulateHedaerChildrenFieldsToColDefs = (
+  fields: ColumnHeaderConfig[]
+): ColDef[] => {
   if (!fields || fields.length < 1) {
     return [];
   }
   let result: ColDef[] = [];
-  const SimChildrenColumns: ColDef[] = [
-  ]
+  const SimChildrenColumns: ColDef[] = [];
   result = fields.map((f: ColumnHeaderConfig) => {
-    if (f.jf === 'clr') {
+    if (f.jf === "clr") {
       return {
         colId: f.jf,
         field: f.jf,
@@ -4338,34 +4728,34 @@ export const mapSimulateHedaerChildrenFieldsToColDefs = (fields: ColumnHeaderCon
         headerName: f.hdr,
         hide: !f.vs,
         floatingFilter: false,
-        cellRenderer: 'coloPriorityOfBall',
+        cellRenderer: "coloPriorityOfBall",
 
         initialWidth: 20,
         headerClass: "simchild-header",
-      }
+      };
     }
-    if (f.jf === 'rm') {
+    if (f.jf === "rm") {
       return {
         colId: f.jf,
         field: f.jf,
-        filter: 'agMultiColumnFilter',
+        filter: "agMultiColumnFilter",
         floatingFilter: false,
         headerName: f.hdr,
         hide: !f.vs,
         headerClass: "simchild-header",
-      }
+      };
     }
-    if (f.jf === 'rmd') {
+    if (f.jf === "rmd") {
       return {
         colId: f.jf,
         field: f.jf,
         headerName: f.hdr,
-        filter: 'agMultiColumnFilter',
+        filter: "agMultiColumnFilter",
         floatingFilter: false,
         hide: !f.vs,
         initialWidth: 300,
         headerClass: "simchild-header",
-      }
+      };
     }
     return {
       colId: f.jf,
@@ -4376,20 +4766,20 @@ export const mapSimulateHedaerChildrenFieldsToColDefs = (fields: ColumnHeaderCon
       floatingFilter: false,
       hide: !f.vs,
       headerClass: "simchild-header",
-    }
-  })
+    };
+  });
 
   return [...result, ...SimChildrenColumns];
 };
 
-export const mapMaterialCoverageFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef[] => {
-
+export const mapMaterialCoverageFieldsToColDefs = (
+  fields: ColumnHeaderConfig[]
+): ColDef[] => {
   if (!fields || fields.length < 1) {
     return [];
   }
   let result: ColDef[] = [];
-  const PPColumns: ColDef[] = [
-  ]
+  const PPColumns: ColDef[] = [];
 
   result = fields.map((f: ColumnHeaderConfig) => {
     if (f.jf === "ic") {
@@ -4402,37 +4792,37 @@ export const mapMaterialCoverageFieldsToColDefs = (fields: ColumnHeaderConfig[])
         initialWidth: 80,
       };
     }
-    if (f.jf === 'cp') {
+    if (f.jf === "cp") {
       return {
         colId: f.jf,
         field: f.jf,
         headerName: f.hdr,
         hide: !f.vs,
         cellRenderer: "colorCellRenderer",
-        initialWidth: 200,//160
+        initialWidth: 200, //160
         autoHeaderHeight: true,
         wrapHeaderText: true,
-      }
+      };
     }
-    if (f.jf === 'fka') {
+    if (f.jf === "fka") {
       return {
         colId: f.jf,
         field: f.jf,
         headerName: f.hdr,
         hide: !f.vs,
         cellRenderer: "avlCellRenderer",
-        tooltipComponent: 'availabilityToolTip',
+        tooltipComponent: "availabilityToolTip",
         tooltipValueGetter: (params: any) => {
           const oq = params.data.oq;
           const fka = params.data.fka;
           return `${fka}/${oq} kits can be manufactured`;
         },
-        initialWidth: 200,//160
+        initialWidth: 200, //160
         autoHeaderHeight: true,
         wrapHeaderText: true,
-        filter: 'agMultiColumnFilter',
+        filter: "agMultiColumnFilter",
         floatingFilter: true,
-      }
+      };
     }
     return {
       colId: f.jf,
@@ -4443,25 +4833,24 @@ export const mapMaterialCoverageFieldsToColDefs = (fields: ColumnHeaderConfig[])
       autoHeaderHeight: true,
       wrapHeaderText: true,
       initialWidth: 200, //160
-      filter: 'agMultiColumnFilter',
+      filter: "agMultiColumnFilter",
       floatingFilter: true,
-    }
-  })
+    };
+  });
 
   return [...result, ...PPColumns];
 };
-export const mapMaterialFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef[] => {
-
+export const mapMaterialFieldsToColDefs = (
+  fields: ColumnHeaderConfig[]
+): ColDef[] => {
   if (!fields || fields.length < 1) {
     return [];
   }
   let result: ColDef[] = [];
-  const PPColumns: ColDef[] = [
-  ]
+  const PPColumns: ColDef[] = [];
 
   result = fields.map((f: ColumnHeaderConfig) => {
-
-    if (f.jf === 'cp') {
+    if (f.jf === "cp") {
       return {
         colId: f.jf,
         field: f.jf,
@@ -4471,11 +4860,11 @@ export const mapMaterialFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef
         tooltipValueGetter: (params: any) => {
           const cpData = params.data.cp[0];
           const keysToPrint = ["B", "R", "Y", "G"];
-          let tooltipText = '';
+          let tooltipText = "";
           keysToPrint.forEach((key) => {
             if (Object.prototype.hasOwnProperty.call(cpData, key)) {
-              if (tooltipText !== '') {
-                tooltipText += ' | ';
+              if (tooltipText !== "") {
+                tooltipText += " | ";
               }
               tooltipText += `${key}: ${cpData[key]}`;
             }
@@ -4486,7 +4875,7 @@ export const mapMaterialFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef
         initialWidth: 400, //160
         autoHeaderHeight: true,
         wrapHeaderText: true,
-      }
+      };
     }
 
     return {
@@ -4498,10 +4887,10 @@ export const mapMaterialFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef
       autoHeaderHeight: true,
       wrapHeaderText: true,
       initialWidth: 400, //160
-      filter: 'agMultiColumnFilter',
+      filter: "agMultiColumnFilter",
       floatingFilter: true,
-    }
-  })
+    };
+  });
 
   return [...result, ...PPColumns];
 };
@@ -4510,7 +4899,7 @@ export const mapMaterialFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef
 // ===================================================================================================
 export function mergeObjects(target: any, ...sources: any) {
   sources.forEach((source: any) => {
-    Object.keys(source).forEach(key => {
+    Object.keys(source).forEach((key) => {
       if (source[key] instanceof Object && key in target)
         Object.assign(source[key], mergeObjects(target[key], source[key]));
     });
@@ -4522,79 +4911,89 @@ export function getColumnDefinations(
   fields: any,
   customizationParams: any = {},
   extraFields: any = [],
-  removeCols: any = [],
+  removeCols: any = []
 ) {
- 
-  const columnDefs = fields?.sort((a: any, b: any) => a.cp - b.cp)?.map((data: any) => { 
-    let filterType = 'agMultiColumnFilter'; 
+  const columnDefs = fields
+    ?.sort((a: any, b: any) => a.cp - b.cp)
+    ?.map((data: any) => {
+      let filterType = "agMultiColumnFilter";
 
-    if (data.dt === 'date') {
-      filterType = 'agDateColumnFilter';
-    } else if (data.dt === 'number' || data.dt ==='decimal') {
-      filterType = 'agNumberColumnFilter';
-    }
-
-    const columnDef = {
-      colId: data.cc,
-      headerName: data.hd,
-      field: data.scc,
-      initialHide: !data.v,
-      pinned: null,
-      filter: filterType,
-      enablePivot: true,
-      initialFlex: 1,
-      minWidth: 150,
-      valueFormatter: (params: any) => {
-        if (params.value) {
-          const format = (getNumberFormat() || 'USA').toUpperCase();
-          const locale = format === 'USA' ? 'en-US' : format === 'IND' ? 'hi-IN' : undefined;
-      
-          if (data.dt === 'number') {
-            return locale ? params.value.toLocaleString(locale) : params.value;
-          }
-      
-          if (data.dt === 'decimal') {
-            const fixedValue = parseFloat(params.value.toFixed(2)); 
-            return locale ? fixedValue.toLocaleString(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) :fixedValue;
-          }
-      
-          return params.value;
-        }
-      }, 
-      filterParams: {
-        buttons: ['reset'], 
-        comparator: (filterLocalDateAtMidnight: Date, cellValue: any) => {
-          if (!cellValue) return -1;
-        
-          const cellDate = new Date(cellValue);
-          if (isNaN(cellDate.getTime())) return -1;
-        
-          const cellDateOnly = new Date(
-            cellDate.getFullYear(),
-            cellDate.getMonth(),
-            cellDate.getDate()
-          );
-        
-          if (cellDateOnly < filterLocalDateAtMidnight) return -1;
-          if (cellDateOnly > filterLocalDateAtMidnight) return 1;
-          return 0;
-        }
-        
-      },
-      cellStyle: {
-        justifyContent: data.cla
+      if (data.dt === "date") {
+        filterType = "agDateColumnFilter";
+      } else if (data.dt === "number" || data.dt === "decimal") {
+        filterType = "agNumberColumnFilter";
       }
-    }; 
-    // Apply customization if needed
-    if (customizationParams[data.cc]) {
-      // Object.assign(columnDef, customizationParams[data.cc]);
-      mergeObjects(columnDef, customizationParams[data.cc])
-    }
-    return columnDef;
-  });
 
+      const columnDef = {
+        colId: data.cc,
+        headerName: data.hd,
+        field: data.scc,
+        initialHide: !data.v,
+        pinned: null,
+        filter: filterType,
+        enablePivot: true,
+        initialFlex: 1,
+        minWidth: 150,
+        valueFormatter: (params: any) => {
+          if (params.value) {
+            const format = (getNumberFormat() || "USA").toUpperCase();
+            const locale =
+              format === "USA"
+                ? "en-US"
+                : format === "IND"
+                ? "hi-IN"
+                : undefined;
 
-  
+            if (data.dt === "number") {
+              return locale
+                ? params.value.toLocaleString(locale)
+                : params.value;
+            }
+
+            if (data.dt === "decimal") {
+              const fixedValue = parseFloat(params.value.toFixed(2));
+              return locale
+                ? fixedValue.toLocaleString(locale, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })
+                : fixedValue;
+            }
+
+            return params.value;
+          }
+        },
+        filterParams: {
+          buttons: ["reset"],
+          comparator: (filterLocalDateAtMidnight: Date, cellValue: any) => {
+            if (!cellValue) return -1;
+
+            const cellDate = new Date(cellValue);
+            if (isNaN(cellDate.getTime())) return -1;
+
+            const cellDateOnly = new Date(
+              cellDate.getFullYear(),
+              cellDate.getMonth(),
+              cellDate.getDate()
+            );
+
+            if (cellDateOnly < filterLocalDateAtMidnight) return -1;
+            if (cellDateOnly > filterLocalDateAtMidnight) return 1;
+            return 0;
+          },
+        },
+        cellStyle: {
+          justifyContent: data.cla,
+        },
+      };
+      // Apply customization if needed
+      if (customizationParams[data.cc]) {
+        // Object.assign(columnDef, customizationParams[data.cc]);
+        mergeObjects(columnDef, customizationParams[data.cc]);
+      }
+      return columnDef;
+    });
+
   // Add extra columns
   extraFields?.forEach((field: any) => {
     let position = field.position;
@@ -4609,10 +5008,11 @@ export function getColumnDefinations(
     columnDefs?.splice(position, 0, field);
   });
 
-  const finalcolDef = columnDefs?.filter((obj: any) => !removeCols?.includes(obj.colId));
-  
+  const finalcolDef = columnDefs?.filter(
+    (obj: any) => !removeCols?.includes(obj.colId)
+  );
+
   return finalcolDef;
-  
 }
 // ===================================================================================================
 
@@ -4651,15 +5051,20 @@ export function findUniqueKeysAndValues(filterData: any) {
   // Convert Set to Array and include empty array for missing keys
   const response: any = {};
   for (const key in uniqueValues) {
-    response[key] = Array.from(uniqueValues[key]).map((o: any) => ({ label: o, value: o }));
+    response[key] = Array.from(uniqueValues[key]).map((o: any) => ({
+      label: o,
+      value: o,
+    }));
   }
 
   // Add empty array for any missing keys based on the first object in each array
   const allKeys: any = [
-    ...Array.from(new Set([
-      ...Object.keys(filterData.customers?.[0] || {}),
-      ...Object.keys(filterData.ordLineItems?.[0] || {})
-    ]))
+    ...Array.from(
+      new Set([
+        ...Object.keys(filterData.customers?.[0] || {}),
+        ...Object.keys(filterData.ordLineItems?.[0] || {}),
+      ])
+    ),
   ];
 
   allKeys.forEach((key: any) => {
@@ -4673,12 +5078,15 @@ export function findUniqueKeysAndValues(filterData: any) {
 
 // Function to find dynamic attributes of the object that is passed in paramenters
 export const getDynamicAttributes = (attributes: any) => {
-
-  if (!attributes || attributes?.length === 0 || Object.keys(attributes).length === 0) {
+  if (
+    !attributes ||
+    attributes?.length === 0 ||
+    Object.keys(attributes).length === 0
+  ) {
     return [];
   }
   return attributes?.map((attr: any) => attr.key);
-}
+};
 
 export const getKeyName = (attributes: any, key: string) => {
   for (let i = 0; i < attributes.length; i++) {
@@ -4686,23 +5094,23 @@ export const getKeyName = (attributes: any, key: string) => {
       return attributes[i].name;
     }
   }
-  return ''
-}
+  return "";
+};
 
 export const getType = (attributes: any, key: any) => {
-    for (let i = 0; i < attributes.length; i++) {
-      if (key === attributes[i].key) {
-        if(attributes[i].is_number){
-          return InputTypes.NumberCompare
-        }
-        return InputTypes.TextCompare
+  for (let i = 0; i < attributes.length; i++) {
+    if (key === attributes[i].key) {
+      if (attributes[i].is_number) {
+        return InputTypes.NumberCompare;
       }
+      return InputTypes.TextCompare;
     }
-    return ""
-}
+  }
+  return "";
+};
 
 // Function to check values already there in Values
-  export const formatFilterJSON = (filter: any = {}) => {
+export const formatFilterJSON = (filter: any = {}) => {
   const formatFilter: any = {};
 
   for (const key in filter) {
@@ -4713,34 +5121,44 @@ export const getType = (attributes: any, key: any) => {
       if (value?.length > 0) {
         let formattedVal;
 
-        if (type === 'textCompare') {
-          formattedVal = { op: operator ?? 'et', val: value[0].value };
-        } else if (type === 'numberCompare') {
-          formattedVal = { op: operator ?? 'et', val: parseInt(value[0].value) };
+        if (type === "textCompare") {
+          formattedVal = { op: operator ?? "et", val: value[0].value };
+        } else if (type === "numberCompare") {
+          formattedVal = {
+            op: operator ?? "et",
+            val: parseInt(value[0].value),
+          };
         } else {
           formattedVal = value.map((v: any) => v?.value || v?.id);
         }
 
-        if ((type === 'textCompare' || type === 'numberCompare' )  && !['ide','ov','pbsz','pcbsz'].includes(attributeName)) {
+        if (
+          (type === "textCompare" || type === "numberCompare") &&
+          !["ide", "ov", "pbsz", "pcbsz"].includes(attributeName)
+        ) {
           if (!formatFilter.attributes) formatFilter.attributes = {};
           formatFilter.attributes[attributeName] = formattedVal;
         } else {
           formatFilter[attributeName] = formattedVal;
-        }}
+        }
       }
     }
+  }
 
   // Cleanup empty or invalid entries
-  Object.keys(formatFilter).forEach(key => {
-    if (formatFilter[key]?.val === '') {
+  Object.keys(formatFilter).forEach((key) => {
+    if (formatFilter[key]?.val === "") {
       delete formatFilter[key];
     }
   });
 
-  Object.keys(formatFilter).forEach(key => {
+  Object.keys(formatFilter).forEach((key) => {
     if (
-      (formatFilter[key]?.op && (formatFilter[key]?.val === undefined || formatFilter[key]?.val === null)) ||
-      (formatFilter[key]?.val && (formatFilter[key]?.op === undefined || formatFilter[key]?.op === null))
+      (formatFilter[key]?.op &&
+        (formatFilter[key]?.val === undefined ||
+          formatFilter[key]?.val === null)) ||
+      (formatFilter[key]?.val &&
+        (formatFilter[key]?.op === undefined || formatFilter[key]?.op === null))
     ) {
       delete formatFilter[key];
     }
@@ -4749,8 +5167,6 @@ export const getType = (attributes: any, key: any) => {
   return formatFilter;
 };
 
-
-
 export const checkValue = (filters: any, value: any) => {
   for (let i = 0; i < filters.length; i++) {
     if (filters[i]?.id === value || filters[i]?.value === value) {
@@ -4758,7 +5174,7 @@ export const checkValue = (filters: any, value: any) => {
     }
   }
   return false;
-}
+};
 
 export const getSelectedFilters = (filter: any, isMfgStrgyIncluded: any) => {
   const selectedFilter: any = {};
@@ -4767,20 +5183,34 @@ export const getSelectedFilters = (filter: any, isMfgStrgyIncluded: any) => {
     const newFilter: any = {
       name: label,
       parentId: key,
-      filters: []
-    }
+      filters: [],
+    };
 
     for (let i = 0; i < filters?.length; i++) {
       const { name, attributeName, value, type, operator } = filters[i];
 
-      if (attributeName === 'ms') {
+      if (attributeName === "ms") {
         if (value?.length > 0 && isMfgStrgyIncluded) {
-          newFilter.filters.push({ filterId: attributeName, type, operator, label: name, value: value?.filter((v: any) => v.value || v.id) });
+          newFilter.filters.push({
+            filterId: attributeName,
+            type,
+            operator,
+            label: name,
+            value: value?.filter((v: any) => v.value || v.id),
+          });
         }
       } else {
         if (Array.isArray(value) && value.length > 0) {
-          newFilter.filters.push({ filterId: attributeName, type, operator, label: name, value: (value[0]?.value===0)?  
-            [{value: '0', label: '0'}]: value?.filter((v: any) => v.value || v.id) });
+          newFilter.filters.push({
+            filterId: attributeName,
+            type,
+            operator,
+            label: name,
+            value:
+              value[0]?.value === 0
+                ? [{ value: "0", label: "0" }]
+                : value?.filter((v: any) => v.value || v.id),
+          });
         }
       }
     }
@@ -4788,13 +5218,10 @@ export const getSelectedFilters = (filter: any, isMfgStrgyIncluded: any) => {
     if (newFilter?.filters?.length > 0) {
       selectedFilter[key] = { ...newFilter };
     }
-
-
-
   }
 
   return selectedFilter;
-}
+};
 
 export const getBodyForExcelExport = ({
   headersdata,
@@ -4804,26 +5231,25 @@ export const getBodyForExcelExport = ({
 }: any) => {
   console.log(headersdata,"headersdataaa")
   const filteredHeadersData = headersdata?.filter(
-    (col: any) =>{
-      if(col.colId !== "DropDown" && col.colId !== "Action" && (col.hide !== true || col.rowGroup !== false) && !col.colId.includes('History') && (col.colId!=="Default Attribute-Remark")){
-        console.log(col,"colIdaa")
-        return true;
-      }
-      
-    }
-
+    (col: any) =>
+      col.colId !== "DropDown" &&
+      col.colId !== "Action" &&
+      col.hide !== true &&
+      !col.colId.includes("History") &&
+      col.colId !== "Default Attribute-Remark"
   );
 
   try {
     // Grouped data
     if (groupedColDefsRef?.current) {
-
       const groupedColumnData: any = [];
-    
+
       filteredHeadersData.forEach((headerItem: any) => {
         groupedColDefsRef?.current.forEach((groupDef: any) => {
-          const header = groupDef.ch.find((subHeader: any) => subHeader.groupHeaderKey === headerItem.colId);
-    
+          const header = groupDef.ch.find(
+            (subHeader: any) => subHeader.groupHeaderKey === headerItem.colId
+          );
+
           if (!header) return;
 
           const last = groupedColumnData[groupedColumnData.length - 1];
@@ -4833,7 +5259,6 @@ export const getBodyForExcelExport = ({
           } else {
             groupedColumnData.push({ cc: groupDef.cc, ch: [header] });
           }
-
         });
       });
 
@@ -4842,7 +5267,6 @@ export const getBodyForExcelExport = ({
         isGrouped: true,
         ...filterData,
       };
-      
     }
     // Flat data
     else {
@@ -4855,9 +5279,7 @@ export const getBodyForExcelExport = ({
             
           };
         })
-        .filter(
-          (col: any) => col?.hd !== undefined && col?.scc !== undefined
-        );
+        .filter((col: any) => col?.hd !== undefined && col?.scc !== undefined);
 
       return {
         headers,
@@ -4869,28 +5291,36 @@ export const getBodyForExcelExport = ({
   }
 };
 
-export const DownloadExcel = (response : any,filename = "ReportFile") => {
+export const DownloadExcel = (response: any, filename = "ReportFile") => {
   try {
-    if ((response.headers['content-type'] === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') || (response.headers['content-type'] ===  'application/octet-stream')) {
-      const blob = new Blob([response.data], { type: response.headers['content-type'] });
+    if (
+      response.headers["content-type"] ===
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+      response.headers["content-type"] === "application/octet-stream"
+    ) {
+      const blob = new Blob([response.data], {
+        type: response.headers["content-type"],
+      });
       const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = url;
-      link.setAttribute('download', `${filename}__${format(Date.now(), "dd/MM/yyyy")}.xlsx`); // Use extracted filename
+      link.setAttribute(
+        "download",
+        `${filename}__${format(Date.now(), "dd/MM/yyyy")}.xlsx`
+      ); // Use extracted filename
       document.body.appendChild(link);
       link.click();
       URL.revokeObjectURL(url);
       document.body.removeChild(link);
       return true;
     } else {
-      notifyError('No orders found to export data!');
+      notifyError("No orders found to export data!");
       return false;
     }
   } catch (e) {
     console.log(e);
   }
 };
-
 
 export const DownloadExcelMTA = (response: any, filename = "ReportFile") => {
   try {
@@ -4903,9 +5333,12 @@ export const DownloadExcelMTA = (response: any, filename = "ReportFile") => {
 
     const blob = new Blob([bytes.buffer], { type: responseData.fileType });
     const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = url;
-    link.setAttribute('download', `${filename}__${format(Date.now(), "dd/MM/yyyy")}.xlsx`);
+    link.setAttribute(
+      "download",
+      `${filename}__${format(Date.now(), "dd/MM/yyyy")}.xlsx`
+    );
     document.body.appendChild(link);
     link.click();
     URL.revokeObjectURL(url);
@@ -4916,7 +5349,7 @@ export const DownloadExcelMTA = (response: any, filename = "ReportFile") => {
   }
 };
 
-export const CsvExportMTA = async ( payload: any, filename = "ReportFile") => {
+export const CsvExportMTA = async (payload: any, filename = "ReportFile") => {
   try {
     const response = await axios.post(
       process.env.REACT_APP_API_HOST + `api/mta/GetExportDataAsync`,
@@ -4949,7 +5382,7 @@ export const CsvExportMTA = async ( payload: any, filename = "ReportFile") => {
     throw e;
   }
 };
- 
+
 // Optional helper
 const getFileExtensionFromContentType = (contentType: string | null) => {
   switch (contentType) {
@@ -4963,8 +5396,11 @@ const getFileExtensionFromContentType = (contentType: string | null) => {
 };
 
 // MDM MTO Utils
-export const mapDraftToMTOColumnDefs = (fields: Field[], customParams?: ColDef) => {
-  let result: ColDef[] = []
+export const mapDraftToMTOColumnDefs = (
+  fields: Field[],
+  customParams?: ColDef
+) => {
+  let result: ColDef[] = [];
   result = fields.map((f) => {
     return {
       field: f.key,
@@ -4973,53 +5409,63 @@ export const mapDraftToMTOColumnDefs = (fields: Field[], customParams?: ColDef) 
       minWidth: 180,
 
       cellStyle: {
-        "textAlign": "center",
+        textAlign: "center",
       },
       flex: 1,
       cellRenderer: f.key === "action" && MTOActionRenderer,
       filter: f.key !== "action" && "agMultiColumnFilter",
-      ...customParams
-    }
-  })
-  return result
-}
-
+      ...customParams,
+    };
+  });
+  return result;
+};
 
 export const mapDraftDataToMTOTableRowData = (rowData: any[]) => {
-  let result = []
-  if (!rowData) return
+  let result = [];
+  if (!rowData) return;
   result = rowData.map((row) => {
     return {
       ...row,
-      LastModifiedDateTime: row.LastModifiedDateTime
-    }
-  })
+      LastModifiedDateTime: row.LastModifiedDateTime,
+    };
+  });
 
   result.sort((a, b): any => {
-    return differenceInSeconds(b.LastModifiedDateTime, a.LastModifiedDateTime)
-  })
+    return differenceInSeconds(b.LastModifiedDateTime, a.LastModifiedDateTime);
+  });
 
   result = result.map((r: any, index: number) => {
-    return { ...r, sr_no: index + 1, LastModifiedDateTime: r.LastModifiedDateTime }
-  })
-  return result
-}
+    return {
+      ...r,
+      sr_no: index + 1,
+      LastModifiedDateTime: r.LastModifiedDateTime,
+    };
+  });
+  return result;
+};
 
-export const parseMTOExcelData = async (file: File, master: MDMMasterState, pageType: string) => {
+export const parseMTOExcelData = async (
+  file: File,
+  master: MDMMasterState,
+  pageType: string
+) => {
   const currMasterKeys = master.fields?.map((field) => field.key) || [];
   const buffer = await file.arrayBuffer();
   const numberOfSheets = await readSheetNames(file);
 
   // Validate sheet constraints
   if (numberOfSheets.length > 1) {
-    throw new Error('File cannot contain multiple sheets');
+    throw new Error("File cannot contain multiple sheets");
   }
 
   // Parse Excel data
   const data = await readXlsxFile(buffer, { parseNumber: (string) => string });
 
   // Validate row count
-  const recordLimit = parseInt(process.env.REACT_APP_RECORD_UPLOAD_LIMIT_MTO || "50000", 10);
+  const recordLimit = parseInt(
+    process.env.REACT_APP_RECORD_UPLOAD_LIMIT_MTO || "50000",
+    10
+  );
   if (data.length > recordLimit) {
     throw new Error(`Number of rows should not exceed ${recordLimit}`);
   }
@@ -5032,31 +5478,49 @@ export const parseMTOExcelData = async (file: File, master: MDMMasterState, page
   }
 
   // Map headers to master field keys
-  const headerKeys = headersRow.map((headerName:any) => {
-    const field = master.fields?.find((field) => field.displayName === headerName);
+  const headerKeys = headersRow.map((headerName: any) => {
+    const field = master.fields?.find(
+      (field) => field.displayName === headerName
+    );
     return field ? field.key : headerName;
   });
 
   // Check for missing headers and invalid headers while adding through excel
-  const missingHeaders = currMasterKeys.filter((key) => !headerKeys.includes(key));
-  if (pageType === 'add' && missingHeaders.length > 0) {
-    throw new Error(`File is missing the following columns: ${missingHeaders.map((key) => {
-      return master.fields?.find((field) => field.key === key)?.displayName;
-    }).join(', ')}`);
+  const missingHeaders = currMasterKeys.filter(
+    (key) => !headerKeys.includes(key)
+  );
+  if (pageType === "add" && missingHeaders.length > 0) {
+    throw new Error(
+      `File is missing the following columns: ${missingHeaders
+        .map((key) => {
+          return master.fields?.find((field) => field.key === key)?.displayName;
+        })
+        .join(", ")}`
+    );
   }
 
-  const invalidHeaders = headerKeys.filter((key:any) => !currMasterKeys.includes(key));
+  const invalidHeaders = headerKeys.filter(
+    (key: any) => !currMasterKeys.includes(key)
+  );
   if (invalidHeaders.length > 0) {
-    throw new Error(`File contains columns ${invalidHeaders.join(', ')}, which are not valid columns`);
+    throw new Error(
+      `File contains columns ${invalidHeaders.join(
+        ", "
+      )}, which are not valid columns`
+    );
   }
 
   // Validate data presence
   if (data.slice(1).length === 0) {
-    throw new Error('File Contains zero rows.');
+    throw new Error("File Contains zero rows.");
   }
 
-    if (master.id === 501 || master.id === 502 || master.id === 503 || master.id === 504) {
-
+  if (
+    master.id === 501 ||
+    master.id === 502 ||
+    master.id === 503 ||
+    master.id === 504
+  ) {
     const bufferData: any = [];
     for (let i = 1; i < data?.length; i++) {
       const buffData: any = {};
@@ -5072,54 +5536,54 @@ export const parseMTOExcelData = async (file: File, master: MDMMasterState, page
   return [];
 };
 
-export const generateMTOFilterOptions = (data: Master[], currentFilters:any) => {
+export const generateMTOFilterOptions = (
+  data: Master[],
+  currentFilters: any
+) => {
   const temp: string[] = [];
   const options: Option[] = [];
-  if (!data) return options
+  if (!data) return options;
   data.forEach((master: Master) => {
-    const tempMasterFields = [...master.fields]
-    const tempFields = tempMasterFields.sort((a: Field, b: Field) => parseInt(a.col_Position) - parseInt(b.col_Position))
+    const tempMasterFields = [...master.fields];
+    const tempFields = tempMasterFields.sort(
+      (a: Field, b: Field) =>
+        parseInt(a.col_Position) - parseInt(b.col_Position)
+    );
     tempFields.forEach((field: Field) => {
       if (!temp.includes(field.displayName) && field.visible) {
         temp.push(field.displayName);
-        options.push({ value: field.key, label: field.displayName, })
+        options.push({ value: field.key, label: field.displayName });
       }
-    })
+    });
   });
   const finOptions: any[] = options.filter((ele: any) => {
     return !currentFilters.some((e: any) => e.field === ele.value);
   });
   // console.log('fin options', finOptions);
   return finOptions;
+};
+export const getMDMTableHeight = (activeMaster: MDMMasterState): string => {
+  // return activeMaster.progress==='view' ? "calc(100% - 70px)" : "95%"
 
-}
-export const getMDMTableHeight = (activeMaster:MDMMasterState):string=>{
-  // return activeMaster.progress==='view' ? "calc(100% - 70px)" : "95%" 
-
-  if(activeMaster.progress === 'default' && activeMaster.id == 10){
-    return "calc(100% - 70px)"
+  if (activeMaster.progress === "default" && activeMaster.id == 10) {
+    return "calc(100% - 70px)";
   }
 
-  if(activeMaster.progress === 'view'){
-    
-   
-
-    return "calc(100% - 70px)"
+  if (activeMaster.progress === "view") {
+    return "calc(100% - 70px)";
   }
 
-  return 'calc(95% - 10px)'
+  return "calc(95% - 10px)";
+};
 
-}
-
-
-export const downloadBase64Image = (base64Data: any, fileName: string):any => {
-  const downloadLink = document.createElement('a');
+export const downloadBase64Image = (base64Data: any, fileName: string): any => {
+  const downloadLink = document.createElement("a");
   downloadLink.href = base64Data;
   downloadLink.download = fileName;
   document.body.appendChild(downloadLink);
   downloadLink.click();
   document.body.removeChild(downloadLink);
-}
+};
 
 // ===================================================================================================
 
@@ -5127,7 +5591,7 @@ export function getColumnDefinationsMTA(
   fields: any,
   customizationParams: any = {},
   extraFields: any = [],
-  removeCols: any = [],
+  removeCols: any = []
 ) {
   const columnDefs = fields?.map((data: any) => {
     const columnDef = {
@@ -5143,40 +5607,49 @@ export function getColumnDefinationsMTA(
       rowGroupIndex: null,
       initialPivot: false,
       enablePivot: true,
-      enableRowGroup:false,
-      enableValue:true,
+      enableRowGroup: false,
+      enableValue: true,
       pivotIndex: null,
-     
+
       flex: 1,
       minWidth: 180,
       cellStyle: {
-        justifyContent: data.CellAlignment
+        justifyContent: data.CellAlignment,
       },
-      cellRenderer: CellRenderersMapping[data.Col_Code || data.colCode] !== undefined ? CellRenderersMapping[data.Col_Code || data.colCode] : 'string',
+      cellRenderer:
+        CellRenderersMapping[data.Col_Code || data.colCode] !== undefined
+          ? CellRenderersMapping[data.Col_Code || data.colCode]
+          : "string",
       cellDataType: getCellDataType(data.DataType),
       filter: getCellFilter(data.DataType),
       filterParams: filterParams,
       position: data.Col_Position,
 
-      ...(getCellDataType(data.DataType) === 'number' && {
+      ...(getCellDataType(data.DataType) === "number" && {
         valueFormatter: (params: any) => {
-          const format = (process.env.REACT_APP_NUMBER_FORMAT || '').toUpperCase();
-          const locale = format === 'USA' ? 'en-US' : format === 'IND' ? 'hi-IN' : undefined;
-          if(params.value == null || isNaN(params.value)) return ''
-          else if(locale)  return params.value.toLocaleString(locale);
+          const format = (
+            process.env.REACT_APP_NUMBER_FORMAT || ""
+          ).toUpperCase();
+          const locale =
+            format === "USA" ? "en-US" : format === "IND" ? "hi-IN" : undefined;
+          if (params.value == null || isNaN(params.value)) return "";
+          else if (locale) return params.value.toLocaleString(locale);
           return params.value;
           // return params.value == null || isNaN(params.value) ? '' : params.value;
-        }
-      })
+        },
+      }),
     };
     // Apply customization if needed
     if (customizationParams[data.Col_Code || data.colCode]) {
       // Object.assign(columnDef, customizationParams[data.Col_Code]);
-      mergeObjects(columnDef, customizationParams[data.Col_Code || data.colCode])
+      mergeObjects(
+        columnDef,
+        customizationParams[data.Col_Code || data.colCode]
+      );
     }
     return columnDef;
   });
-  
+
   // Add extra columns
   // If position is not specified or invalid, add the column at the end
   extraFields?.forEach((field: any) => {
@@ -5189,31 +5662,40 @@ export function getColumnDefinationsMTA(
       field.position = columnDefs.length;
     }
   });
-  
+
   //add extraFields in columnDefs
   columnDefs.push(...extraFields);
 
-  //sort all column accordinglly position 
+  //sort all column accordinglly position
   columnDefs.sort((a: any, b: any) => a.position - b.position);
 
   //remove columns matching "removeCols"
-  const finalcolDef = columnDefs?.filter((obj: any) => !removeCols?.includes(obj.colId));
+  const finalcolDef = columnDefs?.filter(
+    (obj: any) => !removeCols?.includes(obj.colId)
+  );
 
   return finalcolDef;
-
 }
 
-export function getCCRNamesFromId(ccrsData:any,ccrIds:number[]){
-  if(!Array.isArray(ccrsData) || !ccrsData || !ccrIds||  !ccrsData?.length || !ccrIds.length){
-    return ""
+export function getCCRNamesFromId(ccrsData: any, ccrIds: number[]) {
+  if (
+    !Array.isArray(ccrsData) ||
+    !ccrsData ||
+    !ccrIds ||
+    !ccrsData?.length ||
+    !ccrIds.length
+  ) {
+    return "";
   }
 
-  const ccrNameFromId = ccrIds.map((id:number)=> ccrsData.find((ccr:any)=> ccr.cid == id)?.cnm).join(', ')
+  const ccrNameFromId = ccrIds
+    .map((id: number) => ccrsData.find((ccr: any) => ccr.cid == id)?.cnm)
+    .join(", ");
   return ccrNameFromId ? ccrNameFromId : "";
 }
 
 export const getNestedChildren = (children: Array<any>): any => {
-  const stack = children? [...children]:[];
+  const stack = children ? [...children] : [];
   const result = [];
   while (stack.length > 0) {
     const current = stack.pop();
@@ -5225,3 +5707,12 @@ export const getNestedChildren = (children: Array<any>): any => {
   }
   return result.reverse();
 };
+
+const getNonce = (): string | undefined => {
+  return (
+    (window as any).__nonce__ ??
+    document.querySelector<HTMLMetaElement>('meta[name="csp-nonce"]')?.content?.trim()
+  );
+};
+
+export const nonce = getNonce();

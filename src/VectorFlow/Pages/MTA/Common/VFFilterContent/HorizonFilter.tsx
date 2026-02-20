@@ -1,16 +1,26 @@
 import React, { useState, useRef, useEffect } from "react";
 import {
-  FilterGroup,
-  FilterColumn,
-  TextWrapper,
-  DropDownWrapper,
-} from "./style";
+  filterGroup,
+  filterColumn,
+  textWrapper,
+  dropDownWrapper,
+} from "./style.css";
 import {
-  TextInputWrapper,
-  ButtonWrapper,
-  ImageWrapper,
-  StyledCalendar,
-} from "../../SupplyChainIntelligenceHub/ElephantOrders/styles";
+  eoLayout,
+  eoColorCellRendererWrapper,
+  eoTagsCellRendererWrapper,
+  datePickerWrapper,
+  textInputWrapper,
+  dateInputWrapper,
+  buttonWrapper,
+  imageWrapper,
+  calendarBase,
+  saveDueDateWrapper,
+  // calendar vars
+  calPrimaryVar,
+  calHoverVar,
+  calTodayVar,
+} from "../../SupplyChainIntelligenceHub/ElephantOrders/styles.css";
 import { useUserData } from "../../../../../context";
 import moment from "moment";
 import ReactDOM from "react-dom";
@@ -18,6 +28,9 @@ import { getStartDate, useVFMultiFilter } from "./useVFFilterContent";
 import { BPRFilterState } from "../../../../../VectorFlow/types/BPR";
 import { useSelector } from "react-redux";
 import { RootState } from "./../../../../../redux/store/store";
+import Calendar from "react-calendar";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
+
 interface FilterSectionProps {
   filters?: any;
   multiFilter: BPRFilterState;
@@ -42,8 +55,8 @@ export const HorizonFilter: React.FC<FilterSectionProps> = ({
   });
 
   const lastRunDate = useSelector((state: RootState) => state.mta.lastRunDate);
-  const endDate = lastRunDate.split('T')[0];
-  const startDate:string = getStartDate(endDate);
+  const endDate = lastRunDate.split("T")[0];
+  const startDate: string = getStartDate(endDate);
 
   const [fromDate, setFromDate] = useState<string>(initialFromDate);
   const [toDate, setToDate] = useState<string>(initialToDate);
@@ -58,6 +71,11 @@ export const HorizonFilter: React.FC<FilterSectionProps> = ({
   const fromCalRef = useRef<HTMLDivElement>(null);
   const toCalRef = useRef<HTMLDivElement>(null);
 
+  const primary = themeUi === "REGALBLAZE" ? "#C7810E" : "#82104C";
+  const hover =
+    themeUi === "REGALBLAZE" ? "#fee3b7" : "rgba(188, 61, 129, 0.2)";
+  const today = themeUi === "REGALBLAZE" ? "#E1B69F" : "#e2a9c8";
+
   useEffect(() => {
     if (multiFilter?.horizonFilter?.filters) {
       const startDateFilter = multiFilter.horizonFilter.filters.find(
@@ -66,11 +84,11 @@ export const HorizonFilter: React.FC<FilterSectionProps> = ({
       const endDateFilter = multiFilter.horizonFilter.filters.find(
         (f: any) => f.attributeName === "endDate"
       );
-      
+
       if (startDateFilter) {
         setFromDate(startDateFilter.value);
       }
-      
+
       if (endDateFilter) {
         setToDate(endDateFilter.value);
       }
@@ -115,15 +133,18 @@ export const HorizonFilter: React.FC<FilterSectionProps> = ({
   };
 
   const tileDisabled = ({ date }: { date: Date }) => {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
 
-  const start = new Date(startDate)
-  const end = new Date(endDate);
-
-  const tile = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-  const startOnly = new Date(start.getFullYear(), start.getMonth(), start.getDate());
-  const endOnly = new Date(end.getFullYear(), end.getMonth(), end.getDate());
-  return tile < startOnly || tile > endOnly;
-};
+    const tile = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const startOnly = new Date(
+      start.getFullYear(),
+      start.getMonth(),
+      start.getDate()
+    );
+    const endOnly = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+    return tile < startOnly || tile > endOnly;
+  };
   const toggleToCalendar = () => {
     const rect = toInputRef.current?.getBoundingClientRect();
     if (rect) {
@@ -139,9 +160,9 @@ export const HorizonFilter: React.FC<FilterSectionProps> = ({
     const formatted = moment(date).format("YYYY-MM-DD");
     setFromDate(formatted);
     setShowFromCal(false);
-    
+
     const newValue = [{ label: formatted, value: formatted }];
-    
+
     handleSelectChange({
       newValue,
       header: "Start Date",
@@ -155,9 +176,9 @@ export const HorizonFilter: React.FC<FilterSectionProps> = ({
     const formatted = moment(date).format("YYYY-MM-DD");
     setToDate(formatted);
     setShowToCal(false);
-    
+
     const newValue = [{ label: formatted, value: formatted }];
-    
+
     handleSelectChange({
       newValue,
       header: "End Date",
@@ -165,12 +186,11 @@ export const HorizonFilter: React.FC<FilterSectionProps> = ({
       parentId: "horizonFilter",
       attributeName: "endDate",
     });
-    
   };
 
   const clearFromDate = () => {
     setFromDate("");
-    
+
     handleSelectChange({
       newValue: [],
       header: "HorizonFilter",
@@ -179,10 +199,10 @@ export const HorizonFilter: React.FC<FilterSectionProps> = ({
       attributeName: "startDate",
     });
   };
-  
+
   const clearToDate = () => {
     setToDate("");
-    
+
     handleSelectChange({
       newValue: [],
       header: "HorizonFilter",
@@ -205,12 +225,13 @@ export const HorizonFilter: React.FC<FilterSectionProps> = ({
 
   return (
     <>
-      <FilterGroup>  
-        <FilterColumn>
-          <TextWrapper>From Date</TextWrapper>
-          <DropDownWrapper>
+      <div className={filterGroup}>
+        <div className={filterColumn}>
+          <div className={textWrapper}>From Date</div>
+          <div className={dropDownWrapper}>
             <div style={boxStyle}>
-              <TextInputWrapper
+              <input
+                className={textInputWrapper}
                 ref={fromInputRef}
                 value={fromDate}
                 readOnly
@@ -224,8 +245,13 @@ export const HorizonFilter: React.FC<FilterSectionProps> = ({
                   cursor: "pointer",
                 }}
               />
-              <ButtonWrapper type="button" onClick={toggleFromCalendar}>
-                <ImageWrapper
+              <button
+                className={buttonWrapper}
+                type="button"
+                onClick={toggleFromCalendar}
+              >
+                <img
+                  className={imageWrapper}
                   src={
                     themeUi === "REGALBLAZE"
                       ? "/assets/img/mto/OrderRescheduling/edit-calendar-yellow.svg"
@@ -233,9 +259,14 @@ export const HorizonFilter: React.FC<FilterSectionProps> = ({
                   }
                   alt="calendar"
                 />
-              </ButtonWrapper>
-              <ButtonWrapper type="button" onClick={clearFromDate}>
-                <ImageWrapper
+              </button>
+              <button
+                className={buttonWrapper}
+                type="button"
+                onClick={clearFromDate}
+              >
+                <img
+                  className={imageWrapper}
                   src={
                     themeUi === "REGALBLAZE"
                       ? "/assets/img/Clear_Due_Date_Yellow.svg"
@@ -243,7 +274,7 @@ export const HorizonFilter: React.FC<FilterSectionProps> = ({
                   }
                   alt="clear"
                 />
-              </ButtonWrapper>
+              </button>
             </div>
 
             {showFromCal &&
@@ -261,26 +292,34 @@ export const HorizonFilter: React.FC<FilterSectionProps> = ({
                     overflow: "hidden",
                   }}
                 >
-                  <StyledCalendar
-                    themeUi={themeUi}
-                    onChange={(val) =>
-                      val instanceof Date && handleFromChange(val)
-                    }
-
-                    value={fromDate ? new Date(fromDate) : new Date()}
-                    tileDisabled={tileDisabled}
-                  />
+                  <div
+                    style={assignInlineVars({
+                      [calPrimaryVar]: primary,
+                      [calHoverVar]: hover,
+                      [calTodayVar]: today,
+                    })}
+                  >
+                    <Calendar
+                      className={calendarBase}
+                      onChange={(val) =>
+                        val instanceof Date && handleFromChange(val)
+                      }
+                      value={fromDate ? new Date(fromDate) : new Date()}
+                      tileDisabled={tileDisabled}
+                    />
+                  </div>
                 </div>,
                 document.body
               )}
-          </DropDownWrapper>
-        </FilterColumn>
+          </div>
+        </div>
 
-        <FilterColumn>
-          <TextWrapper>To Date</TextWrapper>
-          <DropDownWrapper>
+        <div className={filterColumn}>
+          <div className={textWrapper}>To Date</div>
+          <div className={dropDownWrapper}>
             <div style={boxStyle}>
-              <TextInputWrapper
+              <input
+                className={textInputWrapper}
                 ref={toInputRef}
                 value={toDate}
                 readOnly
@@ -294,8 +333,13 @@ export const HorizonFilter: React.FC<FilterSectionProps> = ({
                   cursor: "pointer",
                 }}
               />
-              <ButtonWrapper type="button" onClick={toggleToCalendar}>
-                <ImageWrapper
+              <button
+                className={buttonWrapper}
+                type="button"
+                onClick={toggleToCalendar}
+              >
+                <img
+                  className={imageWrapper}
                   src={
                     themeUi === "REGALBLAZE"
                       ? "/assets/img/mto/OrderRescheduling/edit-calendar-yellow.svg"
@@ -303,9 +347,14 @@ export const HorizonFilter: React.FC<FilterSectionProps> = ({
                   }
                   alt="calendar"
                 />
-              </ButtonWrapper>
-              <ButtonWrapper type="button" onClick={clearToDate}>
-                <ImageWrapper
+              </button>
+              <button
+                className={buttonWrapper}
+                type="button"
+                onClick={clearToDate}
+              >
+                <img
+                  className={imageWrapper}
                   src={
                     themeUi === "REGALBLAZE"
                       ? "/assets/img/Clear_Due_Date_Yellow.svg"
@@ -313,7 +362,7 @@ export const HorizonFilter: React.FC<FilterSectionProps> = ({
                   }
                   alt="clear"
                 />
-              </ButtonWrapper>
+              </button>
             </div>
 
             {showToCal &&
@@ -331,19 +380,28 @@ export const HorizonFilter: React.FC<FilterSectionProps> = ({
                     overflow: "hidden",
                   }}
                 >
-                  <StyledCalendar
-                    themeUi={themeUi}
-                    onChange={(val) => val instanceof Date && handleToChange(val)}
-                    value={toDate ? new Date(toDate) : new Date()}
-                    minDate={fromDate ? new Date(fromDate) : undefined}
-                    tileDisabled={tileDisabled}
-                  />
+                  <div
+                    style={assignInlineVars({
+                      [calPrimaryVar]: primary,
+                      [calHoverVar]: hover,
+                      [calTodayVar]: today,
+                    })}
+                  >
+                    <Calendar
+                      className={calendarBase}
+                      onChange={(val) =>
+                        val instanceof Date && handleFromChange(val)
+                      }
+                      value={fromDate ? new Date(fromDate) : new Date()}
+                      tileDisabled={tileDisabled}
+                    />
+                  </div>
                 </div>,
                 document.body
               )}
-          </DropDownWrapper>
-        </FilterColumn>
-      </FilterGroup>
+          </div>
+        </div>
+      </div>
     </>
   );
 };

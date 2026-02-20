@@ -1,4 +1,4 @@
-import { RRRLayout } from '../RationedRequirementReport/styles';
+import { RRRLayout } from '../RationedRequirementReport/styles.css';
 import useTotalRequirementReport from './useTotalRequirementReport';
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import VFLoader from '../../../../../components/VectorFLOW/commons/VFLoader';
@@ -77,7 +77,7 @@ const TotalRequirementReport = () => {
         onDelete={onDeleteFilter}
       />
     </div>
-    <RRRLayout>
+    <div className={RRRLayout}>
         {/* <RRRTaskBar style={{width:isSideBarOpen? '77%':'97%'}}>
             <VFButtonOutline
                     themeUi="NOIRFUSION"
@@ -149,7 +149,7 @@ const TotalRequirementReport = () => {
             {...tempAgGridProps}
           />
         </div>
-    </RRRLayout>
+    </div>
   </GridStateContext.Provider>
   )
 }

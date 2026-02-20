@@ -1,0 +1,76 @@
+.ev-tooltip-wrapper {
+  background: #6c696a;
+  color: white;
+  padding: 10px;
+}
+
+.ev-tooltip-header {
+  color: white;
+  padding: 5px;
+  text-align: center;
+}
+
+.ev-tooltip-table {
+  width: 100%;
+  color: white;
+  border-collapse: collapse;
+}
+
+.ev-tooltip-th-left {
+  text-align: left;
+}
+
+.ev-tooltip-th-right {
+  text-align: right;
+}
+
+.ev-tooltip-td {
+  padding: 5px;
+  background-color: #6c696a;
+}
+
+.ev-tooltip-td-right {
+  text-align: right;
+}
+
+.color-label {
+  padding: 5px;
+  background-color: #6c696a;
+  display: flex;
+  align-items: center;
+}
+
+.color-labelDiv {
+  display: flex;
+  align-items: center;
+}
+.ev-color-box {
+  margin-right: 10px;
+  height: 10px;
+  width: 15px;
+  /* background-color will still be inline due to dynamic nature,
+       but you can set dynamically with JS as well if necessary */
+}
+
+.font-bold {
+  font-weight: bold;
+}
+
+.ev-color-value-b {
+  background: black;
+}
+.ev-color-value-r {
+  background: red;
+}
+.ev-color-value-y {
+  background: #ffbf00;
+}
+.ev-color-value-g {
+  background: green;
+}
+.ev-color-value-bu {
+  background: blue;
+}
+.ev-color-value-w {
+  background: grey;
+}

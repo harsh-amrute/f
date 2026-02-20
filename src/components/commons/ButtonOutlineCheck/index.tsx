@@ -1,9 +1,9 @@
-import { SCButtonOutline } from './styles'
-interface ButtonOutlineCheck {
-  onChange: any
+import { buttonOutline } from './styles.css'
+interface ButtonOutlineCheckProps {
+  onChange: () => void
   text: string
-  icon: string
-  styles: any
+  icon?: string
+  styles?: React.CSSProperties
 }
 
 const ButtonOutlineCheck = ({
@@ -11,25 +11,24 @@ const ButtonOutlineCheck = ({
   text,
   icon,
   styles
-}: ButtonOutlineCheck) => {
+}: ButtonOutlineCheckProps) => {
+  const variant = icon === 'accept' ? 'withIcon' : 'withoutIcon'
+
   return (
-    <SCButtonOutline
-      icons={icon === 'accept'}
+    <button
+      className={buttonOutline[variant]}
       style={styles}
       onClick={onChange}
     >
-      {icon
-        ? (
+      {icon && (
         <img
           style={{ paddingRight: 10 }}
           src={`/assets/img/check/${icon}.svg`}
+          alt={icon}
         />
-          )
-        : (
-            ''
-          )}{' '}
+      )}
       {text}
-    </SCButtonOutline>
+    </button>
   )
 }
 

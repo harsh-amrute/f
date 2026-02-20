@@ -1,5 +1,5 @@
 
-import { BPRColorCellRendererWrapper } from '../../../MTA/SupplyChainIntelligenceHub/BPR/styles';
+import { BPRColorCellRendererWrapper } from '../../../MTA/SupplyChainIntelligenceHub/BPR/styles.css';
 import { ColorsMTO } from '../Colors';
 
 const colorMapper = (color: string) => {
@@ -36,11 +36,11 @@ const ColorCellRenderer = (params: any) => {
 
     return (
         <>
-            {color && <BPRColorCellRendererWrapper
+            {color && <div className={BPRColorCellRendererWrapper}
                 style={{ backgroundColor: cellColor.bg, color: cellColor.text, maxWidth: '80px' }}
                 data-testid='color-cell'>
                 {color}
-            </BPRColorCellRendererWrapper>}
+            </div>}
         
         </>
     );

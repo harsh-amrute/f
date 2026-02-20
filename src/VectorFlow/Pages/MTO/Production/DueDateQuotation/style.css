@@ -1,25 +1,25 @@
-:root{
-    --separator-border: transparent;
+:root {
+  --separator-border: transparent;
 }
-.sash-horizontal::after{
-    content: url(../../../../../../public/assets/img/mto/dueDateQuotation/draggable.svg);
-    width: 12px;
-    display: block;
-    /* z-index: 100000; */
-    /* background: black; */
-    position: absolute;
-    height: 12px;
-    left: 50%;
-    top: 50%;
-    display: flex;
-    transform: translate(-50%, -50%);
-    justify-content: center;
+.sash-horizontal::after {
+  content: url(../../../../../../public/assets/img/mto/dueDateQuotation/draggable.svg);
+  width: 12px;
+  display: block;
+  /* z-index: 100000; */
+  /* background: black; */
+  position: absolute;
+  height: 12px;
+  left: 50%;
+  top: 50%;
+  display: flex;
+  transform: translate(-50%, -50%);
+  justify-content: center;
 }
 
-.sash-horizontal{
-    border: 8px solid lightgrey;
-    border-radius: 4px;
-    z-index: 1 !important;
+.sash-horizontal {
+  border: 8px solid lightgrey;
+  border-radius: 4px;
+  z-index: 1 !important;
 }
 
 /* .split-view-view{
@@ -43,5 +43,44 @@
   overflow: visible !important;
 }
 
+.step2-tooltip-container {
+  background: #6c696a;
+  /* transform: translateX(120px) */
+}
 
+.transform-translate-x {
+  transform: translateX(120px);
+}
 
+.step2-tooltip-header {
+  color: white;
+  padding: 10px 10px 4px;
+  background-color: #6c696a;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px dashed white;
+}
+
+.step2-tooltip-body {
+  color: white;
+  background-color: #6c696a;
+  padding: 10px;
+}
+
+.step2-tooltip-row {
+  display: flex;
+  align-items: center;
+}
+
+.step2-color-box {
+  margin-right: 10px;
+  height: 3px;
+  width: 15px;
+}
+.barcolor-ccrFolWithHoliday {
+  background-color: black;
+}
+.barcolor-orderLoad {
+  background-color: #3874FF;
+}

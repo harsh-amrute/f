@@ -6,6 +6,7 @@ import { getColumnDefinations } from "../../../../../../../helpers/utils";
 import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer';
 import { ProductionInsightsAndTrendsString } from "../../../../Common/String";
 import { columnConfigData } from "../ColumnData";
+import "./style.css"
 
 const STPLGraph = (props: any) => {
     const { graphData, lastRunDate } = props;
@@ -65,24 +66,24 @@ const STPLGraph = (props: any) => {
 
   function TooltipRenderer({ datum, xKey }: any) {
     return `
-       <div class="ag-chart-tooltip-title" style="background-color: #6C696A; display: flex; justify-content: center; align-items: center">
+       <div class="stplGraph-tooltip-title" >
            ${datum[xKey]}
        </div>
-       <div class="ag-chart-tooltip-content" style="color: white; background-color: #6C696A">
+       <div class="stplGraph-tooltip-content">
        
        <div>
-           <div style="display: flex;">
-               <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #AD5000">
+           <div class="displayFlex">
+               <div class="stplGraph-color-box">
                </div>
-               <div style="display:flex ; width: 100%; justify-content: space-between">
+               <div class="stplGraph-label-value">
                    <div>Released WIP (In Days) Exceeding Limit
                    </div>
-                   <div style="margin-left: 20px"> ${datum["exceedDays"]}
+                   <div class="stplGraph-marginLeft"> ${datum["exceedDays"]}
                    </div>
                </div>
            </div> 
-        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: gray"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>Released WIP (In Days)</div><div>${datum["days"]}</div></div></div>
-        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: green"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>Limit</div><div>${datum["limit"]}</div></div></div>
+        <div class="displayFlex"><div class="stplGraph-color-box-days"></div><div class="stplGraph-label-value"><div>Released WIP (In Days)</div><div>${datum["days"]}</div></div></div>
+        <div class="displayFlex"><div class="stplGraph-color-box-limit"></div><div class="stplGraph-label-value"><div>Limit</div><div>${datum["limit"]}</div></div></div>
 
         </div>`;
   }

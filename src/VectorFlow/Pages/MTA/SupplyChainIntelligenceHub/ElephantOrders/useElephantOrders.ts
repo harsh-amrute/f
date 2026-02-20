@@ -4,7 +4,7 @@ import { convertUiConfigToOptions, getColumnDefinationsMTA } from '../../../../.
 import { useEffect, useState,useRef,useMemo } from 'react';
 import { notifyError,notifyLoader, notifySuccess} from '../../../../../helpers/notify';
 import useBPRFilter from '../../../../../hooks/useBPRFilter';
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify/unstyled";
 import { AgGridReactProps } from 'ag-grid-react';
 import { useGetState } from '../../../../Services/MTA/Common/UserUIConfig';
 import { defaultAgGridSideBarForBPR } from '../../../../../helpers/BPRConstants';
@@ -227,7 +227,7 @@ const useElephantOrders= ()=>{
                             cellRenderer: DateCellRenderer ,
                             editable: false,
                             width: 200,
-                            suppressMenu: true,
+                            suppressHeaderMenuButton: true,
                             cellRendererParams: {
                                 onDateChange: (newDate: string, rowData: any) => {
                                   handleDueDateChange(newDate, rowData, 'SKUCode', 'WhCode', 'CustomerOrderID');

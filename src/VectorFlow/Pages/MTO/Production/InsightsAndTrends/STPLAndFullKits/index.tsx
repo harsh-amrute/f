@@ -7,18 +7,29 @@ import {
   BTRAllomentSection,
   BTRTableWrapper,
   HorizontalViewWrapper,
-} from "./styles";
-import { useGetSTPLAndFullKitData, useGetSTPLAndFullKitExcelData } from "../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/STPLAndFullKits";
-import OverlayLoader from '../../../Common/Loader';
-import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
+} from "./styles.css";
+import {
+  useGetSTPLAndFullKitData,
+  useGetSTPLAndFullKitExcelData,
+} from "../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/STPLAndFullKits";
+import OverlayLoader from "../../../Common/Loader";
+import { notifyError, notifySuccess } from "../../../../../../helpers/notify";
 import GridView from "./GridView";
-import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
-import { useGetUIConfigData } from '../../../../../Services/MTO/Common/UIConfig';
-import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from '../../../../../../helpers/utils';
+import {
+  useGetUserUIConfigData,
+  useUpdateUserUIConfigData,
+} from "../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig";
+import { useGetUIConfigData } from "../../../../../Services/MTO/Common/UIConfig";
+import {
+  DownloadExcel,
+  formatFilterJSON,
+  getBodyForExcelExport,
+  getColumnDefinations,
+} from "../../../../../../helpers/utils";
 import { FilterPageName, UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
-import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
-import useFilter from '../../../../../../hooks/useFilter';
+import { useGetFilterData } from "../../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
+import useFilter from "../../../../../../hooks/useFilter";
 import useColDef from "../../../../../../hooks/useColDef";
 import { format } from "date-fns";
 import { useGetDate } from "../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting";
@@ -26,44 +37,58 @@ import { useGetDate } from "../../../../../../VectorFlow/Services/MTO/Production
 
 const APIFilterConfig = {
   filSecVisConfig: {
-    "Prod_STPL_And_FullKits" : {
-      mjr : false,
+    Prod_STPL_And_FullKits: {
+      mjr: false,
       or: false,
       res: true,
-      cus: false
+      cus: false,
     },
-  }
+  },
 };
 
 const STPLAndFullKits = () => {
   const [isGridView, setIsGridView] = useState(false);
-  const { mutateAsync: getSTPLandFullkitInDaysData, isLoading, isError, isSuccess } = useGetSTPLAndFullKitData()
+  const {
+    mutateAsync: getSTPLandFullkitInDaysData,
+    isLoading,
+    isError,
+    isSuccess,
+  } = useGetSTPLAndFullKitData();
   const [graphData, setGraphData] = useState<any>({});
   const [currentGridRef, setCurrentGridRef] = useState<any>(null);
   const [columnState, setColumnState] = useState<any>([]);
   const [isReset, setIsReset] = useState<any>(undefined);
   const [colDef, setColDef] = useState([{}]);
   const [filterData, setFilterData] = useState({});
-  const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
-  const { 
-      state: currFilter, 
-      setState: setCurrFilter, 
-      onFilterRemove, 
-      isFilterOpen, 
-      isMfgSelected,
-      onAddFilter, 
-      onApplyFilter, 
-      toggleFilter,
-      appliedFilters
-  } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_STPL_And_FullKits);
-  const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
-  const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
+  const { mutateAsync: getPageWiseFilterData /*isLoading*/ } =
+    useGetFilterData();
+  const {
+    state: currFilter,
+    setState: setCurrFilter,
+    onFilterRemove,
+    isFilterOpen,
+    isMfgSelected,
+    onAddFilter,
+    onApplyFilter,
+    toggleFilter,
+    appliedFilters,
+  } = useFilter(
+    filterData,
+    APIFilterConfig.filSecVisConfig.Prod_STPL_And_FullKits
+  );
+  const {
+    mutateAsync: updateUserUIReportConfigData,
+    isLoading: isUpdateUserConfig,
+  } = useUpdateUserUIConfigData();
+  const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } =
+    useGetUserUIConfigData();
   const { mutateAsync: getUIConfigData } = useGetUIConfigData();
-  
+
   const reportName = "STPLAndFullKits";
   const { user } = useUserData();
-  const { colDefMap,getColDef } = useColDef()
-  const { mutateAsync : getSTPLandFullkitInDaysExcelData} = useGetSTPLAndFullKitExcelData();
+  const { colDefMap, getColDef } = useColDef();
+  const { mutateAsync: getSTPLandFullkitInDaysExcelData } =
+    useGetSTPLAndFullKitExcelData();
   const [masterUIConfig, setMasterUIConfig] = useState([]);
 
   const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
@@ -79,115 +104,120 @@ const STPLAndFullKits = () => {
   const themeUi = user?.user?.theme_ui;
 
   const getGraphData = async (params: any) => {
-    const {isExcelExport,graphflag} = params;
-    if(isExcelExport) {
+    const { isExcelExport, graphflag } = params;
+    if (isExcelExport) {
       const headersdata = currentGridRef?.current?.api?.getColumnState();
-      const formattedFilters = formatFilterJSON(appliedFilters)
-      const body = getBodyForExcelExport({headersdata,appliedFilters : formattedFilters,colDefMap})
-      try{
-          const response = await getSTPLandFullkitInDaysExcelData({body,isExcelExport : 1,graphflag, report_name : FilterPageName.Prod_STPL_And_FullKits})
-          DownloadExcel(response, FilterPageName.Prod_STPL_And_FullKits)
+      const formattedFilters = formatFilterJSON(appliedFilters);
+      const body = getBodyForExcelExport({
+        headersdata,
+        appliedFilters: formattedFilters,
+        colDefMap,
+      });
+      try {
+        const response = await getSTPLandFullkitInDaysExcelData({
+          body,
+          isExcelExport: 1,
+          graphflag,
+          report_name: FilterPageName.Prod_STPL_And_FullKits,
+        });
+        DownloadExcel(response, FilterPageName.Prod_STPL_And_FullKits);
+      } catch (e) {
+        console.log(e);
       }
-      catch(e){
-        console.log(e)
-      }
-
-    }
-    else{
-
+    } else {
       try {
         const response = await getSTPLandFullkitInDaysData(params);
         setGraphData(response.data.data);
-      }
-      catch (e) {
+      } catch (e) {
         console.log(e);
-        notifyError('Failed to fetch Graph data!');
+        notifyError("Failed to fetch Graph data!");
       }
     }
-  }
+  };
 
-  const getGridData = async (params: any,pageSize?:any) => {
-      try {
-        const formatedFilters = formatFilterJSON(appliedFilters);
-        const response = await getSTPLandFullkitInDaysData({ ...params, appliedFilters: formatedFilters, page_size: pageSize || userPageSize });
-        setGridData(response?.data?.data?.results);
-        setTotalRow(response?.data?.data?.count)
-      }
-      catch (e) {
-        console.log(e);
-        notifyError('Failed to fetch Grid data!');
-      }
+  const getGridData = async (params: any, pageSize?: any) => {
+    try {
+      const formatedFilters = formatFilterJSON(appliedFilters);
+      const response = await getSTPLandFullkitInDaysData({
+        ...params,
+        appliedFilters: formatedFilters,
+        page_size: pageSize || userPageSize,
+      });
+      setGridData(response?.data?.data?.results);
+      setTotalRow(response?.data?.data?.count);
+    } catch (e) {
+      console.log(e);
+      notifyError("Failed to fetch Grid data!");
     }
+  };
 
   const colDefCustomizations = {
     Plant: {
       cellRenderer: "agGroupCellRenderer",
-    }
-  }
-
+    },
+  };
 
   useEffect(() => {
     if (Object.entries(appliedFilters).length && userConfigFetched) {
       setCurrentPage(1);
       getGridData({ graphflag: 0, page: 1 });
     }
-   }, [appliedFilters, userConfigFetched])
+  }, [appliedFilters, userConfigFetched]);
 
   const handlePageChange = async (currPage: number) => {
     setCurrentPage(currPage);
     getGridData({ graphflag: 0, page: currPage });
-  }
-
-  
+  };
 
   const savePageSize = (pageSize: any) => {
     if (pageSize) {
       setUserPageSize(pageSize);
-        setCurrentPage(1)
-        handleSaveClick(undefined, pageSize);
-        getGridData({ graphflag: 0, page: 1 }, pageSize);
-      } else {
-        notifyError("Invalide page size");
+      setCurrentPage(1);
+      handleSaveClick(undefined, pageSize);
+      getGridData({ graphflag: 0, page: 1 }, pageSize);
+    } else {
+      notifyError("Invalide page size");
     }
-    
-}
+  };
 
   const setColumnDef = async () => {
     try {
       const response = await getUIConfigData(reportName);
-      getColDef(response)
-      setColDef(getColumnDefinations(response.data.data, colDefCustomizations, []));
-    }
-    catch (e) {
+      getColDef(response);
+      setColDef(
+        getColumnDefinations(response.data.data, colDefCustomizations, [])
+      );
+    } catch (e) {
       console.log(e);
     }
-  }
-  
-  
+  };
+
   const getUserColumnConfig = async () => {
     try {
       const data = await getUserUIReportConfigData({
         un: user.user.name,
-        rn_id: UIGridCode.ProdStplAndFullKit
+        rn_id: UIGridCode.ProdStplAndFullKit,
       });
 
-      setUserConfigFetched(true)
+      setUserConfigFetched(true);
       const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
-      setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
+      setUserPageSize(
+        newConfig.pageSize ? Number(newConfig.pageSize) : undefined
+      );
       setColumnState(newConfig.cs);
 
       if (!data) {
-        console.error('Failed to apply column state');
+        console.error("Failed to apply column state");
       }
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
-  const handleSaveClick = async (coldefs?: any,page_size?:any) => {
+  const handleSaveClick = async (coldefs?: any, page_size?: any) => {
     try {
       if (coldefs) {
-        const fullConfig = {cs: coldefs, pageSize: page_size || userPageSize };
+        const fullConfig = { cs: coldefs, pageSize: page_size || userPageSize };
         const payload = {
           un: user.user.name,
           rn_id: UIGridCode.ProdStplAndFullKit,
@@ -195,28 +225,24 @@ const STPLAndFullKits = () => {
         };
         await updateUserUIReportConfigData([payload]);
         setColumnState([...coldefs]);
-
-      }
-      else if(page_size){
+      } else if (page_size) {
         const config = columnState;
-        const fullConfig = { cs: config,  pageSize: page_size};        
+        const fullConfig = { cs: config, pageSize: page_size };
         const payload = {
           un: user.user.name,
           rn_id: UIGridCode.ProdStplAndFullKit,
           cs: JSON.stringify(fullConfig),
         };
         await updateUserUIReportConfigData([payload]);
-      }
-      else {
+      } else {
         if (currentGridRef?.current?.api) {
-
           const config = currentGridRef.current.api.getColumnState();
-          const fullConfig = {  cs: config,  pageSize: userPageSize };
+          const fullConfig = { cs: config, pageSize: userPageSize };
           const payload = {
             un: user.user.name,
             rn_id: UIGridCode.ProdStplAndFullKit,
-            cs: JSON.stringify(fullConfig)
-          }
+            cs: JSON.stringify(fullConfig),
+          };
           await updateUserUIReportConfigData([payload]);
           await getUserColumnConfig();
         }
@@ -224,36 +250,38 @@ const STPLAndFullKits = () => {
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   const handleResetClick = () => {
     setIsReset(true);
-  }
+  };
 
   const getFilterData = async () => {
     try {
-        const response = await getPageWiseFilterData({page_name: FilterPageName.Prod_STPL_And_FullKits});
-        setFilterData(response?.data.data);
+      const response = await getPageWiseFilterData({
+        page_name: FilterPageName.Prod_STPL_And_FullKits,
+      });
+      setFilterData(response?.data.data);
     } catch (error) {
-        console.error(error);
+      console.error(error);
     }
-  }
+  };
 
   useEffect(() => {
     setColumnDef();
     getGraphData({ graphflag: 1 });
     getFilterData();
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (isSuccess) {
-      notifySuccess("Fetched Data successfully!")
+      notifySuccess("Fetched Data successfully!");
     }
     if (isError) {
-      notifyError("Failed to load data!")
+      notifyError("Failed to load data!");
     }
-  }, [isSuccess, isError])
-  
+  }, [isSuccess, isError]);
+
   useEffect(() => {
     if (isReset) {
       handleSaveClick(masterUIConfig);
@@ -261,30 +289,27 @@ const STPLAndFullKits = () => {
     }
   }, [isReset]);
 
-
   useEffect(() => {
-    if ((currentGridRef?.current)) {
+    if (currentGridRef?.current) {
       setMasterUIConfig(currentGridRef?.current.api.getColumnState());
       getUserColumnConfig();
     }
- 
   }, [colDef, currentGridRef, isGridView]);
 
-//   useEffect(() => {
-//   if (isGridView && !userConfigFetched) {
-//     getUserColumnConfig();
-//   }
-// }, [isGridView]);
+  //   useEffect(() => {
+  //   if (isGridView && !userConfigFetched) {
+  //     getUserColumnConfig();
+  //   }
+  // }, [isGridView]);
 
-  
   const GetExcelData = async () => {
-    getGraphData({graphflag : 0 , isExcelExport : true , appliedFilters})
-  }
+    getGraphData({ graphflag: 0, isExcelExport: true, appliedFilters });
+  };
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-      {
-        (isLoading || isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />
-      }
+      {(isLoading || isUpdateUserConfig || isGetUserConfig) && (
+        <OverlayLoader />
+      )}
       <MTOActionToolBar
         comp={"stplAndFullKit"}
         isGridView={isGridView}
@@ -292,8 +317,8 @@ const STPLAndFullKits = () => {
         isChartGridToggle
         isAddFilterButton
         themeUi={themeUi}
-        isExcelExport={isGridView?true:false}
-        onExcelExportClick = {GetExcelData}
+        isExcelExport={isGridView ? true : false}
+        onExcelExportClick={GetExcelData}
         handleSaveClick={handleSaveClick}
         handleResetClick={handleResetClick}
         isFilterOpen={isFilterOpen}
@@ -305,9 +330,9 @@ const STPLAndFullKits = () => {
         onFilterRemove={onFilterRemove}
         isMfgSelected={isMfgSelected}
       />
-      <HorizontalViewWrapper style={{ flex: 1 }}>
+      <div className={HorizontalViewWrapper} style={{ flex: 1 }}>
         {isGridView ? (
-          <GridView 
+          <GridView
             colDef={colDef}
             setCurrentGridRef={setCurrentGridRef}
             currentGridRef={currentGridRef}
@@ -321,23 +346,29 @@ const STPLAndFullKits = () => {
             rowData={gridData}
           />
         ) : (
-          <BTRTableWrapper style={{ height:"95%", paddingLeft: "20px", paddingBottom: "10px" }}>
+          <div
+            className={BTRTableWrapper}
+            style={{
+              height: "95%",
+              paddingLeft: "20px",
+              paddingBottom: "10px",
+            }}
+          >
             <Allotment vertical={false} separator={false}>
-              <Allotment.Pane preferredSize={"50%"}>
-                <BTRAllomentSection>
+              <Allotment.Pane preferredSize="50%">
+                <div className={BTRAllomentSection}>
                   <STPLGraph graphData={graphData?.stpl} lastRunDate={lastRunDate} />
-                </BTRAllomentSection>
+                </div>
               </Allotment.Pane>
-
-              <Allotment.Pane preferredSize={"50%"}>
-                <BTRAllomentSection>
+              <Allotment.Pane preferredSize="50%">
+                <div className={BTRAllomentSection}>
                   <FullKitGraph graphData={graphData?.fk} lastRunDate={lastRunDate} />
-                </BTRAllomentSection>
+                </div>
               </Allotment.Pane>
             </Allotment>
-          </BTRTableWrapper>
+          </div>
         )}
-      </HorizontalViewWrapper>
+      </div>
     </div>
   );
 };
