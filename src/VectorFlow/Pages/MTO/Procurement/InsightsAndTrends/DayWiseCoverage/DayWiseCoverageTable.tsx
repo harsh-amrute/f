@@ -10,7 +10,7 @@ import {
 } from "../../../Common/VFPagination/styles.css";
 import { useUserData } from "../../../../../../context";
 import { formatFilterJSON } from "../../../../../../helpers/utils";
-import { TableWrapper } from "./style";
+import { TableWrapper } from "./style.css";
 import VFPagination from "../../../Common/VFPagination";
 
 interface IDayWiseCoverageProps {
@@ -227,7 +227,7 @@ const handlePageSizeChange = (newSize: any) => {
 
   return (
     <>
-     <TableWrapper>
+     <div className={TableWrapper}>
     <VFTable
       ref={gridRef}
       animateRows={true}
@@ -270,7 +270,7 @@ const handlePageSizeChange = (newSize: any) => {
       customPageSizeEnabled={true}
       savePageSize={handlePageSizeChange}
     />
-      </TableWrapper>
+    </div>
 
 
     </>
