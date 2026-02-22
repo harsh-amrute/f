@@ -54,12 +54,7 @@ const TableUserManagement = ({
             notifySuccess(data?.data?.msg);
           }
           setIsOpenDelete(false);
-          // console.log("gridREf", gridRef.current.api)
-          gridRef.current.api.forEachNode((node: any) => {
-            if (node.data.id === idUser) {
-              gridRef?.current?.api?.applyTransaction({ remove: [node.data] })
-            }
-          })
+          gridRef?.current?.api?.applyTransaction({ remove: [{ id: idUser }] })
         },
         onError: (error: any) => {
           notifyError(error.response.msg || error.message);
@@ -93,30 +88,7 @@ const TableUserManagement = ({
   const renderAction = (item: any, is_admin: any) => {
     const permissionUser = item.role_id.map((item: any) => item.name);
 
-    if (is_admin) {
-      if (item.is_admin) {
-        return <NoAction rolesMap={permissionUser} />;
-      } else {
-        return <>{action({ item, permissionUser })}</>;
-      }
-    } else {
-      if (permission?.includes("IST Admin") || permission?.includes("Admin")) {
-        if (item.is_admin) {
-          return <NoAction rolesMap={permissionUser} />;
-        } else {
-          if (
-            permissionUser?.includes("IST Admin") ||
-            permissionUser?.includes("Admin")
-          ) {
-            return <NoAction rolesMap={permissionUser} />;
-          } else {
-            return <>{action({ item, permissionUser })}</>;
-          }
-        }
-      } else {
-        return <NoAction rolesMap={permissionUser} />;
-      }
-    }
+    return <>{action({ item, permissionUser })}</>;
   };
 
   const clearGridFilter = () => {
@@ -284,18 +256,10 @@ const TableUserManagement = ({
         flex: 1,
         filter: false,
         suppressTooltips: true,
-        cellRenderer: (params: any) => {
-          return (
-            <ToggleCell
-              data={params.data}
-              permission={permission}
-              is_admin={is_admin}
-            />
-          );
-        },
+        cellRenderer: ToggleCell,
       },
     ],
-    [is_admin, permission]
+    [is_admin, permission, gridRef]
   );
 
   return (
@@ -313,6 +277,7 @@ const TableUserManagement = ({
         pagination={false}
         height="450px"
         sideBar={false}
+        getRowId={(params: any) => params.data.id}
         getRowStyle={(params: any) => {
           if (params.node.rowIndex % 2 === 0) {
             return { background: "#F4F4F4" };

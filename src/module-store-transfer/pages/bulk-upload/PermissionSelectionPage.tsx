@@ -750,6 +750,9 @@ const PermissionSelectionPage = ({
       {
         headerName: "Sr.No",
         field: "srNo",
+        cellRenderer: (params: any) => {
+          return params.node.rowIndex + 1;
+        },
         maxWidth: 80,
         enablePivot: true,
         filter: 'agNumberColumnFilter',
