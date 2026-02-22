@@ -22,7 +22,6 @@ import {
   useRegisterUser,
   usePutEditUser
 } from "../../../services/profile";
-import Spinner from "../../../components/commons/Spinner";
 import { useTranslation } from "react-i18next";
 // import { dataListRoles } from "./listRoles";
 import { generateRolesObject } from '../../../helpers/utils';
@@ -33,6 +32,7 @@ import { APPLICATION_NAMES } from "../../../helpers/constants";
 import { useUserData } from "../../../context";
 import SingleUserPermissionSelectionModal from "../bulk-upload/SingleUserPermissionSelectionModal";
 import VFModalCard from "../../../components/VectorFLOW/commons/VFModalCard";
+import VFLoader from "../../../components/VectorFLOW/commons/VFLoader";
 
 
 interface ManageUsersProps{
@@ -791,7 +791,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
             zIndex: 99999,                           
     }}
   >
-    <Spinner />
+          <VFLoader />
   </div>
       )}
       <div className={scProfileOverView}>
@@ -834,7 +834,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
 
         {isFetching || isLoadingRoles || isLoadingHeaders || !dataPermissions ? (
           <div style={{ padding: '40px', display: 'flex', justifyContent: 'center' }}>
-            <Spinner />
+            <VFLoader />
           </div>
         ) : (
           <TableUserManagement
