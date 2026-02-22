@@ -64,7 +64,7 @@ const Profile = () => {
         </div>
       <div style={{zoom: 0.75, borderLeft: '1px solid #cecece', borderRight: '1px solid #cecece', borderBottom: '1px solid #cecece', borderRadius: '0 0 12px 12px', boxShadow: '0px 10px 20px #c4c8d066', background: '#fff'}}>
       {tabPanel === 0 && <Overview style={{zoom: 0.75}} themeUi={themeUi} />}
-      {tabPanel === 1 && <Permissions roles={user.roles} />}
+        {tabPanel === 1 && <Permissions />}
       {tabPanel === 2 && (
         <ManageUsers 
         is_admin={isAdmin} 

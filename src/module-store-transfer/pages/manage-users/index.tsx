@@ -11,7 +11,6 @@ import {
   ButtonFloat,
   TableUserManagement,
   ModalManageUsers,
-  ModalAdvanedPermissions,
   ButtonOutlineIcon,
 } from "../../../components/index";
 import {
@@ -34,7 +33,6 @@ import { APPLICATION_NAMES } from "../../../helpers/constants";
 import { useUserData } from "../../../context";
 import SingleUserPermissionSelectionModal from "../bulk-upload/SingleUserPermissionSelectionModal";
 import VFModalCard from "../../../components/VectorFLOW/commons/VFModalCard";
-import VFLoader from "../../../components/VectorFLOW/commons/VFLoader";
 
 
 interface ManageUsersProps{
