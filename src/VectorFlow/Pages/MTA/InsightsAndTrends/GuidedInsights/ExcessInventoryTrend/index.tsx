@@ -1,4 +1,4 @@
-import { SCChartContainer, SCDynamicContainer } from "../style";
+import { SCChartContainer, SCDynamicContainer } from "../style.css";
 import { AgCharts } from "ag-charts-react";
 import { Allotment } from "allotment";
 import {
@@ -29,10 +29,13 @@ const ExcessInventoryTrend = ({
 }) => {
   const [options1, setOptions1] = useState({});
   const [options2, setOptions2] = useState({});
-  const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
-  const CURRENCY = EnvConfig?.CURRENCY; 
-  const chartParams1 = useMemo(() => createChartParams('skuCount'), []);
-    const chartParams2 = useMemo(() => createChartParams('value', CURRENCY), [CURRENCY]);
+  const EnvConfig = useSelector((state: RootState) => state.mta.EnvConfig);
+  const CURRENCY = EnvConfig?.CURRENCY;
+  const chartParams1 = useMemo(() => createChartParams("skuCount"), []);
+  const chartParams2 = useMemo(
+    () => createChartParams("value", CURRENCY),
+    [CURRENCY]
+  );
 
   const greyShades = [
     "#333333",
@@ -127,9 +130,8 @@ const ExcessInventoryTrend = ({
     <OverlayLoader />;
   }
   return (
-    <SCDynamicContainer>
+    <div className={SCDynamicContainer}>
       <Allotment minSize={0} maxSize={590}>
-
         <Allotment.Pane preferredSize={"50%"}>
           <div
             className="main"
@@ -145,11 +147,13 @@ const ExcessInventoryTrend = ({
               setHorizon={setHorizon}
               OnHorizonChange={OnHorizonChange}
               horizon={horizon}
-              styles={{width:'100%'}}
+              styles={{ width: "100%" }}
             />
-            <CustomizedChartComponent chartOptions={options1} chartParams={chartParams1}/>
+            <CustomizedChartComponent
+              chartOptions={options1}
+              chartParams={chartParams1}
+            />
           </div>
-
         </Allotment.Pane>
         <div
           className="main"
@@ -165,13 +169,15 @@ const ExcessInventoryTrend = ({
             setHorizon={setHorizon}
             OnHorizonChange={OnHorizon2Change}
             horizon={horizon}
-            styles={{width:'100%'}}
+            styles={{ width: "100%" }}
           />
-          <CustomizedChartComponent chartOptions={options2} chartParams={chartParams2}/>
+          <CustomizedChartComponent
+            chartOptions={options2}
+            chartParams={chartParams2}
+          />
         </div>
       </Allotment>
-
-    </SCDynamicContainer>
+    </div>
   );
 };
 
@@ -182,7 +188,7 @@ export const CustomizedChartComponent = ({chartOptions,chartParams}:any) => {
     ? `chart-series-${chartOptions.series.length}` 
     : 'chart-default';
   return (
-    <SCChartContainer>
+    <div className={SCChartContainer}>
       <div
         style={{
           height: "300px",
@@ -210,6 +216,6 @@ export const CustomizedChartComponent = ({chartOptions,chartParams}:any) => {
         </div>
         <AgCharts key={chartKey} options={chartOptions} />
       </div>
-    </SCChartContainer>
+    </div>
   );
 };

@@ -1,9 +1,12 @@
 import { useState } from "react";
-import { SCWrapper, SCInput, SCText } from "./style";
+import { Wrapper, Input, Text, sliderColorVar } from "./style.css";
 import { useUserData } from "../../../context";
+import { assignInlineVars } from '@vanilla-extract/dynamic';
+import * as globalStyles from '../../../styles/global'; // keep import unchanged
 
 const ButtonToggle3State = ({ onClick }: any) => {
   const { user } = useUserData();
+  const theme = user?.user?.theme_ui as keyof typeof globalStyles.chooseThemeColor | undefined;
 
   const [stateToggle, setStateToggle] = useState<any>({
     status: 2,
@@ -26,22 +29,26 @@ const ButtonToggle3State = ({ onClick }: any) => {
     onClick(formData.moq);
   };
 
+  const themeColor =
+  (theme && globalStyles.chooseThemeColor[theme]?.color5) || '#820F4C';
+
   return (
     <>
-      <SCWrapper>
-        <SCInput
-          colorTheme={user?.user?.theme_ui}
-          id="custom-toggle"
-          type="range"
-          name="points"
-          onChange={(e) => handleChange(e)}
-          min={1}
-          step={1}
-          max={3}
-          value={stateToggle.status}
-        />
-        <SCText>{stateToggle.text}</SCText>
-      </SCWrapper>
+    <div className={Wrapper}>
+      <input
+        className={Input}
+        style={assignInlineVars({ [sliderColorVar]: themeColor })}
+        id="custom-toggle"
+        type="range"
+        name="points"
+        onChange={handleChange}
+        min={1}
+        step={1}
+        max={3}
+        value={stateToggle.status}
+      />
+      <span className={Text}>{stateToggle.text}</span>
+    </div>
     </>
   );
 };

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { CustomCellRendererProps } from '@ag-grid-community/react';
 import { RowEvent } from '@ag-grid-community/core';
-import { FlatIcon } from './styles';
+import { FlatIcon } from './styles.css';
 import { useGetBombLevelData } from '../../../../../VectorFlow/Services/MTO/Production/DepartmentWiseBMReport';
 
 const customCellRenderer = (props: CustomCellRendererProps) => {
@@ -39,7 +39,7 @@ const { mutateAsync: getBombLevelData, /*isLoading :BombDataLoading*/ } = useGet
     return (
 
         <button data-testid='collapsable' style={{ fontSize: "18px", background: "transparent", fontWeight: "bold" }} onClick={onClick}>
-            <FlatIcon src={expanded ? "/assets/img/mto/dayWiseCoverage/arrow_down.svg" : "/assets/img/mto/dayWiseCoverage/arrow_right.svg"} />
+            <img className={FlatIcon} src={expanded ? "/assets/img/mto/dayWiseCoverage/arrow_down.svg" : "/assets/img/mto/dayWiseCoverage/arrow_right.svg"} />
             {props?.data?.plnt || ''}
         </button>
     )

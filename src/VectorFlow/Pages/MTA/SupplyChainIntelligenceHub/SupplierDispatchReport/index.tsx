@@ -1,18 +1,15 @@
 import useSupplierDispatchReport from "./useSupplierDispatchReport";
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
 import { GridStateContext } from "../../../../../context/GridStateContext";
-import { VDRLayout } from "./styles";
+import { VDRLayout } from "./styles.css";
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
-import VFPagination from "../../../../../VectorFlow/Pages/MTO/Common/VFPagination"
+import VFPagination from "../../../../../VectorFlow/Pages/MTO/Common/VFPagination";
 import ActionToolBar from "../Planning/ActionToolBar";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/store/store";
 
-
 const SupplierDispatchReport = () => {
-  
-
   const {
     VDRColumns,
     RowData,
@@ -41,13 +38,12 @@ const SupplierDispatchReport = () => {
   userPageSize
   } = useSupplierDispatchReport();
 
-      const [isDisabled, setIsDisabled]= useState<boolean>(true)
-  
-   
-      const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
-      const SUPPLIER_DISPATCH_REPORT_PER_PAGE = EnvConfig['SUPPLIER_DISPATCH_REPORT_PER_PAGE'];   
+  const [isDisabled, setIsDisabled] = useState<boolean>(true);
 
-  
+  const EnvConfig = useSelector((state: RootState) => state.mta.EnvConfig);
+  const SUPPLIER_DISPATCH_REPORT_PER_PAGE =
+    EnvConfig["SUPPLIER_DISPATCH_REPORT_PER_PAGE"];
+
   return (
     <GridStateContext.Provider
       value={{
@@ -58,29 +54,29 @@ const SupplierDispatchReport = () => {
         setTempDownloadData: setTempDownloadData,
         exportExcelRowData: exportExcelRowData,
         setExportExcelRowData: setExportExcelRowData,
-        onResetCallback:onResetCallback
+        onResetCallback: onResetCallback,
       }}
     >
-      <div style={{marginLeft:'10px'}}>
-      <ActionToolBar 
-        view={'grid'} 
-        setCurrentTab={''} 
-        currCategory={'SDR'} 
-        currentTab={''} 
-        tabsList={[]} 
-        onApplyFilter={(e)=>onApplyFilter(e)}
-        onFloatingTabChange={()=>console.log('')} 
-        onGoBack={()=>console.log('')} 
-        onViewChange={()=>console.log('')}
-        genericRecordCount={SDRCount}
-        onExportToExcelCallBack={onExportToExcelCallBack}
-        multiFilter={currFilter}
-        generalFilterOptions={generalFilterOptions}
-        setMultiFilter={setCurrFilter}
-        onDelete={onDeleteFilter}
-      />
+      <div style={{ marginLeft: "10px" }}>
+        <ActionToolBar
+          view={"grid"}
+          setCurrentTab={""}
+          currCategory={"SDR"}
+          currentTab={""}
+          tabsList={[]}
+          onApplyFilter={(e) => onApplyFilter(e)}
+          onFloatingTabChange={() => console.log("")}
+          onGoBack={() => console.log("")}
+          onViewChange={() => console.log("")}
+          genericRecordCount={SDRCount}
+          onExportToExcelCallBack={onExportToExcelCallBack}
+          multiFilter={currFilter}
+          generalFilterOptions={generalFilterOptions}
+          setMultiFilter={setCurrFilter}
+          onDelete={onDeleteFilter}
+        />
       </div>
-      <VDRLayout>
+      <div className={VDRLayout}>
       {(isLoading )?(
           <VFLoader/>
         ):
@@ -118,9 +114,10 @@ const SupplierDispatchReport = () => {
               />
                }
             </div>
-        </div>
-      )}
-      <div style={{display:'none'}}>                
+          </div>
+        )}
+
+        <div style={{ display: "none" }}>
           <VFTable
             ref={tempRef}
             columnDefs={VDRColumns}
@@ -128,7 +125,7 @@ const SupplierDispatchReport = () => {
             {...tempAgGridProps}
           />
         </div>
-      </VDRLayout>
+      </div>
     </GridStateContext.Provider>
   );
 };

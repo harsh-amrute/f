@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import VFTable from "../../../VectorFlow/Pages/MTO/Common/VFTable";
-import { TableWrapper } from "../../../VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMOrderwiseCoverage/styles";
+import { TableWrapper } from "../../../VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMOrderwiseCoverage/styles.css";
 import { CellStyle, ColDef, FillOperationParams, RowStyle } from "ag-grid-enterprise";
 import { AgGridReactProps } from "ag-grid-react";
 import BulkUploadHeader from "./BulkUploadHeader";
@@ -18,7 +18,7 @@ import PermissionSelectionModal from "./PermissionSelectionModal";
 import PermissionViewCellRenderer from "./PermissionViewCellRenderer";
 import VFButton from "../../../components/VectorFLOW/commons/VFButton";
 import OverlayLoader from "../../../VectorFlow/Pages/MTO/Common/Loader";
-import { SCGoBackContainer, SCGoBackText } from "../../../components/VectorFLOW/commons/MTO/ActionToolBar/styles";
+import { SCGoBackContainer, SCGoBackText } from "../../../components/VectorFLOW/commons/MTO/ActionToolBar/styles.css";
 import _ from "lodash";
 import { notifyError, notifySuccess } from "../../../helpers/notify";
 import { useUserData } from "../../../context";
@@ -827,7 +827,7 @@ const PermissionSelectionPage = ({
         sortable: true,
         filter: true,
         floatingFilter: true,
-        suppressMenu: true,
+        suppressHeaderMenuButton: true,
         cellRendererParams: {
           roles: [],
         },
@@ -863,8 +863,8 @@ const PermissionSelectionPage = ({
   }
 
     return (
-      <TableWrapper style={{ paddingBottom: "50px" }}>
-        {(isLoading || isDataPermissions || isDataRoles) && <OverlayLoader message="Creating Users..." />}
+      <div className={TableWrapper} style={{ paddingBottom: "50px" }}>
+        {((isLoading || isDataPermissions || isDataRoles) || isDataPermissions || isDataRoles) && <OverlayLoader message="Creating Users..." />}
         {!isFinalView && (
           <BulkUploadHeader
             gridRef={gridRef}
@@ -891,7 +891,7 @@ const PermissionSelectionPage = ({
               }}
             >
               <div>
-                <SCGoBackContainer
+                <div className={SCGoBackContainer}
                   style={{ paddingLeft: "10px" }}
                   onClick={() => {
                     setIsFinalView(false);
@@ -903,10 +903,10 @@ const PermissionSelectionPage = ({
                     alt=""
                     style={{ height: "20px" }}
                   />
-                  <SCGoBackText style={{ fontSize: "1.5rem" }}>
+                  <div className={SCGoBackText} style={{ fontSize: "1.5rem" }}>
                     <b>Go Back</b>
-                  </SCGoBackText>
-                </SCGoBackContainer>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -1050,7 +1050,7 @@ const PermissionSelectionPage = ({
             />
           </VFModalCard>
         }
-      </TableWrapper>
+      </div>
     );
   };
 export default PermissionSelectionPage;

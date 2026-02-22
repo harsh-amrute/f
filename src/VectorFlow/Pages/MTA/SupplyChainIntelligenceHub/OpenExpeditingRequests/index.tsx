@@ -1,27 +1,25 @@
+import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
+import ActionToolBar from "../Planning/ActionToolBar";
+import BPRSubmiRemarkToolTip from "../BPR/BPRSubmitRemarkToolTip";
 
+import useOpenExpeditingRequests from "./useOpenExpeditingRequests";
+import { GridStateContext } from "../../../../../context/GridStateContext";
+import RemarkModal from "./RemarkModal";
 
-import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
-import ActionToolBar from "../Planning/ActionToolBar"
-import BPRSubmiRemarkToolTip from "../BPR/BPRSubmitRemarkToolTip"
+import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
 
-import useOpenExpeditingRequests from "./useOpenExpeditingRequests"
-import { GridStateContext } from "../../../../../context/GridStateContext"
-import RemarkModal from "./RemarkModal"
-
-import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
-
-import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline"
-import { ButtonWrapper } from "./styles"
+import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
+import { ButtonWrapper } from "./styles.css";
 import LastRunDateComponent from "../../../../../components/commons/lastRundate";
-import { useState } from "react"
-import { GridFilterWrapper, TextBtn } from "../../../../../VectorFlow/Pages/MTO/Common/VFPagination/styles"
+import { useState } from "react";
+import {
+  gridFilterWrapper,
+  textBtn,
+} from "../../../MTO/Common/VFPagination/styles.css";
 import { useUserData } from "../../../../../context";
-import VFSaveRemark from "../../../../../components/VectorFLOW/commons/VFSaveRemark"
-
-
+import VFSaveRemark from "../../../../../components/VectorFLOW/commons/VFSaveRemark";
 
 const OpenExpeditingRequests = () => {
-
   const {
     agGridProps,
     rowData,
@@ -51,28 +49,34 @@ const OpenExpeditingRequests = () => {
     onSubmitEditedRows,
     themeUi,
     onResetCallback,
-    lastRunDate
-  } = useOpenExpeditingRequests()
+    lastRunDate,
+  } = useOpenExpeditingRequests();
 
-    const [isDisabled, setIsDisabled]= useState<boolean>(true)
-    const {user} = useUserData()
-    const theme_ui = user.user.theme_ui
+  const [isDisabled, setIsDisabled] = useState<boolean>(true);
+  const { user } = useUserData();
+  const theme_ui = user.user.theme_ui;
 
-    const clearGridFilter = () =>{
-      ref?.current?.api.setFilterModel(null);
-      setIsDisabled(true);
-      }
-  
-    const CustomStatusPanel = () => {
-      return (
-        <GridFilterWrapper style={{marginTop:'25px'}}>
-          <TextBtn onClick={clearGridFilter} disabled={isDisabled} themeUi={theme_ui}>
-              Clear All Grid Filters
-          </TextBtn>  
-        </GridFilterWrapper>           
-        );
-    };
-  
+  const clearGridFilter = () => {
+    ref?.current?.api.setFilterModel(null);
+    setIsDisabled(true);
+  };
+  const brand = theme_ui === "REGALBLAZE" ? "REGALBLAZE" : "DEFAULT";
+
+  const CustomStatusPanel = () => {
+    return (
+      <div className={gridFilterWrapper} style={{ marginTop: "25px" }}>
+        <button
+          className={textBtn[brand]}
+          onClick={clearGridFilter}
+          disabled={isDisabled}
+        >
+          {" "}
+          Clear All Grid Filters
+        </button>
+      </div>
+    );
+  };
+
   return (
     <GridStateContext.Provider
       value={{
@@ -83,22 +87,23 @@ const OpenExpeditingRequests = () => {
         setTempDownloadData: setTempDownloadData,
         exportExcelRowData: exportExcelRowData,
         setExportExcelRowData: setExportExcelRowData,
-        onResetCallback:onResetCallback
-
+        onResetCallback: onResetCallback,
       }}
     >
-      <div style={{ marginLeft: '10px',marginBottom:'10px' }}>
+      <div style={{ marginLeft: "10px", marginBottom: "10px" }}>
         <ActionToolBar
-          view={'grid'}
-          setCurrentTab={''}
-          currCategory={'OpenExpeditingRequests'}
-          currentTab={''}
+          view={"grid"}
+          setCurrentTab={""}
+          currCategory={"OpenExpeditingRequests"}
+          currentTab={""}
           tabsList={[]}
-          onFloatingTabChange={() => console.log('')}
-          onGoBack={() => console.log('')}
-          onViewChange={() => console.log('')}
+          onFloatingTabChange={() => console.log("")}
+          onGoBack={() => console.log("")}
+          onViewChange={() => console.log("")}
           genericRecordCount={12}
-          onExportToExcelCallBack={() => { return }}
+          onExportToExcelCallBack={() => {
+            return;
+          }}
           multiFilter={currentFilter}
           lastRunDate={lastRunDate}
           setMultiFilter={setCurrentFilter}
@@ -108,15 +113,11 @@ const OpenExpeditingRequests = () => {
           disableSubmitEditedRowsBtn={editedRows.length === 0}
         />
       </div>
-      {lastRunDate && (
-        <LastRunDateComponent lastRunDate={lastRunDate} />
-      )}
-      {(isLoading) ?
-        (
-          <VFLoader />
-        )
-        :
-        (<div style={{ marginLeft: '15px', height: '70vh' }}>
+      {lastRunDate && <LastRunDateComponent lastRunDate={lastRunDate} />}
+      {isLoading ? (
+        <VFLoader />
+      ) : (
+        <div style={{ marginLeft: "15px", height: "70vh" }}>
           <VFTable
             columnDefs={OERColumns}
             rowData={rowData}
@@ -124,13 +125,15 @@ const OpenExpeditingRequests = () => {
             rowSelection="multiple"
             statusBar={{
               statusPanels: [
-                { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
-                { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
-                { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
-                { statusPanel: 'agAggregationComponent', align: 'left' },
+                {
+                  statusPanel: "agTotalAndFilteredRowCountComponent",
+                  align: "left",
+                },
+                { statusPanel: "agTotalRowCountComponent", align: "left" },
+                { statusPanel: "agFilteredRowCountComponent", align: "left" },
+                { statusPanel: "agSelectedRowCountComponent", align: "left" },
+                { statusPanel: "agAggregationComponent", align: "left" },
                 { statusPanel: CustomStatusPanel, align: "right" },
-
               ],
             }}
             {...agGridProps}
@@ -146,20 +149,21 @@ const OpenExpeditingRequests = () => {
                   }
                   });
             }}
-            
             height={"95%"}
             maintainColumnOrder={true}
           />
-          
-          <VFSaveRemark onSubmitRemarks={onSubmitEditedRows} isDisabled={editedRows.length === 0}/>
-          
+
+          <VFSaveRemark
+            onSubmitRemarks={onSubmitEditedRows}
+            isDisabled={editedRows.length === 0}
+          />
+
           {/* <ButtonWrapper>
             <VFButtonOutline disabled={editedRows.length === 0} themeUi={themeUi} width={169} style={{ fontSize: '20px', fontWeight: '500' }} onClick={onSubmitEditedRows}>Save  Remarks</VFButtonOutline>
           </ButtonWrapper> */}
         </div>
-        )
-      }
-      
+      )}
+
       {isSubmitRemarkToolTipOpen && (
         <BPRSubmiRemarkToolTip
           remark={remark}
@@ -188,7 +192,7 @@ const OpenExpeditingRequests = () => {
         onClose={onCloseRemarkHistory}
       />
     </GridStateContext.Provider>
-  )
-}
+  );
+};
 
-export default OpenExpeditingRequests
+export default OpenExpeditingRequests;

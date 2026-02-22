@@ -9,7 +9,7 @@ import { notifyError, notifySuccess, notifyWarning } from '../../../../../helper
 import OverlayLoader from '../../Common/Loader';
 import { useSearchParams } from 'react-router-dom';
 import { useUserData } from '../../../../../context';
-import { MainSection } from './SchedulingStyles';
+import { mainSection } from './SchedulingStyles.css';
 
 
 
@@ -192,7 +192,7 @@ const Scheduling = () => {
     
 
     return (
-        <MainSection id='main-content' >
+        <div className={mainSection} id='main-content' >
             {
                 finalResultLoading &&
                 <OverlayLoader message='Fetching Run Result...'/>
@@ -206,7 +206,7 @@ const Scheduling = () => {
             {
                 getRunActionBar()
             }
-        </MainSection>
+        </div>
     )
 }
 

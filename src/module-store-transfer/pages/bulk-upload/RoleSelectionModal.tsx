@@ -3,7 +3,15 @@ import Checkbox from "../../../components/VectorFLOW/commons/MTO/Checkbox";
 import { useUserData } from "../../../context";
 import VFButton from "../../../components/VectorFLOW/commons/VFButton";
 import VFButtonOutline from "../../../components/VectorFLOW/commons/VFButtonOutline";
-import { ModalContainer, ModalContent, Section, SectionHeader, RolesGrid, CheckboxLabel, ButtonSection } from "./style";
+import {
+  modalContainer,
+  modalContent,
+  section,
+  sectionHeader,
+  rolesGrid,
+  checkboxLabel,
+  buttonSection,
+} from "./style.css";
 
 interface Role {
   id: number;
@@ -18,15 +26,12 @@ interface RoleSelectionModalProps {
   activeApplications: string[];
 }
 
-
-
 const RoleSelectionModal: React.FC<RoleSelectionModalProps> = ({
   listRoles,
   updateRoles,
   closeModal,
-  activeApplications
+  activeApplications,
 }) => {
-
   const user = useUserData();
   const themeUi = user.user.user.theme_ui;
   const [selectedRoles, setSelectedRoles] = useState<Set<Role>>(new Set());
@@ -41,7 +46,11 @@ const RoleSelectionModal: React.FC<RoleSelectionModalProps> = ({
     });
   };
   const applicationGroups = Array.from(
-    new Set(listRoles.map((role) => role.application_name).filter(app => activeApplications.includes(app)))
+    new Set(
+      listRoles
+        .map((role) => role.application_name)
+        .filter((app) => activeApplications.includes(app))
+    )
   );
 
   const [expandedApps, setExpandedApps] = useState<Record<string, boolean>>(
@@ -53,11 +62,11 @@ const RoleSelectionModal: React.FC<RoleSelectionModalProps> = ({
   };
 
   return (
-    <ModalContainer>
-      <ModalContent>
+    <div className={modalContainer}>
+      <div className={modalContent}>
         {applicationGroups.map((appName) => (
-          <Section key={appName}>
-            <SectionHeader
+          <div className={section} key={appName}>
+            <div className={sectionHeader}
               onClick={() => toggleSection(appName)}
               style={{
                 borderBottom: expandedApps[appName]
@@ -69,20 +78,20 @@ const RoleSelectionModal: React.FC<RoleSelectionModalProps> = ({
               <span style={{ marginLeft: 8 }}>
                 {expandedApps[appName] ? "▲" : "▼"}
               </span>
-            </SectionHeader>
+            </div>
             {expandedApps[appName] && (
-              <RolesGrid>
+              <div className={rolesGrid}>
                 {listRoles
                   .filter((role) => role.application_name === appName)
                   .map((role) => (
-                    <CheckboxLabel
+                    <label className={checkboxLabel}
                       key={role.id}
                       style={{
-                        userSelect: 'none',
+                        userSelect: "none",
                         display: "flex",
                         alignContent: "center",
                         alignItems: "center",
-                        cursor: 'pointer'
+                        cursor: "pointer",
                       }}
                       onClick={() => {
                         selectedRoles.has(role)
@@ -102,21 +111,21 @@ const RoleSelectionModal: React.FC<RoleSelectionModalProps> = ({
                         }
                       />
                       <p
-                        style={{ paddingTop: "1px", cursor: 'pointer' }}
+                        style={{ paddingTop: "1px", cursor: "pointer" }}
                         onClick={(e) => {
                           e.stopPropagation();
                         }}
                       >
                         {role.name}
                       </p>
-                    </CheckboxLabel>
+                    </label>
                   ))}
-              </RolesGrid>
+              </div>
             )}
-          </Section>
+          </div>
         ))}
-      </ModalContent>
-      <ButtonSection>
+      </div>
+      <div className={buttonSection}>
         <VFButtonOutline
           disabled={false}
           style={{ width: "100px", height: "35px", fontSize: "1rem" }}
@@ -132,12 +141,15 @@ const RoleSelectionModal: React.FC<RoleSelectionModalProps> = ({
           disabled={false}
           style={{ width: "100px", height: "35px", fontSize: "1rem" }}
           themeUi={themeUi}
-          onClick={()=>{updateRoles(selectedRoles); closeModal();}}
+          onClick={() => {
+            updateRoles(selectedRoles);
+            closeModal();
+          }}
         >
           {"Update Roles"}
         </VFButton>
-      </ButtonSection>
-    </ModalContainer>
+      </div>
+    </div>
   );
 };
 

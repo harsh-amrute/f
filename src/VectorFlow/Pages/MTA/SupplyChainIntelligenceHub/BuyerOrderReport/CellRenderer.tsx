@@ -1,5 +1,5 @@
 
-import { BORColorCellRendererWrapper} from "./styles"
+import { BORColorCellRendererWrapper} from "./styles.css"
 
 
 const colorMapper =(color:string)=> {
@@ -46,16 +46,16 @@ export const DispatchColorCellRenderer = (params:any)=>{
 
     if(!DispatchColor || DispatchColor.length<1){
         return(
-            <BORColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text}}>
+            <div className={BORColorCellRendererWrapper} style={{backgroundColor:cellColor.bg,color:cellColor.text}}>
                 NULL
-            </BORColorCellRendererWrapper>
+            </div>
         )
     }
 
     return(
-        <BORColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text}}>
+        <div className={BORColorCellRendererWrapper} style={{backgroundColor:cellColor.bg,color:cellColor.text}}>
             {params.data.DispatchPen}%
-        </BORColorCellRendererWrapper>
+        </div>
     )
 }
 export{}

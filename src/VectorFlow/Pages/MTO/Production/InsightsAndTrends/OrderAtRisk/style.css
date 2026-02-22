@@ -1,0 +1,45 @@
+.insightOrderRisk-tooltip-title {
+    background-color: #2e2e2e;
+    color: lightgray;
+    display: flex;
+    justify-content: center;
+  }
+
+  .insightOrderRisk-tooltip-content {
+    color: white; 
+    background-color: #2E2E2E;
+  }
+
+  .insightOrderRisk-tooltip-divider {
+    border-top: 1px dashed lightgray;
+  }
+
+  .insightOrderRisk-tooltip-row {
+    display: flex;
+    width: 100%;
+    color: lightgray;
+  }
+
+  .header-row {
+    justify-content: space-between;
+  }
+
+  .value-row {
+    justify-content: space-around;
+  }
+
+  .insightOrderRisk-tooltip-cell {
+    padding: 5px 20px;
+  }
+
+  .total-order {
+    /* additional styles if needed */
+  }
+
+  .black-order {
+    margin-left: 30px;
+  }
+
+  .red-order {
+    /* additional styles if needed */
+  }

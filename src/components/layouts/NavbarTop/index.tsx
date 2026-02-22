@@ -10,13 +10,17 @@ import {
   SCTxt,
   SCImgLink,
   SCVerticalPartitions,
-} from "./styles";
+  wrapBgVar,
+  breadcrumbColorVar,
+  userNameColorVar,
+} from "./styles.css";
 import { useUserData } from "../../../context";
 import BreadCrumb from "../BreadCrumb";
 import { useState } from "react";
 import { ModalReportIssue, ModalSuccess } from "../../index";
-import {  useNavigate} from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
+import * as globalStyles from "../../../styles/global";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 
 const NavbarTop = ({
   setIsOpenNavbarRight,
@@ -43,7 +47,7 @@ const NavbarTop = ({
 
   const onCloseModalSuccess = () => {
     setIsOpenReportSuccess(false);
-  }
+  };
 
   const navigate = useNavigate();
 
@@ -51,52 +55,96 @@ const NavbarTop = ({
     navigate("/landing-page"); // Navigating to the desired route
   };
 
+    // derive runtime theme colors
+    const theme = globalStyles.chooseThemeColor[colorTheme] || {};
+    const wrapBg = theme?.color1 || "#000";
+    const breadcrumbColor =
+      colorTheme === "PUREELEGANCE" ? theme?.color3 || "#000" : globalStyles.white;
+    const userNameColor =
+      colorTheme === "PUREELEGANCE" ? theme?.color3 || "#000" : globalStyles.white;
+  
+
   return (
     <>
-      <SCWrap colorTheme={colorTheme}>
-        <SCLeft>
-          <SCWrapLogo>
-            <SCLogo
+      <div
+        className={SCWrap}
+        style={assignInlineVars({
+          [wrapBgVar]: wrapBg,
+        })}
+      >
+        <div className={SCLeft}>
+          <div className={SCWrapLogo}>
+            <img
+              className={SCLogo}
               src={
                 colorTheme === "PUREELEGANCE"
                   ? "/assets/img/header/VectorFlowLogoBlackNew.svg"
                   : "/assets/img/header/VectorFlowLogoWhite.svg"
               }
               onClick={handleClick}
+              alt="VectorFlow"
             />
-          </SCWrapLogo>
+          </div>
 
-          <SCVerticalPartitions />
+          <div className={SCVerticalPartitions} />
 
-          <SCWrapBreadcrumb>
-            <SCBreadCrumb colorTheme={colorTheme}>
+          <div className={SCWrapBreadcrumb}>
+            <div
+              className={SCBreadCrumb}
+              style={assignInlineVars({
+                [breadcrumbColorVar]: breadcrumbColor,
+              })}
+            >
               <BreadCrumb />
-            </SCBreadCrumb>
-          </SCWrapBreadcrumb>
-        </SCLeft>
-        <SCRight>
-            <SCImg
-              src={`/assets/img/header/${
-                colorTheme === "REGALBLAZE"
-                  ? "notifications_yellow"
-                  : "notifications_purple"
-              }.svg`}
-            />
-          <SCImg
+            </div>
+          </div>
+        </div>
+
+        <div className={SCRight}>
+          <img
+            className={SCImg}
+            src={`/assets/img/header/${
+              colorTheme === "REGALBLAZE"
+                ? "notifications_yellow"
+                : "notifications_purple"
+            }.svg`}
+            alt="Notifications"
+          />
+
+          <img
+            className={SCImg}
             src="/assets/img/header/icon_theme_colors.svg"
             onClick={openNavbarRight}
-          />
-          <SCImg
-            src="/assets/img/header/report-bug.svg"
-            onClick={openReportIssue}
+            alt="Theme"
           />
 
-          <SCImgLink to="/profile">
-            <SCImg src="/assets/img/header/profile_new.svg" />
-          </SCImgLink>
-          <SCTxt colorTheme={colorTheme}>{user?.user?.name}</SCTxt>
-        </SCRight>
-      </SCWrap>
+          <img
+            className={SCImg}
+            src="/assets/img/header/report-bug.svg"
+            onClick={openReportIssue}
+            alt="Report bug"
+          />
+
+          <Link to="/profile" className={SCImgLink}>
+            <img
+              className={SCImg}
+              src="/assets/img/header/profile_new.svg"
+              alt="Profile"
+            />
+          </Link>
+
+          <span
+            className={SCTxt}
+            style={assignInlineVars({
+              [userNameColorVar]: userNameColor,
+            })}
+            title={user?.user?.name}
+          >
+            {user?.user?.name}
+          </span>
+        </div>
+      </div>
+
       {isOpenReportIssue && (
         <ModalReportIssue
           openModal={isOpenReportIssue}

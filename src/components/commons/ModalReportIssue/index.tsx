@@ -1,12 +1,4 @@
 import { Dialog, Transition } from "@headlessui/react";
-import "./styles.css";
-import { Fragment, useEffect, useState } from "react";
-import { FileUploader } from "react-drag-drop-files";
-import { notifyError } from "../../../helpers/notify";
-import { useTranslation } from "react-i18next";
-import { useUserData } from "../../../context";
-import { MainService } from "../../../services/profile/api";
-import { SelectOptionLevel } from "../../index";
 import {
   SCModalContent,
   SCTextTitle,
@@ -17,6 +9,7 @@ import {
   SCWrapperText,
   SCTextThin,
   SCItem,
+  ContentFile,
   SCWrapperImg,
   SCImg,
   SCPlaceholderImg,
@@ -27,7 +20,18 @@ import {
   SCWrapperItemImg,
   SCItemText,
   SCItemImg,
-} from "./styles";
+  buttonBgVar,
+} from "./styles.css";
+import { Fragment, useEffect, useState } from "react";
+import { FileUploader } from "react-drag-drop-files";
+import { notifyError } from "../../../helpers/notify";
+import { useTranslation } from "react-i18next";
+import { useUserData } from "../../../context";
+import { MainService } from "../../../services/profile/api";
+import { SelectOptionLevel } from "../../index";
+
+import { assignInlineVars } from "@vanilla-extract/dynamic";
+import * as globalStyles from "../../../styles/global";
 
 interface ModalProps {
   openModal: boolean;
@@ -116,7 +120,7 @@ const ModalReportIssue = ({
       formData.append("description", description);
       for (const file of fileUpload) {
         formData.append("attachment", file, file?.name);
-      }      
+      }
 
       MainService.postIssueReport(formData)
         .then(() => {
@@ -164,147 +168,158 @@ const ModalReportIssue = ({
     setFileUpload(newUploadFile);
   };
 
+  const buttonBg =
+    (themeUi && globalStyles.chooseThemeColor[themeUi]?.colorButton) ||
+    globalStyles.NOIRFUSION.colorButton;
+
   return (
-    <>
-      {
-        <Transition appear show={openModal} as={Fragment}>
-          <Dialog as="div" className="modal-box" onClose={closeModal}>
+    <Transition appear show={openModal} as={Fragment}>
+      <Dialog as="div" className="modal-box" onClose={closeModal}>
+        <Transition.Child
+          as={Fragment}
+          enter="transition"
+          enterFrom="opa-0"
+          enterTo="opa"
+          leave="leave-modal"
+          leaveFrom="opa"
+          leaveTo="opa-0"
+        >
+          <div className="modal-bg inset" />
+        </Transition.Child>
+
+        <div className={SCModalContent}>
+          <div className="modal-content--box">
             <Transition.Child
               as={Fragment}
               enter="transition"
-              enterFrom="opa-0"
-              enterTo="opa"
+              enterFrom="opa-0 tranlate "
+              enterTo="opa translate-y-0 "
               leave="leave-modal"
-              leaveFrom="opa"
-              leaveTo="opa-0"
+              leaveFrom="opa translate-y-0"
+              leaveTo="opacity-0 tranlate"
             >
-              <div className="modal-bg inset" />
-            </Transition.Child>
-            <SCModalContent>
-              <div className="modal-content--box">
-                <Transition.Child
-                  as={Fragment}
-                  enter="transition"
-                  enterFrom="opa-0 tranlate "
-                  enterTo="opa translate-y-0 "
-                  leave="leave-modal"
-                  leaveFrom="opa translate-y-0"
-                  leaveTo="opacity-0 tranlate"
-                >
-                  <Dialog.Panel className="modal-forced--block">
-                    <Dialog.Title as="h3" className="modal-title-forced">
-                      <SCTextTitle>{t("reportAnIssue.title")}</SCTextTitle>
-                      <SCCloseModal onClick={closeModal}>x</SCCloseModal>
-                    </Dialog.Title>
-                    <SCWrapperContent>
-                      <SCItem>
-                        <SCText htmlFor="choose-component">
-                          {t("reportAnIssue.chooseComponent")}
-                        </SCText>
-                        <SelectOptionLevel
-                          value={valueComponent}
-                          setValue={setValueComponent}
-                          options={listIssueComponent}
-                          placeholder={t(
-                            "reportAnIssue.placeholderSelectAnOption"
-                          )}
-                          isDisabled={isLoadSpinner}
-                        />
-                      </SCItem>
+              <Dialog.Panel className="modal-forced--block">
+                <Dialog.Title as="h3" className="modal-title-forced">
+                  <span className={SCTextTitle}>
+                    {t("reportAnIssue.title")}
+                  </span>
+                  <span className={SCCloseModal} onClick={closeModal}>
+                    x
+                  </span>
+                </Dialog.Title>
 
-                      <SCItem>
-                        <SCText htmlFor="select-issue-type">
-                          {t("reportAnIssue.selectIssueType")}
-                        </SCText>
-                        <SelectOptionLevel
-                          value={valueIssueType}
-                          setValue={setValueIssueType}
-                          options={listIssueType}
-                          placeholder={t(
-                            "reportAnIssue.placeholderSelectAnOption"
-                          )}
-                          isDisabled={isLoadSpinner}
-                        />
-                      </SCItem>
+                <div className={SCWrapperContent}>
+                  <div className={SCItem}>
+                    <label className={SCText} htmlFor="choose-component">
+                      {t("reportAnIssue.chooseComponent")}
+                    </label>
+                    <SelectOptionLevel
+                      value={valueComponent}
+                      setValue={setValueComponent}
+                      options={listIssueComponent}
+                      placeholder={t("reportAnIssue.placeholderSelectAnOption")}
+                      isDisabled={isLoadSpinner}
+                    />
+                  </div>
 
-                      <SCItem>
-                        <SCText htmlFor="issue-description">
-                          {t("reportAnIssue.issueDescription")}
-                        </SCText>
-                        <SCTextarea
-                          id="issue-description"
-                          maxLength={2000}
-                          rows={5}
-                          placeholder={
-                            t("reportAnIssue.placeholderDescription") || ""
-                          }
-                          value={description}
-                          onChange={(e) => setDescription(e.target.value)}
-                          disabled={isLoadSpinner}
-                        />
-                      </SCItem>
+                  <div className={SCItem}>
+                    <label className={SCText} htmlFor="select-issue-type">
+                      {t("reportAnIssue.selectIssueType")}
+                    </label>
+                    <SelectOptionLevel
+                      value={valueIssueType}
+                      setValue={setValueIssueType}
+                      options={listIssueType}
+                      placeholder={t("reportAnIssue.placeholderSelectAnOption")}
+                      isDisabled={isLoadSpinner}
+                    />
+                  </div>
 
-                      <SCWrapperImg>
-                        <SCWrapperText>
-                          <SCText>{t("reportAnIssue.attachments")}</SCText>
-                          <SCTextThin>
-                            {` (${t("reportAnIssue.anyFileUpto4Mb")})`}
-                          </SCTextThin>
-                        </SCWrapperText>
-                        <FileUploader
-                          classes="content-file"
-                          multiple
-                          name="file"
-                          handleChange={handleChooseFile}
-                          disabled={isLoadSpinner}
-                        >
-                          <SCImg
-                            src="/assets/img/reportIssue/plus.svg"
-                            alt=""
+                  <div className={SCItem}>
+                    <label className={SCText} htmlFor="issue-description">
+                      {t("reportAnIssue.issueDescription")}
+                    </label>
+                    <textarea
+                      id="issue-description"
+                      maxLength={2000}
+                      rows={5}
+                      placeholder={
+                        t("reportAnIssue.placeholderDescription") || ""
+                      }
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      disabled={isLoadSpinner}
+                      className={SCTextarea}
+                    />
+                  </div>
+
+                  <div className={SCWrapperImg}>
+                    <div className={SCWrapperText}>
+                      <span className={SCText}>
+                        {t("reportAnIssue.attachments")}
+                      </span>
+                      <span className={SCTextThin}>
+                        {` (${t("reportAnIssue.anyFileUpto4Mb")})`}
+                      </span>
+                    </div>
+
+                    <FileUploader
+                      classes={ContentFile}
+                      multiple
+                      name="file"
+                      handleChange={handleChooseFile}
+                      disabled={isLoadSpinner}
+                    >
+                      <img
+                        className={SCImg}
+                        src="/assets/img/reportIssue/plus.svg"
+                        alt=""
+                      />
+                      <span className={SCPlaceholderImg}>
+                        {t("reportAnIssue.placeholderAttachments")}
+                      </span>
+                    </FileUploader>
+
+                    <div className={SCWrapperContentImg}>
+                      {fileUpload?.map((item: any, index: number) => (
+                        <div className={SCWrapperItemImg} key={index}>
+                          <span className={SCItemText}>{item?.name}</span>
+                          <img
+                            className={SCItemImg}
+                            src="/assets/img/reportIssue/delete.svg"
+                            onClick={() => handleDelete(index)}
                           />
-                          <SCPlaceholderImg>
-                            {t("reportAnIssue.placeholderAttachments")}
-                          </SCPlaceholderImg>
-                        </FileUploader>
-                        <SCWrapperContentImg>
-                          {fileUpload?.map((item: any, index: number) => (
-                            <SCWrapperItemImg key={index}>
-                              <SCItemText>{item?.name}</SCItemText>
-                              <SCItemImg
-                                src="/assets/img/reportIssue/delete.svg"
-                                onClick={() => handleDelete(index)}
-                              />
-                            </SCWrapperItemImg>
-                          ))}
-                        </SCWrapperContentImg>
-                      </SCWrapperImg>
-                    </SCWrapperContent>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
 
-                    <SCModalBottom>
-                      <SCButtonGoBack
-                        type="button"
-                        onClick={closeModal}
-                        disabled={isLoadSpinner}
-                      >
-                        {t("reportAnIssue.goBack")}
-                      </SCButtonGoBack>
-                      <SCButtonSubmit
-                        className={"btn_submitReport " + themeUi}
-                        onClick={handleReportIssue}
-                        disabled={isLoadSpinner}
-                        themeUi={themeUi}
-                      >
-                        {t("reportAnIssue.submit")}
-                      </SCButtonSubmit>
-                    </SCModalBottom>
-                  </Dialog.Panel>
-                </Transition.Child>
-              </div>
-            </SCModalContent>
-          </Dialog>
-        </Transition>
-      }
-    </>
+                <div className={SCModalBottom}>
+                  <button
+                    type="button"
+                    className={SCButtonGoBack}
+                    onClick={closeModal}
+                    disabled={isLoadSpinner}
+                  >
+                    {t("reportAnIssue.goBack")}
+                  </button>
+
+                  <button
+                    className={SCButtonSubmit}
+                    style={assignInlineVars({ [buttonBgVar]: buttonBg })}
+                    onClick={handleReportIssue}
+                    disabled={isLoadSpinner}
+                  >
+                    {t("reportAnIssue.submit")}
+                  </button>
+                </div>
+              </Dialog.Panel>
+            </Transition.Child>
+          </div>
+        </div>
+      </Dialog>
+    </Transition>
   );
 };
 

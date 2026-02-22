@@ -4,7 +4,10 @@ import VFTable from "../../../Common/VFTable";
 import CustomGroupCellRenderer from "./CustomGroupCellRenderer";
 import DayWiseCoverageDetailsCellRenderer from "./DayWiseCoverageDetailsCellRenderer";
 import { useGetDayWiseCoverageData } from "../../../../../../VectorFlow/Services/MTO/Procurement/DayWiseCoverage";
-import { GridFilterWrapper, TextBtn } from "../../../Common/VFPagination/styles";
+import {
+  gridFilterWrapper,
+  textBtn,
+} from "../../../Common/VFPagination/styles.css";
 import { useUserData } from "../../../../../../context";
 import { formatFilterJSON } from "../../../../../../helpers/utils";
 
@@ -33,7 +36,6 @@ const DayWiseCoverageTable = ({
   appliedFilters,
   childColDef
 }: IDayWiseCoverageProps) => {
-
   // const extra = [
   //   {
   //       headerName: "Action",
@@ -43,10 +45,11 @@ const DayWiseCoverageTable = ({
   // ]
   const gridRef = useRef<any>(null);
   const [rowData, setRowData] = useState([]);
-  const { mutateAsync: getData, isLoading: isGridLoading } = useGetDayWiseCoverageData();
-  const [isDisabled, setIsDisabled]= useState<boolean>(true)
+  const { mutateAsync: getData, isLoading: isGridLoading } =
+    useGetDayWiseCoverageData();
+  const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const { user } = useUserData();
-  const theme_ui = user.user.theme_ui
+  const theme_ui = user.user.theme_ui;
 
   const getGridData = async () => {
     if (selectedDate) {
@@ -61,32 +64,35 @@ const DayWiseCoverageTable = ({
       const convertToArray = !Array.isArray(data?.data?.data) ? [] : data?.data?.data;
       setRowData(convertToArray);
     }
-  }
+  };
 
-  
-  const clearGridFilter = () =>{
+  const clearGridFilter = () => {
     gridRef?.current?.api.setFilterModel(null);
-      setIsDisabled(true);
-}
+    setIsDisabled(true);
+  };
+  const brand = theme_ui === "REGALBLAZE" ? "REGALBLAZE" : "DEFAULT";
 
   const CustomStatusPanel = () => {
-          return (
-              <GridFilterWrapper style={{marginTop:'15px'}}>
-                  <TextBtn onClick={clearGridFilter} disabled={isDisabled} themeUi={theme_ui}>
-                      Clear All Grid Filters
-                  </TextBtn>  
-              </GridFilterWrapper>           
-          );
-      };
-      
+    return (
+      <div className={gridFilterWrapper} style={{ marginTop: "15px" }}>
+        <button
+          className={textBtn[brand]}
+          onClick={clearGridFilter}
+          disabled={isDisabled}
+        >
+          Clear All Grid Filters
+        </button>
+      </div>
+    );
+  };
 
   useEffect(() => {
     getGridData()
   }, [selectedDate, appliedFilters])
 
   useEffect(() => {
-    setLoading(isGridLoading)
-  }, [isGridLoading])
+    setLoading(isGridLoading);
+  }, [isGridLoading]);
 
 
   const options: GridOptions<any> = useMemo(() => ({
@@ -100,12 +106,12 @@ const DayWiseCoverageTable = ({
       resizable: true,
       cellStyle: {
         display: "flex",
-      }
+      },
     },
     autoGroupColumnDef: {
       headerName: "Group",
       cellRenderer: CustomGroupCellRenderer,
-      suppressMenu: true,
+      suppressHeaderMenuButton: true,
       initialWidth: 260,
     },
     masterDetail: true,
@@ -115,15 +121,15 @@ const DayWiseCoverageTable = ({
     },
   }), [colDef, childColDef]);
 
-  useEffect(()=>{ 
+  useEffect(() => {
     if (columnState?.length && colDef.length > 0) {
-        const result = currentGridRef?.current?.api.applyColumnState({
-            state: columnState,
-            applyOrder: true
-        });
-        if (!result) {
-            console.error('Failed to apply column state');
-        }
+      const result = currentGridRef?.current?.api.applyColumnState({
+        state: columnState,
+        applyOrder: true,
+      });
+      if (!result) {
+        console.error("Failed to apply column state");
+      }
     }
   },[columnState,currentGridRef]);
 
@@ -183,9 +189,6 @@ const DayWiseCoverageTable = ({
   }, [gridRef.current, childColDef, rowData]);
 
   return (
-
-    
-
     <VFTable
       ref={gridRef}
       animateRows={true}
@@ -208,12 +211,12 @@ const DayWiseCoverageTable = ({
       onGridReady={(params: any) => {
         params.api.autoSizeAllColumns();
         setCurrentGridRef(gridRef);
-        params.api.addEventListener('filterChanged', () => {
+        params.api.addEventListener("filterChanged", () => {
           const filterModel = params.api.getFilterModel();
           if (Object.keys(filterModel).length > 0) {
-            setIsDisabled(false); 
+            setIsDisabled(false);
           } else {
-            setIsDisabled(true); 
+            setIsDisabled(true);
           }
         });
       }}

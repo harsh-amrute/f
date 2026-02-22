@@ -1,17 +1,17 @@
-import * as Tab from "./style";
-import {  Modal } from "../../index";
-import {
-  UsePutDeleteUser,
-  useResetPwd,
-} from "../../../services/profile";
+import { tableTdCenter, tableTd, iconWrapper, icon } from "./style.css";
+import { Modal } from "../../index";
+import { UsePutDeleteUser, useResetPwd } from "../../../services/profile";
 import { notifyError, notifySuccess } from "../../../helpers/notify";
 import { useTranslation } from "react-i18next";
-import {  useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import VFTable from "../../../VectorFlow/Pages/MTO/Common/VFTable";
 import LoadingSpinner from "../LoadingSpinner";
-import { GridFilterWrapper, TextBtn } from "../../../VectorFlow/Pages/MTO/Common/VFPagination/styles";
+import {
+  gridFilterWrapper,
+  textBtn,
+} from "../../../VectorFlow/Pages/MTO/Common/VFPagination/styles.css";
 import { useUserData } from "../../../context";
-import ToggleCell from "./ToggleCell"; 
+import ToggleCell from "./ToggleCell";
 import Tooltip from "../../../VectorFlow/Pages/MTO/Common/Tooltip";
 
 interface TableUser {
@@ -37,8 +37,10 @@ const TableUserManagement = ({
   const { user } = useUserData();
   const theme_ui = user.user.theme_ui;
 
-  const { mutateAsync: usePutDeleteUser, isLoading: isDeleting } = UsePutDeleteUser();
-  const { mutateAsync: mutateResetPwd, isLoading: isResettingPwd } = useResetPwd();
+  const { mutateAsync: usePutDeleteUser, isLoading: isDeleting } =
+    UsePutDeleteUser();
+  const { mutateAsync: mutateResetPwd, isLoading: isResettingPwd } =
+    useResetPwd();
 
   const isLoading = isDeleting || isResettingPwd;
 
@@ -121,44 +123,55 @@ const TableUserManagement = ({
     gridRef?.current?.api.setFilterModel(null);
     setIsDisabled(true);
   };
+  const brand = theme_ui === "REGALBLAZE" ? "REGALBLAZE" : "DEFAULT";
 
   const CustomStatusPanel = () => {
     return (
-      <GridFilterWrapper style={{ marginTop: '15px' }}>
-        <TextBtn onClick={clearGridFilter} disabled={isDisabled} themeUi={theme_ui}>
+      <div className={gridFilterWrapper} style={{ marginTop: "15px" }}>
+        <button
+          onClick={clearGridFilter}
+          disabled={isDisabled}
+          className={textBtn[brand]}
+        >
           Clear All Grid Filters
-        </TextBtn>
-      </GridFilterWrapper>
+        </button>
+      </div>
     );
   };
 
   const ListAction = ({ item }: any) => {
     return (
       <>
-        <Tab.SCTableTd>
-          <Tab.SCIconWrapper>
+        <div className={tableTd}>
+          <div className={iconWrapper}>
             <Tooltip
               id="edit"
-              content={<p style={{ fontSize: '1rem', padding: '4px' }}>Edit User</p>}
+              content={
+                <p style={{ fontSize: "1rem", padding: "4px" }}>Edit User</p>
+              }
               place="top"
               className="user-manage-tooltip"
             >
-              <Tab.SCIcon
+              <img
+                className={icon}
                 data-tooltip-id="edit"
                 src="/assets/img/profile/icon_edit.svg"
                 onClick={() => handleClickEdit(item)}
               />
             </Tooltip>
-          </Tab.SCIconWrapper>
+          </div>
 
-          <Tab.SCIconWrapper>
+          <div className={iconWrapper}>
             <Tooltip
               id="delete"
-              content={<p style={{ fontSize: '1rem', padding: '4px' }}>Delete User</p>}
+              content={
+                <p style={{ fontSize: "1rem", padding: "4px" }}>Delete User</p>
+              }
               place="top"
               className="user-manage-tooltip"
             >
-              <Tab.SCIcon
+              <img
+                className={icon}
                 data-tooltip-id="delete"
                 src="/assets/img/profile/icon_delete.svg"
                 onClick={() => {
@@ -166,16 +179,21 @@ const TableUserManagement = ({
                 }}
               />
             </Tooltip>
-          </Tab.SCIconWrapper>
+          </div>
 
-          <Tab.SCIconWrapper>
+          <div className={iconWrapper}>
             <Tooltip
               id="reset"
-              content={<p style={{ fontSize: '1rem', padding: '4px' }}>Reset Password</p>}
+              content={
+                <p style={{ fontSize: "1rem", padding: "4px" }}>
+                  Reset Password
+                </p>
+              }
               place="top"
               className="user-manage-tooltip"
             >
-              <Tab.SCIcon
+              <img
+                className={icon}
                 data-tooltip-id="reset"
                 src="/assets/img/profile/icon_lock.svg"
                 onClick={() => {
@@ -183,8 +201,8 @@ const TableUserManagement = ({
                 }}
               />
             </Tooltip>
-          </Tab.SCIconWrapper>
-        </Tab.SCTableTd>
+          </div>
+        </div>
       </>
     );
   };
@@ -255,7 +273,7 @@ const TableUserManagement = ({
         flex: 1,
         filter: false,
         suppressTooltips: true,
-        tooltipValueGetter: () => '',
+        tooltipValueGetter: () => "",
         cellRenderer: (params: any) => {
           return renderAction(params.data, is_admin);
         },
@@ -267,14 +285,18 @@ const TableUserManagement = ({
         filter: false,
         suppressTooltips: true,
         cellRenderer: (params: any) => {
-          return <ToggleCell data={params.data} permission={permission} is_admin={is_admin} />;
+          return (
+            <ToggleCell
+              data={params.data}
+              permission={permission}
+              is_admin={is_admin}
+            />
+          );
         },
       },
     ],
     [is_admin, permission]
   );
-
- 
 
   return (
     <>
@@ -300,15 +322,18 @@ const TableUserManagement = ({
         statusBar={{
           statusPanels: [
             { statusPanel: CustomStatusPanel, align: "left" },
-            { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'right' },
-            { statusPanel: 'agTotalRowCountComponent', align: 'right' },
-            { statusPanel: 'agFilteredRowCountComponent', align: 'right' },
-            { statusPanel: 'agSelectedRowCountComponent', align: 'right' },
-            { statusPanel: 'agAggregationComponent', align: 'right' },
+            {
+              statusPanel: "agTotalAndFilteredRowCountComponent",
+              align: "right",
+            },
+            { statusPanel: "agTotalRowCountComponent", align: "right" },
+            { statusPanel: "agFilteredRowCountComponent", align: "right" },
+            { statusPanel: "agSelectedRowCountComponent", align: "right" },
+            { statusPanel: "agAggregationComponent", align: "right" },
           ],
         }}
         onGridReady={(params: any) => {
-          params.api.addEventListener('filterChanged', () => {
+          params.api.addEventListener("filterChanged", () => {
             const filterModel = params.api.getFilterModel();
             if (Object.keys(filterModel).length > 0) {
               setIsDisabled(false);

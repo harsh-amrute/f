@@ -10,7 +10,7 @@ import ColorCellRenderer from '../../../../../InsightsAndTrends/BTR/ColorCellRen
 import RequestExpeditingModal from '../../../../BPR/RequestExpeditingModal';
 import { useSubmitOpenExpediteRequest } from '../../../../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/Planning';
 import { notifyError, notifyLoader, notifySuccess } from '../../../../../../../../helpers/notify';
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify/unstyled";
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../../../../../redux/store/store';
 

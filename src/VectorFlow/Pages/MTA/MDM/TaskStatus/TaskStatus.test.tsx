@@ -16,12 +16,12 @@ import { getTaskDetailsDownloadDataMockData, getTaskStatusDataMockData,getMaster
 jest.mock("../../../../Services/MTA/MDM");
 
 
-jest.mock('react-toastify', () => ({
-  toast: {
-    error: jest.fn(),
-    success:jest.fn()
-  },
-}))
+// jest.mock('react-toastify', () => ({
+//   toast: {
+//     error: jest.fn(),
+//     success:jest.fn()
+//   },
+// }))
 
 const useGetTaskStatusDataMock = useGetTaskStatusData as jest.MockedFunction<
    typeof useGetTaskStatusData

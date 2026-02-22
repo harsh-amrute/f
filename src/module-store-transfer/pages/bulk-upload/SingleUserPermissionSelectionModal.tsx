@@ -1,19 +1,13 @@
 import React, { CSSProperties, useEffect, useRef, useState } from "react";
-import {
-  SCHorizontalDivison,
-  SCViewContainer,
-  SCViewContainerWithBgToggle,
-} from "../../../components/VectorFLOW/commons/MTO/ActionToolBar/styles";
 import { useUserData } from "../../../context";
 import { NewChartView, NewGridIcon } from "../../../helpers/SvgRenderer";
 import PermissionHeirarchyCanvas from "../manage-users/PermissioinHeirarchyCanvas";
 import PermissionForm from "./PermissionForm";
 import VFButton from "../../../components/VectorFLOW/commons/VFButton";
 import VFButtonOutline from "../../../components/VectorFLOW/commons/VFButtonOutline";
-import { ToggleButton, ToggleContainer } from "./style";
-import Portal from "../../../components/VectorFLOW/layouts/Portal";
-import { DropdownWrapper } from "../../../components/commons/CustomDropdown/style";
-import Spinner from "../../../components/commons/Spinner";
+import { toggleButton, toggleContainer } from "./style.css";
+import { SCHorizontalDivison, SCViewContainer, SCViewContainerWithBg } from "../../../components/VectorFLOW/commons/MTO/ActionToolBar/styles.css";
+
 
 
 const ViewToggle = ({
@@ -22,17 +16,17 @@ const ViewToggle = ({
   setSelectedApplication,
 }: any) => {
   return (
-    <ToggleContainer>
+    <div className={toggleContainer}>
       {allApplications.map((app: string) => (
-        <ToggleButton
+        <button className={toggleButton}
           key={app}
-          active={selectedApplication === app}
+          style={{ backgroundColor: selectedApplication === app ? "#f1d2e0" : "#fff", color: selectedApplication === app ? "#c72e64" : "#000" }}
           onClick={() => setSelectedApplication(app)}
         >
           {app}
-        </ToggleButton>
+        </button>
       ))}
-    </ToggleContainer>
+    </div>
   );
 };
 
@@ -41,26 +35,26 @@ const ChartViewToggle = ({ isChartView, setIsChartView }: any) => {
   const themeUi = user.user.user.theme_ui;
 
   return (
-    <SCViewContainerWithBgToggle style={{ zoom: 0.5, border: '0.5px solid #cecece' }}>
-      <SCViewContainer
+    <div className={SCViewContainerWithBg} style={{ flexDirection: 'row', zoom: 0.5, border: '0.5px solid #cecece', padding: '0 20px' }}>
+      <div className={SCViewContainer}
         onClick={() => {
           isChartView && setIsChartView?.(!isChartView);
         }}
       >
         <NewChartView theme={themeUi} view={!isChartView} />
-      </SCViewContainer>
+      </div>
 
-      <SCHorizontalDivison />
+      <div className={SCHorizontalDivison} />
 
-      <SCViewContainer
+      <div className={SCViewContainer}
         onClick={() => {
           !isChartView && setIsChartView?.(!isChartView);
         }}
         style={{ paddingTop: "7px" }}
       >
         <NewGridIcon theme={themeUi} view={isChartView} />
-      </SCViewContainer>
-    </SCViewContainerWithBgToggle>
+      </div>
+    </div>
   );
 };
 

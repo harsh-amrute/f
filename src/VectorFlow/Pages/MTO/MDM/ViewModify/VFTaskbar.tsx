@@ -2,7 +2,7 @@ import React from "react"
 import { useUserData } from "../../../../../context"
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline"
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton"
-import { TaskBarContainer, VFTaskBarButtonGroup } from "./styles"
+import { TaskBarContainer, VFTaskBarButtonGroup } from "./styles.css"
 import VFStepper, { StepItem } from "../../../../../components/VectorFLOW/commons/VFStepper"
 import { ViewModifyProgressState } from "../../../../../VectorFlow/types/MDM"
 
@@ -276,9 +276,9 @@ const VFTaskBar = (props: VFTaskBarProps) => {
     if (mtoSaveData) {
         return (
             <div style={{ zoom: 0.8 }}>
-                <TaskBarContainer data-testid="taskbar" style={{ width: width }}>
-                    <VFTaskBarButtonGroup>
-                        <BackButton />
+    <div className={TaskBarContainer} data-testid="taskbar" style={{ width }}>
+    <div className={VFTaskBarButtonGroup}>
+    <BackButton />
                         <VFButtonOutline onClick={onExportData} themeUi={themeUi} disabled={false} width={139}>
                             Export Data
                         </VFButtonOutline>
@@ -295,13 +295,13 @@ const VFTaskBar = (props: VFTaskBarProps) => {
                         <VFButtonOutline onClick={onMTOSaveData && (!isMTOSaveDataDisabled) ? onMTOSaveData : () => { return null; }} themeUi={themeUi} disabled={isMTOSaveDataDisabled} width={139}>
                             Save As Task
                         </VFButtonOutline>
-                    </VFTaskBarButtonGroup>
+                    </div>
                     <div>
                         <VFStepper
                             items={getStepperState()}
                         />
                     </div>
-                </TaskBarContainer>
+                </div>
             </div>
         )
     }
@@ -309,9 +309,9 @@ const VFTaskBar = (props: VFTaskBarProps) => {
     switch (masterProgress) {
         case "view":
             return (
-                <TaskBarContainer data-testid="taskbar" style={{ width: width }}>
-                    <VFTaskBarButtonGroup>
-                        <BackButton />
+<div className={TaskBarContainer} data-testid="taskbar" style={{ width }}>
+<div className={VFTaskBarButtonGroup}>
+<BackButton />
                         <VFButtonOutline onClick={onExportData} themeUi={themeUi} width={130}>
                             Export Data
                         </VFButtonOutline>
@@ -332,29 +332,29 @@ const VFTaskBar = (props: VFTaskBarProps) => {
                     <VFButtonOutline onClick={onModifyData} themeUi={themeUi} disabled={false} width={164}>
                         Modify Data
                     </VFButtonOutline>
-                    </VFTaskBarButtonGroup>
-                </TaskBarContainer>
+                    </div>
+                </div>
             )
 
         case "error":
             return (
-                <TaskBarContainer data-testid="taskbar" style={{ width: width }}>
-                    <VFTaskBarButtonGroup>
-                        <BackButton />
+<div className={TaskBarContainer} data-testid="taskbar" style={{ width }}>
+<div className={VFTaskBarButtonGroup}>
+<BackButton />
                         <VFButtonOutline onClick={onSaveToDraft} themeUi={themeUi} disabled={false} width={139}>
                             Save as draft
                         </VFButtonOutline>
                         <VFButton onClick={() => onClearAndExportErrors(false)} themeUi={themeUi} disabled={false} width={183}>
                             Clear & Export Errors
                         </VFButton>
-                    </VFTaskBarButtonGroup>
-                </TaskBarContainer>
+                    </div>
+                </div>
             )
 
         case "uploaded":
             return (
-                <TaskBarContainer data-testid="taskbar" style={{ width: width }}>
-                    <VFTaskBarButtonGroup>
+                <div className={TaskBarContainer} data-testid="taskbar" style={{ width }}>
+                      <div className={VFTaskBarButtonGroup}>
                         <BackButton />
                         <VFButtonOutline onClick={onDeleteSelected} themeUi={themeUi} disabled={disableDeleteSelected} width={139}>
                             Delete Selected
@@ -365,18 +365,18 @@ const VFTaskBar = (props: VFTaskBarProps) => {
                         <VFButton onClick={onSubmit} themeUi={themeUi} disabled={disableSubmit} width={139}>
                             Submit All
                         </VFButton>
-                    </VFTaskBarButtonGroup>
+                    </div>
                     <div>
                         <VFStepper
                             items={getStepperState()}
                         />
                     </div>
-                </TaskBarContainer>
+                </div>
             )
 
         case "submitted":
             return (
-                <TaskBarContainer data-testid="taskbar" style={{ width: width, justifyContent: 'space-between' }}>
+                <div className={TaskBarContainer} data-testid="taskbar" style={{ width: width, justifyContent: 'space-between' }}>
                     <div style={{ display: 'flex', gap: '20px' }}>
                         <BackButton />
                         {showSubmittedExportError ? (
@@ -395,12 +395,12 @@ const VFTaskBar = (props: VFTaskBarProps) => {
                         />
                     </div>
 
-                </TaskBarContainer>
+                </div>
             )
         case "editOnline":
             return (
-                <TaskBarContainer data-testid="taskbar" style={{ width: width }}>
-                    <VFTaskBarButtonGroup>
+                <div className={TaskBarContainer} data-testid="taskbar" style={{ width }}>
+                      <div className={VFTaskBarButtonGroup}>
                         <BackButton />
                         <VFButtonOutline themeUi={themeUi} onClick={onReset} disabled={!enableEditOnlineReset}>
                             Reset
@@ -411,18 +411,18 @@ const VFTaskBar = (props: VFTaskBarProps) => {
                         <VFButtonOutline themeUi={themeUi} onClick={onSubmit} >
                             Submit
                         </VFButtonOutline>
-                    </VFTaskBarButtonGroup>
+                    </div>
                     <div >
                         <VFStepper
                             items={getStepperState()}
                         />
                     </div>
-                </TaskBarContainer>
+                </div>
             )
         // case "editOnlineSaved":
         //     return(
         //         <TaskBarContainer data-testid="taskbar" style={{width:width}}>
-        //            <VFTaskBarButtonGroup>
+        //              <div className={VFTaskBarButtonGroup}>
         //             <BackButton/>
         //                 <VFButtonOutline themeUi={themeUi} onClick={onReset} disabled={!enableEditOnlineReset}>
         //                     Reset
@@ -430,31 +430,31 @@ const VFTaskBar = (props: VFTaskBarProps) => {
         //                 <VFButton themeUi={themeUi} onClick={onSubmit}>
         //                     Submit
         //                 </VFButton>
-        //            </VFTaskBarButtonGroup>
+        //            </div>
         //             <div>
         //                 <VFStepper
         //                     items={getStepperState()}
         //                 />
         //             </div>
-        //         </TaskBarContainer>
+        //         </div>
         //     )
         case "editOnlineSubmitted":
             return (
-                <TaskBarContainer data-testid="taskbar" style={{ width: width, justifyContent: 'space-between' }}>
-                    <VFTaskBarButtonGroup>
+                <div className={TaskBarContainer} data-testid="taskbar" style={{ width: width, justifyContent: 'space-between' }}>
+                      <div className={VFTaskBarButtonGroup}>
                         <BackButton />
-                    </VFTaskBarButtonGroup>
+                    </div>
                     <div >
                         <VFStepper
                             items={getStepperState()}
                         />
                     </div>
-                </TaskBarContainer>
+                </div>
             )
         case 'phaseInPhaseOut':
             return (
-                <TaskBarContainer data-testid="taskbar" style={{ width: width }}>
-                    <VFTaskBarButtonGroup>
+                <div className={TaskBarContainer} data-testid="taskbar" style={{ width }}>
+                      <div className={VFTaskBarButtonGroup}>
                         <BackButton />
                         <VFButton themeUi={themeUi} onClick={onPhaseInPhaseOutStop}>
                             Stop Selected
@@ -462,13 +462,13 @@ const VFTaskBar = (props: VFTaskBarProps) => {
                         <VFButtonOutline onClick={onSaveToDraft} themeUi={themeUi} disabled={masterId > 14} width={139}>
                             Save as draft
                         </VFButtonOutline>
-                    </VFTaskBarButtonGroup>
-                </TaskBarContainer>
+                    </div>
+                </div>
             )
         case 'deleteView':
             return (
-                <TaskBarContainer data-testid="taskbar" style={{ width: width }}>
-                    <VFTaskBarButtonGroup>
+                <div className={TaskBarContainer} data-testid="taskbar" style={{ width }}>
+                      <div className={VFTaskBarButtonGroup}>
                         <BackButton />
                         <VFButtonOutline themeUi={themeUi} onClick={onDeleteOnline} disabled={!deleteOnline}>
                             Delete Online
@@ -476,14 +476,14 @@ const VFTaskBar = (props: VFTaskBarProps) => {
                     <VFButtonOutline themeUi={themeUi} onClick={onDeleteData} disabled={false}>
                             Delete Data
                         </VFButtonOutline>
-                    </VFTaskBarButtonGroup>
+                    </div>
 
-                </TaskBarContainer>
+                </div>
             )
         case 'deleteOnline':
             return (
-                <TaskBarContainer data-testid="taskbar" style={{ width: width }}>
-                    <VFTaskBarButtonGroup>
+                <div className={TaskBarContainer} data-testid="taskbar" style={{ width }}>
+                      <div className={VFTaskBarButtonGroup}>
                         <BackButton />
                         <VFButtonOutline themeUi={themeUi} onClick={onDeleteOnlineReset}>
                             Reset
@@ -494,18 +494,18 @@ const VFTaskBar = (props: VFTaskBarProps) => {
                         <VFButtonOutline themeUi={themeUi} onClick={onSubmit}>
                             Submit
                         </VFButtonOutline >
-                    </VFTaskBarButtonGroup>
+                    </div>
                     <div >
                         <VFStepper
                             items={getStepperState()}
                         />
                     </div>
-                </TaskBarContainer>
+                </div>
             )
         //  case "deleteOnlineSaved":
         //     return(
         //         <TaskBarContainer data-testid="taskbar" style={{width:width}}>
-        //            <VFTaskBarButtonGroup>
+        //              <div className={VFTaskBarButtonGroup}>
         //             <BackButton/>
         //                 <VFButtonOutline themeUi={themeUi} onClick={onDeleteOnlineReset}>
         //                     Reset
@@ -513,28 +513,28 @@ const VFTaskBar = (props: VFTaskBarProps) => {
         //                 <VFButton themeUi={themeUi} onClick={onDeleteOnlineSubmit}>
         //                     Submit
         //                 </VFButton>
-        //            </VFTaskBarButtonGroup>
+        //            </div>
         //             <div >
         //                 <VFStepper
         //                     items={getStepperState()}
         //                 />
         //             </div>
-        //         </TaskBarContainer>
+        //         </div>
         //     )
         case "deleteOnlineSubmitted":
             return (
-                <TaskBarContainer data-testid="taskbar" style={{ width: width, justifyContent: 'flex-end' }}>
+                <div className={TaskBarContainer} data-testid="taskbar" style={{ width: width, justifyContent: 'flex-end' }}>
                     <div>
                         <VFStepper
                             items={getStepperState()}
                         />
                     </div>
-                </TaskBarContainer>
+                </div>
             )
         case 'deleteUploaded':
             return (
-                <TaskBarContainer data-testid="taskbar" style={{ width: width }}>
-                    <VFTaskBarButtonGroup>
+                <div className={TaskBarContainer} data-testid="taskbar" style={{ width }}>
+                      <div className={VFTaskBarButtonGroup}>
                         <BackButton />
                         <VFButtonOutline themeUi={themeUi} onClick={onDeleteSelected} width={139}>
                             Remove Selected
@@ -545,18 +545,18 @@ const VFTaskBar = (props: VFTaskBarProps) => {
                         <VFButton themeUi={themeUi} onClick={onSubmit}>
                             Delete All
                         </VFButton>
-                    </VFTaskBarButtonGroup>
+                    </div>
                     <div >
                         <VFStepper
                             items={getStepperState()}
                         />
                     </div>
-                </TaskBarContainer>
+                </div>
             )
         case "conflicts":
             return (
-                <TaskBarContainer data-testid="taskbar" style={{ width: width }}>
-                    <VFTaskBarButtonGroup>
+                <div className={TaskBarContainer} data-testid="taskbar" style={{ width }}>
+                      <div className={VFTaskBarButtonGroup}>
                         <BackButton />
                         <VFButtonOutline onClick={onDeleteSelected} themeUi={themeUi} disabled={false} width={139}>
                             Delete Selected
@@ -564,18 +564,18 @@ const VFTaskBar = (props: VFTaskBarProps) => {
                         <VFButton onClick={onSubmitConflictData} themeUi={themeUi} disabled={disableSubmit} width={139}>
                             Submit All
                         </VFButton>
-                    </VFTaskBarButtonGroup>
+                    </div>
                     <div>
                         <VFStepper
                             items={getStepperState()}
                         />
                     </div>
-                </TaskBarContainer>
+                </div>
             )
         case "editOnlineConflicts":
             return (
-                <TaskBarContainer data-testid="taskbar" style={{ width: width }}>
-                    <VFTaskBarButtonGroup>
+                <div className={TaskBarContainer} data-testid="taskbar" style={{ width }}>
+                      <div className={VFTaskBarButtonGroup}>
                         <BackButton />
                         <VFButtonOutline onClick={onDeleteSelected} themeUi={themeUi} disabled={false} width={139}>
                             Delete Selected
@@ -583,18 +583,18 @@ const VFTaskBar = (props: VFTaskBarProps) => {
                         <VFButton onClick={onSubmitConflictData} themeUi={themeUi} disabled={disableSubmit} width={139}>
                             Submit All
                         </VFButton>
-                    </VFTaskBarButtonGroup>
+                    </div>
                     <div>
                         <VFStepper
                             items={getStepperState()}
                         />
                     </div>
-                </TaskBarContainer>
+                </div>
             )
         case "mtoView":
             return (
-                <TaskBarContainer data-testid="taskbar" style={{ width: width }}>
-                    <VFTaskBarButtonGroup>
+                <div className={TaskBarContainer} data-testid="taskbar" style={{ width }}>
+                      <div className={VFTaskBarButtonGroup}>
                         <BackButton />
                         <VFButtonOutline onClick={onDeleteSelected} themeUi={themeUi} disabled={false} width={139}>
                             Delete Selected
@@ -602,13 +602,13 @@ const VFTaskBar = (props: VFTaskBarProps) => {
                         <VFButton onClick={onSubmitConflictData} themeUi={themeUi} disabled={disableSubmit} width={139}>
                             Submit All
                         </VFButton>
-                    </VFTaskBarButtonGroup>
+                    </div>
                     <div>
                         <VFStepper
                             items={getStepperState()}
                         />
                     </div>
-                </TaskBarContainer>
+                </div>
             )
         default:
             return (

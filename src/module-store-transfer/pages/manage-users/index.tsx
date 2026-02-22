@@ -1,12 +1,12 @@
-import { useRef, useState,useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import {
-  SCProfileOverView,
-  SCSubTitleBox,
-  SCSubTitlePad,
-  SCSubTitleSpan,
-  SCSubTitlePadItem,
-  SCItemBtn,
-} from "./styles";
+  scProfileOverView,
+  subTitleBox,
+  subTitlePad,
+  subTitleSpan,
+  subTitlePadItem,
+  itemBtn,
+} from "./styles.css";
 import {
   ButtonFloat,
   TableUserManagement,
@@ -75,8 +75,8 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
 
   const { data: dataFetch,refetch, isFetching } = useGetAllUsers();
   const { data: dataPermissions } = useGetAllPermissions();
-  const { mutateAsync : usegetHeaderData } = useGetHeadersData();
-  const [headers , setHeaders] = useState<any>();
+  const { mutateAsync: usegetHeaderData } = useGetHeadersData();
+  const [headers, setHeaders] = useState<any>();
 
   const { mutateAsync: getUserPermissions,isLoading:edit } = useGetUserPermissions();
   
@@ -98,7 +98,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   }
   useEffect(() => {
     getHeaderDatafunct();
-  },[])
+  }, []);
   const dataAllPermissions = dataPermissions?.data;
 
   const dataAllUsers = dataFetch?.data;
@@ -118,26 +118,32 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     isPrdCheck: {},
     isLcCheck: {},
   });
-  
+
   //Follwing Function Updates All Permissions according to current active Application/Application Id provided
-  const updateAllPermissions = (applicationId:number) => {
-    setAllPermissions(dataAllPermissions.find((app:any)=>app.application_id===applicationId))
-  }
+  const updateAllPermissions = (applicationId: number) => {
+    setAllPermissions(
+      dataAllPermissions.find(
+        (app: any) => app.application_id === applicationId
+      )
+    );
+  };
 
   const getApplicationIds = () => {
     const application_names = [APPLICATION_NAMES.MTA, APPLICATION_NAMES.MTO];
 
     const applicationIds = dataAllPermissions
-      .filter((dataAllPermission: any) => application_names.includes(dataAllPermission.application_name))
+      .filter((dataAllPermission: any) =>
+        application_names.includes(dataAllPermission.application_name)
+      )
       .map((filterItem: any) => filterItem.application_id);
     return applicationIds;
-  }
+  };
 
   const [selectedPermissions, setSelectedPermissions] = useState<any>({});
 
   const handleClickAddNewUser = () => {
     if (!getApplicationIds().length) {
-      notifyError(t("profile.tabContent.manageUsers.notifyError.RoleMismatch"))
+      notifyError(t("profile.tabContent.manageUsers.notifyError.RoleMismatch"));
       return;
     }
     setvalueSelect({});
@@ -145,7 +151,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
       name: "",
       email: "",
       roles: [],
-      edit:false
+      edit: false,
     });
     setContentModal({
       callApi: 1,
@@ -153,13 +159,13 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
       buttonSubmit: "Add User",
     });
     setIsOpenUser(true);
-    setIsEditUser(false)
+    setIsEditUser(false);
     setStorePermission([]);
     setSelectedPermissions({}); // Reset permissions on new user
     isCheckBoxRef.current.isPrdCheck = {},
     isCheckBoxRef.current.isLcCheck = {}
   };
-  
+
   const onCloseModal = () => {
     setIsOpenUser(false);
   };
@@ -171,7 +177,6 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   const onClosePermissionModal = () => {
     setIsPermissionModalOpen(false);
   };
-
 
   const getPermission = ({ data, txtParent, txtChild, txtGrandChild }: any) => {
     const parent: any = [];
@@ -196,7 +201,10 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
         child.push({ label: valueChild, value: valueChild });
       }
 
-      if (!checkAddGrandChild?.includes(valueGrandChild) && txtGrandChild in item) {
+      if (
+        !checkAddGrandChild?.includes(valueGrandChild) &&
+        txtGrandChild in item
+      ) {
         checkAddGrandChild.push(valueGrandChild);
         grandChild.push({ label: valueGrandChild, value: valueGrandChild });
       }
@@ -215,51 +223,72 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   const fillAdvancedPermissionsModalData = (item?:any)=>{
     const prevPremission = storePermission
 
-    const validApplications:Array<number> = [];
-    listRoles.forEach((app:any)=>{
-      const commonRoles = _.intersection(app.child.map((perm:any)=>perm.id),infoUser.roles);
-      if(commonRoles.length > 0) validApplications.push(app.id);
+    const validApplications: Array<number> = [];
+    listRoles.forEach((app: any) => {
+      const commonRoles = _.intersection(
+        app.child.map((perm: any) => perm.id),
+        infoUser.roles
+      );
+      if (commonRoles.length > 0) validApplications.push(app.id);
     });
-    validApplications.sort((a:number,b:number)=>a-b);
-    
-    
-    if(contentModal.callApi === 1){
+    validApplications.sort((a: number, b: number) => a - b);
 
-      const fillStepperDetails = dataAllPermissions.map((app:any,index:number)=>validApplications.includes(app.application_id) ? ({
-        label:app.application_name,
-        id:app.application_id,
-        currentState:'pending',
-        isLast:index===dataAllPermissions.length-1,
-        themeUi:themeUi
-      }) : undefined).filter((element:any) => element !== undefined);
-      fillStepperDetails.sort((a:any,b:any)=>a.id-b.id)
-      fillStepperDetails && fillStepperDetails[0] &&  (fillStepperDetails[0].currentState = 'active');
-      
-      const fillEmptyPermission = dataAllPermissions.map((app:any)=>validApplications.includes(app.application_id) ? ({
-        application_id:app.application_id,
-        application_name:app.application_name,
-        productPermission:[],
-        locationPermission:[]
-      }) : undefined).filter((element:any) => element !== undefined)
-  
-      fillEmptyPermission.sort((a:any,b:any)=>a.application_id-b.application_id);
-      
-      const prevValidApplications = prevPremission.map((perm: any) => perm.application_id).sort((a: number, b: number) => a - b);
-      const isValidApplicationChanged = !_.isEqual(prevValidApplications, validApplications);
-     
-      if(prevPremission.length > 0 && !isValidApplicationChanged){
+    if (contentModal.callApi === 1) {
+      const fillStepperDetails = dataAllPermissions
+        .map((app: any, index: number) =>
+          validApplications.includes(app.application_id)
+            ? {
+                label: app.application_name,
+                id: app.application_id,
+                currentState: "pending",
+                isLast: index === dataAllPermissions.length - 1,
+                themeUi: themeUi,
+              }
+            : undefined
+        )
+        .filter((element: any) => element !== undefined);
+      fillStepperDetails.sort((a: any, b: any) => a.id - b.id);
+      fillStepperDetails &&
+        fillStepperDetails[0] &&
+        (fillStepperDetails[0].currentState = "active");
+
+      const fillEmptyPermission = dataAllPermissions
+        .map((app: any) =>
+          validApplications.includes(app.application_id)
+            ? {
+                application_id: app.application_id,
+                application_name: app.application_name,
+                productPermission: [],
+                locationPermission: [],
+              }
+            : undefined
+        )
+        .filter((element: any) => element !== undefined);
+
+      fillEmptyPermission.sort(
+        (a: any, b: any) => a.application_id - b.application_id
+      );
+
+      const prevValidApplications = prevPremission
+        .map((perm: any) => perm.application_id)
+        .sort((a: number, b: number) => a - b);
+      const isValidApplicationChanged = !_.isEqual(
+        prevValidApplications,
+        validApplications
+      );
+
+      if (prevPremission.length > 0 && !isValidApplicationChanged) {
         setStorePermission(prevPremission);
-      }else{
-
+      } else {
         setStorePermission(fillEmptyPermission);
       }
       setStepperDetails(fillStepperDetails);
       setActiveApplication(validApplications[0]);
       updateAllPermissions(validApplications[0]);
     }
-    if(contentModal.callApi === 2){
-      const productPermissionAllApp:any = [];
-      const locationPermissionAllApp:any = [];
+    if (contentModal.callApi === 2) {
+      const productPermissionAllApp: any = [];
+      const locationPermissionAllApp: any = [];
 
       item?.product_id?.forEach((app:any)=>{
         const getProductPermissions = getPermission({
@@ -279,11 +308,11 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
         };
 
         productPermissionAllApp.push({
-          'application_id':app.application_id,
-          'application_name':app.application_name,
-          'productPermission':productPermission
-        })
-      })
+          application_id: app.application_id,
+          application_name: app.application_name,
+          productPermission: productPermission,
+        });
+      });
 
       item?.location_id?.forEach((app:any)=>{
         const getLocationPermissions = getPermission({
@@ -303,79 +332,91 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
         };
 
         locationPermissionAllApp.push({
-          'application_id':app?.application_id,
-          'application_name':app?.application_name,
-          'locationPermission':locationPermission
-        })
+          application_id: app?.application_id,
+          application_name: app?.application_name,
+          locationPermission: locationPermission,
+        });
+      });
 
-    })
-
-    const initialPermissions = productPermissionAllApp?.map((prodApp:any)=>{
-      const coLocationPermission = locationPermissionAllApp?.find((locApp:any)=>prodApp.application_id === locApp.application_id);
-      if(coLocationPermission){
-        return {
-          ...prodApp,
-          locationPermission:coLocationPermission.locationPermission
+      const initialPermissions = productPermissionAllApp?.map(
+        (prodApp: any) => {
+          const coLocationPermission = locationPermissionAllApp?.find(
+            (locApp: any) => prodApp.application_id === locApp.application_id
+          );
+          if (coLocationPermission) {
+            return {
+              ...prodApp,
+              locationPermission: coLocationPermission.locationPermission,
+            };
+          }
+          return { ...prodApp };
         }
-      }
-      return {...prodApp}
-    })
+      );
 
-    //Enable Product Permissions of Applications With Selected Roles
-    const newStepperDetails:any = validApplications?.map((valid_id:any,index:number)=>{
-      //Find if Application Permission Already Exist
-      const oldPermissions = initialPermissions?.find((app:any)=>app?.application_id === valid_id);
-      if(oldPermissions){
-        return {
-          label:oldPermissions.application_name,
-          id:valid_id,
-          currentState:'pending',
-          isLast:index===initialPermissions.length-1,
-          themeUi:themeUi
+      //Enable Product Permissions of Applications With Selected Roles
+      const newStepperDetails: any = validApplications?.map(
+        (valid_id: any, index: number) => {
+          //Find if Application Permission Already Exist
+          const oldPermissions = initialPermissions?.find(
+            (app: any) => app?.application_id === valid_id
+          );
+          if (oldPermissions) {
+            return {
+              label: oldPermissions.application_name,
+              id: valid_id,
+              currentState: "pending",
+              isLast: index === initialPermissions.length - 1,
+              themeUi: themeUi,
+            };
+          } else {
+            return {
+              label: dataAllPermissions.find(
+                (app: any) => app.application_id === valid_id
+              )?.application_name,
+              id: valid_id,
+              currentState: "pending",
+              isLast: index === initialPermissions.length - 1,
+              themeUi: themeUi,
+            };
+          }
         }
-      }
-      else{
-        return {
-          label:dataAllPermissions.find((app:any)=>app.application_id === valid_id)?.application_name,
-          id:valid_id,
-          currentState:'pending',
-          isLast:index===initialPermissions.length-1,
-          themeUi:themeUi
-        }
-      }
-    })
-    newStepperDetails.sort((a:any,b:any)=>a.id-b.id)
-    newStepperDetails[0].currentState = 'active';
-    setStepperDetails(newStepperDetails);
+      );
+      newStepperDetails.sort((a: any, b: any) => a.id - b.id);
+      newStepperDetails[0].currentState = "active";
+      setStepperDetails(newStepperDetails);
 
-    //Set Permissions For Selected Applications
+      //Set Permissions For Selected Applications
 
-    const validApplicationPermissions:any = validApplications?.map((id:any)=>{
-      //Find if Application Permission Already Exist
-      const oldPermissions = initialPermissions.find((app:any)=>app.application_id === id);
-      if(oldPermissions){
-        return _.cloneDeep(oldPermissions)
-      }
-      else{
-        return {
-          application_id: id,
-          application_name: listRoles.find((app:any) => app.id === id)?.title || "",
-          productPermission:[],
-          locationPermission:[]
+      const validApplicationPermissions: any = validApplications?.map(
+        (id: any) => {
+          //Find if Application Permission Already Exist
+          const oldPermissions = initialPermissions.find(
+            (app: any) => app.application_id === id
+          );
+          if (oldPermissions) {
+            return _.cloneDeep(oldPermissions);
+          } else {
+            return {
+              application_id: id,
+              application_name:
+                listRoles.find((app: any) => app.id === id)?.title || "",
+              productPermission: [],
+              locationPermission: [],
+            };
+          }
         }
-      }
-    })
+      );
       validApplicationPermissions.sort((a: any, b: any) => a.id - b.id);
-    setStorePermission(validApplicationPermissions);
+      setStorePermission(validApplicationPermissions);
 
-    setvalueSelect(_.cloneDeep(validApplicationPermissions));
+      setvalueSelect(_.cloneDeep(validApplicationPermissions));
 
-    setActiveApplication(validApplicationPermissions[0].application_id)
+      //Todo: check if this needed
+      setActiveApplication(validApplicationPermissions[0].application_id);
 
-    updateAllPermissions(validApplicationPermissions[0].application_id)
+      updateAllPermissions(validApplicationPermissions[0].application_id);
     }
-  }
-
+  };
 
   const handleClickEdit = async (initialItem: any) => {
     const applicationIds = getApplicationIds();
@@ -384,9 +425,9 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
       return;
     }
     const response = await getUserPermissions(initialItem.id);
-    const item = {...initialItem, ...response.data? response.data: {}}
-    setCurrentItem(item)
-    setIsEditUser(true)
+    const item = { ...initialItem, ...(response.data ? response.data : {}) };
+    setCurrentItem(item);
+    setIsEditUser(true);
     const roles = item.role_id.map((role: any) => role.id);
     const currentUserActiveApplications = new Set<string>();
     listRoles.forEach((app: any) => {
@@ -421,16 +462,28 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
       Array.isArray(array) ? array.find((entry: any) => entry.application_id === appId)?.[key]?.length : 0;
 
     applicationIds.forEach((applicationId: any) => {
+      const productPermission = findPermissionLength(
+        item.product_id,
+        applicationId
+      );
+      const locationPermission = findPermissionLength(
+        item.location_id,
+        applicationId
+      );
 
-      const productPermission = findPermissionLength(item.product_id, applicationId);
-      const locationPermission = findPermissionLength(item.location_id, applicationId);
-
-      const productPermissionAll = findPermissionAllLength(dataAllPermissions, applicationId, 'product_permission_ids');
-      const locationPermissionAll = findPermissionAllLength(dataAllPermissions, applicationId, 'location_permission_ids');
+      const productPermissionAll = findPermissionAllLength(
+        dataAllPermissions,
+        applicationId,
+        "product_permission_ids"
+      );
+      const locationPermissionAll = findPermissionAllLength(
+        dataAllPermissions,
+        applicationId,
+        "location_permission_ids"
+      );
 
       isPRDCheck[applicationId] = productPermission === productPermissionAll;
       isLcCheck[applicationId] = locationPermission === locationPermissionAll;
-
     });
 
     // }); 
@@ -485,8 +538,11 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
                             if (path.length > 0) {
                                 path[path.length - 1] = path[path.length - 1] + "'";
                             }
-                      } else if (!isDynamicPermissions) {
-                        }
+                      }
+                      // TODO: check this condition
+                      //  else if (!isDynamicPermissions) {
+                      //   // do nothing
+                      //   }
 
                         
                         return path;
@@ -509,8 +565,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     // -------------------------------------------------------------
 
     setIsOpenUser(true);
-  }
-
+  };
 
   const navigate = useNavigate()
   const handleClickBulkUpload = ()=>{
@@ -741,25 +796,27 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     <Spinner />
   </div>
       )}
-      <SCProfileOverView>
-        <SCSubTitleBox>
-          <SCSubTitlePad>
-            <SCSubTitleSpan>
+      <div className={scProfileOverView}>
+        <div className={subTitleBox}>
+          <div className={subTitlePad}>
+            <span className={subTitleSpan}>
               {t("profile.tabContent.manageUsers.title")}
-            </SCSubTitleSpan>
-            <SCSubTitlePadItem>              
-              <SCItemBtn>
+            </span>
+
+            <div className={subTitlePadItem}>
+              <div className={itemBtn}>
                 <ButtonFloat
                   text={t("profile.tabContent.manageUsers.button.addNewUser")}
                   onClick={handleClickAddNewUser}
                   icon="/assets/img/profile/icon_plus.svg"
                 />
-              </SCItemBtn>
+              </div>
+
              
              {
               bulkUploadEnabled &&
 
-                <SCItemBtn>
+                <div className={itemBtn}>
                   <ButtonOutlineIcon
                     text={t("profile.tabContent.manageUsers.button.bulkUpload")}
                     icon={`/assets/img/profile/${
@@ -770,12 +827,12 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
                         disabled={false}
                         onClick={handleClickBulkUpload}
                         />
-                </SCItemBtn>
+                </div>
                       }
             
-            </SCSubTitlePadItem>
-          </SCSubTitlePad>
-        </SCSubTitleBox>
+            </div>
+          </div>
+        </div>
 
         {isFetching || isLoadingRoles || isLoadingHeaders || !dataPermissions ? (
           <div style={{ padding: '40px', display: 'flex', justifyContent: 'center' }}>
@@ -790,8 +847,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
             permission={permission}
           />
         )}
-      </SCProfileOverView>
-
+      </div>
 
 
       <ModalManageUsers

@@ -2,7 +2,13 @@ import React, { useEffect, useState } from "react";
 import {  SearchInputMultiple } from "../../../components";
 import { useUserData } from "../../../context";
 import Checkbox from "../../../components/VectorFLOW/commons/MTO/Checkbox";
-import { SelectAllWrapper, SectionContainer, SectionTitle, SelectContainer, Label, Grid, TitleContainer } from "./style";
+import { set } from "lodash";
+import { selectAllWrapper,
+  sectionContainer,
+  sectionTitle,
+  selectContainer,
+  label,
+  grid, titleContainer } from "./style.css";
 
 
 const PermissionForm = ({
@@ -177,7 +183,7 @@ const PermissionForm = ({
 
   const getUniqueObjects=(arr:any, key:any)=> {
     const seen = new Set();
-    return arr.filter((item:any) => {
+    return arr.filter((item: any) => {
       const val = item[key];
       if (seen.has(val)) return false;
       seen.add(val);
@@ -191,7 +197,8 @@ const PermissionForm = ({
     permissionType,
     level,
   }: any) => {
-    const currentPermissions =  (selectedPermissions && selectedPermissions?.[selectedApplication]) || {};
+    const currentPermissions =
+      (selectedPermissions && selectedPermissions?.[selectedApplication]) || {};
 
     const permissionSet = currentPermissions?.[permissionType] || [];
 
@@ -270,15 +277,15 @@ const PermissionForm = ({
     level,
   }: any) => {
     if (!val || !Array.isArray(val)) return;
-  
+
     // Extract the `value` property from each object in `val`
     const values = val.map((item: any) => item.value);
-  
+
     const prevPerms =
       selectedPermissions?.[selectedApplication]?.[permissionType] || [];
-  
+
     const selectPermissions = Array.isArray(prevPerms) ? prevPerms : [];
-  
+
     let newPerm: any[] = [];
 
     if (level === 0) {
@@ -342,7 +349,7 @@ const PermissionForm = ({
       
       newPerm = [...permissionsToKeep, ...newLevel0Permissions];
     }
-  
+
     if (level === 1) {
       // Update L1 Items (ZoneA>GroupB) AND L1 IA nodes (ZoneA>GroupB')
       
@@ -433,7 +440,7 @@ const PermissionForm = ({
         }
       });
     }
-  
+
     if (level === 2) {
       // Update L2 Items (ZoneA>GroupB>WH1)
       // L1 IA nodes (ZoneA>GroupB') are moved to L1 dropdown.
@@ -526,7 +533,7 @@ const PermissionForm = ({
         }
       });
     }
-  
+
     // Update the selected permissions state
     setSelectedPermissions((prev: any) => ({
       ...prev,
@@ -537,7 +544,7 @@ const PermissionForm = ({
     }));
   };
 
-  const themeUi= useUserData().user.user.theme_ui
+  const themeUi = useUserData().user.user.theme_ui;
 
 
   const getAllPossiblePermissions = (type: string) => {
@@ -630,7 +637,7 @@ const PermissionForm = ({
         },
       }));
     }
-  }
+  };
 
   const getLabel = (type: string) => {
       const name = type.replace("_permission", "").replace(/_/g, " ");
@@ -660,12 +667,12 @@ const PermissionForm = ({
   return (
     <div style={{ padding: "40px 20px 20px 20px" }}>
         {permissionTypes.map((type) => (
-             <SectionContainer key={type}>
-             <TitleContainer>
-                 <SectionTitle>{getLabel(type)}</SectionTitle>
+             <div className={sectionContainer} key={type}>
+             <div className={titleContainer}>
+                 <div className={sectionTitle}>{getLabel(type)}</div>
                  <div style={{ marginBottom: "20px", fontSize: "14px", fontWeight: 600, display: 'flex', justifyContent: 'right', alignItems: 'center'}}>
                    {!readOnly && (
-                     <SelectAllWrapper>
+                     <div className={selectAllWrapper}>
                      <Checkbox
                                  id={`selectAll_${type}`}
                                  style={{ zoom: 0.5 }}
@@ -677,14 +684,14 @@ const PermissionForm = ({
                                  />
                                <label htmlFor={`selectAll_${type}`} style={{ cursor: "pointer" }}>Select All</label>
        
-                     </SelectAllWrapper>
+                     </div>
                    )}
                  </div>
                
-             </TitleContainer>
-             <Grid>
-               <SelectContainer>
-                   <Label>{getHeaderLabel(type, 0)}</Label>
+             </div>
+             <div className={grid}>
+               <div className={selectContainer}>
+                   <div className={label}>{getHeaderLabel(type, 0)}</div>
                  <SearchInputMultiple
                    disabled={readOnly}
                    placeholder="Select"
@@ -706,9 +713,9 @@ const PermissionForm = ({
                    }}
                    key={1}
                  />
-               </SelectContainer>
-               <SelectContainer>
-                 <Label>{getHeaderLabel(type, 1)}</Label>
+               </div>
+               <div className={selectContainer}>
+                 <div className={label}>{getHeaderLabel(type, 1)}</div>
                  <SearchInputMultiple
                    placeholder="Select"
                    disabled={readOnly}
@@ -730,9 +737,9 @@ const PermissionForm = ({
                    }}
                    key={2}
                  />
-               </SelectContainer>
-               <SelectContainer>
-                 <Label>{getHeaderLabel(type, 2)}</Label>
+               </div>
+               <div className={selectContainer}>
+                 <div className={label}>{getHeaderLabel(type, 2)}</div>
                  <SearchInputMultiple
                    placeholder="Select"
                    disabled={readOnly}
@@ -754,9 +761,9 @@ const PermissionForm = ({
                    }}
                    key={3}
                  />
-               </SelectContainer>
-             </Grid>
-           </SectionContainer>
+               </div>
+             </div>
+           </div>
         ))}
     </div>
   );

@@ -1,7 +1,7 @@
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
 import VFPagination from "../../../MTO/Common/VFPagination"
 
- import { BORLayout } from "./styles"
+ import { BORLayout } from "./styles.css"
  import {useSupplierWiseAllocation} from "./useSupplierWiseAllocation"
  import ActionToolBar from "../Planning/ActionToolBar"
 import { GridStateContext } from "../../../../../context/GridStateContext";
@@ -99,7 +99,7 @@ const SupplierWiseAllocation = ()=>{
         {lastRunDate && (
         <LastRunDateComponent lastRunDate={lastRunDate} />
       )}
-        <BORLayout>
+        <div className={BORLayout}>
           {/* <BORTaskBar style={{width:'74%'}}>
         <VFButtonOutline
             themeUi="NOIRFUSION"
@@ -171,7 +171,7 @@ const SupplierWiseAllocation = ()=>{
               rowData={exportExcelRowData}
               {...tempAgGridProps} />
           </div>
-        </BORLayout>
+        </div>
         <BPRRemarkHistoryModal
                 data={remarkHistory}
                 isOpen={isRemarkHistoryToolTipOpen}

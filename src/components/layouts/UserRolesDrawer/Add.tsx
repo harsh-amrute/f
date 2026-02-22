@@ -1,25 +1,34 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 
-import Select from "react-select";
+import Select, { CSSObjectWithLabel } from "react-select";
 
 import {
-  InputWrapper,
-  URLsForm,
-  Label,
-  ButtonsWrapper,
-  CheckBoxesWrapper,
-  CheckBoxesHeader,
-  CheckBoxesContainer,
-  CheckBoxWrapper,
-  CheckBoxLabel,
-  CheckBoxesHeaderContainer,
-  SearchWrapper,
-  URLSearch,
-} from "../UserURLsDrawer/styles";
-import { Input, PrimaryButton, Skeleton, TextArea } from "../../commons/styled";
+  inputWrapper,
+  urlsForm,
+  label,
+  buttonsWrapper,
+  checkBoxesWrapper,
+  checkBoxesHeader,
+  checkBoxesContainer,
+  checkBoxWrapper,
+  checkBoxLabel,
+  checkBoxesHeaderContainer,
+  searchWrapper,
+  urlSearch,
+} from "../UserURLsDrawer/styles.css";
+import {
+  input,
+  primaryButton,
+  skeleton,
+  textArea,
+  focusOutlineVar,
+  primaryBgVar
+} from "../../commons/styled/index.css";
 import { useUserData } from "../../../context";
 import axios from "axios";
 import { notifyError, notifySuccess } from "../../../helpers/notify";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
+import * as globalStyles from "../../../styles/global";
 
 interface FormDataType {
   name: string;
@@ -209,56 +218,91 @@ const AddRole = (props: { cb: () => void }) => {
 
   if (isLoading) {
     return (
-      <URLsForm>
+      <form className={urlsForm}>
         <div style={{ display: "flex", height: 30, gap: 20 }}>
-          <Skeleton style={{ height: "100%", flex: 1, width: "100%" }} />
-          <Skeleton style={{ height: "100%", flex: 1, width: "100%" }} />
+          <div
+            className={skeleton}
+            style={{ height: "100%", flex: 1, width: "100%" }}
+          />
+          <div
+            className={skeleton}
+            style={{ height: "100%", flex: 1, width: "100%" }}
+          />
         </div>
-        <Skeleton style={{ height: 30, width: "100%", marginTop: 20 }} />
-        <Skeleton style={{ height: 30, width: "100%", marginTop: 20 }} />
+        <div
+          className={skeleton}
+          style={{ height: 30, width: "100%", marginTop: 20 }}
+        />
+        <div
+          className={skeleton}
+          style={{ height: 30, width: "100%", marginTop: 20 }}
+        />
 
-        <Skeleton style={{ height: 80, width: "100%", marginTop: 20 }} />
-        <ButtonsWrapper
+        <div
+          className={skeleton}
+          style={{ height: 80, width: "100%", marginTop: 20 }}
+        />
+        <div
+          className={buttonsWrapper}
           style={{
             alignItems: "flex-end",
             justifyContent: "flex-end",
             flex: 10,
           }}
         >
-          <Skeleton style={{ height: 30, width: "100px" }} />
-        </ButtonsWrapper>
-      </URLsForm>
+          <div className={skeleton} style={{ height: 30, width: "100px" }} />
+        </div>
+      </form>
     );
   }
 
+  const focusColor =
+      globalStyles.chooseThemeColor[themeUi]?.color4 ?? "#0000";
+  const bg = globalStyles.chooseThemeColor?.[themeUi]?.color5 ?? "#1f2937";
+  
+
   return (
-    <URLsForm onSubmit={handleSubmit}>
+    <form className={urlsForm} onSubmit={handleSubmit}>
       <div style={{ display: "flex" }}>
-        <InputWrapper>
-          <Label htmlFor="name"> Name</Label>
-          <Input
+        <div className={inputWrapper}>
+          <label className={label} htmlFor="name">
+            {" "}
+            Name
+          </label>
+          <input
+            className={input}
             type={"text"}
             required
             name="name"
             placeholder="Any name"
-            themeUi={themeUi}
+            style={assignInlineVars({
+              [focusOutlineVar]: focusColor,
+            })}
             onChange={handleChange}
           />
-        </InputWrapper>
-        <InputWrapper style={{ marginLeft: "10px" }}>
-          <Label htmlFor="code"> Code</Label>
-          <Input
+        </div>
+        <div className={inputWrapper} style={{ marginLeft: "10px" }}>
+          <label className={label} htmlFor="code">
+            {" "}
+            Code
+          </label>
+          <input
+            className={input}
             type={"text"}
             required
             name="code"
             placeholder="Role code"
-            themeUi={themeUi}
+            style={assignInlineVars({
+              [focusOutlineVar]: focusColor,
+            })}
             onChange={handleChange}
           />
-        </InputWrapper>
+        </div>
       </div>
-      <InputWrapper>
-        <Label htmlFor="application">Applications </Label>
+      <div className={inputWrapper}>
+        <label className={label} htmlFor="application">
+          Applications{" "}
+        </label>
         <Select
           options={applicationsFormattedData}
           placeholder={"Select Application"}
@@ -280,7 +324,7 @@ const AddRole = (props: { cb: () => void }) => {
                     : "#bc3d814d",
                 color: "black",
               },
-            }),
+            }as CSSObjectWithLabel),
             control: (baseStyles, { isFocused }) => ({
               ...baseStyles,
               fontSize: 12,
@@ -291,37 +335,46 @@ const AddRole = (props: { cb: () => void }) => {
               "&:hover": {
                 borderColor: "#BC3D80",
               },
-            }),
+            }as CSSObjectWithLabel),
           }}
         />
-      </InputWrapper>
-      <InputWrapper>
-        <Label htmlFor="description"> Description</Label>
-        <TextArea
+      </div>
+      <div className={inputWrapper}>
+        <label className={label} htmlFor="description">
+          {" "}
+          Description
+        </label>
+        <textarea
+          className={textArea}
           name="description"
-          style={{ minHeight: 50 }}
           required
           placeholder="Example : BPR Manager"
-          themeUi={themeUi}
+          style={{
+            minHeight: 50,
+            ...assignInlineVars({
+              [focusOutlineVar]: focusColor,
+            }),
+          }}
           onChange={handleChange}
         />
-      </InputWrapper>
-      <CheckBoxesWrapper>
-        <CheckBoxesHeaderContainer>
-          <CheckBoxesHeader>Select URLS</CheckBoxesHeader>
-          <SearchWrapper>
-            <URLSearch
+      </div>
+      <div className={checkBoxesWrapper}>
+        <div className={checkBoxesHeaderContainer}>
+          <div className={checkBoxesHeader}>Select URLS</div>
+          <div className={searchWrapper}>
+            <input
+              className={urlSearch}
               // style={{ padding: "2px 5px", height: "25px" }}
               // themeUi={themeUi}
               type={"search"}
               placeholder="Search..."
               onChange={debouncedSearch}
             />
-            <img src="/assets/img/search-icon.svg"height={15} width={15}/>
-          </SearchWrapper>
-        </CheckBoxesHeaderContainer>
-        <CheckBoxesContainer
-          className="custom-scrollbar"
+            <img src="/assets/img/search-icon.svg" height={15} width={15} />
+          </div>
+        </div>
+        <div
+          className={`${checkBoxesContainer} custom-scrollbar`}
           style={{
             display: "flex",
             flexDirection: "column",
@@ -331,7 +384,8 @@ const AddRole = (props: { cb: () => void }) => {
         >
           {queriedURLs.length ? (
             <React.Fragment>
-              <CheckBoxWrapper
+              <div
+                className={checkBoxWrapper}
                 style={{ position: "sticky", top: 0, backgroundColor: "white" }}
               >
                 <input
@@ -340,13 +394,13 @@ const AddRole = (props: { cb: () => void }) => {
                   name={"all"}
                   onChange={handleSelectAll}
                 />
-                <Label htmlFor={"all"}>
+                <label className={label} htmlFor={"all"}>
                   <b> Select All</b>
-                </Label>
-              </CheckBoxWrapper>
+                </label>
+              </div>
               {queriedURLs.map((r) => {
                 return (
-                  <CheckBoxWrapper key={r.code}>
+                  <div className={checkBoxWrapper} key={r.code}>
                     <input
                       style={{ width: 10 }}
                       checked={isChecked(r)}
@@ -354,33 +408,31 @@ const AddRole = (props: { cb: () => void }) => {
                       name={r.name}
                       onChange={(e) => handleCheck(e, r)}
                     />
-                    <Label htmlFor={r.name}>
-                      <CheckBoxLabel>
-                      {r.name.split("").map((letter:string)=>{
-                          if(urlSearchQuery.includes(letter.toLowerCase())){
-                           return  <p style={{color:"#BC3D81"}}>{letter}</p>
+                    <label className={label} htmlFor={r.name}>
+                      <div className={checkBoxLabel}>
+                        {r.name.split("").map((letter: string) => {
+                          if (urlSearchQuery.includes(letter.toLowerCase())) {
+                            return <p style={{ color: "#BC3D81" }}>{letter}</p>;
                           }
-                          return (
-                            <p>{letter}</p>
-                          )
+                          return <p>{letter}</p>;
                         })}
-                      </CheckBoxLabel>
-                    </Label>
-                  </CheckBoxWrapper>
+                      </div>
+                    </label>
+                  </div>
                 );
               })}
             </React.Fragment>
           ) : (
-            <CheckBoxWrapper>
+            <div className={checkBoxWrapper}>
               <p
                 style={{ fontSize: "14px", textAlign: "center", width: "100%" }}
               >
                 No result
               </p>
-            </CheckBoxWrapper>
+            </div>
           )}
-        </CheckBoxesContainer>
-      </CheckBoxesWrapper>
+        </div>
+      </div>
       <div
         style={{
           display: "flex",
@@ -389,11 +441,17 @@ const AddRole = (props: { cb: () => void }) => {
           flex: 10,
         }}
       >
-        <PrimaryButton disabled={isFormValid || isSubmitting} themeUi={themeUi}>
+        <button
+          className={primaryButton}
+          disabled={isFormValid || isSubmitting}
+          style={assignInlineVars({
+            [primaryBgVar]: bg,
+          })}
+        >
           Add Role
-        </PrimaryButton>
+        </button>
       </div>
-    </URLsForm>
+    </form>
   );
 };
 

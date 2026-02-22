@@ -1,5 +1,5 @@
 import { useEffect, useState,useMemo,useRef } from "react"
-import { toast } from "react-toastify";
+import { toast } from "react-toastify/unstyled";
 import { VFPaginationProps } from "../../../../../components/VectorFLOW/commons/VFPagination";
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify";
 import { useGetDailyData } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";

@@ -2,7 +2,7 @@ import { Allotment } from 'allotment'
 import { useEffect, useState } from 'react'
 import { useTopFailureReasonData } from '../../../../../../VectorFlow/Services/MTO/Poogi/InsightAndTrends/TrendsOfFailureReason'
 import MTOActionToolBar from '../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar'
-import { BTRAllomentSection, BTRTableWrapper, HorizontalViewWrapper } from '../../../Common/SplitGraphContainer/styles'
+import { BTRAllomentSection, BTRTableWrapper, HorizontalViewWrapper } from '../../../Common/SplitGraphContainer/styles.css'
 import DownTrend from './DownTrend'
 import EmgAndUnres from './EmgAndUnres'
 import OverlayLoader from '../../../Common/Loader';
@@ -102,22 +102,22 @@ const TrendsOfFailureReason = () => {
                 onFilterRemove={onFilterRemove}
                 isMfgSelected={isMfgSelected}
             />
-            <HorizontalViewWrapper style={{ margin: '20px 14px', height: '85%', display: 'flex' }}>
-                <BTRTableWrapper style={{ flex: '1', margin: '0' }}>
+            <div className={HorizontalViewWrapper} style={{ margin: '20px 14px', height: '85%', display: 'flex' }}>
+                <div className={BTRTableWrapper} style={{ flex: '1', margin: '0' }}>
                     <Allotment vertical={false} separator={false}   >
                         <Allotment.Pane minSize={400} preferredSize={'50%'} className='allotment-pane-custom'>
-                            <BTRAllomentSection>
+                            <div className={BTRAllomentSection}>
                                 <EmgAndUnres graphData={graphData?.eu} />
-                            </BTRAllomentSection>
+                            </div>
                         </Allotment.Pane>
                         <Allotment.Pane minSize={400} preferredSize={'50%'} className='allotment-pane-custom'>
-                            <BTRAllomentSection>
+                            <div className={BTRAllomentSection}>
                                 <DownTrend graphData={graphData?.dt} />
-                            </BTRAllomentSection>
+                            </div>
                         </Allotment.Pane>
                     </Allotment>
-                </BTRTableWrapper>
-            </HorizontalViewWrapper>
+                </div>
+            </div>
         </>
     )
 }

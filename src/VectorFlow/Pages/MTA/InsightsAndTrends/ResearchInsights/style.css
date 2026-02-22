@@ -1,0 +1,99 @@
+/* .ag-theme-alpine{
+    height:100% !important;
+    max-height: 100% !important;
+} */
+
+.color-red,
+.rie-color-red {
+  color: red;
+}
+.colorBg-red {
+  background-color: red;
+}
+.color-green,
+.rie-color-green
+ {
+  color: green;
+}
+.colorBg-green{
+  background-color: green;
+}
+
+.color-#ffbf00,
+.color-yellow,
+.rie-color-#ffbf00,
+.rie-color-yellow{
+  color: #ffbf00;
+}
+
+.colorBg-yellow {
+  background-color: #ffbf00;
+}
+
+
+.color-black,
+.rie-color-black{
+  color: black;
+}
+.colorBg-black {
+  background-color: black;
+}
+
+
+.color-blue,
+.rie-color-blue{
+  color: blue;
+}
+.colorBg-blue {
+  background-color: blue;
+}
+
+.color-white,
+.color-gray,
+.rie-color-gray,
+.rie-color-white{
+  color: rgb(205, 205, 205);
+}
+.colorBg-white {
+  background-color: gray;
+}
+.colorBg-gray {
+  background-color: gray;
+}
+
+
+.colorRowDiv {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+}
+.colorRowValue {
+  margin-left: 12px;
+  font-weight: 550;
+}
+
+.tooltipKey {
+  padding: 6px 12px;
+  /* margin-left: 10px; */
+  color: white;
+  font-weight: 550;
+  font-size: 12px;
+}
+.tooltipRows {
+  padding: 8px 12px;
+  background: white;
+  border-radius: 0 0 4px 4px;
+  color: #333;
+  font-size: 12px;
+}
+.colorRowDivKeySpan {
+  font-weight: 550;
+}
+
+.seriesColorCommonTooltip {
+  padding: 0;
+  border-radius: 4px;
+  min-width: 100px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}

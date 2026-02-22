@@ -3,13 +3,8 @@ import { useUserData } from "../../../context";
 import { MainService } from "../../../services/profile/api";
 import PermissionHeirarchyCanvas from "../manage-users/PermissioinHeirarchyCanvas";
 
-import {
-  SCProfileOverView,
-  SCSubTitleBox,
-  SCSubTitlePad,
-  SCSubTitleSpan,
-} from "./styles";
 import styled from "styled-components";
+import { profileOverView, subTitleBox, subTitlePad, subTitleSpan } from "./styles.css";
 
 // Reusing styles from manage-users or creating local ones for Tabs
 const TabsContainer = styled.div`
@@ -162,12 +157,12 @@ const UserPermissionsView = () => {
   const applications = dataAllPermissions.map((app) => app.application_name);
 
   return (
-    <SCProfileOverView>
-      <SCSubTitleBox>
-        <SCSubTitlePad>
-          <SCSubTitleSpan>My Permissions</SCSubTitleSpan>
-        </SCSubTitlePad>
-      </SCSubTitleBox>
+    <div className={profileOverView}>
+      <div className={subTitleBox}>
+        <div className={subTitlePad}>
+          <div className={subTitleSpan}>My Permissions</div>
+        </div>
+      </div>
 
       {/* Applications Tabs */}
       <TabsContainer>
@@ -198,7 +193,7 @@ const UserPermissionsView = () => {
           </>
         )}
       </ContentContainer>
-    </SCProfileOverView>
+    </div>
   );
 };
 

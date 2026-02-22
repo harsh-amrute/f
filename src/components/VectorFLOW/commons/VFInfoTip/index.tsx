@@ -1,33 +1,42 @@
-import { InfoWrapper, IconTextContainer, InfoIcon, Infotext } from "./styles"
+import {
+  InfoWrapper,
+  IconTextContainer,
+  InfoIcon,
+  Infotext,
+} from "./styles.css";
 
-interface VFInfoTipProps{
-    text:Array<string>
-    
+interface VFInfoTipProps {
+  text: Array<string>;
 }
 
-const VFInfoTip=(props:VFInfoTipProps)=>{
+const VFInfoTip = (props: VFInfoTipProps) => {
+  const { text } = props;
+  const gapVariant = text.length > 1 ? "loose" : "tight";
 
-    const {
-        text
-    } = props
+  return (
+    <div className={InfoWrapper}>
+      <div className={IconTextContainer[gapVariant]}>
+        <div className={InfoIcon}>
+          <img src="/assets/img/VectorFLOW/BPR/bulb.svg" alt="Info" />
+        </div>
 
-    return(
-        <>
-        <InfoWrapper>
-            <IconTextContainer gap={text.length > 1 ? '22px' : '8px'}>
-                <InfoIcon>
-                    <img src="/assets/img/VectorFLOW/BPR/bulb.svg"></img>
-                </InfoIcon>
-                <Infotext>
-                    {text.length>1 ? text.map((temp)=>(
-                        <ul style={{margin:'0px 0px 5px 0px', padding:'0'}}>
-                            <li key={temp} style={{listStyle:'outside'}}><b>{temp}</b></li> 
-                        </ul>  
-                    )) : <p><b>{text}</b></p>}         
-                </Infotext>
-            </IconTextContainer>   
-        </InfoWrapper>
-        </>
-    )
-}
-export default VFInfoTip
+        <div className={Infotext}>
+          {text.length > 1 ? (
+            <ul style={{ margin: "0 0 5px 0", padding: 0 }}>
+              {text.map((t, i) => (
+                <li key={`${t}-${i}`} style={{ listStyle: "outside" }}>
+                  <b>{t}</b>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>
+              <b>{text[0]}</b>
+            </p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+export default VFInfoTip;

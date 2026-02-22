@@ -7,3 +7,5 @@
 /coverage
 *.snap
 report.html
+
+.history

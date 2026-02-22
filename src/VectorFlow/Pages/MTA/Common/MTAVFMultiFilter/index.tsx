@@ -15,17 +15,24 @@ import { AttributesFilters } from "../VFFilterContent/FilterAttributes";
 import { HistroricalFilter } from "../VFFilterContent/HistroricalFilter";
 import { CoverageFilters } from "../VFFilterContent/FilterCoverage";
 import {
-  ModalContent,
-  FilterLayout,
-  SidebarSection,
-  ContentSection,
-  SidebarItem,
-  FooterSection,
-  FooterButtons,
-} from "./style";
+  modalContent,
+  filterLayout,
+  sidebarSection,
+  sidebarItem,
+  contentSection,
+  footerSection,
+  footerButtons,
+  sbBgVar,
+  sbColorVar,
+  sbWeightVar,
+  sbMarginRightVar,
+  sbHoverBgVar,
+  sbHoverColorVar,
+} from "./style.css";
 import { RootState } from "../../../../../redux/store/store";
 import { BPRFilterState } from "../../../../../VectorFlow/types/BPR";
 import { UPDATE_MTA_VF_MULTI_FILTER } from "../../../../../redux/actions/MTA";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 
 interface FilterModalProps {
   isOpen: boolean;
@@ -327,6 +334,8 @@ const FilterModal: React.FC<FilterModalProps> = ({
 
   const themeColor =
     user.user.theme_ui === "REGALBLAZE" ? "#14213D" : "#000000";
+  const isRegal = user.user.theme_ui === "REGALBLAZE";
+
   return (
     <VFModalCard
       zoom="0.73"
@@ -341,28 +350,52 @@ const FilterModal: React.FC<FilterModalProps> = ({
       data-testid="vfmultifilter-img"
       absolute
     >
-      <ModalContent>
-        <FilterLayout>
-          <SidebarSection>
-            {availableSections.map(({ label }) => (
-              <SidebarItem
-                theme_ui={user.user.theme_ui}
-                key={label}
-                active={activeSection === label}
-                onClick={() => setActiveSection(label)}
-              >
-                {label}
-              </SidebarItem>
-            ))}
-          </SidebarSection>
-          <ContentSection>
+      <div className={modalContent}>
+        <div className={filterLayout}>
+          <div className={sidebarSection}>
+            {availableSections.map(({ label }) => {
+              const active = activeSection === label;
+              return (
+                <div
+                  key={label}
+                  className={sidebarItem}
+                  style={assignInlineVars({
+                    [sbBgVar]: active
+                      ? isRegal
+                        ? "#fca2113d"
+                        : "#fce4f0"
+                      : "transparent",
+                    [sbColorVar]: active
+                      ? isRegal
+                        ? "#FCA311"
+                        : "#BC3D80"
+                      : "#000000ff",
+                    [sbWeightVar]: active ? "480" : "400",
+                    [sbMarginRightVar]: active ? "-1px" : "0",
+                    [sbHoverBgVar]: active
+                      ? isRegal
+                        ? "#fca2111b"
+                        : "#fce4f0"
+                      : "#e9ecef",
+                    [sbHoverColorVar]: isRegal ? "#FCA311" : "#BC3D80",
+                  })}
+                  onClick={() => setActiveSection(label)}
+                >
+                  {label}
+                </div>
+              );
+            })}
+          </div>
+
+          <div className={contentSection}>
             <div style={{ flex: 1, overflowY: "auto", padding: "1rem 0" }}>
               {renderFilterContent()}
             </div>
-          </ContentSection>
-        </FilterLayout>
-        <FooterSection>
-          <FooterButtons>
+          </div>
+        </div>
+
+        <div className={footerSection}>
+          <div className={footerButtons}>
             {currentActiveFilters > 0 && (
               <VFButtonOutline
                 themeUi={user.user.theme_ui}
@@ -379,9 +412,9 @@ const FilterModal: React.FC<FilterModalProps> = ({
             >
               {currentActiveFilters > 0 ? "Apply Filter" : "Show All"}
             </VFButton>
-          </FooterButtons>
-        </FooterSection>
-      </ModalContent>
+          </div>
+        </div>
+      </div>
     </VFModalCard>
   );
 };

@@ -1,0 +1,67 @@
+import { style, createVar, globalStyle } from '@vanilla-extract/css';
+
+export const vHeight = createVar();
+export const vZoom = createVar();
+
+export const VFTableWrapper = style({
+  height: vHeight,
+  // max-height: 90%; // (kept commented like original)
+  // margin: 20px 0;  // (kept commented like original)
+  // width: '100%',     // replaces the broken width
+  // minWidth: 0,
+  // width: '100%',     // replaces the broken width
+
+  zoom: '1 !important',
+  // width:'1200px',
+
+  // selectors: {
+  //   // cover both: wrapper IS the theme element, or contains it
+  //   '& > .ag-theme-alpine': { margin: '0 !important' },
+  //   '& > .ag-theme-noir-fusion': { margin: '0 !important' },
+  //   '&.ag-theme-alpine': { margin: '0 !important' },
+  //   '&.ag-theme-noir-fusion': { margin: '0 !important' },
+
+  //   // resizer (descendant + direct child just in case)
+  //   '& > .ag-header-cell-resize': {
+  //     position: 'absolute',
+  //     zIndex: 0,
+  //     height: '100%',
+  //     width: '8px',
+  //     top: 0,
+  //     cursor: 'ew-resize',
+  //   },
+  //   '& .ag-header-cell-resize': {
+  //     position: 'absolute',
+  //     zIndex: 0,
+  //     height: '100%',
+  //     width: '8px',
+  //     top: 0,
+  //     cursor: 'ew-resize',
+  //   },
+  // },
+});
+
+// descendants (scoped)
+globalStyle(`${VFTableWrapper} > .ag-theme-alpine`, { margin: '0 !important' });
+globalStyle(`${VFTableWrapper} > .ag-theme-noir-fusion`, { margin:'0 !important' });
+
+globalStyle(`${VFTableWrapper} > .ag-header-cell-resize`, {
+  position: 'absolute',
+  zIndex: 0,
+  height: '100%',
+  width: '8px',
+  top: 0,
+  cursor: 'ew-resize',
+});
+
+/** helper to set height at runtime (defaults to 'auto') */
+// export const vfTableWrapperVars = (height?: string) =>
+//   assignInlineVars({ [vHeight]: height ?? 'auto' });
+
+globalStyle(
+  `${VFTableWrapper} .ag-theme-alpine .ag-charts-wrapper .ag-charts-aria-announcer,
+   ${VFTableWrapper} .ag-theme-alpine .ag-charts-wrapper .ag-charts-canvas-proxy`,
+  {
+    display: 'none !important',
+  }
+);

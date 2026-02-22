@@ -1,7 +1,7 @@
 import {useState, useEffect} from "react";
 import { Allotment } from "allotment";
 import "allotment/dist/style.css";
-import {SCDynamicContainer} from '../style';
+import {SCDynamicContainer} from '../style.css';
 import { useGetChronicUnavailabilityLoc,useGetChronicUnavailabilitySku} from "../../../../../Services/MTA/InsightsAndTrends";
 import VFCharts from "../../../../../../components/VectorFLOW/commons/VFCharts";
 import { coldefs1, coldefs2 } from "./colDef";
@@ -86,7 +86,7 @@ const ChronicUnavailabilityCharts = ({filter}:{filter:any}) => {
     } 
     return(
         <>
-            <SCDynamicContainer style={{marginTop:'10px'}}>
+            <div className={SCDynamicContainer} style={{marginTop:'10px'}}>
                 <Allotment>
                     <Allotment.Pane minSize={440} preferredSize={'50%'}>
 
@@ -114,7 +114,7 @@ const ChronicUnavailabilityCharts = ({filter}:{filter:any}) => {
 
                     </Allotment.Pane>
                 </Allotment>
-            </SCDynamicContainer>
+            </div>
         </>
     )
     

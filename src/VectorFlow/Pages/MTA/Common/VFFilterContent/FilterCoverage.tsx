@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./styles.css";
 import { useThemeStyles } from "../../../../../hooks/useVFFilterContent";
-import { FilterColumn, FilterGroup, TextWrapper } from "./style";
+import { filterColumn, filterGroup, textWrapper } from "./style.css";
 import { BPRFilter, BPRFilterState } from "../../../../../VectorFlow/types/BPR";
 
 interface FilterSectionProps {
@@ -78,9 +78,9 @@ export const CoverageFilters: React.FC<FilterSectionProps> = ({
   };
 
   return (
-    <FilterGroup>
-      <FilterColumn style={{ minWidth: "400px", maxWidth: "none" }}>
-        <TextWrapper>Coverage Filter</TextWrapper>
+    <div className={filterGroup}>
+      <div className={filterColumn} style={{ minWidth: "400px", maxWidth: "none" }}>
+        <div className={textWrapper}>Coverage Filter</div>
         <div className="chip-container">
           {coverageOptions.map((option) => {
             const isActive = selected.includes(option.value);
@@ -100,7 +100,7 @@ export const CoverageFilters: React.FC<FilterSectionProps> = ({
             );
           })}
         </div>
-      </FilterColumn>
-    </FilterGroup>
+      </div>
+    </div>
   );
 };

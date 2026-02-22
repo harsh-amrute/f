@@ -3,8 +3,16 @@ import { ReactFlow, Handle, Position, Background, BackgroundVariant, MiniMap, Pa
 import "@xyflow/react/dist/style.css";
 import Checkbox from "../../../components/VectorFLOW/commons/MTO/Checkbox";
 import { useUserData } from "../../../context";
-import { ToggleContainer, ToggleButton, ChartWrapper } from "./PermissionHeirarchyStyles";
 import Tooltip from "../../../VectorFlow/Pages/MTO/Common/Tooltip";
+import {
+  ToggleContainer,
+  ToggleButton,
+  ChartWrapper,
+  toggleBgVar,
+  toggleColorVar,
+  toggleWeightVar,
+} from "./PermissionHeirarchyStyles.css";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 
 const NodeDataContext = createContext<any>(undefined);
 
@@ -30,17 +38,22 @@ const ViewToggle = ({
   };
 
   return (
-    <ToggleContainer>
+    <div className={ToggleContainer}>
       {allApplications.map((app: string) => (
-        <ToggleButton
+        <button
+          className={ToggleButton}
           key={app}
-          active={selectedApplication === app}
+          style={assignInlineVars({
+            [toggleBgVar]: selectedApplication === app ? "#f1d2e0" : "#f5f5f5",
+            [toggleColorVar]: selectedApplication === app ? "#c72e64" : "#000",
+            [toggleWeightVar]: selectedApplication === app ? "bold" : "normal",
+          })}
           onClick={() => setSelectedApplication(app)}
         >
           {getLabel(app)}
-        </ToggleButton>
+        </button>
       ))}
-    </ToggleContainer>
+    </div>
   );
 };
 
@@ -1051,7 +1064,8 @@ export default function PermissionHeirarchyCanvas({
           selectedApplication={permissionType}
           setSelectedApplication={setPermissionType}
         />
-        <ChartWrapper
+        <div
+          className={ChartWrapper}
           style={{
             position: "relative",
             width: "100%",
@@ -1082,7 +1096,7 @@ export default function PermissionHeirarchyCanvas({
               </button>
             </Tooltip>
           </div>
-        </ChartWrapper>
+        </div>
       </div>
     </NodeDataContext.Provider>
   );

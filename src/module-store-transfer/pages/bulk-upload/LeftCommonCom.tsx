@@ -1,12 +1,17 @@
 import React from "react";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 import {
-  HeaderSection,
-  HeaderText,
-  LeftCommonComUploadWrapper,
-  LeftCommonComWrapper,
-  LeftStep,
-  SubText,
-} from "./style";
+  headerSection,
+  leftCommonComUploadWrapper,
+  leftCommonComWrapper,
+  leftStep,
+  subTextStyle,
+  headerTextFontSizeVar,
+  headerTextFontWeightVar,
+  subTextFontSizeVar,
+  subTextFontWeightVar,
+  headerTextStyle,
+} from "./style.css";
 import ButtonFloat from "../../../../src/components/commons/ButtonFloat";
 
 interface LeftCommonComProps {
@@ -35,9 +40,10 @@ function LeftCommonCom({
 
   
   return (
-    <LeftCommonComWrapper>
-      <LeftStep>Step {step}</LeftStep>
-      <LeftCommonComUploadWrapper>
+    <div className={leftCommonComWrapper}>
+      <div className={leftStep}>Step {step}</div>
+
+      <div className={leftCommonComUploadWrapper}>
         <div
           style={{
             display: "flex",
@@ -47,19 +53,36 @@ function LeftCommonCom({
           }}
         >
           <img src={img} alt="" style={imgStyles} />
-          <HeaderSection>
-            <HeaderText>{headerText}</HeaderText>
-            <SubText fontSize="1.15rem" >{subText}</SubText>
-          </HeaderSection>
+          <div className={headerSection}>
+            <div
+              className={headerTextStyle}
+              style={assignInlineVars({
+                [headerTextFontSizeVar]: "1.35rem",
+                [headerTextFontWeightVar]: "600",
+              })}
+            >
+              {headerText}
+            </div>
+            <div
+              className={subTextStyle}
+              style={assignInlineVars({
+                [subTextFontSizeVar]: "1.15rem",
+                [subTextFontWeightVar]: "300",
+              })}
+            >
+              {subText}
+            </div>
+          </div>
         </div>
+
         <ButtonFloat
           onClick={(e:any)=>{handleClick(e)}}
           text={btnText}
           icon={btnImg}
           styles={btnStyles}
-        ></ButtonFloat>
-      </LeftCommonComUploadWrapper>
-    </LeftCommonComWrapper>
+        />
+      </div>
+    </div>
   );
 }
 
