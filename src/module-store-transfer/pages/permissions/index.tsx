@@ -2,50 +2,18 @@ import React, { useEffect, useState } from "react";
 import { useUserData } from "../../../context";
 import { MainService } from "../../../services/profile/api";
 import PermissionHeirarchyCanvas from "../manage-users/PermissioinHeirarchyCanvas";
-import styled from "styled-components";
-import { profileOverView, subTitleBox, subTitlePad, subTitleSpan } from "./styles.css";
-
-// Reusing styles from manage-users or creating local ones for Tabs
-const TabsContainer = styled.div`
-  display: flex;
-  gap: 14px;
-  background: white;
-  padding: 10px 10px 0 10px;
-  overflow-x: auto;
-  margin-left: 80px;
-`;
-
-const Tab = styled.div<{ active: boolean }>`
-  padding: 8px 16px;
-  cursor: pointer;
-  font-size: 1.6rem;
-  border-radius: 24px;
-  border-bottom: 2px solid ${({ active }) => (active ? "#b02792ff" : "transparent")};
-  color: ${({ active }) => (active ? "#b02790ff" : "#666")};
-  background: ${({ active }) => (!active ? "#eceeeeff" : "#e6b0dc64")};
-  font-weight: ${({ active }) => (active ? "bold" : "normal")};
-  white-space: nowrap;
-
-  &:hover {
-    color: #b0277bff;
-    background-color: #f3e5f5;
-  }
-`;
-
-const ContentContainer = styled.div`
-  display: flex;
-  height: calc(100vh - 200px); 
-  overflow: hidden;
-  justify-content: center; /* Center the canvas */
-`;
-
-const CanvasSection = styled.div`
-  flex: none; /* Do not stretch indefinitely */
-  width: 90%; /* Occupy 90% width or specific px like 1200px */
-  position: relative;
-  overflow: hidden;
-  margin-top: 20px; /* Spacing from tabs */
-`;
+import { 
+  profileOverView, 
+  subTitleBox, 
+  subTitlePad, 
+  subTitleSpan,
+  tabsContainer,
+  tabBase,
+  tabActive,
+  tabInactive,
+  contentContainer,
+  canvasSection
+} from "./styles.css";
 
 const Permissions = () => {
   const { user } = useUserData();
@@ -150,7 +118,7 @@ const Permissions = () => {
   }, [user]);
 
   if (loading) {
-    return <div style={{ padding: 20 }}>Loading permissions...</div>;
+    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh', fontSize: '1.8rem' }}>Loading permissions...</div>;
   }
 
   const applications = dataAllPermissions.map((app) => app.application_name);
@@ -164,23 +132,23 @@ const Permissions = () => {
       </div>
 
       {/* Applications Tabs */}
-      <TabsContainer>
+      <div className={tabsContainer}>
         {applications.map((app) => (
-          <Tab
+          <div
             key={app}
-            active={selectedApplication === app}
+            className={`${tabBase} ${selectedApplication === app ? tabActive : tabInactive}`}
             onClick={() => setSelectedApplication(app)}
           >
             {app}
-          </Tab>
+          </div>
         ))}
-      </TabsContainer>
+      </div>
 
-      <ContentContainer>
+      <div className={contentContainer}>
         {selectedApplication && (
           <>
             {/* Hierarchy Canvas (Read Only) */}
-            <CanvasSection>
+            <div className={canvasSection}>
               <PermissionHeirarchyCanvas
                 dataAllPermissions={dataAllPermissions}
                 selectedApplication={selectedApplication}
@@ -188,10 +156,10 @@ const Permissions = () => {
                 setSelectedPermissions={() => { console.log("setSelectedPermissions") }}
                 readOnly={true}
               />
-            </CanvasSection>
+            </div>
           </>
         )}
-      </ContentContainer>
+      </div>
     </div>
   );
 };
