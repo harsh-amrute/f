@@ -255,7 +255,8 @@ const handlePageSizeChange = (newSize: any) => {
         });
       }}
       // defaultExcelExportParams={defaultExcelExportParams}  
-      maintainColumnOrder={true}    
+      maintainColumnOrder={true}  
+      groupLockGroupColumns={1}
       />
 
      <VFPagination

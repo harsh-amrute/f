@@ -1,7 +1,6 @@
 import axios from "axios"
 
     export const getDayWiseCoverageData = async (startDate: string, endDate: string, plannedReleaseDate: string | undefined, appliedFilters:any,page?: any, pageSize?: any,isExcelExport?:any,body?:any,report_name?:any,isChildren?:any) => {
-        console.log("bodyyyyy",)
         return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getDayWiseCoverageData/`,{ ...appliedFilters, ...body}, {
             headers: {
                 'Content-Type': 'application/json',
