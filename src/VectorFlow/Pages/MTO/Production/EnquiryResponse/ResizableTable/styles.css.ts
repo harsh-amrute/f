@@ -93,7 +93,7 @@ export const VFTableWrapper = style({
   width: "100%",
   display: "flex",
   margin: "20px 0px",
-  height: vfHeightVar,
+  height: "100%",
 
   /* zoom scaling between laptop and desktop widths (prop-driven via var) */
   "@media": {

@@ -34,7 +34,6 @@ const ResizableTable = (props: IResizeTableProps) => {
     columnState,
     userPageSize,
     savePageSize,
-    height,
   } = props;
   const gridRef = props.gridRef;
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
@@ -118,14 +117,7 @@ const ResizableTable = (props: IResizeTableProps) => {
 
 
   return (
-    <div
-      className={VFTableWrapper}
-      style={assignInlineVars({
-        // optional overrides; these default in styles.css.ts if you omit them
-        [vfHeightVar]: height,
-        // [vfZoomMdVar]: disableZoomScaling ? "1" : "0.75",
-      })}
-    >
+    <div className={VFTableWrapper}>
     <VFTable
         ref={gridRef}
         columnDefs={colDef}

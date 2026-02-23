@@ -15,9 +15,10 @@ import {
   formContainer,
   radioGroup,
   radioLabel,
-  radioInput,labelEl,inputEl,selectEl,inputWrapper, daysContainer,dayBtn,dayBtnSelected,
+  radioInput,labelEl,inputEl,selectEl,inputWrapper, daysContainer,dayBtn,
   footerText,daySelectedBgVar, accentColorVar
 } from "./styles.css";
+import CalenderMonthlySelect from "./CalenderMonthlySelect";
 
 /* runtime vars */
 // export const accentColorVar = createVar(); // for radio accent color
@@ -181,24 +182,24 @@ const DatePickForm = ({
     });
   };
 
-  useEffect(() => {
-    // Clear all selections first to avoid duplicate toggling issues
-    document.querySelectorAll(".selected").forEach((el) => {
-      el.classList.remove("selected");
-    });
+  // useEffect(() => {
+  //   // Clear all selections first to avoid duplicate toggling issues
+  //   document.querySelectorAll(".selected").forEach((el) => {
+  //     el.classList.remove("selected");
+  //   });
 
-    // Apply the correct class to selected days
-    if (formData && formData.dow && Array.isArray(formData.dow)) {
-      formData?.dow
-        .map((day: any) => day.md)
-        .forEach((day: string) => {
-          const element = document.getElementById(day);
-          if (element) {
-            element.classList.add("selected");
-          }
-        });
-    }
-  }, [formData.dow]);
+  //   // Apply the correct class to selected days
+  //   if (formData && formData.dow && Array.isArray(formData.dow)) {
+  //     formData?.dow
+  //       .map((day: any) => day.md)
+  //       .forEach((day: string) => {
+  //         const element = document.getElementById(day);
+  //         if (element) {
+  //           element.classList.add("selected");
+  //         }
+  //       });
+  //   }
+  // }, [formData.dow]);
 
   useEffect(() => {
     if (formData.rb !== "Weekly") {
@@ -355,7 +356,7 @@ const DatePickForm = ({
               value={formData.plant__plant_name || formData.plnm}
               onChange={onHandlePlantChange}
             >
-              <option value="" disabled hidden>
+              <option value="" selected disabled hidden>
                 Select a Plant
               </option>
               {plantNames.map((plant: any, i: number) => (
@@ -377,7 +378,6 @@ const DatePickForm = ({
                     [itemMulWidthVar]: "85%", // override when needed
                   })}
                 >
-                  {" "}
                   <SearchInputMultiple
                     placeholder={"Select CCR"}
                     options={formData.plid ? ccrNameOptFromPlant : []}
@@ -447,11 +447,13 @@ const DatePickForm = ({
                 <label className={labelEl}>On</label>
                 <div className={daysContainer}>
                   {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((day) => {
-                    const isSelected = formData?.dow?.includes?.(day);
+                    const isSelected = formData?.dow?.some(
+                      (d: any) => d.md === day
+                    );
                     return (
                       <button
                         key={day}
-                        className={cx(dayBtn, isSelected && dayBtnSelected)}
+                        className={`${dayBtn} ${isSelected ? "selected" : ""}`}
                         style={assignInlineVars({
                           [daySelectedBgVar]:
                             themeUi === "REGALBLAZE" ? "#C7810E" : "#82104C",
@@ -469,6 +471,20 @@ const DatePickForm = ({
           )}
 
           {/* monthly block stays as-is (your CalenderMonthlySelect) */}
+          {formData.rb === "Monthly" &&
+          formData?.dow?.map((val: any) => {
+            return (
+              <CalenderMonthlySelect
+                key={val.id}
+                formData={formData}
+                handleMdOptionsChange={handleMdOptionsChange}
+                handleMnOptionsChange={handleMnOptionsChange}
+                onAddClick={onAddClick}
+                onRemoveClick={onRemoveclick}
+                id={val.id}
+              />
+            );
+          })}
 
           {/* end */}
           <div className={inputWrapper}>
@@ -486,9 +502,60 @@ const DatePickForm = ({
               onChange={onHandleEndDateChange}
             />
           </div>
+          <div style={{ zoom: "0.8", marginTop: "10px" }}>
+          <div
+            key={"1"}
+            style={{
+              display: "flex",
+              justifyContent: "right",
+              gap: "8px",
+              borderTop: "2px dashed #A0A0A0",
+              padding: "20px 10px 0 0",
+            }}
+          >
+            <div>
+              <button
+                disabled={isDisabled}
+                type="submit"
+                onClick={() => {
+                  onSaveHandler();
+                }}
+                style={{
+                  font: "normal normal 300 16px/24px Roboto",
+                  fontWeight: "400",
+                  padding: "10px 30px",
+                  color: "white",
+                  borderRadius: "6px",
+                  background: isDisabled ? "gray" : "#820F4C",
+                  boxShadow: "0px 6px 25px #00000029",
+                  cursor: isDisabled ? "not-allowed" : "pointer",
+                }}
+              >
+                Save
+              </button>
+            </div>
+            <div>
+              <button
+                style={{
+                  background: "white",
+                  color: "grey",
+                  font: "normal normal 300 16px/24px Roboto",
+                  padding: "10px 20px",
+                  fontWeight: "400",
+                  borderRadius: "6px",
+                  border: "1px solid grey",
 
-          {/* footer buttons (left inline, unchanged) */}
-          {/* ... */}
+                  boxShadow: "0px 6px 25px #00000029",
+                }}
+                onClick={() => {
+                  setIsModalOpen(false);
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
         </div>
       </fieldset>
     </>
