@@ -76,6 +76,7 @@ const GridView = ({
         savePageSize={savePageSize}
         userPageSize={userPageSize}
         isDisabled={isDisabled}
+        resetGridRef={currentGridRef}
       />
     </div>
   );
