@@ -14,14 +14,14 @@ import useFilter from "../../../../../../hooks/useFilter";
 import { useGetOTIFAnalysisData, useGetOTIFAnalysisDataExcelExport } from "../../../../../../VectorFlow/Services/MTO/Poogi/InsightAndTrends/OTIFAnalysis";
 import OverlayLoader from '../../../Common/Loader';
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
-import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from '../../../../../../helpers/utils';
-import { FilterPageName, pagination, UIGridCode } from "../../../Common/Enum";
+import { DownloadExcel, formatFilterJSON, getBodyForExcelExport } from '../../../../../../helpers/utils';
+import { FilterPageName, UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 import useColDef from "../../../../../../hooks/useColDef";
 import BPPRenderer from "../../../Common/BPRRenderer/BPPRenderer";
 import moment from "moment";
 import CommonGridview from "../../../../../../helpers/CommonGridview";
-import { SCDynamicContainer } from './styles'
+import { SCDynamicContainer } from "../../../Common/GridView/styles";
 
 
 const APIFilterConfig = {
