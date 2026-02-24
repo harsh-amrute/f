@@ -121,7 +121,6 @@ const STPLGraph = (props: any) => {
 
   const options: AgChartOptions = {
     data: rawData,
-
     series: createSeriesData(3),
 
     axes: [

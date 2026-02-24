@@ -60,7 +60,6 @@ const VFModalCard = ({
       ? `${paddingLeftAndRight}px`
       : "74px";
 
-  console.log(headerBgColor, "headerBgColor");
   return (
     <>
       {
