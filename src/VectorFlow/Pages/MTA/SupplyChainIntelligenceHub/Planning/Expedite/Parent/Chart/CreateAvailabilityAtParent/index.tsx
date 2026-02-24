@@ -1,7 +1,7 @@
 import {useState, useEffect} from "react";
 import { Allotment } from "allotment";
 import "allotment/dist/style.css";
-import {SCDynamicContainer} from '../../../styles';
+import {SCDynamicContainer} from '../../../style.css';
 import {convertToInt, getProductAndLocationHeirarchiesFromEnv, generateChartOptions} from '../../../../../../../../../helpers/utils';
 import { chartParams1 , chartParams2 } from './chartParams' 
 import VFCharts from "../../../../../../../../../components/VectorFLOW/commons/VFCharts";
@@ -157,7 +157,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
      
     return(
         <>
-            <SCDynamicContainer>
+            <div className={SCDynamicContainer}>
                 <Allotment>
                     <Allotment.Pane>
 
@@ -186,7 +186,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
 
                     </Allotment.Pane>
                 </Allotment>
-            </SCDynamicContainer>
+            </div>
         </>
     )
     

@@ -1,38 +1,40 @@
-import { useEffect, useRef, useState } from 'react';
-import moment from 'moment';
-import {CalendarProps} from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
-import ReactDOM from 'react-dom';
+import { useEffect, useRef, useState } from "react";
+import moment from "moment";
+import Calendar, { CalendarProps } from "react-calendar";
+import "react-calendar/dist/Calendar.css";
+import ReactDOM from "react-dom";
 import { useUserData } from "../../../../../context/index";
 import {
   DatePickerWrapper,
   TextInputWrapper,
   ButtonWrapper,
   ImageWrapper,
-  StyledCalendar
-} from './styles';
+  calendarRoot,
+  calendarVarsHost,
+  calActiveBgVar,
+  calFocusBgVar,
+  calHoverBgVar,
+  calNowBgVar,
+} from "./styles.css";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 
 interface CustomDatePickerProps {
-    date: any;
-    onDateChange: any;
-    themeUi?: string;
-    minDate?: any;
-    disabled?: boolean;
-    dateInputStyle?: React.CSSProperties;
-    imgStyle?: React.CSSProperties;
-    showCalendarIcon?: boolean;
-    onClick?: any,
-    enableIconClick?: boolean;
-    forceOpenCalendar?: boolean;
+  date: any;
+  onDateChange: any;
+  themeUi?: string;
+  minDate?: any;
+  disabled?: boolean;
+  dateInputStyle?: React.CSSProperties;
+  imgStyle?: React.CSSProperties;
+  showCalendarIcon?: boolean;
+  onClick?: any;
+  enableIconClick?: boolean;
+  forceOpenCalendar?: boolean;
   maxDate?: any;
   tileDisabled?: any
-  }
-  
+}
 
-
-
-type Value = CalendarProps['value'];
-
+type Value = CalendarProps["value"];
 
 const VFDatePicker = ({
   date,
@@ -55,7 +57,7 @@ const VFDatePicker = ({
 
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
-    
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
@@ -70,8 +72,8 @@ const VFDatePicker = ({
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showCalendar]);
 
   const toggleCalendar = () => {
@@ -80,15 +82,15 @@ const VFDatePicker = ({
     if (rect) {
       setCalendarPosition({
         top: rect.bottom + window.scrollY,
-        left: rect.left + window.scrollX
+        left: rect.left + window.scrollX,
       });
     }
-    setShowCalendar(prev => !prev);
+    setShowCalendar((prev) => !prev);
   };
 
   const handleCalendarChange = (value: Value) => {
     if (value instanceof Date) {
-      const formatted = moment(value).format('YYYY-MM-DD')
+      const formatted = moment(value).format("YYYY-MM-DD");
       onDateChange(formatted);
       setShowCalendar(false);
     }
@@ -106,73 +108,90 @@ const VFDatePicker = ({
       setShowCalendar(true);
     }
   }, [forceOpenCalendar]);
-  
 
-
-  
   return (
-    <DatePickerWrapper>
-      <TextInputWrapper
+    <div className={DatePickerWrapper}>
+      <input
         ref={inputRef}
         type="text"
-        value={date ? moment(date).format('YYYY-MM-DD') : ''}
+        value={date ? moment(date).format("YYYY-MM-DD") : ""}
         placeholder="DD-MM-YYYY"
         readOnly
         onClick={toggleCalendar}
         disabled={disabled}
+        className={TextInputWrapper}
         style={dateInputStyle}
       />
 
-      {showCalendarIcon &&
+      {showCalendarIcon && (
         <>
-        <ButtonWrapper type="button"
-         onClick={(e) => {
-          if (enableIconClick && onClick ) {
-            onClick(e);  
-            return;
-           }
-           toggleCalendar();
-        }}
-        >
-            <ImageWrapper
-            style={imgStyle}
+          <button
+            type="button"
+            onClick={(e) => {
+              if (enableIconClick && onClick) {
+                onClick(e);
+                return;
+              }
+              toggleCalendar();
+            }}
+            className={ButtonWrapper}
+          >
+            <img
+              className={ImageWrapper}
+              style={imgStyle}
               src={
-                themeUi === 'REGALBLAZE'
-                  ? '/assets/img/mto/OrderRescheduling/edit-calendar-yellow.svg'
-                  : '/assets/img/mto/OrderRescheduling/edit-calendar.svg'
+                themeUi === "REGALBLAZE"
+                  ? "/assets/img/mto/OrderRescheduling/edit-calendar-yellow.svg"
+                  : "/assets/img/mto/OrderRescheduling/edit-calendar.svg"
               }
               alt="calendar-icon"
             />
-          </ButtonWrapper>
+          </button>
 
           {showCalendar &&
             ReactDOM.createPortal(
               <div
                 ref={calendarRef}
                 style={{
-                  position: 'absolute',
+                  position: "absolute",
                   top: calendarPosition.top,
                   left: calendarPosition.left,
                   zIndex: 9999,
-                  backgroundColor: 'white',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.3)'
+                  backgroundColor: "white",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
                 }}
               >
-                <StyledCalendar
-                  themeUi={themeUi}
-                  onChange={handleCalendarChange}
-                  value={date ? new Date(date) : new Date()}
-                  minDate={minDate}
-                  maxDate={maxDate}
-                  tileDisabled={tileDisabled} 
-                />
+                {/* put inline vars on a wrapper DIV, not on <Calendar /> */}
+                <div
+                  className={calendarVarsHost}
+                  style={assignInlineVars({
+                    [calFocusBgVar]:
+                      themeUi === "REGALBLAZE" ? "#C7810E" : "#82104C",
+                    [calActiveBgVar]:
+                      themeUi === "REGALBLAZE" ? "#C7810E" : "#82104C",
+                    [calNowBgVar]:
+                      themeUi === "REGALBLAZE" ? "#E1B69F" : "#e2a9c8",
+                    [calHoverBgVar]:
+                      themeUi === "REGALBLAZE"
+                        ? "#fee3b7"
+                        : "rgba(188,61,129,0.2)",
+                  })}
+                >
+                  <Calendar
+                    className={calendarRoot}
+                    onChange={handleCalendarChange}
+                    value={date ? new Date(date) : new Date()}
+                    minDate={minDate}
+                    tileDisabled={tileDisabled}
+                  />
+                </div>
               </div>,
               document.body
             )}
         </>
-      }
-    </DatePickerWrapper>
+      )}
+    </div>
   );
-}
+};
 
 export default VFDatePicker;

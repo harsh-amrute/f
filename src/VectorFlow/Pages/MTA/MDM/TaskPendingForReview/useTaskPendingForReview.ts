@@ -7,7 +7,7 @@ import { GridRef, Master, TaskDataType } from "../../../../../VectorFlow/types/M
 import TaskPendingLinkCellRenderer from "./TaskPendingLinkCellRenderer"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState } from '../../../../../redux/store/store';
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify/unstyled";
 import { notifyLoader,notifyError,notifySuccess } from "../../../../../helpers/notify";
 import { SET_RECORD_COUNT } from "../../../../../redux/actions/MDM";
 import { useUserData } from "../../../../../context"
@@ -155,7 +155,7 @@ useEffect(() => {
                 setNoDataMessage(''); // Clear message if we have data
                 
                     const uiConfigurationResponse = await getMasterUIConfiguration(getActionName(taskData.Actiontype).value)
-                    
+                
                     const masters:Master[] = uiConfigurationResponse.data.data
                     const currentMasterFields = masters.find((master:Master)=>master.id==currentTaskMasterId)?.fields
                     if(currentMasterFields){
@@ -169,7 +169,9 @@ useEffect(() => {
                                        
                         let existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields);
                         if(taskData.Actiontype === 3){
-                            existingColumnFields = existingColumnFields.filter(field => field?.isDelete);
+                            existingColumnFields = existingColumnFields.filter(field =>
+                                field?.isDelete || field?.key === 'sd' || field?.key === 'wd'
+                              );
                         }
                         // setDetailTableColDefs(mapMasterToColumnGroupDefs(existingColumnFields,currentTaskMasterId,themeUi,getActionName(taskData.Actiontype).value,toggleApproveAllModal,toggleRejectAllModal,actionStatus,isDisabled))
                         setColGenArgs({

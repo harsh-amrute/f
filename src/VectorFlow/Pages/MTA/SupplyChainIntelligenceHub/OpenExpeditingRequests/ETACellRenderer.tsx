@@ -1,17 +1,20 @@
-import { useEffect, useRef, useState } from 'react';
-import moment from 'moment';
-import Calendar, { CalendarProps } from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
-import ReactDOM from 'react-dom';
+import { useEffect, useRef, useState } from "react";
+import moment from "moment";
+import Calendar, { CalendarProps } from "react-calendar";
+import "react-calendar/dist/Calendar.css";
+import ReactDOM from "react-dom";
 import { useUserData } from "../../../../../context/index";
-import { StyledCalendar } from '../ElephantOrders/styles';
+import {
+  calendarBase,
+  imageWrapper,
+  textInputWrapper,
+} from "../ElephantOrders/styles.css";
 import {
   DatePickerWrapper,
   TextInputWrapper,
   ButtonWrapperForSubmitRemark,
   ImageWrapper,
-} from './styles';
-
+} from "./styles.css";
 
 interface AGGridProps {
   value: string;
@@ -22,10 +25,16 @@ interface AGGridProps {
   [key: string]: any;
 }
 
-type Value = CalendarProps['value'];
+type Value = CalendarProps["value"];
 
 const ETACellRenderer = (props: AGGridProps) => {
-  const { value, onDateChange: externalOnDateChange, disabled = false, style, imgStyle } = props;
+  const {
+    value,
+    onDateChange: externalOnDateChange,
+    disabled = false,
+    style,
+    imgStyle,
+  } = props;
 
   const [showCalendar, setShowCalendar] = useState(false);
   const [calendarPosition, setCalendarPosition] = useState({ top: 0, left: 0 });
@@ -49,8 +58,8 @@ const ETACellRenderer = (props: AGGridProps) => {
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showCalendar]);
 
   const toggleCalendar = () => {
@@ -59,78 +68,83 @@ const ETACellRenderer = (props: AGGridProps) => {
     if (rect) {
       setCalendarPosition({
         top: rect.bottom + window.scrollY,
-        left: rect.left + window.scrollX - 20
+        left: rect.left + window.scrollX - 20,
       });
     }
-    setShowCalendar(prev => !prev);
+    setShowCalendar((prev) => !prev);
   };
 
-  
   const handleCalendarChange = (value: Value) => {
     if (value instanceof Date) {
-      const formatted = moment(value).format('YYYY-MM-DD');
-  
-      if (typeof props.setValue === 'function') {
-        props.setValue(formatted); 
+      const formatted = moment(value).format("YYYY-MM-DD");
+
+      if (typeof props.setValue === "function") {
+        props.setValue(formatted);
       }
-  
-      if (typeof externalOnDateChange === 'function') {
-        externalOnDateChange(formatted, props.data); 
+
+      if (typeof externalOnDateChange === "function") {
+        externalOnDateChange(formatted, props.data);
       }
-  
+
       setShowCalendar(false);
     }
   };
-  
+
   return (
-    <DatePickerWrapper>
-      <TextInputWrapper
-        ref={inputRef}
+    <div className={DatePickerWrapper}>
+      <input
         type="text"
-        value={value ? moment(value).format('YYYY-MM-DD') : ''}
-        placeholder="YYYY-MM-DD"
+        className={textInputWrapper}
+        ref={inputRef}
+        value={value ? moment(value).format("YYYY-MM-DD") : ""}
         readOnly
+        placeholder="YYYY-MM-DD"
         onClick={toggleCalendar}
-        disabled={disabled}
         style={style}
+        disabled={disabled}
       />
 
-      <ButtonWrapperForSubmitRemark type="button" onClick={toggleCalendar}>
-        <ImageWrapper
+      <button
+        className={ButtonWrapperForSubmitRemark}
+        type="button"
+        onClick={toggleCalendar}
+      >
+        <img
+          className={imageWrapper}
           style={imgStyle}
           src={
-            themeUi === 'REGALBLAZE'
-              ? '/assets/img/mto/OrderRescheduling/edit-calendar-yellow.svg'
-              : '/assets/img/mto/OrderRescheduling/edit-calendar.svg'
+            themeUi === "REGALBLAZE"
+              ? "/assets/img/mto/OrderRescheduling/edit-calendar-yellow.svg"
+              : "/assets/img/mto/OrderRescheduling/edit-calendar.svg"
           }
           alt="calendar-icon"
         />
-      </ButtonWrapperForSubmitRemark>
+      </button>
 
       {showCalendar &&
         ReactDOM.createPortal(
           <div
             ref={calendarRef}
             style={{
-              position: 'absolute',
+              position: "absolute",
               top: calendarPosition.top,
               left: calendarPosition.left,
               zIndex: 9999,
-              backgroundColor: 'white',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.3)'
+              backgroundColor: "white",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
             }}
           >
-            <StyledCalendar
-              themeUi={themeUi}
+            <Calendar
+              data-theme={themeUi}
+              className={calendarBase}
               onChange={handleCalendarChange}
               value={value ? new Date(value) : new Date()}
               minDate={undefined}
-            
             />
           </div>,
           document.body
         )}
-    </DatePickerWrapper>
+    </div>
   );
 };
 

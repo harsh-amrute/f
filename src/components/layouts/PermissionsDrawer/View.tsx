@@ -1,14 +1,14 @@
 import {useState,useEffect,useCallback, useRef} from 'react'
 import VFTable from "../../VectorFLOW/commons/VFTable"
-import { TableWrapper } from "../UserURLsDrawer/styles"
-import {  Skeleton } from "../../commons/styled"
+import { tableWrapper } from "../UserURLsDrawer/styles.css"
+import {  skeleton } from "../../commons/styled/index.css"
 import { notifyError } from '../../../helpers/notify'
 import { useGetAdminPermissions } from '../../../VectorFlow/Services/MTA/MDM'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../redux/store/store'
 import ErrorCell from './ErrorCell';
 import { GridRef } from '../../../VectorFlow/types/MDM'
-import { GridFilterWrapper, TextBtn } from '../../../VectorFlow/Pages/MTO/Common/VFPagination/styles'
+import { gridFilterWrapper, textBtn } from '../../../VectorFlow/Pages/MTO/Common/VFPagination/styles.css'
 import { useUserData } from '../../../context'
 
 export const getProductColumns = (envConfig: any) => [
@@ -88,20 +88,21 @@ const ViewPermissions = (props:{permissionType: string})=>{
         ref?.current?.api.setFilterModel(null);
           setIsDisabled(true);
     }
+    const brand = themeUi === "REGALBLAZE" ? "REGALBLAZE" : "DEFAULT";
 
     const CustomStatusPanel = () => {
         return (
-            <GridFilterWrapper style={{marginTop:'25px'}}>
-                <TextBtn onClick={clearGridFilter} disabled={isDisabled} themeUi={themeUi}>
+            <div className={gridFilterWrapper} style={{marginTop:'25px'}}>
+                <button onClick={clearGridFilter} disabled={isDisabled} className={textBtn[brand]}>
                     Clear All Grid Filters
-                </TextBtn>  
-            </GridFilterWrapper>           
+                </button>  
+            </div>           
         );
     };
 
     if(isLoading){
         return (
-            <Skeleton style={{height:400,width:'100%'}}/>
+            <div className={skeleton} style={{height:400,width:'100%'}}/>
         )
     }
 
@@ -114,7 +115,7 @@ const ViewPermissions = (props:{permissionType: string})=>{
     }
 
     return(
-        <TableWrapper>
+        <div className={tableWrapper}>
             <VFTable 
                 ref={ref}
                 defaultColDef={{
@@ -149,7 +150,7 @@ const ViewPermissions = (props:{permissionType: string})=>{
                     [],
                   }}
             />
-        </TableWrapper>
+        </div>
     )
 }
 

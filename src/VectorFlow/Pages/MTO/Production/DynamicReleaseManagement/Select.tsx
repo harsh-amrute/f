@@ -1,5 +1,5 @@
 import React from 'react'
-import Select, { components, OptionProps } from 'react-select'
+import Select, { components, CSSObjectWithLabel, OptionProps } from 'react-select'
 import { Checkbox } from '../../../../../components';
 
 const CustomSelect = ({ selected, placeholder, options, width, optionsWidth }: any) => {
@@ -24,11 +24,11 @@ const CustomSelect = ({ selected, placeholder, options, width, optionsWidth }: a
                     color: 'black',
                     fontWeight: 500,
                     fontSize: '14px', 
-                }),
+                }as CSSObjectWithLabel),
                 container: (base) => ({
                     ...base,
                     width: width || "max-content"
-                }),
+                }as CSSObjectWithLabel),
                 control: (base: any, state: any) => ({
                     ...base,
                     border: "1px solid hsl(0, 0%, 80%)",
@@ -37,13 +37,13 @@ const CustomSelect = ({ selected, placeholder, options, width, optionsWidth }: a
                     '&:hover': {
                         border: "1px solid hsl(0, 0%, 80%)"
                     }
-                }),
+                }as CSSObjectWithLabel),
                 menu: (base) => ({
                     ...base,
                     width: "max-content",
                     minWidth: optionsWidth || "150px",
                     right: 0,
-                }),
+                }as CSSObjectWithLabel),
                 option: (base) => ({
                     ...base,
                     background: "white",
@@ -51,7 +51,7 @@ const CustomSelect = ({ selected, placeholder, options, width, optionsWidth }: a
                     "&:hover": {
                         background: "white"
                     }
-                })
+                }as CSSObjectWithLabel)
             }}
             placeholder={placeholder || ''}
             options={options || [

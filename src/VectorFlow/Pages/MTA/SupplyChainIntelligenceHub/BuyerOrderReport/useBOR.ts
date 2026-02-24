@@ -13,7 +13,7 @@ import { RootState } from "../../../../../redux/store/store"
 import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA} from '../../../../../redux/actions/MTA';
 import { type DailyDataGraph } from "../../../../types/MTA";
 import { notifyError, notifyLoader,notifySuccess} from "../../../../../helpers/notify"
-import { toast } from "react-toastify"
+import { toast } from "react-toastify/unstyled"
 
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
@@ -588,7 +588,10 @@ export const useBOR =()=>{
       lockPosition: true,
       resizable: false,
       floatingFilter: false,
-      suppressColumnsToolPanel: false
+      suppressColumnsToolPanel: false,
+      suppressMenu:true,
+      headerTooltip: "Daily Data Graph",
+      headerName:"Daily Data Graph",
     },
     remarks: {
       cellStyle: {
@@ -603,7 +606,7 @@ export const useBOR =()=>{
       maxWidth: 160,
       lockPosition: 'right',
       menuTabs: [],
-      suppressMenu: true,
+      suppressHeaderMenuButton: true,
       resizable: false,
       floatingFilter: false,
     },
@@ -617,7 +620,7 @@ export const useBOR =()=>{
       maxWidth: 120,
       lockPosition: 'right',
       menuTabs: [],
-      suppressMenu: true,
+      suppressHeaderMenuButton: true,
       resizable: false,
       floatingFilter: false,
     },

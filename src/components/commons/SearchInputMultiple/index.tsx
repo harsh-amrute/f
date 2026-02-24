@@ -3,7 +3,7 @@ import { selectStyles, styleMoreSelect } from "./style";
 import { useUserData } from "../../../context";
 import { chooseThemeColor } from "../../../styles/global";
 
-interface SelectSearchMultipleProps {
+export interface SelectSearchMultipleProps {
   value: any;
   setValue: any;
   options: any;

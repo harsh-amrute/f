@@ -1,7 +1,7 @@
 import useElephantOrders from "./useElephantOrders";
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
 import { GridStateContext } from "../../../../../context/GridStateContext";
-import { EOLayout } from "./styles";
+import { eoLayout } from "./styles.css";
 import VFPagination from "../../../../../VectorFlow/Pages/MTO/Common/VFPagination";
 import ActionToolBar from "../Planning/ActionToolBar";
 import { useState } from "react";
@@ -41,10 +41,11 @@ const ElephantOrder = () => {
         userPageSize
   } = useElephantOrders();
 
-      const [isDisabled, setIsDisabled]= useState<boolean>(true)
-  
-      const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
-      const ELEPHANT_ORDER_ROWS_PER_PAGE = EnvConfig['ELEPHANT_ORDER_ROWS_PER_PAGE'];   
+  const [isDisabled, setIsDisabled] = useState<boolean>(true);
+
+  const EnvConfig = useSelector((state: RootState) => state.mta.EnvConfig);
+  const ELEPHANT_ORDER_ROWS_PER_PAGE =
+    EnvConfig["ELEPHANT_ORDER_ROWS_PER_PAGE"];
 
   return (
     <GridStateContext.Provider
@@ -78,8 +79,10 @@ const ElephantOrder = () => {
           onDelete={onDeleteFilter}
         />
       </div>
-      <EOLayout>
+
+      <div className={eoLayout}>
         {(isLoading || isSavedDataLoading) && <OverlayLoader />}
+
         <div style={{ height: "60vh" }}>
           <VFTable
             ref={ref}
@@ -88,10 +91,7 @@ const ElephantOrder = () => {
             rowData={RowData}
             statusBar={{
               statusPanels: [
-                {
-                  statusPanel: "agTotalAndFilteredRowCountComponent",
-                  align: "left",
-                },
+                { statusPanel: "agTotalAndFilteredRowCountComponent", align: "left" },
                 { statusPanel: "agTotalRowCountComponent", align: "left" },
                 { statusPanel: "agFilteredRowCountComponent", align: "left" },
                 { statusPanel: "agSelectedRowCountComponent", align: "left" },
@@ -131,6 +131,7 @@ const ElephantOrder = () => {
             <VFSave onSubmitDueDate={onSubmitDueDate} />
           </div>
         </div>
+
         <div style={{ display: "none" }}>
           <VFTable
             ref={tempRef}
@@ -139,7 +140,7 @@ const ElephantOrder = () => {
             {...tempAgGridProps}
           />
         </div>
-      </EOLayout>
+      </div>
     </GridStateContext.Provider>
   );
 };

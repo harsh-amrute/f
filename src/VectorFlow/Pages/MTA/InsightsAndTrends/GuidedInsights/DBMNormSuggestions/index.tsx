@@ -7,7 +7,7 @@ import {
   useGetDBMNormSuggestionAgeing,
 } from "../../../../../Services/MTA/InsightsAndTrends";
 import "allotment/dist/style.css";
-import { SCDynamicContainer } from "../style";
+import { SCDynamicContainer } from "../style.css";
 import { generateChartOptions } from "../../../../../../helpers/utils";
 import VFCharts from "../../../../../../components/VectorFLOW/commons/VFCharts";
 import "./styles.css";
@@ -165,7 +165,7 @@ const DBMNormSuggestions = ({ filter }: { filter: any }) => {
 
   return (
     <>
-      <SCDynamicContainer style={{ height: "81vh" }}>
+      <div className={SCDynamicContainer} style={{ height: "81vh" }}>
         <Allotment vertical>
           <Allotment.Pane className="upperPanel" preferredSize={"48%"}>
             <Allotment>
@@ -227,7 +227,7 @@ const DBMNormSuggestions = ({ filter }: { filter: any }) => {
             </Allotment>
           </Allotment.Pane>
         </Allotment>
-      </SCDynamicContainer>
+      </div>
     </>
   );
 };

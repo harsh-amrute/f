@@ -1,6 +1,6 @@
  import { useState,useRef } from "react";
  import {  notifyLoader, notifySuccess } from "../../../../../helpers/notify";
- import { toast } from "react-toastify";
+ import { toast } from "react-toastify/unstyled";
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { useUserData } from "../../../../../context";
 import {useGetDBMNormSuggestionLoc,useGetDBMNormSuggestionPie,useGetDBMNormSuggestionSKUs,useGetDBMNormSuggestionAgeing, useGetChronicUnavailabilityLoc,useGetChronicUnavailabilitySku, useGetChronicUnavailabilityGridView} from "../../../../Services/MTA/InsightsAndTrends";

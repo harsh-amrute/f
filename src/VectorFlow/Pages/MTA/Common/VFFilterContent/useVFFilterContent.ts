@@ -1,6 +1,6 @@
-import { useCallback, useState } from 'react';
+import { MutableRefObject, useCallback, useState } from 'react';
 import { BPRFilterState, BPRFilter } from "../../../../types/BPR";
-import { MutableRefObject } from "react";
+
 interface FilterRow {
   id: number;
 }
@@ -117,10 +117,10 @@ export const numericOperators = [
 ]
 
 export const colorOptions = [
-  { value: "Black", label: "Black", color: "black" },
   { value: "Red", label: "Red", color: "red" },
   { value: "Yellow", label: "Yellow", color: "gold" },
   { value: "Green", label: "Green", color: "green" },
+  { value: "Black", label: "Black", color: "black" },
   { value: "White", label: "White", color: "lightgrey" },
   { value: "Blue", label: "Blue", color: "blue" },
   { value: "Grey", label: "Grey", color: "grey" },
@@ -154,13 +154,9 @@ export const availabilityFilterOptions = [
 ]
 
 export const horizonFilterOptions = [
-  { label: 'Start Date', value: 'StartDate' },
-  { label: 'EndDate', value: 'EndDate' },
+  { label: 'Start Date', value: 'StartDate'},
+  { label: 'EndDate', value: 'EndDate'},
 ]
-export const colorTypeFilterOptions = [
-  { value: "colorcount", label: "Color Count" },
-  { value: "colorage", label: "Color Age" },
-];
 
 export const getStartDate = (endDate: string): string => {
   const date = new Date(endDate);

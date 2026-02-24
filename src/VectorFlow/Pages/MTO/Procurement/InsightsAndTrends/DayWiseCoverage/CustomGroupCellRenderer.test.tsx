@@ -7,20 +7,20 @@ describe('Custom Group Cell Renderer', () => {
         const data = {
             node: {
                 expanded: false,
-                addEventListener(eventType, listener) {
+                addEventListener(eventType:any, listener:any) {
                     console.log(eventType)
                     listener({ node: { expanded: true } })
                 },
-                removeEventListener(eventType, listener) {
+                removeEventListener(eventType:any, listener:any) {
                     console.log(eventType)
                     listener({ node: { expanded: true } })
                 },
-                setExpanded(expanded, sourceEvent?, forceSync?) {
+                setExpanded(expanded:any, sourceEvent?:any, forceSync?:any) {
                     console.log(sourceEvent)
                     console.log(forceSync)
                     this.expanded = expanded
                 },
-            },
+            }as any,
             value: "1"
         } as CustomCellRendererProps
         render(<CustomGroupCellRenderer {...data} />)
@@ -32,19 +32,19 @@ describe('Custom Group Cell Renderer', () => {
         const data = {
             node: {
                 expanded: true,
-                addEventListener(eventType, listener) {
+                addEventListener(eventType:any, listener:any) {
                     console.log(eventType)
                     listener({ node: { expanded: false } })
                 },
-                removeEventListener(eventType, listener) {
+                removeEventListener(eventType:any, listener:any) {
                     console.log(eventType)
                     listener({ node: { expanded: false } })
                 },
-                setExpanded(expanded, sourceEvent?, forceSync?) {
+                setExpanded(expanded:any, sourceEvent?:any, forceSync?:any) {
                     console.log(sourceEvent, forceSync)
                     this.expanded = expanded
                 },
-            },
+            }as any,
             value: "1"
         } as CustomCellRendererProps
         render(<CustomGroupCellRenderer {...data} />)

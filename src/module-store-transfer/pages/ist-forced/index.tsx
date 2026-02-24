@@ -14,7 +14,9 @@ import {
   SCSearchText,
   SCIconLocation,
   SCQuickFiltersWrap,
-} from "./styes";
+  vAccent,
+  bg,
+} from "./styes.css";
 import {
   ButtonOutlineStatus,
   VerticalPartitions,
@@ -35,6 +37,8 @@ import { useTranslation } from "react-i18next";
 import LcnFilter from "../../../components/layouts/LocationFilter/common-filter";
 import PrdFilter from "../../../components/layouts/ProductFilter/common-filter";
 import { useUserData } from "../../../context";
+import * as globalStyles from "../../../styles/global";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 
 interface SearchText {
   value: any;
@@ -265,8 +269,8 @@ const IstForced = () => {
   const TextInput = ({ value, text, type, icon, onChange }: SearchText) => {
     return (
       <div>
-        <SCIconLocation className="icon_location" src={icon} />
-        <SCSearchText>
+        <img className={SCIconLocation} src={icon} alt="" />
+        <div className={SCSearchText}>
           <input
             type={type}
             value={value}
@@ -275,7 +279,7 @@ const IstForced = () => {
             }}
             placeholder={text}
           />
-        </SCSearchText>
+        </div>
       </div>
     );
   };
@@ -361,16 +365,19 @@ const IstForced = () => {
       receiver_wh_subtype: receiverLocationSubType.map(
         (item: any) => item.value
       ),
-      launch_period: launchPeriod.map(
-        (item: any) => item.value
-      ),
+      launch_period: launchPeriod.map((item: any) => item.value),
     };
   };
 
   return (
     <>
-      <SCBoxFilterSticky>
-        <SCBoxFilter>
+      <div className={SCBoxFilterSticky}>
+        <div
+          className={SCBoxFilter}
+          style={assignInlineVars({
+            [bg]: globalStyles.white,
+          })}
+        >
           <PrdFilter
             ref={productFilterRef}
             endpoint="/api/forced-closure/product-filter-list"
@@ -381,22 +388,29 @@ const IstForced = () => {
               lcFilterList: "/api/forced-closure/location-filter-list",
             }}
           />
-          <SCButtonFilter>
-            <SCFilterBtn
-              onClick={() => {
-                onFilter();
-              }}
-              themeUi={themeUi}
+          <div className={SCButtonFilter}>
+            <button
+              className={SCFilterBtn}
+              style={assignInlineVars({
+                [vAccent]: globalStyles.chooseThemeColor[themeUi]?.color5,
+              })}
+              onClick={onFilter}
             >
               {t("ISTForcedClosure.button.filter")}
-            </SCFilterBtn>
-            <SCResetFilterBtn onClick={resetFilter} themeUi={themeUi}>
+            </button>
+            <button
+              className={SCResetFilterBtn}
+              style={assignInlineVars({
+                [vAccent]: globalStyles.chooseThemeColor[themeUi]?.color5,
+              })}
+              onClick={resetFilter}
+            >
               {t("ISTForcedClosure.button.resetFilter")}
-            </SCResetFilterBtn>
-          </SCButtonFilter>
-        </SCBoxFilter>
-        <SCQuickFilters>
-          <SCQuickFiltersWrap>
+            </button>
+          </div>
+        </div>
+        <div className={SCQuickFilters}>
+          <div className={SCQuickFiltersWrap}>
             <div style={{ display: "flex", alignItems: "end", gap: "10px" }}>
               <InputSearchList
                 placeholder={t("ISTForcedClosure.button.searchByISTID")}
@@ -414,14 +428,17 @@ const IstForced = () => {
             </div>
             {isOpenListItem && (
               <div ref={ref} style={{ position: "absolute" }}>
-                <ListItemInput data={listIdItem} onClickItem={onClickItem} />
+                <ListItemInput
+                  data={listIdItem ?? []}
+                  onClickItem={onClickItem}
+                />
               </div>
             )}
 
             <VerticalPartitions height="55px" />
 
-            <SCBoxFilterButton>
-              <SCBoxFilterButtonFlex>
+            <div className={SCBoxFilterButton}>
+              <div className={SCBoxFilterButtonFlex}>
                 <ButtonOutlineStatus
                   status={buttonAuto.auto}
                   icon=""
@@ -438,13 +455,13 @@ const IstForced = () => {
                     await onChangeAuto("Manual");
                   }}
                 />
-              </SCBoxFilterButtonFlex>
-            </SCBoxFilterButton>
+              </div>
+            </div>
 
             <VerticalPartitions height="55px" />
 
-            <SCBoxFilterButton>
-              <SCBoxFilterButtonFlex>
+            <div className={SCBoxFilterButton}>
+              <div className={SCBoxFilterButtonFlex}>
                 <ButtonOutlineStatus
                   status={buttonStatus.acceptdonor}
                   icon=""
@@ -476,33 +493,34 @@ const IstForced = () => {
                   items={listDataAeging}
                   icon=""
                 />
-              </SCBoxFilterButtonFlex>
-            </SCBoxFilterButton>
+              </div>
+            </div>
 
             <VerticalPartitions height="55px" />
-          </SCQuickFiltersWrap>
-
-          <SCBoxFilterButton>
-            <SCExportAllBox>
-              <SCExportAllBoxButton
-                onClick={async () => {
-                  await handleDownload("IST_forced_closure");
-                }}
+          </div>
+          <div className={SCBoxFilterButton}>
+            <div className={SCExportAllBox}>
+              <button
+                className={SCExportAllBoxButton}
+                style={assignInlineVars({
+                  [bg]: globalStyles.white,
+                })}
+                onClick={() => handleDownload("IST_forced_closure")}
               >
                 <img
                   src="/assets/img/forced/excel.png"
-                  alt="and"
-                  style={{ width: "26px" }}
+                  alt=""
+                  style={{ width: 26 }}
                 />
-                <SCExportAllBoxSpan>
+                <span className={SCExportAllBoxSpan}>
                   {t("ISTForcedClosure.button.exportAll")}
-                </SCExportAllBoxSpan>
-                <img src="/assets/img/forced/export.svg" alt="and" />
-              </SCExportAllBoxButton>
-            </SCExportAllBox>
-          </SCBoxFilterButton>
-        </SCQuickFilters>
-      </SCBoxFilterSticky>
+                </span>
+                <img src="/assets/img/forced/export.svg" alt="" />
+              </button>
+            </div>
+          </div>{" "}
+        </div>
+      </div>
       {isLoading ? (
         <Spinner />
       ) : (

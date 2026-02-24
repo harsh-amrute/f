@@ -1,104 +1,111 @@
-import * as Tab from './style'
-import { ButtonOutlineStoreStatus } from './../../index'
-import { UsePutStoreStatus, useGetTotalParticulars } from '../../../services/store-status'
-import { notifyError, notifySuccess } from '../../../helpers/notify'
-import Spinner from '../../../components/commons/Spinner'
-import { useTranslation } from 'react-i18next'
+import {
+  tableBox,
+  tableTab,
+  tableTrHeader,
+  tableTh,
+  tableTitle,
+  tableTd,
+  tableTdCenter,
+  tableTrValue,
+} from "./style.css";
+import { ButtonOutlineStoreStatus } from "./../../index";
+import {
+  UsePutStoreStatus,
+  useGetTotalParticulars,
+} from "../../../services/store-status";
+import { notifyError, notifySuccess } from "../../../helpers/notify";
+import Spinner from "../../../components/commons/Spinner";
+import { useTranslation } from "react-i18next";
 
 interface TableSore {
-  listTable: any
-  refetch: any
+  listTable: any;
+  refetch: any;
 }
 const TableStore = ({ listTable, refetch }: TableSore) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
-  const { mutateAsync: usePutStoreStatus } = UsePutStoreStatus()
+  const { mutateAsync: usePutStoreStatus } = UsePutStoreStatus();
   const { refetch: refetchTablePar } = useGetTotalParticulars();
 
   const logState = (id: number, status: boolean) => {
     const formData = {
       id,
-      movement_status: !status
-    }
+      movement_status: !status,
+    };
 
     setTimeout(() => {
       usePutStoreStatus(formData, {
         onSuccess: (data) => {
-          refetch()
-          notifySuccess(data?.data?.msg)
-          refetchTablePar()
+          refetch();
+          notifySuccess(data?.data?.msg);
+          refetchTablePar();
         },
         onError: (data: any) => {
-          notifyError(data.response.msg || data.message)
-        }
-      })
-    }, 200)
-  }
+          notifyError(data.response.msg || data.message);
+        },
+      });
+    }, 200);
+  };
 
   return (
     <>
-      {listTable
-        ? (
-          <Tab.SCTableBox style={{ marginBottom: 30 }}>
-            <Tab.SCTableTab width="100%">
-              <Tab.SCTableTr>
-                <Tab.SCTableTh>
-                  <Tab.SCTableTitle>
-                    {t('storeStatus.table.brand')}
-                  </Tab.SCTableTitle>
-                </Tab.SCTableTh>
-                <Tab.SCTableTh>
-                  <Tab.SCTableTitle>
-                    {t('storeStatus.table.locationName')}
-                  </Tab.SCTableTitle>
-                </Tab.SCTableTh>
-                <Tab.SCTableTh>
-                  <Tab.SCTableTitle>
-                    {t('storeStatus.table.locationCode')}
-                  </Tab.SCTableTitle>
-                </Tab.SCTableTh>
-                <Tab.SCTableTh>
-                  <Tab.SCTableTitle>
-                    {t('storeStatus.table.city')}
-                  </Tab.SCTableTitle>
-                </Tab.SCTableTh>
-                <Tab.SCTableTh>
-                  <Tab.SCTableTitle>
-                    {t('storeStatus.table.cluster')}
-                  </Tab.SCTableTitle>
-                </Tab.SCTableTh>
-                <Tab.SCTableTh style={{ textAlign: 'center' }}>
-                  {t('storeStatus.table.status')}
-                </Tab.SCTableTh>
-              </Tab.SCTableTr>
-              {listTable &&
-                listTable.map((item: any) => (
-                  <Tab.SCTableTrValue key={item?.id}>
-                    <Tab.SCTableTd>{item?.specific_sales}</Tab.SCTableTd>
-                    <Tab.SCTableTd>{item?.wh_name}</Tab.SCTableTd>
-                    <Tab.SCTableTd>{item?.wh_code}</Tab.SCTableTd>
-                    <Tab.SCTableTd>{item?.wh_city}</Tab.SCTableTd>
-                    <Tab.SCTableTd>{item?.wh_location_group}</Tab.SCTableTd>
-                    <Tab.SCTableTdCenter>
-                      <ButtonOutlineStoreStatus
-                        labelOn={t('storeStatus.button.active')}
-                        labelOff={t('storeStatus.button.inactive')}
-                        toggled={item?.movement_status}
-                        onClick={() => {
-                          logState(item?.id, item?.movement_status)
-                        }}
-                      />
-                    </Tab.SCTableTdCenter>
-                  </Tab.SCTableTrValue>
-                ))}
-            </Tab.SCTableTab>
-          </Tab.SCTableBox>
-        )
-        : (
-          <Spinner />
-        )}
-    </>
-  )
-}
+      {listTable ? (
+        <div className={tableBox} style={{ marginBottom: 30 }}>
+          <table className={tableTab}>
+            <tr className={tableTrHeader}>
+              <th className={tableTh}>
+                <div className={tableTitle}>{t("storeStatus.table.brand")}</div>
+              </th>
+              <th className={tableTh}>
+                <div className={tableTitle}>
+                  {t("storeStatus.table.locationName")}
+                </div>
+              </th>
+              <th className={tableTh}>
+                <div className={tableTitle}>
+                  {t("storeStatus.table.locationCode")}
+                </div>
+              </th>
+              <th className={tableTh}>
+                <div className={tableTitle}>{t("storeStatus.table.city")}</div>
+              </th>
+              <th className={tableTh}>
+                <div className={tableTitle}>
+                  {t("storeStatus.table.cluster")}
+                </div>
+              </th>
+              <th className={tableTh} style={{ textAlign: "center" }}>
+                {t("storeStatus.table.status")}
+              </th>
+            </tr>
 
-export default TableStore
+            {listTable &&
+              listTable.map((item: any) => (
+                <tr className={tableTrValue} key={item?.id}>
+                  <td className={tableTd}>{item?.specific_sales}</td>
+                  <td className={tableTd}>{item?.wh_name}</td>
+                  <td className={tableTd}>{item?.wh_code}</td>
+                  <td className={tableTd}>{item?.wh_city}</td>
+                  <td className={tableTd}>{item?.wh_location_group}</td>
+                  <td className={tableTdCenter}>
+                    <ButtonOutlineStoreStatus
+                      labelOn={t("storeStatus.button.active")}
+                      labelOff={t("storeStatus.button.inactive")}
+                      toggled={item?.movement_status}
+                      onClick={() => {
+                        logState(item?.id, item?.movement_status);
+                      }}
+                    />
+                  </td>
+                </tr>
+              ))}
+          </table>
+        </div>
+      ) : (
+        <Spinner />
+      )}
+    </>
+  );
+};
+
+export default TableStore;

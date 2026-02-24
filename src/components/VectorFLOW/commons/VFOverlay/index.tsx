@@ -1,12 +1,7 @@
+import { VFOverlayWrapper } from "./styles.css";
 
-import { VFOverlayWrapper } from "./styles"
+const VFOverlay = ({ children }: any) => {
+  return <div className={VFOverlayWrapper}>{children}</div>;
+};
 
-const VFOverlay = ({children}:any)=>{
-    return (
-        <VFOverlayWrapper>
-            {children}
-        </VFOverlayWrapper>
-    )
-}
-
-export default VFOverlay
+export default VFOverlay;

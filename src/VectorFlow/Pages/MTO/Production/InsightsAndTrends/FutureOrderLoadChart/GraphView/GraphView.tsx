@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ChartWrapper, GraphViewWrapper } from "../../../../../../../VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMOrderwiseCoverage/GraphView/styles";
-import { SCChartContainer, SCHorizontalDivider } from "../../STPLAndFullKits/styles";
+import { chartWrapper, graphViewWrapper } from "../../../../../../../VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMOrderwiseCoverage/GraphView/styles.css";
+import { SCChartContainer, SCHorizontalDivider, chartHeightVar } from "../../STPLAndFullKits/styles.css";
 import { AgCharts } from "ag-charts-react";
-import { ApplyZoomOut } from "../../../OrderRescheduling/styles";
+import { applyZoomOut } from "../../../OrderRescheduling/styles.css";
 import VFFloatingTab from "../../../../../../../components/VectorFLOW/commons/VFFloatingTab";
-import { MyFutureOrderTabsFix } from "../styles";
+import { myFutureOrderTabsFix } from "../styles.css";
 import CustomLegend from "../../../../../../../VectorFlow/Pages/MTO/Common/CustomLegend/index";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
+import "./style.css";
 
 const GraphView = ({ Viewtabs, currView, setCurrView, selectedCCR, horizonData, graphData, cwl, selectedAction, currTab }: any) => {
   
@@ -168,22 +170,12 @@ const GraphView = ({ Viewtabs, currView, setCurrView, selectedCCR, horizonData, 
     renderer: ({ datum }: any) => {
       const label = currTab === "Load Wise" ? "Load" : "Pending CCR Quantity";
       return `
-        <div style="
-          background: white;
-          color: #000;
-          padding: 12px 16px;
-          min-width: 120px;
-          text-align: center;
-          border-radius: 6px;
-          box-shadow: 0 0 6px rgba(0,0,0,0.15);
-        ">
-          <div style="color:#555; font-weight:600; font-size:12px; margin-bottom:4px;">
-            ${label}
-          </div>
-          <div style="font-size:12px;">${datum.load}</div>
-        </div>
-      `;
-    }
+      <div class="tooltip-box">
+        <div class="tooltip-label">${label}</div>
+        <div class="tooltip-load">${datum.load}</div>
+      </div>
+    `;
+    },
   });
 
   const [chartoptions, setChartOptions] = useState<any>({
@@ -247,21 +239,11 @@ const GraphView = ({ Viewtabs, currView, setCurrView, selectedCCR, horizonData, 
         },
         tooltip: {
           renderer: ({ datum }: any) => `
-            <div style="
-              background: white;
-              color: #000;
-              padding: 12px 16px;
-              min-width: 100px;
-              text-align: center;
-              border-radius: 6px;
-              box-shadow: 0 0 6px rgba(0,0,0,0.15);
-            ">
-              <div style="color:#FF5959; font-weight:600; font-size:12px; margin-bottom:4px;">
-                Past
-              </div>
-              <div style="font-size:12px;">${datum.past}</div>
+            <div class="tooltip-box">
+              <div class="tooltip-label past-label">Past</div>
+              <div class="tooltip-value">${datum.past}</div>
             </div>
-          `
+          `,
         },
         itemStyler: ({ datum }: any) =>
           datum.past ? {} : { fillOpacity: 0, strokeOpacity: 0 }
@@ -284,23 +266,13 @@ const GraphView = ({ Viewtabs, currView, setCurrView, selectedCCR, horizonData, 
         },
         tooltip: {
           renderer: ({ datum }: any) => `
-            <div style="
-              background: white;
-              color: #000;
-              padding: 12px 16px;
-              min-width: 120px;
-              text-align: center;
-              border-radius: 6px;
-              box-shadow: 0 0 6px rgba(0,0,0,0.15);
-            ">
-              <div style="color:#820f4c; font-weight:600; font-size:12px; margin-bottom:4px;">
-                Limit
-              </div>
-              <div style="font-size:12px;">${datum.limit}</div>
+            <div class="tooltip-box">
+              <div class="tooltip-label limit-label">Limit</div>
+              <div class="tooltip-value">${datum.limit}</div>
             </div>
-          `
-        }
-      }
+          `,
+        },
+      },
     ],
     axes: [
       {
@@ -449,15 +421,19 @@ const GraphView = ({ Viewtabs, currView, setCurrView, selectedCCR, horizonData, 
   };
 
   return (
-    <GraphViewWrapper style={{ height: '80%' }}>
-      <SCChartContainer
-        height={'100%'}
+    <div className={graphViewWrapper} style={{ height: '80%' }}>
+      <div className={SCChartContainer}
         style={{
           border: '1px solid #CCCCCC',
           margin: '-10px',
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
+
+          ...assignInlineVars({
+            [chartHeightVar]: '100%',
+          }),
+
         }}
       >
         <div className="title" style={{ backgroundColor: 'white', height: '40px', display: 'flex', justifyContent: 'right', alignItems: 'center' }}>
@@ -471,16 +447,16 @@ const GraphView = ({ Viewtabs, currView, setCurrView, selectedCCR, horizonData, 
           </div>
         </div>
         <SCHorizontalDivider />
-        <ApplyZoomOut style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', zoom: 0.6, paddingBottom: '10px' }}>
-          <MyFutureOrderTabsFix>
+        <div className={applyZoomOut} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', zoom: 0.6, paddingBottom: '10px' }}>
+          <div className={myFutureOrderTabsFix}>
             <VFFloatingTab
               handleClick={(e) => setCurrView(e.id)}
               tabs={Viewtabs}
               defaultTab={Viewtabs.findIndex((tab:any) => tab.id === currView) || 0}
             />
-          </MyFutureOrderTabsFix>
-        </ApplyZoomOut>
-        <ChartWrapper>
+          </div>
+        </div>
+        <div className={chartWrapper}>
           <div style={{ height: '100%', width: '100%' }} ref={containerRef}>
             <div className='chart-wrapper' style={{ flex: 1, height: "90%" }}>
               <CustomLegend chartOptions={chartoptions} setChartOptions={setChartOptions}/>
@@ -489,9 +465,9 @@ const GraphView = ({ Viewtabs, currView, setCurrView, selectedCCR, horizonData, 
               </div>
             </div>
           </div>
-        </ChartWrapper>
-      </SCChartContainer>
-    </GraphViewWrapper>
+        </div>
+      </div>
+    </div>
   );
 };
 

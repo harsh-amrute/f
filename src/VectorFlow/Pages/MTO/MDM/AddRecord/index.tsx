@@ -4,7 +4,7 @@ import useViewModify from "../ViewModify/useViewModify";
 import useAdd from "./useAdd";
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
 import VFTab from "../../../../../components/VectorFLOW/commons/MTO/VFTab";
-import { SCContainer } from "../ViewModify/styles";
+import { SCContainer } from "../ViewModify/styles.css";
 import VFTable from "../../Common/VFTable";
 import UploadModal from "../ViewModify/UploadModal";
 import VFTaskBar from "../ViewModify/VFTaskbar";
@@ -162,7 +162,7 @@ const MTOAddRecord = () => {
 
     return(
         <React.Fragment>
-          <SCContainer>
+          <div className={SCContainer}>
               <VFTab 
                 activeMaster={activeMaster}
                 themeUi={themeUi}
@@ -235,7 +235,7 @@ const MTOAddRecord = () => {
                     handleChangePage={(e)=>handleChangePage(e)}  
                   />
               }
-          </SCContainer>
+          </div>
           {isUploadModalOpen && 
           <UploadModal 
             header={"Addition"}

@@ -1,47 +1,61 @@
-import {useState} from 'react'
-import { useUserData } from "../../../../../context"
-import VFButton from "../../../../../components/VectorFLOW/commons/VFButton"
-import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline"
-import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard"
-import { RequestExpeditingModalContent, RequestExpeditingModalInput,RequestExpeditingModalButtonGroup } from "./styles"
+import { useState } from "react";
+import { useUserData } from "../../../../../context";
+import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
+import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
+import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard";
+import {
+  RequestExpeditingModalContent,
+  RequestExpeditingModalInput,
+  RequestExpeditingModalButtonGroup,
+} from "./styles.css";
 
-interface RequestExpeditingModalProps{
-    isOpen:boolean
-    onClose:()=>void
-    onSubmit:(params:string)=>void
+interface RequestExpeditingModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: (params: string) => void;
 }
 
-const RequestExpeditingModal = (props:RequestExpeditingModalProps)=>{
+const RequestExpeditingModal = (props: RequestExpeditingModalProps) => {
+  const { isOpen, onClose, onSubmit } = props;
 
-    const {
-        isOpen,
-        onClose,
-        onSubmit
-    } = props
+  const [remark, setRemark] = useState<string>("");
 
-    const [remark,setRemark] = useState<string>('')
+  const { user } = useUserData();
+  const themeUi = user.user.theme_ui;
 
-    const {user} = useUserData()
-    const themeUi = user.user.theme_ui
+  return (
+    <VFModalCard
+      openModal={isOpen}
+      closeModal={onClose}
+      headerText="Request Expediting"
+      headerIcon=""
+      closeIcon="/assets/img/VectorFLOW/NMS/close-dark.svg"
+      paddingLeftAndRight={0}
+    >
+      <div className={RequestExpeditingModalContent}>
+        <textarea
+          className={RequestExpeditingModalInput}
+          placeholder="Type your message something like ‘Need stock for SKU no - 879777979789723’"
+          value={remark}
+          onChange={(e) => setRemark(e.currentTarget.value)}
+        />
+        <div className={RequestExpeditingModalButtonGroup}>
+          <VFButtonOutline onClick={onClose} themeUi={themeUi}>
+            Go Back!
+          </VFButtonOutline>
+          <VFButton
+            themeUi={themeUi}
+            onClick={() => {
+              onSubmit(remark);
+              setRemark("");
+            }}
+          >
+            Submit
+          </VFButton>
+        </div>
+      </div>
+    </VFModalCard>
+  );
+};
 
-
-    return (
-        <VFModalCard openModal={isOpen} closeModal={onClose} headerText='Request Expediting' headerIcon='' closeIcon="/assets/img/VectorFLOW/NMS/close-dark.svg" paddingLeftAndRight={0}>
-           <RequestExpeditingModalContent>
-                <RequestExpeditingModalInput placeholder="Type your message something like ‘Need stock for SKU no - 879777979789723’" value={remark} onChange={(e)=>setRemark(e.currentTarget.value)}/>
-                <RequestExpeditingModalButtonGroup>
-                    <VFButtonOutline onClick={onClose} themeUi={themeUi} >
-                        Go Back!
-                    </VFButtonOutline>
-                    <VFButton themeUi={themeUi} onClick={()=>{
-                        onSubmit(remark)
-                        setRemark('')
-                    }}>
-                        Submit
-                    </VFButton>
-                </RequestExpeditingModalButtonGroup>
-           </RequestExpeditingModalContent>
-        </VFModalCard>)
-    }
-
-export default RequestExpeditingModal
+export default RequestExpeditingModal;

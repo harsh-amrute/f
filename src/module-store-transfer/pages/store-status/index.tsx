@@ -5,16 +5,17 @@ import {
   Pagination,
 } from "./../../../components/index";
 import {
-  SCQuickFiltersDistance,
-  SCBoxFilter,
-  SCQuickFilterBox,
-  SCQuickFilterFlex,
-  SCBoxHalfPart,
-  SCButtonFilter,
-  SCFilterBtn,
-  SCResetFilterBtn,
-  SCQuickFiltersText,
-} from "./styles";
+  quickFiltersDistance,
+  boxFilter,
+  quickFilterBox,
+  quickFilterFlex,
+  boxHalfPart,
+  buttonFilter,
+  filterBtn,
+  resetFilterBtn,
+  quickFiltersText,
+  accentVar,
+} from "./styles.css";
 import { useGetFilterStoreStatus } from "../../../services/store-status";
 import { useNavigate } from "react-router-dom";
 import { DEFAULT_PAGE_SIZE } from "../../constants";
@@ -22,6 +23,9 @@ import Spinner from "../../../components/commons/Spinner";
 import { useTranslation } from "react-i18next";
 import LcnFilter from "./location-filter";
 import { useUserData } from "../../../context";
+import { assignInlineVars } from '@vanilla-extract/dynamic';
+import * as globalStyles from '../../../styles/global';
+
 
 const StoreStatus = () => {
   const { t } = useTranslation();
@@ -241,51 +245,63 @@ const StoreStatus = () => {
     return dataLocFilter;
   };
 
+  // Resolve theme accent color once
+  const accent =
+    (globalStyles as any)?.chooseThemeColor?.[themeUi]?.color5 ?? "#BC3D81"; // sensible fallback
+
   return (
     <>
-      <SCQuickFilterFlex>
-        <SCBoxHalfPart>
-          <SCBoxFilter>
+      <div className={quickFilterFlex}>
+        <div className={boxHalfPart}>
+          <div className={boxFilter}>
             <LcnFilter ref={locationFilterRef} />
-            <SCButtonFilter>
-              <SCFilterBtn onClick={handleFilter} themeUi={themeUi}>
+            <div className={buttonFilter}>
+              <button
+                className={filterBtn}
+                style={assignInlineVars({ [accentVar]: accent })}
+                onClick={handleFilter}
+              >
                 {t("storeStatus.button.filter")}
-              </SCFilterBtn>
-              <SCResetFilterBtn onClick={handleResetFilter} themeUi={themeUi}>
+              </button>
+
+              <button
+                className={resetFilterBtn}
+                style={assignInlineVars({ [accentVar]: accent })}
+                onClick={handleResetFilter}
+              >
                 {t("storeStatus.button.resetFilter")}
-              </SCResetFilterBtn>
-            </SCButtonFilter>
-          </SCBoxFilter>
-        </SCBoxHalfPart>
-        <SCQuickFilterBox>
-          <SCQuickFiltersText>
-            {t("storeStatus.quickFilter")} -
-          </SCQuickFiltersText>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className={quickFilterBox}>
+          <p className={quickFiltersText}>{t("storeStatus.quickFilter")} -</p>
+
           <ButtonOutlineStatus
             status={buttonStatus.active}
             icon=""
             text={t("storeStatus.button.active")}
-            onChange={() => {
-              onChangeStatus("ACTIVE");
-            }}
+            onChange={() => onChangeStatus("ACTIVE")}
           />
+
           <ButtonOutlineStatus
             status={buttonStatus.inActive}
             icon=""
             text={t("storeStatus.button.inactive")}
-            onChange={() => {
-              onChangeStatus("INACTIVE");
-            }}
+            onChange={() => onChangeStatus("INACTIVE")}
           />
-        </SCQuickFilterBox>
-      </SCQuickFilterFlex>
-      <SCQuickFiltersDistance></SCQuickFiltersDistance>
+        </div>
+      </div>
+
+      <div className={quickFiltersDistance} />
 
       {isLoading ? (
         <Spinner />
       ) : (
         <TableStore listTable={dataStore?.data} refetch={refetch} />
       )}
+
       <Pagination
         pageCount={pageCount}
         page={page}

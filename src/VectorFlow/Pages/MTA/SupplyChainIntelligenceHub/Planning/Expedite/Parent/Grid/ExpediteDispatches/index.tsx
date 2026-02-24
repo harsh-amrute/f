@@ -4,14 +4,14 @@ import { BPRTagsCellRenderer } from "../../../../../BPR/BPRCellRenderers";
 import { AgGridReactProps } from "ag-grid-react";
 import { VFPaginationProps } from "../../../../../../../../../components/VectorFLOW/commons/VFPagination";
 import { SideBarDef } from 'ag-grid-enterprise';
-import {getColumnDefinationsMTA } from '../../../../../../../../../helpers/utils';
+import {getColumnDefinationsMTA , MainMenuItemsCustomization } from '../../../../../../../../../helpers/utils';
 import BPRGraphCellRenderer from '../../../../../BPR/BPRGraphCellRenderer';
 import ColorCellRenderer from '../../../../../../InsightsAndTrends/BTR/ColorCellRenderer';
 import RequestExpeditingModal from '../../../../../BPR/RequestExpeditingModal';
 import { useSubmitOpenExpediteRequest } from '../../../../../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/Planning';
 import { notifyError, notifyLoader, notifySuccess } from '../../../../../../../../../helpers/notify';
-import { toast } from 'react-toastify';
-import { MainMenuItemsCustomization } from '../../../../../../../../../helpers/utils'
+import { toast } from "react-toastify/unstyled";
+
 import { GridStateContext } from '../../../../../../../../../context/GridStateContext';
 
 const ExpediteParentExpediteDispatchesGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCategory,currentTab}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any,currentCategory:string,currentTab:string})=>{
@@ -206,7 +206,11 @@ const ExpediteParentExpediteDispatchesGrid = ({data,paginationProps,onOpenDailyD
             pinned: 'left',
             resizable: false,
             floatingFilter: false,
-            suppressColumnsToolPanel: false
+            suppressColumnsToolPanel: false,
+            suppressMenu:true,
+            headerTooltip: "Daily Data Graph",
+            headerName:"Daily Data Graph",
+            sortable: false,
         },
         t: {
             cellRenderer: 'tagsCellRenderer',

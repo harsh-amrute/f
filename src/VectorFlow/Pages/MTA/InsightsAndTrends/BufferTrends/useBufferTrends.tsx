@@ -1,6 +1,6 @@
 import { useEffect, useState} from 'react'
 import { notifyError,notifySuccess } from '../../../../../helpers/notify'
-import { toast } from "react-toastify";
+import { toast } from "react-toastify/unstyled";
 import { useGetBufferTrendsGraph } from "../../../../Services/MTA/InsightsAndTrends/BufferTrends";
 import { BufferTrendsGraphState } from '../../../../../VectorFlow/types/BPR'
 import useBPRFilter from '../../../../../hooks/useBPRFilter';

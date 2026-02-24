@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import {
-  FilterGroup,
-  FilterColumn,
-  TextWrapper,
-  DropDownWrapper,
-  DropDownRow,
-  IconWrapper,
-} from "./style";
+  filterGroup,
+  filterColumn,
+  textWrapper,
+  dropDownWrapper,
+  dropDownRow,
+  iconWrapper,
+} from "./style.css";
 import Select from "react-select";
 import {
   useThemeStyles,
@@ -31,11 +31,11 @@ export const HistroricalFilter: React.FC<AvailabilityFilterProps> = ({
 
   return (
     <>
-      <FilterGroup>
-        <FilterColumn style={{ minWidth: "400px", maxWidth: "none" }}>
-          <TextWrapper>Select Operation</TextWrapper>
-          <DropDownRow>
-            <DropDownWrapper>
+      <div className={filterGroup}>
+        <div className={filterColumn} style={{ minWidth: "400px", maxWidth: "none" }}>
+          <div className={textWrapper}>Select Operation</div>
+          <div className={dropDownRow}>
+            <div className={dropDownWrapper}>
               <Select
                 placeholder={"VirtualNorm"}
                 styles={styles}
@@ -48,16 +48,16 @@ export const HistroricalFilter: React.FC<AvailabilityFilterProps> = ({
                 value={{ label: "Virtual Norm", value: "Virtual Norm" }}
                 options={[]}
               />
-            </DropDownWrapper>
-            <DropDownWrapper>
+            </div>
+            <div className={dropDownWrapper}>
               <Select
                 options={numericOperators}
                 placeholder={"Select an Operation"}
                 styles={styles}
                 components={{ IndicatorSeparator: () => null }}
               />
-            </DropDownWrapper>
-            <DropDownWrapper>
+            </div>
+            <div className={dropDownWrapper}>
               <Select
                 placeholder="Enter a value"
                 styles={styles}
@@ -74,16 +74,16 @@ export const HistroricalFilter: React.FC<AvailabilityFilterProps> = ({
                 menuIsOpen={false}
                 options={[]}
               />
-            </DropDownWrapper>
-            <IconWrapper theme_ui={user.user.theme_ui}>
+            </div>
+            <div className={iconWrapper} data-theme={user.user.theme_ui}>
               <img src={"/assets/img/MTAVFMultiFilter/Error.svg"} />
-            </IconWrapper>
-            <IconWrapper theme_ui={user.user.theme_ui}>
+            </div>
+            <div className={iconWrapper} data-theme={user.user.theme_ui}>
               <img src={"/assets/img/MTAVFMultiFilter/refresh.svg"} />
-            </IconWrapper>
-          </DropDownRow>
-          <DropDownRow>
-            <DropDownWrapper>
+            </div>
+          </div>
+          <div className={dropDownRow}>
+            <div className={dropDownWrapper}>
               <Select
                 placeholder={"Norm"}
                 styles={styles}
@@ -96,16 +96,16 @@ export const HistroricalFilter: React.FC<AvailabilityFilterProps> = ({
                 value={{ label: "Norm", value: "Norm" }}
                 options={[]}
               />
-            </DropDownWrapper>
-            <DropDownWrapper>
+            </div>
+            <div className={dropDownWrapper}>
               <Select
                 placeholder={"Select an Operation"}
                 styles={styles}
                 components={{ IndicatorSeparator: () => null }}
                 options={numericOperators}
               />
-            </DropDownWrapper>
-            <DropDownWrapper>
+            </div>
+            <div className={dropDownWrapper}>
               <Select
                 placeholder="Enter a value"
                 styles={styles}
@@ -122,16 +122,16 @@ export const HistroricalFilter: React.FC<AvailabilityFilterProps> = ({
                 menuIsOpen={false}
                 options={[]}
               />
-            </DropDownWrapper>
-            <IconWrapper theme_ui={user.user.theme_ui}>
+            </div>
+            <div className={iconWrapper} data-theme={user.user.theme_ui}>
               <img src={"/assets/img/MTAVFMultiFilter/Error.svg"} />
-            </IconWrapper>
-            <IconWrapper theme_ui={user.user.theme_ui}>
+            </div>
+            <div className={iconWrapper} data-theme={user.user.theme_ui}>
               <img src={"/assets/img/MTAVFMultiFilter/refresh.svg"} />
-            </IconWrapper>
-          </DropDownRow>
-          <DropDownRow>
-            <DropDownWrapper>
+            </div>
+          </div>
+          <div className={dropDownRow}>
+            <div className={dropDownWrapper}>
               <Select
                 placeholder={"Stock"}
                 styles={styles}
@@ -144,16 +144,16 @@ export const HistroricalFilter: React.FC<AvailabilityFilterProps> = ({
                 value={{ label: "Stock", value: "Stock" }}
                 options={[]}
               />
-            </DropDownWrapper>
-            <DropDownWrapper>
+            </div>
+            <div className={dropDownWrapper}>
               <Select
                 placeholder={"Select an Operation"}
                 styles={styles}
                 components={{ IndicatorSeparator: () => null }}
                 options={numericOperators}
               />
-            </DropDownWrapper>
-            <DropDownWrapper>
+            </div>
+            <div className={dropDownWrapper}>
               <Select
                 placeholder="Enter a value"
                 styles={styles}
@@ -170,16 +170,16 @@ export const HistroricalFilter: React.FC<AvailabilityFilterProps> = ({
                 menuIsOpen={false}
                 options={[]}
               />
-            </DropDownWrapper>
-            <IconWrapper theme_ui={user.user.theme_ui}>
+            </div>
+            <div className={iconWrapper} data-theme={user.user.theme_ui}>
               <img src={"/assets/img/MTAVFMultiFilter/Error.svg"} />
-            </IconWrapper>
-            <IconWrapper theme_ui={user.user.theme_ui}>
+            </div>
+            <div className={iconWrapper} data-theme={user.user.theme_ui}>
               <img src={"/assets/img/MTAVFMultiFilter/refresh.svg"} />
-            </IconWrapper>
-          </DropDownRow>
-          <DropDownRow>
-            <DropDownWrapper>
+            </div>
+          </div>
+          <div className={dropDownRow}>
+            <div className={dropDownWrapper}>
               <Select
                 placeholder={"GIT"}
                 styles={styles}
@@ -192,16 +192,16 @@ export const HistroricalFilter: React.FC<AvailabilityFilterProps> = ({
                 value={{ label: "GIT", value: "GIT" }}
                 options={[]}
               />
-            </DropDownWrapper>
-            <DropDownWrapper>
+            </div>
+            <div className={dropDownWrapper}>
               <Select
                 placeholder={"Select an Operation"}
                 styles={styles}
                 components={{ IndicatorSeparator: () => null }}
                 options={numericOperators}
               />
-            </DropDownWrapper>
-            <DropDownWrapper>
+            </div>
+            <div className={dropDownWrapper}>
               <Select
                 placeholder="Enter a value"
                 styles={styles}
@@ -218,16 +218,16 @@ export const HistroricalFilter: React.FC<AvailabilityFilterProps> = ({
                 menuIsOpen={false}
                 options={[]}
               />
-            </DropDownWrapper>
-            <IconWrapper theme_ui={user.user.theme_ui}>
+            </div>
+            <div className={iconWrapper} data-theme={user.user.theme_ui}>
               <img src={"/assets/img/MTAVFMultiFilter/Error.svg"} />
-            </IconWrapper>
-            <IconWrapper theme_ui={user.user.theme_ui}>
+            </div>
+            <div className={iconWrapper} data-theme={user.user.theme_ui}>
               <img src={"/assets/img/MTAVFMultiFilter/refresh.svg"} />
-            </IconWrapper>
-          </DropDownRow>
-        </FilterColumn>
-      </FilterGroup>
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 };

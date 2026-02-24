@@ -37,7 +37,8 @@ import {
   SCFilterControls,
   SCFilterSeperator,
   SCLegend,
-} from "./styles";
+} from "./styles.css";
+import { assignInlineVars } from '@vanilla-extract/dynamic';
 import SubmitConflictModal from "./SubmitConflictModal";
 import useViewModify from "./useViewModify";
 import VFTaskBar from "./VFTaskbar";
@@ -50,9 +51,8 @@ import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCar
 const MTOViewModify = () => {
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
-  const [isDisabledPoogi1,setIsDisabledPoogi1,] = useState(true)
-  const [isDisabledPoogi2,setIsDisabledPoogi2,] = useState(true)
-
+  const [isDisabledPoogi1, setIsDisabledPoogi1] = useState(true);
+  const [isDisabledPoogi2, setIsDisabledPoogi2] = useState(true);
 
   // const disabled=true;
   // const dummyFn =()=>{return}
@@ -141,36 +141,35 @@ const MTOViewModify = () => {
   const editStatus: string = useSelector((state: any) => state.mto.editStatus);
 
   const handleExportData = useCallback(() => {
-    notifyLoader('Exporting Data')
+    notifyLoader("Exporting Data");
     try {
       ref?.current?.api?.exportDataAsExcel(onExcelExport());
-      notifySuccess('Exported Data Successfully')
-    } catch (error:any) {
-      notifyError(error.message || "Failed to Export Data")
+      notifySuccess("Exported Data Successfully");
+    } catch (error: any) {
+      notifyError(error.message || "Failed to Export Data");
     }
   }, [ref, onExcelExport]);
-  
-  const calendarOnClickHandler = () => {
-      setCalendarFormData({
-        iwd: true,
-        dsc: "",
-        rb: "Once",
-        sd: "",
-        dow: [{id: 0, mn: "", md: ""}],
-        ccr_id : [],
-        plid: "",
-        rd: null,
-        plnm:"",
-        ccr:"",
-        ed: "",
-        hid: uuidv4(),
-        ia:false,
-        id:false,
-        iu:false,
-      });
-      setIsModalOpen(true);
-  };
 
+  const calendarOnClickHandler = () => {
+    setCalendarFormData({
+      iwd: true,
+      dsc: "",
+      rb: "Once",
+      sd: "",
+      dow: [{ id: 0, mn: "", md: "" }],
+      ccr_id: [],
+      plid: "",
+      rd: null,
+      plnm: "",
+      ccr: "",
+      ed: "",
+      hid: uuidv4(),
+      ia: false,
+      id: false,
+      iu: false,
+    });
+    setIsModalOpen(true);
+  };
 
   useEffect(() => {
     if (ref.current && ref.current.api) {
@@ -182,14 +181,13 @@ const MTOViewModify = () => {
     }
   }, [isTableDataLoading]);
 
-
   const tempRefPoogi = React.useRef<any>(null);
 
-  const clearGridFilterPoogi1 = () =>{
+  const clearGridFilterPoogi1 = () => {
     ref?.current?.api.setFilterModel(null);
-      setIsDisabledPoogi1(true);
-  }
-  const clearGridFilterPoogi2 = () =>{
+    setIsDisabledPoogi1(true);
+  };
+  const clearGridFilterPoogi2 = () => {
     tempRefPoogi?.current?.api.setFilterModel(null);
     setIsDisabledPoogi2(true);
   }
@@ -206,8 +204,8 @@ const MTOViewModify = () => {
 
   return (
     <>
-      <SCContainer>
-        {(isAPILoading) && (
+      <div className={SCContainer}>
+      {(isAPILoading) && (
           <div>
             <OverlayLoader></OverlayLoader>
           </div>
@@ -241,9 +239,9 @@ const MTOViewModify = () => {
             >
               {(activeMaster.progress === "default" ||
                 activeMaster.progress === "view") && (
-                <SCFilterContainer style={{ zoom: 0.8, display: "none" }}>
-                  <SCFilterControls>
-                    <SCLegend>Filter</SCLegend>
+                <div className={SCFilterContainer} style={{ zoom: 0.8, display:"none"}}>
+                  <div className={SCFilterControls}>
+                  <legend className={SCLegend}>Filter</legend>
                     {activeMaster.filters.map((f: Filter) => {
                       if (f.masterId == activeMaster?.id) {
                         return (
@@ -264,32 +262,31 @@ const MTOViewModify = () => {
                         );
                       }
                     })}
-                  </SCFilterControls>
-                  <SCFilterAddControls>
+                  </div>
+                  <div className={SCFilterAddControls}>
                     {activeMaster.filters.map((f: Filter, index: number) => {
                       if (f.masterId === activeMaster?.id && index === 0) {
                         return (
-                          <SCFilterAddButtonWrapper key={index}>
-                            <SCFilterAddButton
-                              onClick={() => {
-                                handleOnAddFilter();
-                              }}
-                              src={
-                                themeUi === "REGALBLAZE"
-                                  ? "/assets/img/VectorFLOW/NMS/add-filter-regal.svg"
-                                  : "/assets/img/VectorFLOW/NMS/add-filter.svg"
-                              }
-                              key={f.id}
-                              data-testid="add-filter"
-                            />
-                          </SCFilterAddButtonWrapper>
+                          <div key={index} className={SCFilterAddButtonWrapper}>
+                          <img
+                            className={SCFilterAddButton}
+                            onClick={handleOnAddFilter}
+                            src={
+                              themeUi === 'REGALBLAZE'
+                                ? '/assets/img/VectorFLOW/NMS/add-filter-regal.svg'
+                                : '/assets/img/VectorFLOW/NMS/add-filter.svg'
+                            }
+                            data-testid="add-filter"
+                          />
+                        </div>
+      
                         );
                       }
                     })}
-                  </SCFilterAddControls>
-                  <SCFilterSeperator />
-                  <SCFilterButtonGroup>
-                    <VFButton
+                  </div>
+                  <div className={SCFilterSeperator} />
+                  <div className={SCFilterButtonGroup}>
+                  <VFButton
                       disabled={!areMasterFiltersValid(activeMaster.filters)}
                       themeUi={themeUi}
                       onClick={() => {
@@ -302,28 +299,27 @@ const MTOViewModify = () => {
                     {(isTableDataLoading) && (
                       <div>
                           <OverlayLoader></OverlayLoader>
-                      </div>
-                    )}
-                    <VFButtonOutline
-                      onClick={() => handleApplyFilter(true)}
-                      themeUi={themeUi}
-                    >
-                      {areMasterFiltersValid(activeMaster.filters)
-                        ? "Clear Filters"
-                        : "Show All"}
-                    </VFButtonOutline>
-                  </>
-                  </SCFilterButtonGroup>
-                </SCFilterContainer>
+                        </div>
+                      )}
+                      <VFButtonOutline
+                        onClick={() => handleApplyFilter(true)}
+                        themeUi={themeUi}
+                      >
+                        {areMasterFiltersValid(activeMaster.filters)
+                          ? "Clear Filters"
+                          : "Show All"}
+                      </VFButtonOutline>
+                    </>
+                  </div>
+                </div>
               )}
               {activeMaster?.isMTO && activeMaster?.id === 503 ? (
-                <PoogiSection>
-                  <MTOPoogiTableContainer
+                <div className={PoogiSection}>
+                  <div className={MTOPoogiTableContainer}
                     id="myGrid"
                     style={{ display: "flex", height: "50%", flex: "1" }}
                   >
                     <VFTable
-                      
                       ref={ref}
                       columnDefs={MTOPoogiMajorColdef}
                       rowData={activeMaster.rowData}
@@ -335,14 +331,14 @@ const MTOViewModify = () => {
                             align: "left",
                           },
                           {
-                                    statusPanel: CustomStatusPanel,
-                                    key: 'clearGridFilters',
-                                    align:'right',
-                                    statusPanelParams: {
-                                      isDisabled: isDisabledPoogi1,
-                                      clearGridFilter:clearGridFilterPoogi1,
-                                      themeUi,
-                                    },  
+                            statusPanel: CustomStatusPanel,
+                            key: "clearGridFilters",
+                            align: "right",
+                            statusPanelParams: {
+                              isDisabled: isDisabledPoogi1,
+                              clearGridFilter: clearGridFilterPoogi1,
+                              themeUi,
+                            },
                           },
                           {
                             statusPanel: "agTotalRowCountComponent",
@@ -364,11 +360,11 @@ const MTOViewModify = () => {
                       }}
                       defaultColDef={{ ...agGridProps.defaultColDef, flex: 1 }}
                       rowSelection={"single"}
-                      tabToNextCell={()=>{
+                      tabToNextCell={() => {
                         return null;
                       }}
-                      onCellKeyDown={(e:any)=>{
-                        if(e.event.key === 'Tab'){
+                      onCellKeyDown={(e: any) => {
+                        if (e.event.key === "Tab") {
                           return;
                         }
                       }}
@@ -390,9 +386,9 @@ const MTOViewModify = () => {
                           : "90%"
                       }
                       onFilterChanged={() => {
-                        if(ref && ref.current && ref.current.api){
-        
-                          Object.keys(ref.current.api.getFilterModel())?.length > 0
+                        if (ref && ref.current && ref.current.api) {
+                          Object.keys(ref.current.api.getFilterModel())
+                            ?.length > 0
                             ? setIsDisabledPoogi1(false)
                             : setIsDisabledPoogi1(true);
                         }
@@ -403,26 +399,25 @@ const MTOViewModify = () => {
                       rowData={minReasonRowData}
                       ref={tempRefPoogi}
                       {...agGridProps}
-                      tabToNextCell={()=>{
+                      tabToNextCell={() => {
                         return null;
                       }}
-                      onCellKeyDown={(e:any)=>{
-                        if(e.event.key === 'Tab'){
+                      onCellKeyDown={(e: any) => {
+                        if (e.event.key === "Tab") {
                           return;
                         }
                       }}
                       statusBar={{
                         statusPanels: [
-                          
                           {
                             statusPanel: CustomStatusPanel,
-                            key: 'clearGridFilters',
-                            align:'right',
+                            key: "clearGridFilters",
+                            align: "right",
                             statusPanelParams: {
                               isDisabled: isDisabledPoogi2,
-                              clearGridFilter:clearGridFilterPoogi2,
+                              clearGridFilter: clearGridFilterPoogi2,
                               themeUi,
-                            },  
+                            },
                           },
                           {
                             statusPanel: "agTotalAndFilteredRowCountComponent",
@@ -460,17 +455,20 @@ const MTOViewModify = () => {
                       onCellEditingStopped={onMinReasonEditingStopped}
                       suppressRowClickSelection={true}
                       onFilterChanged={() => {
-                        if(tempRefPoogi && tempRefPoogi.current && tempRefPoogi.current.api){
-        
-                          Object.keys(tempRefPoogi.current.api.getFilterModel())?.length > 0
+                        if (
+                          tempRefPoogi &&
+                          tempRefPoogi.current &&
+                          tempRefPoogi.current.api
+                        ) {
+                          Object.keys(tempRefPoogi.current.api.getFilterModel())
+                            ?.length > 0
                             ? setIsDisabledPoogi2(false)
                             : setIsDisabledPoogi2(true);
                         }
                       }}
-
                     />
-                  </MTOPoogiTableContainer>
-                  <PoogiAddButtonWrapper>
+                  </div>
+                  <div className={PoogiAddButtonWrapper}>
                     <button
                       style={{
                         display: "flex",
@@ -576,8 +574,8 @@ const MTOViewModify = () => {
                         </>
                       )}
                     </button>
-                  </PoogiAddButtonWrapper>
-                </PoogiSection>
+                  </div>
+                </div>
               ) : (
                 <VFTable
                   ref={ref}
@@ -617,10 +615,14 @@ const MTOViewModify = () => {
                 <VFTable
                   ref={tempRef}
                   rowData={getCombinedPoogiDataForExcelExport()}
-                  columnDefs={[...MTOPoogiMajorColdef, ...MTOPoogiMinorColdef].filter((ele)=>ele.field!=='Warning' && ele.field!=='Error')}
+                  columnDefs={[
+                    ...MTOPoogiMajorColdef,
+                    ...MTOPoogiMinorColdef,
+                  ].filter(
+                    (ele) => ele.field !== "Warning" && ele.field !== "Error"
+                  )}
                   {...tempAgGridProps}
                 />
-                
               </div>
               {activeMaster.isMTO && activeMaster.id !== 503 && (
                 <>
@@ -631,47 +633,41 @@ const MTOViewModify = () => {
                       gap: "8px",
                       width: "110px",
                       margin: "8px",
-                      cursor:  "pointer",
+                      cursor: "pointer",
                       background: "#fff",
                     }}
                     // disabled={activeMaster?.rowData?.length === 0}
                     onClick={() => {
-                      
-                        if (activeMaster.id !== 504) {
-                          addRowToMtoGrid();
-                        }
-                        else{
-                          calendarOnClickHandler();
-                        }
+                      if (activeMaster.id !== 504) {
+                        addRowToMtoGrid();
+                      } else {
+                        calendarOnClickHandler();
                       }
-                    
-                    }
+                    }}
                   >
-                    
-                      <>
-                        <img
-                          src="/assets/img/AddBufferMasterIcon.svg"
-                          alt="Add Master Button"
-                          height={14}
-                          width={14}
-                        />
-                        <p
-                          style={{
-                            fontSize: "12px",
-                            color: ColorsMTO.Pink.code,
-                          }}
-                        >
-                          Add {activeMaster.name}
-                        </p>
-                      </>
-                    
+                    <>
+                      <img
+                        src="/assets/img/AddBufferMasterIcon.svg"
+                        alt="Add Master Button"
+                        height={14}
+                        width={14}
+                      />
+                      <p
+                        style={{
+                          fontSize: "12px",
+                          color: ColorsMTO.Pink.code,
+                        }}
+                      >
+                        Add {activeMaster.name}
+                      </p>
+                    </>
                   </button>
                 </>
               )}
             </VFTab>
           </React.Fragment>
-         )}
-      </SCContainer>
+        )}
+      </div>
       {isModalOpen && (
         <CalenderModalCard
           selectedData={selectedData}
@@ -681,7 +677,7 @@ const MTOViewModify = () => {
           ccrNames={ccrNames}
           onSaveHandler={onSaveHandler}
           setIsModalOpen={setIsModalOpen}
-          isModalOpen={isModalOpen} 
+          isModalOpen={isModalOpen}
         />
       )}
       {isWarningModalOpen && (
@@ -745,12 +741,17 @@ const MTOViewModify = () => {
             onClearAndExportErrors={onClearExportError}
             onModifyData={() => toggleUploadModal(true)}
             onExportData={() => {
-              if(activeMaster.id === 503){
+              if (activeMaster.id === 503) {
                 tempRef?.current?.api &&
-                tempRef?.current?.api.exportDataAsExcel({
-                  fileName: `${activeMaster.name} (MTO)`,
-                  columnKeys: [...MTOPoogiMajorColdef, ...MTOPoogiMinorColdef].filter((ele)=>ele.field!=='Warning' && ele.field!=='Error').map((col) => col.field)
-                });
+                  tempRef?.current?.api.exportDataAsExcel({
+                    fileName: `${activeMaster.name} (MTO)`,
+                    columnKeys: [...MTOPoogiMajorColdef, ...MTOPoogiMinorColdef]
+                      .filter(
+                        (ele) =>
+                          ele.field !== "Warning" && ele.field !== "Error"
+                      )
+                      .map((col) => col.field),
+                  });
                 return;
               }
               handleExportData();

@@ -1,4 +1,4 @@
-import { ProcurementLayout } from '../styles';
+import { ProcurementLayout } from '../styles.css';
 import ActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
 import useSimFullKit from '../SimulateFullKit/useSimFullKit';
 import VFFloatingTab from "../../../../../../components/VectorFLOW/commons/VFFloatingTab";
@@ -48,9 +48,9 @@ const SimulateFullKit = () => {
                 />
 
             </div>
-            <ProcurementLayout>
+            <div className={ProcurementLayout}>
                 {renderView()}
-            </ProcurementLayout>
+            </div>
             {/* <text onClick={Save} style={{ fontSize: 34 }}>save</text> */}
         </div>
     )

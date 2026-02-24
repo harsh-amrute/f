@@ -1,102 +1,150 @@
-import {useMemo} from 'react'
-import { useUserData } from "../../../../../context"
-import { RRRAnalyticsContainer, RRRAnalyticsHeader, RRRAnalyticsTableContainer, RRRAnalyticsTableHeaderWrapper, RRRAnalyticsWrapper,RRRAnalyticsTableHeader,  RRRAnalyticsTableRowContainer, RRRAnalyticsTableRow, RRRAnalyticsTableCell} from "../../SupplyChainIntelligenceHub/RationedRequirementReport/styles"
-import { useGetDBMAnalyticsData } from '../../../../../VectorFlow/Services/MTA/DBM'
+import { useMemo } from "react";
+import { useUserData } from "../../../../../context";
+import {
+  RRRAnalyticsContainer,
+  RRRAnalyticsHeader,
+  RRRAnalyticsTableContainer,
+  RRRAnalyticsTableHeaderWrapper,
+  RRRAnalyticsWrapper,
+  RRRAnalyticsTableHeader,
+  RRRAnalyticsTableRowContainer,
+  RRRAnalyticsTableRow,
+  RRRAnalyticsTableCell,
+  rrrBgVar,
+  rrrTextVar,
+} from "../../SupplyChainIntelligenceHub/RationedRequirementReport/styles.css";
+import { useGetDBMAnalyticsData } from "../../../../../VectorFlow/Services/MTA/DBM";
+import * as globalStyles from "../../../../../styles/global";
 
+const DBMAnalytics = () => {
+  const { user } = useUserData();
 
-const DBMAnalytics = ()=>{
+  const themeUi = user.user.theme_ui;
 
-    const {user} = useUserData()
+  const { data } = useGetDBMAnalyticsData();
 
-    const themeUi = user.user.theme_ui
+  const rowData = useMemo(() => {
+    if (data && data.data && data.data.data && Array.isArray(data.data.data)) {
+      const result: any = {};
+      const rawData = data.data.data[0];
+      Object.keys(rawData).map((k: string) => {
+        result[k] = rawData[k][0];
+      });
+      return result;
+    }
+    return {
+      nofsugg: {
+        u: 0,
+        d: 0,
+      },
+      acc: {
+        u: 0,
+        d: 0,
+      },
+      sleep: {
+        u: 0,
+        d: 0,
+      },
+    };
+  }, [data]);
 
-    const {data} = useGetDBMAnalyticsData()
+  console.log(rowData);
 
-   
+  const theme = globalStyles.chooseThemeColor[themeUi];
+  const bg = themeUi === "NOIRFUSION" ? theme.color3 : theme.color1;
+  const text = themeUi === "PUREELEGANCE" ? "black" : "white";
+  const sep = text; // same logic as before
 
-    const rowData = useMemo(()=>{
-        if(data && data.data && data.data.data && Array.isArray(data.data.data)){
-            const result:any = {
+  return (
+    <div className={RRRAnalyticsWrapper}>
+      <div
+        className={RRRAnalyticsContainer}
+        style={{
+          [rrrBgVar as any]: bg,
+          [rrrTextVar as any]: text,
+        }}
+      >
+        <div className={RRRAnalyticsHeader} style={{ paddingLeft: "10px" }}>
+          Analytics
+        </div>
+        <div
+          className={RRRAnalyticsTableContainer}
+          style={{ padding: "4px 10px" }}
+        >
+          <div className={RRRAnalyticsTableHeaderWrapper}>
+            <div
+              className={RRRAnalyticsTableHeader}
+              style={{ maxWidth: "60px" }}
+            />
+            <div className={RRRAnalyticsTableHeader}>
+              No Of
+              <br /> Upward
+            </div>
+            <div className={RRRAnalyticsTableHeader}>
+              No Of
+              <br /> Downward
+            </div>
+          </div>
+          <div className={RRRAnalyticsTableRowContainer}>
+            <div className={RRRAnalyticsTableRow} style={{ border: "none" }}>
+              <div
+                className={RRRAnalyticsTableCell}
+                style={{
+                  height: "40px",
+                  maxWidth: "60px",
+                  textAlign: "center",
+                }}
+              >
+                No Of Suggestion
+              </div>
+              <div className={RRRAnalyticsTableCell} style={{ height: "40px" }}>
+                {rowData.nofsugg.u}
+              </div>
+              <div className={RRRAnalyticsTableCell} style={{ height: "40px" }}>
+                {rowData.nofsugg.d}
+              </div>
+            </div>
+            <div className={RRRAnalyticsTableRow} style={{ border: "none" }}>
+              <div
+                className={RRRAnalyticsTableCell}
+                style={{
+                  height: "40px",
+                  maxWidth: "60px",
+                  textAlign: "center",
+                }}
+              >
+                Suggestion Accepted
+              </div>
+              <div className={RRRAnalyticsTableCell} style={{ height: "40px" }}>
+                {rowData.acc.u}
+              </div>
+              <div className={RRRAnalyticsTableCell} style={{ height: "40px" }}>
+                {rowData.acc.d}
+              </div>
+            </div>
+            <div className={RRRAnalyticsTableRow} style={{ border: "none" }}>
+              <div
+                className={RRRAnalyticsTableCell}
+                style={{
+                  height: "40px",
+                  maxWidth: "60px",
+                  textAlign: "center",
+                }}
+              >
+                Suggestion Put On Sleep
+              </div>
+              <div className={RRRAnalyticsTableCell} style={{ height: "40px" }}>
+                {rowData.sleep.u}
+              </div>
+              <div className={RRRAnalyticsTableCell} style={{ height: "40px" }}>
+                {rowData.sleep.d}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
-            }
-            const rawData = data.data.data[0]
-            Object.keys(rawData).map((k:string)=>{
-                result[k] = rawData[k][0]
-            })
-            return result
-        }
-        return {
-            "nofsugg": {
-                "u": 0,
-                "d": 0
-            },
-            "acc": {
-                "u": 0,
-                "d": 0
-            },
-            "sleep": {
-                "u": 0,
-                "d": 0
-            }
-        }
-    },[data])
-
-    console.log(rowData)
-
-
-    return(
-        <RRRAnalyticsWrapper>
-           <RRRAnalyticsContainer themeUi={themeUi}>
-                <RRRAnalyticsHeader style={{paddingLeft:'10px'}}>Analytics</RRRAnalyticsHeader>
-                <RRRAnalyticsTableContainer style={{padding:'4px 10px'}}>
-                    <RRRAnalyticsTableHeaderWrapper>
-                        <RRRAnalyticsTableHeader style={{maxWidth:'60px'}}/>
-                        <RRRAnalyticsTableHeader>
-                            No Of<br/> Upward
-                        </RRRAnalyticsTableHeader>
-                        <RRRAnalyticsTableHeader>
-                            No Of<br/> Downward
-                        </RRRAnalyticsTableHeader>
-                    </RRRAnalyticsTableHeaderWrapper>
-                    <RRRAnalyticsTableRowContainer>
-                        <RRRAnalyticsTableRow style={{border:'none'}}>
-                            <RRRAnalyticsTableCell style={{height:'40px',maxWidth:'60px',textAlign:'center'}}>
-                                No Of Suggestion 
-                            </RRRAnalyticsTableCell>
-                            <RRRAnalyticsTableCell style={{height:'40px'}}>
-                                {rowData.nofsugg.u}
-                            </RRRAnalyticsTableCell>
-                            <RRRAnalyticsTableCell style={{height:'40px'}}>
-                                {rowData.nofsugg.d}
-                            </RRRAnalyticsTableCell>
-                        </RRRAnalyticsTableRow>
-                        <RRRAnalyticsTableRow style={{border:'none'}}>
-                            <RRRAnalyticsTableCell style={{height:'40px',maxWidth:'60px',textAlign:'center'}}>
-                                Suggestion Accepted 
-                            </RRRAnalyticsTableCell>
-                            <RRRAnalyticsTableCell style={{height:'40px'}}>
-                                {rowData.acc.u}
-                            </RRRAnalyticsTableCell>
-                            <RRRAnalyticsTableCell style={{height:'40px'}}>
-                                {rowData.acc.d}
-                            </RRRAnalyticsTableCell>
-                        </RRRAnalyticsTableRow>
-                        <RRRAnalyticsTableRow style={{border:'none'}}>
-                            <RRRAnalyticsTableCell style={{height:'40px',maxWidth:'60px',textAlign:'center'}}>
-                                Suggestion Put On Sleep
-                            </RRRAnalyticsTableCell>
-                            <RRRAnalyticsTableCell style={{height:'40px'}}>
-                                {rowData.sleep.u}
-                            </RRRAnalyticsTableCell>
-                            <RRRAnalyticsTableCell style={{height:'40px'}}>
-                                {rowData.sleep.d}
-                            </RRRAnalyticsTableCell>
-                        </RRRAnalyticsTableRow>
-                    </RRRAnalyticsTableRowContainer>
-                </RRRAnalyticsTableContainer>
-           </RRRAnalyticsContainer>
-        </RRRAnalyticsWrapper>
-    )
-}
-
-export default DBMAnalytics
+export default DBMAnalytics;

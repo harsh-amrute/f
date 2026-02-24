@@ -1,10 +1,11 @@
-import * as Tab from "./style";
+import * as Tab from "./style.css";
 import { useState, useEffect } from "react";
 import { Modal } from "../../index";
 import { UsePutItemCodeChangeTye } from "../../../services/ist";
 import { notifyError, notifySuccess } from "../../../helpers/notify";
 import TableItem from "./tableItem";
 import { t } from "i18next";
+import { SCValuePvPA, type PvKey } from "./style.css";
 
 interface TableProps {
   data: any;
@@ -13,7 +14,7 @@ interface TableProps {
   getData: () => void;
   listIdTable: any;
   isMoq: string;
-  checkAllPage: boolean
+  checkAllPage: boolean;
 }
 
 const Table = ({
@@ -23,7 +24,7 @@ const Table = ({
   getData,
   listIdTable,
   isMoq,
-  checkAllPage
+  checkAllPage,
 }: TableProps) => {
   const [accept, setAccept] = useState("");
   const [isOpenAccept, setIsOpenAccept] = useState(false);
@@ -33,7 +34,7 @@ const Table = ({
   const [listIdTableSingle, setListIdTableSingle] = useState([] as any);
   const [listIdTablePause, setListIdTablePause] = useState([] as any);
 
-  useEffect(() => {    
+  useEffect(() => {
     if (checkAllPage) {
       const temp = data?.map(() => true);
       setListCheckAll(temp);
@@ -59,8 +60,8 @@ const Table = ({
           setIsOpenAccept(false);
           setIsOpenReject(false);
           setIsOpenPause(false);
-          if(data?.status === 400) {
-            notifyError(data?.response?.msg)
+          if (data?.status === 400) {
+            notifyError(data?.response?.msg);
           } else {
             notifySuccess(data?.data?.msg);
           }
@@ -82,14 +83,13 @@ const Table = ({
         setIsOpenAccept(false);
         setIsOpenReject(false);
         setIsOpenPause(false);
-        if(data?.status === 400) {
-          notifyError(data?.response?.msg)
+        if (data?.status === 400) {
+          notifyError(data?.response?.msg);
         } else {
           notifySuccess(data?.data?.msg);
         }
-        
       },
-      onError: (error: any) => {        
+      onError: (error: any) => {
         notifyError(error.response.msg || error.message);
       },
     });
@@ -105,12 +105,11 @@ const Table = ({
       onSuccess: (data: any) => {
         setListCheckAll([]);
         getData();
-        if(data?.status === 400) {
-          notifyError(data?.response?.msg)
+        if (data?.status === 400) {
+          notifyError(data?.response?.msg);
         } else {
           notifySuccess(data.data.msg);
         }
-        
       },
       onError: (data: any) => {
         notifyError(data.error);
@@ -185,94 +184,132 @@ const Table = ({
     }
   };
 
+  const toPvKey = (v: unknown): PvKey => {
+    return v === "R" || v === "G" || v === "W" ? v : "default";
+  };
+
   const dataTable =
     data &&
-    data.map((item: any, idx: number) => (
-      <Tab.SCTableBox key={idx} style={{ marginBottom: 30 }}>
-        <Tab.SCTableInformation>
-          <Tab.SCTableImages
-            src="/assets/img/defaulimg.jpg"
-            alt="logo"
-            width={100}
+    data.map((item: any, idx: number) => {
+      const beforeKey: PvKey = toPvKey(item?.product?.before_col);
+      const afterKey: PvKey = toPvKey(item?.product?.after_col);
+
+      return (
+        <div key={idx} className={Tab.SCTableBox} style={{ marginBottom: 30 }}>
+          <div className={Tab.SCTableInformation}>
+            <img
+              className={Tab.SCTableImages}
+              src="/assets/img/defaulimg.jpg"
+              alt="logo"
+              width={100}
+            />
+            <div className={Tab.SCTableStyle}>
+              <p className={Tab.SCTableStyleText}>
+                {t("pendingISTRequests.table.style")} -{" "}
+                {item?.product?.generic_code}
+                <span className={Tab.SCTableStyleTextSpan}>
+                  {item?.product?.product_hierarchy_1} |{" "}
+                  {item?.product?.product_hierarchy_2} |{" "}
+                  {item?.product?.product_hierarchy_3}
+                </span>
+                <span className={Tab.SCTableStyleTextSpan}>
+                  {item?.product?.product_hierarchy_4} |{" "}
+                  <span className={Tab.SCRupeeContainer}>
+                    <img
+                      className={Tab.SCRupeeSign}
+                      src="/assets/img/ist/rupee-icon.svg"
+                    />
+                    {item?.product?.price}
+                  </span>
+                </span>
+              </p>
+            </div>
+
+            <ul className={Tab.SCTableList}>
+              <li className={Tab.SCTableItem}>
+                <p className={Tab.SCTableItemName}>
+                  {t("pendingISTRequests.table.receiverROSN")}
+                </p>
+                <p className={Tab.SCTableItemValue}>
+                  {parseFloat(item?.product?.receiver_rosn)
+                    .toFixed(2)
+                    .toString()}
+                </p>
+              </li>
+
+              <li className={Tab.SCTableItem}>
+                <p className={Tab.SCTableItemName}>
+                  {t("pendingISTRequests.table.PvPA")}
+                </p>
+                <p
+                  className={Tab.SCTableItemValue}
+                  style={{ display: "flex", alignItems: "center" }}
+                >
+                  <span className={SCValuePvPA[beforeKey]}>
+                    {item?.product?.before_col}
+                  </span>
+                  <img
+                    className={Tab.SCLargerSign}
+                    src="/assets/img/ist/PvPA.svg"
+                    alt="PvPA"
+                  />
+                  <span className={SCValuePvPA[afterKey]}>
+                    {item?.product?.after_col}
+                  </span>
+                </p>
+              </li>
+
+              <li className={Tab.SCTableItem}>
+                <p className={Tab.SCTableItemName}>
+                  {t("pendingISTRequests.table.receiverLocation")}
+                </p>
+                <p className={Tab.SCTableItemValue}>
+                  {item?.product?.receiver_wh_name}
+                </p>
+              </li>
+
+              <li className={Tab.SCTableItem}>
+                <p className={Tab.SCTableItemName}>
+                  {t("pendingISTRequests.table.city")}
+                </p>
+                <p className={Tab.SCTableItemValue}>
+                  {item?.product?.receiver_wh_city}
+                </p>
+              </li>
+
+              <li className={Tab.SCTableItem}>
+                <p className={Tab.SCTableItemName}>
+                  {t("pendingISTRequests.table.locationCode")}
+                </p>
+                <p className={Tab.SCTableItemValue}>
+                  {item?.product?.receiver_wh_code}
+                </p>
+              </li>
+
+              <li className={Tab.SCTableItem}>
+                <p className={Tab.SCTableItemName}>
+                  {t("pendingISTRequests.table.locationType")}
+                </p>
+                <p className={Tab.SCTableItemValue}>
+                  {item?.product?.receiver_wh_type}
+                </p>
+              </li>
+            </ul>
+          </div>
+
+          <TableItem
+            item={item}
+            setListCheckAll={setCheckAllTable}
+            listCheckAll={listCheckAll[idx]}
+            index={idx}
+            onModalAccept={onModalAccept}
+            onModalReject={onModalReject}
+            onModalPause={onModalPause}
+            listIdTable={listIdTable}
           />
-          <Tab.SCTableStyle>
-            <Tab.SCTableStyleText>
-              {t("pendingISTRequests.table.style")} - {item?.product?.generic_code}
-              <Tab.SCTableStyleTextSpan>
-                {item?.product?.product_hierarchy_1} | {item?.product?.product_hierarchy_2} |{" "}
-                {item?.product?.product_hierarchy_3}
-              </Tab.SCTableStyleTextSpan>
-              <Tab.SCTableStyleTextSpan>
-                {item?.product?.product_hierarchy_4} | <Tab.SCRupeeContainer><Tab.SCRupeeSign src="/assets/img/ist/rupee-icon.svg"/>{item?.product?.price}</Tab.SCRupeeContainer>
-              </Tab.SCTableStyleTextSpan>
-            </Tab.SCTableStyleText>
-          </Tab.SCTableStyle>
-          <Tab.SCTableList>
-            <Tab.SCTableItem>
-              <Tab.SCTableItemName>
-                {t("pendingISTRequests.table.receiverROSN")}
-              </Tab.SCTableItemName>
-              <Tab.SCTableItemValue>
-                {/* eslint-disable-next-line no-unsafe-optional-chaining */}
-                {parseFloat(item?.product?.receiver_rosn).toFixed(2).toString()}
-              </Tab.SCTableItemValue>
-            </Tab.SCTableItem>
-            <Tab.SCTableItem>
-              <Tab.SCTableItemName>
-                {t("pendingISTRequests.table.PvPA")}
-              </Tab.SCTableItemName>
-              <Tab.SCTableItemValue style={{display: "flex", alignItems: "center"}}>
-                <Tab.SCValuePvPA value={item?.product?.before_col}>{item?.product?.before_col}</Tab.SCValuePvPA>
-                <Tab.SCLargerSign src="/assets/img/ist/PvPA.svg" alt="PvPA" />
-                <Tab.SCValuePvPA value={item?.product?.after_col}>{item?.product?.after_col}</Tab.SCValuePvPA>
-              </Tab.SCTableItemValue>
-            </Tab.SCTableItem>
-            <Tab.SCTableItem>
-              <Tab.SCTableItemName>
-                {t("pendingISTRequests.table.receiverLocation")}
-              </Tab.SCTableItemName>
-              <Tab.SCTableItemValue>
-                {item?.product?.receiver_wh_name}
-              </Tab.SCTableItemValue>
-            </Tab.SCTableItem>
-            <Tab.SCTableItem>
-              <Tab.SCTableItemName>
-                {t("pendingISTRequests.table.city")}
-              </Tab.SCTableItemName>
-              <Tab.SCTableItemValue>
-                {item?.product?.receiver_wh_city}
-              </Tab.SCTableItemValue>
-            </Tab.SCTableItem>
-            <Tab.SCTableItem>
-              <Tab.SCTableItemName>
-                {t("pendingISTRequests.table.locationCode")}
-              </Tab.SCTableItemName>
-              <Tab.SCTableItemValue>
-                {item?.product?.receiver_wh_code}
-              </Tab.SCTableItemValue>
-            </Tab.SCTableItem>
-            <Tab.SCTableItem>
-              <Tab.SCTableItemName>
-                {t("pendingISTRequests.table.locationType")}
-              </Tab.SCTableItemName>
-              <Tab.SCTableItemValue>
-                {item?.product?.receiver_wh_type}
-              </Tab.SCTableItemValue>
-            </Tab.SCTableItem>
-          </Tab.SCTableList>
-        </Tab.SCTableInformation>
-        <TableItem
-          item={item}
-          setListCheckAll={setCheckAllTable}
-          listCheckAll={listCheckAll[idx]}
-          index={idx}
-          onModalAccept={onModalAccept}
-          onModalReject={onModalReject}
-          onModalPause={onModalPause}
-          listIdTable={listIdTable}
-        />
-      </Tab.SCTableBox>
-    ));
+        </div>
+      );
+    });
 
   return (
     <>

@@ -1,4 +1,4 @@
-import {RRRLayout} from './styles'
+import {RRRLayout} from './styles.css'
 import useRRR from './useRRR';
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
 import ActionToolBar from "../Planning/ActionToolBar"
@@ -86,7 +86,7 @@ const RRR = () => {
     {lastRunDate && (
         <LastRunDateComponent lastRunDate={lastRunDate} />
       )}
-    <RRRLayout>
+    <div className={RRRLayout}>
         {/* <RRRTaskBar style={{width:isSideBarOpen? '77%':'97%'}}>
             <VFButtonOutline
                     themeUi="NOIRFUSION"
@@ -163,7 +163,7 @@ const RRR = () => {
             {...tempAgGridProps}
           />
         </div>
-    </RRRLayout>
+    </div>
   </GridStateContext.Provider>
   )
 }

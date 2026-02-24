@@ -87,3 +87,23 @@
 .ag-theme-planning-custom .ag-column-select-checkbox:not(:last-child) {
     margin-right: 4px !important;
 }
+
+.SCDynamicContainer {
+    display: block;
+    height: 150vh;
+    padding: 20px;
+  }
+  
+  /* Laptop to Desktop */
+  @media screen and (min-width: 1024px) and (max-width: 1439px) {
+    .SCDynamicContainer {
+      height: 70vh;
+    }
+  }
+  
+  /* Desktop and above */
+  @media screen and (min-width: 1440px) {
+    .SCDynamicContainer {
+      height: 110vh;
+    }
+  }

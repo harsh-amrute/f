@@ -5,7 +5,7 @@ import ChildrenColor from './ChildrenColor';
 import { ICellRendererParams } from 'ag-grid-enterprise';
 
 // Mock the styles module
-jest.mock('./styles', () => ({
+jest.mock('./styles.css', () => ({
     ProcPlanningChildrenColor: (props: React.PropsWithChildren<any>) => <div data-testid="children-cell-renderer" {...props} />,
     ChildrenColorCellRenderer: (props: { value: string }) => <div data-testid="color-cell-renderer">{props.value}</div>
 }));

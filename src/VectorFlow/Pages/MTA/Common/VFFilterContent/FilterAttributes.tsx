@@ -1,12 +1,14 @@
 import React, { useEffect, useState, useRef } from "react";
 import {
-  FilterGroup,
-  FilterColumn,
-  TextWrapper,
-  DropDownWrapper,
-  DropDownRow,
-  IconWrapper,
-} from "./style";
+  filterGroup,
+  filterColumn,
+  textWrapper,
+  dropDownWrapper,
+  dropDownRow,
+  iconWrapper,
+  accentColorVar,
+  disabledVar,
+} from "./style.css";
 import Select from "react-select";
 import { useThemeStyles } from "../../../../../hooks/useVFFilterContent";
 import {
@@ -176,17 +178,63 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
     setFilterRows,
   ]);
 
-  const { onFilterChange } = useMultiFilterChange({
-    parentId: "customAttributeFilter",
-    prefix: "CAF",
-    rowSelections,
-    setRowSelections,
-    multiFilter,
-    onMultiFilterChange,
-    rowFilterIndexMap,
-    setRowFilterIndexMap,
-    isUpdatingFromInternal,
-  });
+  const onFilterChange = (
+    rowId: number,
+    field: "column" | "operation" | "value",
+    selected: any
+  ) => {
+    const updatedSelections = {
+      ...rowSelections,
+      [rowId]: { ...rowSelections[rowId], [field]: selected },
+    };
+    setRowSelections(updatedSelections);
+
+    const parentId = "customAttributeFilter";
+    const current = updatedSelections[rowId];
+
+    if (
+      current?.column &&
+      current?.operation &&
+      (current?.operation?.value === "hasvalue" ||
+        current?.operation?.value === "hasnovalue" ||
+        (current?.value !== undefined && current?.value !== ""))
+    ) {
+      const newFilter: BPRFilter = {
+        attributeName: current.column.value,
+        value:
+          current?.operation?.value === "hasvalue"
+            ? "hasvalue"
+            : current?.operation?.value === "hasnovalue"
+            ? "hasnovalue"
+            : current.value,
+        operator: current.operation.value,
+        label: current.column.label,
+        name: current.column.name,
+      };
+
+      const existingFilters = (multiFilter[parentId]?.filters ||
+        []) as BPRFilter[];
+      const nextFilters = existingFilters.slice();
+      const idx = rowFilterIndexMap[rowId];
+      const newIndexMap = { ...rowFilterIndexMap };
+
+      if (typeof idx === "number" && idx >= 0 && idx < nextFilters.length) {
+        nextFilters[idx] = newFilter;
+      } else {
+        nextFilters.push(newFilter);
+        newIndexMap[rowId] = nextFilters.length - 1;
+      }
+
+      isUpdatingFromInternal.current = true;
+      onMultiFilterChange({
+        ...multiFilter,
+        [parentId]: { ...multiFilter[parentId], filters: nextFilters },
+      });
+
+      setRowFilterIndexMap(newIndexMap);
+    }
+  };
+
   const handleRemoveRowWithFilter = (rowId: number) => {
     if (isMinRows) return;
 
@@ -229,14 +277,22 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
   if (!isLoading && attributeOptions.length === 0) {
     return <NoAttributesFilters reportName={reportName} />;
   }
+  const brand = user.user.theme_ui === "REGALBLAZE" ? "REGALBLAZE" : "DEFAULT";
 
   return (
-    <FilterGroup>
-      <FilterColumn style={{ minWidth: "400px", maxWidth: "none" }}>
-        <TextWrapper>Select Attributes - SKU/Location</TextWrapper>
+    <div className={filterGroup}>
+      <div
+        className={filterColumn}
+        style={{ minWidth: "400px", maxWidth: "none" }}
+      >
+        <div className={textWrapper}>Select Attributes - SKU/Location</div>
         {filterRows.map((row) => (
-          <DropDownRow key={row.id} style={{ alignItems: "center" }}>
-            <DropDownWrapper>
+          <div
+            className={dropDownRow}
+            key={row.id}
+            style={{ alignItems: "center" }}
+          >
+            <div className={dropDownWrapper}>
               <Select
                 options={attributeOptions}
                 placeholder="Select Column"
@@ -247,9 +303,9 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
                   onFilterChange(row.id, "column", selected)
                 }
               />
-            </DropDownWrapper>
+            </div>
 
-            <DropDownWrapper>
+            <div className={dropDownWrapper}>
               <Select
                 options={stringOpertors}
                 placeholder="Select Operation"
@@ -261,9 +317,9 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
                   onFilterChange(row.id, "operation", selected)
                 }
               />
-            </DropDownWrapper>
+            </div>
 
-            <DropDownWrapper>
+            <div className={dropDownWrapper}>
               <input
                 placeholder="Enter value"
                 className={`filter-input ${
@@ -285,11 +341,12 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
                   rowSelections[row.id]?.operation?.value === "hasnovalue"
                 }
               />
-            </DropDownWrapper>
+            </div>
 
             <div style={{ display: "flex", alignItems: "center" }}>
-              <IconWrapper
-                theme_ui={user.user.theme_ui}
+              <div
+                className={iconWrapper}
+                data-theme={user.user.theme_ui}
                 style={{
                   opacity: isRowComplete(row.id) ? 0 : 1,
                   cursor: isRowComplete(row.id) ? "default" : "pointer",
@@ -304,31 +361,38 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
                       : "Must select a column."
                   }
                 />
-              </IconWrapper>
-              <IconWrapper
-                theme_ui={user.user.theme_ui}
-                disabled={isMaxRows}
+              </div>
+              <div
+                className={iconWrapper}
+                data-theme={user.user.theme_ui}
+                style={{
+                  [accentColorVar]: brand,
+                  [disabledVar]: isMaxRows ? "true" : "false",
+                }}
                 onClick={handleAddRow}
               >
                 <img
                   src={"/assets/img/MTAVFMultiFilter/plus-sign-circle.svg"}
                   alt="add"
                 />
-              </IconWrapper>
-              <IconWrapper
-                theme_ui={user.user.theme_ui}
-                disabled={isMinRows}
+              </div>
+              <div
+                className={iconWrapper}
+                style={{
+                  [accentColorVar]: brand,
+                  [disabledVar]: isMinRows ? "true" : "false",
+                }}
                 onClick={() => handleRemoveRowWithFilter(row.id)}
               >
                 <img
                   src={"/assets/img/MTAVFMultiFilter/minus-sign-circle.svg"}
                   alt="remove"
                 />
-              </IconWrapper>
+              </div>
             </div>
-          </DropDownRow>
+          </div>
         ))}
-      </FilterColumn>
-    </FilterGroup>
+      </div>
+    </div>
   );
 };

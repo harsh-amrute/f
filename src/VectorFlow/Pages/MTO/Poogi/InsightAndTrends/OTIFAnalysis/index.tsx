@@ -7,7 +7,7 @@ import {
   BTRAllomentSection,
   BTRTableWrapper,
   HorizontalViewWrapper,
-} from "./styles";
+} from "./styles.css";
 import TagCellToolTip from "./TagCellRenderer/TagCellRenderer";
 import { useGetFilterData } from "../../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
 import useFilter from "../../../../../../hooks/useFilter";
@@ -21,7 +21,7 @@ import useColDef from "../../../../../../hooks/useColDef";
 import BPPRenderer from "../../../Common/BPRRenderer/BPPRenderer";
 import moment from "moment";
 import CommonGridview from "../../../../../../helpers/CommonGridview";
-import { SCDynamicContainer } from "../../../Common/GridView/styles";
+import { SCDynamicContainer } from "../../../Common/GridView/styles.css";
 
 
 const APIFilterConfig = {
@@ -191,22 +191,20 @@ useEffect(() => {
 {
   !isGridView ?
     <>
-      <HorizontalViewWrapper style={{ margin: '20px 14px', height: '85%', display: 'flex' }}>
-          <BTRTableWrapper style={{ maxHeight: "95%", paddingLeft: "20px" }}>
+           <div className={BTRTableWrapper} style={{ maxHeight: "95%", paddingLeft: "20px" }}>
             <Allotment vertical={false} separator={false}>
               <Allotment.Pane preferredSize={"50%"}>
-                <BTRAllomentSection>
+                <div className={BTRAllomentSection}>
                   <OTIFTrendsGraph graphData={graphData?.otif} />
-                </BTRAllomentSection>
+                </div>
               </Allotment.Pane>
-            <Allotment.Pane preferredSize={"50%"}>
-          <BTRAllomentSection>
-          <OTAndIFTrendsGraph graphData={graphData?.ot_n_if} />
-              </BTRAllomentSection>
+              <Allotment.Pane preferredSize={"50%"}>
+                <div className={BTRAllomentSection}>
+                  <OTAndIFTrendsGraph graphData={graphData?.ot_n_if} />
+                </div>
               </Allotment.Pane>
             </Allotment>
-          </BTRTableWrapper>
-      </HorizontalViewWrapper>
+          </div>
     </>
       :
         <>
@@ -242,7 +240,7 @@ useEffect(() => {
               setMultiFilter: setCurrFilter,
               isMfgSelected,
               }}
-              VFWrapper={SCDynamicContainer} 
+              vfWrapperClassName={SCDynamicContainer} 
         />
         </>
             }
