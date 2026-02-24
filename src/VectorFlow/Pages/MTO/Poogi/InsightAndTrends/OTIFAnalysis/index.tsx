@@ -14,8 +14,6 @@ import useFilter from "../../../../../../hooks/useFilter";
 import { useGetOTIFAnalysisData, useGetOTIFAnalysisDataExcelExport } from "../../../../../../VectorFlow/Services/MTO/Poogi/InsightAndTrends/OTIFAnalysis";
 import OverlayLoader from '../../../Common/Loader';
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
-import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
-import { useGetUIConfigData } from '../../../../../Services/MTO/Common/UIConfig';
 import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from '../../../../../../helpers/utils';
 import { FilterPageName, pagination, UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
@@ -44,8 +42,7 @@ const OTIFAnalysis = () => {
   const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
   const [filterData, setFilterData] = useState({});
   const [currentGridRef, setCurrentGridRef] = useState<any>(null);
-  const [colDef, setColDef] = useState([{}]);
-  const [HeaderData, setHeaderData] = useState([]);
+
   const {
     state: currFilter,
     setState: setCurrFilter,
@@ -59,13 +56,9 @@ const OTIFAnalysis = () => {
     setAppliedFilters
   } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Poogi_OTIF_Analysis);
 
-  const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
-  const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
   const { user } = useUserData();
   const { mutateAsync: getOTIFAnalysisDataExcelExport } = useGetOTIFAnalysisDataExcelExport();
   const { colDefMap, getColDef } = useColDef();
-
-  const [userPageSize, setUserPageSize] = useState<number>();
 
   const themeUi = user?.user?.theme_ui;
 
@@ -157,13 +150,8 @@ useEffect(() => {
   if (!isGridView) {
     getGraphData({ graphflag: 1 });
   }
-}, [appliedFilters, isGridView, userPageSize]);
+}, [appliedFilters, isGridView]);
 
-
-
-  useEffect(() => {
-    setColDef(getColumnDefinations(HeaderData, colDefCustomizations))
-  }, [HeaderData])
 
 
   useEffect(() => {
@@ -179,7 +167,7 @@ useEffect(() => {
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
       {
-        (isLoading || isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />
+        (isLoading) && <OverlayLoader />
       }
       {!isGridView && (
         <MTOActionToolBar
