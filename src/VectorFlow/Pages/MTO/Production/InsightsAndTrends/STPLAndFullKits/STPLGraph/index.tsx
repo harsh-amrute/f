@@ -1,6 +1,5 @@
 import { AgChartOptions } from "ag-charts-community";
 import { useEffect, useMemo, useState } from "react";
-// import { APIMock } from "../StplAndFullKitsData";
 import VFInfoToolTip from "../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 import { getColumnDefinations } from "../../../../../../../helpers/utils";
 import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer';

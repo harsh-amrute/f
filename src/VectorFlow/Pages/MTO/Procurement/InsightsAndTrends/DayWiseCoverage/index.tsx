@@ -33,6 +33,7 @@ import SafeLottie from "../../../../../../components/commons/SafeLottie";
 import { useGetFilterData } from '../../../../../..//VectorFlow/Services/MTO/Common/CommonFilter';
 import useFilter from '../../../../../../hooks/useFilter';
 import { ITooltipParams } from 'ag-grid-enterprise';
+import SwipePointer from "../../../../../../lottie/swipe pointer.json";
 
 enum Colors {
   Selected = "#B93B7E",
@@ -477,7 +478,7 @@ const DayWiseCoverage = () => {
         ) : (
           <div className={AnimationWrapper}>
             <SafeLottie
-              src={"/assets/img/VectorFLOW/BPR/swipe pointer.json"}
+              src={SwipePointer}
               loop
               autoplay
               style={{ height: 100, width: 100 }}
@@ -537,7 +538,7 @@ const DayWiseCoverage = () => {
           }}
           onClick={handleMaterialRequirementClick}
         >
-          Material Requirement{" "}
+          Material Requirement
           <svg
             id="Layer_2"
             data-name="Layer 2"

@@ -8,18 +8,16 @@ import VFTable from "../../Common/VFTable";
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import { useNavigate } from "react-router-dom";
-import { ProcessRowGroupForExportParams, ExcelCell, ExcelRow, ExcelExportParams, ExcelStyle } from 'ag-grid-community';
+import { ProcessRowGroupForExportParams, ExcelCell, ExcelRow, ExcelStyle } from 'ag-grid-community';
 import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from '../../../../../helpers/utils';
 import ChildrenProcPlanningCellRenderer from "../ChildrenProcPlanningCellRenderer";
 import { putUpdateProcurementSimulationData, useGetProcurementPlanningDataForExcelExport, userGetProcPlanningData } from "../../../../Services/MTO/Procurement/ProcPlanning/index";
-import { toast } from "react-toastify/unstyled";
-import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify";
+import { notifyError, notifySuccess } from "../../../../../helpers/notify";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import VFPagination from "../../Common/VFPagination";
 import OverlayLoader from "../../Common/Loader";
 import { INumberCellEditorParams } from "@ag-grid-community/core"
 import { TableWrapper } from "./styles.css";
-//import { pagination } from "../../Common/Enum";
 import { useDispatch } from "react-redux";
 import { APPLIED_FILTERS, PROCPLANNING_ANALYTICS } from "../../../../../redux/actions/MTO";
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UserUIConfig";
@@ -324,7 +322,7 @@ const useProcPlanning = ( appliedFilters: any) => {
             else {
                 notifyError("Failed to fetch data!");
             }
-            setTotalRows(response?.data?.data?.count)
+            setTotalRows(response?.data?.data?.count || 0)
             setData(response?.data?.data?.results || []);
 
 
