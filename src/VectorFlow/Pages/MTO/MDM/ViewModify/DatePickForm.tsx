@@ -16,13 +16,9 @@ import {
   radioGroup,
   radioLabel,
   radioInput,labelEl,inputEl,selectEl,inputWrapper, daysContainer,dayBtn,
-  footerText,daySelectedBgVar, accentColorVar
+  daySelectedBgVar, accentColorVar
 } from "./styles.css";
 import CalenderMonthlySelect from "./CalenderMonthlySelect";
-
-/* runtime vars */
-// export const accentColorVar = createVar(); // for radio accent color
-// export const daySelectedBgVar = createVar(); // selected day background
 
 const DatePickForm = ({
   plantNames,
@@ -181,25 +177,6 @@ const DatePickForm = ({
       return { ...prevFormData, dow: updatedDow };
     });
   };
-
-  // useEffect(() => {
-  //   // Clear all selections first to avoid duplicate toggling issues
-  //   document.querySelectorAll(".selected").forEach((el) => {
-  //     el.classList.remove("selected");
-  //   });
-
-  //   // Apply the correct class to selected days
-  //   if (formData && formData.dow && Array.isArray(formData.dow)) {
-  //     formData?.dow
-  //       .map((day: any) => day.md)
-  //       .forEach((day: string) => {
-  //         const element = document.getElementById(day);
-  //         if (element) {
-  //           element.classList.add("selected");
-  //         }
-  //       });
-  //   }
-  // }, [formData.dow]);
 
   useEffect(() => {
     if (formData.rb !== "Weekly") {
