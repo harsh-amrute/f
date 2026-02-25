@@ -359,11 +359,23 @@ const CustomNode = ({
             } : {})
           }}
         />
-        <span
-          style={{ padding: "10px", fontSize: "1.2rem", fontFamily: "roboto" }}
-        >
+        <Tooltip content={<span style={{ fontSize: "1.2rem", fontFamily: "roboto", padding: '1px 6px' }}>
           {data.label}
         </span>
+        }>
+          <span
+            style={{
+              padding: "10px",
+              fontSize: "1.2rem",
+              fontFamily: "roboto",
+              display: "inline-block",
+            }}
+          >
+            {data.label.length > 8
+              ? `${data.label.substring(0, 8)}...`
+              : data.label}
+          </span>
+        </Tooltip>
       </label>
       {data.hasChildren && (
         <div

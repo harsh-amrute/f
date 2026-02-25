@@ -1,6 +1,6 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { useForm } from "react-hook-form";
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Errors, ArrowList } from "../../../components";
 import { notifyError } from "../../../helpers/notify";
 import "./styles.css";
@@ -19,6 +19,8 @@ interface ModalProps {
   currentItem:any
   isEditUser?:any
   setIsEditUser?:any
+  createUser?: any
+  isMtoPermissionEnabled?: boolean;
 }
 
 const ModalManageUsers = ({
@@ -34,6 +36,8 @@ const ModalManageUsers = ({
   currentItem,
   isEditUser,
   setIsEditUser,
+  createUser,
+  isMtoPermissionEnabled
 }: ModalProps) => {
   const { t } = useTranslation();
   const { user } = useUserData();
@@ -66,9 +70,33 @@ const ModalManageUsers = ({
     closeModal();
   }
 
+  const [isAnyDistRole, setIsAnyDistRole] = useState(true);
+  const checkIfDistributionRole = () => {
+    const distributionRoleIds = listRoles?.find((ele: any) => ele.title === "Distribution")?.child?.map((ele: any) => ele.id);
+    const isAnyDistributionRole = infoUser?.roles?.some((role: any) => distributionRoleIds.includes(role));
+    return isAnyDistributionRole || isMtoPermissionEnabled;
+  }
+  useEffect(() => {
+    console.log("this is updated");
+    setIsAnyDistRole(checkIfDistributionRole());
+  }, [infoUser]);
+
   const onSubmit = () => {
     const value = getValues();    
+    console.log("roles", infoUser.roles);
+    console.log("listRoles", listRoles);
+    const isAnyDistributionRole = checkIfDistributionRole();
     if (infoUser.roles.length > 0) {
+      const userDetails = {
+        ...infoUser,
+        name: value.username,
+        email: value.email_id.trim().toLowerCase(),
+        password: value.password,
+      }
+      if (!isAnyDistributionRole) {
+        createUser({}, userDetails);
+        return;
+      }
       // if(!value.password || value.password.length === 0){
       //   notifyError("Password Cannot Be Empty !")
       //   return 
@@ -290,7 +318,7 @@ const ModalManageUsers = ({
 
                       <div className="modal-bottom">
                         <button type="submit" disabled={Object.keys(errors).length > 0}  className={"btn_submit " + themeUi}>
-                          {t("profile.tabContent.manageUsers.button.nextBtn")}
+                          {isAnyDistRole ? "Next" : infoUser.edit ? "Update User" : "Create User"}
                         </button>
                         <button
                           type="button"

@@ -88,7 +88,30 @@ const TableUserManagement = ({
   const renderAction = (item: any, is_admin: any) => {
     const permissionUser = item.role_id.map((item: any) => item.name);
 
-    return <>{action({ item, permissionUser })}</>;
+    if (is_admin) {
+      if (item.is_admin) {
+        return <NoAction rolesMap={permissionUser} />;
+      } else {
+        return <>{action({ item, permissionUser })}</>;
+      }
+    } else {
+      if (permission?.includes("IST Admin") || permission?.includes("Admin")) {
+        if (item.is_admin) {
+          return <NoAction rolesMap={permissionUser} />;
+        } else {
+          if (
+            permissionUser?.includes("IST Admin") ||
+            permissionUser?.includes("Admin")
+          ) {
+            return <NoAction rolesMap={permissionUser} />;
+          } else {
+            return <>{action({ item, permissionUser })}</>;
+          }
+        }
+      } else {
+        return <NoAction rolesMap={permissionUser} />;
+      }
+    }
   };
 
   const clearGridFilter = () => {
@@ -270,7 +293,13 @@ const TableUserManagement = ({
         rowData={dataAllUsers}
         columnDefs={columnDefs}
         defaultColDef={
-          { suppressMenu: true }
+          {
+            suppressMenu: true,
+            cellRendererParams: {
+              is_admin: is_admin,
+              permission: permission
+            }
+          }
         }
         domLayout="normal"
         rowHeight={55}

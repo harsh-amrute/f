@@ -33,6 +33,7 @@ import { useUserData } from "../../../context";
 import SingleUserPermissionSelectionModal from "../bulk-upload/SingleUserPermissionSelectionModal";
 import VFModalCard from "../../../components/VectorFLOW/commons/VFModalCard";
 import VFLoader from "../../../components/VectorFLOW/commons/VFLoader";
+import { useGetDBRsettingsData } from "../../../VectorFlow/Services/MTO/Common/DBRSettings";
 
 
 interface ManageUsersProps{
@@ -77,13 +78,31 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   const [headers, setHeaders] = useState<any>();
 
   const { mutateAsync: getUserPermissions,isLoading:edit } = useGetUserPermissions();
+  const { mutateAsync: getDBRSettings } = useGetDBRsettingsData();
   
   useGetAllRoles((data:any)=>{
     const dataAllRoles = data.data ? generateRolesObject(data.data) : [];
     setListRoles(dataAllRoles);
     setIsLoadingRoles(false);
   });
-  
+
+  const [isMtoPermissionEnabled, setIsMtoPermissionEnabled] = useState(false);
+
+  const getDBRSettingsData = async () => {
+    try {
+      const reponse = await getDBRSettings();
+      console.log("DBR Settings", reponse.data.data);
+      setIsMtoPermissionEnabled(reponse?.data?.data?.some((ele: any) => ele.flag === 'IsDataPermissionEnabled' && ele.value === '1') || false);
+    } catch (e) {
+      notifyError("Failed to fetch MTO Settings");
+      console.error("Error fetching DBR Settings", e);
+    }
+  }
+
+  useEffect(() => {
+    getDBRSettingsData();
+  }, [])
+
   const getHeaderDatafunct = async() =>{
     try {
         const reponse = await usegetHeaderData();
@@ -167,14 +186,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   const onCloseModal = () => {
     setIsOpenUser(false);
   };
- 
-  // ... (keeping existing code)
 
-
-
-  const onClosePermissionModal = () => {
-    setIsPermissionModalOpen(false);
-  };
 
   const getPermission = ({ data, txtParent, txtChild, txtGrandChild }: any) => {
     const parent: any = [];
@@ -536,13 +548,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
                             if (path.length > 0) {
                                 path[path.length - 1] = path[path.length - 1] + "'";
                             }
-                      }
-                      // TODO: check this condition
-                      //  else if (!isDynamicPermissions) {
-                      //   // do nothing
-                      //   }
-
-                        
+                      }     
                         return path;
                     }).filter((p: any) => p !== null);
 
@@ -578,11 +584,16 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   const isDynamicPermissions = (user.config_data.INHERITED_ACCESS==="1") || false
 
 
-  const createUser = async (permissions: any) => {
+  const createUser = async (permissions: any, userDetails?: any) => {
 
-    const payload: any = {
+    let payload: any = {
       ...infoUser,
     };
+    if (userDetails) {
+      payload = {
+        ...userDetails,
+      }
+    }
     
     // Ensure defaults
     if (payload.edit === undefined) payload.edit = false;
@@ -746,7 +757,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
           setIsPermissionModalOpen(false);
           setIsOpenUser(false);
           refetch()
-          notifySuccess("user updated succesfully")
+          notifySuccess("User Updated Succesfully")
         }
         else {
           notifyError("Failed to update user: "+response?.response?.msg);
@@ -849,7 +860,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
 
 
       <ModalManageUsers
-      contentModal={contentModal}
+        contentModal={contentModal}
         openModal={isOpenUser}
         closeModal={onCloseModal}
         setIsOpenAdvanced={setIsPermissionModalOpen}
@@ -861,6 +872,8 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
         currentItem={currentItem}
         isEditUser={isEditUser}
         setIsEditUser={setIsEditUser}
+        createUser={createUser}
+        isMtoPermissionEnabled={isMtoPermissionEnabled}
         />   
 
 <VFModalCard

@@ -3,7 +3,6 @@ import { ButtonOutlineStoreStatus } from "../../index";
 import { useChangeStatus } from "../../../services/profile";
 import { notifyError, notifySuccess } from "../../../helpers/notify";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
 
 const ToggleCell = (params: any) => {
 
@@ -32,6 +31,21 @@ const ToggleCell = (params: any) => {
       },
     });
   };
+
+  const permissionUser = params.data.role_id.map((item: any) => item.name);
+
+  if (params.is_admin) {
+    if (params.data.is_admin) {
+      return null;
+    }
+  } else {
+    if (
+      (params.permission?.includes("IST Admin") || params.permission?.includes("Admin")) &&
+      (permissionUser?.includes("IST Admin") || permissionUser?.includes("Admin"))
+    ) {
+      return null;
+    }
+  }
 
 
 
