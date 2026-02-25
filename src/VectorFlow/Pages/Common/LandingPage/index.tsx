@@ -1,22 +1,22 @@
-import React, { Fragment, useEffect, useRef, useState } from "react";
-import { useUserData } from "../../../../context";
+import { Fragment, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router";
 import { listMenuParent } from "../../../../../src/components/layouts/NavbarMenu/listMenu";
+import { useUserData } from "../../../../context";
+import { ApplicationName } from "../../MTO/Common/Enum";
 import {
   appBox,
+  appBoxDiv,
+  appBoxDivider,
+  cardContainer,
+  clickBox,
+  image,
   imageHolder,
   landingContainer,
   landingPageDivider,
   rectangle,
-  image,
-  appBoxDivider,
-  clickBox,
-  cardContainer,
-  appBoxDiv,
 } from "./LandingPage.styled.css";
-import { ApplicationName } from "../../MTO/Common/Enum";
-import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router";
-import { LayoutPriority } from "allotment";
+import { NOIRFUSION, REGALBLAZE } from "../../../../styles/global";
 
 const LandingPage = () => {
   const { user } = useUserData();
@@ -106,7 +106,7 @@ const LandingPage = () => {
         Welcome to{" "}
         <span
           style={{
-            color: themeUi === "REGALBLAZE" ? "rgb(199, 129, 14)" : "#BC3D81",
+            color: themeUi === "REGALBLAZE" ? REGALBLAZE.color5 : NOIRFUSION.color5,
             marginBottom: 0,
           }}
         >
@@ -161,8 +161,8 @@ const LandingPage = () => {
                                   style={{
                                     color:
                                       themeUi === "REGALBLAZE"
-                                        ? "rgb(199, 129, 14)"
-                                        : "#820F4C",
+                                        ? REGALBLAZE.color5
+                                        : NOIRFUSION.color5,
                                   }}
                                 >
                                   Click to view{" "}
