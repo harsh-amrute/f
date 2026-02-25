@@ -77,7 +77,6 @@ const STPLAndFullKits = () => {
       ? format(new Date(apiResponseData?.data?.data), "dd MMM yyyy")
       : "";
 
-  // ✅ FIX: wrapped in useCallback and accepts filters as arg to prevent stale closures
   const getGraphData = useCallback(async (filters: any) => {
     try {
       const formattedFilters = formatFilterJSON(filters);
@@ -107,7 +106,6 @@ const STPLAndFullKits = () => {
     getFilterData();
   }, []);
 
-  // ✅ FIX: Explicitly passing appliedFilters to getGraphData
   useEffect(() => {
     if (!isGridView) {
       getGraphData(appliedFilters);
