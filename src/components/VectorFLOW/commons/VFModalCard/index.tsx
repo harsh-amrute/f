@@ -11,9 +11,6 @@ import {
   SCWrapperContent,
   VFHeaderWrapper,
   SCHeader,
-  modalTitleForced,
-  modalForcedBlock,
-  headerBgVar,
   headerTextVar,
   contentLRVar,
   contentBgVar,
@@ -60,7 +57,6 @@ const VFModalCard = ({
       ? `${paddingLeftAndRight}px`
       : "74px";
 
-  console.log(headerBgColor, "headerBgColor");
   return (
     <>
       {
