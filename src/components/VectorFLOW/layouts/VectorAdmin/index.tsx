@@ -1,24 +1,19 @@
-import {ReactNode} from 'react'
+import { ReactNode } from "react";
 
-import {AdminLayoutContent, AdminLayoutWrapper} from './styles'
+import { AdminLayoutContent, AdminLayoutWrapper } from "./styles.css";
 
-interface VectorAdminLayoutProps{
-    children:ReactNode
+interface VectorAdminLayoutProps {
+  children: ReactNode;
 }
 
-const VectorAdminLayout = (props:VectorAdminLayoutProps)=>{
+const VectorAdminLayout = (props: VectorAdminLayoutProps) => {
+  const { children } = props;
 
-    const {
-        children
-    } = props
+  return (
+    <div className={AdminLayoutWrapper}>
+      <div className={AdminLayoutContent}>{children}</div>
+    </div>
+  );
+};
 
-    return(
-        <AdminLayoutWrapper>
-            <AdminLayoutContent>
-            {children}
-            </AdminLayoutContent>
-        </AdminLayoutWrapper>
-    )
-}
-
-export default VectorAdminLayout
+export default VectorAdminLayout;

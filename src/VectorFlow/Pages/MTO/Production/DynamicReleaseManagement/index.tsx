@@ -1,50 +1,80 @@
-import { AgCharts } from 'ag-charts-react';
-import { GridOptions, IRowNode } from 'ag-grid-enterprise';
-import { useEffect, useRef, useState } from 'react'
-import VFTable from '../../Common/VFTable';
-import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from '../../../../../helpers/utils';
-import AvailabilityCellRenderer from '../../../MTA/InsightsAndTrends/BTR/AvailabilityCellRenderer';
-import ColorCellRenderer from '../../Common/ColorCellRenderer/ColorCellRenderer';
-import { Button, Wrapper, BPRViewTableHeaderTab, InputCheckBox, SCTabHeader } from './DynamicReleaseManagement.styled';
-import { useUserData } from '../../../../../context';
-import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar';
-import EditRouteModal from '../../Common/EditRouteModal';
+import { AgCharts } from "ag-charts-react";
+import { GridOptions, IRowNode } from "ag-grid-enterprise";
+import { useEffect, useRef, useState } from "react";
+import VFTable from "../../Common/VFTable";
+import {
+  DownloadExcel,
+  formatFilterJSON,
+  getBodyForExcelExport,
+  getColumnDefinations,
+} from "../../../../../helpers/utils";
+import AvailabilityCellRenderer from "../../../MTA/InsightsAndTrends/BTR/AvailabilityCellRenderer";
+import ColorCellRenderer from "../../Common/ColorCellRenderer/ColorCellRenderer";
+import {
+  Button,
+  Wrapper,
+  btnBgVar,
+  btnTextVar,
+  arrowUrlVar,
+} from "./DynamicReleaseManagement.styled.css";
+import {
+  BPRViewTableHeaderTab,
+  InputCheckBox,
+  SCTabHeader,
+  accentVar,
+  tabTextColorVar,
+  tabZIndexVar,
+  tabMarginLeftVar,
+  tabPaddingLeftVar,
+  tabBgVar,
+} from "./style.css";
+import { useUserData } from "../../../../../context";
+import MTOActionToolBar from "../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
+import EditRouteModal from "../../Common/EditRouteModal";
 import * as globalStyles from "../../../../../styles/global";
-import ReleaseModal from './ReleaseModal';
-import './styles.css'
-import { useGetDynamicReleaseData, useGetDynamicReleaseExcelData } from '../../../../../VectorFlow/Services/MTO/Production/DynamicReleaseManagement';
-import { notifyError, notifySuccess } from '../../../../../helpers/notify';
-import OverlayLoader from '../../Common/Loader';
-import VFPagination from '../../Common/VFPagination';
-import { GridRef } from '../../../../../VectorFlow/types/MDM';
-import { useGetUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UIConfig';
-import { FilterPageName, pagination, UIGridCode } from '../../Common/Enum';
-import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
+import ReleaseModal from "./ReleaseModal";
+import "./styles.css";
+import {
+  useGetDynamicReleaseData,
+  useGetDynamicReleaseExcelData,
+} from "../../../../../VectorFlow/Services/MTO/Production/DynamicReleaseManagement";
+import { notifyError, notifySuccess } from "../../../../../helpers/notify";
+import OverlayLoader from "../../Common/Loader";
+import VFPagination from "../../Common/VFPagination";
+import { GridRef } from "../../../../../VectorFlow/types/MDM";
+import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
+import { FilterPageName, pagination, UIGridCode } from "../../Common/Enum";
+import {
+  useGetUserUIConfigData,
+  useUpdateUserUIConfigData,
+} from "../../../../../VectorFlow/Services/MTO/Common/UserUIConfig";
 import useFilter from "../../../../../hooks/useFilter";
 import { useGetFilterData } from "../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
-import useColDef from '../../../../../hooks/useColDef';
-import { ColorsMTO } from '../../Common/Colors';
-import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
-import BPPRenderer from '../../Common/BPRRenderer/BPPRenderer';
-import { useGetDBRsettingsData } from '../../../../Services/MTO/Common/DBRSettings';
-import { useNavigate } from 'react-router';
-import VFWarningModal from '../../../../../components/VectorFLOW/commons/MTO/VFWarningModal';
-import _ from 'lodash';
-import CustomLegend from '../../Common/CustomLegend';
+import useColDef from "../../../../../hooks/useColDef";
+import { ColorsMTO } from "../../Common/Colors";
+import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
+import BPPRenderer from "../../Common/BPRRenderer/BPPRenderer";
+import { useGetDBRsettingsData } from "../../../../Services/MTO/Common/DBRSettings";
+import { useNavigate } from "react-router";
+import VFWarningModal from "../../../../../components/VectorFLOW/commons/MTO/VFWarningModal";
+import _ from "lodash";
+import CustomLegend from "../../Common/CustomLegend";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
+import "./style.css";
 
 const APIFilterConfig = {
   filSecVisConfig: {
-    "Prod_Dynamic_Release_Management" : {
-      mjr : false,
+    Prod_Dynamic_Release_Management: {
+      mjr: false,
       or: true,
       res: true,
-      cus: true
+      cus: true,
     },
-  }
+  },
 };
 
 const isApiLoading = (...loadingStates: boolean[]) => {
-  return loadingStates.some(state => state);
+  return loadingStates.some((state) => state);
 };
 
 const DynamicReleaseManagement = () => {
@@ -56,7 +86,7 @@ const DynamicReleaseManagement = () => {
       ccr_name: string;
       "Incremental WIP"?: number | 0;
       selected?: boolean;
-      fol_gap: number | 0,
+      fol_gap: number | 0;
     };
   }
   interface OutputData {
@@ -77,35 +107,52 @@ const DynamicReleaseManagement = () => {
   const [columnState, setColumnState] = useState<any>([]);
   const [isReset, setIsReset] = useState<any>(undefined);
   const [colDef, setColDef] = useState([{}]);
-  const refGrid = useRef<GridRef | any>(null)
+  const refGrid = useRef<GridRef | any>(null);
   const [selectedRows, setSelectedRows] = useState<any>([]);
   const [rowRelease, setRowRelease] = useState(false);
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
-  const [order_key, setOrder_Key] = useState('');
+  const [order_key, setOrder_Key] = useState("");
   const [table1, setTable1] = useState<any>(undefined);
-  const [showReleaseModal, setShowReleaseModal] = useState(false)
-  const { mutateAsync: getDBRsettingsData, isLoading: isDBRSettingData } = useGetDBRsettingsData();
-  const { mutateAsync: getDynamicReleaseData, isLoading, isError, isSuccess } = useGetDynamicReleaseData();
-  const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
-  const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
-  const { mutateAsync: getDynamicReleaseExcelData, isLoading: isDynamicReleaseExcelData } = useGetDynamicReleaseExcelData();
-  const { mutateAsync: getPageWiseFilterData, isLoading: isGetFilterData } = useGetFilterData();
-  const { mutateAsync: getUIConfigData, isLoading: isGetUIConfigData } = useGetUIConfigData();
+  const [showReleaseModal, setShowReleaseModal] = useState(false);
+  const { mutateAsync: getDBRsettingsData, isLoading: isDBRSettingData } =
+    useGetDBRsettingsData();
+  const {
+    mutateAsync: getDynamicReleaseData,
+    isLoading,
+    isError,
+    isSuccess,
+  } = useGetDynamicReleaseData();
+  const {
+    mutateAsync: updateUserUIReportConfigData,
+    isLoading: isUpdateUserConfig,
+  } = useUpdateUserUIConfigData();
+  const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } =
+    useGetUserUIConfigData();
+  const {
+    mutateAsync: getDynamicReleaseExcelData,
+    isLoading: isDynamicReleaseExcelData,
+  } = useGetDynamicReleaseExcelData();
+  const { mutateAsync: getPageWiseFilterData, isLoading: isGetFilterData } =
+    useGetFilterData();
+  const { mutateAsync: getUIConfigData, isLoading: isGetUIConfigData } =
+    useGetUIConfigData();
   const [rowDataCount, setRowDataCount] = useState<any>([]);
   const [rowData, setRowData] = useState<any>([]);
   const [graphData, setGraphData] = useState<any>({});
   const [hide, setHide] = useState(false);
-  const [showModal, setShowModal] = useState(false)
+  const [showModal, setShowModal] = useState(false);
   const graph = useRef<any>();
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [HeaderData, setHeaderData] = useState([]);
   const [filterData, setFilterData] = useState({});
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const { colDefMap, getColDef } = useColDef();
   const [masterUIConfig, setMasterUIConfig] = useState([]);
-  const userTheme = themeUi === 'REGALBLAZE';
-  const backgroundColor = userTheme ? ColorsMTO.Orange.code : ColorsMTO.darkPink.code;
+  const userTheme = themeUi === "REGALBLAZE";
+  const backgroundColor = userTheme
+    ? ColorsMTO.Orange.code
+    : ColorsMTO.darkPink.code;
   const [finalGraphData, setFinalGraphData] = useState<any>([]);
   const [orderDetails, setOrderDetails] = useState<any>({});
   const [currentPage, setCurrentPage] = useState(1);
@@ -137,27 +184,30 @@ const DynamicReleaseManagement = () => {
     onAddFilter,
     onApplyFilter,
     toggleFilter,
-    appliedFilters
-  } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_Dynamic_Release_Management);
+    appliedFilters,
+  } = useFilter(
+    filterData,
+    APIFilterConfig.filSecVisConfig.Prod_Dynamic_Release_Management
+  );
 
   useEffect(() => {
     fetchDBRSettingsData();
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (Object.entries(appliedFilters).length && userConfigFetched) {
       setCurrentPage(1);
       GetData(table1 ? 0 : 1);
     }
-  }, [appliedFilters, userConfigFetched])
-  
+  }, [appliedFilters, userConfigFetched]);
+
   const onDataUpdate = () => {
     setCurrentPage(1);
     setSelectedRows([]);
     setIsCheckboxChecked(false);
     setWipDataGlobal({});
     GetData(table1 ? 0 : 1, 1, 1);
-  }
+  };
 
   useEffect(() => {
     if (table1 !== undefined) {
@@ -165,64 +215,62 @@ const DynamicReleaseManagement = () => {
       setIsCheckboxChecked(false);
       getFilterData();
     }
-  }, [table1])
-  
+  }, [table1]);
+
   useEffect(() => {
     if (HeaderData.length > 0) {
-      setColDef(getColumnDefinations(HeaderData, colDefCustomizations, extras))
+      setColDef(getColumnDefinations(HeaderData, colDefCustomizations, extras));
       getUserColumnConfig();
     }
-
-  }, [HeaderData])
-
+  }, [HeaderData]);
 
   useEffect(() => {
     if (isSuccess) {
-      notifySuccess("Fetched Data successfully!")
+      notifySuccess("Fetched Data successfully!");
     }
     if (isError) {
-      notifyError("Failed to load data!")
+      notifyError("Failed to load data!");
     }
-  }, [isSuccess, isError])
+  }, [isSuccess, isError]);
 
   useEffect(() => {
-    
     if (selectedRows.length) {
       setIsReleaseButtonDisabled(false);
-    }
-    else {
+    } else {
       setIsReleaseButtonDisabled(true);
     }
 
     handleWIPData();
-    
   }, [selectedRows]);
 
   const handleWIPData = async () => {
-
     const cloneGraphData: InputData = _.cloneDeep(graphData);
 
     // Update cloneGraphData with existing WIP data
-    selectedRows.forEach((rows:any) => {
+    selectedRows.forEach((rows: any) => {
       const existingWIPData = wipDataGlobal[rows.ok];
       if (existingWIPData) {
-        Object.entries(existingWIPData).forEach(([key, value]:any) => {
+        Object.entries(existingWIPData).forEach(([key, value]: any) => {
           if (cloneGraphData[key]) {
-            cloneGraphData[key]['Incremental WIP'] = (cloneGraphData[key]['Incremental WIP'] ?? 0) + value;
-            cloneGraphData[key]['selected'] = true;
+            cloneGraphData[key]["Incremental WIP"] =
+              (cloneGraphData[key]["Incremental WIP"] ?? 0) + value;
+            cloneGraphData[key]["selected"] = true;
           }
         });
       }
     });
 
-    const selectedOrdersWIP = await getWIPData(selectedRows.map((item: any) => item.ok));
+    const selectedOrdersWIP = await getWIPData(
+      selectedRows.map((item: any) => item.ok)
+    );
 
     // Update cloneGraphData with newly fetched WIP data
-    Object.values(selectedOrdersWIP).forEach((orderData:any) => {
-      Object.entries(orderData).forEach(([key, value]:any) => {
+    Object.values(selectedOrdersWIP).forEach((orderData: any) => {
+      Object.entries(orderData).forEach(([key, value]: any) => {
         if (cloneGraphData[key]) {
-          cloneGraphData[key]['Incremental WIP'] = (cloneGraphData[key]['Incremental WIP'] ?? 0) + value;
-          cloneGraphData[key]['selected'] = true;
+          cloneGraphData[key]["Incremental WIP"] =
+            (cloneGraphData[key]["Incremental WIP"] ?? 0) + value;
+          cloneGraphData[key]["selected"] = true;
         }
       });
     });
@@ -235,21 +283,20 @@ const DynamicReleaseManagement = () => {
       // initially set selected true for all CCRS
       setFinalGraphData(convertData(graphData, true));
     }
-
-  }, [graphData])
+  }, [graphData]);
 
   useEffect(() => {
-    setChartOptions({ ...chartoptions, data: finalGraphData })
-  }, [finalGraphData])
+    setChartOptions({ ...chartoptions, data: finalGraphData });
+  }, [finalGraphData]);
 
   useEffect(() => {
     if (currentGridRef?.current && columnState?.length) {
       const result = currentGridRef.current.api.applyColumnState({
         state: columnState,
-        applyOrder: true
+        applyOrder: true,
       });
       if (!result) {
-        console.error('Failed to apply column state 1');
+        console.error("Failed to apply column state 1");
       }
     }
   }, [columnState]);
@@ -266,63 +313,76 @@ const DynamicReleaseManagement = () => {
       setMasterUIConfig(currentGridRef?.current.api.getColumnState());
     }
   }, [colDef]);
-  
+
   /**
-  * Fetches UI configuration data and updates header state.
-  * @async
-  * @function setColumnDef
-  * @description Makes an API call to get UI config data for a report,
-  *           updates column definitions using `getColDef`,
-  *           and sets header data using `setHeaderData`.
-  * 
-  * @calls getUIConfigData(reportName) - API call to fetch config.
-  * @calls getColDef(response) - Method to set column definitions.
-  * @state HeaderData - Updated with the fetched header data.
-  */
+   * Fetches UI configuration data and updates header state.
+   * @async
+   * @function setColumnDef
+   * @description Makes an API call to get UI config data for a report,
+   *           updates column definitions using `getColDef`,
+   *           and sets header data using `setHeaderData`.
+   *
+   * @calls getUIConfigData(reportName) - API call to fetch config.
+   * @calls getColDef(response) - Method to set column definitions.
+   * @state HeaderData - Updated with the fetched header data.
+   */
   const setColumnDef = async () => {
     try {
       const response = await getUIConfigData(reportName);
       getColDef(response);
       setHeaderData(response.data.data);
-    }
-    catch (e) {
+    } catch (e) {
       console.log(e);
     }
-  }
+  };
 
   /**
- * Handles the API response by checking its status and invoking appropriate callbacks.
- *
- * @param {ApiResponse} response - The response object returned from the API call.
- * @param {() => void} successCallback - Callback function to execute if the API response status is 200 (OK).
- * @param {string} errorMessage - Error message to display if the API response status is not 200 (OK).
- */
-  const handleAPIResponse = (response: ApiResponse, successCallback: () => void, errorMessage: string) => {
+   * Handles the API response by checking its status and invoking appropriate callbacks.
+   *
+   * @param {ApiResponse} response - The response object returned from the API call.
+   * @param {() => void} successCallback - Callback function to execute if the API response status is 200 (OK).
+   * @param {string} errorMessage - Error message to display if the API response status is not 200 (OK).
+   */
+  const handleAPIResponse = (
+    response: ApiResponse,
+    successCallback: () => void,
+    errorMessage: string
+  ) => {
     if (response?.status === 200) {
       successCallback();
     } else {
       notifyError(errorMessage);
     }
   };
- 
+
   /**
-   * 
+   *
    * @param [allOrders=0] - Flag indicating whether to include all orders.
    * @param [page=1] - The current page to be fetched for paginated data.
    * @param [graph=1] - Flag to determine if graph data should be fetched.
    * @param [isExcelExport=false] - Flag indicating if the data fetch is intended for Excel export.
    * @param [pageSize] - Optional page size for pagination; defaults to user's page size.
-   * 
+   *
    */
-  const GetData = async (allOrders = 0, page = 1, graph = 1, isExcelExport = false, pageSize?: any) => {
+  const GetData = async (
+    allOrders = 0,
+    page = 1,
+    graph = 1,
+    isExcelExport = false,
+    pageSize?: any
+  ) => {
     const formattedFilters = formatFilterJSON(appliedFilters);
 
     const page_size = pageSize || userPageSize;
-  
+
     try {
       if (isExcelExport) {
         const headersdata = currentGridRef?.current?.api.getColumnState();
-        const body = getBodyForExcelExport({ headersdata, filterData: formattedFilters, colDefMap });
+        const body = getBodyForExcelExport({
+          headersdata,
+          filterData: formattedFilters,
+          colDefMap,
+        });
         const excelResponse = await getDynamicReleaseExcelData({
           isExcelExport: 1,
           body,
@@ -330,7 +390,15 @@ const DynamicReleaseManagement = () => {
           ao: allOrders,
           report_name: FilterPageName.Prod_Dynamic_Release_Management,
         });
-        handleAPIResponse(excelResponse, () => DownloadExcel(excelResponse, FilterPageName.Prod_Dynamic_Release_Management), "Failed to export to Excel");
+        handleAPIResponse(
+          excelResponse,
+          () =>
+            DownloadExcel(
+              excelResponse,
+              FilterPageName.Prod_Dynamic_Release_Management
+            ),
+          "Failed to export to Excel"
+        );
       } else {
         const gridResponse = await getDynamicReleaseData({
           graph: 0,
@@ -339,18 +407,24 @@ const DynamicReleaseManagement = () => {
           appliedFilters: formattedFilters,
           page_size,
         });
-        handleAPIResponse(gridResponse, () => {
+        handleAPIResponse(
+          gridResponse,
+          () => {
+            if (
+              !gridResponse?.data?.data ||
+              gridResponse?.data?.data?.length === 0
+            ) {
+              setRowDataCount(0);
+              setRowData([]);
+              return;
+            }
 
-          if (!gridResponse?.data?.data || gridResponse?.data?.data?.length === 0) {
-            setRowDataCount(0);
-            setRowData([]);
-            return;
-          }
+            setRowDataCount(gridResponse.data.data.count || 0);
+            setRowData(gridResponse.data.data.results || []);
+          },
+          "Failed to fetch Grid data!"
+        );
 
-          setRowDataCount(gridResponse.data.data.count || 0);
-          setRowData(gridResponse.data.data.results || []);
-        }, "Failed to fetch Grid data!");
-  
         if (graph) {
           const graphResponse = await getDynamicReleaseData({
             graph: 1,
@@ -368,31 +442,34 @@ const DynamicReleaseManagement = () => {
     }
   };
 
-
   const getFilterData = async () => {
     try {
       const response = await getPageWiseFilterData({
         page_name: FilterPageName.Prod_Dynamic_Release_Management,
-        ao: table1 ? 0 : 1
+        ao: table1 ? 0 : 1,
       });
       setFilterData(response?.data.data);
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   const onCloseWarningModal = () => {
     navigate("/landing-page");
-  }
-  
+  };
+
   const fetchDBRSettingsData = async () => {
     try {
       const DBRSettingsData = await getDBRsettingsData();
       const DBRSettings = DBRSettingsData?.data?.data || [];
       if (DBRSettings && DBRSettings.length) {
-        const WIPThresholdLimit = DBRSettings.find((data: any) => data.flag === "WIPThresholdLimit") || 0;
+        const WIPThresholdLimit =
+          DBRSettings.find((data: any) => data.flag === "WIPThresholdLimit") ||
+          0;
         setWIPThresholdLimit(WIPThresholdLimit?.value);
-        const isAutoRelease = DBRSettings.find((data: any) => data.flag === "AutoRelease")?.value === "1" || false;
+        const isAutoRelease =
+          DBRSettings.find((data: any) => data.flag === "AutoRelease")
+            ?.value === "1" || false;
         if (isAutoRelease) {
           setShowWarningModal(true);
         } else {
@@ -400,67 +477,118 @@ const DynamicReleaseManagement = () => {
           setColumnDef();
         }
       }
-
     } catch (e) {
       console.error(e);
     }
-  }
+  };
 
   const colDefCustomizations = {
     Action: {
       floatingFilter: false,
       resizable: false,
-      suppressMenu: true,
+      suppressHeaderMenuButton: true,
       cellRenderer: (params: any) => {
         if (!_.isEmpty(params.data)) {
           return (
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', color: backgroundColor, fontWeight: 'bold', fontFamily: 'roboto' }} onClick={() => { setRowRelease(true), setOrder_Key(params.data.ok), setMessage(`Release Order with id: ${params.data.oid} `), setShowReleaseModal(true) }}>
-              <div >Release &nbsp; </div>
-              <img height={14} width={14} src={userTheme ? '/assets/img/mto/dynamicReleaseManagement/arrow-icon-yellow.svg' : '/assets/img/mto/dynamicReleaseManagement/arrow-icon.svg'} alt='arrow-icon' />
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                color: backgroundColor,
+                fontWeight: "bold",
+                fontFamily: "roboto",
+              }}
+              onClick={() => {
+                setRowRelease(true),
+                  setOrder_Key(params.data.ok),
+                  setMessage(`Release Order with id: ${params.data.oid} `),
+                  setShowReleaseModal(true);
+              }}
+            >
+              <div>Release &nbsp; </div>
+              <img
+                height={14}
+                width={14}
+                src={
+                  userTheme
+                    ? "/assets/img/mto/dynamicReleaseManagement/arrow-icon-yellow.svg"
+                    : "/assets/img/mto/dynamicReleaseManagement/arrow-icon.svg"
+                }
+                alt="arrow-icon"
+              />
             </div>
-          )
+          );
         }
-      }
+      },
     },
     BufferType: {
-      cellRenderer: ColorCellRenderer
+      cellRenderer: ColorCellRenderer,
     },
     Route: {
       cellRenderer: (params: any) => {
         if (!_.isEmpty(params.data)) {
           return (
-            <div style={{ display: "flex", alignItems: "center", gap: "1rem", width: "100%" }}>
-              <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{params.value}</div>
-              <img height={12} width={12} alt="edit icon" src={userTheme ? "/assets/img/mto/fullKitAssignment/edit_icon_yellow.svg" : "/assets/img/mto/fullKitAssignment/edit_icon.svg"} style={{ color: globalStyles.chooseThemeColor[themeUi]?.color4, cursor: "pointer" }}
-                onClick={() => {
-                if (params.data.rid === null) {
-                  notifyError("No Route assigned to this order!");
-                  return;
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "1rem",
+                width: "100%",
+              }}
+            >
+              <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
+                {params.value}
+              </div>
+              <img
+                height={12}
+                width={12}
+                alt="edit icon"
+                src={
+                  userTheme
+                    ? "/assets/img/mto/fullKitAssignment/edit_icon_yellow.svg"
+                    : "/assets/img/mto/fullKitAssignment/edit_icon.svg"
                 }
-                  setOrderDetails({ itemTypeId: params.data.itid, plantId: params.data.plid, routeNum: params.data.rid, orderKey: params.data.ok, pcqty: params.data.pcqty });
-                setShowModal(true);
-              }} />
+                style={{
+                  color: globalStyles.chooseThemeColor[themeUi]?.color4,
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  if (params.data.rid === null) {
+                    notifyError("No Route assigned to this order!");
+                    return;
+                  }
+                  setOrderDetails({
+                    itemTypeId: params.data.itid,
+                    plantId: params.data.plid,
+                    routeNum: params.data.rid,
+                    orderKey: params.data.ok,
+                    pcqty: params.data.pcqty,
+                  });
+                  setShowModal(true);
+                }}
+              />
             </div>
-          )
+          );
         }
-      }
+      },
     },
     OrderInFullKitToday: {
       cellRenderer: AvailabilityCellRenderer,
     },
     ColorPriority: {
-      cellRenderer: ColorCellRenderer
+      cellRenderer: ColorCellRenderer,
     },
     BPP: {
       cellRenderer: BPPRenderer,
     },
     Tags: {
       cellRenderer: ColorCellRenderer,
-      minWidth: 150
+      minWidth: 150,
     },
     DropDown: {
       field: "",
-      headerName: '',
+      headerName: "",
       position: 0,
       resizable: false,
       headerCheckboxSelection: false,
@@ -469,14 +597,12 @@ const DynamicReleaseManagement = () => {
         return params.node && !params.node.group;
       },
       maxWidth: 50,
-      suppressMenu: true,
+      suppressHeaderMenuButton: true,
       floatingFilter: false,
-    }
-  }
+    },
+  };
 
-  const extras: any = [
-
-  ];
+  const extras: any = [];
 
   const getWIPData = async (selectedOrders: any) => {
     try {
@@ -485,17 +611,18 @@ const DynamicReleaseManagement = () => {
         (ok: string) => !wipDataGlobal[ok]
       );
 
-      
       if (newOrders.length === 0) {
         return {};
       }
-  
+
       // Prepare the input for the API
-      const filteredOrders = Object.keys(newOrders.reduce((acc: any, orderId: string) => {
-        acc[orderId] = selectedOrders[orderId];
-        return acc;
-      }, {}));
-  
+      const filteredOrders = Object.keys(
+        newOrders.reduce((acc: any, orderId: string) => {
+          acc[orderId] = selectedOrders[orderId];
+          return acc;
+        }, {})
+      );
+
       // Call the API with the filtered orders
       const response = await getDynamicReleaseData({
         graph: 0,
@@ -503,8 +630,8 @@ const DynamicReleaseManagement = () => {
         page: 1,
         appliedFilters: formatFilterJSON(appliedFilters),
         wipObj: filteredOrders,
-      });      
-  
+      });
+
       if (response.status == 200) {
         // Update the global WIP data state
         setWipDataGlobal((prev: any) => ({
@@ -522,13 +649,15 @@ const DynamicReleaseManagement = () => {
 
   const updateGraphOnSelect = async () => {
     const selectedData = refGrid.current?.api.getSelectedRows();
-    
+
     if (selectedData) {
       let mergedData: any = [...selectedRows]; // Start with the existing selected data
 
       //add newly selected rows in all selectedData
       selectedData.forEach((newItem: any) => {
-        const index = mergedData.findIndex((item: any) => item.ok === newItem.ok);
+        const index = mergedData.findIndex(
+          (item: any) => item.ok === newItem.ok
+        );
 
         if (index !== -1) {
           // If the item exists, replace it
@@ -546,12 +675,12 @@ const DynamicReleaseManagement = () => {
           if (selectedD.ok === item.ok) {
             isThere = 1;
           }
-        })
+        });
 
         if (isThere == 0) {
-          mergedData = mergedData.filter((e: any) => e.ok !== item.ok)
+          mergedData = mergedData.filter((e: any) => e.ok !== item.ok);
         }
-      })
+      });
 
       setSelectedRows(mergedData);
     }
@@ -559,23 +688,20 @@ const DynamicReleaseManagement = () => {
     refGrid.current.api.refreshCells();
   };
 
-  const onFirstDataRendered =
-    (params: any) => {
-      const nodesToSelect: IRowNode[] = [];
-      params.api.forEachNode((node: any) => {
-        if (node.data && node.data.oid && existsInSelected(node.data.ok)) {
-          node.data.ok = selectedRows[0].ok;
-          nodesToSelect.push(node);
-        }
-
-      });
-      params.api.setNodesSelected({ nodes: nodesToSelect, newValue: true });
-      params.api.refreshCells();
-      setCurrentGridRef(refGrid);
-      toggleCheckBox();
-      updateGraphOnSelect();
-
-    }
+  const onFirstDataRendered = (params: any) => {
+    const nodesToSelect: IRowNode[] = [];
+    params.api.forEachNode((node: any) => {
+      if (node.data && node.data.oid && existsInSelected(node.data.ok)) {
+        node.data.ok = selectedRows[0].ok;
+        nodesToSelect.push(node);
+      }
+    });
+    params.api.setNodesSelected({ nodes: nodesToSelect, newValue: true });
+    params.api.refreshCells();
+    setCurrentGridRef(refGrid);
+    toggleCheckBox();
+    updateGraphOnSelect();
+  };
 
   const options: GridOptions<any> = {
     getRowStyle: (params: any) => {
@@ -589,14 +715,14 @@ const DynamicReleaseManagement = () => {
     sideBar: {
       toolPanels: [
         {
-          id: 'columns',
-          labelDefault: 'Columns',
-          labelKey: 'columns',
-          iconKey: 'columns',
-          toolPanel: 'agColumnsToolPanel',
+          id: "columns",
+          labelDefault: "Columns",
+          labelKey: "columns",
+          iconKey: "columns",
+          toolPanel: "agColumnsToolPanel",
           minWidth: 225,
           maxWidth: 225,
-          width: 225
+          width: 225,
         },
       ],
     },
@@ -604,16 +730,15 @@ const DynamicReleaseManagement = () => {
     columnDefs: colDef,
     defaultColDef: {
       resizable: true,
-      suppressMenu: true,
+      suppressHeaderMenuButton: true,
       initialFlex: 1,
       autoHeaderHeight: true,
       floatingFilter: true,
       enableRowGroup: true,
       cellStyle: {
-        "fontSize": "12px",
-        'display': 'flex',
-        'alignItems': 'center',
-
+        fontSize: "12px",
+        display: "flex",
+        alignItems: "center",
       },
     },
   };
@@ -622,13 +747,13 @@ const DynamicReleaseManagement = () => {
     const result: OutputData[] = [];
     // Convert the input object to an array of keys for iteration
     const keys = Object.keys(input);
-    
+
     keys.forEach((key) => {
       const item = input[key];
-      const releasedWIP = item?.wip ?? 0; 
+      const releasedWIP = item?.wip ?? 0;
       const incrementalWIP = item?.["Incremental WIP"] ?? 0;
-      const actualLimit = (item?.limit ?? 0) * (1 + (WIPThresholdLimit / 100)) ; // considered threshold in limit
-      
+      const actualLimit = (item?.limit ?? 0) * (1 + (WIPThresholdLimit / 100)); // considered threshold in limit
+
       const totalLoad = releasedWIP + incrementalWIP;
       let loadType = "Underloaded";
       if (actualLimit === totalLoad || actualLimit === 0) {
@@ -636,7 +761,7 @@ const DynamicReleaseManagement = () => {
       } else if (actualLimit < totalLoad) {
         loadType = "Overloaded";
       }
-      
+
       // Create the main data entry
       result.push({
         category: [loadType, item.ccr_name],
@@ -648,7 +773,6 @@ const DynamicReleaseManagement = () => {
         "CCR Name": item.ccr_name,
         "FOL Gap": item.fol_gap ?? 0,
       });
-      
     });
 
     return result;
@@ -667,7 +791,7 @@ const DynamicReleaseManagement = () => {
   //     size: number;
   //     path: any;
   //   }) => {
-      
+
   //     const width = size * 4;
   //     const height = size / 6;
 
@@ -679,26 +803,26 @@ const DynamicReleaseManagement = () => {
 
   function TooltipRenderer({ datum, xKey }: any) {
     return `
-    <div style="background:#6C696A; style="transform: translateX(120px)" >
-    <div  style=" color: white; padding: 10px 10px 4px;background-color: #6C696A; display: flex; justify-content: center; align-items: center; border-bottom: 1px dashed white">
-        ${datum[xKey]}
-    </div>
-    <div style="color: white; background-color: #6C696A; padding: 10px;">
-      <div style="display: flex; align-items: center;">
-        <div style="margin-right: 10px; height: 3px; width: 15px; background-color: ${barColors["Released WIP"]}"></div>
-        Released WIP:  ${datum["Released WIP"]}
+      <div class="drm-tooltip-container">
+        <div class="drm-tooltip-header">
+          ${datum[xKey]}
+        </div>
+        <div class="drm-tooltip-body">
+          <div class="drm-tooltip-row">
+            <div class="drm-color-box barcolor-Released_WIP"></div>
+            <div>Released WIP: ${datum["Released WIP"]}</div>
+          </div>
+          <div class="drm-tooltip-row">
+            <div class="drm-color-box barcolor-Incremental_WIP"></div>
+            <div>Incremental WIP: ${datum["Incremental WIP"]}</div>
+          </div>
+          <div class="drm-tooltip-row">
+            <div class="drm-color-box barcolor-Limit"></div>
+            <div>Limit: ${datum["Limit"]}</div>
+          </div>
+        </div>
       </div>
-      <div style="display: flex; align-items: center;">
-        <div style="margin-right: 10px; height: 3px; width: 15px; background-color: ${barColors["Incremental WIP"]}"></div>
-        Incremental WIP:  ${datum["Incremental WIP"]}
-      </div>
-      <div style="display: flex; align-items: center;">
-        <div style="margin-right: 10px; height: 3px; width: 15px; background-color: ${barColors["Limit"]}"></div>
-        Limit:  ${datum["Limit"]}
-      </div>
-      
-    </div>
-    </div>`;
+    `;
     // dont remove below code require for fol gap phase 2
     // <div style="display: flex; align-items: center;">
     //     FOL Gap:  ${datum["FOL Gap"]}
@@ -706,44 +830,44 @@ const DynamicReleaseManagement = () => {
   }
 
   const barColors = {
-    "Released WIP": "#191919",
-    "Incremental WIP": "#4BAAF7",
-    "Limit": "#E53F3F",
-  }
+    Released_WIP: "#191919",
+    Incremental_WIP: "#4BAAF7",
+    Limit: "#E53F3F",
+  };
 
   const [chartoptions, setChartOptions] = useState<any>({
     // data: graphData,
     series: [
       {
-        type: 'bar',
-        xKey: 'category',
+        type: "bar",
+        xKey: "category",
         yKey: "Released WIP",
         stacked: true,
         strokeWidth: 0,
         visible: true,
-        fill: barColors["Released WIP"],
-        itemStyler: ({ datum }:any) => {
+        fill: barColors["Released_WIP"],
+        itemStyler: ({ datum }: any) => {
           return {
             fillOpacity: datum.selected == true ? 1 : 0.5,
           };
         },
         tooltip: {
-          position: { placement: "right" },  // anchor to bar
-          renderer: TooltipRenderer
+          position: { placement: "right" }, // anchor to bar
+          renderer: TooltipRenderer,
         },
       },
       {
-        type: 'bar',
-        xKey: 'category',
+        type: "bar",
+        xKey: "category",
         yKey: "Incremental WIP",
         stacked: true,
         strokeWidth: 0,
         visible: true,
-        fill: barColors["Incremental WIP"],
+        fill: barColors["Incremental_WIP"],
         tooltip: {
-          position: { placement: "right" },  // anchor to bar
-          renderer: TooltipRenderer
-        }
+          position: { placement: "right" }, // anchor to bar
+          renderer: TooltipRenderer,
+        },
       },
       {
         type: "scatter",
@@ -755,10 +879,10 @@ const DynamicReleaseManagement = () => {
         visible: true,
         fill: barColors["Limit"],
         tooltip: {
-          position: { placement: "right" },  // anchor to bar
-          renderer: TooltipRenderer
+          position: { placement: "right" }, // anchor to bar
+          renderer: TooltipRenderer,
         },
-      }
+      },
     ],
     axes: [
       {
@@ -768,7 +892,7 @@ const DynamicReleaseManagement = () => {
         // paddingOuter: 0.2,       // Gap before first and after last category
         // groupPaddingInner: 0.6,  // Gap between bars in the same category group
         gridLine: {
-          enabled: false
+          enabled: false,
         },
         depthOptions: [
           {
@@ -777,11 +901,11 @@ const DynamicReleaseManagement = () => {
               rotation: -20,
               avoidCollisions: true,
               wrapping: "hyphenate",
-            }
+            },
           },
           {
-            tick: { enabled: true, stroke: 'black' },
-            label: { fontWeight: "bold", avoidCollisions: true }
+            tick: { enabled: true, stroke: "black" },
+            label: { fontWeight: "bold", avoidCollisions: true },
           },
         ],
       },
@@ -789,46 +913,46 @@ const DynamicReleaseManagement = () => {
         type: "number",
         position: "left",
         title: {
-          text: "Days"
+          text: "Days",
         },
         gridLine: {
-          enabled: false
+          enabled: false,
         },
       },
     ],
     legend: {
       enabled: false,
     },
-  })
+  });
 
   const onOrderRelease = () => {
     setRowRelease(false);
-    setOrder_Key('');
-    setMessage(`Release ${selectedRows.length} selected orders out of ${rowDataCount}`)
+    setOrder_Key("");
+    setMessage(
+      `Release ${selectedRows.length} selected orders out of ${rowDataCount}`
+    );
     setShowReleaseModal(true);
-  }
+  };
 
   const handlePageChangeCumulative = async (pageNumber: number) => {
     setCurrentPage(pageNumber);
     if (table1) {
       GetData(0, pageNumber, 0);
-    }
-    else {
+    } else {
       GetData(1, pageNumber, 0);
     }
   };
 
   const savePageSize = (pageSize: any) => {
     if (pageSize) {
-      setCurrentPage(1)
+      setCurrentPage(1);
       setUserPageSize(pageSize);
       handleSaveClick(undefined, pageSize);
       GetData(table1 ? 0 : 1, 1, 0, false, pageSize);
     } else {
       notifyError("Invalide page size");
     }
-    
-  }
+  };
 
   const onCheckBoxToggle = (e: any) => {
     const isChecked = e.target.checked;
@@ -839,16 +963,16 @@ const DynamicReleaseManagement = () => {
     } else {
       refGrid.current.api.deselectAll();
     }
-  }
-
-  const toggleCheckBox = () => {
-    
-    const selectedNodes = refGrid?.current?.api?.getSelectedRows();
-    const totalRows = refGrid?.current?.api?.getDisplayedRowCount()
-
-    setIsCheckboxChecked(selectedNodes?.length > 0 && selectedNodes?.length === totalRows);
   };
 
+  const toggleCheckBox = () => {
+    const selectedNodes = refGrid?.current?.api?.getSelectedRows();
+    const totalRows = refGrid?.current?.api?.getDisplayedRowCount();
+
+    setIsCheckboxChecked(
+      selectedNodes?.length > 0 && selectedNodes?.length === totalRows
+    );
+  };
 
   const existsInSelected = (ok: string): boolean => {
     for (let index = 0; index < selectedRows.length; index++) {
@@ -856,33 +980,34 @@ const DynamicReleaseManagement = () => {
       if (element.ok === ok) {
         return true;
       }
-
     }
     return false;
-  }
-  
-    
+  };
+
   const getUserColumnConfig = async () => {
     try {
       const data = await getUserUIReportConfigData({
         un: user.user.name,
-        rn_id: UIGridCode.ProdDynamicReleaseManagement
+        rn_id: UIGridCode.ProdDynamicReleaseManagement,
       });
 
-      setUserConfigFetched(true)
-      const newConfig = data?.data?.data[0] ? JSON.parse(data?.data?.data[0]?.columns_settings) || [] : [];
-      setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
+      setUserConfigFetched(true);
+      const newConfig = data?.data?.data[0]
+        ? JSON.parse(data?.data?.data[0]?.columns_settings) || []
+        : [];
+      setUserPageSize(
+        newConfig.pageSize ? Number(newConfig.pageSize) : undefined
+      );
       setColumnState(newConfig.cs);
-  
+
       if (!data) {
-        console.error('Failed to apply column state');
+        console.error("Failed to apply column state");
       }
     } catch (error) {
       console.error(error);
     }
-  }
-      
-  
+  };
+
   const handleSaveClick = async (coldefs?: any, page_size?: any) => {
     try {
       if (coldefs) {
@@ -894,9 +1019,7 @@ const DynamicReleaseManagement = () => {
         };
         await updateUserUIReportConfigData([payload]);
         setColumnState([...coldefs]);
-        
-      }
-      else if (page_size) {
+      } else if (page_size) {
         const config = columnState;
         const fullConfig = { cs: config, pageSize: page_size };
         const payload = {
@@ -905,43 +1028,84 @@ const DynamicReleaseManagement = () => {
           cs: JSON.stringify(fullConfig),
         };
         await updateUserUIReportConfigData([payload]);
-      }
-      else {
+      } else {
         if (currentGridRef?.current?.api) {
           const config = currentGridRef.current.api.getColumnState();
 
           const fullConfig = { cs: config, pageSize: userPageSize };
 
-
           const payload = {
             un: user.user.name,
             rn_id: UIGridCode.ProdDynamicReleaseManagement,
-            cs: JSON.stringify(fullConfig)
-          }
+            cs: JSON.stringify(fullConfig),
+          };
           await updateUserUIReportConfigData([payload]);
           await getUserColumnConfig();
         }
       }
-
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   const handleResetClick = () => {
     setIsReset(true);
-  }
-  
+  };
+
   const ExcelData = () => {
-    GetData(table1 ? 0 : 1, 0, 0, true)
-  }
+    GetData(table1 ? 0 : 1, 0, 0, true);
+  };
+
+  // helper to mirror your styled-logic
+  const computeTabBg = ({
+    status,
+    themeUi,
+    bgColor,
+  }: {
+    status: boolean;
+    themeUi: string;
+    bgColor?: string;
+  }) =>
+    bgColor ??
+    (status
+      ? themeUi === "REGALBLAZE"
+        ? globalStyles.chooseThemeColor[themeUi]?.color5
+        : "transparent linear-gradient(74deg, #820F4C 0%, #BC3D81 100%) 0% 0% no-repeat padding-box"
+      : "white");
 
   const ReleaseOrderHeader: any = (
     <>
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '18px', fontWeight: 'bold', gap: '15px' }}>
-
-        <div style={{ borderRadius: '5px', background: 'white', padding: '10px 30px', display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: 'rgba(133, 132, 132, 0.247) -5px 4px 10px', gap: '10px' }}>
-          <InputCheckBox checked={isCheckboxChecked} onChange={onCheckBoxToggle} type="checkbox" theme={themeUi} />
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          fontSize: "18px",
+          fontWeight: "bold",
+          gap: "15px",
+        }}
+      >
+        <div
+          style={{
+            borderRadius: "5px",
+            background: "white",
+            padding: "10px 30px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            boxShadow: "rgba(133, 132, 132, 0.247) -5px 4px 10px",
+            gap: "10px",
+          }}
+        >
+          <input
+            type="checkbox"
+            checked={isCheckboxChecked}
+            onChange={onCheckBoxToggle}
+            className={InputCheckBox}
+            style={assignInlineVars({
+              [accentVar]: globalStyles.chooseThemeColor[themeUi].color5,
+            })}
+          />
           <p>Release</p>
         </div>
         <VFButton
@@ -970,10 +1134,8 @@ const DynamicReleaseManagement = () => {
 
   return (
     <>
-      <Wrapper>
-        {
-          isApiLoading(...isLoadingStates) && <OverlayLoader />
-        }
+      <div className={Wrapper}>
+        {isApiLoading(...isLoadingStates) && <OverlayLoader />}
         <MTOActionToolBar
           comp="FullKitAssignment"
           isExcelExport
@@ -993,36 +1155,73 @@ const DynamicReleaseManagement = () => {
           ReleaseOrderHeader={ReleaseOrderHeader}
         />
         <VFWarningModal
-          warningMsg={"Access to this page is restricted because orders will be automatically released in the current system."}
+          warningMsg={
+            "Access to this page is restricted because orders will be automatically released in the current system."
+          }
           actionButtonText={"Ok"}
           showWarningModal={showWarningModal}
           onCloseWarningModal={onCloseWarningModal}
           themeUI={user.user.theme_ui}
         />
 
-        <SCTabHeader style={{ marginTop: '5px' }}>
-
-          <BPRViewTableHeaderTab onClick={() => { setTable1(true) }} status={table1} marLeft={true} themeUi={themeUi} zIndex={2} style={{ width: '250px', fontSize: '12px' }} >
+        <div className={SCTabHeader} style={{ marginTop: "5px" }}>
+          <div
+            className={BPRViewTableHeaderTab}
+            onClick={() => {
+              setTable1(true);
+            }}
+            style={{
+              ...assignInlineVars({
+                [tabTextColorVar]: table1 ? "#FFFFFF" : "inherit",
+                [tabZIndexVar]: String(2),
+                [tabMarginLeftVar]: "-1.5em", // marLeft === true
+                [tabPaddingLeftVar]: "1.5em",
+                [tabBgVar]: computeTabBg({ status: table1, themeUi }),
+              }),
+              width: "250px",
+              fontSize: "12px",
+            }}
+          >
             Orders with simulated full kit
-          </BPRViewTableHeaderTab>
-          <BPRViewTableHeaderTab onClick={() => { setTable1(false) }} status={!table1} marLeft={true} themeUi={themeUi} zIndex={1} style={{ width: '250px', fontSize: '12px' }} >
+          </div>
+          <div
+            className={BPRViewTableHeaderTab}
+            onClick={() => {
+              setTable1(false);
+            }}
+            style={{
+              ...assignInlineVars({
+                [tabTextColorVar]: !table1 ? "#FFFFFF" : "inherit",
+                [tabZIndexVar]: String(1),
+                [tabMarginLeftVar]: "-1.5em", // marLeft === true
+                [tabPaddingLeftVar]: "1.5em",
+                [tabBgVar]: computeTabBg({ status: !table1, themeUi }),
+              }),
+              width: "250px",
+              fontSize: "12px",
+            }}
+          >
             All Orders
-          </BPRViewTableHeaderTab>
-        </SCTabHeader>
+          </div>
+        </div>
         <VFTable
           ref={refGrid}
           rowData={rowData}
           disableZoomScaling
           gridOptions={options}
           columnDefs={options.columnDefs}
-          onFilterChanged={() => { Object.keys((currentGridRef?.current?.api?.getFilterModel()))?.length > 0 ? setIsDisabled(false) : setIsDisabled(true) }}
+          onFilterChanged={() => {
+            Object.keys(currentGridRef?.current?.api?.getFilterModel())
+              ?.length > 0
+              ? setIsDisabled(false)
+              : setIsDisabled(true);
+          }}
           rowSelection="multiple"
           onSelectionChanged={updateGraphOnSelect}
           onRowDataUpdated={onFirstDataRendered}
           maintainColumnOrder={true}
         />
-        <div style={{ width: '100%' }}>
-
+        <div style={{ width: "100%" }}>
           <VFPagination
             selectedRows={0}
             rowsPerPage={userPageSize || pagination.mtoPageSize}
@@ -1037,19 +1236,84 @@ const DynamicReleaseManagement = () => {
             userPageSize={userPageSize}
           />
         </div>
-        <Button arrowName={!hide ? "bg_arrow_down" : "bg_arrow_up"} themeUi={themeUi} onClick={() => { setHide(!hide) }}> {hide ? "Show" : "Hide"} Load Chart</Button>
-         <div className='chart-wrapper' style={{ flex: !hide ? 1:0, overflow: hide ? "hidden":"unset", minHeight: 0, marginBottom: hide ? "0" : "10px", boxShadow: "0px 6px 12px #81818129"}}>
-            <CustomLegend chartOptions={chartoptions} setChartOptions={ setChartOptions } />
-            <div className='chart-scroll' style={{overflowX:chartoptions?.data?.length > 15 ? "scroll" : "hidden"}}>
-              <AgCharts ref={graph} style={{ height: "100%", width: chartoptions?.data?.length > 15 ? `${100*chartoptions?.data?.length + "px"}` : "100%" }} options={chartoptions} /> 
-            </div>
+        <button
+          className={Button}
+          onClick={() => setHide(!hide)}
+          style={assignInlineVars({
+            [btnBgVar]: globalStyles.chooseThemeColor[themeUi]?.color4,
+            [btnTextVar]: globalStyles.chooseThemeColor[themeUi]?.colorText,
+            [arrowUrlVar]: `url("${
+              process.env.PUBLIC_URL
+            }/assets/img/mto/fullKitAssignment/${
+              !hide ? "bg_arrow_down" : "bg_arrow_up"
+            }.svg`,
+          })}
+        >
+          {" "}
+          {hide ? "Show" : "Hide"} Load Chart
+        </button>
+        <div
+          className="chart-wrapper"
+          style={{
+            flex: !hide ? 1 : 0,
+            overflow: hide ? "hidden" : "unset",
+            minHeight: 0,
+            marginBottom: hide ? "0" : "10px",
+            boxShadow: "0px 6px 12px #81818129",
+          }}
+        >
+          <CustomLegend
+            chartOptions={chartoptions}
+            setChartOptions={setChartOptions}
+          />
+          <div
+            className="chart-scroll"
+            style={{
+              overflowX: chartoptions?.data?.length > 15 ? "scroll" : "hidden",
+            }}
+          >
+            <AgCharts
+              ref={graph}
+              style={{
+                height: "100%",
+                width:
+                  chartoptions?.data?.length > 15
+                    ? `${100 * chartoptions?.data?.length + "px"}`
+                    : "100%",
+              }}
+              options={chartoptions}
+            />
+          </div>
         </div>
-        {showModal && <EditRouteModal orderDetails={orderDetails} chartoptions={chartoptions} setChartOptions={setChartOptions} onDataUpdateCallback={onDataUpdate} showModal={showModal} setShowModal={setShowModal} themeUi={themeUi} />}
-        
-        {showReleaseModal && <ReleaseModal onDataUpdateCallback={onDataUpdate} setResetReleaseCheckbox={setIsCheckboxChecked} rowRelase={rowRelease} message={message} themeUi={themeUi} totalOrders={120} order_key={order_key} selectedOrders={selectedRows} showModal={showReleaseModal} setShowModal={setShowReleaseModal} />}
-      </Wrapper>
-    </>
-  )
-}
+        {showModal && (
+          <EditRouteModal
+            orderDetails={orderDetails}
+            chartoptions={chartoptions}
+            setChartOptions={setChartOptions}
+            onDataUpdateCallback={onDataUpdate}
+            showModal={showModal}
+            setShowModal={setShowModal}
+            themeUi={themeUi}
+          />
+        )}
 
-export default DynamicReleaseManagement
+        {showReleaseModal && (
+          <ReleaseModal
+            onDataUpdateCallback={onDataUpdate}
+            setResetReleaseCheckbox={setIsCheckboxChecked}
+            rowRelase={rowRelease}
+            message={message}
+            themeUi={themeUi}
+            totalOrders={120}
+            order_key={order_key}
+            selectedOrders={selectedRows}
+            showModal={showReleaseModal}
+            setShowModal={setShowReleaseModal}
+          />
+        )}
+      </div>
+    </>
+  );
+};
+
+export default DynamicReleaseManagement;

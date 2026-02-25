@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import "./styles.css";
+import * as s from "./style.css";
 
 const DropdownAccordion = ({ roles, selected, toggleOption }: any) => {
   const [open, setOpen] = useState(false);
@@ -14,55 +14,71 @@ const DropdownAccordion = ({ roles, selected, toggleOption }: any) => {
 
   return (
     <details
-      className={`custom-details ${open ? "open" : ""}`}
       ref={detailsRef}
       onToggle={handleToggle}
-      style={{ backgroundColor: roles?.subchild?.length !== 0 ? "white" : "" }}
+      className={`${s.customDetails} ${
+        open ? s.customDetailsState.open : s.customDetailsState.closed
+      }`}
+      style={{
+        backgroundColor: roles?.subchild?.length !== 0 ? "white" : undefined,
+      }}
     >
       <summary
-        className={`custom-summary ${open ? "open" : ""}`}
+        className={`${open ? s.customSummary.open : s.customSummary.closed}`}
         style={{
           backgroundColor:
-            roles?.subchild?.length !== 0 && !roles.title ? "white" : "",
-            paddingRight: !roles.title && roles.subchild?.length !== 0 && open ? "2rem" : "",
+            roles?.subchild?.length !== 0 && !roles.title ? "white" : undefined,
+          paddingRight:
+            !roles.title && roles.subchild?.length !== 0 && open
+              ? "2rem"
+              : undefined,
         }}
       >
         <label
+          className={s.truncate}
           style={{
             display: "flex",
             alignItems: "center",
             gap: "0.5rem",
-            fontSize: roles.title ? "1.2rem" : roles.subchild?.length === 0 || roles.subchild === undefined ? "0.9rem" : "1.1rem",
-            fontWeight : roles.title ? 700 : roles.subchild?.length === 0 || roles.subchild === undefined ? 400 : 500,
+            fontSize: roles.title
+              ? "1.2rem"
+              : roles.subchild?.length === 0 || roles.subchild === undefined
+              ? "0.9rem"
+              : "1.1rem",
+            fontWeight: roles.title
+              ? 700
+              : roles.subchild?.length === 0 || roles.subchild === undefined
+              ? 400
+              : 500,
           }}
-          className={"truncate"}
         >
           {!("title" in roles) && (
             <input
               type="checkbox"
               checked={isChecked}
               onChange={() => toggleOption(roles)}
-              onClick={(e) => e.stopPropagation()} // prevent details toggle on checkbox click
+              onClick={(e) => e.stopPropagation()}
             />
           )}
-
           {roles.title || roles.name}
         </label>
+
         {hasChildren && (
-          <span className="arrow">
+          <span className={s.arrow}>
             <img
               src="/assets/img/VectorFLOW/BPR/down-arrow.svg"
               style={{
                 marginRight: "0.8rem",
-                height: "5px",
+                height: 5,
                 transform: open ? "rotate(180deg)" : "none",
               }}
+              alt=""
             />
           </span>
         )}
       </summary>
 
-        <div style={{ paddingLeft: "0.7rem"}}>
+      <div className={s.customDropdown} style={{ paddingLeft: "0.7rem" }}>
         {hasChildren &&
           roles.subchild.map((child: any) => (
             <DropdownAccordion
@@ -72,8 +88,7 @@ const DropdownAccordion = ({ roles, selected, toggleOption }: any) => {
               toggleOption={toggleOption}
             />
           ))}
-        </div>
-   
+      </div>
     </details>
   );
 };

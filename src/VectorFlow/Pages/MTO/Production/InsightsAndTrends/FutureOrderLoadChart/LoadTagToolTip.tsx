@@ -1,7 +1,17 @@
 import React from "react";
 import { CustomTooltipProps } from "@ag-grid-community/react";
-import styled from "styled-components";
-
+import {
+  tooltipWrapper,
+  tagWrapper,
+  tagArrow,
+  tagLabel,
+  tagArrowRightColorVar,
+  tagArrowBorderColorVar,
+  tagLabelBgVar,
+  tagLabelTextColorVar,
+  tagLabelBorderVar,
+} from "./styles.css";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 const getTagStyles = (tag: string) => {
   if (!tag) {
     return { arrow: "#cccccc", bg: "#fff", text: "#000", border: "none" };
@@ -20,45 +30,6 @@ const getTagStyles = (tag: string) => {
   return { arrow: "#c1c1c1", bg: "#fff", text: "#111", border: "none" };
 };
 
-const TooltipWrapper = styled.div`
-  color: white;
-  background-color: transparent;
-  padding: 8px 10px;
-  border-radius: 6px;
-  font-size: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-
-`;
-
-const TagWrapper = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const TagArrow = styled.div<{ arrowcolor: string; bordercolor: string }>`
-  width: 0;
-  height: 0;
-  border-top: 11px solid transparent;
-  border-bottom: 11px solid transparent;
-  border-right: 15px solid ${({ arrowcolor }) => arrowcolor};
-  ${({ bordercolor }) =>
-    bordercolor !== "none" &&
-    `border-top: 1px solid ${bordercolor}; border-bottom: 1px solid ${bordercolor};`};
-`;
-
-const TagLabel = styled.div<{ bgcolor: string; textcolor: string; bordercolor: string }>`
-  padding: 5px 12px;
-  line-height: 1;
-  min-width: 120px;
-  background: ${({ bgcolor }) => bgcolor};
-  color: ${({ textcolor }) => textcolor};
-  font-weight: 500;
-  border-radius: 0 4px 4px 0;
-  border: ${({ bordercolor }) => bordercolor};
-`;
-
 const LoadTagTooltip: React.FC<CustomTooltipProps> = (props) => {
   const rawValue = props.value;
   const tags: string[] = Array.isArray(rawValue)
@@ -66,27 +37,36 @@ const LoadTagTooltip: React.FC<CustomTooltipProps> = (props) => {
     : [rawValue].filter(Boolean);
 
   if (tags.length === 0) {
-    return <TooltipWrapper>No tags</TooltipWrapper>;
+    return <div className={tooltipWrapper}>No tags</div>;
   }
 
   return (
-    <TooltipWrapper>
+    <div className={tooltipWrapper}>
       {tags.map((tag, idx) => {
         const style = getTagStyles(tag);
         return (
-          <TagWrapper key={idx}>
-            <TagArrow arrowcolor={style.arrow} bordercolor={style.border} />
-            <TagLabel
-              bgcolor={style.bg}
-              textcolor={style.text}
-              bordercolor={style.border}
+          <div className={tagWrapper} key={idx}>
+            <div
+              className={tagArrow}
+              style={assignInlineVars({
+                [tagArrowRightColorVar]: style.arrow,
+                [tagArrowBorderColorVar]: style.border,
+              })}
+            />
+            <div
+              className={tagLabel}
+              style={assignInlineVars({
+                [tagLabelBgVar]: style.bg,
+                [tagLabelTextColorVar]: style.text,
+                [tagLabelBorderVar]: style.border,
+              })}
             >
               {tag}
-            </TagLabel>
-          </TagWrapper>
+            </div>
+          </div>
         );
       })}
-    </TooltipWrapper>
+    </div>
   );
 };
 

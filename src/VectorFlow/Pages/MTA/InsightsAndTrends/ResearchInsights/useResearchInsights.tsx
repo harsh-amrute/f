@@ -12,7 +12,7 @@ import { isSameDay, format, addDays } from 'date-fns'
 import { ReseachInsightsGraphState } from '../../../../../VectorFlow/types/BPR'
 import { useGetUpdatedGraphData, useGetHistroricalAvailabilityData } from '../../../../../VectorFlow/Services/MTA/InsightsAndTrends/ResearchInsights'
 import { notifyError, notifyLoader,notifySuccess } from '../../../../../helpers/notify'
-import { toast } from 'react-toastify'
+import { toast } from 'react-toastify/unstyled'
 
 
 import { useSelector, useDispatch } from 'react-redux'

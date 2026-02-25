@@ -8,7 +8,9 @@ import {
   ButtonToggle3State,
   SelectAllPage,
 } from "../../../components/index";
-import { chooseThemeColor } from "../../../styles/global";
+import { chooseThemeColor, mainColor } from "../../../styles/global";
+
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 import {
   SCBoxFilter,
   SCQuickFilters,
@@ -24,7 +26,11 @@ import {
   SCFilterBtn,
   SCResetFilterBtn,
   SCQuickFiltersWrap,
-} from "./styles";
+  filterBtnBgVar,
+  resetBtnBorderVar,
+  resetBtnColorVar,
+  quickActionBtnBgVar,
+} from "./styles.css";
 import { ISTService } from "../../../services/ist/api";
 import Spinner from "../../../components/commons/Spinner/index";
 import LoadingSpinner from "../../../components/commons/LoadingSpinner/index";
@@ -389,30 +395,45 @@ const Home = () => {
 
   return (
     <>
-      <SCBoxFilterSticky>
-        <SCBoxFilter>
+      <div className={SCBoxFilterSticky}>
+        <div className={SCBoxFilter}>
           <PrdFilter
             ref={productFilterRef}
             endpoint="/api/ist/pending/product-filter-list"
           />
           <LcnFilter
             ref={locationFilterRef}
-            endpoint={{
-              lcFilterList: "/api/ist/pending/location-filter-list",
-            }}
+            endpoint={{ lcFilterList: "/api/ist/pending/location-filter-list" }}
           />
-          <SCButtonFilter>
-            <SCFilterBtn onClick={onFilter} themeUi={themeUi}>
+
+          <div className={SCButtonFilter}>
+            <button
+              className={SCFilterBtn}
+              style={assignInlineVars({
+                [filterBtnBgVar]: chooseThemeColor[themeUi]?.color5 ?? "#000",
+              })}
+              onClick={onFilter}
+            >
               {t("pendingISTRequests.button.filter")}
-            </SCFilterBtn>
-            <SCResetFilterBtn onClick={resetFilter} themeUi={themeUi}>
+            </button>
+
+            <button
+              className={SCResetFilterBtn}
+              style={assignInlineVars({
+                [resetBtnColorVar]: chooseThemeColor[themeUi]?.color5 ?? "#000",
+                [resetBtnBorderVar]:
+                  chooseThemeColor[themeUi]?.color5 ?? "#000",
+              })}
+              onClick={resetFilter}
+            >
               {t("pendingISTRequests.button.resetFilter")}
-            </SCResetFilterBtn>
-          </SCButtonFilter>
-        </SCBoxFilter>
-        <SCQuickFilters>
-          <SCQuickFiltersWrap>
-            <SCQuickAction>
+            </button>
+          </div>
+        </div>
+
+        <div className={SCQuickFilters}>
+          <div className={SCQuickFiltersWrap}>
+            <div className={SCQuickAction}>
               {listAllId.length > 0 ? (
                 <Checkbox
                   name="action"
@@ -423,14 +444,14 @@ const Home = () => {
               ) : (
                 ""
               )}
-              <SCQuickActionSelect>
-                <SCQuickActionLabel>
+
+              <div className={SCQuickActionSelect}>
+                <label className={SCQuickActionLabel}>
                   {t("pendingISTRequests.action.title")}
-                </SCQuickActionLabel>
-                <SCQuickActionSelectInput
-                  onChange={(e) => {
-                    setTypeTable(e.target.value);
-                  }}
+                </label>
+                <select
+                  className={SCQuickActionSelectInput}
+                  onChange={(e) => setTypeTable(e.target.value)}
                 >
                   <option value="ACCEPTED">
                     {t("pendingISTRequests.action.accept")}
@@ -441,30 +462,32 @@ const Home = () => {
                   <option value="REJECTED">
                     {t("pendingISTRequests.action.reject")}
                   </option>
-                </SCQuickActionSelectInput>
-              </SCQuickActionSelect>
-            </SCQuickAction>
-            <SCQuickFilterBox>
-              <SCQuickActionButton
-                style={
-                  checkAllTable && listAllId.length > 0
-                    ? { background: chooseThemeColor[themeUi].color5 }
-                    : { background: "#D8D8D8", pointerEvents: "none" }
-                }
+                </select>
+              </div>
+            </div>
+
+            <div className={SCQuickFilterBox}>
+              <button
+                className={SCQuickActionButton}
+                style={assignInlineVars({
+                  [quickActionBtnBgVar]: mainColor ?? "#000",
+                })}
                 onClick={async () => {
                   await onAction();
                 }}
+                // disabled visual state via inline styles you already use below
               >
                 <img src="/assets/img/ist/White-Arrow.svg" alt="filter" />
-              </SCQuickActionButton>
-            </SCQuickFilterBox>
+              </button>
+            </div>
 
             <VerticalPartitions />
 
-            <SCQuickFilterBox>
-              <SCQuickFiltersText>
+            <div className={SCQuickFilterBox}>
+              <p className={SCQuickFiltersText}>
                 {t("pendingISTRequests.quickFilter.title")} -
-              </SCQuickFiltersText>
+              </p>
+
               <ButtonOutlineStatus
                 status={buttonStatus.accepted}
                 icon=""
@@ -489,11 +512,11 @@ const Home = () => {
                   await onChange("REJECTED");
                 }}
               />
-            </SCQuickFilterBox>
+            </div>
 
             <VerticalPartitions />
 
-            <SCQuickFilterBox>
+            <div className={SCQuickFilterBox}>
               <ButtonOutlineStatus
                 status={buttonAuto.auto}
                 icon=""
@@ -510,14 +533,14 @@ const Home = () => {
                   await onChangeAuto("Manual");
                 }}
               />
-            </SCQuickFilterBox>
+            </div>
 
             <VerticalPartitions />
-          </SCQuickFiltersWrap>
+          </div>
 
           <ButtonToggle3State onClick={logState} />
-        </SCQuickFilters>
-      </SCBoxFilterSticky>
+        </div>
+      </div>
 
       {checkAllTable && (
         <SelectAllPage
@@ -535,9 +558,7 @@ const Home = () => {
         <>
           <Table
             data={filterData}
-            getData={() => {
-              setExecuteFilter(new Date().getTime());
-            }}
+            getData={() => setExecuteFilter(new Date().getTime())}
             listCheckAll={listCheckAll}
             setListCheckAll={setListCheckAll}
             listIdTable={listIdTable}

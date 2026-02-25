@@ -1,0 +1,57 @@
+.stplGraph-tooltip-title {
+  background-color: #6c696a;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.stplGraph-tooltip-content {
+  color: white;
+  background-color: #6c696a;
+}
+
+.stplGraph-tooltip-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.stplGraph-color-box {
+  margin-right: 10px;
+  margin-top: 5px;
+  height: 10px;
+  width: 10px;
+  background-color: #ad5000;
+}
+
+.color-gray {
+  background-color: gray;
+}
+
+.stplGraph-label-value {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.displayFlex {
+  display: flex;
+}
+.stplGraph-marginLeft {
+  margin-left: 20px;
+}
+
+.stplGraph-color-box-days {
+  margin-right: 10px;
+  margin-top: 5px;
+  height: 10px;
+  width: 10px;
+  background-color: gray;
+}
+.stplGraph-color-box-limit {
+  margin-right: 10px;
+  margin-top: 5px;
+  height: 10px;
+  width: 10px;
+  background-color: green;
+}

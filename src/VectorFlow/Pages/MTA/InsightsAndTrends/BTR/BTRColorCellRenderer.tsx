@@ -1,4 +1,4 @@
-import {BPRColorCellRendererWrapper} from '../../SupplyChainIntelligenceHub/BPR/styles'
+import {BPRColorCellRendererWrapper} from '../../SupplyChainIntelligenceHub/BPR/styles.css'
 import { Black, Green, Red, white, Yellow, Blue,gray, Grey } from '../../../../../styles/global'
 
 const colorMapper =(color:string)=> {
@@ -52,24 +52,24 @@ const BTRColorCellRenderer = (params:any)=>{
 
     if(color===null || color===undefined || isNaN(color)){
         return(
-            <BPRColorCellRendererWrapper style={{backgroundColor:gray,color:Black,maxWidth:85}} data-testid='color-cell'>
+            <div className={BPRColorCellRendererWrapper} style={{backgroundColor:gray,color:Black,maxWidth:85}} data-testid='color-cell'>
               X
-            </BPRColorCellRendererWrapper>
+            </div>
         )
 
     }
     if(color==-99999999.00){
         return(
-            <BPRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.bg,maxWidth:85}} data-testid='color-cell'>
+            <div className={BPRColorCellRendererWrapper} style={{backgroundColor:cellColor.bg,color:cellColor.bg,maxWidth:85}} data-testid='color-cell'>
                -999.99%
-            </BPRColorCellRendererWrapper>
+            </div>
         )
     }
 
     return(
-        <BPRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text,maxWidth:85}} data-testid='color-cell'>
+        <div className={BPRColorCellRendererWrapper} style={{backgroundColor:cellColor.bg,color:cellColor.text,maxWidth:85}} data-testid='color-cell'>
             {color.toFixed(2)}%
-        </BPRColorCellRendererWrapper>
+        </div>
     )
 }
 

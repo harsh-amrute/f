@@ -1,5 +1,6 @@
 import React from "react";
-import {  Svg, Circle, Text } from "./style";
+import { svg, text, circleStyle, circleStrokeWidthVar } from "./style.css";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 
 type CircularProgressProps = {
   size: number;
@@ -22,31 +23,37 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
   const offset = circumference - (progress / 100) * circumference;
 
   return (
-
-      <Svg width={size} height={size}>
-        <Circle
-          cx={center}
-          cy={center}
-          r={radius}
-          strokeWidth={strokeWidth}
-          stroke={bgColor}
-          fill="none"
-        />
-        <Circle
-          cx={center}
-          cy={center}
-          r={radius}
-          strokeWidth={strokeWidth}
-          stroke={color}
-          fill="none"
-          strokeDasharray={circumference}
-          strokeDashoffset={offset}
-          strokeLinecap="round"
-          transform={`rotate(-90 ${center} ${center})`}
-        />
-        <Text x="50%" y="50%" dy=".3em">{`${progress}%`}</Text>
-      </Svg>
-
+    <svg className={svg} width={size} height={size}>
+      <circle
+        className={circleStyle}
+        style={assignInlineVars({
+          [circleStrokeWidthVar] : `${strokeWidth}px`
+        })}
+        cx={center}
+        cy={center}
+        r={radius}
+        strokeWidth={strokeWidth}
+        stroke={bgColor}
+        fill="none"
+      />
+      <circle
+        className={circleStyle}
+        style={assignInlineVars({
+          [circleStrokeWidthVar] : `${strokeWidth}px`
+        })}
+        cx={center}
+        cy={center}
+        r={radius}
+        strokeWidth={strokeWidth}
+        stroke={color}
+        fill="none"
+        strokeDasharray={circumference}
+        strokeDashoffset={offset}
+        strokeLinecap="round"
+        transform={`rotate(-90 ${center} ${center})`}
+      />
+      <text className={text} x="50%" y="50%" dy=".3em">{`${progress}%`}</text>
+    </svg>
   );
 };
 

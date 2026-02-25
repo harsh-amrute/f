@@ -4,7 +4,7 @@ import { useNavigate } from "react-router"
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify"
 import { useDeleteMTODraft, useGetAllDrafts, useGetBufferTypeMaster, useGetCCRMasterData, useGetDraftById, useGetDraftCount, useGetMasterUIConfiguration, useGetMTODraftById, useGetMTODrafts, useGetMTOMasterUIConfiguration } from "../../../../../VectorFlow/Services/MTA/MDM"
 
-import { toast } from 'react-toastify'
+import { toast } from "react-toastify/unstyled"
 import { v4 as uuidv4 } from "uuid"
 import { useUserData } from "../../../../../context"
 import { createMastersStateFromDraftData, generateRandomId, getActionName, getCCRNamesFromId, mapMasterToMasterState } from "../../../../../helpers/utils"

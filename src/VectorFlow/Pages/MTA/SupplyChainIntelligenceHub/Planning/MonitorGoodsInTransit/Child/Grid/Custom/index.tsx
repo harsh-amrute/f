@@ -3,12 +3,12 @@ import {useEffect, useContext, useState } from "react";
 // import "./styles.css";
 import VFTable from "../../../../../../../../../components/VectorFLOW/commons/VFTable";
 // import _ from "lodash";
-import '../../../styles.css';
+import '../../../style.css';
 import { useGetPlanningDataCustom } from "../../../../../../../../Services/MTA/SupplyChainIntelligenceHub/Planning";
 import VFLoader from "../../../../../../../../../components/VectorFLOW/commons/VFLoader";
-import { SCDynamicContainer } from "../../../styles";
+import { SCDynamicContainer } from "../../../style.css";
 import { notifyLoader,notifyError,notifySuccess } from "../../../../../../../../../helpers/notify";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify/unstyled";
 
 import { useGetState } from "../../../../../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 
@@ -128,7 +128,7 @@ const MonitorGITChildCustomCharts = ({recordCount}:{recordCount:number}) => {
     
     return(
         <>
-        <SCDynamicContainer>
+        <div className={SCDynamicContainer}>
             <VFTable
                 height={'100%'}
                 ref={ref}
@@ -176,7 +176,7 @@ const MonitorGITChildCustomCharts = ({recordCount}:{recordCount:number}) => {
                 disableZoomScaling={true}
                 rowHeight={30}
             />
-        </SCDynamicContainer>
+        </div>
         </>
     )
     

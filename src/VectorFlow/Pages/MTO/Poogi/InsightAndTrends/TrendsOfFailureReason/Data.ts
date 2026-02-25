@@ -1,20 +1,20 @@
 import { ColDef } from "ag-grid-enterprise";
-
+import "./style.css";
 export function TooltipRenderer(props: any) {
     const { datum, xKey, labels } = props;
     return `
-<div style="width: 250px">
-<div class="ag-chart-tooltip-title" style="background-color: #6C696A; display: flex; justify-content: center; align-items: center">
+<div class="tooltip-div-tfr">
+<div class="ag-chart-tooltip-title-tfr">
     ${datum[xKey]}
 </div>
-<div class="ag-chart-tooltip-content" style="color: white; background-color: #6C696A">
+<div class="ag-chart-tooltip-content-tfr">
 
 <div>
     ${labels?.map((label: any) => `
-    <div style="display: flex;">
-        <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: ${label?.color}"></div>
-        <div style="display:flex ;width: 100%; justify-content: space-between">
-            <div style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" >${label.text}</div>
+    <div class="displayFlex">
+        <div class="color-label-tfr" style=" background-color: ${label?.color}"></div>
+        <div class="color-textbox" style="">
+            <div class="color-box-tfr">${label.text}</div>
             <div>${datum[label?.key] || '--' }</div>
         </div>
     </div>

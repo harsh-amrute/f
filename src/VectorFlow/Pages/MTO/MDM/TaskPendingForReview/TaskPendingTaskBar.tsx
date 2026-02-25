@@ -1,4 +1,4 @@
-import { TaskBarContainer, VFTaskBarButtonGroup } from "../ViewModify/styles"
+import { TaskBarContainer, VFTaskBarButtonGroup } from "../ViewModify/styles.css"
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline"
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton"
 import { useUserData } from "../../../../../context"
@@ -23,16 +23,16 @@ const TaskPendingTaskBar = (props:TaskPendingTaskBarProps) =>{
     const {user} = useUserData()
 
     return(
-        <TaskBarContainer data-testid="taskbar" style={{width:isSideBarOpen?'77%':'97%'}}>
-            <VFTaskBarButtonGroup>
+        <div className={TaskBarContainer} data-testid="taskbar" style={{width:isSideBarOpen?'77%':'97%'}}>
+            <div className={VFTaskBarButtonGroup}>
                 <VFButtonOutline onClick={onCancel} themeUi={user.user.theme_ui} disabled={false} width={137}>
                     Cancel
                 </VFButtonOutline>            
                 <VFButton onClick={onSubmit} themeUi={user.user.theme_ui} disabled={disableSubmit} width={137}>
                     Submit
                 </VFButton>
-            </VFTaskBarButtonGroup>
-        </TaskBarContainer>
+            </div>
+        </div>
     )
 }
 

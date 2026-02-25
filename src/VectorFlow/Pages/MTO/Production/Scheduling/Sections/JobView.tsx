@@ -1,31 +1,57 @@
 import React, { Suspense, lazy, useEffect, useState } from "react";
-import styled, { keyframes } from "styled-components";
-import { TaskBar, TooltipRow, TooltipWrapper } from "../components/MyChartStyles";
+import {
+  taskBar,
+  taskBarBgVar,
+  taskBarLeftVar,
+  taskBarWidthVar,
+  tooltipRow,
+  tooltipWrapper,
+} from "../components/MyChartStyles.css";
 import { format } from "date-fns";
-import { ChartWrapper, SectionWrapper, SkeletonBlock } from "../SchedulingStyles";
+import {
+  chartWrapper,
+  sectionWrapper,
+  skeletonBlock,
+  skeletonHeightVar,
+  skeletonWidthVar,
+} from "../SchedulingStyles.css";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 
 const MyChart = lazy(() => import("../components/MyChart")); // still code-split
-
-
 
 const GanttSkeleton = () => {
   return (
     <div>
-      <SkeletonBlock height="30px" width="40%" />
-      <SkeletonBlock height="30px" width="60%" />
+      <div
+        className={skeletonBlock}
+        style={assignInlineVars({
+          [skeletonHeightVar]: "30px",
+          [skeletonWidthVar]: "40%",
+        })}
+      />
+      <div
+        className={skeletonBlock}
+        style={assignInlineVars({
+          [skeletonHeightVar]: "30px",
+          [skeletonWidthVar]: "60%",
+        })}
+      />
 
       {[...Array(6)].map((_, i) => (
-        <SkeletonBlock
+        <div
+          className={skeletonBlock}
           key={i}
-          height="20px"
-          width={`${50 + Math.random() * 40}%`}
+          style={assignInlineVars({
+            [skeletonHeightVar]: "20px",
+            [skeletonWidthVar]: `${50 + Math.random() * 40}%`,
+          })}
         />
       ))}
     </div>
   );
 };
 
-const JobView = ({ResourceData}: any) => {
+const JobView = ({ ResourceData }: any) => {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -89,78 +115,77 @@ const JobView = ({ResourceData}: any) => {
     });
   });
 
+  const colors: any = ResourceData.Workstation_master;
 
-  const colors:any = ResourceData.Workstation_master;
-
-  const CustomTaskBar = ({ taskIdx, left, width, task }:any) => {
-
+  const CustomTaskBar = ({ taskIdx, left, width, task }: any) => {
     return (
-      <TaskBar
+      <div
+        className={taskBar}
         key={taskIdx}
-        left={left}
-        width={width}
-        backgroundColor={colors?.[task.stage] ?? "#cecece"}
+        style={assignInlineVars({
+          [taskBarLeftVar]: `${left}px`,
+          [taskBarWidthVar]: `${width}px`,
+          [taskBarBgVar]: colors?.[task.stage] ?? "#cecece",
+        })}
       >
-        {task.stage + " : "+ task.work_station}
-      </TaskBar>
+        {task.stage + " : " + task.work_station}
+      </div>
     );
   };
 
   const CustomTooltip = (
-      task: any,
-      taskStartOffset: any,
-      taskEndOffset: any,
-      startDate: any,
-      Attributes: any
-    ) => {
-      return (
-        <TooltipWrapper>
-          <TooltipRow>
-            <div>
-              <strong>{task.stage +" : "+ task.work_station}</strong>
+    task: any,
+    taskStartOffset: any,
+    taskEndOffset: any,
+    startDate: any,
+    Attributes: any
+  ) => {
+    return (
+      <div className={tooltipWrapper}>
+        <div className={tooltipRow}>
+          <div>
+            <strong>{task.stage + " : " + task.work_station}</strong>
+          </div>
+          <div style={{ color: "#cecece" }}>
+            {task.jobId ? task.jobId : task.task_type}
+          </div>
+        </div>
+        {task.jobId &&
+          Attributes &&
+          Attributes[task.jobId] &&
+          Object.keys(Attributes[task.jobId]).map((attrKey, idx) => (
+            <div className={tooltipRow} key={idx}>
+              <div style={{ color: "#cecece" }}>{attrKey}:</div>
+              <div style={{ color: "#cecece" }}>
+                {Attributes[task.jobId][attrKey]}
+              </div>
             </div>
-            <div style={{ color: "#cecece" }}>
-              {task.jobId ? task.jobId : task.task_type}
-            </div>
-          </TooltipRow>
-          {
-                    task.jobId && Attributes && Attributes[task.jobId] &&
-                    Object.keys(Attributes[task.jobId]).map((attrKey, idx)=>(
-                      <TooltipRow key={idx}>
-                         <div style={{ color: "#cecece" }}>
-                          {attrKey}:
-                        </div>
-                        <div style={{ color: "#cecece" }}>
-                        {Attributes[task.jobId][attrKey]}
-                        </div>
-                      </TooltipRow>
-                    ))
-                  }
-          <div style={{ width: "100%", borderTop: "1px dashed #666666" }}></div>
-          <TooltipRow>
-            <div>
-              <strong>Start:</strong>
-            </div>
-            <div>
-              {format(new Date(startDate.getTime() + taskStartOffset), "PPpp")}
-            </div>
-          </TooltipRow>
-  
-          <TooltipRow>
-            <div>
-              <strong>End:</strong>
-            </div>
-            <div>
-              {format(new Date(startDate.getTime() + taskEndOffset), "PPpp")}
-            </div>
-          </TooltipRow>
-        </TooltipWrapper>
-      );
-    };
+          ))}
+        <div style={{ width: "100%", borderTop: "1px dashed #666666" }}></div>
+        <div className={tooltipRow}>
+          <div>
+            <strong>Start:</strong>
+          </div>
+          <div>
+            {format(new Date(startDate.getTime() + taskStartOffset), "PPpp")}
+          </div>
+        </div>
+
+        <div className={tooltipRow}>
+          <div>
+            <strong>End:</strong>
+          </div>
+          <div>
+            {format(new Date(startDate.getTime() + taskEndOffset), "PPpp")}
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
-    <SectionWrapper>
-      <ChartWrapper>
+    <div className={sectionWrapper}>
+      <div className={chartWrapper}>
         {ready ? (
           <Suspense fallback={<GanttSkeleton />}>
             <MyChart
@@ -172,14 +197,14 @@ const JobView = ({ResourceData}: any) => {
               CustomTaskBar={CustomTaskBar}
               CustomTooltip={CustomTooltip}
               Slot={ResourceData?.Slot}
-              Attributes={ResourceData?.Attribute_Master|| {}}
+              Attributes={ResourceData?.Attribute_Master || {}}
             />
           </Suspense>
         ) : (
           <GanttSkeleton />
         )}
-      </ChartWrapper>
-    </SectionWrapper>
+      </div>
+    </div>
   );
 };
 

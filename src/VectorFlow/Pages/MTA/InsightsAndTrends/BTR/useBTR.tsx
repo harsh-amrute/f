@@ -12,7 +12,7 @@ import { useGetBTRDataCount, useGetBTRData } from "../../../../../VectorFlow/Ser
 
 
 import { ColDef } from "ag-grid-enterprise"
-import { BTRTableHeader } from "./styles"
+import { BTRTableHeader } from "./styles.css"
 import CategoryCellRenderer from "./CategoryCellRenderer"
 import AvailabilityCellRenderer from "./AvailabilityCellRenderer"
 import ColorCellRenderer from "./ColorCellRenderer"
@@ -25,7 +25,7 @@ import { VFPaginationProps } from "../../../../../components/VectorFLOW/commons/
 import VFPagination from "../../../../../VectorFlow/Pages/MTO/Common/VFPagination"
 import CustomVFTable from "./CustomVFTable"
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify"
-import { toast } from "react-toastify"
+import { toast } from "react-toastify/unstyled"
 import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA} from '../../../../../redux/actions/MTA';
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { useUserData } from "../../../../../context"
@@ -674,9 +674,9 @@ useEffect(() => {
             case "1":
                 return (
                     <>
-                        <BTRTableHeader>
+                        <p className={BTRTableHeader}>
                             On-Hand Inventory View Trend Report
-                        </BTRTableHeader>
+                        </p>
                         <div style={{height: '100%'}}>
                         <CustomVFTable
                             height={"90%"}
@@ -713,9 +713,9 @@ useEffect(() => {
             case "2":
                 return (
                     <>
-                        <BTRTableHeader>
+                        <p className={BTRTableHeader}>
                             Pipeline Inventory Trend Report
-                        </BTRTableHeader>
+                        </p>
                         
                         <div style={{height:'100%'}}>
                         <CustomVFTable

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'react-toastify/unstyled';
 import { useGetOpenSODetailsData, useGetOpenSODetailsDataForExcelExport, useGetSOSummaydetails } from '../../../../../VectorFlow/Services/MTO/Procurement/MaterialCoverage';
 import ActionToolBar from "../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
 import VFFloatingTab from "../../../../../components/VectorFLOW/commons/VFFloatingTab";
@@ -7,14 +7,14 @@ import { notifyError, notifyLoader } from '../../../../../helpers/notify';
 import useFilter from "../../../../../hooks/useFilter";
 import { MaterialCoverageString } from '../../Common/String';
 import {
-  BTRLayoutTabsWrapper,
-  ProcurementLayout,
-  TextXAxis,
-  TextYAxis,
-} from '../MaterialCoverage/styles';
-import { DetailsObj } from './CommonFunc';
-import CurrentCov from './CurrentCov';
+  textXAxis,
+  textYAxis,
+  btrLayoutTabsWrapper,
+  procurementLayout
+} from './styles.css';
 import FutureCov from './FutureCov';
+import CurrentCov from './CurrentCov';
+import { DetailsObj } from './CommonFunc';
 import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
 import { useGetDBRsettingsData } from '../../../../../VectorFlow/Services/MTO/Common/DBRSettings';
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
@@ -205,7 +205,7 @@ const MaterialCov = () => {
           resizable: true,
           position: 0,
           suppressHeaderFilterButton: true,
-          suppressMenu: true,
+          suppressHeaderMenuButton: true,
           filter: false,
           width: 50,
           maxWidth: 50,
@@ -295,13 +295,13 @@ const MaterialCov = () => {
                 padding: "0 1rem",
               }}
             >
-              <BTRLayoutTabsWrapper>
+              <div className={btrLayoutTabsWrapper}>
                 <VFFloatingTab
                   handleClick={(e) => setCurrTab(e.value)}
                   tabs={tabs}
                   defaultTab={defaultTab}
                 />
-              </BTRLayoutTabsWrapper>
+              </div>
 
               {isAllData && (
                 <VFButton
@@ -337,8 +337,8 @@ const MaterialCov = () => {
                   position: "relative",
                 }}
               >
-                <TextXAxis
-                  style={{
+                <h3 className={textXAxis
+                 } style={{
                     height: "max-content",
                     position: "absolute",
                     right: "100%",
@@ -354,7 +354,7 @@ const MaterialCov = () => {
                       marginLeft: "5px",
                     }}
                   ></div>
-                </TextXAxis>
+                </h3>
 
                 {/**code goes here */}
                 {currTab === "FutureCoverage" ? (
@@ -374,7 +374,7 @@ const MaterialCov = () => {
             </div>
 
             <div style={{ display: "flex", justifyContent: "center" }}>
-              <TextYAxis style={{ width: "max-content" }}>
+              <h3 className={textYAxis} style={{ width: "max-content" }}>
                 {MaterialCoverageString.statusKits}
                 <div
                   style={{
@@ -385,7 +385,7 @@ const MaterialCov = () => {
                     marginLeft: "5px",
                   }}
                 ></div>
-              </TextYAxis>
+              </h3>
             </div>
           </div>
         </>
@@ -453,8 +453,8 @@ const MaterialCov = () => {
               onFilterRemove: onFilterRemove,
             }}
             BomExcelExport={BomExcelExportModal}
-            VFWrapper={ProcurementLayout}
             vfWrapperStyle={{ marginLeft: '25px', flex: "1" }}
+            vfWrapperClassName={procurementLayout}
           />
 
         </div>

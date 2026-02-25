@@ -4,11 +4,11 @@ import { BPRTagsCellRenderer } from "../../../../../BPR/BPRCellRenderers";
 import { AgGridReactProps } from "ag-grid-react";
 import { VFPaginationProps } from "../../../../../../../../../components/VectorFLOW/commons/VFPagination";
 import { SideBarDef } from 'ag-grid-enterprise';
-import { getColumnDefinationsMTA } from '../../../../../../../../../helpers/utils';
+import { getColumnDefinationsMTA , MainMenuItemsCustomization } from '../../../../../../../../../helpers/utils';
 import BPRGraphCellRenderer from '../../../../../BPR/BPRGraphCellRenderer';
 import ColorCellRenderer from '../../../../../../InsightsAndTrends/BTR/ColorCellRenderer';
 import { AgeingCellRenderer } from '../../../../../../../../../components/VectorFLOW/commons/AgeingCellRenderer';
-import { MainMenuItemsCustomization } from '../../../../../../../../../helpers/utils'
+
 import { GridStateContext } from '../../../../../../../../../context/GridStateContext';
 
 const MonitorGITChildLocationWiseGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCategory,currentTab}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any,currentCategory:string,currentTab:string})=>{

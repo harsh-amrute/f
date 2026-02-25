@@ -1,60 +1,67 @@
 import { useEffect, useState } from 'react';
 import { useUserData } from '../../../../../context';
-import { PaginationWrapper, StatusBarLabel, StatusBarLabelLight, StatusBarLabelBold, PaginationContainer, PaginationArrowIcon,StatusBarWrapper, TextBtn,GridFilterWrapper, CustomPageSize, PageSizeInputDiv, PageSizeInput } from "./styles"
-import { notifyError } from '../../../../../helpers/notify';
-import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
+import {
+  paginationWrapper,
+  paginationContainer,
+  gridFilterWrapper,
+  statusBarWrapper,
+  statusBarLabel,
+  statusBarLabelLight,
+  statusBarLabelBold,
+  arrowIcon,
+  arrowIconDisabled,
+  rotate180,
+  ml10,
+  textBtn,
+} from './styles.css';
 import CustomPageSizeInput from './CustomPageSizeInput';
 
 export interface VFPaginationProps {
-    selectedRows: number
-    totalRows: number
-    currentPage: number
-    rowsPerPage: number
-    handleChangePage: (e: any) => void
-    handleChangePerPage?: (e: any) => void
-    showTotalItems?: boolean,
-    showPagination?: boolean,
-    resetGridRef?: any,
-    isDisabled?: boolean | undefined,
-    customPageSizeEnabled?: boolean | undefined,
-    savePageSize?: (e: any) => void,
-    userPageSize?: any,
+  selectedRows: number;
+  totalRows: number;
+  currentPage: number;
+  rowsPerPage: number;
+  handleChangePage: (page: number) => void; // tighten type
+  handleChangePerPage?: (n: number) => void;
+  showTotalItems?: boolean;
+  showPagination?: boolean;
+  resetGridRef?: any;
+  isDisabled?: boolean;
+  customPageSizeEnabled?: boolean;
+  savePageSize?: (n: number) => void; // align with child
+  userPageSize?: number;
 }
 
- 
 const VFPagination = (props: VFPaginationProps) => {
+  const {
+    totalRows,
+    currentPage,
+    rowsPerPage,
+    handleChangePage,
+    resetGridRef,
+    isDisabled,
+    customPageSizeEnabled,
+    savePageSize,
+    userPageSize,
+  } = props;
 
-    const {
-        totalRows,
-        currentPage,
-        rowsPerPage,
-        handleChangePage,
-        resetGridRef,
-        isDisabled,
-        customPageSizeEnabled,
-        savePageSize,
-        userPageSize,
+  const { user } = useUserData();
+  const themeUi = user?.user?.theme_ui;
+  const [customPageSize, setCustomPageSize] = useState<number | undefined>();
 
-    } = props
-    
-    const { user } = useUserData();
-    const themeUi = user?.user?.theme_ui;
-    const [customPageSize, setCustomPageSize] = useState();
+  useEffect(() => {
+    setCustomPageSize(userPageSize);
+  }, [userPageSize]);
 
-    useEffect(() => {
-        setCustomPageSize(userPageSize);
-    },[userPageSize])
+  const defaultPaginationLimit = 100;
+  const totalPages = Math.max(
+    1,
+    Math.ceil(totalRows / (rowsPerPage || defaultPaginationLimit))
+  );
 
-   
-    const defaultPaginationLimit = 100;
-    const totalPages = Math.ceil(totalRows / (props.rowsPerPage || defaultPaginationLimit));
-
-
-    // const totalPages = Math.ceil(totalRows/rowsPerPage)
-
-    const clearGridFilter = () =>{
-        resetGridRef?.current?.api.setFilterModel(null)
-    }
+  const clearGridFilter = () => {
+    resetGridRef?.current?.api.setFilterModel(null);
+  };
 
     const getTotalItemsString = () => {
         if (totalRows === 0) return "0 to 0"; 
@@ -67,82 +74,80 @@ const VFPagination = (props: VFPaginationProps) => {
         return `${start} to ${(currentPage) * rowsPerPage}`;
     }
 
-    const handleOnClick = (newPage: number) => {
-        if (newPage === currentPage) return
-        if (newPage > totalPages) return
-        if (newPage < 1) return
-        return handleChangePage(newPage)
-    }
+  const handleOnClick = (newPage: number) => {
+    if (newPage === currentPage) return;
+    if (newPage > totalPages) return;
+    if (newPage < 1) return;
+    handleChangePage(newPage);
+  };
 
-    return (
-        <PaginationWrapper data-testid="vf_pagination">
-            <PaginationContainer>
-            <GridFilterWrapper>
-                <TextBtn onClick={clearGridFilter} disabled={isDisabled} themeUi={themeUi}>Clear All Grid Filters</TextBtn>  
-            </GridFilterWrapper>
-               <StatusBarWrapper>
-                    {customPageSizeEnabled &&
-                        <CustomPageSizeInput
-                            savePageSize={savePageSize}
-                            userPageSize={userPageSize}
-                        />
-                    }
-                <StatusBarLabel>
-                    <StatusBarLabelBold>
-                        {getTotalItemsString()}
-                    </StatusBarLabelBold>
-                    <StatusBarLabelLight>
-                        of
-                    </StatusBarLabelLight>
-                    <StatusBarLabelBold>
-                        {totalRows}
-                    </StatusBarLabelBold>
-                    </StatusBarLabel>
-                    <StatusBarLabel style={{ marginLeft: '10px'}}>
-                        <PaginationArrowIcon
-                            disabled={currentPage === 1}
-                            src="/assets/img/VectorFLOW/NMS/pagination-last-arrow.svg"
-                            style={{ transform: 'rotate(180deg)' }}
-                            onClick={() => handleOnClick(1)}
-                            alt="pagination-last-prev-arrow"
-                        />
-                        <PaginationArrowIcon
-                            disabled={currentPage === 1}
-                            src="/assets/img/VectorFLOW/NMS/pagination-arrow.svg"
-                            style={{ transform: 'rotate(180deg)' }}
-                            onClick={() => handleOnClick(currentPage - 1)}
-                            alt="pagination-prev-arrow"
-                        />
-                        <StatusBarLabelLight>
-                            Page
-                        </StatusBarLabelLight>
-                        <StatusBarLabelBold>
-                            {totalRows === 0 ? 0 : currentPage}
-                        </StatusBarLabelBold>
-                        <StatusBarLabelLight>
-                            of
-                        </StatusBarLabelLight>
-                        <StatusBarLabelBold>
-                            {totalPages}
-                        </StatusBarLabelBold>
-                        <PaginationArrowIcon
-                            disabled={currentPage === totalPages}
-                            src="/assets/img/VectorFLOW/NMS/pagination-arrow.svg"
-                            onClick={() => handleOnClick(currentPage + 1)}
-                            alt="pagination-next-arrow"
-                        />
-                        <PaginationArrowIcon
-                            disabled={currentPage === totalPages}
-                            src="/assets/img/VectorFLOW/NMS/pagination-last-arrow.svg"
-                            onClick={() => handleOnClick(totalPages)}
-                            alt="pagination-last-next-arrow"
-                        />
-                    </StatusBarLabel>
-                </StatusBarWrapper>
+  const brand = themeUi === 'REGALBLAZE' ? 'REGALBLAZE' : 'DEFAULT';
 
-            </PaginationContainer>
-        </PaginationWrapper>
-    )
-}
+  const isFirst = currentPage === 1;
+  const isLast = currentPage === totalPages;
 
-export default VFPagination
+  return (
+    <div className={paginationWrapper} data-testid="vf_pagination">
+      <div className={paginationContainer}>
+        <div className={gridFilterWrapper}>
+          <button
+            className={textBtn[brand]}
+            onClick={clearGridFilter}
+            disabled={isDisabled}
+            type="button"
+          >
+            Clear All Grid Filters
+          </button>
+        </div>
+
+        <div className={statusBarWrapper}>
+          {customPageSizeEnabled && (
+            <CustomPageSizeInput
+              savePageSize={savePageSize}
+              userPageSize={userPageSize}
+            />
+          )}
+
+          <div className={statusBarLabel} aria-live="polite">
+            <div className={statusBarLabelBold}>{getTotalItemsString()}</div>
+            <div className={statusBarLabelLight}>of</div>
+            <div className={statusBarLabelBold}>{totalRows}</div>
+          </div>
+
+          <div className={`${statusBarLabel} ${ml10}`}>
+            <img
+              className={`${arrowIcon} ${isFirst ? arrowIconDisabled : ''} ${rotate180}`}
+              src="/assets/img/VectorFLOW/NMS/pagination-last-arrow.svg"
+              onClick={() => handleOnClick(1)}
+              alt="Go to first page"
+            />
+            <img
+              className={`${arrowIcon} ${isFirst ? arrowIconDisabled : ''} ${rotate180}`}
+              src="/assets/img/VectorFLOW/NMS/pagination-arrow.svg"
+              onClick={() => handleOnClick(currentPage - 1)}
+              alt="Go to previous page"
+            />
+            <div className={statusBarLabelLight}>Page</div>
+            <div className={statusBarLabelBold}>{currentPage}</div>
+            <div className={statusBarLabelLight}>of</div>
+            <div className={statusBarLabelBold}>{totalPages}</div>
+            <img
+              className={`${arrowIcon} ${isLast ? arrowIconDisabled : ''}`}
+              src="/assets/img/VectorFLOW/NMS/pagination-arrow.svg"
+              onClick={() => handleOnClick(currentPage + 1)}
+              alt="Go to next page"
+            />
+            <img
+              className={`${arrowIcon} ${isLast ? arrowIconDisabled : ''}`}
+              src="/assets/img/VectorFLOW/NMS/pagination-last-arrow.svg"
+              onClick={() => handleOnClick(totalPages)}
+              alt="Go to last page"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default VFPagination;

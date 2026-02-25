@@ -1,0 +1,23 @@
+.tooltip-title {
+    text-decoration: underline;
+    text-align: center;
+  }
+
+  .tooltip-row {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .font-bold {
+    font-weight: 600;
+  }
+
+  .font-medium {
+    font-weight: 500;
+  }
+
+  .tooltip-divider {
+    width: 100%;
+    border: none;
+    border-top: 1px dashed #B2B2B2;
+  }

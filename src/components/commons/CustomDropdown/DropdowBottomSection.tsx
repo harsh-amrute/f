@@ -1,12 +1,15 @@
-import { SCViewContainerWithBg } from "../../../components/VectorFLOW/commons/MTO/ActionToolBar/styles";
+import { SCViewContainerWithBg } from "../../VectorFLOW/commons/MTO/ActionToolBar/styles.css";
 import ButtonFloat from "../ButtonFloat";
 
 interface DropdowBottomSectionProps {
-    clearAll : ()=> void;
-    handleApply : ()=> void
+  clearAll: () => void;
+  handleApply: () => void;
 }
 
-function DropdowBottomSection({clearAll,handleApply}: DropdowBottomSectionProps) {
+function DropdowBottomSection({
+  clearAll,
+  handleApply,
+}: DropdowBottomSectionProps) {
   return (
     <div style={{ borderTop: "1px solid #ccc", padding: "10px" }}>
       <div
@@ -16,9 +19,10 @@ function DropdowBottomSection({clearAll,handleApply}: DropdowBottomSectionProps)
           alignItems: "center",
         }}
       >
-        <SCViewContainerWithBg
-            onClick={clearAll}
-          styles={{
+        <div
+          className={SCViewContainerWithBg}
+          onClick={clearAll}
+          style={{
             width: "7rem",
             fontSize: "1rem",
             fontWeight: 300,
@@ -28,7 +32,7 @@ function DropdowBottomSection({clearAll,handleApply}: DropdowBottomSectionProps)
           }}
         >
           <p>Clear</p>
-        </SCViewContainerWithBg>
+        </div>
         <ButtonFloat
           text="Apply"
           onClick={handleApply} // apply functionality pending

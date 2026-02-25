@@ -1,27 +1,28 @@
-import { SCMenu, SCMenuList, SCMenuItem } from './styles'
+import { menu, menuList, menuItem } from './styles.css';
 
 interface ListItemInputProps {
-  data: any
-  onClickItem: any
+  data: any[];
+  onClickItem: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
+
 const ListItemInput = ({ data, onClickItem }: ListItemInputProps) => {
   return (
-    <SCMenu>
-      <SCMenuList>
-        {data?.map((item: any, index: number) => (
-          <SCMenuItem key={index} onClick={(e) => onClickItem(e)}>
+    <div className={menu}>
+      <div className={menuList}>
+        {data?.map((item, index) => (
+          <div key={index} className={menuItem} onClick={(e) => onClickItem(e)}>
             {item}
-          </SCMenuItem>
+          </div>
         ))}
 
         {data?.length === 0 && (
-          <SCMenuItem>
+          <div className={menuItem}>
             <div style={{ width: '155px' }}>No Data</div>
-          </SCMenuItem>
+          </div>
         )}
-      </SCMenuList>
-    </SCMenu>
-  )
-}
+      </div>
+    </div>
+  );
+};
 
-export default ListItemInput
+export default ListItemInput;

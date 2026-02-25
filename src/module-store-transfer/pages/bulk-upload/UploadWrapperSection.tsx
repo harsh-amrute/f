@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { UploadSectionWrapper } from "./style";
+import { uploadSectionWrapper } from "./style.css";
 import UploadRightSection from "./UploadRightSection";
 import UploadLeftSection from "./UploadLeftSection";
 import NoDataToDisplay from "./NoDataToDisplay";
@@ -261,7 +261,7 @@ function UploadWrapperSection({
   };
 
   return (
-    <UploadSectionWrapper>
+    <div className={uploadSectionWrapper}>
       <UploadLeftSection
         setErrorCount={setErrorCount}
         setErrorData={setErrorData}
@@ -272,7 +272,7 @@ function UploadWrapperSection({
         file={file}
       />
       {noData ? (
-        <NoDataToDisplay imgSrc={"/assets/img/no data to display.svg"} />
+        <NoDataToDisplay imgSrc="/assets/img/no data to display.svg" />
       ) : (
         <UploadRightSection
           errorCount={errorCount}
@@ -282,7 +282,7 @@ function UploadWrapperSection({
           progress={progress}
         />
       )}
-    </UploadSectionWrapper>
+    </div>
   );
 }
 

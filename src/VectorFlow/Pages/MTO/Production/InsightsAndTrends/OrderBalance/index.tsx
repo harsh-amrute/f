@@ -5,9 +5,14 @@ import {
   BTRAllomentSection,
   BTRTableWrapper,
   HorizontalViewWrapper,
-} from "./styles";
+} from "./styles.css";
 // import GridView from "../../../Common/GridView";
-import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from "../../../../../../helpers/utils";
+import {
+  DownloadExcel,
+  formatFilterJSON,
+  getBodyForExcelExport,
+  getColumnDefinations,
+} from "../../../../../../helpers/utils";
 import TrailDeptCount from "./TrailDeptCount";
 import TrailDeptBalance from "./TrailDeptBalance";
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
@@ -17,12 +22,20 @@ import {
   useGetOrderBalanceData,
   useGetOrderBalanceDataExcelExport,
   // <-------------- uncomment below code to enable dropdown for orderType    --------->
-  useGetOrderTypeOptions 
+  useGetOrderTypeOptions,
 } from "../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/OrderBalance";
-import OverlayLoader from '../../../Common/Loader';
-import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
-import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
-import { ExcelExportName, FilterPageName, pagination, UIGridCode } from "../../../Common/Enum";
+import OverlayLoader from "../../../Common/Loader";
+import { notifyError, notifySuccess } from "../../../../../../helpers/notify";
+import {
+  useGetUserUIConfigData,
+  useUpdateUserUIConfigData,
+} from "../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig";
+import {
+  ExcelExportName,
+  FilterPageName,
+  pagination,
+  UIGridCode,
+} from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 import useColDef from "../../../../../../hooks/useColDef";
 import BPPRenderer from "../../../Common/BPRRenderer/BPPRenderer";
@@ -30,16 +43,15 @@ import GridView from "../OrderAtRisk/GridView";
 import { useGetDate } from "../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting";
 import { format } from "date-fns";
 
-
 const APIFilterConfig = {
   filSecVisConfig: {
-    "Prod_Order_Balance": {
+    Prod_Order_Balance: {
       mjr: false,
       or: true,
       res: true,
-      cus: true
+      cus: true,
     },
-  }
+  },
 };
 
 const OrderBalance = () => {
@@ -48,39 +60,53 @@ const OrderBalance = () => {
   const [columnState, setColumnState] = useState<any>([]);
   const [isReset, setIsReset] = useState(false);
   const [colDef, setColDef] = useState([{}]);
-  const { mutateAsync: getUIConfigData } = useGetUIConfigData()
-  const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
+  const { mutateAsync: getUIConfigData } = useGetUIConfigData();
+  const { mutateAsync: getPageWiseFilterData /*isLoading*/ } =
+    useGetFilterData();
   const [filterData, setFilterData] = useState({});
-  const { 
-    state: currFilter, 
-    setState: setCurrFilter, 
-    onFilterRemove, 
-    isFilterOpen, 
+  const {
+    state: currFilter,
+    setState: setCurrFilter,
+    onFilterRemove,
+    isFilterOpen,
     isMfgSelected,
-    onAddFilter, 
-    onApplyFilter, 
+    onAddFilter,
+    onApplyFilter,
     toggleFilter,
-    appliedFilters
-} = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_Order_Balance);
-  const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
-  const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
-  const { mutateAsync: getOrderBalanceData, isLoading, isError, isSuccess } = useGetOrderBalanceData();
+    appliedFilters,
+  } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_Order_Balance);
+  const {
+    mutateAsync: updateUserUIReportConfigData,
+    isLoading: isUpdateUserConfig,
+  } = useUpdateUserUIConfigData();
+  const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } =
+    useGetUserUIConfigData();
+  const {
+    mutateAsync: getOrderBalanceData,
+    isLoading,
+    isError,
+    isSuccess,
+  } = useGetOrderBalanceData();
   // <-------------- uncomment below code to enable dropdown for orderType    --------->
-  const {mutateAsync: getOrderTypeOptions, /*isLoading: isOptionsLoading, isError: isOptionsError, isSuccess: isOptionsSuccess */} = useGetOrderTypeOptions();
+  const {
+    mutateAsync:
+      getOrderTypeOptions /*isLoading: isOptionsLoading, isError: isOptionsError, isSuccess: isOptionsSuccess */,
+  } = useGetOrderTypeOptions();
   const [graphData, setGraphData] = useState<any>({});
   //  <-------------- uncomment below code to enable dropdown for orderType    --------->
-  const [orderOptions, setOrderOptions] = useState([]); 
-  const [orderType, setOrderType] = useState<any>({}); 
+  const [orderOptions, setOrderOptions] = useState([]);
+  const [orderType, setOrderType] = useState<any>({});
   const reportName = "OrderBalance";
   const { user } = useUserData();
-  const {colDefMap , getColDef} = useColDef();
-  const { mutateAsync: getOrderBalanceGraphDataExcelExport } = useGetOrderBalanceDataExcelExport();
+  const { colDefMap, getColDef } = useColDef();
+  const { mutateAsync: getOrderBalanceGraphDataExcelExport } =
+    useGetOrderBalanceDataExcelExport();
   const [masterUIConfig, setMasterUIConfig] = useState([]);
 
   const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
   const [userPageSize, setUserPageSize] = useState<any>();
-  const [totalRow, setTotalRow] = useState<number>(0)
-  const [currentPage, setCurrentPage] = useState<number>(1)
+  const [totalRow, setTotalRow] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const [gridData, setGridData] = useState([]);
 
   const { data: apiResponseData } = useGetDate();
@@ -90,28 +116,28 @@ const OrderBalance = () => {
   const colDefCustomizations = {
     BPP: {
       cellRenderer: BPPRenderer,
-      minwidth:100
-    }
+      minwidth: 100,
+    },
   };
 
   const setColumnDef = async () => {
     try {
       const response = await getUIConfigData(reportName);
-      getColDef(response)
+      getColDef(response);
       // setHeaderData(response.data.data);
-      setColDef(getColumnDefinations(response.data.data, colDefCustomizations, []));
-    }
-    catch (e) {
+      setColDef(
+        getColumnDefinations(response.data.data, colDefCustomizations, [])
+      );
+    } catch (e) {
       console.log(e);
     }
-  }
+  };
 
   const [isFirstRendered, setIsFirstRendered] = useState(true);
 
-  const getGraphData = async (params: any,pageSize?:any) => {
-    if(params.isExcelExport){
+  const getGraphData = async (params: any, pageSize?: any) => {
+    if (params.isExcelExport) {
       try {
-
         const gridAPi = currentGridRef?.current?.api;
 
         if (!gridAPi) {
@@ -121,99 +147,101 @@ const OrderBalance = () => {
 
         const isPivotMode = gridAPi.isPivotMode();
         const isRowGroupingActive = gridAPi.getRowGroupColumns().length > 0;
-        const isValueActive =  gridAPi.getValueColumns().length > 0;
+        const isValueActive = gridAPi.getValueColumns().length > 0;
 
-          if (isPivotMode || isRowGroupingActive || isValueActive) {                 
-                                        //  const exportName = `${FilterPageName.Prod_Order_Balance}_${moment().format("DD-MM-YYYY")}`;
-                                        const exportName = ExcelExportName.Order_Balance
-                                        gridAPi.exportDataAsExcel({
-                                         fileName: exportName,
-                                         sheetName: exportName
-                                         });
-          }else {            
-            const headersdata = currentGridRef?.current?.api.getColumnState();
-            const formattedFilters = formatFilterJSON(appliedFilters);
-            const body = getBodyForExcelExport({headersdata,filterData :formattedFilters,colDefMap})
-            const response = await getOrderBalanceGraphDataExcelExport({body , report_name : FilterPageName.Prod_Order_Balance , isExcelExport : 1})
-            if(response.status === 200){
-          DownloadExcel(response,FilterPageName.Prod_Order_Balance)
-          notifySuccess("Excel data exported successfully")
-        }else{
-          notifyError("Failed to export Excel data")
+        if (isPivotMode || isRowGroupingActive || isValueActive) {
+          //  const exportName = `${FilterPageName.Prod_Order_Balance}_${moment().format("DD-MM-YYYY")}`;
+          const exportName = ExcelExportName.Order_Balance;
+          gridAPi.exportDataAsExcel({
+            fileName: exportName,
+            sheetName: exportName,
+          });
+        } else {
+          const headersdata = currentGridRef?.current?.api.getColumnState();
+          const formattedFilters = formatFilterJSON(appliedFilters);
+          const body = getBodyForExcelExport({
+            headersdata,
+            filterData: formattedFilters,
+            colDefMap,
+          });
+          const response = await getOrderBalanceGraphDataExcelExport({
+            body,
+            report_name: FilterPageName.Prod_Order_Balance,
+            isExcelExport: 1,
+          });
+          if (response.status === 200) {
+            DownloadExcel(response, FilterPageName.Prod_Order_Balance);
+            notifySuccess("Excel data exported successfully");
+          } else {
+            notifyError("Failed to export Excel data");
+          }
         }
-      }
       } catch (error) {
-         notifyError(" An error has occurred")
-         console.log(error)
+        notifyError(" An error has occurred");
+        console.log(error);
       }
-         
-    }
-    
-    else{
-
+    } else {
       try {
         let payload;
-        if(isFirstRendered){
-          payload={graphflag:1}
+        if (isFirstRendered) {
+          payload = { graphflag: 1 };
           setIsFirstRendered(false);
-        }
-        else {
+        } else {
           payload = {
             page: currentPage,
             page_size: pageSize || userPageSize,
-            graphflag: 0
+            graphflag: 0,
           };
         }
 
         const response = await getOrderBalanceData(payload);
-        if(payload.graphflag==1){
-          setGraphData(response?.data?.data)
-        }
-        else{
+        if (payload.graphflag == 1) {
+          setGraphData(response?.data?.data);
+        } else {
           setGridData(response.data.data.results || []);
         }
-        setTotalRow(response?.data?.data?.count)
-      }
-      catch (e) {
+        setTotalRow(response?.data?.data?.count);
+      } catch (e) {
         console.log(e);
-        notifyError('Failed to fetch Graph data!');
+        notifyError("Failed to fetch Graph data!");
       }
     }
-  }
-
+  };
 
   // <-------------- uncomment below code to enable dropdown for orderType    --------->
   const getOrderOptions = async () => {
     const response = await getOrderTypeOptions();
-    setOrderOptions(response?.data?.data)
-  }
+    setOrderOptions(response?.data?.data);
+  };
 
   const handleChange = (option: any) => {
-    setOrderType(option)
-     getGraphData({ graphflag: 1, ordertype: option?.value || 1 });
+    setOrderType(option);
+    getGraphData({ graphflag: 1, ordertype: option?.value || 1 });
   };
 
   const getUserColumnConfig = async () => {
     try {
       const data = await getUserUIReportConfigData({
         un: user.user.name,
-        rn_id: UIGridCode.ProdOrderBalance
+        rn_id: UIGridCode.ProdOrderBalance,
       });
 
-      setUserConfigFetched(true)
+      setUserConfigFetched(true);
       const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
-      setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
+      setUserPageSize(
+        newConfig.pageSize ? Number(newConfig.pageSize) : undefined
+      );
       setColumnState(newConfig.cs);
 
       if (!data) {
-        console.error('Failed to apply column state');
+        console.error("Failed to apply column state");
       }
     } catch (error) {
       console.error(error);
     }
-  }
-  
-  const handleSaveClick = async (coldefs?: any,page_size?: any) => {
+  };
+
+  const handleSaveClick = async (coldefs?: any, page_size?: any) => {
     try {
       if (coldefs) {
         const fullConfig = { cs: coldefs, pageSize: userPageSize };
@@ -224,18 +252,15 @@ const OrderBalance = () => {
         };
         await updateUserUIReportConfigData([payload]);
         setColumnState([...coldefs]);
-
-      }
-      else if (page_size) {
-        const config = columnState
+      } else if (page_size) {
+        const config = columnState;
         const fullConfig = { cs: config, pageSize: page_size };
         const payload = {
           un: user.user.name,
           rn_id: UIGridCode.ProdOrderBalance,
           cs: JSON.stringify(fullConfig),
-        }
+        };
         await updateUserUIReportConfigData([payload]);
-
       } else {
         if (currentGridRef?.current?.api) {
           const config = currentGridRef.current.api.getColumnState();
@@ -243,8 +268,8 @@ const OrderBalance = () => {
           const payload = {
             un: user.user.name,
             rn_id: UIGridCode.ProdOrderBalance,
-            cs: JSON.stringify(fullConfig)
-          }
+            cs: JSON.stringify(fullConfig),
+          };
           await updateUserUIReportConfigData([payload]);
           await getUserColumnConfig();
         }
@@ -252,7 +277,7 @@ const OrderBalance = () => {
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   const savePageSize = (pageSize: any) => {
     if (pageSize) {
@@ -260,43 +285,44 @@ const OrderBalance = () => {
       handleSaveClick(false, pageSize, );
       getGraphData({ graphflag: 1 }, pageSize);
     } else {
-        notifyError("Invalide page size");
+      notifyError("Invalide page size");
     }
-    
-}
+  };
   const handleResetClick = () => {
     setIsReset(true);
-  }
+  };
 
   const getFilterData = async () => {
     try {
-        const response = await getPageWiseFilterData({ page_name: FilterPageName.Prod_Order_Balance });
-        setFilterData(response?.data.data);
+      const response = await getPageWiseFilterData({
+        page_name: FilterPageName.Prod_Order_Balance,
+      });
+      setFilterData(response?.data.data);
     } catch (error) {
-        console.error(error);
+      console.error(error);
     }
-  }
+  };
 
   const handleChangePage = async (currPage: number) => {
     setCurrentPage(currPage);
-  }
+  };
 
   useEffect(() => {
     setColumnDef();
-    getGraphData({ graphflag: 1});
+    getGraphData({ graphflag: 1 });
     getFilterData();
-    // <-------------- uncomment below code to enable dropdown for orderType    --------->  
-     getOrderOptions()
-  }, [])
+    // <-------------- uncomment below code to enable dropdown for orderType    --------->
+    getOrderOptions();
+  }, []);
 
   useEffect(() => {
     if (isSuccess) {
-      notifySuccess("Fetched Data successfully!")
+      notifySuccess("Fetched Data successfully!");
     }
     if (isError) {
-      notifyError("Failed to load data!")
+      notifyError("Failed to load data!");
     }
-  }, [isSuccess, isError])
+  }, [isSuccess, isError]);
 
   useEffect(() => {
     if (isReset) {
@@ -312,42 +338,40 @@ const OrderBalance = () => {
     }
   }, [colDef, currentGridRef]);
 
-
   useEffect(() => {
-
     if (Object.entries(appliedFilters).length) {
       getGraphData({ graphflag: 1 });
     }
   }, [currentPage]);
 
-    useEffect(() => {
-      if (Object.entries(appliedFilters).length && userConfigFetched) {
-        if (currentPage == 1) {
-          getGraphData({graphflag: 1});
-        } else {
-          setCurrentPage(1);
-        }      
+  useEffect(() => {
+    if (Object.entries(appliedFilters).length && userConfigFetched) {
+      if (currentPage == 1) {
+        getGraphData({ graphflag: 1 });
+      } else {
+        setCurrentPage(1);
       }
-    },[appliedFilters,userConfigFetched])
+    }
+  }, [appliedFilters, userConfigFetched]);
 
   const ExcelExportData = () => {
-    getGraphData({isExcelExport : true})
-  }
+    getGraphData({ isExcelExport: true });
+  };
 
   const themeUi = user?.user?.theme_ui;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-      {
-        (isLoading || isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />
-      }
+      {(isLoading || isUpdateUserConfig || isGetUserConfig) && (
+        <OverlayLoader />
+      )}
       <MTOActionToolBar
         comp={"orderBalance"}
         isGridView={isGridView}
         themeUi={themeUi}
         setIsGridView={setIsGridView}
-        isExcelExport = {isGridView ? true : false}
-        onExcelExportClick = {ExcelExportData}
+        isExcelExport={isGridView ? true : false}
+        onExcelExportClick={ExcelExportData}
         isChartGridToggle
         isAddFilterButton
         isFilterOpen={isFilterOpen}
@@ -361,33 +385,40 @@ const OrderBalance = () => {
         handleSaveClick={handleSaveClick}
         handleResetClick={handleResetClick}
       />
-      <HorizontalViewWrapper style={{ flex: 1 }}>
+      <div className={HorizontalViewWrapper} style={{ flex: 1 }}>
         {isGridView ? (
-           <GridView
-              gridData={gridData}
-              colDef={colDef}
-              setCurrentGridRef={setCurrentGridRef}
-              currentGridRef={currentGridRef}
-              columnState={columnState}
-              userPageSize={userPageSize}
-              handleChangePage={handleChangePage}
-              savePageSize={savePageSize}
-              totalRows={totalRow}
-              currentPage={currentPage}
-              customPageSize={true}
-              reportName={reportName}
-            />
+          <GridView
+            gridData={gridData}
+            colDef={colDef}
+            setCurrentGridRef={setCurrentGridRef}
+            currentGridRef={currentGridRef}
+            columnState={columnState}
+            userPageSize={userPageSize}
+            handleChangePage={handleChangePage}
+            savePageSize={savePageSize}
+            totalRows={totalRow}
+            currentPage={currentPage}
+            customPageSize={true}
+            reportName={reportName}
+          />
         ) : (
-          <BTRTableWrapper style={{ height:"95%", paddingLeft: "20px", paddingBottom:"10px" }}>
+          <div
+            className={BTRTableWrapper}
+            style={{
+              height: "95%",
+              paddingLeft: "20px",
+              paddingBottom: "10px",
+            }}
+          >
             <Allotment vertical={false} separator={false}>
               <Allotment.Pane preferredSize={"50%"}>
-                <BTRAllomentSection>
+                <div className={BTRAllomentSection}>
                   <TrailDeptCount graphData={graphData} lastRunDate={lastRunDate} />
-                </BTRAllomentSection>
+                </div>
               </Allotment.Pane>
 
               <Allotment.Pane preferredSize={"50%"}>
-                <BTRAllomentSection>
+                <div className={BTRAllomentSection}>
                   <TrailDeptBalance
                     graphData={graphData}
                   // <-------------- uncomment below code to enable dropdown for orderType    --------->
@@ -396,12 +427,12 @@ const OrderBalance = () => {
                   orderType={orderType}
                   lastRunDate={lastRunDate} 
                   />
-                </BTRAllomentSection>
+                </div>
               </Allotment.Pane>
             </Allotment>
-          </BTRTableWrapper>
+          </div>
         )}
-      </HorizontalViewWrapper>
+      </div>
     </div>
   );
 };

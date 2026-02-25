@@ -17,7 +17,7 @@ import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Commo
 import VFPagination from "../../Common/VFPagination";
 import OverlayLoader from "../../Common/Loader";
 import { INumberCellEditorParams } from "@ag-grid-community/core"
-import { TableWrapper } from "./styles";
+import { TableWrapper } from "./styles.css";
 import { useDispatch } from "react-redux";
 import { APPLIED_FILTERS, PROCPLANNING_ANALYTICS } from "../../../../../redux/actions/MTO";
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UserUIConfig";
@@ -438,7 +438,7 @@ const useProcPlanning = ( appliedFilters: any) => {
             field: "",
             position: 0,
             suppressHeaderFilterButton: true,
-            suppressMenu: true,
+            suppressHeaderMenuButton: true,
             filter: false,
             maxWidth: 35,
             minWidth: 35,
@@ -467,8 +467,8 @@ const useProcPlanning = ( appliedFilters: any) => {
 
     const icons = useMemo(() => {
         return {
-            groupExpanded: `<img src="${'/assets/img/mto/dayWiseCoverage/collapse.svg'}" style="height: 100%; width: 80%;"/>`,
-            groupContracted: `<img src="${'/assets/img/mto/dayWiseCoverage/expand.svg'}" style="height: 100%; width: 80%;"/>`,
+            groupExpanded: `<img src="${'/assets/img/mto/dayWiseCoverage/collapse.svg'}" height="100%" width= "80%"/>`,
+            groupContracted: `<img src="${'/assets/img/mto/dayWiseCoverage/expand.svg'}" height="100%" width= "80%"/>`,
         };
     }, []);
     const autoGroupColumnDef = useMemo(() => {
@@ -658,10 +658,10 @@ const useProcPlanning = ( appliedFilters: any) => {
         switch (currentTab?.id) {
             case "ca":
                 return (
-                    <TableWrapper>
+                    <div className={TableWrapper}>
                         <VFTable
                             {...agGridProps}
-                            
+                            height={"100%"}
                             columnDefs={colDef}
                             rowData={CompleteAvailableDatas}
                             tooltipHideDelay={100000}
@@ -690,16 +690,17 @@ const useProcPlanning = ( appliedFilters: any) => {
                             userPageSize = {userPageSize}
 
                         />
-                    </TableWrapper>
+                    </div>
                 );
             case "short":
                 return (
 
-                    <TableWrapper>
+                    <div className={TableWrapper}>
                         {isOverlayLoading && <OverlayLoader message={"Updating the simulated data..."} />}
                         <VFTable
                             key={2}
                             {...agGridProps}
+                            height={"100%"}
                             columnDefs={colDef}
                             rowData={ShortageDatas}
                             tooltipHideDelay={100000}
@@ -776,15 +777,15 @@ const useProcPlanning = ( appliedFilters: any) => {
                             
                             }
 
-                    </TableWrapper>
+                    </div>
                 );
             
             default:
                 return(
-                    <TableWrapper>
+                    <div className={TableWrapper}>
                         <VFTable
                             {...agGridProps}
-                            
+                            height={"100%"}
                             columnDefs={colDef}
                             rowData={CompleteAvailableDatas}
                             tooltipHideDelay={100000}
@@ -813,7 +814,7 @@ const useProcPlanning = ( appliedFilters: any) => {
                             savePageSize={savePageSize}
                             userPageSize = {userPageSize}
                         />
-                    </TableWrapper>
+                    </div>
                 );
         }
     }

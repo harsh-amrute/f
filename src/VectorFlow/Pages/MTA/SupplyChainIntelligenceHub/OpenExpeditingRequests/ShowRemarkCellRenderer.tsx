@@ -1,25 +1,26 @@
-import { BPRRemarksCellRendererWrapper,BPRColorCellRendererIcon } from "../BPR/styles";
+import {
+  BPRRemarksCellRendererWrapper,
+  BPRColorCellRendererIcon,
+} from "../BPR/styles.css";
 
-const ShowRemarkCellRenderer = (params:any)=>{
+const ShowRemarkCellRenderer = (params: any) => {
+  return (
+    <div className={BPRRemarksCellRendererWrapper}>
+      <img
+        className={BPRColorCellRendererIcon}
+        alt="history icon"
+        src="/assets/img/VectorFLOW/BPR/history.svg"
+        ref={(ref) => {
+          if (!ref) return;
 
-   
-    return (
-        <BPRRemarksCellRendererWrapper >
-            <BPRColorCellRendererIcon 
-            alt="history icon"
-             src="/assets/img/VectorFLOW/BPR/history.svg"
-             ref={(ref) => {
-                if (!ref) return;
-        
-                ref.onclick = (e:any) => {
-                 params.onClick(e, params.data)
-                  e.stopPropagation();
-                };
-              }}
-             />
-        </BPRRemarksCellRendererWrapper>
-    )
-}
+          ref.onclick = (e: any) => {
+            params.onClick(e, params.data);
+            e.stopPropagation();
+          };
+        }}
+      />
+    </div>
+  );
+};
 
-
-export default ShowRemarkCellRenderer
+export default ShowRemarkCellRenderer;
