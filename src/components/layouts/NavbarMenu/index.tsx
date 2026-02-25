@@ -74,18 +74,51 @@ const NavbarMenu = ({
   const [tempUrls, setTempUrls] = useState([]); //temp url is used to show downloading
   const [reportUrls, setReportUrls] = useState<string[]>([]);
 
-  const location = useLocation();       
-   useEffect(()=>{
-    setListMenu((prev:any[])=>{
-      const updatedPrev = prev.map((list)=>{
-        return {
-          ...list,
-          status : list.url === location.pathname
+
+  const isUrlExist = (list: any) => {
+    return list.url === location.pathname
+  }
+
+  const findUrlInMenu = (list: any): boolean => {
+    let isFound = false
+    isFound = isUrlExist(list)
+    if (isFound) {
+      return true
+    } else {
+      if (list?.child?.length > 0) {
+        for (const child of list.child) {
+          isFound = findUrlInMenu(child)
+          if (isFound) {
+            return true
+          }
+        }
+      }
+    }
+    return isFound
+  }
+
+  const location = useLocation();
+  useEffect(() => {
+
+    setListMenu((prev: any[]) => {
+      const updatedPrev = prev.map((list) => {
+        if (findUrlInMenu(list)) {
+          setMenuItem(list)
+          return {
+            ...list,
+            status: true
+          }
+        } else {
+          return {
+            ...list,
+            status: false
+          }
         }
       })
       return updatedPrev
     })
-  },[location])
+  }, [location])
+
 
   const getReportFields = async () => {
     try {
@@ -419,9 +452,9 @@ const NavbarMenu = ({
               style={
                 item.status
                   ? assignInlineVars({
-                      [NavStyle.themeColor2Var]: color2,
-                      [NavStyle.themeColor5Var]: color5,
-                    })
+                    [NavStyle.themeColor2Var]: color2,
+                    [NavStyle.themeColor5Var]: color5,
+                  })
                   : undefined
               }
             >
