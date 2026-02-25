@@ -3,8 +3,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  border-bottom: 2px dotted white; /* Adds a 1px dotted white line at the bottom */
+  border-bottom: 2px dotted white; 
   color: white;
+  
   }
 
 .stplGraph-tooltip-content {
