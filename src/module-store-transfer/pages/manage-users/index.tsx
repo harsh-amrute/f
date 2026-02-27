@@ -23,11 +23,10 @@ import {
   usePutEditUser
 } from "../../../services/profile";
 import { useTranslation } from "react-i18next";
-// import { dataListRoles } from "./listRoles";
 import { generateRolesObject } from '../../../helpers/utils';
 import _ from 'lodash'
 import { useNavigate } from "react-router";
-import { notifyError, notifyLoader, notifySuccess } from "../../../helpers/notify";
+import { notifyError, notifySuccess } from "../../../helpers/notify";
 import { APPLICATION_NAMES } from "../../../helpers/constants";
 import { useUserData } from "../../../context";
 import SingleUserPermissionSelectionModal from "../bulk-upload/SingleUserPermissionSelectionModal";
@@ -39,11 +38,7 @@ import { useGetDBRsettingsData } from "../../../VectorFlow/Services/MTO/Common/D
 interface ManageUsersProps{
   is_admin:boolean
   permission:Array<any>
-  themeUi:string
-  // isRolesDrawerOpen:boolean
-  // isURLsDrawerOpen:boolean
-  // toggleRolesDrawer:(v:boolean)=>void
-  // toggleURLsDrawer:(v:boolean)=>void
+  themeUi: string
 }
 
 const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
@@ -66,20 +61,18 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   // Loading States
   const [isLoadingRoles, setIsLoadingRoles] = useState(true);
   const [isLoadingHeaders, setIsLoadingHeaders] = useState(true);
+  const [selectedPermissions, setSelectedPermissions] = useState<any>({});
 
-  const [valueSelect, setvalueSelect] = useState<any>();
-
-  const prdPermissionRef = useRef<any>();
-  const lcPermissionRef = useRef<any>();
 
   const { data: dataFetch,refetch, isFetching } = useGetAllUsers();
   const { data: dataPermissions } = useGetAllPermissions();
   const { mutateAsync: usegetHeaderData } = useGetHeadersData();
-  const [headers, setHeaders] = useState<any>();
-
-  const { mutateAsync: getUserPermissions,isLoading:edit } = useGetUserPermissions();
+  const [headers, setHeaders] = useState<any>();    
+  const { mutateAsync: getUserPermissions, isLoading: edit } = useGetUserPermissions();
   const { mutateAsync: getDBRSettings } = useGetDBRsettingsData();
-  
+  const { mutateAsync: registerUser, isLoading: registerLoading } = useRegisterUser();
+  const { mutateAsync: editUser, isLoading: editLoading } = usePutEditUser();
+
   useGetAllRoles((data:any)=>{
     const dataAllRoles = data.data ? generateRolesObject(data.data) : [];
     setListRoles(dataAllRoles);
@@ -91,7 +84,6 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   const getDBRSettingsData = async () => {
     try {
       const reponse = await getDBRSettings();
-      console.log("DBR Settings", reponse.data.data);
       setIsMtoPermissionEnabled(reponse?.data?.data?.some((ele: any) => ele.flag === 'IsDataPermissionEnabled' && ele.value === '1') || false);
     } catch (e) {
       notifyError("Failed to fetch MTO Settings");
@@ -110,7 +102,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     } catch (e) {
         console.error("Error fetching headers", e);
     } finally {
-        setIsLoadingHeaders(false);
+      setIsLoadingHeaders(false);
     }
   }
   useEffect(() => {
@@ -120,9 +112,6 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
 
   const dataAllUsers = dataFetch?.data;
 
-  const [stepperDetails,setStepperDetails] = useState();
-  const [activeApplication,setActiveApplication] = useState<number>(0);
-  const [allPermissions,setAllPermissions] = useState<any>([]);
   const [storePermission,setStorePermission] = useState([]);
   const [currentItem,setCurrentItem] = useState();
   const [isEditUser,setIsEditUser] = useState<boolean | undefined>()
@@ -136,14 +125,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     isLcCheck: {},
   });
 
-  //Follwing Function Updates All Permissions according to current active Application/Application Id provided
-  const updateAllPermissions = (applicationId: number) => {
-    setAllPermissions(
-      dataAllPermissions.find(
-        (app: any) => app.application_id === applicationId
-      )
-    );
-  };
+
 
   const getApplicationIds = () => {
     const application_names = [APPLICATION_NAMES.MTA, APPLICATION_NAMES.MTO];
@@ -156,14 +138,12 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     return applicationIds;
   };
 
-  const [selectedPermissions, setSelectedPermissions] = useState<any>({});
 
   const handleClickAddNewUser = () => {
     if (!getApplicationIds().length) {
       notifyError(t("profile.tabContent.manageUsers.notifyError.RoleMismatch"));
       return;
     }
-    setvalueSelect({});
     setInfoUser({
       name: "",
       email: "",
@@ -292,9 +272,6 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
       } else {
         setStorePermission(fillEmptyPermission);
       }
-      setStepperDetails(fillStepperDetails);
-      setActiveApplication(validApplications[0]);
-      updateAllPermissions(validApplications[0]);
     }
     if (contentModal.callApi === 2) {
       const productPermissionAllApp: any = [];
@@ -393,7 +370,6 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
       );
       newStepperDetails.sort((a: any, b: any) => a.id - b.id);
       newStepperDetails[0].currentState = "active";
-      setStepperDetails(newStepperDetails);
 
       //Set Permissions For Selected Applications
 
@@ -419,12 +395,6 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
       validApplicationPermissions.sort((a: any, b: any) => a.id - b.id);
       setStorePermission(validApplicationPermissions);
 
-      setvalueSelect(_.cloneDeep(validApplicationPermissions));
-
-      //Todo: check if this needed
-      setActiveApplication(validApplicationPermissions[0].application_id);
-
-      updateAllPermissions(validApplicationPermissions[0].application_id);
     }
   };
 
@@ -578,8 +548,6 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   
 
 
-  const { mutateAsync: registerUser, isLoading: registerLoading } = useRegisterUser();
-  const { mutateAsync: editUser, isLoading: editLoading } = usePutEditUser();
 
   const isDynamicPermissions = (user.config_data.INHERITED_ACCESS==="1") || false
 

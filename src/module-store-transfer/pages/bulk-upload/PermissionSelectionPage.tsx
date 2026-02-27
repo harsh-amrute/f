@@ -7,7 +7,6 @@ import BulkUploadHeader from "./BulkUploadHeader";
 import VFModalCard from "../../../components/VectorFLOW/commons/VFModalCard";
 import {
   useGetAllPermissions,
-  useGetAllRoles,
   useGetRoles,
   usePostBulkUploadUsers,
 } from "../../../services/profile";

@@ -58,26 +58,6 @@ const ChartViewToggle = ({ isChartView, setIsChartView }: any) => {
   );
 };
 
-const hasSelectedPermissions = (permissions: any): boolean => {
-  if (!permissions || typeof permissions !== 'object' || Object.keys(permissions).length === 0) {
-    return false; 
-  }
-  for (const appName in permissions) {
-    const appPermissions = permissions[appName];
-    if (appPermissions && typeof appPermissions === 'object') {
-      
-      for (const permType in appPermissions) {
-        const permList = appPermissions[permType];
-        
-        if (Array.isArray(permList) && permList.length > 0) {
-          return true; // Found at least one permission
-        }
-      }
-    }
-  }
-
-  return false; 
-};
 
 const SingleUserPermissionSelectionModal = ({ dataAllPermissions, closeModal, createUser, activeApplications, infoUser, setInfoUser, setPrevModal, selectedPermissions, setSelectedPermissions, allRoles, isLoader }: { dataAllPermissions: any, closeModal: any, createUser: any, activeApplications: any, infoUser: any, setInfoUser: any, setPrevModal: any, selectedPermissions: any, setSelectedPermissions: any, allRoles: any, isLoader: any }) => {
   const [isChartView, setIsChartView] = React.useState(false);
@@ -129,12 +109,7 @@ const SingleUserPermissionSelectionModal = ({ dataAllPermissions, closeModal, cr
   const clearAllPermissions = () => {
     setSelectedPermissions({});
   }
-  
-  // Check if Distribution role requires both location & product permissions
 
-  // const isApplyDisabled = !hasSelectedPermissions(selectedPermissions) || isDistributionPermMissing;
-
-  // Build tooltip message
 
   const [open, setOpen] = useState(false);
     const [dropdownPosition, setDropdownPosition] = useState<CSSProperties>({});

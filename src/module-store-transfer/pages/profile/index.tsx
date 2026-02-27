@@ -4,7 +4,6 @@ import {
   profileImg,
   profileName,
   tabsWrapper,
-  // tabsAction, // keep if you re-enable the buttons
 } from "./styles.css";
 import { useUserData } from "../../../../src/context";
 import { useState } from "react";
@@ -13,8 +12,6 @@ import Overview from "../overview";
 import Permissions from "../permissions";
 import ManageUsers from "../manage-users";
 import { useTranslation } from "react-i18next";
-// import VFButton from '../../../components/VectorFLOW/commons/VFButton'
-// import VFButtonOutline from '../../../components/VectorFLOW/commons/VFButtonOutline'
 
 const Profile = () => {
   const { t } = useTranslation();

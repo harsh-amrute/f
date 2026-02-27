@@ -35,7 +35,9 @@ const Permissions = () => {
         let allPermissionsData: any[] = [];
         if (allPermsRes.data) {
           allPermissionsData = allPermsRes.data;
-          setDataAllPermissions(allPermsRes.data);
+          if (allPermsRes.data.length > 0) {
+            setDataAllPermissions(allPermsRes.data);
+          }
           // Set default selected application
           if (allPermsRes.data.length > 0) {
             setSelectedApplication(allPermsRes.data[0].application_name);
@@ -43,7 +45,6 @@ const Permissions = () => {
         }
 
         if (userPermsRes.data) {
-          const isDynamicPermissions = (user.config_data.INHERITED_ACCESS === "1") || false;
           // Parse permissions
           const fetchedPermissionsArray = userPermsRes.data.permissions || userPermsRes.data;
           const newSelectedPermissions: any = {};
@@ -65,6 +66,10 @@ const Permissions = () => {
                     const type = key.replace('_hids', '_permission');
                     const defKey1 = `${type}_ids`;
                     const defKey2 = `${type.replace("_permission", "")}_permission_ids`;
+                    console.log("here")
+                    console.log(defKey1, defKey2)
+
+                    console.log(appData[defKey1], appData[defKey2])
 
                     const definitions = appData[defKey1] || appData[defKey2] || [];
                     const prefix = type.split("_")[0];
@@ -74,19 +79,23 @@ const Permissions = () => {
                       const def = definitions.find((d: any) => d.h_id === cleanHid || d.h_id === hid);
                       if (!def) return null;
 
-                      const h1 = def[`${prefix}_hierarchy_1`] || def[`hierarchy_1`] || def[`${prefix}_heirarchy_1`] || def[`heirarchy_1`];
-                      const h2 = def[`${prefix}_hierarchy_2`] || def[`hierarchy_2`] || def[`${prefix}_heirarchy_2`] || def[`heirarchy_2`];
-                      const h3 = def[`${prefix}_hierarchy_3`] || def[`hierarchy_3`] || def[`${prefix}_heirarchy_3`] || def[`heirarchy_3`];
+                      const h1 = def[`${prefix}_hierarchy_1`] ?? def[`hierarchy_1`] ?? def[`${prefix}_heirarchy_1`] ?? def[`heirarchy_1`] ?? '';
+                      const h2 = def[`${prefix}_hierarchy_2`] ?? def[`hierarchy_2`] ?? def[`${prefix}_heirarchy_2`] ?? def[`heirarchy_2`] ?? '';
+                      const h3 = def[`${prefix}_hierarchy_3`] ?? def[`hierarchy_3`] ?? def[`${prefix}_heirarchy_3`] ?? def[`heirarchy_3`] ?? '';
 
-                      const path = [h1, h2, h3].filter(Boolean);
+                      const path = [h1, h2, h3].filter(Boolean); // Filter out empty strings
 
-                      if (!isDynamicPermissions) {
-                        const isLeaf = (h3 && h3 !== "");
-                        if (!isLeaf) {
-                          path.push("isActive");
+                      // IA Node Logic
+                      // If def is active (IA Node definition) AND the input HID does NOT end with underscore
+                      // (Underscore implies Group/Parent selection of that node, not the IA node itself)
+                      // AND it is NOT a leaf node (L3). Leaf nodes (L3) should never have prime suffix, they are just selected.
+                      // Assuming L3 means h3 is present.
+                      const isLeaf = (h3 && h3 !== "");
+                      if (def.isActive && !hid.endsWith('_') && !isLeaf) {
+                        if (path.length > 0) {
+                          path[path.length - 1] = path[path.length - 1] + "'";
                         }
-                      }
-
+                      }     
                       return path;
                     }).filter((p: any) => p !== null);
 

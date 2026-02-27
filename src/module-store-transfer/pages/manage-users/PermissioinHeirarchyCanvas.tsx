@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { ReactFlow, Handle, Position, Background, BackgroundVariant, MiniMap, PanelPosition, Controls } from "@xyflow/react";
+import { ReactFlow, Handle, Position, Background, BackgroundVariant, Controls } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import Checkbox from "../../../components/VectorFLOW/commons/MTO/Checkbox";
 import { useUserData } from "../../../context";
@@ -70,11 +70,8 @@ const CustomNode = ({
   };
 }) => {
   const {
-    nodes,
     opened,
     setOpened,
-    checked,
-    setChecked,
     selectedPermissions,
     setSelectedPermissions,
     selectedApplication,
@@ -94,56 +91,6 @@ const CustomNode = ({
   const getPermissionList = () =>
     (selectedPermissions?.[selectedApplication]?.[permissionType] ??
       []) as string[][];
-
-  const isPermissionChecked = (key: string) => {
-    const path = getPathArray(key);
-    const permissionList = getPermissionList();
-
-    return permissionList.some((perm) =>
-      path.every((val, idx) => perm[idx] === val)
-    );
-  };
-
-  // New function to check if node should have pink shadow
-  const shouldHavePinkShadow = (key: string) => {
-    const path = getPathArray(key);
-    const permissionList = getPermissionList();
-
-    // Check if this node itself is selected
-    const isThisNodeSelected = permissionList.some((perm) =>
-      JSON.stringify(perm) === JSON.stringify(path)
-    );
-
-    if (isThisNodeSelected) return false;
-
-    // Check if any parent is selected
-    let hasSelectedParent = false;
-    for (let i = 1; i < path.length; i++) {
-      const parentPath = path.slice(0, i);
-      const isParentSelected = permissionList.some(
-        (perm) => JSON.stringify(perm) === JSON.stringify(parentPath)
-      );
-      if (isParentSelected) {
-        hasSelectedParent = true;
-        break;
-      }
-    }
-
-    if (!hasSelectedParent) return false;
-
-    // Check if any sibling at the same level is selected
-    const siblingPrefix = path.slice(0, -1);
-    const hasSiblingSelected = permissionList.some((perm) => {
-      // Must be at same level (same length)
-      if (perm.length !== path.length) return false;
-      // Must share the same parent prefix
-      if (JSON.stringify(perm.slice(0, -1)) !== JSON.stringify(siblingPrefix)) return false;
-      // Must be a different node (different last element)
-      return perm[perm.length - 1] !== path[path.length - 1];
-    });
-
-    return !hasSiblingSelected;
-  };
 
 
 
@@ -456,9 +403,33 @@ export default function PermissionHeirarchyCanvas({
   setSelectedPermissions,
   readOnly = false,
 }: any) {
+
+  const START_X = 100;
+  const START_Y = 100;
+  const HORIZONTAL_GAP = 400;
+  const NODE_HEIGHT = 50;
+  const SIBLING_GAP = 40;
+  const GROUP_PADDING = 15;
+  const GROUP_WIDTH = 180;
+
+  const GROUP_VERTICAL_SPACING = 40;
+  const HEADER_HEIGHT = 30;
   const [permissionType, setPermissionType] = useState<string>("");
   const [availablePermissionTypes, setAvailablePermissionTypes] = useState<string[]>([]);
 
+
+
+  const [nodes, setNodes] = React.useState<any>([]);
+  const [edges, setEdges] = React.useState<any>([]);
+
+  const [opened, setOpened] = useState<any>([]);
+
+  // Cache for opened state per application + permissionType
+  const openedStateCache = React.useRef<Record<string, any[]>>({});
+  // Track previous key to save state before switching
+  const prevCacheKey = React.useRef<string>("");
+
+  const [checked, setChecked] = useState<any>([]);
   const [selectedAppAllPermissions, setSelectedApplication] = useState<any>(
     dataAllPermissions?.find(
       (ele: any) => ele.application_name === selectedApplication
@@ -467,7 +438,6 @@ export default function PermissionHeirarchyCanvas({
 
 
 
-  const [selectedPermissionIds, setSelectedPermissionIds] = useState<any>([]);
 
   useEffect(() => {
     const appData = dataAllPermissions?.find(
@@ -494,14 +464,8 @@ export default function PermissionHeirarchyCanvas({
     }
   }, [selectedApplication, dataAllPermissions]);
 
-  const [opened, setOpened] = useState<any>([]);
 
-  // Cache for opened state per application + permissionType
-  const openedStateCache = React.useRef<Record<string, any[]>>({});
-  // Track previous key to save state before switching
-  const prevCacheKey = React.useRef<string>("");
 
-  const [checked, setChecked] = useState<any>([]);
 
   function createEdge(sourceId: string, targetId: string) {
     return {
@@ -617,16 +581,6 @@ export default function PermissionHeirarchyCanvas({
     const finalNodes: any[] = [];
     const finalEdges: any[] = [];
 
-    const START_X = 100;
-    const START_Y = 100;
-    const HORIZONTAL_GAP = 400;
-    const NODE_HEIGHT = 50;
-    const SIBLING_GAP = 40;
-    const GROUP_PADDING = 15;
-    const GROUP_WIDTH = 180;
-
-    const GROUP_VERTICAL_SPACING = 40;
-    const HEADER_HEIGHT = 30;
 
     let currentY = START_Y;
 
@@ -827,11 +781,6 @@ export default function PermissionHeirarchyCanvas({
       return position;
     }
 
-    // Top Level Grouping
-    // const topGroupStartY = currentY; // Unused for grouping now
-    // currentY += GROUP_PADDING; // REMOVE
-
-    const prevL1Group = false;
 
     level1.forEach((l1Node, idx) => {
       const childHasChildren = (childrenMap.get(l1Node.id)?.length ?? 0) > 0;
@@ -929,38 +878,10 @@ export default function PermissionHeirarchyCanvas({
       }
     });
 
-    // currentY += GROUP_PADDING; // REMOVE
-
-    // Group Box for Root Level // REMOVE
-    /*
-    if (level1.length > 0) {
-      finalNodes.push({
-          id: `group_root`,
-          type: 'groupNode',
-          position: { 
-              x: START_X - 20, 
-              y: topGroupStartY 
-          },
-          style: {
-              width: GROUP_WIDTH,
-              height: currentY - topGroupStartY,
-              border: "1px solid #d9d9d9",
-              borderRadius: "8px",
-              backgroundColor: "white",
-              zIndex: -1
-          },
-          data: { label: '' }
-      });
-    }
-    */
 
     return { nodes: finalNodes, edges: finalEdges };
   };
 
-  const { user } = useUserData();
-
-  const [nodes, setNodes] = React.useState<any>([]);
-  const [edges, setEdges] = React.useState<any>([]);
 
   useEffect(() => {
     if (checked && checked.length && opened && opened.length && selectedAppAllPermissions) {
