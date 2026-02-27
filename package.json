@@ -76,7 +76,6 @@
   },
   "scripts": {
     "start": "craco start",
-    "dev-start": "react-scripts start",
     "build": "craco build",
     "test": "craco test --coverage --passWithNoTests",
     "clear-cache": "react-scripts test --clearCache",
