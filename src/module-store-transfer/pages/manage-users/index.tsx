@@ -72,6 +72,24 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   const { mutateAsync: getDBRSettings } = useGetDBRsettingsData();
   const { mutateAsync: registerUser, isLoading: registerLoading } = useRegisterUser();
   const { mutateAsync: editUser, isLoading: editLoading } = usePutEditUser();
+  const { user } = useUserData()
+  const isDynamicPermissions = (user.config_data.INHERITED_ACCESS === "1") || false
+
+  const dataAllPermissions = dataPermissions?.data;
+
+  const dataAllUsers = dataFetch?.data;
+
+  const [storePermission, setStorePermission] = useState([]);
+  const [currentItem, setCurrentItem] = useState();
+  const [isEditUser, setIsEditUser] = useState<boolean | undefined>()
+
+  const feature_permission = user?.feature_permission || [];
+  const bulkUploadEnabled = feature_permission.includes("Bulk_upload");
+
+  const isCheckBoxRef = useRef<any>({
+    isPrdCheck: {},
+    isLcCheck: {},
+  });
 
   useGetAllRoles((data:any)=>{
     const dataAllRoles = data.data ? generateRolesObject(data.data) : [];
@@ -108,22 +126,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   useEffect(() => {
     getHeaderDatafunct();
   }, []);
-  const dataAllPermissions = dataPermissions?.data;
 
-  const dataAllUsers = dataFetch?.data;
-
-  const [storePermission,setStorePermission] = useState([]);
-  const [currentItem,setCurrentItem] = useState();
-  const [isEditUser,setIsEditUser] = useState<boolean | undefined>()
-
-  const {user} = useUserData()
-  const feature_permission = user?.feature_permission || [];
-  const bulkUploadEnabled = feature_permission.includes("Bulk_upload");
-
-  const isCheckBoxRef = useRef<any>({
-    isPrdCheck: {},
-    isLcCheck: {},
-  });
 
 
 
@@ -548,7 +551,6 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
 
 
 
-  const isDynamicPermissions = (user.config_data.INHERITED_ACCESS==="1") || false
 
 
   const createUser = async (permissions: any, userDetails?: any) => {
