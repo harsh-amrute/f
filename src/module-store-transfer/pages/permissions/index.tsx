@@ -66,11 +66,6 @@ const Permissions = () => {
                     const type = key.replace('_hids', '_permission');
                     const defKey1 = `${type}_ids`;
                     const defKey2 = `${type.replace("_permission", "")}_permission_ids`;
-                    console.log("here")
-                    console.log(defKey1, defKey2)
-
-                    console.log(appData[defKey1], appData[defKey2])
-
                     const definitions = appData[defKey1] || appData[defKey2] || [];
                     const prefix = type.split("_")[0];
 

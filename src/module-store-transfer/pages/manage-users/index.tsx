@@ -466,7 +466,6 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
       isLcCheck[applicationId] = locationPermission === locationPermissionAll;
     });
 
-    // }); 
 
     isCheckBoxRef.current.isPrdCheck = isPRDCheck;
     isCheckBoxRef.current.isLcCheck = isLcCheck;
@@ -595,6 +594,12 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
         const ids: string[] = [];
         const prefix = permType.split("_")[0]; // e.g. location
 
+        const getHierarchy = (def: any) => ({
+          h1: def[`${prefix}_hierarchy_1`] ?? def[`hierarchy_1`] ?? def[`${prefix}_heirarchy_1`] ?? def[`heirarchy_1`] ?? '',
+          h2: def[`${prefix}_hierarchy_2`] ?? def[`hierarchy_2`] ?? def[`${prefix}_heirarchy_2`] ?? def[`heirarchy_2`] ?? '',
+          h3: def[`${prefix}_hierarchy_3`] ?? def[`hierarchy_3`] ?? def[`${prefix}_heirarchy_3`] ?? def[`heirarchy_3`] ?? '',
+        });
+
         if (Array.isArray(definitions)) {
           paths.forEach((path: string[]) => {
             // Updated Detection Logic (Apply to BOTH modes)
@@ -610,10 +615,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
             if (!isDynamicPermissions) {
               // Logic For False (Cascade Mode / Legacy)
                const matchedDefs = definitions.filter((def: any) => {
-                 // Use ?? for correct empty string handling
-                 const h1 = def[`${prefix}_hierarchy_1`] ?? def[`hierarchy_1`] ?? def[`${prefix}_heirarchy_1`] ?? def[`heirarchy_1`] ?? '';
-                 const h2 = def[`${prefix}_hierarchy_2`] ?? def[`hierarchy_2`] ?? def[`${prefix}_heirarchy_2`] ?? def[`heirarchy_2`] ?? '';
-                 const h3 = def[`${prefix}_hierarchy_3`] ?? def[`hierarchy_3`] ?? def[`${prefix}_heirarchy_3`] ?? def[`heirarchy_3`] ?? '';
+                 const { h1, h2, h3 } = getHierarchy(def);
 
                  // IA Case: Specific Match Only (isActive: true)
                  if (isIANode) {
@@ -657,10 +659,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
             } else {
                // Logic For True (Dynamic Mode)
                 const matchedDef = definitions.find((def: any) => {
-                  // Use ?? instead of || to correctly handle empty strings
-                  const h1 = def[`${prefix}_hierarchy_1`] ?? def[`hierarchy_1`] ?? def[`${prefix}_heirarchy_1`] ?? def[`heirarchy_1`] ?? '';
-                  const h2 = def[`${prefix}_hierarchy_2`] ?? def[`hierarchy_2`] ?? def[`${prefix}_heirarchy_2`] ?? def[`heirarchy_2`] ?? '';
-                  const h3 = def[`${prefix}_hierarchy_3`] ?? def[`hierarchy_3`] ?? def[`${prefix}_heirarchy_3`] ?? def[`heirarchy_3`] ?? '';
+                  const { h1, h2, h3 } = getHierarchy(def);
                    
                   if (h1 !== lookupPath[0]) return false;
                    
@@ -687,7 +686,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
                       ids.push(matchedDef.h_id);
                   } else {
                       // Standard Node
-                    const h3 = matchedDef[`${prefix}_hierarchy_3`] ?? matchedDef[`hierarchy_3`] ?? matchedDef[`${prefix}_heirarchy_3`] ?? matchedDef[`heirarchy_3`] ?? '';
+                    const { h3 } = getHierarchy(matchedDef);
                       const isLeaf = (h3 && h3 !== "");
                       
                       if (isLeaf) {
