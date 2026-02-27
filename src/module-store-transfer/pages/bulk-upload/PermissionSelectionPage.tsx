@@ -503,16 +503,14 @@ const PermissionSelectionPage = ({
       // Task 1: Check if users with roles from compulsory apps have corresponding permissions
       finalData.users.forEach((user:any )=> {
           const userRoles = finalData.roles[user.rid]?.roles || [];
-          const userPermissions = finalData.permissions[user.perm_id] || {};
-        console.log("userPermissions", userPermissions)
+        const userPermissions = finalData.permissions[user.perm_id] || {};
         const userLocationPermissions = userPermissions.location_permission || [];
         const userProductPermissions = userPermissions.product_permission || [];
           
           // Get application IDs from user's permissions (both location and product)
           const userPermissionAppIdsLoc = new Set();
           const userPermissionAppIdsPerm = new Set();
-          
-        console.log("userLocationPermission", userLocationPermissions)
+
           // Add application IDs from location permissions
         userLocationPermissions.forEach((perm: any) => {
           if (perm?.perm?.length) {
