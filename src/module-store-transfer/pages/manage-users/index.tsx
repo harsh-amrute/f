@@ -725,7 +725,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
           setIsPermissionModalOpen(false);
           setIsOpenUser(false);
           refetch()
-          notifySuccess("User Updated Succesfully")
+          notifySuccess("User updated Succesfully")
           setSelectedPermissions({});
         }
         else {
