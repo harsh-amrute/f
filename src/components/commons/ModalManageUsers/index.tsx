@@ -1,6 +1,6 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { useForm } from "react-hook-form";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useMemo } from "react";
 import { Errors, ArrowList } from "../../../components";
 import { notifyError } from "../../../helpers/notify";
 import "./styles.css";
@@ -70,21 +70,16 @@ const ModalManageUsers = ({
     closeModal();
   }
 
-  const [isAnyDistRole, setIsAnyDistRole] = useState(true);
   const checkIfDistributionRole = () => {
-    const distributionRoleIds = listRoles?.find((ele: any) => ele.title === "Distribution")?.child?.map((ele: any) => ele.id);
+    const distributionRoleIds = listRoles?.find((ele: any) => ele.title === "Distribution")?.child?.map((ele: any) => ele.id) || [];
     const isAnyDistributionRole = infoUser?.roles?.some((role: any) => distributionRoleIds.includes(role));
     return isAnyDistributionRole || isMtoPermissionEnabled;
   }
-  useEffect(() => {
-    console.log("this is updated");
-    setIsAnyDistRole(checkIfDistributionRole());
-  }, [infoUser]);
+  const isAnyDistRole = useMemo(() => checkIfDistributionRole(), [infoUser, listRoles]);
+
 
   const onSubmit = () => {
     const value = getValues();    
-    console.log("roles", infoUser.roles);
-    console.log("listRoles", listRoles);
     const isAnyDistributionRole = checkIfDistributionRole();
     if (infoUser.roles.length > 0) {
       const userDetails = {
@@ -97,10 +92,6 @@ const ModalManageUsers = ({
         createUser({}, userDetails);
         return;
       }
-      // if(!value.password || value.password.length === 0){
-      //   notifyError("Password Cannot Be Empty !")
-      //   return 
-      // }
       if (infoUser.edit===false && value.password.length > 0 && value.password.trim() === value.password) {
         setInfoUser({
           ...infoUser,

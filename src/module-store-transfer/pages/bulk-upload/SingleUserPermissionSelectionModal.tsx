@@ -105,8 +105,7 @@ const SingleUserPermissionSelectionModal = ({ dataAllPermissions, closeModal, cr
     }
   }
 
-  useEffect(()=>{
-      ResetPermissions();
+  useEffect(() => {
         setAllApplications(
           dataAllPermissions
             ?.map((ele: any) => ele.application_name)

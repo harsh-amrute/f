@@ -2,8 +2,6 @@ import { useNavigate } from "react-router";
 import IconCard from "../../commons/VFCard/IconCard";
 import { PanelGrid } from "../SelectMaster/styles.css";
 import { ToolsWrapper } from "./styles.css";
-import { useAuth } from "./useAuth";
-import Spinner from "../../../../components/commons/Spinner";
 import { useUserData } from "../../../../context";
 
 const Tools = () => {

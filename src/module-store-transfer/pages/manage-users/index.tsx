@@ -758,6 +758,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
           setIsOpenUser(false);
           refetch()
           notifySuccess("User Updated Succesfully")
+          setSelectedPermissions({});
         }
         else {
           notifyError("Failed to update user: "+response?.response?.msg);
@@ -771,6 +772,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
           setIsOpenUser(false);
           refetch()
           notifySuccess("user created succesfully")
+          setSelectedPermissions({});
         }
         else {
           notifyError("Failed to create user: "+response?.response?.msg);

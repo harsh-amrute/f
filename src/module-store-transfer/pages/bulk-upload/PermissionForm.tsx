@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {  SearchInputMultiple } from "../../../components";
 import { useUserData } from "../../../context";
 import Checkbox from "../../../components/VectorFLOW/commons/MTO/Checkbox";
-import { set } from "lodash";
 import { selectAllWrapper,
   sectionContainer,
   sectionTitle,
@@ -19,7 +18,6 @@ const PermissionForm = ({
   readOnly = false,
 }: any) => {
 
-  console.log("currentAppAllPermissions", currentAppAllPermissions)
 
   // Dynamic State
   const [permissionTypes, setPermissionTypes] = useState<string[]>([]);
