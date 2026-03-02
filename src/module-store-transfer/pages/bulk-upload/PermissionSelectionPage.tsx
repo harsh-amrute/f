@@ -261,8 +261,7 @@ const PermissionSelectionPage = ({
 
               const prefix = permType.split("_")[0]; // location or product
               const defKey1 = `${permType}_ids`;
-              const defKey2 = `${permType.replace("_permission", "")}_permission_ids`;
-              const definitions = appData[defKey1] || appData[defKey2] || [];
+            const definitions = appData[defKey1] || [];
               
               if (!Array.isArray(definitions)) return [];
 

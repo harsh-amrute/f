@@ -17,7 +17,6 @@ import {
   useGetAllRoles,
   useGetAllUsers,
   useGetAllPermissions,
-  useGetHeadersData,
   useGetUserPermissions,
   useRegisterUser,
   usePutEditUser
@@ -66,8 +65,6 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
 
   const { data: dataFetch,refetch, isFetching } = useGetAllUsers();
   const { data: dataPermissions } = useGetAllPermissions();
-  const { mutateAsync: usegetHeaderData } = useGetHeadersData();
-  const [headers, setHeaders] = useState<any>();    
   const { mutateAsync: getUserPermissions, isLoading: edit } = useGetUserPermissions();
   const { mutateAsync: getDBRSettings } = useGetDBRsettingsData();
   const { mutateAsync: registerUser, isLoading: registerLoading } = useRegisterUser();
@@ -113,19 +110,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     getDBRSettingsData();
   }, [])
 
-  const getHeaderDatafunct = async() =>{
-    try {
-        const reponse = await usegetHeaderData();
-        setHeaders(reponse.data);
-    } catch (e) {
-        console.error("Error fetching headers", e);
-    } finally {
-      setIsLoadingHeaders(false);
-    }
-  }
-  useEffect(() => {
-    getHeaderDatafunct();
-  }, []);
+
 
 
 
@@ -493,10 +478,9 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
 
                     const type = key.replace('_hids', '_permission'); // e.g., product_permission
                     // Determine Definition Key (some inconsistency in naming likely, check dataAllPermissions)
-                    const defKey1 = `${type}_ids`; 
-                    const defKey2 = `${type.replace("_permission", "")}_permission_ids`;
+                  const defKey1 = `${type}_ids`; 
                     
-                    const definitions = appData[defKey1] || appData[defKey2] || [];
+                  const definitions = appData[defKey1] || [];
                     const prefix = type.split("_")[0];
 
                     const paths = hids.map((hid: string) => {
@@ -590,8 +574,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
         
         // Resolve definitions
         const defKey1 = `${permType}_ids`;
-        const defKey2 = `${permType.replace("_permission", "")}_permission_ids`;
-        const definitions = appData[defKey1] || appData[defKey2] || [];
+        const definitions = appData[defKey1] || [];
 
         const ids: string[] = [];
         const prefix = permType.split("_")[0]; // e.g. location

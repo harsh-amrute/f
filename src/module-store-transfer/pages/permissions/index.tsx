@@ -65,8 +65,7 @@ const Permissions = () => {
 
                     const type = key.replace('_hids', '_permission');
                     const defKey1 = `${type}_ids`;
-                    const defKey2 = `${type.replace("_permission", "")}_permission_ids`;
-                    const definitions = appData[defKey1] || appData[defKey2] || [];
+                    const definitions = appData[defKey1] || [];
                     const prefix = type.split("_")[0];
 
                     const paths = hids.map((hid: string) => {
