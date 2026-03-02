@@ -346,7 +346,7 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
     });
   };
 
-  const isBTRReport = window.location.pathname === '/mta/insights-and-trends/buffer-trend-report';
+  const isBTRReport = window.location.pathname === '/mta/insights-and-trends/buffer-trend-report' || window.location.pathname === '/mta/supply-chain-intelligence-hub/availability-report';
 
   const shouldShowColorFilters = currCategory === 'BPR' || currCategory === 'BOR' || currCategory === 'RRR';
 

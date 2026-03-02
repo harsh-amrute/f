@@ -28,7 +28,8 @@ export enum UIColumnConfigName{
     InTransit = "InTransitWhereAbouts",
     BuffertrendReport = "BufferTrendReport",
     SDR = "SupplierDispatchReport",
-    EO = "ElephantOrderReport"
+    EO = "ElephantOrderReport",
+    AvailabilityReport = "AvailabilityReport",
 }
 
 export enum UserUIColumnConfigName{

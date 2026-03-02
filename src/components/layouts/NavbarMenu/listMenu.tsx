@@ -307,6 +307,12 @@ export const listMenuParent: any = [
  
           },
           {
+            name: "Availability Report",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/mta/supply-chain-intelligence-hub/availability-report",
+ 
+          },
+          {
             name: "Merchandising Grid",
             img: "/assets/img/nav/arrow_down.svg",
             url: "/supply-chain-intelligence-hub/merchandising-grid",

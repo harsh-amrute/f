@@ -187,6 +187,7 @@ const ActionToolBar = ({
     else if (
       pathname === "/mta/insights-and-trends/buffer-trend-report" ||
       pathname === "/mta/supply-chain-intelligence-hub/bpr" ||
+      pathname === "/mta/supply-chain-intelligence-hub/availability-report" ||
       pathname === "/mta/supply-chain-intelligence-hub/rrr" ||
       pathname === "/mta/supply-chain-intelligence-hub/bor" ||
       pathname === "/mta/supply-chain-intelligence-hub/bor-color-bandwise" ||
@@ -217,6 +218,7 @@ const ActionToolBar = ({
     if(pathname === "/mta/insights-and-trends/buffer-trend-report" 
       ||  pathname === "/mta/insights-and-trends/buffer-trends"  
       || pathname === "/mta/supply-chain-intelligence-hub/bpr"
+      || pathname === "/mta/supply-chain-intelligence-hub/availability-report" 
     || pathname === "/mta/supply-chain-intelligence-hub/rrr"
     || pathname ===  "/mta/supply-chain-intelligence-hub/rrr-color-bandwise"
     || pathname === "/mta/supply-chain-intelligence-hub/bor"
@@ -522,6 +524,24 @@ const ActionToolBar = ({
               onReset={handleResetFilters}      
             />
         );
+        case "AvailabilityReport":
+          if (
+            pathname === "/mta/supply-chain-intelligence-hub/availability-report" &&
+            onChangeHorizon
+          ) {
+            return (
+              <MTAVFMultiFilter
+                isOpen={isFilterOpen}
+                onApply={handleApplyFilter}
+                multiFilter={multiFilter}
+                onClose={() => toggleFilter(false)}
+                onReset={handleResetFilters}
+                currentTab={currentTab}
+                reportName={UIColumnConfigName.AvailabilityReport}
+              />
+            );
+          }
+        break;
       default:
         <></>;
     }
@@ -1014,6 +1034,7 @@ const ActionToolBar = ({
             currCategory === "RRR" ||
             currCategory === "BOR" ||
             currCategory === "BTR" ||
+            currCategory === "AvailabilityReport" ||
             currCategory === "ResearchInsight" ||
             currCategory === "DBMNorm" ||
             (currCategory === "GuidedInsight" &&
