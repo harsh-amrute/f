@@ -4,7 +4,6 @@ import {
   inputWrapper,
   urlsForm,
   label,
-  // focusOutlineVar,
 } from "../UserURLsDrawer/styles.css";
 import {
   input,
@@ -115,6 +114,9 @@ const EditReportConfig = (props: { data: any; cb: () => void }) => {
 
   const themeColor =
     (themeUi && globalStyles.chooseThemeColor[themeUi]?.color4) || "#820F4C";
+   const bgColor =
+      globalStyles.chooseThemeColor[themeUi]?.color5 ?? "transparent";
+  
 
   return (
     <form className={urlsForm}  onSubmit={handleSubmit} >
@@ -313,7 +315,7 @@ const EditReportConfig = (props: { data: any; cb: () => void }) => {
           disabled={!isFormValid || !isChanged}
           style={assignInlineVars({
             [focusOutlineVar]: themeColor,
-            [primaryBgVar]: themeColor,  
+            [primaryBgVar]: bgColor,  
           })}
         >
           Update UI Report Config

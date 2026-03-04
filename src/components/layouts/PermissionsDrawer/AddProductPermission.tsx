@@ -184,6 +184,9 @@ const AddProductPermission = (props: { cb: () => void }) => {
     );
   const focusColor =
     globalStyles.chooseThemeColor[themeUi]?.color4 ?? "transparent";
+   const bgColor =
+      globalStyles.chooseThemeColor[themeUi]?.color5 ?? "transparent";
+  
 
   return (
     <>
@@ -258,7 +261,7 @@ const AddProductPermission = (props: { cb: () => void }) => {
             type="button"
             style={assignInlineVars({
               [focusOutlineVar]: focusColor,
-              [primaryBgVar]: focusColor,  
+              [primaryBgVar]: bgColor,  
             })}
             onClick={() => toggleUploadModal(true)}
           >
@@ -269,7 +272,7 @@ const AddProductPermission = (props: { cb: () => void }) => {
             disabled={isFormInvalid || isSubmitting}
             style={assignInlineVars({
               [focusOutlineVar]: focusColor,
-              [primaryBgVar]: focusColor,  
+              [primaryBgVar]: bgColor,  
               
             })}
           >

@@ -163,20 +163,25 @@ const DeptWiseAnalytics = () => {
 
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
-  const themeColor = (themeUi && globalStyles.chooseThemeColor[themeUi]?.color5) || "#820F4C";
+  const themeColor = (themeUi && themeUi === 'NOIRFUSION') ? globalStyles.chooseThemeColor[themeUi]?.color3 : "#383737";
 
   if (isLoading) {
     return (
-      <div className={BPRDailyAnalyticsWrapper}  style={assignInlineVars({           // ← add this
-        [analyticsHeaderBorderColorVar]: themeColor,
-        [analyticsBgVar]: "#383737",
-        [analyticsTextColorVar]: "white",
-      })}>
+      <div className={BPRDailyAnalyticsWrapper}>
         <div
           className={BPRDailyAnalyticsContainer}
-          style={{ aspectRatio: "0.9", width: "90%" }}  
+          style={assignInlineVars({  
+          aspectRatio:'0.9',
+          width:'90%',        
+          [analyticsBgVar]: themeColor,
+          [analyticsTextColorVar]: "white",
+      })}
         >
-          <div className={BPRDailyAnalyticsHeader}>
+          <div className={BPRDailyAnalyticsHeader}
+             style={assignInlineVars({          
+              [analyticsHeaderBorderColorVar]: 'white',
+          })}
+            >
             Analytics (For all orders)
           </div>
           <div
@@ -223,7 +228,7 @@ const DeptWiseAnalytics = () => {
     <div className={BPRDailyAnalyticsWrapper}>
       <div className={BPRDailyAnalyticsContainer}  style={assignInlineVars({
             [analyticsHeaderBorderColorVar]: 'white',  
-            [analyticsBgVar]: "#383737",                  // bg 
+            [analyticsBgVar]: themeColor,                  // bg 
             [analyticsTextColorVar]: "white",             // text color
           })}>
         <div className={BPRDailyAnalyticsHeader}>
