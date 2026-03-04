@@ -194,6 +194,8 @@ const useViewModify = (pageType: string) => {
     []
   );
   const [seasonalityRowData, setSeasonalityRowData] = useState<any>([]);
+  const tempRefPoogi = useRef<any>(null);
+
 
 
   const {
@@ -1071,7 +1073,6 @@ const useViewModify = (pageType: string) => {
   };
 
   const agGridProps: AgGridReactProps = {
-    singleClickEdit:true,
     tooltipShowDelay: 0,
     readOnlyEdit: true,
     tooltipTrigger: "hover",
@@ -1101,7 +1102,6 @@ const useViewModify = (pageType: string) => {
           }
         });
         validateMTOMaster(activeMaster.id, newRowData);
-        return;
       }
     },
     onCellValueChanged: (event) => {
@@ -1110,9 +1110,7 @@ const useViewModify = (pageType: string) => {
       const newValue = event.newValue;
       const newRow = { ...data };
       newRow[field] = newValue;
-      // if(activeMaster.id===503){
-      //   return;
-      // }
+
       if (pageType === "add") {
         const newRowData = _.cloneDeep(
           activeMaster.rowData.map((row: any) => {
@@ -1133,62 +1131,16 @@ const useViewModify = (pageType: string) => {
         return;
       }
     },
-    onRowDataUpdated: (event: any) => {
-      if (activeMaster.id === 503) {
-        const nodesToSelect: any = [];
-
-        event.api.forEachNode((node: any) => {
-          if (
-            !node.data.minId &&
-            node.data?.majId === selectedMajReason?.majId
-          ) {
-            nodesToSelect.push(node);
-          }
-        });
-        event.api.setNodesSelected({ nodes: nodesToSelect, newValue: true });
-      }
-
-      const downloadableColumnKeys: string[] = [];
-      activeMaster.fields.forEach((field: Field) => {
-        if (field.isDownload) {
-          downloadableColumnKeys.push(field.key);
-        }
-      });
-
-      if (downloadData) {
-        const currentMaster = masters.find(
-          (master: MDMMasterState) => master.id === activeMaster.id
-        );
-        const visibleColumns = ref.current?.api.getAllDisplayedColumns();
-        const validColumnKeys: string[] = [];
-        if (visibleColumns) {
-          visibleColumns.forEach((col: any) => {
-            if (
-              isUploadModalOpen &&
-              !downloadableColumnKeys.includes(col.colId)
-            ) {
-              return;
-            }
-            validColumnKeys.push(col.colId);
-          });
-        }
-        // if (currentMaster) {
-        //   event.api.exportDataAsExcel(onExcelExprot(colDefs));
-        // }
-      }
-    },
     rowSelection: "multiple",
     suppressRowClickSelection: true,
     components: customCellRenderers,
-    onSelectionChanged: () => {
-      if (ref.current?.api) {
-        setSelectedRowsCount(ref.current?.api.getSelectedRows().length);
-      }
-    },
     onGridReady: (params: any) => {
       if (activeMaster.id === 501) {
         params.api.sizeColumnsToFit();
       }
+    },
+    getRowId: (params: any)=>{
+      return params.data.majId
     },
 
     onCellEditingStopped(event) {
@@ -1197,10 +1149,9 @@ const useViewModify = (pageType: string) => {
       const newValue = event.newValue;
       const newRow = { ...data };
       newRow[field] = newValue;
-      
-      // if(activeMaster.id===503){
-      //   return;
-      // }
+      if(activeMaster.id===503){
+        ref.current?.api.applyTransaction({update: [newRow]})
+      }
       if (pageType === "add") {
         const newRowData = _.cloneDeep(
           activeMaster.rowData.map((row: any) => {
@@ -1218,32 +1169,8 @@ const useViewModify = (pageType: string) => {
           }
         });
         validateMTOMaster(activeMaster.id, newRowData);
-        return;
       }
 
-      if (data.minId === undefined) {
-        const newRowData = activeMaster.rowData.map((row: any) => {
-          if (JSON.stringify(row) === JSON.stringify(data)) {
-            return newRow;
-          }
-          return row;
-        });
-        // setEnableEditOnlineReset(true)
-        dispatch(UPDATE_ROW_DATA([...newRowData]));
-      } else if (activeMaster.id === 503) {
-        const newRowData = activeMaster.rowData.map((row: any) => {
-          if (JSON.stringify(row.majId) === JSON.stringify(data.majId)) {
-            row.minData.map((ele: any) => {
-              if (ele.minId === data.minId) {
-                return data;
-              }
-              return ele;
-            });
-          }
-          return row;
-        });
-        dispatch(UPDATE_ROW_DATA([...newRowData]));
-      }
     },
     statusBar:{
       statusPanels: [
@@ -1961,8 +1888,7 @@ const useViewModify = (pageType: string) => {
         notifyError("Please select a file to upload.");
         return;
       }
-      // const selectedColumns = ref.current?.api.getAllDisplayedColumns();
-      // const toasId = notifyLoader("Reading File");
+
       setIsOverlayVisible(true);
 
       // TODO : MTO check for which all master this needs to be done
@@ -1995,133 +1921,6 @@ const useViewModify = (pageType: string) => {
         mode: "upload",
       });
 
-      /////
-      // const updatedColdefs:any = activeMaster?.colDefs?.map((col: ColDef) => {
-      //   // const isEditable = activeMaster.fields.find((field: Field) => field.key === col.colId)?.isEdit;
-      //   if (col.field === "iv") return { ...col, cellRenderer: ToggleButton, pinned: 'right', filter: false };
-      //   if (col.field === "bt")
-      //     return {
-      //       ...col,
-      //       editable: true,
-      //       cellEditor: "agRichSelectCellEditor",
-      //       cellEditorParams: {
-      //         values: bufferTypeData?.map((item: any) => item.id),
-      //         formatValue: (id: any) => getCategoryName(id)
-      //       },
-      //       valueGetter: (params: any) => {
-      //         return getCategoryName(params?.data?.bt)
-      //       },
-      //       filter: 'agTextColumnFilter',
-      //     }
-      //   if (col.field === "pl" || col.field === "plnm" || col.field ==='pid')
-      //     return {
-      //       ...col,
-      //       editable: true,
-      //       cellEditor: "agRichSelectCellEditor",
-      //       cellEditorParams: {
-      //         values: plantMaster?.map((item: any) => item.plant_name),
-      //       },
-      //     };
-      
-        
-      //   if(col.field === "ccrId"){
-      //     return {
-      //       ...col,
-      //       editable: true,
-      //       cellEditor: "agRichSelectCellEditor",
-      //       cellEditorParams:{
-      //         values: ccr_names?.map((ccr: string) => ccr),
-      //       }
-      //     }
-      //   }
-
-      //   if (col.field === "sd" || col.field === "ed") {
-      //     return {
-      //       ...col,
-      //       cellDataType:'date',
-      //       editable: true,
-      //       cellEditor:"agDateCellEditor",
-      //       valueFormatter: (params: any) => {
-      //         if(params.value === null || params.value === undefined) return '';
-      //         const date = new Date(params.value);
-      //         return date.toLocaleDateString("en-CA");
-
-      //       },
-      //       // cellRenderer: DueDateCellRenderer,
-      //     };
-      //   }
-
-      //   if (col.field === "dp")
-      //     return {
-      //       ...col,
-      //       editable: true,
-      //       cellEditor: "agRichSelectCellEditor",
-      //       cellEditorParams: {
-      //         values: deptMaster?.map((item: any) => item.dept_name),
-      //       },
-      //     };
-
-      //   if (col.field === "cgid")
-      //     return {
-      //       ...col,
-      //       editable: true,
-      //       cellEditor: "agRichSelectCellEditor",
-      //       cellEditorParams: {
-      //         values: Object.keys(ccrGroupMaster || {}),
-      //       },
-      //     };
-      //   if (col.field === "slt")
-      //     return {
-      //       ...col,
-      //       editable: true,
-      //       cellEditor: "agNumberCellEditor",
-      //     };
-      //   if (col.field === "mlt")
-      //     return {
-      //       ...col,
-      //       editable: true,
-      //       cellEditor: "agNumberCellEditor",
-      //     };
-      //   if (col.field === "cpd")
-      //     return {
-      //       ...col,
-      //       editable: true,
-      //       cellEditor: "agNumberCellEditor",
-      //     };
-      //   if (col.field === "whpd")
-      //     return {
-      //       ...col,
-      //       editable: true,
-      //       cellEditor: "agNumberCellEditor",
-      //     };
-      //   if (col.field === "sh")
-      //     return {
-      //       ...col,
-      //       editable: true,
-      //       cellEditor: "agNumberCellEditor",
-      //     };
-      //   if (col.field === "rb")
-      //     return {
-      //       ...col,
-      //       editable: true,
-      //       cellEditor: "agNumberCellEditor",
-      //     };
-      //   if (col.field === "fh")
-      //     return {
-      //       ...col,
-      //       editable: true,
-      //       cellEditor: "agNumberCellEditor",
-      //     };
-      //   if (col.field === "cwl")
-      //     return {
-      //       ...col,
-      //       editable: true,
-      //       cellEditor: "agNumberCellEditor",
-      //     };
-      //   else return { ...col, editable: true, singleClickEdit: true };
-      //   // return { ...col }
-      // })
-
       dispatch(
         UPDATE_COLDEFS([
           {
@@ -2141,53 +1940,11 @@ const useViewModify = (pageType: string) => {
       formData.append("file", file);
       formData.append("ui_config", JSON.stringify(activeMaster.fields));
       formData.append("screen_type", JSON.stringify({ screenType: pageType }));
-      // const processId = uuidv4();
-
-      // TODO: checked for buffer only make it dynamic
-      //   if(activeMaster.id!==501 && activeMaster.id!==502 && activeMaster.id!==503 && activeMaster.id!==504){
-
-      //     intervalID = setInterval(async () => {
-      //       const progress = await getUploadProgress(processId);
-      //       setUploadProgress(progress.data.progress);
-      //       setTotalProgress(progress.data.totalRows)
-      //     }, 1000)
-
-      //     const response = await validateMaster({ formData, masterId: activeMaster.id });
-      //     clearInterval(intervalID);
-      //     let result = JSON.parse(response.data)
-      //     const errorAndWarningData = result.filter((data: any) => data.error.length > 0 || data.warning.length > 0)
-      //     result = [...errorAndWarningData, ...result.filter((data: any) => data.error.length === 0 && data.warning.length === 0)]
-
-      //     setIsOverlayVisible(false);
-
-      //   const ifErrorExists = result.find((data: any) => data.error.length > 1);
-      //   const ifWarningExists = result.find((data: any) => data.warning.length > 1);
-
-      //   if (ifErrorExists) {
-      //     dispatch(UPDATE_PROGRESS_STATE('error'));
-      //     addInvalidDataColDefs('error');
-      //   }
-      //   if (ifWarningExists) {
-      //     // dispatch(UPDATE_PROGRESS_STATE('error'));
-      //     addInvalidDataColDefs('warning');
-      //   }
-      //   if (!ifErrorExists) {
-      //     if (activeMaster.progress === 'deleteView') dispatch(UPDATE_PROGRESS_STATE('deleteUploaded'));
-      //     else dispatch(UPDATE_PROGRESS_STATE('uploaded'));
-      //     addCheckBoxColDefs();
-      //   }
-
-      //   dispatch(SET_RECORD_COUNT(result.length));
-      //   dispatch(UPDATE_ROW_DATA(result));
-      //   dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
-      // }
-      // else{
+     
       dispatch(SET_RECORD_COUNT(buffData?.length));
       dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
 
       dispatch(UPDATE_ROW_DATA(buffData));
-
-      // }
 
       dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
       dispatch(TOGGLE_UPLOAD_MODAL(false));
@@ -3457,43 +3214,44 @@ const useViewModify = (pageType: string) => {
         majdsc: "",
         majId: newId,
         ie: false,
-        minData: [{ majId: newId, mindsc: "", minId: newIdMin, ie: false, ia: true, iu: true,}],
+        minData: [{ majId: newId, editable: true, mindsc: "", minId: newIdMin, ie: false, ia: true, iu: true,}],
         ia: true,
         iu: true,
+        editable: true
       };
       setSelectedMajReason(newRow);
     }
-    // addRowToMtoMinGrid();
-    dispatch(UPDATE_ROW_DATA([newRow, ...activeMaster.rowData]));
-    addEditableToLastColumn();
+    if(activeMaster.id !== 503){
+      dispatch(UPDATE_ROW_DATA([newRow, ...activeMaster.rowData]));
+      addEditableToLastColumn();
+    }
+    else{
+      ref.current?.api.applyTransaction({add: [newRow], addIndex: 0});
+    }
   };
 
   const addRowToMtoMinGrid = () => {
     const newMinId = "min" + uuidv4();
+   
+    // const selectedMajReason = ref.current?.api.getSelectedRows()[0];
+    const newMinReason = {
+      majId: selectedMajReason.majId,
+      editable: true,
+      mindsc: "",
+      minId: newMinId,
+      ie: false,
+      ia: true,
+      iu: true,
+    };
     const newSelectedMajReason = {
       ...selectedMajReason,
       minData: [
-        {
-          majId: selectedMajReason.majId,
-          ie: false,
-          minId: newMinId,
-          mindsc: "",
-       
-        },
+        newMinReason,
         ...selectedMajReason.minData,
       ],
     };
-    const newRowData: any = [];
-    activeMaster.rowData.forEach((element) => {
-      if (element.majId === selectedMajReason.majId) {
-        newRowData.push(newSelectedMajReason);
-      } else {
-        newRowData.push(element);
-      }
-    });
-    dispatch(UPDATE_ROW_DATA(newRowData));
-    setSelectedMajReason(newSelectedMajReason);
-    addEditableToLastMinColumn();
+    ref.current?.api.applyTransaction({update: [newSelectedMajReason]});
+    tempRefPoogi.current?.api.applyTransaction({add: [newMinReason], addIndex:0});
   };
 
 
@@ -4452,24 +4210,40 @@ const useViewModify = (pageType: string) => {
     deptMaster
   ]);
 
+  useEffect(()=>{
+    console.log("selectedMajreaons changed", selectedMajReason?.minData || [])
+  },[selectedMajReason])
+
   const onMajReasonSelected = () => {
     setSelectedMajReason(ref?.current?.api?.getSelectedRows()[0]);
   };
 
-  const onMinReasonEditingStopped = (params: any) => {
-    const newData = _.cloneDeep(activeMaster.rowData);
-    let majIdIndex = 0;
-    activeMaster.rowData.forEach((ele: any, index: number) => {
-      if (ele?.majId === selectedMajReason?.majId) {
-        majIdIndex = index;
-      }
-    });
+  const onMinReasonEditingStopped = (event: any) => {
+    // TODO: update both the minReasonRowData and activeMaster
 
-    newData[majIdIndex] &&
-      (newData[majIdIndex].minData[params.node.rowIndex].mindsc =
-        params.newValue);
-    dispatch(UPDATE_ROW_DATA(newData));
-    setSelectedMajReason(newData[majIdIndex]);
+    const data = event.data;
+      const field: any = event.colDef.field;
+      const newValue = event.newValue;
+      const newRow = { ...data };
+      newRow[field] = newValue;
+
+
+      // updated the majreason
+    ref.current?.api.forEachNode((node: any)=>{
+      if(node.data.minData.some((ele:any)=>ele.minId===event.data.minId)){
+        node.data.minData.forEach((ele:any)=>{
+          if(ele.minId===event.data.minId){
+            ele[field] = newValue;
+          }
+        })
+      }
+    })
+
+    tempRefPoogi.current.api.applyTransaction({
+      update: [newRow]})
+
+    
+    
   };
 
   const getCombinedPoogiDataForExcelExport = () => {
@@ -4602,7 +4376,10 @@ const useViewModify = (pageType: string) => {
           if (col.colId === "mindsc") {
             return {
               ...col,
-              cellRenderer: MinReasonDescCell,
+              // cellRenderer: MinReasonDescCell,
+              editable: (params: any)=>{
+                return params.data.editable;
+              }
             };
           }
           return col;
@@ -4635,7 +4412,10 @@ const useViewModify = (pageType: string) => {
           if (col.colId === "majdsc") {
             return {
               ...col,
-              cellRenderer: MajReasonDescCell,
+              // cellRenderer: MajReasonDescCell,
+              editable: (params: any)=>{
+                return params.data.editable;
+              }
             };
           }
           else if(col.colId === 'plnm'){
@@ -4645,6 +4425,9 @@ const useViewModify = (pageType: string) => {
               cellEditorParams: {
                 values: plantMaster?.map((item: any) => item.plant_name),
               },
+              editable: (params: any)=>{
+                return params.data.editable;
+              }
             }
           }
           return col;
@@ -4667,7 +4450,9 @@ const useViewModify = (pageType: string) => {
     showModal,
     setShowModal,
     bufferDataConfirm: onIncompleteDataConfirm,
-    isAPILoading
+    isAPILoading,
+    tempRefPoogi,
+    selectedMajReason,
   };
 };
 export default useViewModify;
