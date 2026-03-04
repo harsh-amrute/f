@@ -36,7 +36,7 @@ export const input = style({
       cursor: "not-allowed",
     },
     "&:active, &:focus": {
-      outlineColor: focusOutlineVar,
+      outlineColor: '#BC3D80',
     },
   },
 });
@@ -58,7 +58,7 @@ export const textArea = style({
 
   selectors: {
     "&:active, &:focus": {
-      outlineColor: focusOutlineVar,
+      outlineColor: '#BC3D80'
     },
   },
 });
@@ -100,7 +100,7 @@ export const button = buttonBase;
 export const primaryButton = style([
   buttonBase,
   {
-    backgroundColor: primaryBgVar,
+    backgroundColor: '#BC3D80', 
     color: "white",
     selectors: {
       "&:hover:not(:disabled)": { boxShadow: "0 0 0 3px rgba(0,0,0,.05)" },

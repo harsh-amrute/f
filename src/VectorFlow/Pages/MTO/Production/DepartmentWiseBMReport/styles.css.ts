@@ -275,16 +275,19 @@ export const BPRDailyAnalyticsContainer = style({
   flexDirection: 'column',
   width: '90%',
   background: analyticsBgVar,
-  color: analyticsTextColorVar,
   boxShadow: '0px 6px 12px #00000034',
   padding: '4px 8px',
   borderRadius: 4,
+  color:'white',
+  backgroundColor:'#383737'
+
 });
 
 export const BPRDailyAnalyticsHeader = style({
   color: 'inherit',
   marginBottom: 6,
-  borderBottom: `1px solid ${analyticsHeaderBorderColorVar}`,
+  borderBottom: `1px solid white`,
+
 });
 
 export const BPRDailyAnalyticsTableContainer = style({});
