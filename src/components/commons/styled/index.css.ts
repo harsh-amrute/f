@@ -100,7 +100,7 @@ export const button = buttonBase;
 export const primaryButton = style([
   buttonBase,
   {
-    backgroundColor: '#BC3D80', 
+    backgroundColor: '#BC3D80',  
     color: "white",
     selectors: {
       "&:hover:not(:disabled)": { boxShadow: "0 0 0 3px rgba(0,0,0,.05)" },
