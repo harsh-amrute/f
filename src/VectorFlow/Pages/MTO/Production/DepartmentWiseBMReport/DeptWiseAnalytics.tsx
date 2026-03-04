@@ -227,11 +227,12 @@ const DeptWiseAnalytics = () => {
   return (
     <div className={BPRDailyAnalyticsWrapper}>
       <div className={BPRDailyAnalyticsContainer}  style={assignInlineVars({
-            [analyticsHeaderBorderColorVar]: 'white',  
             [analyticsBgVar]: themeColor,                  // bg 
             [analyticsTextColorVar]: "white",             // text color
           })}>
-        <div className={BPRDailyAnalyticsHeader}>
+        <div className={BPRDailyAnalyticsHeader}   style={assignInlineVars({          
+              [analyticsHeaderBorderColorVar]: 'white',
+          })}>
           Analytics (For all orders)
         </div>
         <div className={BPRDailyAnalyticsTableContainer}>

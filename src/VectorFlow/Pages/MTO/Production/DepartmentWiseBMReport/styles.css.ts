@@ -279,7 +279,6 @@ export const BPRDailyAnalyticsContainer = style({
   padding: '4px 8px',
   borderRadius: 4,
   color:analyticsTextColorVar,
-  backgroundColor:'#383737'
 
 });
 
