@@ -14,9 +14,10 @@ import {
 } from "../../../../../helpers/utils";
 
 import {
-  useGetBTRDataCount,
-  useGetBTRData,
-} from "../../../../Services/MTA/InsightsAndTrends/BTR";
+  useGetARDataCount,
+  useGetARData,
+  useGetARSummaryData,
+} from "../../../../Services/MTA/SupplyChainIntelligenceHub/AvailabilityReport";
 
 import { ColDef } from "ag-grid-enterprise";
 import { ARTableHeader } from "./styles.css";
@@ -138,13 +139,17 @@ const useAR = () => {
     BTR_ROWS_PER_PAGE ? parseInt(BTR_ROWS_PER_PAGE) : 50
   );
 
-  const { mutateAsync: getBTRData, isLoading } = useGetBTRData();
+  const { mutateAsync: getARData, isLoading } = useGetARData();
 
+  const { mutateAsync: getARSummaryData, isLoading: isARSummaryLoading } =
+    useGetARSummaryData();
+  const [techSummaryData, setTechSummaryData] = useState<any[]>([]);
+  const [ecoSummaryData, setEcoSummaryData] = useState<any[]>([]);
   const {
     data: countData,
     mutateAsync: getBTRDataCount,
     isLoading: isBTRCountLoading,
-  } = useGetBTRDataCount();
+  } = useGetARDataCount();
 
   const {
     mutateAsync: getUiConfig,
@@ -383,8 +388,8 @@ const useAR = () => {
     };
     const loaderId = notifyLoader("Loading data");
     try {
-      const data = await getBTRData(payload);
-      console.log("data Tech::", data);
+      const data = await getARData(payload);
+      console.log("data Tech::--------------", data);
       setTechRowData(mapBTRRowData(data.data.data.tech, horizon));
     } catch (err: any) {
       notifyError(err);
@@ -394,7 +399,70 @@ const useAR = () => {
       toast.dismiss(loaderId);
     }
   };
+  const getSummaryData = async (
+    filter: any,
+    pageNumber: number,
+    pageSize?: number
+  ) => {
+    const payload = {
+      id: 0,
+      name: "both",
+      fields: [],
+      filters: filter,
+      paginationParameter: {
+        pageNumber: pageNumber,
+        recordsPerPage: pageSize || userPageSizeTech,
+      },
+      ISExport: "0",
+    };
 
+    const loaderId = notifyLoader("Loading summary data");
+
+    try {
+      const response = await getARSummaryData(payload);
+
+      const raw = response.data.data;
+      const data = typeof raw === "string" ? JSON.parse(raw) : raw;
+
+      const techStats = data.TechColorStats || [];
+      const ecoStats = data.EcoColorStats || [];
+
+      const formattedTech = techStats.map((item: any) => ({
+        Category: item.TechColor,
+        AbsoluteNo: item.color_count,
+        Percentage: `${item.percentage.toFixed(2)}%`,
+      }));
+
+      if (techStats.length > 0) {
+        formattedTech.push({
+          Category: "Total",
+          AbsoluteNo: techStats[0].grand_total,
+          Percentage: "100%",
+        });
+      }
+
+      const formattedEco = ecoStats.map((item: any) => ({
+        Category: item.EcoColor,
+        AbsoluteNo: item.item_count,
+        Percentage: `${item.percentage.toFixed(2)}%`,
+      }));
+
+      if (ecoStats.length > 0) {
+        formattedEco.push({
+          Category: "Total",
+          AbsoluteNo: ecoStats[0].grand_total,
+          Percentage: "100%",
+        });
+      }
+
+      setTechSummaryData(formattedTech);
+      setEcoSummaryData(formattedEco);
+    } catch (err: any) {
+      notifyError("Error loading summary");
+    } finally {
+      toast.dismiss(loaderId);
+    }
+  };
   const getDataEco = async (
     filter: any,
     pageNumber: number,
@@ -413,7 +481,7 @@ const useAR = () => {
     };
     const loaderId = notifyLoader("Loading data");
     try {
-      const data = await getBTRData(payload);
+      const data = await getARData(payload);
       console.log("data Eco::", data);
       setEcoRowData(mapBTRRowData(data.data.data.eco, horizon));
     } catch (err: any) {
@@ -439,7 +507,7 @@ const useAR = () => {
     };
     const loaderId = notifyLoader("Loading data");
     try {
-      const data = await getBTRData(payload);
+      const data = await getARData(payload);
       console.log("data for Both Eco and Tech::", data);
       setEcoRowData(mapBTRRowData(data.data.data.eco, horizon));
       setTechRowData(mapBTRRowData(data.data.data.tech, horizon));
@@ -492,6 +560,7 @@ const useAR = () => {
     getBTRDataCount(payload);
     if (currentTab?.value === "on-hand") getDataTech(tempFilter, 1);
     else if (currentTab?.value === "pipeline") getDataEco(tempFilter, 1);
+    else if (currentTab?.value === "summary") getSummaryData(tempFilter, 1);
     else getData(tempFilter, 1);
     getBPRUiConfig();
   };
@@ -704,7 +773,7 @@ const useAR = () => {
   useEffect(() => {
     if (initialColumnState) {
       if (currentTab.id === "1" && techColDefs?.length)
-        getDataTech(currFilter, 1);
+        getSummaryData(currFilter, 1);
       if (currentTab.id === "2" && techColDefs?.length)
         getDataTech(currFilter, 1);
       if (currentTab.id === "3") getDataEco(currFilter, 1);
@@ -715,7 +784,7 @@ const useAR = () => {
   useEffect(() => {
     if (initialColumnState) {
       if (currentTab.id === "1" && techColDefs?.length)
-        getDataTech(currFilter, 1);
+        getSummaryData(currFilter, 1);
       if (currentTab.id === "2" && techColDefs?.length)
         getDataTech(currFilter, 1);
       if (currentTab.id === "3") getDataEco(currFilter, 1);
@@ -745,7 +814,7 @@ const useAR = () => {
             themeUi={themeUi}
             techTable={{
               columnDefs: techColDefs,
-              rowData: techRowData,
+              rowData: techSummaryData,
               header: "On-Hand",
               paginationProps: techPaginationPropsForBoth,
               ...gridProps,
@@ -753,7 +822,7 @@ const useAR = () => {
             ecoTable={{
               columnDefs: ecoColDefs,
               paginationProps: ecoPaginationPropsForBoth,
-              rowData: ecoRowData,
+              rowData: ecoSummaryData,
               header: "In-Pipeline",
               ...gridProps,
             }}

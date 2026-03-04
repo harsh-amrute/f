@@ -214,12 +214,8 @@ const Summary = (props: SplitViewProps) => {
   const ref2 = useRef<AgGridReact>(null);
 
   // TODO: replace buildSummaryRows() with real API data derived from techTable / ecoTable rowData
-  const techSummaryRows = useMemo(
-    () => buildSummaryRows(),
-    [techTable.rowData]
-  );
-  const ecoSummaryRows = useMemo(() => buildSummaryRows(), [ecoTable.rowData]);
-
+  const techSummaryRows = techTable.rowData ?? [];
+  const ecoSummaryRows = ecoTable.rowData ?? [];
   return (
     <div
       className={ARTableWrapper}
