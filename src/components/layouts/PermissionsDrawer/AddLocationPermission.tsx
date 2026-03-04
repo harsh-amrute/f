@@ -10,6 +10,7 @@ import {
   primaryButton,
   skeleton,
   focusOutlineVar,
+  primaryBgVar,
 } from "../../commons/styled/index.css";
 import { useUserData } from "../../../context";
 import { notifyError, notifySuccess } from "../../../helpers/notify";
@@ -253,6 +254,7 @@ const AddLocationPermission = (props: { cb: () => void }) => {
             type="button"
             style={assignInlineVars({
               [focusOutlineVar]: focusColor,
+              [primaryBgVar]: focusColor,  
             })}
             onClick={() => toggleUploadModal(true)}
           >
@@ -263,6 +265,7 @@ const AddLocationPermission = (props: { cb: () => void }) => {
             disabled={isFormInvalid || isSubmitting}
             style={assignInlineVars({
               [focusOutlineVar]: focusColor,
+              [primaryBgVar]: focusColor,  
             })}
           >
             Add Permission

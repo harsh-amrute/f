@@ -278,7 +278,7 @@ export const BPRDailyAnalyticsContainer = style({
   boxShadow: '0px 6px 12px #00000034',
   padding: '4px 8px',
   borderRadius: 4,
-  color:'white',
+  color:analyticsTextColorVar,
   backgroundColor:'#383737'
 
 });
@@ -286,7 +286,7 @@ export const BPRDailyAnalyticsContainer = style({
 export const BPRDailyAnalyticsHeader = style({
   color: 'inherit',
   marginBottom: 6,
-  borderBottom: `1px solid white`,
+  borderBottom: `1px solid ${analyticsHeaderBorderColorVar}`,
 
 });
 

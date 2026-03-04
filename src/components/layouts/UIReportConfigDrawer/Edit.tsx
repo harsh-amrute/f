@@ -4,13 +4,15 @@ import {
   inputWrapper,
   urlsForm,
   label,
-  focusOutlineVar,
+  // focusOutlineVar,
 } from "../UserURLsDrawer/styles.css";
 import {
   input,
   primaryButton,
   secondaryButton,
   textArea,
+  primaryBgVar,
+  focusOutlineVar
 } from "../../commons/styled/index.css";
 import { useUserData } from "../../../context";
 import { notifyError, notifySuccess } from "../../../helpers/notify";
@@ -112,10 +114,10 @@ const EditReportConfig = (props: { data: any; cb: () => void }) => {
   }, [formData]);
 
   const themeColor =
-    (themeUi && globalStyles.chooseThemeColor[themeUi]?.color5) || "#820F4C";
+    (themeUi && globalStyles.chooseThemeColor[themeUi]?.color4) || "#820F4C";
 
   return (
-    <form className={urlsForm} onSubmit={handleSubmit}>
+    <form className={urlsForm}  onSubmit={handleSubmit} >
       <div style={{ display: "flex" }}>
         <div className={inputWrapper}>
           <label className={label} htmlFor="ReportName">
@@ -311,6 +313,7 @@ const EditReportConfig = (props: { data: any; cb: () => void }) => {
           disabled={!isFormValid || !isChanged}
           style={assignInlineVars({
             [focusOutlineVar]: themeColor,
+            [primaryBgVar]: themeColor,  
           })}
         >
           Update UI Report Config
