@@ -209,7 +209,7 @@ const AvailabilityReport = () => {
         <div style={{ display: "none" }}>
           <VFTable
             ref={tempRef}
-            columnDefs={currentTab.id === "3" ? techColDefs : ecoColDefs}
+            columnDefs={currentTab.id === "2" ? techColDefs : ecoColDefs}
             rowData={exportExcelRowData}
             {...tempAgGridProps}
             maintainColumnOrder={true}

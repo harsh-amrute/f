@@ -5,16 +5,12 @@ import VFTable from "../../../../../VectorFlow/Pages/MTO/Common/VFTable";
 
 interface SpliViewTableProps extends AgGridReactProps {
   header: string;
-  paginationProps: any;
 }
 
 export interface SplitViewProps {
   techTable: SpliViewTableProps;
   ecoTable: SpliViewTableProps;
-  isLocked: boolean;
-  toggleLockMode: (value: boolean) => void;
   themeUi: string;
-  initialColumnState: any;
 }
 
 const CategoryBadgeCellRenderer = (params: any) => {
@@ -26,6 +22,7 @@ const CategoryBadgeCellRenderer = (params: any) => {
     { bg: string; color: string; border?: string }
   > = {
     Black: { bg: "#000000", color: "#ffffff" },
+    Blue: { bg: "#0c37e5ff", color: "#ffffff" },
     Red: { bg: "#e53935", color: "#ffffff" },
     Yellow: { bg: "#f9a825", color: "#ffffff" },
     Green: { bg: "#43a047", color: "#ffffff" },
@@ -59,17 +56,6 @@ const CategoryBadgeCellRenderer = (params: any) => {
     </span>
   );
 };
-
-const buildSummaryRows = () => [
-  { Category: "Black", AbsoluteNo: 10, Percentage: 3 },
-  { Category: "Red", AbsoluteNo: 10, Percentage: 5 },
-  { Category: "Yellow", AbsoluteNo: 1, Percentage: 3 },
-  { Category: "Green", AbsoluteNo: 1, Percentage: 6 },
-  { Category: "White", AbsoluteNo: 2, Percentage: 9 },
-  { Category: "Grey", AbsoluteNo: 11, Percentage: 2 },
-  { Category: "Total", AbsoluteNo: 35, Percentage: 28 },
-  { Category: "Availability", AbsoluteNo: "-", Percentage: 11 },
-];
 
 const BoldCellRenderer = (params: any) => {
   const isBold =
@@ -213,7 +199,6 @@ const Summary = (props: SplitViewProps) => {
   const ref1 = useRef<AgGridReact>(null);
   const ref2 = useRef<AgGridReact>(null);
 
-  // TODO: replace buildSummaryRows() with real API data derived from techTable / ecoTable rowData
   const techSummaryRows = techTable.rowData ?? [];
   const ecoSummaryRows = ecoTable.rowData ?? [];
   return (

@@ -937,7 +937,7 @@ const ActionToolBar = ({
             {currCategory === "BufferTrend" ? null : (
               <>
                 {currCategory === "GuidedInsightchronicunavailability" ||
-                (currCategory === "BTR" && currentTab === "both") ? null : (
+                ((currCategory === "BTR" || currCategory === "AvailabilityReport") && (currentTab === "both" || currentTab === "summary")) ? null : (
                   <>
                     {isFilterButtonVisible && <div className={SCVerticalDivider} />}
                     {/* <SCViewContainerWithBg onClick={handleExportToExcel}> */}
@@ -961,6 +961,7 @@ const ActionToolBar = ({
                         />
                         <p>
                           {currCategory === "BTR" ||
+                          currCategory === "AvailabilityReport" ||
                           currCategory === "BPR" ||
                           currCategory === "RRR" ||
                           currCategory === "BOR" ||
@@ -977,7 +978,7 @@ const ActionToolBar = ({
                 )}
                 {(currCategory === "GuidedInsight" &&
                   currentTab === "chronicunavailability") ||
-                (currCategory === "BTR" && currentTab === "both") ? null : (
+                ((currCategory === "BTR" || currCategory === "AvailabilityReport") && (currentTab === "both" || currentTab === "summary")) ? null : (
                   <>
                     <div className={SCVerticalDivider} />
                     <div

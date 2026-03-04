@@ -7,7 +7,7 @@ import HorizontalSplitView from "./HorizontalSplitView";
 import VerticalSplitView from "./VerticalSplitView";
 import {
   getColumnsForExcelExport,
-  mapBTRRowData,
+  mapARRowData,
   MainMenuItemsCustomization,
   getColumnDefinationsMTA,
   CsvExportMTA,
@@ -24,7 +24,7 @@ import { ARTableHeader } from "./styles.css";
 import CategoryCellRenderer from "./CategoryCellRenderer";
 import AvailabilityCellRenderer from "./AvailabilityCellRenderer";
 import { AgGridReactProps } from "ag-grid-react";
-import TagsCellRenderer from "./TagsCellRenderer";
+import { BPRTagsCellRenderer } from "../../SupplyChainIntelligenceHub/BPR/BPRCellRenderers";
 import AvailabilityToolTip from "./AvailabilityToolTip";
 import CategoryToolTip from "./CategoryToolTip";
 import { SeasonalityGraphCellRenderer } from "../../../../../components/VectorFLOW/commons/SeasonalityCellRenderers";
@@ -54,14 +54,12 @@ import BPRGraphCellRenderer from "../BPR/BPRGraphCellRenderer";
 import type { RootState } from "../../../../../redux/store/store";
 
 import { useGetUIConfigData } from "../../../../Services/MTA/Common/UIConfig";
-import {
-  UIColumnConfigName,
-  UserUIColumnConfigName,
-} from "../../../../../helpers/Enum";
+import { UIColumnConfigName } from "../../../../../helpers/Enum";
 import { format } from "date-fns";
 import { useGetState } from "../../../../Services/MTA/Common/UserUIConfig";
 import { GridRef } from "../../../../types/MDM";
 import Summary from "./Summary";
+import TodaysColorCellRenderer from "./TodaysColorCellRenderer";
 
 const useAR = () => {
   const showDailyDataGraphModal = useSelector(
@@ -288,8 +286,9 @@ const useAR = () => {
           categoryCellRenderer: CategoryCellRenderer,
           categoryToolTip: CategoryToolTip,
           availabilityCellRenderer: AvailabilityCellRenderer,
-          tagsCellRenderer: TagsCellRenderer,
+          tagsCellRenderer: BPRTagsCellRenderer,
           availabilityToolTip: AvailabilityToolTip,
+          todaysColorCellRenderer: TodaysColorCellRenderer,
         },
         suppressDragLeaveHidesColumns: true,
         getRowStyle: (params: any) => {
@@ -323,34 +322,6 @@ const useAR = () => {
       setInitialColumnState(response.data.data);
     } catch (err: any) {
       notifyError("Something Went Wrong");
-    }
-  };
-
-  const getUserColumnConfig = async () => {
-    if (currentTab.id === "2") {
-      const stateData = await getState({
-        reportname: UserUIColumnConfigName.BTROnHand,
-      });
-
-      if (stateData.data.data.length !== 0) {
-        const parsedContent = JSON.parse(stateData.data.data);
-        setTechGridState(parsedContent);
-      } else {
-        console.log("State Data not available for BTROnHand");
-      }
-    }
-
-    if (currentTab.id === "3") {
-      const stateData = await getState({
-        reportname: UserUIColumnConfigName.BTRPipeline,
-      });
-      if (stateData.data.data.length !== 0) {
-        const parsedContent = JSON.parse(stateData.data.data);
-
-        setEcoGridState(parsedContent);
-      } else {
-        console.log("State Data not available BTRPipeline");
-      }
     }
   };
 
@@ -390,7 +361,7 @@ const useAR = () => {
     try {
       const data = await getARData(payload);
       console.log("data Tech::--------------", data);
-      setTechRowData(mapBTRRowData(data.data.data.tech, horizon));
+      setTechRowData(mapARRowData(data.data.data.tech));
     } catch (err: any) {
       notifyError(err);
       setTechRowData([]);
@@ -399,6 +370,7 @@ const useAR = () => {
       toast.dismiss(loaderId);
     }
   };
+
   const getSummaryData = async (
     filter: any,
     pageNumber: number,
@@ -463,6 +435,7 @@ const useAR = () => {
       toast.dismiss(loaderId);
     }
   };
+
   const getDataEco = async (
     filter: any,
     pageNumber: number,
@@ -483,7 +456,7 @@ const useAR = () => {
     try {
       const data = await getARData(payload);
       console.log("data Eco::", data);
-      setEcoRowData(mapBTRRowData(data.data.data.eco, horizon));
+      setEcoRowData(mapARRowData(data.data.data.eco));
     } catch (err: any) {
       notifyError(err);
       setTechRowData([]);
@@ -509,8 +482,8 @@ const useAR = () => {
     try {
       const data = await getARData(payload);
       console.log("data for Both Eco and Tech::", data);
-      setEcoRowData(mapBTRRowData(data.data.data.eco, horizon));
-      setTechRowData(mapBTRRowData(data.data.data.tech, horizon));
+      setEcoRowData(mapARRowData(data.data.data.eco));
+      setTechRowData(mapARRowData(data.data.data.tech));
     } catch (err: any) {
       notifyError(err);
       setTechRowData([]);
@@ -557,11 +530,13 @@ const useAR = () => {
         recordsPerPage: RowsPerPageCurrTab,
       },
     };
-    getBTRDataCount(payload);
-    if (currentTab?.value === "on-hand") getDataTech(tempFilter, 1);
-    else if (currentTab?.value === "pipeline") getDataEco(tempFilter, 1);
-    else if (currentTab?.value === "summary") getSummaryData(tempFilter, 1);
-    else getData(tempFilter, 1);
+    if (currentTab?.value === "summary") getSummaryData(tempFilter, 1);
+    else {
+      getBTRDataCount(payload);
+      if (currentTab?.value === "on-hand") getDataTech(tempFilter, 1);
+      else if (currentTab?.value === "pipeline") getDataEco(tempFilter, 1);
+      else getData(tempFilter, 1);
+    }
     getBPRUiConfig();
   };
 
@@ -649,9 +624,22 @@ const useAR = () => {
       tooltipComponent: "categoryToolTip",
     },
     Availability: {
+      field: "Availability",
       cellRenderer: "availabilityCellRenderer",
       tooltipField: "Availability",
       tooltipComponent: "availabilityToolTip",
+    },
+    aa: {
+      field: "Availability",
+      valueFormatter: (params: any) => {
+        console.log("Availability value:", params.value);
+        const val = parseFloat(params.value);
+        return isNaN(val) ? "" : `${val.toFixed(2)}%`;
+      },
+    },
+    tc: {
+      headerName: "Today's Color",
+      cellRenderer: "todaysColorCellRenderer",
     },
     Tags: {
       cellRenderer: "tagsCellRenderer",
@@ -813,22 +801,15 @@ const useAR = () => {
           <Summary
             themeUi={themeUi}
             techTable={{
-              columnDefs: techColDefs,
               rowData: techSummaryData,
               header: "On-Hand",
-              paginationProps: techPaginationPropsForBoth,
               ...gridProps,
             }}
             ecoTable={{
-              columnDefs: ecoColDefs,
-              paginationProps: ecoPaginationPropsForBoth,
               rowData: ecoSummaryData,
               header: "In-Pipeline",
               ...gridProps,
             }}
-            isLocked={isLockMode}
-            toggleLockMode={toggleLockMode}
-            initialColumnState={{}}
           />
         );
 
@@ -1018,7 +999,11 @@ const useAR = () => {
     currentTab,
     verticalView,
     isLoading:
-      isLoading || isBTRCountLoading || isUIConfigLoading || isSavedDataLoading,
+      isLoading ||
+      isBTRCountLoading ||
+      isUIConfigLoading ||
+      isSavedDataLoading ||
+      isARSummaryLoading,
     isError,
     techColDefs,
     techTotalRows,
