@@ -170,12 +170,14 @@ const DeptWiseAnalytics = () => {
       <div className={BPRDailyAnalyticsWrapper}>
         <div
           className={BPRDailyAnalyticsContainer}
-          style={assignInlineVars({  
-          aspectRatio:'0.9',
-          width:'90%',        
-          [analyticsBgVar]: themeColor,
-          [analyticsTextColorVar]: "white",
-      })}
+          style={{
+            aspectRatio: "0.9",
+            width: "90%",
+            ...assignInlineVars({
+            [analyticsBgVar]: themeColor,
+            [analyticsTextColorVar]: "white",
+            }),
+            }}
         >
           <div className={BPRDailyAnalyticsHeader}
              style={assignInlineVars({          
