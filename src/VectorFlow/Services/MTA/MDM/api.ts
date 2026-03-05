@@ -25,7 +25,7 @@ export namespace MDMService {
 
   export const getMasterData = async (body:GetMasterDataPayload) => {
    
-    return await axios.post(process.env.REACT_APP_API_HOST + `api/mta/GetMasterData`,body,{
+    return await axios.post(process.env.REACT_APP_API_HOST + 'api/mta/ModifyMasterData',{...body,"forwardUsers":true},{
       headers: { 'Content-Type': 'application/json' }
     })
   }
@@ -171,7 +171,7 @@ export namespace MDMService {
   }
 
   export const approveTask = async(body:any)=>{
-    return await axios.post(process.env.REACT_APP_API_HOST + 'api/mta/PostMasterAfterApproved',body,{
+    return await axios.post(process.env.REACT_APP_API_HOST + 'api/mta/BulkPostMasterAfterApproved',body,{
       headers: { 'Content-Type': 'application/json' }
     })
   }
