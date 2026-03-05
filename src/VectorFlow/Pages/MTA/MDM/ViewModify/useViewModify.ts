@@ -1465,22 +1465,43 @@ const useViewModify = (pageType: string) => {
     }
   };
 
-  const onClearExportError = (source: string) => {
-    const erroneusData: any[] = [];
-    const validData: any[] = [];
-    activeMaster.rowData.forEach((data: any) => {
-      if (data["warning"] && data["warning"].length > 0) {
-        setWarningFlag(true);
-        erroneusData.push(data);
-      }
+  const CHUNK_SIZE = 5000;
 
-      if (data["error"] && data["error"].length > 0) {
-        erroneusData.push(data);
-      } else {
-        validData.push(data);
+  const yieldToBrowser = () =>
+    new Promise<void>((resolve) => setTimeout(resolve, 0));
+
+  const onClearExportError = async (source: string) => {
+    const erroneousData: any[] = [];
+    const validData: any[] = [];
+    let warningFound = false;
+    const rows = activeMaster.rowData;
+    const total = rows.length;
+
+    notifyLoader("Preparing Excel");
+
+    for (let i = 0; i < total; i += CHUNK_SIZE) {
+      const end = Math.min(i + CHUNK_SIZE, total);
+
+      for (let j = i; j < end; j++) {
+        const data = rows[j];
+
+        const hasWarning = data?.warning?.length > 0;
+        const hasError = data?.error?.length > 0;
+        if (hasWarning) {
+          warningFound = true;
+          erroneousData.push(data);
+        }
+
+        if (hasError) {
+          erroneousData.push(data);
+        } else {
+          validData.push(data);
+        }
       }
-    });
-    setTempGridData(erroneusData);
+      await yieldToBrowser();
+    }
+    if (warningFound) setWarningFlag(true);
+    setTempGridData(erroneousData);
     setTempDownloadData(true);
     setErrorDownloadPrefix(source);
 
@@ -1489,29 +1510,26 @@ const useViewModify = (pageType: string) => {
       activeMaster.progress !== "deleteOnlineSubmitted"
     ) {
       dispatch(UPDATE_ROW_DATA(validData));
-
       dispatch(REMOVE_COLDEFS(["error", "warning"]));
 
       if (pageType === "remove") {
-        if (validData.length === 0) {
-          dispatch(UPDATE_PROGRESS_STATE("submitted"));
-        } else {
-          dispatch(UPDATE_PROGRESS_STATE("deleteUploaded"));
-        }
-      } else if (pageType === "add" || pageType == "modify") {
-        if (validData.length === 0) {
-          dispatch(UPDATE_PROGRESS_STATE("submitted"));
-        } else {
-          dispatch(UPDATE_PROGRESS_STATE("uploaded"));
-        }
-      }
-      // else if(validData.length!==0) dispatch(UPDATE_PROGRESS_STATE('uploaded'));
-      else if (validData.length === 0) {
-        if (draftID.length === 0) {
-          dispatch(UPDATE_PROGRESS_STATE("Discard"));
-        } else {
-          dispatch(UPDATE_PROGRESS_STATE("DiscardDraft"));
-        }
+        dispatch(
+          UPDATE_PROGRESS_STATE(
+            validData.length === 0 ? "submitted" : "deleteUploaded"
+          )
+        );
+      } else if (pageType === "add" || pageType === "modify") {
+        dispatch(
+          UPDATE_PROGRESS_STATE(
+            validData.length === 0 ? "submitted" : "uploaded"
+          )
+        );
+      } else if (validData.length === 0) {
+        dispatch(
+          UPDATE_PROGRESS_STATE(
+            draftID.length === 0 ? "Discard" : "DiscardDraft"
+          )
+        );
       }
       dispatch(SET_RECORD_COUNT(validData.length));
       dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
@@ -1519,6 +1537,8 @@ const useViewModify = (pageType: string) => {
         addCheckBoxColDefs();
       }
     }
+
+    notifySuccess("Excel Downloaded Successfully");
   };
 
   const deleteSelected = () => {
