@@ -1304,6 +1304,17 @@ const useViewModify = (pageType: string) => {
         masterId: activeMaster.id,
       });
       // clearInterval(intervalID);
+      if (response.status == 400) {
+        const rawError = (response as any).response; 
+        if (rawError) {
+            const parsedError = JSON.parse(rawError);
+            toast.dismiss();
+            console.error(parsedError.error);
+            notifyError(parsedError.error);
+            setIsOverlayVisible(false);
+            return  
+        }
+      }
       let result = JSON.parse(response.data);
       const errorAndWarningData = result.filter(
         (data: any) => data.error.length > 0 || data.warning.length > 0
