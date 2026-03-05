@@ -1297,7 +1297,6 @@ const useViewModify = (pageType: string) => {
   };
 
   const onUploadMaster = async (RECORD_UPLOAD_LIMIT: any) => {
-    console.log("onUploadMaster button clicked");
 
     let intervalID: any;
     try {
@@ -1306,6 +1305,13 @@ const useViewModify = (pageType: string) => {
         return;
       }
       const selectedColumns = ref.current?.api.getAllDisplayedColumns();
+      let selectedKeys:any;
+          if(pageType==='add'){
+            selectedKeys = activeMaster.fields.filter((field:Field)=>field.isAdd).map((field:Field)=>field.key);
+          }
+          else{
+            selectedKeys = selectedColumns?.map((col:any)=>col.colId);
+          }
       // const toasId = notifyLoader("Reading File");
       setIsOverlayVisible(true)
 
@@ -1321,6 +1327,7 @@ const useViewModify = (pageType: string) => {
 
       formData.append("process_id", JSON.stringify({ processId: processId }));
       formData.append("RECORD_UPLOAD_LIMIT",JSON.stringify({RECORD_UPLOAD_LIMIT:850000}));
+      formData.append("SELECTED_KEYS",JSON.stringify({SELECTED_KEYS:selectedKeys}));
 
       // intervalID = setInterval(async ()=>{
       //   const progress = await getUploadProgress(processId);
