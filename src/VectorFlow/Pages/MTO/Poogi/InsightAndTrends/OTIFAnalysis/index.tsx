@@ -13,12 +13,11 @@ import useFilter from "../../../../../../hooks/useFilter";
 import { useGetOTIFAnalysisData, useGetOTIFAnalysisDataExcelExport } from "../../../../../../VectorFlow/Services/MTO/Poogi/InsightAndTrends/OTIFAnalysis";
 import OverlayLoader from '../../../Common/Loader';
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
-import { DownloadExcel, formatFilterJSON, getBodyForExcelExport } from '../../../../../../helpers/utils';
+import { formatFilterJSON } from '../../../../../../helpers/utils';
 import { FilterPageName, UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 import useColDef from "../../../../../../hooks/useColDef";
 import BPPRenderer from "../../../Common/BPRRenderer/BPPRenderer";
-import moment from "moment";
 import CommonGridview from "../../../../../../helpers/CommonGridview";
 import { SCDynamicContainer } from "../../../Common/GridView/styles.css";
 
@@ -106,11 +105,11 @@ const OTIFAnalysis = () => {
 
   useEffect(() => {
     getFilterData();
-    getGraphData({ graphflag: 1 });
+    // getGraphData({ graphflag: 1 });
   }, [])
   
 useEffect(() => {
-  if (!isGridView) {
+  if (Object.keys(appliedFilters).length!==0 && !isGridView ) {
     getGraphData({ graphflag: 1 });
   }
 }, [appliedFilters, isGridView]);
@@ -132,81 +131,78 @@ useEffect(() => {
       {
         (isLoading) && <OverlayLoader />
       }
-      {!isGridView && (
-        <MTOActionToolBar
-          isGridView={isGridView}
-          themeUi={themeUi}
-          setIsGridView={setIsGridView}
-          isChartGridToggle
-          isAddFilterButton
-          isFilterOpen={isFilterOpen}
-          onAddFilter={onAddFilter}
-          toggleFilter={toggleFilter}
-          onApplyFilter={onApplyFilter}
-          multiFilter={currFilter}
-          setMultiFilter={setCurrFilter}
-          onFilterRemove={onFilterRemove}
-          isMfgSelected={isMfgSelected}
-         
-        />
-      )}
-
-{
-  !isGridView ?
+     {
+  !isGridView ? (
     <>
-           <div className={BTRTableWrapper} style={{ maxHeight: "95%", paddingLeft: "20px" }}>
-            <Allotment vertical={false} separator={false}>
-              <Allotment.Pane preferredSize={"50%"}>
-                <div className={BTRAllomentSection}>
-                  <OTIFTrendsGraph graphData={graphData?.otif} />
-                </div>
-              </Allotment.Pane>
-              <Allotment.Pane preferredSize={"50%"}>
-                <div className={BTRAllomentSection}>
-                  <OTAndIFTrendsGraph graphData={graphData?.ot_n_if} />
-                </div>
-              </Allotment.Pane>
-            </Allotment>
-          </div>
+      <MTOActionToolBar
+        isGridView={isGridView}
+        themeUi={themeUi}
+        setIsGridView={setIsGridView}
+        isChartGridToggle
+        isAddFilterButton
+        isFilterOpen={isFilterOpen}
+        onAddFilter={onAddFilter}
+        toggleFilter={toggleFilter}
+        onApplyFilter={onApplyFilter}
+        multiFilter={currFilter}
+        setMultiFilter={setCurrFilter}
+        onFilterRemove={onFilterRemove}
+        isMfgSelected={isMfgSelected}
+      />
+
+      <div className={BTRTableWrapper} style={{ maxHeight: "95%", paddingLeft: "20px" }}>
+        <Allotment vertical={false} separator={false}>
+          <Allotment.Pane preferredSize={"50%"}>
+            <div className={BTRAllomentSection}>
+              <OTIFTrendsGraph graphData={graphData?.otif} />
+            </div>
+          </Allotment.Pane>
+
+          <Allotment.Pane preferredSize={"50%"}>
+            <div className={BTRAllomentSection}>
+              <OTAndIFTrendsGraph graphData={graphData?.ot_n_if} />
+            </div>
+          </Allotment.Pane>
+        </Allotment>
+      </div>
     </>
-      :
-        <>
-          <CommonGridview
-            reportName="OTIFAnalysis" 
-            columnDefinationProps={{
-              customColDef: colDefCustomizations,
-              }}
-            getRowData={getOTIFAnalysisData}
-            gridDataLoading={isLoading}
-            reportNameId={UIGridCode.PoogiOTIFAnalysis}
-            excelExportParams={{
-              isExcelExportFromBackend: true,
-              excelExportReportName: FilterPageName.Poogi_OTIF_Analysis,
-              excelExportSheetName: FilterPageName.Poogi_OTIF_Analysis,
-            }}
-            getExcelExportData={getOTIFAnalysisDataExcelExport}
-            setAppliedFilters={setAppliedFilters}
-            setCurrentFilters={setCurrFilter}
-            appliedFilters={appliedFilters}     
-            actionToolBarProps={{
-              comp: "OTIFAnalysis",
-              isAddFilterButton: true,
-              isChartGridToggle: true,
-              isGridView,
-              setIsGridView,
-              isFilterOpen,
-              onAddFilter,
-              toggleFilter,
-              onApplyFilter,
-              onFilterRemove,
-              multiFilter: currFilter,
-              setMultiFilter: setCurrFilter,
-              isMfgSelected,
-              }}
-              vfWrapperClassName={SCDynamicContainer} 
-        />
-        </>
-            }
+  ) : (
+    <CommonGridview
+      reportName="OTIFAnalysis"
+      columnDefinationProps={{
+        customColDef: colDefCustomizations,
+      }}
+      getRowData={getOTIFAnalysisData}
+      gridDataLoading={isLoading}
+      reportNameId={UIGridCode.PoogiOTIFAnalysis}
+      excelExportParams={{
+        isExcelExportFromBackend: true,
+        excelExportReportName: FilterPageName.Poogi_OTIF_Analysis,
+        excelExportSheetName: FilterPageName.Poogi_OTIF_Analysis,
+      }}
+      getExcelExportData={getOTIFAnalysisDataExcelExport}
+      setAppliedFilters={setAppliedFilters}
+      setCurrentFilters={setCurrFilter}
+      appliedFilters={appliedFilters}
+      actionToolBarProps={{
+        comp: "OTIFAnalysis",
+        isAddFilterButton: true,
+        isChartGridToggle: true,
+        isGridView,
+        setIsGridView,
+        isFilterOpen,
+        onAddFilter,
+        toggleFilter,
+        onApplyFilter,
+        onFilterRemove,
+        multiFilter: currFilter,
+        setMultiFilter: setCurrFilter,
+        isMfgSelected,
+      }}
+      vfWrapperClassName={SCDynamicContainer}
+    />
+  )
+}
     </div>
   );
 };
