@@ -1602,17 +1602,17 @@ const useViewModify = (pageType: string) => {
     }
 
     // Convert To String
-    rowData = rowData.map((row: any) => {
-      const tempRow: any = {};
-      Object.keys(row).forEach((key: string) => {
-        if (row[key] === undefined || row[key] === null) {
-          tempRow[key] = "";
-        } else {
-          tempRow[key] = row[key].toString();
-        }
-      });
-      return tempRow;
-    });
+    // rowData = rowData.map((row: any) => {
+    //   const tempRow: any = {};
+    //   Object.keys(row).forEach((key: string) => {
+    //     if (row[key] === undefined || row[key] === null) {
+    //       tempRow[key] = "";
+    //     } else {
+    //       tempRow[key] = row[key].toString();
+    //     }
+    //   });
+    //   return tempRow;
+    // });
     let taskId: any = "";
     let toastId: any = "";
     let conflictCount = 0;

@@ -204,13 +204,13 @@ const useDelete=()=>{
         rowData = rowData.map((row:any)=>_.omit(row,'error','warning','users',columnsToOmit));
 
        // Convert To String
-       rowData = rowData.map((row:any)=>{
-        const tempRow:any = {};
-        Object.keys(row).forEach((key:string)=>{
-          tempRow[key] = row[key].toString();
-        })
-        return tempRow;
-      });
+      //  rowData = rowData.map((row:any)=>{
+      //   const tempRow:any = {};
+      //   Object.keys(row).forEach((key:string)=>{
+      //     tempRow[key] = row[key].toString();
+      //   })
+      //   return tempRow;
+      // });
 
       const deletableKeys = activeMaster.fields.filter(field => field.isDelete === true).map(field => field.key)
       rowData = rowData.map((obj: any) => {
