@@ -55,7 +55,6 @@ import { decryptStorageData } from "../VectorFlow/Pages/MTO/Common/encryption";
 import "./style.css";
 import { getNumberFormat } from "./numberFormat";
 import axios from 'axios';
-import * as XLSX from 'xlsx';
 
 const keyboardCharacters = [
   // '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
