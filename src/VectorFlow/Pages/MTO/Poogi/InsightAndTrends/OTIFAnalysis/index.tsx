@@ -16,7 +16,6 @@ import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
 import { formatFilterJSON } from '../../../../../../helpers/utils';
 import { FilterPageName, UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
-import useColDef from "../../../../../../hooks/useColDef";
 import BPPRenderer from "../../../Common/BPRRenderer/BPPRenderer";
 import CommonGridview from "../../../../../../helpers/CommonGridview";
 import { SCDynamicContainer } from "../../../Common/GridView/styles.css";
@@ -39,7 +38,6 @@ const OTIFAnalysis = () => {
   const [graphData, setGraphData] = useState<any>({});
   const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
   const [filterData, setFilterData] = useState({});
-  const [currentGridRef] = useState<any>(null);
 
   const {
     state: currFilter,
@@ -56,7 +54,6 @@ const OTIFAnalysis = () => {
 
   const { user } = useUserData();
   const { mutateAsync: getOTIFAnalysisDataExcelExport } = useGetOTIFAnalysisDataExcelExport();
-  const { colDefMap } = useColDef();
 
   const themeUi = user?.user?.theme_ui;
 
