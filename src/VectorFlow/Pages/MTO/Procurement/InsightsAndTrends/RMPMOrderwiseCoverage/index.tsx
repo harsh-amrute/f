@@ -187,31 +187,6 @@ const RMPMOrderwiseCoverage = () => {
         }
     }
 
-    const mapDataToColumns = (data: any, columns: ColDef[]) => {
-
-        return data?.map((item: any) => {
-
-            const rmpmColumnExist = columns.find((col) => col.field == "rmpm");
-
-            if (rmpmColumnExist && rmpmColumnExist.field) {
-                if (item['or'] > 0) {
-                    item[rmpmColumnExist.field]=InsightsAndTrendsString.ordersWithRMPM;
-                }
-                else if (item['po'] > 0) {
-                    item[rmpmColumnExist.field] = InsightsAndTrendsString.ordersWithFullkitOPO;
-                }
-                else if (item['sit'] > 0) {
-                    item[rmpmColumnExist.field] = InsightsAndTrendsString.ordersWithFullkitSIT;
-                }
-                else {
-                    item[rmpmColumnExist.field] = InsightsAndTrendsString.ordersWithFullkitOHS;
-                }
-            }
-
-            return item;
-
-        });
-    };
 
     const GetData = async (graph: any, page: any, isExcelExport = false,pageSize?:any) => {
         if (isExcelExport) {
@@ -378,7 +353,7 @@ const RMPMOrderwiseCoverage = () => {
     }, [appliedFilters,userConfigFetched]);
 
     useEffect(() => {
-        setConvertedData(mapDataToColumns(apiGridData, columnData));
+        setConvertedData(apiGridData);
     }, [apiGridData])
 
     useEffect(() => {

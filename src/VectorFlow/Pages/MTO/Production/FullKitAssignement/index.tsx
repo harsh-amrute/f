@@ -750,7 +750,7 @@ const FullKitAssignment = () => {
       wrapHeaderText: true,
       autoHeaderHeight: true,
       filter: "agTextColumnFilter",
-      floatingFilterComponentParams: { suppressFilterButton: true },
+      floatingFilterComponentParams: { suppressFilterButton: false },
       floatingFilter: true,
       enableRowGroup: true,
     },
