@@ -599,6 +599,7 @@ const DynamicReleaseManagement = () => {
       maxWidth: 50,
       suppressHeaderMenuButton: true,
       floatingFilter: false,
+      filter: false,
     },
   };
 
