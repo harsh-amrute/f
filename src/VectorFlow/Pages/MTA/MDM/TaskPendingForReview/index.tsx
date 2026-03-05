@@ -152,6 +152,7 @@ const TaskPendingForReview = ()=>{
                     disableSubmit={selectedRows!==detailTableRowData?.length}
                     onCancel={onCancel}
                     onSubmit={onTaskSubmit}
+                    isAllDataVisible={isAllDataVisible}
                 />
             </div>
           )

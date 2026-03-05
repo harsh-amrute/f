@@ -17,7 +17,7 @@ describe("RejectAllModal Component", () => {
           isSideBarOpen:true,toggleSideBar:jest.fn
         }}
       >
-        <TaskPendingTaskBar onSubmit={onSubmit} onCancel={onCancel} disableSubmit={false} isSideBarOpen={true}/>
+        <TaskPendingTaskBar onSubmit={onSubmit} onCancel={onCancel} disableSubmit={false} isSideBarOpen={true} isAllDataVisible={true}/>
         </UserDataContext.Provider>
     );
     fireEvent.click(screen.getByText("Submit"));
