@@ -929,11 +929,11 @@ export const checkError = (
 
 export const parseExcelData = async (file: any, master: MDMMasterState, pageType: string, selectedColumns: any,RECORD_UPLOAD_LIMIT?:any) => {
 
-  const currMasterKeys = master.fields.map((field: Field) => field.key); //array containing keys of current master fields
-  const result: object[] = [];
-  const buffer = await file.arrayBuffer();
+  // const currMasterKeys = master.fields.map((field: Field) => field.key); //array containing keys of current master fields
+  // const result: object[] = [];
+  // const buffer = await file.arrayBuffer();
 
-  let selectedKeys:any;
+  // let selectedKeys:any;
 
   //Selected Columns Keys
   // if(pageType==='add'){
@@ -1108,7 +1108,7 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
 
 
 
-  return result;
+  return ;
 }
 
 const buildFieldMaps = (master: MDMMasterState) => {
