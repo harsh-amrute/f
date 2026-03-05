@@ -1290,7 +1290,7 @@ const useViewModify = (pageType: string) => {
       const processId = uuidv4();
 
       formData.append("process_id", JSON.stringify({ processId: processId }));
-
+      formData.append("RECORD_UPLOAD_LIMIT",JSON.stringify({RECORD_UPLOAD_LIMIT:RECORD_UPLOAD_LIMIT}));
       // intervalID = setInterval(async ()=>{
       //   const progress = await getUploadProgress(processId);
       //   if(progress.data!==undefined){
