@@ -1439,8 +1439,10 @@ const useViewModify = (pageType: string) => {
 
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
+      const masterName = activeMaster?.name || activeMaster?.name || "MasterData";
+      const safeFileName = masterName.replace(/[^a-zA-Z0-9-_ ]/g, "").trim();
       a.href = url;
-      a.download = "MasterData.xlsx";
+      a.download = `${safeFileName}.xlsx`;
       document.body.appendChild(a);
       a.click();
 
