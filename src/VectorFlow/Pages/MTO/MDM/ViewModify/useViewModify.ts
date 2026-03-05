@@ -196,8 +196,6 @@ const useViewModify = (pageType: string) => {
   const [seasonalityRowData, setSeasonalityRowData] = useState<any>([]);
   const tempRefPoogi = useRef<any>(null);
 
-
-
   const {
     mutateAsync: MTOMasterUIConfiguration, isLoading /*isLoading: MTOBufferLoading*/,
   } = useGetMTOMasterUIConfiguration();
@@ -2879,202 +2877,7 @@ const useViewModify = (pageType: string) => {
       ccr_names,
       mode: "edit",
     });
-    // const modifiedColDefs = activeMaster.colDefs.map((colDef: any) => {
-    //   const editable = (params: any) => {
-    //     if(activeMaster.id === 503){
-    //       return params.data.ia === true
-    //     }else{
-    //       return params.data.iu === true
-    //     }
-    //   };
-    //   if(colDef.field === 'actions' || colDef.field === 'iv' ){
-    //     return {
-    //       ...colDef,
-    //       editable: false,
-    //       filter:false,
-    //       floatingFilter: false,
-    //     }
-    //   }
-
-    //   if (colDef.field === "bt") {
-    //     return {
-    //       ...colDef,
-    //       cellEditor: "agRichSelectCellEditor",
-    //       cellEditorParams: {
-    //         values: bufferTypeData?.map((item: any) => item.id),
-    //         formatValue: (id: any) => getCategoryName(id)
-    //       },
-    //       valueGetter: (params: any) => {
-    //         return getCategoryName(params?.data?.bt)
-    //       },
-    //       filter: 'agTextColumnFilter',
-    //       cellStyle: (params: any) => {
-    //         if (
-    //           params.data.bid === null ||
-    //           params.data.bid === undefined ||
-    //           params.data.iv === false
-    //         ) {
-    //           return { color: "rgb(128, 0, 64)" };
-    //         }
-    //       },
-    //       editable,
-    //     };
-    //   }
-    //   if (
-    //     colDef.field === "slt" ||
-    //     colDef.field === "mlt" ||
-    //     colDef.field === "bsz"
-    //   ) {
-    //     return {
-    //       ...colDef,
-    //       cellEditor: "agNumberCellEditor",
-    //       cellStyle: (params: any) => {
-    //         if (
-    //           params.data.bid === null ||
-    //           params.data.bid === undefined ||
-    //           params.data.iv === false
-    //         ) {
-    //           return { color: "rgb(128, 0, 64)" };
-    //         }
-    //       },
-    //       editable,
-    //     };
-    //   }
-    //   if (colDef.field === "ib") {
-    //     return {
-    //       ...colDef,
-    //       cellRenderer: "agCheckboxCellRenderer",
-    //       cellEditor: "agCheckboxCellEditor",
-    //       editable,
-    //     };
-    //   } else if (colDef.field === "bcd" || colDef.field === "bd") {
-    //     return {
-    //       ...colDef,
-    //       cellStyle: (params: any) => {
-    //         if (
-    //           params.data.bid === null ||
-    //           params.data.bid === undefined ||
-    //           params.data.iv === false
-    //         ) {
-    //           return { color: "rgb(128, 0, 64)" };
-    //         }
-    //       },
-    //       editable,
-    //     };
-    //   }
-
-    //   if (activeMaster.id === 502) {
-    //     if(colDef.field === 'actions' || colDef.field === 'iv'){
-    //       return {
-    //         ...colDef,
-    //         editable: false,
-    //         filter: false,
-    //         floatingFilter: false,
-            
-    //       }
-    //     }
-        
-    //     if (
-    //       colDef.field === "pl" ||
-    //       colDef.field === "dp" ||
-    //       colDef.field === "cgid"
-    //     ) {
-    //       return {
-    //         ...colDef,
-    //         cellEditor: "agRichSelectCellEditor",
-    //         valueFormatter: myCCRFormatter,
-    //         cellEditorParams: {
-    //           values: getDropDown(colDef.field),
-    //         },
-    //         editable,
-    //       };
-    //     }
-    //     if (colDef.field === "rb") {
-    //       return {
-    //         ...colDef,
-    //         editable,
-    //         cellEditor: "agNumberCellEditor"
-    //       };
-    //     }
-    //     if (
-    //       (colDef.field === "cpd" ||
-    //       colDef.field === "whpd" ||
-    //       colDef.field === "sh" || 
-    //       colDef.field === "fh" ||
-    //       colDef.field === "cwl")
-    //     ) {
-    //       return {
-    //         ...colDef,
-    //         editable,
-    //         cellEditor: "agNumberCellEditor",
-    //         cellEditorParams: {
-    //           min: 0,
-    //           max: 1000000
-    //         },
-    //       };
-    //     }
-    //     return {
-    //       ...colDef,
-    //       editable,
-    //     };
-    //   }
-    //   if (activeMaster.id === 503) {
-    //     if (colDef.field === "plnm") {
-    //       return {
-    //         ...colDef,
-    //         cellEditor: "agRichSelectCellEditor",
-    //         valueFormatter: myCCRFormatter,
-    //         cellEditorParams: {
-    //           values: getDropDown(colDef.field),
-    //         },
-    //         cellStyle: (params: any) => {
-    //           if (
-    //             params.data.majId?.toString().startsWith("m") ||
-    //             params.data.minId?.toString().startsWith("m") ||
-    //             params.data.iu === true ||
-    //             params.data.id === true ||
-    //             params.data.ie === false
-    //           ) {
-    //             return { color: "rgb(128, 0, 64)" };
-    //           }
-    //         },
-    //         editable,
-    //       };
-    //     }
-    //     return {
-    //       ...colDef,
-    //       cellStyle: (params: any) => {
-    //         if (
-    //           params.data.majId?.toString().startsWith("m") ||
-    //           params.data.minId?.toString().startsWith("m") ||
-    //           params.data.ie === false ||
-    //           params.data.iu === true ||
-    //           params.data.id === true
-    //         ) {
-    //           return { color: "rgb(128, 0, 64)" };
-    //         }
-    //       },
-    //       // editable: (params: any) =>{ (params.data.minId && params.node.rowIndex === useSelector((state: any) => state.mto.editableMinRow)) || ((!params.data.minId) && params.node.rowIndex === useSelector((state: any) => state.mto.editableMajRow))  }
-    //       editable,
-    //     };
-    //   } else {
-    //     return {
-    //       ...colDef,
-    //       cellEditor: "agNumberCellEditor",
-    //       editable,
-    //       cellStyle: (params: any) => {
-    //         if (
-    //           params.data.bid === null ||
-    //           params.data.bid === undefined ||
-    //           params.data.iv === false
-    //         ) {
-    //           return { color: "rgb(128, 0, 64)" };
-    //         }
-    //       },
-    //     };
-    //   }
-    // });
-
+   
     const isFromSaveDraft503 = prevPath === saveDraft && activeMaster.id === 503;
 
     if(isFromSaveDraft503){
@@ -3108,52 +2911,6 @@ const useViewModify = (pageType: string) => {
     }
   };
 
-  const addEditableToLastMinColumn = async () => {
-    const modifiedColDefs = activeMaster.colDefs.map((colDef: any) => {
-      const editable = (params: any) => {
-        return params.node.rowIndex === 0 && params.colDef.colId === "mindsc";
-      };
-
-      if (activeMaster.id === 503) {
-        return {
-          ...colDef,
-          cellStyle: (params: any) => {
-            if (
-              params.data.majId?.toString().startsWith("m") ||
-              params.data.minId?.toString().startsWith("m") ||
-              params.data.ie === false ||
-              params.data.iu === true ||
-              params.data.id === true
-            ) {
-              return { color: "rgb(128, 0, 64)" };
-            }
-          },
-          editable,
-        };
-      } else {
-        return {
-          ...colDef,
-          cellEditor: "agNumberCellEditor",
-          editable,
-          cellStyle: (params: any) => {
-            if (
-              params.data.bid === null ||
-              params.data.bid === undefined ||
-              params.data.iv === false
-            ) {
-              return { color: "rgb(128, 0, 64)" };
-            }
-          },
-        };
-      }
-    });
-
-    // if (modifiedColDefs.find((colDef: any) => colDef.field === "actions")) {
-    //   return;
-    // }
-
-    dispatch(UPDATE_COLDEFS([actionsCol(true), ...modifiedColDefs]));
-  };
 
   const addRowToMtoGrid = () => {
     let newRow: any = {};
@@ -3227,6 +2984,8 @@ const useViewModify = (pageType: string) => {
     }
     else{
       ref.current?.api.applyTransaction({add: [newRow], addIndex: 0});
+      ref.current?.api.refreshCells();
+
     }
   };
 
@@ -3252,6 +3011,7 @@ const useViewModify = (pageType: string) => {
     };
     ref.current?.api.applyTransaction({update: [newSelectedMajReason]});
     tempRefPoogi.current?.api.applyTransaction({add: [newMinReason], addIndex:0});
+    tempRefPoogi.current?.api.refreshCells();
   };
 
 
@@ -3781,6 +3541,26 @@ const useViewModify = (pageType: string) => {
       return;
     } else if (activeMaster.id === 503) {
       notifyLoader("Saving POOGI Task...");
+
+      // 1. Collect all major rows from the grid ref
+      const allMajorRows: any[] = [];
+      ref.current?.api.forEachNode((node: any) => {
+        allMajorRows.push(_.cloneDeep(node.data));
+      });
+
+      // 2. Check if any row is still in editable mode (major or any of its minData)
+      const hasEditable = allMajorRows.some((row: any) => {
+        if (row.editable) return true;
+        if (row.minData?.some((min: any) => min.editable)) return true;
+        return false;
+      });
+
+      if (hasEditable) {
+        toast.dismiss();
+        notifyError("Please complete all editing before creating the task.");
+        return;
+      }
+
       const POOGIPostObj: any = {
         mid: activeMaster.id,
         uid: user.user.user.id.toString(),
@@ -3789,64 +3569,82 @@ const useViewModify = (pageType: string) => {
         at: pageType === "add" ? "Add" : "Modify",
       };
 
-      poogiModifyData?.forEach((ele: any) => {
+      allMajorRows.forEach((ele: any) => {
+        // If ia: true AND id: true, skip entirely (newly added then deleted)
+        if (ele.ia && ele.id) return;
+
+        // Only include rows that have some change: ia, iu, or id
+        if (!ele.ia && !ele.iu && !ele.id) {
+          // Check if any minData has changes
+          const hasMinChanges = ele.minData?.some((min: any) => min.ia || min.iu || min.id);
+          if (!hasMinChanges) return;
+        }
+
         const e = _.cloneDeep(ele);
         e.majid = ele.majId;
         e.majcd = ele.majcd ? ele.majcd : "*";
-        if (typeof e.majId === "string" && e.majId.startsWith("m")) {
+
+        if (ele.ia) {
+          // Newly added major reason - remove custom majId
           e.majId = null;
           e.majid = null;
           e.ie = false;
         } else {
           e.ie = true;
         }
+
         e.id = ele.id ? ele.id : false;
         e.iu = ele.iu ? ele.iu : false;
 
-        // Iterate through minData to check and update minId if it starts with 'm'
-        e.minData.forEach((minElement: any) => {
-          minElement.id = minElement.id ? minElement.id : false;
-          if (
-            typeof minElement.minId === "string" &&
-            minElement.minId.startsWith("m")
-          ) {
-            minElement.minId = null;
-            minElement.majId = null;
-            minElement.minid = null;
-            minElement.majid = null;
-            minElement.ie = false;
-            minElement.mincd = minElement.mincd ? minElement.mincd : "*";
-          } else {
-            minElement.ie = true;
-          }
-          minElement.minid = minElement.minId;
-          minElement.majid = minElement.majId;
-          minElement.mincd = minElement.mincd ? minElement.mincd : "*";
-          minElement.iu = minElement.iu ? minElement.iu : false;
-        });
+        // Process minData
+        if (e.minData) {
+          e.minData = e.minData
+            .filter((minElement: any) => {
+              // If ia: true AND id: true, skip (newly added then deleted)
+              if (minElement.ia && minElement.id) return false;
+              return true;
+            })
+            .map((minElement: any) => {
+              const min = { ...minElement };
+              min.id = minElement.id ? minElement.id : false;
+              min.iu = minElement.iu ? minElement.iu : false;
+
+              if (minElement.ia) {
+                // Newly added minor reason - remove custom minId/majId
+                min.minId = null;
+                min.majId = null;
+                min.minid = null;
+                min.majid = null;
+                min.ie = false;
+              } else {
+                min.ie = true;
+                min.minid = minElement.minId;
+                min.majid = minElement.majId;
+              }
+
+              min.mincd = minElement.mincd ? minElement.mincd : "*";
+              return min;
+            });
+        }
 
         plantMaster?.forEach((elm: any) => {
           if (elm.plant_name === ele.plnm) e.pl = elm.plant_id;
         });
+
         POOGIPostObj.reasonData.push(
-          _.omit(e, ["editable", "error", "warning", "plnm"])
+          _.omit(e, ["editable", "error", "warning", "plnm", "oldValue", "ipd"])
         );
       });
+
       try {
         const response = await savePOOGIMasterTask(POOGIPostObj);
         if (response.status === 200) {
           toast.dismiss();
           notifySuccess("Saved POOGI Task Successfully");
-          const newPoogiInitialData = _.cloneDeep(poogiInitialData);
-          const finNewPoogiInitialData = newPoogiInitialData.filter(
-            (item: any) =>
-              !item.majId?.toString().startsWith("m") &&
-              !item.minData.some((minItem: any) =>
-                minItem.minId?.toString().startsWith("m")
-              )
-          );
-          dispatch(UPDATE_ROW_DATA(finNewPoogiInitialData));
-          dispatch(SET_POOGI_INITIAL_DATA(newPoogiInitialData));
+          // Refresh data from server
+          const result = await getPOOGIMasterData({});
+          dispatch(SET_POOGI_INITIAL_DATA(result.data.data));
+          dispatch(UPDATE_ROW_DATA(result.data.data));
           dispatch(SET_POOGI_MODIFY_DATA([]));
           setMTOProgress("submitted Once");
         } else {
@@ -4363,7 +4161,9 @@ const useViewModify = (pageType: string) => {
         cellStyle: {
           textAlign: "center",
         },
-        valueGetter: "node.rowIndex + 1",
+         valueGetter: (params: any)=>{
+          return params.node.rowIndex + 1;
+        },
       },
       ...activeMaster.colDefs
         .filter(
@@ -4387,6 +4187,10 @@ const useViewModify = (pageType: string) => {
       {
         headerName: "Action",
         cellRenderer: "poogiEditDeleteCellRenderer",
+        cellRendererParams: {
+          majorRef: ref,
+          minRef: tempRefPoogi
+        },
         maxWidth: 100,
         filter: false
       },
@@ -4398,7 +4202,9 @@ const useViewModify = (pageType: string) => {
         cellStyle: {
           textAlign: "center",
         },
-        valueGetter: "node.rowIndex + 1",
+        valueGetter: (params: any)=>{
+          return params.node.rowIndex + 1;
+        },
       },
       ...activeMaster.colDefs
         .filter(
@@ -4435,6 +4241,10 @@ const useViewModify = (pageType: string) => {
       {
         headerName: "Action",
         cellRenderer: "poogiEditDeleteCellRenderer",
+         cellRendererParams: {
+          majorRef: ref,
+          minRef: tempRefPoogi
+        },
         maxWidth: 100,
         filter: false
       },

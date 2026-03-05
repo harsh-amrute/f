@@ -541,9 +541,7 @@ const MTOViewModify = () => {
                           addRowToMtoMinGrid();
                       }}
                     >
-                      {!activeMaster.colDefs.some(
-                        (x) => x.field === "actions" || x.field === "pactions"
-                      ) &&
+                      {
                       ref &&
                       ref.current &&
                       ref?.current?.api?.getSelectedRows()?.length > 0 ? (
