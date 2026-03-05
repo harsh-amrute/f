@@ -1274,13 +1274,7 @@ const useViewModify = (pageType: string) => {
       setIsOverlayVisible(true)
 
       if (activeMaster.id < 14) {
-        await parseExcelData(
-          file,
-          activeMaster,
-          pageType,
-          selectedColumns,
-          RECORD_UPLOAD_LIMIT
-        );
+        await parseExcelData(file,activeMaster,pageType,selectedColumns);
       }
 
       const formData = new FormData();
@@ -1290,7 +1284,8 @@ const useViewModify = (pageType: string) => {
       const processId = uuidv4();
 
       formData.append("process_id", JSON.stringify({ processId: processId }));
-      formData.append("RECORD_UPLOAD_LIMIT",JSON.stringify({RECORD_UPLOAD_LIMIT:RECORD_UPLOAD_LIMIT}));
+      formData.append("RECORD_UPLOAD_LIMIT",JSON.stringify({RECORD_UPLOAD_LIMIT:900000}));
+
       // intervalID = setInterval(async ()=>{
       //   const progress = await getUploadProgress(processId);
       //   if(progress.data!==undefined){
