@@ -6,7 +6,6 @@ import OTAndIFTrendsGraph from "./OTAndIFTrendsGraph";
 import {
   BTRAllomentSection,
   BTRTableWrapper,
-  HorizontalViewWrapper,
 } from "./styles.css";
 import TagCellToolTip from "./TagCellRenderer/TagCellRenderer";
 import { useGetFilterData } from "../../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
@@ -41,7 +40,7 @@ const OTIFAnalysis = () => {
   const [graphData, setGraphData] = useState<any>({});
   const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
   const [filterData, setFilterData] = useState({});
-  const [currentGridRef, setCurrentGridRef] = useState<any>(null);
+  const [currentGridRef] = useState<any>(null);
 
   const {
     state: currFilter,
@@ -58,7 +57,7 @@ const OTIFAnalysis = () => {
 
   const { user } = useUserData();
   const { mutateAsync: getOTIFAnalysisDataExcelExport } = useGetOTIFAnalysisDataExcelExport();
-  const { colDefMap, getColDef } = useColDef();
+  const { colDefMap } = useColDef();
 
   const themeUi = user?.user?.theme_ui;
 
@@ -79,41 +78,7 @@ const OTIFAnalysis = () => {
   }
 
   const getGraphData = async (params: any) => {
-    if (params.isExcelExport) {
-
-      const gridAPi = currentGridRef?.current?.api;
-
-      if (!gridAPi) {
-        notifyError('Grid is not ready for Excel export!');
-        return;
-      }
-
-      const isPivot = gridAPi.getPivotMode();
-      const isRowGroup = gridAPi.getRowGroupColumns().length > 0;
-      const isValue = gridAPi.getValueColumns().length > 0;
-      
-      if (isPivot || isValue || isRowGroup) {                 
-       const exportName = `${FilterPageName.Poogi_OTIF_Analysis}_${moment().format("DD-MM-YYYY")}`;
-        gridAPi.exportDataAsExcel({
-        fileName: exportName,
-        sheetName: exportName
-      })
-    }
-    else {
-        const headersdata = currentGridRef?.current?.api.getColumnState();
-        const formattedFilters = formatFilterJSON(appliedFilters);
-        const body = getBodyForExcelExport({ headersdata, filterData: formattedFilters, colDefMap })
-        const response = await getOTIFAnalysisDataExcelExport({ body, report_name: FilterPageName.Poogi_OTIF_Analysis, isExcelExport: 1, graphflag: 0 })
-        if (response.status === 200) {
-          DownloadExcel(response, FilterPageName.Poogi_OTIF_Analysis)
-        } else {
-          notifyError('Failed to export Excel file!');
-        }
-      }
-    }
-    else {
-
-      try {
+         try {
         const formattedFilters = formatFilterJSON(appliedFilters);
 
         const response = await getOTIFAnalysisData({
@@ -122,14 +87,12 @@ const OTIFAnalysis = () => {
           ...params
         });
         
-        console.log(response.data.data, 'graph ka data')
         setGraphData(response.data.data || {});
       }
       catch (e) {
         console.log(e);
         notifyError('Failed to fetch Graph data!');
       }
-    }
   }
 
   const getFilterData = async () => {
