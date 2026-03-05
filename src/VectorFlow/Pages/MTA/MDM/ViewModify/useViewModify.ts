@@ -1414,132 +1414,98 @@ const useViewModify = (pageType: string) => {
   const exportToExcel = async (fromUploadModal?: boolean) => {
     try {
       const currMasterFilters = activeMaster.filters;
-      const payloadFilters = areMasterFiltersValid(currMasterFilters)
-        ? mapStateFiltersToPayload(currMasterFilters)
-        : [];
-  
+      const payloadFilters = areMasterFiltersValid(currMasterFilters) ? mapStateFiltersToPayload(currMasterFilters) : [];
+
       const payloadFields: any = getCurrentVisbileColumns();
-  
-      const toastId = notifyLoader("Preparing Excel…");
-  
-      const result = await queryFilteredDataExcel({
-        filters: payloadFilters,
-        fields: payloadFields,
-        pageType:pageType,
-        Stream:1,
-      });
-  
-      const blob = new Blob(
-        [result.data],
-        {
-          type:
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        }
-      );
-  
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      const masterName = activeMaster?.name || activeMaster?.name || "MasterData";
-      const safeFileName = masterName.replace(/[^a-zA-Z0-9-_ ]/g, "").trim();
-      a.href = url;
-      a.download = `${safeFileName}.xlsx`;
-      document.body.appendChild(a);
-      a.click();
-  
-      a.remove();
-      window.URL.revokeObjectURL(url);
-  
+
+      const numberOfPages = Math.ceil(recordCount / chunkSize);
+      const toastId = notifyLoader(`Downloading Data 0 / ${recordCount}`)
+      const rows = [];
+      for (let i = 1; i <= numberOfPages; i++) {
+        const result = await queryFilteredData({ filters: payloadFilters, fields: payloadFields, showAll: false, pagination: true, currentPage: i, rowsPerPage: chunkSize });
+        if (result.data.data === null) throw new Error("Something Went Wrong")
+        rows.push(...result.data.data)
+        if (i === numberOfPages) toast.update(toastId, { render: `Downloading Data ${recordCount} / ${recordCount}` })
+        else toast.update(toastId, { render: `Downloading Data ${i * chunkSize} / ${recordCount}` })
+      }
+
+      dispatch(UPDATE_ROW_DATA(rows));
+      dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+      setDownloadData(true);
       toast.dismiss(toastId);
-  
       if (fromUploadModal) {
         setIsUploadButtonDisabled(false);
-        notifySuccess("Data Downloaded Successfully");
-        return;
+        notifySuccess(`Data Downloaded Successfully`);
+        return
       }
-  
-      notifySuccess("Data Exported Successfully");
-    }
-    catch (error) {
+
+      notifySuccess(`Data Exported Successfully`);
+    } catch (error) {
       toast.dismiss();
-      notifyError("Something Went Wrong");
+      notifyError('Something Went Wrong');
     }
-  };
 
-  const CHUNK_SIZE = 5000;
-
-  const yieldToBrowser = () =>
-    new Promise<void>((resolve) => setTimeout(resolve, 0));
-
-  const onClearExportError = async (source: string) => {
-    const erroneousData: any[] = [];
-    const validData: any[] = [];
-    let warningFound = false;
-    const rows = activeMaster.rowData;
-    const total = rows.length;
-
-    notifyLoader("Preparing Excel");
-
-    for (let i = 0; i < total; i += CHUNK_SIZE) {
-      const end = Math.min(i + CHUNK_SIZE, total);
-
-      for (let j = i; j < end; j++) {
-        const data = rows[j];
-
-        const hasWarning = data?.warning?.length > 0;
-        const hasError = data?.error?.length > 0;
-        if (hasWarning) {
-          warningFound = true;
-          erroneousData.push(data);
-        }
-
-        if (hasError) {
-          erroneousData.push(data);
-        } else {
-          validData.push(data);
-        }
+  }
+  const onClearExportError = (source: string) => {
+    const erroneusData: any[] = [];
+    const validData: any[] = []
+    activeMaster.rowData.forEach((data: any) => {
+      if (data['warning'] && data['warning'].length > 0) {
+        setWarningFlag(true)
+        erroneusData.push(data)
       }
-      await yieldToBrowser();
-    }
-    if (warningFound) setWarningFlag(true);
-    setTempGridData(erroneousData);
+
+      if (data['error'] && data['error'].length > 0) {
+        erroneusData.push(data);
+      }
+      else {
+        validData.push(data);
+      }
+    });
+    setTempGridData(erroneusData);
     setTempDownloadData(true);
-    setErrorDownloadPrefix(source);
+    setErrorDownloadPrefix(source)
 
-    if (
-      activeMaster.progress !== "submitted" &&
-      activeMaster.progress !== "deleteOnlineSubmitted"
-    ) {
+    if ((activeMaster.progress !== 'submitted') && (activeMaster.progress !== 'deleteOnlineSubmitted')) {
       dispatch(UPDATE_ROW_DATA(validData));
-      dispatch(REMOVE_COLDEFS(["error", "warning"]));
 
-      if (pageType === "remove") {
-        dispatch(
-          UPDATE_PROGRESS_STATE(
-            validData.length === 0 ? "submitted" : "deleteUploaded"
-          )
-        );
-      } else if (pageType === "add" || pageType === "modify") {
-        dispatch(
-          UPDATE_PROGRESS_STATE(
-            validData.length === 0 ? "submitted" : "uploaded"
-          )
-        );
-      } else if (validData.length === 0) {
-        dispatch(
-          UPDATE_PROGRESS_STATE(
-            draftID.length === 0 ? "Discard" : "DiscardDraft"
-          )
-        );
+      dispatch(REMOVE_COLDEFS(['error', 'warning']));
+
+
+      if (pageType === 'remove') {
+
+        if (validData.length === 0) {
+
+          dispatch(UPDATE_PROGRESS_STATE('submitted'))
+        }
+        else {
+          dispatch(UPDATE_PROGRESS_STATE('deleteUploaded'));
+        }
       }
-      dispatch(SET_RECORD_COUNT(validData.length));
+      else if (pageType === 'add' || pageType == 'modify') {
+        if (validData.length === 0) {
+          dispatch(UPDATE_PROGRESS_STATE('submitted'))
+        }
+        else {
+          dispatch(UPDATE_PROGRESS_STATE('uploaded'));
+        }
+      }
+      // else if(validData.length!==0) dispatch(UPDATE_PROGRESS_STATE('uploaded'));
+      else if (validData.length === 0) {
+        if (draftID.length === 0) {
+          dispatch(UPDATE_PROGRESS_STATE('Discard'))
+        } else {
+          dispatch(UPDATE_PROGRESS_STATE('DiscardDraft'))
+        }
+      }
+      dispatch(SET_RECORD_COUNT(validData.length))
       dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
       if (validData.length !== 0) {
         addCheckBoxColDefs();
       }
     }
 
-    notifySuccess("Excel Downloaded Successfully");
-  };
+  }
 
   const deleteSelected = () => {
     const selectedRows = ref.current?.api.getSelectedRows();
