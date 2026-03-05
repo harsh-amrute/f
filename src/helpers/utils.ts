@@ -1308,33 +1308,22 @@ const readExcelData = async (
   limit?: number
 ): Promise<{ data: any[][]; sheetNames: string[] }> => {
   
-  const MAX_FILE_SIZE = 45 * 1024 * 1024; 
-
-  if (file.size > MAX_FILE_SIZE) {
-    const actualSizeMB = (file.size / (1024 * 1024)).toFixed(2);
-    
-    throw new Error(
-      `File is too large (${actualSizeMB} MB). ` +
-      `The maximum allowed size is 45 MB to prevent browser memory issues.`
-    );
-  }
-  
   const buffer = await file.arrayBuffer();
-  
   const opts = limit ? { sheetRows: limit } : {};
   const workbook = XLSX.read(buffer, opts);
-  
   const sheetNames = workbook.SheetNames;
   
-
   if (sheetNames.length === 0) {
     return { data: [], sheetNames };
   }
-
+  
   const data = XLSX.utils.sheet_to_json(workbook.Sheets[sheetNames[0]], {
     header: 1,
   }) as any[][];
-
+  
+  if(data?.length === 0){
+    throw new Error(`File is too large for the browser . Please reduce the number of rows`);
+  }
   return { data, sheetNames };
 };
 
