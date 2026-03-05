@@ -30,6 +30,14 @@ export namespace MDMService {
     })
   }
 
+  export const getMasterData1 = async (body:GetMasterDataPayload) => {
+   
+    return await axios.post(process.env.REACT_APP_API_HOST + `api/mta/GetMasterDataAsync`,body,{
+      responseType: "blob",
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+  
   export const getMasterDataRetail = async (body: GetMasterDataPayload) => {
 
     return await axios.post(process.env.REACT_APP_API_HOST + `/api/validate-master/get-master-data/`, body, {

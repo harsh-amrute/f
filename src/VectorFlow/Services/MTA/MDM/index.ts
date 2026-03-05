@@ -1,11 +1,12 @@
 import { useQuery, useMutation } from '@tanstack/react-query'
-import { GetMasterDataPayload } from '../../../types/MDM';
+import { GetMasterDataPayload, GetMasterDataPayloadExcel } from '../../../types/MDM';
 import { MDMService } from './api'
 
 
 export const QUERY_KEYS = {
   useGetMasterUIConfiguration: ['MDMService.useGetMasterUIConfiguration'],
   useGetMasterData: ['MDMService.useGetMasterData'],
+  useGetMasterData1: ['MDMService.useGetMasterData1'],
   useGetAllDrafts: ['MDMService.useGetAllDrafts'],
   useGetDraftCount: ['MDMService.useGetDraftCount'],
   useGetDraftById: ['MDMService.useGetDraftById'],
@@ -56,6 +57,12 @@ export const useGetRetailCount = () => {
 export const useGetMasterData = () => {
   return useMutation(async (body: GetMasterDataPayload) => {
     return await MDMService.getMasterData(body)
+  })
+}
+
+export const useGetMasterData1 = () => {
+  return useMutation(async (body: GetMasterDataPayloadExcel) => {
+    return await MDMService.getMasterData1(body)
   })
 }
 

@@ -7,6 +7,8 @@ import {
   type GridRef,
   type QueryFilteredDataConfigs,
   type MDMMasterState,
+  QueryFilteredDataConfigsExcel, 
+  GetMasterDataPayloadExcel
 } from "../../../../types/MDM";
 import {
   generateOptions,
@@ -24,6 +26,7 @@ import {
 } from "../../../../../helpers/utils";
 import {
   useGetMasterData,
+  useGetMasterData1,
   useGetMasterUIConfiguration,
   useGetCount,
   useCreateDraft,
@@ -197,6 +200,8 @@ const useViewModify = (pageType: string) => {
   const { mutateAsync: getSeasonalityDetails } = useGetSeasonalityDetails();
 
   const { mutateAsync: getMasterData } = useGetMasterData();
+
+  const {mutateAsync:getMasterData1} = useGetMasterData1();
 
   const { mutateAsync: getMasterDataRetail } = useGetMasterDataRetail();
 
@@ -733,6 +738,37 @@ const useViewModify = (pageType: string) => {
 
     return resultData;
   };
+  
+  const queryFilteredDataExcel = async (configs:QueryFilteredDataConfigsExcel) => {
+    const {filters,fields,count} = configs;
+    const payload:GetMasterDataPayloadExcel = {
+      id:activeMaster.id,
+      name:activeMaster.name,
+      filters:filters,
+      fields:fields,
+      pageType: pageType,
+      Stream:1
+    }
+    let resultData;
+    if(count){
+      if(activeMaster.id > 14){
+        resultData =  await getRetailCount(payload);
+      }
+      else{
+        resultData =  await getCount(payload);
+      }
+    }
+    else{
+      if(activeMaster.id > 14){
+        resultData = await getMasterDataRetail(payload); 
+      }
+      else{
+        resultData = await getMasterData1(payload); 
+      }
+    }
+
+    return resultData;
+  }
 
   const queryAllData = async (configs: QueryFilteredDataConfigs) => {
     const { pagination, fields, count, currentPage, rowsPerPage } = configs;
@@ -1374,49 +1410,52 @@ const useViewModify = (pageType: string) => {
       const payloadFilters = areMasterFiltersValid(currMasterFilters)
         ? mapStateFiltersToPayload(currMasterFilters)
         : [];
-
+  
       const payloadFields: any = getCurrentVisbileColumns();
-
-      const numberOfPages = Math.ceil(recordCount / chunkSize);
-      const toastId = notifyLoader(`Downloading Data 0 / ${recordCount}`);
-      const rows = [];
-      for (let i = 1; i <= numberOfPages; i++) {
-        const result = await queryFilteredData({
-          filters: payloadFilters,
-          fields: payloadFields,
-          showAll: false,
-          pagination: true,
-          currentPage: i,
-          rowsPerPage: chunkSize,
-        });
-        if (result.data.data === null) throw new Error("Something Went Wrong");
-        rows.push(...result.data.data);
-        if (i === numberOfPages)
-          toast.update(toastId, {
-            render: `Downloading Data ${recordCount} / ${recordCount}`,
-          });
-        else
-          toast.update(toastId, {
-            render: `Downloading Data ${i * chunkSize} / ${recordCount}`,
-          });
-      }
-
-      dispatch(UPDATE_ROW_DATA(rows));
-      dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-      setDownloadData(true);
+  
+      const toastId = notifyLoader("Preparing Excel…");
+  
+      const result = await queryFilteredDataExcel({
+        filters: payloadFilters,
+        fields: payloadFields,
+        pageType:pageType,
+        Stream:1,
+      });
+  
+      const blob = new Blob(
+        [result.data],
+        {
+          type:
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        }
+      );
+  
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "MasterData.xlsx";
+      document.body.appendChild(a);
+      a.click();
+  
+      a.remove();
+      window.URL.revokeObjectURL(url);
+  
       toast.dismiss(toastId);
+  
       if (fromUploadModal) {
         setIsUploadButtonDisabled(false);
-        notifySuccess(`Data Downloaded Successfully`);
+        notifySuccess("Data Downloaded Successfully");
         return;
       }
-
-      notifySuccess(`Data Exported Successfully`);
-    } catch (error) {
+  
+      notifySuccess("Data Exported Successfully");
+    }
+    catch (error) {
       toast.dismiss();
       notifyError("Something Went Wrong");
     }
   };
+
   const onClearExportError = (source: string) => {
     const erroneusData: any[] = [];
     const validData: any[] = [];
