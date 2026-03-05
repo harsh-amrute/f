@@ -34,12 +34,17 @@ const TaskPendingForReview = ()=>{
         toggleRejectAllModal,
         onSelectionTypeSuccess,
         setSelectionType,
-        noDataMessage
+        noDataMessage,
+        handleChangePage,
+        chunkSize,
+        currentPage,
+        modifiedRowsSet
     } = useTaskPendingForReview()
 
     const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
     const TASKPENDINGFORREVIEW_PAGE = EnvConfig['TASKPENDINGFORREVIEW_PAGE'];  
-
+    const recordCount = useSelector((state:RootState) =>state.mdm.recordCount);
+  
     if(showLoader) return <VFLoader/>
     const suppressMovable = true;
         return (
@@ -70,7 +75,7 @@ const TaskPendingForReview = ()=>{
                       }}
                     rowData={mapRowDataWithSrNo(viewTableRowData)}
                     localeText={{ noRowsToShow: noDataMessage?.length>0?noDataMessage:"No data to approve."}}
-                    pagination={true}
+                    pagination={false}
                     paginationPageSize={parseInt(TASKPENDINGFORREVIEW_PAGE || '100')}  
                 />
                 </div>
@@ -111,23 +116,23 @@ const TaskPendingForReview = ()=>{
                         }
     
                     }}
-                    pagination={true}
+                    pagination={false}
                     paginationPageSize={parseInt(TASKPENDINGFORREVIEW_PAGE || '100')}  
                     // paginationPageSize={50}
                     // suppressPaginationPanel={true}
                 />
     
     
-                {/* <VFPagination
+                <VFPagination
                     selectedRows={selectedRows}
                     totalRows={recordCount}
                     currentPage={currentPage}
-                    rowsPerPage={rowsPerPage}
+                    rowsPerPage={chunkSize}
                     handleChangePage={handleChangePage}
-                    showPagination={false}
-                    showTotalItems={false}
+                    showPagination={true}
+                    showTotalItems={true}
     
-                /> */}
+                />
                 {
                     showApproveAllModal && 
                         <ApproveAllModal onSuccess={()=>onSelectionTypeSuccess('Approved')} onClose={()=>toggleApproveAllModal(false)} setSelectionType={setSelectionType}/>
@@ -138,7 +143,7 @@ const TaskPendingForReview = ()=>{
                 }
                 <TaskPendingTaskBar
                     isSideBarOpen={isSideBarOpen}
-                    disableSubmit={selectedRows!==detailTableRowData?.length}
+                    disableSubmit={modifiedRowsSet?.size!==recordCount}
                     onCancel={onCancel}
                     onSubmit={onTaskSubmit}
                 />
