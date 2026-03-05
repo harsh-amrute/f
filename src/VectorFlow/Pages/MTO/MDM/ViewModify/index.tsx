@@ -129,7 +129,9 @@ const MTOViewModify = () => {
     showModal,
     setShowModal,
     bufferDataConfirm,
-    isAPILoading
+    isAPILoading,
+    tempRefPoogi,
+    selectedMajReason,
   } = useViewModify("modify");
 
   useSimpleBlocker(activeMaster, onBackButton);
@@ -181,7 +183,6 @@ const MTOViewModify = () => {
     }
   }, [isTableDataLoading]);
 
-  const tempRefPoogi = React.useRef<any>(null);
 
   const clearGridFilterPoogi1 = () => {
     ref?.current?.api.setFilterModel(null);
@@ -321,6 +322,7 @@ const MTOViewModify = () => {
                   >
                     <VFTable
                       ref={ref}
+                      key={"major"}
                       columnDefs={MTOPoogiMajorColdef}
                       rowData={activeMaster.rowData}
                       {...agGridProps}
@@ -396,9 +398,11 @@ const MTOViewModify = () => {
                     />
                     <VFTable
                       columnDefs={MTOPoogiMinorColdef}
-                      rowData={minReasonRowData}
                       ref={tempRefPoogi}
+                      key={selectedMajReason?.majId || "min"}
                       {...agGridProps}
+                      rowData={selectedMajReason?.minData || []}
+                      getRowId={(row: any) => { return row.data.minId }}
                       tabToNextCell={() => {
                         return null;
                       }}
@@ -537,9 +541,7 @@ const MTOViewModify = () => {
                           addRowToMtoMinGrid();
                       }}
                     >
-                      {!activeMaster.colDefs.some(
-                        (x) => x.field === "actions" || x.field === "pactions"
-                      ) &&
+                      {
                       ref &&
                       ref.current &&
                       ref?.current?.api?.getSelectedRows()?.length > 0 ? (

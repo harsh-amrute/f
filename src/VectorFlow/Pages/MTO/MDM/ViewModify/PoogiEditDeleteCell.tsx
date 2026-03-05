@@ -1,175 +1,115 @@
 import _ from "lodash";
-import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  UPDATE_COLDEFS,
-  UPDATE_ROW_DATA,
-} from "../../../../../redux/actions/MDM";
-import {
-  SET_EDITABLE_MAJ_ROW,
-  SET_EDITABLE_MIN_ROW,
-  SET_POOGI_MODIFY_DATA,
-} from "../../../../../redux/actions/MTO";
+import { notifyError } from "../../../../../helpers/notify";
 
 const PoogiEditDeleteCell = (params: any) => {
-  const activeMaster = useSelector((state: any) => state.mdm.activeMaster);
-  const dispatch = useDispatch();
-  const editableMajRowIndex = useSelector(
-    (state: any) => state.mto.editableMajRow
-  );
 
-  const editableMinRowIndex = useSelector(
-    (state: any) => state.mto.editableMinRow
-  );
-  const intialPoogiData = useSelector(
-    (state: any) => state.mto.poogiIntialData
-  );
-  const poogiModifyData = useSelector(
-    (state: any) => state.mto.poogiModifyData
-  );
+  const isMajor = !params.data.minId;
 
-  const onSaveChange = () => {
-    dispatch(
-      UPDATE_COLDEFS(
-        activeMaster.colDefs.map((colDef: any) => ({
-          ...colDef,
-          editable: false,
-        }))
-      )
-    );
-    if (params.data.minId) {
-      const newRowData = _.cloneDeep(activeMaster.rowData);
-      newRowData.forEach((element: any) => {
-        if (element.majId === params.data.majId) {
-          element.minData[params.node.rowIndex].iu = true;
-        }
-      });
-      dispatch(UPDATE_ROW_DATA(newRowData));
-      // add it in modify data
-      const newModifyData = _.cloneDeep(poogiModifyData?poogiModifyData:[]);
-
-      const existingElement = newModifyData.find(
-        (element: any) => element.majId === params.data.majId
-      );
-
-      if (existingElement) {
-        // If majId exists, handle minData
-        const existingMinData = existingElement.minData.find(
-          (minElement: any) => minElement.minId === params.data.minId
-        );
-
-        if (existingMinData) {
-          // Replace existing minData with params.data
-          const index = existingElement.minData.indexOf(existingMinData);
-          const newData = { ...params.data, iu: true };
-          existingElement.minData[index] = newData;
-        } else {
-          // Add params.data if not found
-          const newData = { ...params.data, iu: true };
-          existingElement.minData.push(newData);
-        }
-      } else {
-        // If majId does not exist, add a new element
-        const activeMasterElement = activeMaster.rowData.find(
-          (row: any) => row.majId === params.data.majId
-        );
-
-        if (activeMasterElement) {
-          const newElement = {
-            ...activeMasterElement,
-            minData: [{ ...params.data, iu: true }],
-          };
-          newModifyData.push(newElement);
+  const syncMinorToMajor = (updatedMinorData: any, isDeleted = false) => {
+    if (!isMajor && params.majorRef?.current?.api) {
+      const majorNode = params.majorRef.current.api.getRowNode(params.data.majId);
+      if (majorNode) {
+        const majorData = { ...majorNode.data };
+        if (majorData.minData) {
+          if (isDeleted) {
+            majorData.minData = majorData.minData.filter((min: any) => min.minId !== updatedMinorData.minId);
+          } else {
+            majorData.minData = majorData.minData.map((min: any) =>
+              min.minId === updatedMinorData.minId ? updatedMinorData : min
+            );
+          }
+          params.majorRef.current.api.applyTransaction({ update: [majorData] });
         }
       }
-
-      dispatch(SET_POOGI_MODIFY_DATA(newModifyData));
-
-      dispatch(SET_EDITABLE_MIN_ROW(null));
-    } else {
-      const newRowData = _.cloneDeep(activeMaster.rowData);
-      newRowData[params.node.rowIndex].iu = true;
-
-      const newModifyData = _.cloneDeep(poogiModifyData?poogiModifyData:[]);
-
-const existingElement = newModifyData.find(
-  (element: any) => element.majId === params.data.majId
-);
-
-if (existingElement) {
-  // If majId exists, update majdsc and set iu to true
-  existingElement.majdsc = params.data.majdsc;
-  existingElement.iu = true;
-} else {
-  // If majId does not exist, add a new element with minData as an empty array
-  const activeMasterElement = activeMaster.rowData.find(
-    (row: any) => row.majId === params.data.majId
-  );
-
-  if (activeMasterElement) {
-    const newElement = {
-      ...activeMasterElement,
-      minData: [],
-      iu: true,
-      majdsc: params.data.majdsc,
-    };
-    newModifyData.push(newElement);
-  }
-}
-
-dispatch(SET_POOGI_MODIFY_DATA(newModifyData));
-      dispatch(UPDATE_ROW_DATA(newRowData));
-      dispatch(SET_EDITABLE_MAJ_ROW(null));
     }
+    if (params.minRef.current) {
+      params.minRef.current.api.refreshCells()
+    }
+  };
+
+  const validateUniqueness = (dataToCheck: any) => {
+    if (isMajor) {
+      let isDuplicate = false;
+      params.api.forEachNode((node: any) => {
+        if (
+          node.data.majId !== dataToCheck.majId &&
+          node.data.plnm === dataToCheck.plnm &&
+          node.data.majdsc?.toLowerCase().trim() === dataToCheck.majdsc?.toLowerCase().trim() &&
+          !node.data.id
+        ) {
+          isDuplicate = true;
+        }
+      });
+      if (isDuplicate) {
+        notifyError("Major reason description must be unique for a plant.");
+        return false;
+      }
+    } else {
+      let isDuplicate = false;
+      const majorNode = params.majorRef?.current?.api?.getRowNode(dataToCheck.majId);
+      if (majorNode?.data?.minData) {
+        majorNode.data.minData.forEach((min: any) => {
+          if (
+            min.minId !== dataToCheck.minId &&
+            min.mindsc?.toLowerCase().trim() === dataToCheck.mindsc?.toLowerCase().trim() &&
+            !min.id && !min.ipd
+          ) {
+            isDuplicate = true;
+          }
+        });
+      }
+      if (isDuplicate) {
+        notifyError("Minor reason description must be unique under a major reason.");
+        return false;
+      }
+    }
+    return true;
+  };
+
+  const onSaveChange = () => {
+    if (!validateUniqueness(params.data)) {
+      return;
+    }
+    const updatedData = { ...params.data, editable: false, iu: true };
+    params.api.applyTransaction({ update: [updatedData] });
+    if (params.minRef && isMajor) {
+      params.minRef.current = params.data.minId;
+    }
+    syncMinorToMajor(updatedData);
   };
 
   const onCancel = () => {
-    // dispatch(UPDATE_ROW_DATA(intialPoogiData));
-    if (params.data.minId) {
-      const newData = _.cloneDeep(activeMaster.rowData);
-
-      newData.forEach((ele: any) => {
-        if (ele.majId === params.data.majId) {
-          intialPoogiData.forEach((e: any) => {
-            if (e.majId === params.data.majId) {
-              ele.minData[params.node.rowIndex] =
-                e.minData[params.node.rowIndex];
-            }
-          });
-        }
-      });
-      dispatch(UPDATE_ROW_DATA(newData));
-      dispatch(SET_EDITABLE_MIN_ROW(null));
+    if (params.data.oldValue) {
+      const updatedData = { ...params.data, ...params.data.oldValue, editable: false };
+      params.api.applyTransaction({ update: [updatedData] });
+      syncMinorToMajor(updatedData);
     } else {
-      const newData = _.cloneDeep(activeMaster.rowData);
-
-      newData.forEach((ele: any) => {
-        if (ele.majId === params.data.majId) {
-          intialPoogiData.forEach((e: any) => {
-            if (e.majId === params.data.majId) {
-              ele.majdsc = e.majdsc;
-              ele.iu = false;
-            }
+      if (isMajor) {
+        params.api.applyTransaction({ remove: [params.data] });
+        if (params.minRef?.current?.api) {
+          const minorRowsToRemove: any[] = [];
+          params.minRef.current.api.forEachNode((node: any) => {
+            minorRowsToRemove.push(node.data);
           });
+          if (minorRowsToRemove.length > 0) {
+            params.minRef.current.api.applyTransaction({ remove: minorRowsToRemove });
+          }
         }
-      });
-      dispatch(UPDATE_ROW_DATA(newData));
-      dispatch(SET_EDITABLE_MAJ_ROW(null));
+      } else {
+        const majorNode = params.majorRef?.current?.api?.getRowNode(params.data.majId);
+        const minDataCount = majorNode?.data?.minData?.length || 0;
+
+        if (minDataCount <= 1) {
+          notifyError('Major reason must contain atleast one minor reason.');
+        } else {
+          params.api.applyTransaction({ remove: [params.data] });
+          syncMinorToMajor(params.data, true);
+        }
+      }
     }
-    dispatch(
-      UPDATE_COLDEFS(
-        activeMaster.colDefs.map((colDef: any) => ({
-          ...colDef,
-          editable: false,
-        }))
-      )
-    );
   };
 
-  if (
-    (params.data.minId && editableMinRowIndex === params?.node?.rowIndex) ||
-    (!params.data.minId && editableMajRowIndex === params?.node?.rowIndex)
-  ) {
+  if (params?.data.editable) {
     return (
       <div
         style={{
@@ -181,161 +121,82 @@ dispatch(SET_POOGI_MODIFY_DATA(newModifyData));
         }}
       >
         <div onClick={onSaveChange} style={{ cursor: "pointer" }}>
-          <img src="/assets/img/MTOapprovalBuffer.svg" alt="ApproveMaster" />
+          <img height={18} src="/assets/img/MTOapprovalBuffer.svg" alt="ApproveMaster" />
         </div>
 
         <div onClick={onCancel} style={{ cursor: "pointer" }}>
-          <img src="/assets/img/MTOcancelBuffer.svg" alt="CancelMaster" />
+          <img height={18} src="/assets/img/MTOcancelBuffer.svg" alt="CancelMaster" />
         </div>
       </div>
     );
   }
 
   const onDeleteClick = () => {
-    if (params.data.minId === undefined) {
-      const newData = _.cloneDeep(activeMaster.rowData);
-      newData[params.node.rowIndex].id = true;
-      dispatch(UPDATE_ROW_DATA(newData));
+    const updatedData = { ...params.data, id: true, editable: false };
 
-      ///////////
-      let newModifyData = _.cloneDeep(poogiModifyData?poogiModifyData:[]);
+    if (isMajor) {
+      if (updatedData.minData) {
+        updatedData.minData = updatedData.minData.map((min: any) => ({ ...min, editable: false, ipd: true }));
+      }
+      params.api.applyTransaction({ update: [updatedData] });
 
-      const existingElement = newModifyData.find(
-        (element: any) => element.majId === params.data.majId
-      );
-
-      if (existingElement) {
-        // If majId exists, handle minData
-        newModifyData.forEach((elmm:any)=>{
-          if(elmm.majId===params.data.majId){
-            elmm.id = true;
-          }
-        })
-
-      } else {
-        // If majId does not exist, add a new element
-        if(poogiModifyData && poogiModifyData.length){
-          newModifyData = [{...params.data, minData: [], id: true},...poogiModifyData]
-          
-        }
-        else{
-          newModifyData = [{...params.data, minData: [], id: true}]
-
+      if (params.minRef?.current?.api) {
+        const minorUpdates: any[] = [];
+        params.minRef.current.api.forEachNode((node: any) => {
+          minorUpdates.push({ ...node.data, editable: false, ipd: true });
+        });
+        if (minorUpdates.length > 0) {
+          params.minRef.current.api.applyTransaction({ update: minorUpdates });
         }
       }
-
-      dispatch(SET_POOGI_MODIFY_DATA(newModifyData))
-     
-      /////////
-
-
     } else {
-      const newData = _.cloneDeep(activeMaster.rowData);
-      newData.forEach((ele: any) => {
-        if (ele.majId === params.data.majId) {
-          ele.minData[params.node.rowIndex].id = true;
-        }
-      });
-      dispatch(UPDATE_ROW_DATA(newData));
-
-      ////////////
-
-      const newModifyData = _.cloneDeep(poogiModifyData?poogiModifyData:[]);
-
-      const existingElement = newModifyData.find(
-        (element: any) => element.majId === params.data.majId
-      );
-
-      if (existingElement) {
-        // If majId exists, handle minData
-        const existingMinData = existingElement.minData.find(
-          (minElement: any) => minElement.minId === params.data.minId
-        );
-
-        if (existingMinData) {
-          // Replace existing minData with params.data
-          const index = existingElement.minData.indexOf(existingMinData);
-          const newData = { ...params.data, id: true };
-          existingElement.minData[index] = newData;
-        } else {
-          // Add params.data if not found
-          const newData = { ...params.data, id: true };
-          existingElement.minData.push(newData);
-        }
-      } else {
-        // If majId does not exist, add a new element
-        const activeMasterElement = activeMaster.rowData.find(
-          (row: any) => row.majId === params.data.majId
-        );
-
-        if (activeMasterElement) {
-          const newElement = {
-            ...activeMasterElement,
-            minData: [{ ...params.data, id: true }],
-          };
-          newModifyData.push(newElement);
-        }
-      }
-      dispatch(SET_POOGI_MODIFY_DATA(newModifyData))
-      ///////////
+      params.api.applyTransaction({ update: [updatedData] });
+      syncMinorToMajor(updatedData);
     }
   };
+
   const onDeleteUndoClick = () => {
-    if (params.data.minId === undefined) {
-      const newData = _.cloneDeep(activeMaster.rowData);
-      newData[params.node.rowIndex].id = false;
-      dispatch(UPDATE_ROW_DATA(newData));
+    if (!validateUniqueness(params.data)) {
+      return;
+    }
+    const updatedData = { ...params.data, id: false };
 
-      // update the poogiModifyData
+    if (isMajor) {
+      if (updatedData.minData) {
+        updatedData.minData = updatedData.minData.map((min: any) => ({ ...min, ipd: false }));
+      }
+      params.api.applyTransaction({ update: [updatedData] });
 
-      const newModifyData = _.cloneDeep(poogiModifyData);
-      newModifyData.forEach((ele:any)=>{
-        if(ele.majId===params.data.majId){
-          ele.id = false;
+      if (params.minRef?.current?.api) {
+        const minorUpdates: any[] = [];
+        params.minRef.current.api.forEachNode((node: any) => {
+          minorUpdates.push({ ...node.data, ipd: false });
+        });
+        if (minorUpdates.length > 0) {
+          params.minRef.current.api.applyTransaction({ update: minorUpdates });
         }
-      })
-      dispatch(SET_POOGI_MODIFY_DATA(newModifyData))
-
-
+      }
     } else {
-      const newData = _.cloneDeep(activeMaster.rowData);
-      newData.forEach((ele: any) => {
-        if (ele.majId === params.data.majId) {
-          ele.minData[params.node.rowIndex].id = false;
-        }
-      });
-      dispatch(UPDATE_ROW_DATA(newData));
-      const newModifyData = _.cloneDeep(poogiModifyData);
-      newModifyData.forEach((ele:any)=>{
-        if(ele.majId===params.data.majId){
-          ele.minData.forEach((elm: any)=>{
-            if(elm.minId===params.data.minId){
-              elm.id = false;
-            }
-          })
-        }
-      })
-      dispatch(SET_POOGI_MODIFY_DATA(newModifyData));
+      params.api.applyTransaction({ update: [updatedData] });
+      syncMinorToMajor(updatedData);
     }
   };
 
   const onEditClick = () => {
-    if (params.data.minId !== undefined) {
-      dispatch(SET_EDITABLE_MIN_ROW(params.node.rowIndex));
-    } else {
-      dispatch(SET_EDITABLE_MAJ_ROW(params.node.rowIndex));
-    }
-    dispatch(
-      UPDATE_COLDEFS(
-        activeMaster?.colDefs?.map((colDef: any) => (
-          {
-          ...colDef,
-          editable: (para: any) =>
-            para.node.rowIndex === params?.node?.rowIndex,
-        }))
-      )
-    );
+    const updatedData = { ...params.data, editable: true, iu: true, oldValue: { ...params.data } };
+    params.api.applyTransaction({ update: [updatedData] });
+    syncMinorToMajor(updatedData);
   };
+
+  let isMajorDeleted = false;
+  if (!isMajor && params.majorRef?.current?.api) {
+    const majorNode = params.majorRef.current.api.getRowNode(params.data.majId);
+    if (majorNode) {
+      isMajorDeleted = !!majorNode.data.id;
+    }
+  }
+
+  const isEditDisabled = !!params.data.id || isMajorDeleted || !!params.data.ipd;
 
   return (
     <div
@@ -346,26 +207,14 @@ dispatch(SET_POOGI_MODIFY_DATA(newModifyData));
         justifyContent: "center",
       }}
     >
-      {!activeMaster.colDefs.some(
-        (colDef: any) => colDef.field === "actions"
-      ) && (
-        <>
           <button
-            disabled={
-              activeMaster.rowData.some(
-                (element: any) =>
-                  element.majId === params.data.majId && element.id === true
-              ) || params.data.id
-
-
-            }
+        disabled={isEditDisabled}
             onClick={onEditClick}
             style={{
               background: "transparent",
-              opacity: `${  activeMaster.rowData.some(
-                (element: any) =>
-                  element.majId === params.data.majId && element.id === true
-              ) || params.data.id ? 0.2 : 1}`,
+              opacity: isEditDisabled ? 0.2 : 1,
+              border: "none",
+              cursor: isEditDisabled ? "not-allowed" : "pointer"
             }}
           >
             <img
@@ -376,11 +225,13 @@ dispatch(SET_POOGI_MODIFY_DATA(newModifyData));
           </button>
           {params.data.id ? (
             <button
-              disabled={params.data.minId ? activeMaster.rowData.some((element:any)=> element.majId===params.data.majId && element.id===true) : false}
+          disabled={false}
               onClick={onDeleteUndoClick}
               style={{ background: "transparent",
+                border: "none",
+                cursor: "pointer",
                 opacity: 
-              `${  params.data.minId ? activeMaster.rowData.some((element:any)=> element.majId===params.data.majId && element.id===true) ? 0.2 : 1:1}`
+                  !isMajor ? (params.data.editable ? 0.2 : 1) : 1
               }}
             >
               <img
@@ -393,18 +244,11 @@ dispatch(SET_POOGI_MODIFY_DATA(newModifyData));
           ) : (
             <button
               onClick={onDeleteClick}
-              disabled={
-              activeMaster.rowData.some(
-                (element: any) =>
-                  element.majId === params.data.majId && element.id === true
-              ) || params.data.id 
-              }
+            disabled={isMajorDeleted || !!params.data.ipd}
               style={{ background: "transparent",
-                opacity: 
-              `${  activeMaster.rowData.some(
-                (element: any) =>
-                  element.majId === params.data.majId && element.id === true
-              ) || params.data.id ? 0.2 : 1}`
+                border: "none",
+                cursor: (isMajorDeleted || !!params.data.ipd) ? "not-allowed" : "pointer",
+                opacity: (isMajorDeleted || !!params.data.ipd) ? 0.2 : 1
                }}
             >
               <img
@@ -412,9 +256,7 @@ dispatch(SET_POOGI_MODIFY_DATA(newModifyData));
                 width={16}
                 src="/assets/img/VectorFLOW/NMS/delete-draft.svg"
               />
-            </button>
-          )}
-        </>
+          </button>
       )}
     </div>
   );
