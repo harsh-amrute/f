@@ -1136,174 +1136,232 @@ export const checkError = (
 //   return result;
 // };
 
-export const parseExcelData = async (file: any,master: MDMMasterState,pageType: string,selectedColumns: any,RECORD_UPLOAD_LIMIT?: any) => {
+const buildFieldMaps = (master: MDMMasterState) => {
   const fieldByDisplay = new Map<string, Field>();
   const fieldByKey = new Map<string, Field>();
-  const currMasterKeySet = new Set<string>();
-  
-  for (const f of master.fields) {
-    fieldByDisplay.set(f.displayName, f);
-    fieldByKey.set(f.key, f);
-    currMasterKeySet.add(f.key);
+
+  for (const field of master.fields) {
+    fieldByDisplay.set(field.displayName, field);
+    fieldByKey.set(field.key, field);
   }
 
-  const buffer = await file.arrayBuffer();
-  const limit = parseInt(RECORD_UPLOAD_LIMIT || "50000");
-  const stopReadingAt = limit ; 
+  return { fieldByDisplay, fieldByKey };
+};
 
-  let selectedKeys: string[];
-  if (pageType === "add") {
-    selectedKeys = [];
-    for (const f of master.fields) {
-      if (f.isAdd) selectedKeys.push(f.key);
-    }
-  } else {
-    selectedKeys = selectedColumns.map((col: any) => col.colId);
+
+const resolveSelectedKeys = (
+  pageType: string,
+  master: MDMMasterState,
+  selectedColumns: any[]
+): string[] => {
+  if (pageType === 'add') {
+    return master.fields
+      .filter((f) => f.isAdd)
+      .map((f) => f.key);
   }
-  
-  const selectedKeysSet = new Set(selectedKeys);
+  return selectedColumns.map((col) => col.colId);
+};
 
-  const workbook = XLSX.read(buffer, {
-    type: "array",
-    sheetRows: stopReadingAt, 
-    dense: false,             
-    cellStyles: false,
-    cellFormula: false,
-    cellDates: false,
-    WTF: true                
-  });
 
-  if (workbook.SheetNames.length > 1) {
-    throw new Error("File cannot contain multiple sheets");
+const validateSheetStructure = (sheetNames: string[]) => {
+  if (sheetNames.length !== 1) {
+    throw new Error('File cannot contain multiple sheets');
   }
 
-  const sheetName = workbook.SheetNames[0];
-  if (sheetName !== "ag-grid") {
-    throw new Error("Sheet Name is changed");
+  if(sheetNames[0] !== "ag-grid") {
+    throw new Error('Sheet name is changed. Expected "ag-grid"');
   }
+};
 
-  const sheet = workbook.Sheets[sheetName];
+const validateDuplicateHeaders = (headers: any[]) => {
+  const seen = new Set<string>();
 
-  const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 }) as any[][];
-
-  if (rows.length > limit) {
-    throw new Error(`Number of rows should not exceed ${limit}`);
-  }
-
-
-
-  const firstRow = rows[0] || [];
-  const headerKeys: string[] = [];
-  const validHeadersSet = new Set<string>();
-
-  for (let i = 0; i < firstRow.length; i++) {
-    const cellValue = firstRow[i];
-    const headerStr = (cellValue !== undefined && cellValue !== null) ? String(cellValue) : "";
-
-    if (headerStr !== "") {
-      if (validHeadersSet.has(headerStr)) {
-        throw new Error("File Contains Duplicate Headers");
-      }
-      validHeadersSet.add(headerStr);
-    }
-
-    const field = fieldByDisplay.get(headerStr);
-    const key = field ? field.key : "";
-    headerKeys.push(key);
-  }
-
-  const headerKeysSet = new Set(headerKeys.filter(k => k !== ""));
-
-  if ([501, 502, 503, 504].includes(master.id)) {
-    const objKeys = selectedColumns.map((c: any) => c.colId);
-    const bufferData: any[] = [];
-
-    for (let i = 1; i < rows.length; i++) {
-      const rowValues = rows[i] || [];
-      const row: any = {};
-      
-      for (let j = 0; j < objKeys.length; j++) {
-        row[objKeys[j]] = rowValues[j];
-      }
-      
-      row["err"] = "";
-      bufferData.push(row);
-    }
-    return bufferData;
-  }
-
-  const missingHeaders: string[] = [];
-  const invalidHeaders: string[] = [];
-  const extraHeaders: string[] = [];
-  let error = false;
-
-  if (pageType === 'modify') {
-    for (const key of headerKeys) {
-      if (key === "") continue;
-      
-      const field = fieldByKey.get(key);
-      if (field && !field.isDownload) {
-        invalidHeaders.push(field.displayName);
-        error = true;
-      }
+  for (const header of headers) {
+    const normalized = String(header ?? '').trim().toLowerCase();
+    
+    if (!normalized) {
+      throw new Error('File contains empty header');
     }
     
-    if (error) {
-      throw new Error(`File Contains ${invalidHeaders.join(", ")} field which are not allowed to Upload.`);
+    if (seen.has(normalized)) {
+      throw new Error('File contains duplicate headers');
     }
-  }
-
-  for (const key of selectedKeys) {
-    const field = fieldByKey.get(key);
-    const isRequired = 
-        (pageType === "add" && field?.isAdd) ||
-        (pageType === "modify" && field?.isDownload) ||
-        (pageType === "remove" && field?.isDelete);
-
-    if (isRequired && !headerKeysSet.has(key)) {
-       missingHeaders.push(field?.displayName || key);
-       error = true;
-    }
-  }
-
-  if (error) {
-    throw new Error(`File is missing the following columns: ${missingHeaders.join(", ")}`);
-  }
-
-  error = false;
-for (let i = 0; i < firstRow.length; i++) {
-  const cellValue = firstRow[i];
-  const headerStr =
-    cellValue !== undefined && cellValue !== null
-      ? String(cellValue).trim()
-      : "";
-
-  if (headerStr === "") continue;
-  if (!fieldByDisplay.has(headerStr)) {
-    throw new Error("Please Upload a Valid Master");
+    
+    seen.add(normalized);
   }
 }
 
+
+const mapHeadersToKeys = (
+  headers: any[],
+  fieldByDisplay: Map<string, Field>
+): string[] => {
+  const invalidHeaders: string[] = [];
+  const headerKeys: string[] = [];
+
+  for (const header of headers) {
+    const field = fieldByDisplay.get(header);
+    if (!field) {
+      invalidHeaders.push(header);
+    } else {
+      headerKeys.push(field.key);
+    }
+  }
+
+  if (invalidHeaders.length > 0) {
+    throw new Error(
+      `Invalid columns in file: ${invalidHeaders.join(', ')}`
+    );
+  }
+
+  return headerKeys;
+};
+
+
+const validatePageTypeRules = (
+  headerKeys: string[],
+  fieldByKey: Map<string, Field>,
+  pageType: string
+) => {
+  const invalid: string[] = [];
+
   for (const key of headerKeys) {
-    if (key === "") continue;
+    const field = fieldByKey.get(key);
+    if (!field) continue;
 
-    if (!currMasterKeySet.has(key)) {
-       throw new Error("Please Upload a Valid Master");
+    const isInvalid = 
+      (pageType === 'add' && !field.isAdd) ||
+      (pageType === 'modify' && !field.isDownload) ||
+      (pageType === 'remove' && !field.isDelete);
+
+    if (isInvalid) {
+      invalid.push(field.displayName);
     }
-    if (!selectedKeysSet.has(key)) {
-       const field = fieldByKey.get(key);
-       extraHeaders.push(field?.displayName || key);
-       error = true;
+  }
+
+  if (invalid.length > 0) {
+    throw new Error(
+      `File contains ${invalid.join(', ')} which are not allowed`
+    );
+  }
+};
+
+const validateSelectedVsUploaded = (
+  headerKeys: string[],
+  selectedKeys: string[],
+  fieldByKey: Map<string, Field>
+) => {
+  const headerSet = new Set(headerKeys);
+  const selectedSet = new Set(selectedKeys);
+
+  const missing: string[] = [];
+  const extra: string[] = [];
+
+  for (const key of selectedSet) {
+    if (!headerSet.has(key)) {
+      const field = fieldByKey.get(key);
+      missing.push(field?.displayName ?? key);
     }
   }
 
-  if (rows.length <= 1) {
-    throw new Error("File Contains zero rows.");
+  for (const key of headerSet) {
+    if (!selectedSet.has(key)) {
+      const field = fieldByKey.get(key);
+      extra.push(field?.displayName ?? key);
+    }
   }
 
-  if (error) {
-    throw new Error(`File Contains ${extraHeaders.join(", ")} which were not selected`);
+  const uniqMissing = Array.from(new Set(missing));
+  const uniqExtra = Array.from(new Set(extra));
+
+  if (uniqExtra.length > 0) {
+    throw new Error(
+      `File contains ${uniqExtra.join(', ')} which were not selected`
+    );
   }
+
+  if (uniqMissing.length > 0) {
+    throw new Error(
+      `File is missing the following columns: ${uniqMissing.join(', ')}`
+    );
+  }
+};
+
+
+
+const buildSpecialMasterData = (data: any[][], selectedColumns: any[]) => {
+  const keys = selectedColumns.map((c) => c.colId);
+
+  return data.slice(1).map((row) => {
+    const obj: any = {};
+    for (let i = 0; i < keys.length; i++) {
+      obj[keys[i]] = row[i] ?? null;
+    }
+    obj.err = '';
+    return obj;
+  });
+};
+
+
+const readExcelData = async (
+  file: File,
+  limit?: number
+): Promise<{ data: any[][]; sheetNames: string[] }> => {
+  const buffer = await file.arrayBuffer();
+  
+  const opts = limit ? { sheetRows: limit } : {};
+  const workbook = XLSX.read(buffer, opts);
+  
+  const sheetNames = workbook.SheetNames;
+  
+
+  if (sheetNames.length === 0) {
+    return { data: [], sheetNames };
+  }
+
+  const data = XLSX.utils.sheet_to_json(workbook.Sheets[sheetNames[0]], {
+    header: 1,
+  }) as any[][];
+
+  return { data, sheetNames };
+};
+
+export const parseExcelData = async (
+  file: File,
+  master: MDMMasterState,
+  pageType: string,
+  selectedColumns: any
+): Promise<any[]> => {
+  const isSpecialMaster = [501, 502, 503, 504].includes(master.id);
+  const readLimit = isSpecialMaster ? undefined : 10;
+
+
+  const { data, sheetNames } = await readExcelData(file, readLimit);
+
+  validateSheetStructure(sheetNames);
+  if (isSpecialMaster) {
+    return buildSpecialMasterData(data, selectedColumns);
+  }
+
+  const headers = data[0];
+
+  validateDuplicateHeaders(headers);
+
+  const { fieldByDisplay, fieldByKey } = buildFieldMaps(master);
+
+
+  const selectedKeys = resolveSelectedKeys(pageType, master, selectedColumns);
+
+
+  const headerKeys = mapHeadersToKeys(headers, fieldByDisplay);
+
+  validatePageTypeRules(headerKeys, fieldByKey, pageType);
+  validateSelectedVsUploaded(headerKeys, selectedKeys, fieldByKey);
+
+  if (data.length <= 1) {
+    throw new Error('File contains zero rows');
+  }
+
   return [];
 }
 
