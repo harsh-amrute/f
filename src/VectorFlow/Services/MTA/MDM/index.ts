@@ -176,6 +176,12 @@ export const useApproveTask = () => {
   })
 }
 
+export const useBulkApproveTask = () => {
+  return useMutation(async (body: { taskId: string, isApproveAll :any , Comments:any }) => {
+    return await MDMService.bulkApproveTask(body)
+  })
+}
+
 export const useRemoveMasterData = () => {
   return useMutation(async (body: any) => {
     return await MDMService.deleteMasterData(body)

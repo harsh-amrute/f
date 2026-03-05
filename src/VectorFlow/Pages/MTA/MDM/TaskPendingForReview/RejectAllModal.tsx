@@ -15,10 +15,12 @@ interface RejectAllModalProps {
   onSuccess: () => void;
   onClose: () => void;
   setSelectionType: any;
+  rejectButtonLabel:any;
+  isAllDataVisible:any;
 }
 
 const RejectAllModal = (props: RejectAllModalProps) => {
-  const { onSuccess, onClose, setSelectionType } = props;
+  const { onSuccess, onClose, setSelectionType, rejectButtonLabel, isAllDataVisible } = props;
 
   const { user } = useUserData();
 
@@ -41,52 +43,53 @@ const RejectAllModal = (props: RejectAllModalProps) => {
           marginTop: "10px",
         }}
       >
-        <div
-          className={RadioButtonGroup}
-          style={assignInlineVars({
-            [radioAccentVar]: globalStyles.chooseThemeColor[themeUi].color5,
-          })}
-        >
-          <input
-            type="radio"
-            value="option1"
-            onChange={() => setSelectionType("All")}
-            name="Approve"
-            id="ApproveAll"
-          />
-          <label
-            htmlFor="ApproveAll"
-            style={{ fontSize: "15px", fontWeight: "300px" }}
+        {
+          isAllDataVisible ?  
+          <div
+            className={RadioButtonGroup}
+            style={assignInlineVars({
+              [radioAccentVar]: globalStyles.chooseThemeColor[themeUi].color5,
+            })}
           >
-            Reject across all pages
-          </label>
-        </div>
-        <div className={ButtonSeperator} />
-        <div
-          className={RadioButtonGroup}
-          style={assignInlineVars({
-            [radioAccentVar]: globalStyles.chooseThemeColor[themeUi].color5,
-          })}
-        >
-          <input
-            type="radio"
-            value="option2"
-            onChange={() => setSelectionType("Current")}
-            name="Approve"
-            id="ApproveCurrent"
-          />
-          <label
-            htmlFor="ApproveCurrent"
-            style={{ fontSize: "15px", fontWeight: "300px" }}
+            <input
+              type="radio"
+              value="option1"
+              onChange={() => setSelectionType("All")}
+              name="Approve"
+              id="ApproveAll"
+            />
+            <label
+              htmlFor="ApproveAll"
+              style={{ fontSize: "15px", fontWeight: "300px" }}
+            >
+              Reject across all pages
+            </label>
+          </div>
+        :
+          <div
+            className={RadioButtonGroup}
+            style={assignInlineVars({
+              [radioAccentVar]: globalStyles.chooseThemeColor[themeUi].color5,
+            })}
           >
-            Reject all only current page
-          </label>
-        </div>
+            <input
+              type="radio"
+              value="option2"
+              onChange={() => setSelectionType("Current")}
+              name="Approve"
+              id="ApproveCurrent"
+            />
+            <label
+              htmlFor="ApproveCurrent"
+              style={{ fontSize: "15px", fontWeight: "300px" }}
+            >
+              Reject all only current page
+            </label>
+          </div>
+        }
       </div>
       <div className={SubmitButtonWrapper}>
-        <VFButton themeUi={user.user.theme_ui} onClick={onSuccess}>
-          Ok
-        </VFButton>
+        <VFButton themeUi={user.user.theme_ui} onClick={onSuccess}>{rejectButtonLabel}</VFButton>
       </div>
     </VFModalCard>
   );

@@ -37,14 +37,20 @@ const TaskPendingForReview = ()=>{
         noDataMessage,
         handleChangePage,
         chunkSize,
-        currentPage,
-        modifiedRowsSet
+        currentPage
     } = useTaskPendingForReview()
 
     const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
     const TASKPENDINGFORREVIEW_PAGE = EnvConfig['TASKPENDINGFORREVIEW_PAGE'];  
     const recordCount = useSelector((state:RootState) =>state.mdm.recordCount);
-  
+    let isAllDataVisible = true;
+    if (recordCount <= chunkSize) {
+      isAllDataVisible = false;
+    }
+    const approveButtonLabel = isAllDataVisible ? "Submit All" : `Ok`;
+
+    const rejectButtonLabel = isAllDataVisible ? "Reject All" : `Ok`;
+
     if(showLoader) return <VFLoader/>
     const suppressMovable = true;
         return (
@@ -135,15 +141,15 @@ const TaskPendingForReview = ()=>{
                 />
                 {
                     showApproveAllModal && 
-                        <ApproveAllModal onSuccess={()=>onSelectionTypeSuccess('Approved')} onClose={()=>toggleApproveAllModal(false)} setSelectionType={setSelectionType}/>
+                        <ApproveAllModal onSuccess={()=>onSelectionTypeSuccess('Approved')} onClose={()=>toggleApproveAllModal(false)} setSelectionType={setSelectionType} isAllDataVisible={isAllDataVisible} approveButtonLabel={approveButtonLabel}/>
                 }
                 {
                     showRejectAllModal && 
-                        <RejectAllModal onSuccess={()=>onSelectionTypeSuccess('Rejected')} onClose={()=>toggleRejectAllModal(false)} setSelectionType={setSelectionType} />
+                        <RejectAllModal onSuccess={()=>onSelectionTypeSuccess('Rejected')} onClose={()=>toggleRejectAllModal(false)} setSelectionType={setSelectionType} isAllDataVisible={isAllDataVisible} rejectButtonLabel={rejectButtonLabel}/>
                 }
                 <TaskPendingTaskBar
                     isSideBarOpen={isSideBarOpen}
-                    disableSubmit={modifiedRowsSet?.size!==recordCount}
+                    disableSubmit={selectedRows!==detailTableRowData?.length}
                     onCancel={onCancel}
                     onSubmit={onTaskSubmit}
                 />

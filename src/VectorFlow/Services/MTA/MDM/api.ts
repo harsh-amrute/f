@@ -171,6 +171,12 @@ export namespace MDMService {
   }
 
   export const approveTask = async(body:any)=>{
+    return await axios.post(process.env.REACT_APP_API_HOST + 'api/mta/PostMasterAfterApproved',body,{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
+    export const bulkApproveTask = async(body:any)=>{
     return await axios.post(process.env.REACT_APP_API_HOST + 'api/mta/BulkPostMasterAfterApproved',body,{
       headers: { 'Content-Type': 'application/json' }
     })

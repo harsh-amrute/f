@@ -15,10 +15,12 @@ interface ApproveAllModalProps {
   onSuccess: (status: string) => void;
   onClose: () => void;
   setSelectionType: any;
+  approveButtonLabel:any;
+  isAllDataVisible:any;
 }
 
 const ApproveAllModal = (props: ApproveAllModalProps) => {
-  const { onSuccess, onClose, setSelectionType } = props;
+  const { onSuccess, onClose, setSelectionType, approveButtonLabel, isAllDataVisible } = props;
 
   const { user } = useUserData();
 
@@ -41,6 +43,8 @@ const ApproveAllModal = (props: ApproveAllModalProps) => {
           marginTop: "10px",
         }}
       >
+      {
+       isAllDataVisible ?
         <div
           className={RadioButtonGroup}
           style={assignInlineVars({
@@ -54,6 +58,7 @@ const ApproveAllModal = (props: ApproveAllModalProps) => {
             name="Approve"
             id="ApproveAll"
           />
+
           <label
             htmlFor="ApproveAll"
             style={{ fontSize: "15px", fontWeight: "300px" }}
@@ -61,7 +66,7 @@ const ApproveAllModal = (props: ApproveAllModalProps) => {
             Approve across all the pages
           </label>
         </div>
-        <div className={ButtonSeperator} />
+        :
         <div
           className={RadioButtonGroup}
           style={assignInlineVars({
@@ -82,14 +87,13 @@ const ApproveAllModal = (props: ApproveAllModalProps) => {
             Approve only the current page
           </label>
         </div>
+        }
       </div>
       <div className={SubmitButtonWrapper}>
         <VFButton
           themeUi={user.user.theme_ui}
           onClick={() => onSuccess("Approved")}
-        >
-          Ok
-        </VFButton>
+        >{approveButtonLabel}</VFButton>
       </div>
     </VFModalCard>
   );

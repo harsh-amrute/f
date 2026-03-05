@@ -1,13 +1,16 @@
 import { screen, render, fireEvent } from "@testing-library/react"
 import RejectAllModal from "./RejectAllModal"
 import { UserDataContext } from "../../../../../context"
+import { reject } from "lodash"
 
 const mockFunction = jest.fn()
 
 const dummyprops = {
   onSuccess:mockFunction,
   onClose:mockFunction,
-  setSelectionType:mockFunction
+  setSelectionType:mockFunction,
+  rejectButtonLabel:mockFunction,
+  isAllDataVisible:mockFunction
 }
 
 describe("RejectAllModal Component", () => {
