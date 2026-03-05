@@ -55,6 +55,7 @@ import { decryptStorageData } from "../VectorFlow/Pages/MTO/Common/encryption";
 import "./style.css";
 import { getNumberFormat } from "./numberFormat";
 import axios from 'axios';
+import * as XLSX from 'xlsx';
 
 const keyboardCharacters = [
   // '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -926,214 +927,385 @@ export const checkError = (
   return { error, warning };
 };
 
-export const parseExcelData = async (
-  file: any,
-  master: MDMMasterState,
-  pageType: string,
-  selectedColumns: any,
-  RECORD_UPLOAD_LIMIT?: any
-) => {
-  const currMasterKeys = master.fields.map((field: Field) => field.key); //array containing keys of current master fields
-  const result: object[] = [];
+// export const parseExcelData = async (
+//   file: any,
+//   master: MDMMasterState,
+//   pageType: string,
+//   selectedColumns: any,
+//   RECORD_UPLOAD_LIMIT?: any
+// ) => {
+//   const currMasterKeys = master.fields.map((field: Field) => field.key); //array containing keys of current master fields
+//   const result: object[] = [];
+//   const buffer = await file.arrayBuffer();
+
+//   let selectedKeys: any;
+
+//   //Selected Columns Keys
+//   if (pageType === "add") {
+//     selectedKeys = master.fields
+//       .filter((field: Field) => field.isAdd)
+//       .map((field: Field) => field.key);
+//   } else {
+//     selectedKeys = selectedColumns.map((col: any) => col.colId);
+//   }
+
+//   const numberOfSheets = await readSheetNames(file);
+//   if (numberOfSheets.length > 1) {
+//     throw new Error("File cannot contain multiple sheets");
+//   }
+
+//   if (numberOfSheets[0] != "ag-grid") {
+//     throw new Error("Sheet Name is changed");
+//   }
+
+//   const data = await readXlsxFile(buffer, {
+//     parseNumber: (string: any) => string,
+//   });
+
+//   //Check if File Contains a Column that is Duplicate
+//   const isDuplicateHeader = data[0].some(
+//     (header: any, index: number) => data[0].indexOf(header) !== index
+//   );
+
+//   if (data.length > parseInt(RECORD_UPLOAD_LIMIT || "50000")) {
+//     throw new Error(
+//       `Number of rows should not exceed ${RECORD_UPLOAD_LIMIT || "50000"}`
+//     );
+//   }
+
+//   if (isDuplicateHeader) {
+//     throw new Error("File Contains Duplicate Headers");
+//   }
+
+//   //displayName to key mapper
+//   const headerKeys = data[0].map((headerName: any) => {
+//     const fieldObj = master.fields.find(
+//       (field: Field) => field.displayName === headerName
+//     );
+//     if (fieldObj) return fieldObj.key;
+//     else return "";
+//   });
+
+//   if (
+//     master.id === 501 ||
+//     master.id === 502 ||
+//     master.id === 503 ||
+//     master.id === 504
+//   ) {
+//     const objKeys: string[] = [];
+//     selectedColumns.forEach((ele: any) => {
+//       objKeys.push(ele.colId);
+//     });
+
+//     const bufferData: any = [];
+//     for (let i = 1; i < data.length; i++) {
+//       const buffData: any = {};
+//       for (let j = 0; j < data[i].length; j++) {
+//         buffData[objKeys[j]] = data[i][j];
+//       }
+//       buffData["err"] = "";
+//       bufferData.push(buffData);
+//     }
+
+//     return bufferData;
+//   }
+
+//   let headers: any = []; //Not Selected Headers
+//   let error = false;
+
+//   if (pageType === "modify") {
+//     //Check if File Contains a Column that is not Downloadabl;
+//     headerKeys.forEach((key: string) => {
+//       const fieldObj = master.fields.find(
+//         (field: Field) => field.key === key && !field.isDownload
+//       );
+//       if (fieldObj) {
+//         headers.push(fieldObj.displayName);
+//         error = true;
+//       }
+//     });
+
+//     if (error) {
+//       throw new Error(
+//         `File Contains ${headers.join(
+//           ", "
+//         )} field which are not allowed to Upload.`
+//       );
+//     }
+
+//     //Check if All Selected Keys are Present in The Uploaded
+//     selectedKeys.forEach((key: string) => {
+//       const fieldObj = master.fields.find((field: Field) => field.key === key);
+//       if (!headerKeys.includes(key) && fieldObj?.isDownload) {
+//         error = true;
+//         headers.push(
+//           master.fields.find((field: Field) => field.key === key)?.displayName
+//         );
+//       }
+//     });
+//   }
+
+//   if (pageType == "add") {
+//     selectedKeys.forEach((key: string) => {
+//       const fieldObj = master.fields.find((field: Field) => field.key === key);
+//       if (!headerKeys.includes(key) && fieldObj?.isAdd) {
+//         error = true;
+//         headers.push(
+//           master.fields.find((field: Field) => field.key === key)?.displayName
+//         );
+//       }
+//     });
+//   }
+//   if (pageType == "remove") {
+//     selectedKeys.forEach((key: string) => {
+//       const fieldObj = master.fields.find((field: Field) => field.key === key);
+
+//       if (!headerKeys.includes(key) && fieldObj?.isDelete) {
+//         error = true;
+//         headers.push(
+//           master.fields.find((field: Field) => field.key === key)?.displayName
+//         );
+//       }
+//     });
+//   }
+
+//   if (error) {
+//     throw new Error(
+//       `File is missing the following columns: ${headers.join(", ")}`
+//     );
+//   }
+
+//   error = false;
+//   headers = [];
+
+//   headerKeys.forEach((key: string) => {
+//     if (!currMasterKeys.includes(key)) {
+//       throw new Error("Please Upload a Valid Master");
+//     }
+//     if (!selectedKeys.includes(key)) {
+//       error = true;
+//       headers.push(
+//         master.fields.find((field: Field) => field.key === key)?.displayName
+//       );
+//     }
+//   });
+
+//   if (error) {
+//     throw new Error(
+//       `File Contains ${headers.join(", ")} which were not selected`
+//     );
+//   }
+
+//   // let rowObj:any = {};
+//   // let temp = 0;
+//   if (data.slice(1).length === 0) {
+//     throw new Error(`File Contains zero rows.`);
+//   }
+//   // data.slice(1).map((row:any)=>{
+
+//   //   row.map((value:any)=>{
+//   //     const attributeName = headerKeys[temp];
+//   //     rowObj[attributeName.toString()] = "" + value;
+//   //     temp+=1;
+//   //   })
+//   //   temp = 0;
+//   //   //Replace with empty string if null (for Custom keys)
+//   //   Object.keys(rowObj).forEach((key:any)=>{
+//   //     if(customKeys.includes(key) && rowObj[key]===null){
+//   //       rowObj[key] = ''
+//   //     }
+//   //   })
+
+//   //   const {error,warning} = checkError(rowObj,master,pageType);
+
+//   //   if(error !== undefined){
+//   //     rowObj.error = error;
+//   //   }
+//   //   if(warning !== undefined){
+//   //     rowObj.warning = warning;
+//   //   }
+//   //   const doesRowExists = result.find((row:any)=>JSON.stringify(row)===JSON.stringify(rowObj));
+//   //   if(doesRowExists){
+//   //     throw new Error("Duplicate Rows Found in File");
+//   //   }
+//   //   result.push(rowObj);
+//   //   rowObj={}
+
+//   // })
+
+//   return result;
+// };
+
+export const parseExcelData = async (file: any,master: MDMMasterState,pageType: string,selectedColumns: any,RECORD_UPLOAD_LIMIT?: any) => {
+  const fieldByDisplay = new Map<string, Field>();
+  const fieldByKey = new Map<string, Field>();
+  const currMasterKeySet = new Set<string>();
+  
+  for (const f of master.fields) {
+    fieldByDisplay.set(f.displayName, f);
+    fieldByKey.set(f.key, f);
+    currMasterKeySet.add(f.key);
+  }
+
   const buffer = await file.arrayBuffer();
+  const limit = parseInt(RECORD_UPLOAD_LIMIT || "50000");
+  const stopReadingAt = limit ; 
 
-  let selectedKeys: any;
-
-  //Selected Columns Keys
+  let selectedKeys: string[];
   if (pageType === "add") {
-    selectedKeys = master.fields
-      .filter((field: Field) => field.isAdd)
-      .map((field: Field) => field.key);
+    selectedKeys = [];
+    for (const f of master.fields) {
+      if (f.isAdd) selectedKeys.push(f.key);
+    }
   } else {
     selectedKeys = selectedColumns.map((col: any) => col.colId);
   }
+  
+  const selectedKeysSet = new Set(selectedKeys);
 
-  const numberOfSheets = await readSheetNames(file);
-  if (numberOfSheets.length > 1) {
+  const workbook = XLSX.read(buffer, {
+    type: "array",
+    sheetRows: stopReadingAt, 
+    dense: false,             
+    cellStyles: false,
+    cellFormula: false,
+    cellDates: false,
+    WTF: true                
+  });
+
+  if (workbook.SheetNames.length > 1) {
     throw new Error("File cannot contain multiple sheets");
   }
 
-  if (numberOfSheets[0] != "ag-grid") {
+  const sheetName = workbook.SheetNames[0];
+  if (sheetName !== "ag-grid") {
     throw new Error("Sheet Name is changed");
   }
 
-  const data = await readXlsxFile(buffer, {
-    parseNumber: (string: any) => string,
-  });
+  const sheet = workbook.Sheets[sheetName];
 
-  //Check if File Contains a Column that is Duplicate
-  const isDuplicateHeader = data[0].some(
-    (header: any, index: number) => data[0].indexOf(header) !== index
-  );
+  const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 }) as any[][];
 
-  if (data.length > parseInt(RECORD_UPLOAD_LIMIT || "50000")) {
-    throw new Error(
-      `Number of rows should not exceed ${RECORD_UPLOAD_LIMIT || "50000"}`
-    );
+  if (rows.length > limit) {
+    throw new Error(`Number of rows should not exceed ${limit}`);
   }
 
-  if (isDuplicateHeader) {
-    throw new Error("File Contains Duplicate Headers");
-  }
 
-  //displayName to key mapper
-  const headerKeys = data[0].map((headerName: any) => {
-    const fieldObj = master.fields.find(
-      (field: Field) => field.displayName === headerName
-    );
-    if (fieldObj) return fieldObj.key;
-    else return "";
-  });
 
-  if (
-    master.id === 501 ||
-    master.id === 502 ||
-    master.id === 503 ||
-    master.id === 504
-  ) {
-    const objKeys: string[] = [];
-    selectedColumns.forEach((ele: any) => {
-      objKeys.push(ele.colId);
-    });
+  const firstRow = rows[0] || [];
+  const headerKeys: string[] = [];
+  const validHeadersSet = new Set<string>();
 
-    const bufferData: any = [];
-    for (let i = 1; i < data.length; i++) {
-      const buffData: any = {};
-      for (let j = 0; j < data[i].length; j++) {
-        buffData[objKeys[j]] = data[i][j];
+  for (let i = 0; i < firstRow.length; i++) {
+    const cellValue = firstRow[i];
+    const headerStr = (cellValue !== undefined && cellValue !== null) ? String(cellValue) : "";
+
+    if (headerStr !== "") {
+      if (validHeadersSet.has(headerStr)) {
+        throw new Error("File Contains Duplicate Headers");
       }
-      buffData["err"] = "";
-      bufferData.push(buffData);
+      validHeadersSet.add(headerStr);
     }
 
+    const field = fieldByDisplay.get(headerStr);
+    const key = field ? field.key : "";
+    headerKeys.push(key);
+  }
+
+  const headerKeysSet = new Set(headerKeys.filter(k => k !== ""));
+
+  if ([501, 502, 503, 504].includes(master.id)) {
+    const objKeys = selectedColumns.map((c: any) => c.colId);
+    const bufferData: any[] = [];
+
+    for (let i = 1; i < rows.length; i++) {
+      const rowValues = rows[i] || [];
+      const row: any = {};
+      
+      for (let j = 0; j < objKeys.length; j++) {
+        row[objKeys[j]] = rowValues[j];
+      }
+      
+      row["err"] = "";
+      bufferData.push(row);
+    }
     return bufferData;
   }
 
-  let headers: any = []; //Not Selected Headers
+  const missingHeaders: string[] = [];
+  const invalidHeaders: string[] = [];
+  const extraHeaders: string[] = [];
   let error = false;
 
-  if (pageType === "modify") {
-    //Check if File Contains a Column that is not Downloadabl;
-    headerKeys.forEach((key: string) => {
-      const fieldObj = master.fields.find(
-        (field: Field) => field.key === key && !field.isDownload
-      );
-      if (fieldObj) {
-        headers.push(fieldObj.displayName);
+  if (pageType === 'modify') {
+    for (const key of headerKeys) {
+      if (key === "") continue;
+      
+      const field = fieldByKey.get(key);
+      if (field && !field.isDownload) {
+        invalidHeaders.push(field.displayName);
         error = true;
       }
-    });
-
-    if (error) {
-      throw new Error(
-        `File Contains ${headers.join(
-          ", "
-        )} field which are not allowed to Upload.`
-      );
     }
-
-    //Check if All Selected Keys are Present in The Uploaded
-    selectedKeys.forEach((key: string) => {
-      const fieldObj = master.fields.find((field: Field) => field.key === key);
-      if (!headerKeys.includes(key) && fieldObj?.isDownload) {
-        error = true;
-        headers.push(
-          master.fields.find((field: Field) => field.key === key)?.displayName
-        );
-      }
-    });
+    
+    if (error) {
+      throw new Error(`File Contains ${invalidHeaders.join(", ")} field which are not allowed to Upload.`);
+    }
   }
 
-  if (pageType == "add") {
-    selectedKeys.forEach((key: string) => {
-      const fieldObj = master.fields.find((field: Field) => field.key === key);
-      if (!headerKeys.includes(key) && fieldObj?.isAdd) {
-        error = true;
-        headers.push(
-          master.fields.find((field: Field) => field.key === key)?.displayName
-        );
-      }
-    });
-  }
-  if (pageType == "remove") {
-    selectedKeys.forEach((key: string) => {
-      const fieldObj = master.fields.find((field: Field) => field.key === key);
+  for (const key of selectedKeys) {
+    const field = fieldByKey.get(key);
+    const isRequired = 
+        (pageType === "add" && field?.isAdd) ||
+        (pageType === "modify" && field?.isDownload) ||
+        (pageType === "remove" && field?.isDelete);
 
-      if (!headerKeys.includes(key) && fieldObj?.isDelete) {
-        error = true;
-        headers.push(
-          master.fields.find((field: Field) => field.key === key)?.displayName
-        );
-      }
-    });
+    if (isRequired && !headerKeysSet.has(key)) {
+       missingHeaders.push(field?.displayName || key);
+       error = true;
+    }
   }
 
   if (error) {
-    throw new Error(
-      `File is missing the following columns: ${headers.join(", ")}`
-    );
+    throw new Error(`File is missing the following columns: ${missingHeaders.join(", ")}`);
   }
 
   error = false;
-  headers = [];
+for (let i = 0; i < firstRow.length; i++) {
+  const cellValue = firstRow[i];
+  const headerStr =
+    cellValue !== undefined && cellValue !== null
+      ? String(cellValue).trim()
+      : "";
 
-  headerKeys.forEach((key: string) => {
-    if (!currMasterKeys.includes(key)) {
-      throw new Error("Please Upload a Valid Master");
+  if (headerStr === "") continue;
+  if (!fieldByDisplay.has(headerStr)) {
+    throw new Error("Please Upload a Valid Master");
+  }
+}
+
+  for (const key of headerKeys) {
+    if (key === "") continue;
+
+    if (!currMasterKeySet.has(key)) {
+       throw new Error("Please Upload a Valid Master");
     }
-    if (!selectedKeys.includes(key)) {
-      error = true;
-      headers.push(
-        master.fields.find((field: Field) => field.key === key)?.displayName
-      );
+    if (!selectedKeysSet.has(key)) {
+       const field = fieldByKey.get(key);
+       extraHeaders.push(field?.displayName || key);
+       error = true;
     }
-  });
+  }
+
+  if (rows.length <= 1) {
+    throw new Error("File Contains zero rows.");
+  }
 
   if (error) {
-    throw new Error(
-      `File Contains ${headers.join(", ")} which were not selected`
-    );
+    throw new Error(`File Contains ${extraHeaders.join(", ")} which were not selected`);
   }
-
-  // let rowObj:any = {};
-  // let temp = 0;
-  if (data.slice(1).length === 0) {
-    throw new Error(`File Contains zero rows.`);
-  }
-  // data.slice(1).map((row:any)=>{
-
-  //   row.map((value:any)=>{
-  //     const attributeName = headerKeys[temp];
-  //     rowObj[attributeName.toString()] = "" + value;
-  //     temp+=1;
-  //   })
-  //   temp = 0;
-  //   //Replace with empty string if null (for Custom keys)
-  //   Object.keys(rowObj).forEach((key:any)=>{
-  //     if(customKeys.includes(key) && rowObj[key]===null){
-  //       rowObj[key] = ''
-  //     }
-  //   })
-
-  //   const {error,warning} = checkError(rowObj,master,pageType);
-
-  //   if(error !== undefined){
-  //     rowObj.error = error;
-  //   }
-  //   if(warning !== undefined){
-  //     rowObj.warning = warning;
-  //   }
-  //   const doesRowExists = result.find((row:any)=>JSON.stringify(row)===JSON.stringify(rowObj));
-  //   if(doesRowExists){
-  //     throw new Error("Duplicate Rows Found in File");
-  //   }
-  //   result.push(rowObj);
-  //   rowObj={}
-
-  // })
-
-  return result;
-};
+  return [];
+}
 
 export const mapMasterToColumnDefs = (
   fields: Field[],
