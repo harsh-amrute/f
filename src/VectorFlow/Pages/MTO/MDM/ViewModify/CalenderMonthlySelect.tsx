@@ -1,43 +1,4 @@
-import { style } from "@vanilla-extract/css";
-
-export const monthlyWrapper = style({
-  width: "100%",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  gap: "20px",
-  marginBottom: "20px",
-});
-
-export const select = style({
-  width: "100%",
-  padding: "8px",
-  fontSize: "14px",
-  border: "1px solid #ddd",
-  borderRadius: "4px",
-  marginBottom: "20px",
-});
-
-export const selectInline = style({
-  width: "auto",
-  marginBottom: "0px",
-});
-
-export const addButton = style({
-  backgroundColor: "#82104C",
-  color: "white",
-  border: "none",
-  padding: "10px 20px",
-  borderRadius: "4px",
-  cursor: "pointer",
-  fontSize: "14px",
-  fontWeight: "bold",
-  selectors: {
-    "&:hover": {
-      backgroundColor: "#A42C68",
-    },
-  },
-});
+import { addButton, monthlyWrapper, selectCls, selectInline } from "./styles.css";
 
 function CalenderMonthlySelect({
   formData,
@@ -65,7 +26,7 @@ function CalenderMonthlySelect({
       </label>
 
       <select
-        className={`${select} ${selectInline}`}
+        className={`${selectCls} ${selectInline}`}
         value={current.mn}
         onChange={(e) => handleMnOptionsChange(e, id)}
       >
@@ -82,7 +43,7 @@ function CalenderMonthlySelect({
       </select>
 
       <select
-        className={`${select} ${selectInline}`}
+        className={`${selectCls} ${selectInline}`}
         value={current.md}
         onChange={(e) => handleMdOptionsChange(e, id)}
       >

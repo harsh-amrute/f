@@ -1,16 +1,15 @@
 import { ColDef } from "ag-grid-enterprise";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import VFTable from "../../../Common/VFTable";
-import { VFTableWrapper, vfHeightVar } from "./styles.css";
+import { VFTableWrapper } from "./styles.css";
 import {
   gridFilterWrapper,
   textBtn,
 } from "../../../Common/VFPagination/styles.css";
 import { useUserData } from "../../../../../../context";
 import CustomPageSizeInput from "../../../../../../VectorFlow/Pages/MTO/Common/VFPagination/CustomPageSizeInput";
-import { assignInlineVars } from "@vanilla-extract/dynamic";
 
 interface IResizeTableProps {
   colDef: ColDef[];
@@ -34,7 +33,6 @@ const ResizableTable = (props: IResizeTableProps) => {
     columnState,
     userPageSize,
     savePageSize,
-    height,
   } = props;
   const gridRef = props.gridRef;
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
@@ -118,14 +116,7 @@ const ResizableTable = (props: IResizeTableProps) => {
 
 
   return (
-    <div
-      className={VFTableWrapper}
-      style={assignInlineVars({
-        // optional overrides; these default in styles.css.ts if you omit them
-        [vfHeightVar]: height,
-        // [vfZoomMdVar]: disableZoomScaling ? "1" : "0.75",
-      })}
-    >
+    <div className={VFTableWrapper}>
     <VFTable
         ref={gridRef}
         columnDefs={colDef}

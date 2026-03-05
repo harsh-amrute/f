@@ -110,7 +110,7 @@ const STPLAndFullKits = () => {
       const formattedFilters = formatFilterJSON(appliedFilters);
       const body = getBodyForExcelExport({
         headersdata,
-        appliedFilters: formattedFilters,
+        filterData: formattedFilters,
         colDefMap,
       });
       try {

@@ -533,16 +533,16 @@ export const dayBtn = style({
   fontSize: "14px",
   border: "none",
   borderRadius: "4px",
-  background: "white",
+  backgroundColor: "white",
   color: "#333",
   cursor: "pointer",
   marginRight: "4px",
   selectors: { "&:last-child": { marginRight: 0 } },
 });
 
-export const dayBtnSelected = style({
+globalStyle(`${dayBtn}.selected`, {
   background: daySelectedBgVar,
-  color: "#fff",
+  color: "white",
 });
 
 export const footerText = style({
@@ -552,3 +552,41 @@ export const footerText = style({
   marginTop: "-10px",
 });
 
+export const monthlyWrapper = style({
+  width: "100%",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: "20px",
+  marginBottom: "20px",
+});
+
+export const selectCls = style({
+  width: "100%",
+  padding: "8px",
+  fontSize: "14px",
+  border: "1px solid #ddd",
+  borderRadius: "4px",
+  marginBottom: "20px",
+});
+
+export const selectInline = style({
+  width: "auto",
+  marginBottom: "0px",
+});
+
+export const addButton = style({
+  backgroundColor: "#82104C",
+  color: "white",
+  border: "none",
+  padding: "10px 20px",
+  borderRadius: "4px",
+  cursor: "pointer",
+  fontSize: "14px",
+  fontWeight: "bold",
+  selectors: {
+    "&:hover": {
+      backgroundColor: "#A42C68",
+    },
+  },
+});
