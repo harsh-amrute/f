@@ -1414,39 +1414,55 @@ const useViewModify = (pageType: string) => {
   const exportToExcel = async (fromUploadModal?: boolean) => {
     try {
       const currMasterFilters = activeMaster.filters;
-      const payloadFilters = areMasterFiltersValid(currMasterFilters) ? mapStateFiltersToPayload(currMasterFilters) : [];
+      const payloadFilters = areMasterFiltersValid(currMasterFilters)
+        ? mapStateFiltersToPayload(currMasterFilters)
+        : [];
 
       const payloadFields: any = getCurrentVisbileColumns();
 
-      const numberOfPages = Math.ceil(recordCount / chunkSize);
-      const toastId = notifyLoader(`Downloading Data 0 / ${recordCount}`)
-      const rows = [];
-      for (let i = 1; i <= numberOfPages; i++) {
-        const result = await queryFilteredData({ filters: payloadFilters, fields: payloadFields, showAll: false, pagination: true, currentPage: i, rowsPerPage: chunkSize });
-        if (result.data.data === null) throw new Error("Something Went Wrong")
-        rows.push(...result.data.data)
-        if (i === numberOfPages) toast.update(toastId, { render: `Downloading Data ${recordCount} / ${recordCount}` })
-        else toast.update(toastId, { render: `Downloading Data ${i * chunkSize} / ${recordCount}` })
-      }
+      const toastId = notifyLoader("Preparing Excel…");
 
-      dispatch(UPDATE_ROW_DATA(rows));
-      dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-      setDownloadData(true);
+      const result = await queryFilteredDataExcel({
+        filters: payloadFilters,
+        fields: payloadFields,
+        pageType: pageType,
+        Stream: 1,
+      });
+
+      const blob = new Blob(
+        [result.data],
+        {
+          type:
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        }
+      );
+
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "MasterData.xlsx";
+      document.body.appendChild(a);
+      a.click();
+
+      a.remove();
+      window.URL.revokeObjectURL(url);
+
       toast.dismiss(toastId);
+
       if (fromUploadModal) {
         setIsUploadButtonDisabled(false);
-        notifySuccess(`Data Downloaded Successfully`);
-        return
+        notifySuccess("Data Downloaded Successfully");
+        return;
       }
 
-      notifySuccess(`Data Exported Successfully`);
-    } catch (error) {
-      toast.dismiss();
-      notifyError('Something Went Wrong');
+      notifySuccess("Data Exported Successfully");
     }
-
-  }
-  const onClearExportError = (source: string) => {
+    catch (error) {
+      toast.dismiss();
+      notifyError("Something Went Wrong");
+    }
+  };
+    const onClearExportError = (source: string) => {
     const erroneusData: any[] = [];
     const validData: any[] = []
     activeMaster.rowData.forEach((data: any) => {
