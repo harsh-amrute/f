@@ -346,8 +346,8 @@ export const CALENDAR_Add_VALIDATION_SCHEMA = Joi.object({
   }),
 
   plid: Joi.number().messages({
-    "number.base": "Plant cannot be empty!",
-    "any.required": "Plant cannot be empty!",
+    "number.base": "Please select a valid plant from the dropdown!",
+    "any.required": "Please select a valid plant from the dropdown!",
   }),
 
   err: Joi.object({
