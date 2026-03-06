@@ -10,7 +10,9 @@ const dummyprops = {
   onClose:mockFunction,
   setSelectionType:mockFunction,
   rejectButtonLabel:mockFunction,
-  isAllDataVisible:mockFunction
+  isAllDataVisible:mockFunction,
+  isBulkAction:mockFunction
+
 }
 
 describe("RejectAllModal Component", () => {

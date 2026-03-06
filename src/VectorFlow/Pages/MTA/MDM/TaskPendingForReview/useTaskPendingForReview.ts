@@ -99,7 +99,6 @@ useEffect(() => {
         dispatch(SET_RECORD_COUNT(0))
         setSelectedRows(0)
         setCurrentPage(1)
-        setIsBulkAction(false)
     }
 
     const handleBulkAction = async(taskData:TaskDataType)=>{
@@ -109,6 +108,7 @@ useEffect(() => {
         await handleOnClick1(taskData);
         }
         else{
+            setIsBulkAction(false);
             await handleOnClick(taskData)
         }
     }

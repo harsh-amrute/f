@@ -144,11 +144,11 @@ const TaskPendingForReview = ()=>{
                 />
                 {
                     showApproveAllModal && 
-                        <ApproveAllModal onSuccess={() => isBulkAction === true ? onSelectionTypeSuccess1('Approved') : onSelectionTypeSuccess('Approved')} onClose={()=>toggleApproveAllModal(false)} setSelectionType={setSelectionType} isAllDataVisible={isAllDataVisible} approveButtonLabel={approveButtonLabel}/>
+                        <ApproveAllModal onSuccess={() => isBulkAction === true ? onSelectionTypeSuccess1('Approved') : onSelectionTypeSuccess('Approved')} onClose={()=>toggleApproveAllModal(false)} setSelectionType={setSelectionType} isAllDataVisible={isAllDataVisible} approveButtonLabel={approveButtonLabel} isBulkAction={isBulkAction}/>
                 }
                 {
                     showRejectAllModal && 
-                        <RejectAllModal onSuccess={()=> isBulkAction === true ? onSelectionTypeSuccess1('Rejected') : onSelectionTypeSuccess('Rejected')} onClose={()=>toggleRejectAllModal(false)} setSelectionType={setSelectionType} isAllDataVisible={isAllDataVisible} rejectButtonLabel={rejectButtonLabel}/>
+                        <RejectAllModal onSuccess={()=> isBulkAction === true ? onSelectionTypeSuccess1('Rejected') : onSelectionTypeSuccess('Rejected')} onClose={()=>toggleRejectAllModal(false)} setSelectionType={setSelectionType} isAllDataVisible={isAllDataVisible} rejectButtonLabel={rejectButtonLabel} isBulkAction={isBulkAction}/>
                 }
                 <TaskPendingTaskBar
                     isSideBarOpen={isSideBarOpen}
