@@ -4,7 +4,6 @@ import { tag, textWrapper } from './TagCellRenderer/styles.css';
 
 export default (props: CustomTooltipProps & { color: string }) => {
 
-    console.log(props.value, 'CUSTOM');
     const allTags = OTIFTags[props.value].split('_');
     const tags: string[] = [];
     console.log(allTags);
