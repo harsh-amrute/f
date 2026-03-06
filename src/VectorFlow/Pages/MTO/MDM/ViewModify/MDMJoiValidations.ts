@@ -300,19 +300,8 @@ export const CALENDAR_VALIDATION_SCHEMA = Joi.object({
 });
 
 export const CALENDAR_Add_VALIDATION_SCHEMA = Joi.object({
-  dow: Joi.any(),
-
-  plnm: Joi.string().required().optional().messages({
-    "string.base": "Plant name cannot be empty!",
-    "any.required": "Plant name cannot be empty!",
-    "string.empty": "Plant name cannot be empty!",
-  }),
-
-  rb: Joi.any(),
 
   hid: Joi.any().optional(),
-
-  rd : Joi.any(),
 
   ccr: Joi.string().required().optional().messages({
     "string.base": "CCR cannot be empty!",
@@ -320,7 +309,11 @@ export const CALENDAR_Add_VALIDATION_SCHEMA = Joi.object({
     "any.required": "CCR cannot be empty!",
   }),
   
-  ccr_id: Joi.any(),
+  ccr_id: Joi.number().required().messages({
+    "number.base": "CCR cannot be empty!",
+    "number.empty": "CCR cannot be empty!",
+    "any.required": "CCR cannot be empty!",
+  }),
  
   dsc: Joi.string().required().max(100).messages({
     "string.base": "Title cannot be empty!",
@@ -352,21 +345,15 @@ export const CALENDAR_Add_VALIDATION_SCHEMA = Joi.object({
 
   }),
 
-  plid: Joi.number().allow(null).optional().messages({
-    "number.base": "Plant Id cannot be empty!",
-    "any.required": "Plant Id cannot be empty!",
+  plid: Joi.number().messages({
+    "number.base": "Plant cannot be empty!",
+    "any.required": "Plant cannot be empty!",
   }),
 
   err: Joi.object({
     error: Joi.string().allow("").optional(),
     warning: Joi.string().allow("").optional(),
   }),
-
-  ia: Joi.boolean().default(false).optional(),
-  iu: Joi.boolean().default(false).optional(),
-  id: Joi.boolean().default(false).optional(),
-  rid: Joi.any(),
-  did: Joi.any(),
 
 });
 

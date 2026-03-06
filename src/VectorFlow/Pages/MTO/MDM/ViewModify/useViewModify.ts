@@ -340,7 +340,7 @@ const useViewModify = (pageType: string) => {
   const [ccrGroupMaster, setCCRGroupMaster] = useState<any>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [plantNames, setPlantNames] =  useState<any>([]);
-  const [ccrNames, setCCRNames]= useState([]);
+  const [ccrNames, setCCRNames] = useState<any>([]);
   const [selectedData, setSelectedData] = useState<any>({});
   const location = useLocation();
   const prevPath: string | undefined  = location?.state?.backUrl.split('/').pop();
@@ -348,10 +348,14 @@ const useViewModify = (pageType: string) => {
   const navigate = useNavigate()
   const saveDraft = "saved-drafts"
   // adding all ccrName in ccr_names array
-  const ccr_names :string[] = []
-  for(const ccr of ccrsData){
-    ccr_names.push(ccr.cnm)
-  }
+  const ccr_names = useMemo(()=>{
+    const ccrnms = [];
+    for(const ccr of ccrsData){
+      ccrnms.push(ccr.cnm)
+    }
+    return ccrnms
+  },[])
+
   const [calendarFormData, setCalendarFormData] = useState({});
   const CCRGroupMaterSetRef = useRef<Set<string>>(new Set());
   const [isDisabled, setIsDisabled] = useState(true);
@@ -458,12 +462,20 @@ const useViewModify = (pageType: string) => {
       getDeptMasterData();
       getCCRGroupMasterData();
     }
-    else if(activeMaster.id===504){
-      getCCRGroupMasterData();
-
-    }
     getInitialData();
   }, [activeMaster.id]);
+
+  const plantCrrMapfn = ()=>{
+    const map: any = {};
+    
+    for(const ccr of ccrNames){
+      if(!map[ccr.plant]){
+        map[ccr.plant] = []
+      }
+      map[ccr.plant].push({value: ccr.ccr_id, label: ccr.ccr_name})
+    }
+    return map;
+  }
 
   const getUpdatedColDefs = ({
     colDefs,
@@ -480,7 +492,7 @@ const useViewModify = (pageType: string) => {
   
     const commonStyle = (params: any) => {
       const { data } = params;
-      if (params?.colDef?.colId !== "actions" && data?.isdel) { 
+      if (params?.colDef?.colId && !params?.colDef?.colId?.toLowerCase()?.includes("action") && data?.id) { 
         return {
           filter: "blur(1px)",
           opacity: 0.6,
@@ -493,7 +505,7 @@ const useViewModify = (pageType: string) => {
       return {};
     };
   
-    const newColDef =  clonedColDef.map((col: any) => {
+    const newColDef :any =  clonedColDef.map((col: any) => {
       const baseCol = { ...col };
   
       // 🔹 Common: Disable editing on 'actions' and 'iv'
@@ -528,6 +540,7 @@ const useViewModify = (pageType: string) => {
         pl: plantMaster?.map((i: any) => i.plant_id),
         plnm: plantMaster?.map((i: any) => i.plant_name),
         pid: plantMaster?.map((i: any) => i.plant_id),
+        plid: plantMaster?.map((i: any) => i.plant_id),
         dp: deptMaster?.map((i: any) => i.dept_id),
         cgid: Object.keys(ccrGroupMaster || {}),
         ccrId: ccr_names,
@@ -549,17 +562,38 @@ const useViewModify = (pageType: string) => {
           cellStyle: commonStyle,
         };
       }
-  
-      if (["pl", "plnm", "pid", "dp", "cgid", "ccrId"].includes(col.field)) {
+      if (["pl", "plnm", "pid", "plid", "dp", "cgid", "ccrId", "ccr_id"].includes(col.field)) {
         return {
           ...baseCol,
           editable,
           cellEditor: "agRichSelectCellEditor",
-          cellEditorParams: {
-            values: dropdowns[col.field],
-            formatValue: (id: any) => myCCRFormatter(id, col.field, true),
+          cellEditorParams: (params: any) => {
+            if (activeMaster.id === 504 && col.field === "ccr_id") {
+              const plantCrrMap : any = plantCrrMapfn();
+              const plantId = params.data?.plid;
+              const ccrList = plantCrrMap[plantId] || [];
+              return {
+                values: ccrList.map((ccr: any) => ccr.value),
+      
+                formatValue: (id: any) => {
+                  const match = ccrList.find((c: any) => c.value === id);
+                  return match ? match.label : "";
+                }
+              };
+            }
+      
+            return {
+              values: dropdowns[col.field],
+              formatValue: (id: any) => myCCRFormatter(id, col.field, true),
+            };
           },
           valueGetter: myCCRFormatter,
+          valueFormatter: (params: any) => {
+            if (activeMaster.id === 504 && col.field === "ccr_id" && pageType === "add") {
+              return ccrNames.find((ccr: any) => ccr.ccr_id == params?.data?.ccr_id)?.ccr_name || params.value;
+            }
+            return params.value;
+          },
           cellStyle: commonStyle,
         };
       }
@@ -606,6 +640,7 @@ const useViewModify = (pageType: string) => {
             const date = new Date(params.value);
             return date.toLocaleDateString("en-CA");
           },
+          cellStyle: commonStyle
         };
       }
   
@@ -631,21 +666,14 @@ const useViewModify = (pageType: string) => {
       }
   
       if (activeMaster.id === 504) {
-        return {
+       return {
           ...baseCol,
           editable,
-          cellStyle: (params: any) => {
-            const d = params.data;
-            if (d?.id)
-              return {
-                filter: "blur(1px)",
-                opacity: 0.4,
-                transition: "all 0.3s ease-in-out",
-                backgroundColor: "#f0f0f0",
-              };
-            if (d?.iu || d?.ia) return { color: "rgb(173, 5, 89)" };
-            return {};
-          },
+          cellRenderer: ['dow'].includes(col.field) ? DaysOfWeekRenderer : baseCol?.cellRenderer ,
+          valueFormatter : ['ccr_id'].includes(col.field) ? (params:any) => {
+            return getCCRNamesFromId(ccrsData,params?.data?.ccr_id)
+          } : baseCol?.valueFormatter,
+          cellStyle: commonStyle
         };
       }
   
@@ -656,6 +684,26 @@ const useViewModify = (pageType: string) => {
         cellStyle: commonStyle,
       };
     });
+    if (activeMaster.id === 504 && pageType !== 'add') {
+      if (!newColDef.some((col: ColDef) => col.headerName === "Action")) {
+        const actionColDef = {
+          colId: "Action",
+          headerName: "Action",
+          cellRenderer: MTOCalendarEditCellRenderer,
+          cellRendererParams: {
+            handleOpenClick: (index: number, data: any) => {
+              setIsModalOpen(true);
+              setCalendarFormData(data);
+            },
+            onDeleteUndoHandler,
+            onDeleteHandler,
+          },
+          filter: false,
+          pinned: "left",
+        };
+        newColDef.unshift(actionColDef);
+      }
+    }
 
     return newColDef;
   };
@@ -665,7 +713,7 @@ const useViewModify = (pageType: string) => {
   
     if (
       (activeMaster.id === 501 && bufferTypeData) ||
-      (activeMaster.id === 502 && ccrGroupMaster && plantMaster && deptMaster)
+      (activeMaster.id === 502 && ccrGroupMaster && plantMaster && deptMaster) || activeMaster.id === 504
     ) {
       const newColDef = getUpdatedColDefs({
         colDefs: activeMaster.colDefs,
@@ -679,17 +727,15 @@ const useViewModify = (pageType: string) => {
         prevPath,
         saveDraft,
       });
-  
       if (!newColDef.find((col: any) => col.colId === "actions") && prevPath === saveDraft && pageType === "modify") {
         
         dispatch(UPDATE_COLDEFS([actionsCol(false), ...newColDef]));
 
       } else {
-
         dispatch(UPDATE_COLDEFS([...newColDef]));
       }
     }
-  }, [activeMaster.id, activeMaster.rowData, bufferTypeData, plantMaster, deptMaster, ccrGroupMaster]);
+  }, [activeMaster.id, activeMaster.rowData, bufferTypeData, plantMaster, deptMaster, ccrGroupMaster,  ccr_names]);
   
   
   // useEffect(() => {
@@ -872,17 +918,18 @@ const useViewModify = (pageType: string) => {
       try {
         const { data } = await MTOMasterUIConfiguration();
         if(pageType==='add'){
-          setAllMasterState(mapMasterToMasterState(data.data).map((e: any) => {
+          const config = mapMasterToMasterState(data.data).map((e: any) => {
             if (e.id === 501 || e.id === 502) {
               e.fields = e.fields.filter((field: any) => field.key !== "iv");
               e.colDefs = e.colDefs.filter((col: any) => col.colId !== "iv");
             }
             if (e.id === 504) {
-              e.fields = e.fields.filter((field: any) => field.key !== "dow");
-              e.colDefs = e.colDefs.filter((col: any) => col.colId !== "dow");
+              e.fields = e.fields.filter((field: any) => field.key !== "dow" && field.key !== "plnm" && field.key !== "rb" && field.key !== "rd");
+              e.colDefs = e.colDefs.filter((col: any) => col.colId !== "dow" && col.colId !== "plnm" && col.colId !== "rb" && col.colId !== "rd");
             }
             return e;
-            }))
+            });
+          setAllMasterState(config)
         }
         else{
           setAllMasterState(mapMasterToMasterState(data.data));
@@ -1024,9 +1071,18 @@ const useViewModify = (pageType: string) => {
 
       allRows.forEach((e:any)=>{
         const newVal = _.cloneDeep(e);
+        const palntNameToId = plantNames.find((plant:any)=> plant.plant_name === e.plid || plant.plant_id === e.plid)?.plant_id
+        const plantCrrMap = plantCrrMapfn();
+        const isValidCCRForPlant = plantCrrMap[palntNameToId]?.some((ccr:any)=> ccr.value === e.ccr_id)
 
         const {error} = CALENDAR_Add_VALIDATION_SCHEMA.validate(e,{abortEarly:false})
-
+        
+        if(!isValidCCRForPlant){
+          newVal.err = {
+            error: "Please select a valid CCR for the selected plant!",
+            warning: "",
+          };
+        }
         if(error){
           const fieldOrders = activeMaster.fields.map(field =>field.key)
 
@@ -1039,12 +1095,9 @@ const useViewModify = (pageType: string) => {
             warning: ""
           }
 
-          newData.push(newVal)
-
-        }else{
-
-          newData.push(newVal)
         }
+
+        newData.push(newVal)
       })
 
       dispatch(UPDATE_ROW_DATA(newData));
@@ -1202,9 +1255,13 @@ const useViewModify = (pageType: string) => {
       //   return;
       // }
       if (pageType === "add") {
+        if(activeMaster.id === 504 && field === "plid"){
+          newRow.ccr_id = null; 
+
+        }
         const newRowData = _.cloneDeep(
           activeMaster.rowData.map((row: any) => {
-            if (JSON.stringify(row) === JSON.stringify(data)) {
+            if (row.hid === data.hid) {
               return newRow;
             }
             return row;
@@ -1513,7 +1570,6 @@ const useViewModify = (pageType: string) => {
         const rowData = _.cloneDeep(activeMaster.rowData || []);
         let newData = _.cloneDeep(selectedData);
         const {error} = CALENDAR_VALIDATION_SCHEMA.validate(selectedData,{abortEarly:false})
-
         if(error){
           const fieldOrders = activeMaster.colDefs.filter((item:any)=> item.headerName !== "Action").map((item:any)=> item.field);
 
@@ -1977,6 +2033,21 @@ const useViewModify = (pageType: string) => {
           const match = bufferTypeData.find((bufferTypeData: any) => bufferTypeData.nm === bufferType.bt);
           if (match) {
             bufferType.bt = match.id;
+          }
+        });
+      }
+
+      if(activeMaster.id === 504){
+        buffData.forEach((calendar: any) => {
+          const ccrFound = ccrNames.find((ccr: any) => ccr.ccr_name === calendar.ccr_id);
+          const plantFound = plantMaster.find((plant: any) => plant.plant_name === calendar.plid);
+          calendar.hid = uuidv4()
+          if (ccrFound) {
+            calendar.ccr_id = ccrFound.ccr_id;
+          }
+
+          if(plantFound){
+            calendar.plid = plantFound.plant_id;
           }
         });
       }
@@ -3073,7 +3144,7 @@ const useViewModify = (pageType: string) => {
     const currDropdownValue = isValue ? params : params?.data?.[colId];
     let val = currDropdownValue;
   
-    if ((colId === "pl" || colId === "plnm") && plantMaster) {
+    if ((colId === "pl" || colId === "plnm" || colId === "plid") && plantMaster) {
       const plant = plantMaster.find(
         (ele: any) => ele?.plant_id?.toString() === currDropdownValue?.toString()
       );
@@ -3088,11 +3159,17 @@ const useViewModify = (pageType: string) => {
         val = department.dept_name;
       }
     } else if (colId === "cgid" && ccrGroupMaster) {
-      val = getCCRGroupKeyById(ccrGroupMaster, currDropdownValue) || currDropdownValue;
+      if(colId === "ccr_id" && activeMaster.id === 504 && pageType === "add"){
+        val = ccrNames.find((ccr: any) => ccr.ccr_id.toString() === currDropdownValue?.toString())?.ccr_id || currDropdownValue;
+      }else{
+
+        val = getCCRGroupKeyById(ccrGroupMaster, currDropdownValue) || currDropdownValue;
+      }
     }
   
     return val;
   }
+  
 
   const getDropDown = (colField: any) => {
     if (colField === "pl" || colField === "plnm") {
@@ -3499,24 +3576,15 @@ const useViewModify = (pageType: string) => {
 
   const AddCalendarModifyData = (data: any) => {
     data?.forEach((el:any)=>{
-      if(!Array.isArray(el.ccr_id) && !el.hid && !el.plid){
-        const ccrIdAndPlantIdFromName = ccrsData.find((ccr: any) => ccr.cnm.toLowerCase().trim() === el.ccr_id.toLowerCase().trim());
-        if(ccrIdAndPlantIdFromName){
-          el.ccr_id = [ccrIdAndPlantIdFromName.cid];
-          el.plid = ccrIdAndPlantIdFromName.plant;
+          el.ccr_id = [el.ccr_id];
           el.hid = null;
           el.rd = null;
           el.rb = '';
           el.sd = moment(el.sd).format('YYYY-MM-DD');
           el.ed = moment(el.ed).format('YYYY-MM-DD');
-          el.dow = []
-          el.iu = false
-          el.id = false
-        }else{
-          throw new Error("CCR || Plant name is not valid");
-        }
-      
-      }
+          el.dow = [];
+          el.iu = false;
+          el.id = false;
     })
     return data
   }
