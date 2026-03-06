@@ -5,7 +5,7 @@ import { MDMMasterState,Field } from '../../../../../VectorFlow/types/MDM';
 import { UPDATE_ACTIVE_MASTER,RESET_STATE, REMOVE_MASTER, ADD_MASTER,SET_RECORD_COUNT,TOGGLE_SELECT_MASTER_SCREEN,UPDATE_PROGRESS_STATE,UPDATE_COLDEFS,FILL_MASTERS, TOGGLE_UPLOAD_MODAL, UPDATE_ROW_DATA, SYNC_ACTIVE_MASTER_TO_MASTER, REMOVE_COLDEFS,ADD_COLDEFS,SET_DRAFT_ID } from '../../../../../redux/actions/MDM';
 import { useNavigate } from "react-router";
 import { ColDef } from 'ag-grid-enterprise';
-import { useDeleteMasterData ,useDeleteTask,useDeleteDraft,useDeleteMasterDataRetail} from '../../../../..//VectorFlow/Services/MTA/MDM';
+import { useDeleteMasterData ,useDeleteTask,useDeleteDraft,useDeleteMasterDataRetail, useBulkDeleteMasterData} from '../../../../..//VectorFlow/Services/MTA/MDM';
 import {createErrorRowData } from '../../../../../helpers/utils';
 
 import _ from 'lodash';
@@ -24,6 +24,7 @@ const useDelete=()=>{
     const navigate = useNavigate();
 
     const {mutateAsync:deleteMasterData} = useDeleteMasterData()
+    const {mutateAsync:bulkdeleteMasterData} = useBulkDeleteMasterData()
 
     const {mutateAsync:deleteMasterDataRetail} = useDeleteMasterDataRetail()
 
@@ -258,7 +259,12 @@ const useDelete=()=>{
                 data = await deleteMasterDataRetail(payload);
               }
               else{
-                data = await deleteMasterData(payload);
+                if(activeMaster.id === 1 || activeMaster.id === 2 || activeMaster.id === 3){
+                  data = await bulkdeleteMasterData(payload);
+                }
+                else{
+                  data = await deleteMasterData(payload);
+                }
                 if (data.status !== 200) {
                   throw new Error(`Request failed with status`);
                }

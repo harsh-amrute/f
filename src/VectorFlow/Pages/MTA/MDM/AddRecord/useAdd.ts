@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { notifyError,notifyLoader,notifySuccess } from '../../../../../helpers/notify';
 import _ from 'lodash';
 import { toast } from "react-toastify/unstyled";
-import { useAddMasterData,useDeleteTask,useDeleteDraft,useAddMasterDataRetail } from '../../../../../VectorFlow/Services/MTA/MDM';
+import { useAddMasterData,useDeleteTask,useDeleteDraft,useAddMasterDataRetail, useBulkAddMasterData } from '../../../../../VectorFlow/Services/MTA/MDM';
 import { createErrorRowData} from '../../../../../helpers/utils'
 import { ColDef } from 'ag-grid-enterprise';
 
@@ -28,6 +28,7 @@ const useAdd=()=>{
     const draftID = useSelector((state:RootState) => state.mdm.draftId);
 
     const {mutateAsync:addMaster} = useAddMasterData();
+    const {mutateAsync:bulkaddMaster} = useBulkAddMasterData();
 
     const {mutateAsync:addMasterRetail} = useAddMasterDataRetail()
 
@@ -211,7 +212,12 @@ const useAdd=()=>{
                 data = await addMasterRetail(payload);
               }
               else{
-                data = await addMaster(payload);
+                if(activeMaster.id === 1 || activeMaster.id === 2 || activeMaster.id === 3){
+                  data = await bulkaddMaster(payload);
+                }
+                else{
+                  data = await addMaster(payload);
+                }
               }
 
               if(taskId === '' && i!==0) throw new Error("Something Went Wrong");

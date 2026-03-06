@@ -40,6 +40,7 @@ import {
   useGetRetailCount,
   useGetMasterDataRetail,
   useGetUploadProgress,
+  useBulkModifyMasterData,
 } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -216,6 +217,8 @@ const useViewModify = (pageType: string) => {
   const { mutateAsync: deleteDraft } = useDeleteDraft();
 
   const { mutateAsync: modifyMaster } = useModifyMasterData();
+  const {mutateAsync:bulkmodifyMaster} = useBulkModifyMasterData();
+
 
   const { mutateAsync: modifyMasterRetail } = useModifyMasterDataRetail();
 
@@ -1653,7 +1656,12 @@ const useViewModify = (pageType: string) => {
         if (activeMaster.id > 14) {
           data = await modifyMasterRetail(payload);
         } else {
-          data = await modifyMaster(payload);
+          if(activeMaster.id === 1 || activeMaster.id === 2 || activeMaster.id ===3){
+            data = await bulkmodifyMaster(payload);
+          }
+          else{
+            data = await modifyMaster(payload);
+          }
           if (data.status !== 200) {
             throw new Error(`Request failed with status`);
           }

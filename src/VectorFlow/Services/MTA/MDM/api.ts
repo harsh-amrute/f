@@ -129,8 +129,14 @@ export namespace MDMService {
   }
 
 
-  export const modifyMasterData = async(body:any)=>{
-    return await axios.post(process.env.REACT_APP_API_HOST + 'api/mta/BulkModifyMasterData',{...body,"forwardUsers":true},{
+  export const modifyMasterData = async (body: any) => {
+    return await axios.post(process.env.REACT_APP_API_HOST + 'api/mta/ModifyMasterData', { ...body, "forwardUsers": true }, {
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
+  export const bulkmodifyMasterData = async (body: any) => {
+    return await axios.post(process.env.REACT_APP_API_HOST + 'api/mta/BulkModifyMasterData', { ...body, "forwardUsers": true }, {
       headers: { 'Content-Type': 'application/json' }
     })
   }
@@ -142,6 +148,12 @@ export namespace MDMService {
   }
 
   export const addMasterData = async(body:any)=>{
+    return await axios.post(process.env.REACT_APP_API_HOST + 'api/mta/AddMasterData',{...body,"forwardUsers":true},{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
+  export const bulkaddMasterData = async(body:any)=>{
     return await axios.post(process.env.REACT_APP_API_HOST + 'api/mta/BulkAddMasterData',{...body,"forwardUsers":true},{
       headers: { 'Content-Type': 'application/json' }
     })
@@ -154,6 +166,12 @@ export namespace MDMService {
   }
 
   export const deleteMasterData = async(body:any)=>{
+    return await axios.post(process.env.REACT_APP_API_HOST + 'api/mta/RemoveMasterData',{...body,"forwardUsers":true},{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
+    export const bulkdeleteMasterData = async(body:any)=>{
     return await axios.post(process.env.REACT_APP_API_HOST + 'api/mta/BulkRemoveMasterData',{...body,"forwardUsers":true},{
       headers: { 'Content-Type': 'application/json' }
     })

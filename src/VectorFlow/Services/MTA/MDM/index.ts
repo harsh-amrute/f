@@ -194,6 +194,12 @@ export const useModifyMasterData = () => {
   })
 }
 
+export const useBulkModifyMasterData = () => {
+  return useMutation(async (body: any) => {
+    return await MDMService.bulkmodifyMasterData(body)
+  })
+}
+
 export const useModifyMasterDataRetail = () => {
   return useMutation(async (body: any) => {
     return await MDMService.modifyMasterDataRetail(body)
@@ -206,6 +212,12 @@ export const useAddMasterData = () => {
   })
 }
 
+export const useBulkAddMasterData = () => {
+  return useMutation(async (body: any) => {
+    return await MDMService.bulkaddMasterData(body)
+  })
+}
+
 export const useAddMasterDataRetail = () => {
   return useMutation(async (body: any) => {
     return await MDMService.addMasterDataRetail(body)
@@ -215,6 +227,12 @@ export const useAddMasterDataRetail = () => {
 export const useDeleteMasterData = () => {
   return useMutation(async (body: any) => {
     return await MDMService.deleteMasterData(body)
+  })
+}
+
+export const useBulkDeleteMasterData = () => {
+  return useMutation(async (body: any) => {
+    return await MDMService.bulkdeleteMasterData(body)
   })
 }
 
