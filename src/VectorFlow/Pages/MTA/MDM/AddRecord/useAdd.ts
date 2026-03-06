@@ -212,7 +212,7 @@ const useAdd=()=>{
                 data = await addMasterRetail(payload);
               }
               else{
-                if(activeMaster.id === 1 || activeMaster.id === 2 || activeMaster.id === 3){
+                if(activeMaster.id == 1 || activeMaster.id == 2 || activeMaster.id == 3){
                   data = await bulkaddMaster(payload);
                 }
                 else{

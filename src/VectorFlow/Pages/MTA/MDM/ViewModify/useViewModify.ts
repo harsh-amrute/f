@@ -1656,7 +1656,7 @@ const useViewModify = (pageType: string) => {
         if (activeMaster.id > 14) {
           data = await modifyMasterRetail(payload);
         } else {
-          if(activeMaster.id === 1 || activeMaster.id === 2 || activeMaster.id ===3){
+          if(activeMaster.id == 1 || activeMaster.id == 2 || activeMaster.id ==3){
             data = await bulkmodifyMaster(payload);
           }
           else{
