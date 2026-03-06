@@ -37,7 +37,10 @@ const TaskPendingForReview = ()=>{
         noDataMessage,
         handleChangePage,
         chunkSize,
-        currentPage
+        currentPage,
+        onSelectionTypeSuccess1,
+        handleChangePage1,
+        isBulkAction
     } = useTaskPendingForReview()
 
     const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
@@ -134,18 +137,18 @@ const TaskPendingForReview = ()=>{
                     totalRows={recordCount}
                     currentPage={currentPage}
                     rowsPerPage={chunkSize}
-                    handleChangePage={handleChangePage}
+                    handleChangePage={isBulkAction ? handleChangePage1  :handleChangePage}
                     showPagination={true}
                     showTotalItems={true}
     
                 />
                 {
                     showApproveAllModal && 
-                        <ApproveAllModal onSuccess={()=>onSelectionTypeSuccess('Approved')} onClose={()=>toggleApproveAllModal(false)} setSelectionType={setSelectionType} isAllDataVisible={isAllDataVisible} approveButtonLabel={approveButtonLabel}/>
+                        <ApproveAllModal onSuccess={() => isBulkAction === true ? onSelectionTypeSuccess1('Approved') : onSelectionTypeSuccess('Approved')} onClose={()=>toggleApproveAllModal(false)} setSelectionType={setSelectionType} isAllDataVisible={isAllDataVisible} approveButtonLabel={approveButtonLabel}/>
                 }
                 {
                     showRejectAllModal && 
-                        <RejectAllModal onSuccess={()=>onSelectionTypeSuccess('Rejected')} onClose={()=>toggleRejectAllModal(false)} setSelectionType={setSelectionType} isAllDataVisible={isAllDataVisible} rejectButtonLabel={rejectButtonLabel}/>
+                        <RejectAllModal onSuccess={()=> isBulkAction === true ? onSelectionTypeSuccess1('Rejected') : onSelectionTypeSuccess('Rejected')} onClose={()=>toggleRejectAllModal(false)} setSelectionType={setSelectionType} isAllDataVisible={isAllDataVisible} rejectButtonLabel={rejectButtonLabel}/>
                 }
                 <TaskPendingTaskBar
                     isSideBarOpen={isSideBarOpen}

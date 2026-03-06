@@ -59,6 +59,7 @@ const useTaskPendingForReview = ()=>{
     const EnvConfig = useSelector((state: RootState) => state.mta.EnvConfig);
     const TASKPENDINGFORREVIEW_PAGE = EnvConfig['TASKPENDINGFORREVIEW_PAGE'];
     const chunkSize = TASKPENDINGFORREVIEW_PAGE
+    const [isBulkAction , setIsBulkAction] = useState<boolean>(false);
 
     useEffect(() => {
         if (!isViewTableOpen && ref.current?.api && detailTableRowData?.length > 0) {
@@ -97,7 +98,21 @@ useEffect(() => {
         setTaskActionType(0)
         dispatch(SET_RECORD_COUNT(0))
         setSelectedRows(0)
+        setCurrentPage(1)
+        setIsBulkAction(false)
     }
+
+    const handleBulkAction = async(taskData:TaskDataType)=>{
+        const arr = ['Modify-SkuLocationMaster' , 'Modify-LocationMaster' ,'Modify-SKUMaster' , 'Add-SkuLocationMaster' , 'Add-LocationMaster' ,'Add-SKUMaster' ,'Remove-SkuLocationMaster' , 'Remove-LocationMaster' , 'Remove-SKUMaster']
+        if (arr.includes(taskData.TaskName)) {
+        setIsBulkAction(true);
+        await handleOnClick1(taskData);
+        }
+        else{
+            await handleOnClick(taskData)
+        }
+    }
+
 
     const handleOnClick = async(taskData:TaskDataType)=>{
         let toastId;
@@ -110,6 +125,106 @@ useEffect(() => {
             
             const tempToastId = notifyLoader('Loading Data')
             const res:any = await getTaskCount(taskData.TaskID);
+            const taskCount = JSON.parse(res.data.recordCount)[0].recordcount;
+            dispatch(SET_RECORD_COUNT(taskCount));
+         
+            let taskDataStore:any = [];
+            const payload = {
+                taskId:taskData.TaskID,
+                paginationParameter:{
+                    pageNumber:1,
+                    recordsPerPage:chunkSize
+                }
+            }
+            toast.dismiss(tempToastId)
+            toastId = notifyLoader(`Downloading Data 0 / ${taskCount}`)
+
+            if(taskCount <= chunkSize){
+                const result = await getTaskDetails(payload);
+                taskDataStore = result.data.data;
+            }
+            else{
+                const numberOfPages = Math.ceil(taskCount/chunkSize);
+                for(let i=1; i<=numberOfPages; i++){
+                    payload.paginationParameter.pageNumber = i;
+                    const result = await getTaskDetails(payload)
+                    if(i===1){
+                        taskDataStore.push(...result.data.data);
+                    }
+                    console.log(result.data.data)
+                    if(i!==1)  taskDataStore[0].data.push(...result.data.data[0].data);
+                    if(i===numberOfPages) toast.update(toastId,{render:`Downloading Data ${taskCount} / ${taskCount}`})
+                    else toast.update(toastId,{render:`Downloading Data ${i*chunkSize} / ${taskCount}`})
+                }
+            }
+            // const response = await getTaskDetails(payload)
+            toast.dismiss(toastId);
+            
+            if (taskDataStore[0].data?.length != undefined) {
+                // Proceed with setting columns and row data
+                const currentTaskMaster = taskDataStore[0];
+                const currentTaskMasterId: number = currentTaskMaster.MasterId;
+                setCurrMasterId(currentTaskMasterId);
+                // ...existing code for processing data
+                setNoDataMessage(''); // Clear message if we have data
+                
+                    const uiConfigurationResponse = await getMasterUIConfiguration(getActionName(taskData.Actiontype).value)
+                    
+                    const masters:Master[] = uiConfigurationResponse.data.data
+                    const currentMasterFields = masters.find((master:Master)=>master.id==currentTaskMasterId)?.fields
+                    if(currentMasterFields){
+                        // console.log(currentTaskMaster.data[0].new)
+                        const existingColumns = getExistingColumns(
+                            currentTaskMaster.data?
+                            (taskData.Actiontype === 2 && currentTaskMasterId !== 6 && currentTaskMasterId !== 10) || (currentTaskMasterId === 13)
+                            ? JSON.parse(currentTaskMaster?.data[0].new)
+                            : currentTaskMaster?.data[0]:[]
+                        );
+                                       
+                        let existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields);
+                        if(taskData.Actiontype === 3){
+                            existingColumnFields = existingColumnFields.filter(field => field?.isDelete);
+                        }
+                        // setDetailTableColDefs(mapMasterToColumnGroupDefs(existingColumnFields,currentTaskMasterId,themeUi,getActionName(taskData.Actiontype).value,toggleApproveAllModal,toggleRejectAllModal,actionStatus,isDisabled))
+                        setColGenArgs({
+                            existingColumnFields: existingColumnFields,
+                            currentTaskMasterId: currentTaskMasterId,
+                            taskActionTypeValue: getActionName(taskData.Actiontype).value
+                        });
+                        setDetailTableRowData(mapNewAndOldMasterRowDataToCustomRowData(currentTaskMaster.data,existingColumnFields,getActionName(taskData.Actiontype).value,currentTaskMasterId))
+                        // dispatch(SET_RECORD_COUNT(currentTaskMaster.data.length));
+                    }
+            } else {
+                // No data case
+                setNoDataMessage('No Data To Approve.');
+            }
+            
+
+            notifySuccess("Task Details Fetched Successfully");
+            setIsViewTableOpen(false)
+            
+        } catch (error) {
+            toast.dismiss();
+            console.log(error)
+            notifyError("Something Went Wrong");
+            
+        }
+        
+    }
+
+
+    const handleOnClick1 = async(taskData:TaskDataType)=>{
+        let toastId;
+        try {
+            resetState()
+            
+            setTaskId(taskData.TaskID)
+            
+            setTaskActionType(taskData.Actiontype)
+            
+            const tempToastId = notifyLoader('Loading Data')
+            const res:any = await getTaskCount(taskData.TaskID);
+
 
             const taskCount = JSON.parse(res.data.recordCount)[0].recordcount;
             dispatch(SET_RECORD_COUNT(taskCount));
@@ -176,7 +291,12 @@ useEffect(() => {
         
     }
 
-    const handleChangePage = async (pageNo:number) => {
+    const handleChangePage = async (pageNo:any) => {
+        setCurrentPage(pageNo);
+        ref.current?.api.paginationGoToPage(pageNo);
+    }
+
+    const handleChangePage1 = async (pageNo:number) => {
         let toastId;
         try {
             setCurrentPage(pageNo);
@@ -300,6 +420,68 @@ useEffect(() => {
     }
 
     const onSelectionTypeSuccess = (status: string,) => {
+        const pageSize:any = ref.current?.api.paginationGetPageSize()
+        const currentPage:any = ref.current?.api.paginationGetCurrentPage()
+        const filteredData:any = []
+        ref.current?.api.forEachNodeAfterFilter((n) => {
+            filteredData.push(n.id)
+        })
+        const startIndex = currentPage * pageSize
+        const endIndex = startIndex + pageSize
+
+        const pageData = filteredData.slice(startIndex, endIndex);
+        
+    
+        switch (selectionType){
+            case 'All':
+                 ref.current?.api.forEachNode((rowNode)=>{
+                    if(rowNode.data.isModified){
+                        rowNode.setDataValue('status',status)
+                        rowNode.setSelected(true)
+                    }
+                    if(!rowNode.data.isModified && taskActionype===2 && status==="Rejected"){
+                        rowNode.setDataValue('status',status)
+                        rowNode.setSelected(true)
+                    }
+                    else if(taskActionype!==2 || currMasterId===6){
+                        rowNode.setDataValue('status',status)
+                        rowNode.setSelected(true)
+                    }
+                })
+                setActionStatus(status);
+                break;
+            case 'Current':
+                ref.current?.api.forEachNode((rowNode)=>{
+                    if(pageData.includes(rowNode.id) && rowNode.data.isModified){
+                        rowNode.setDataValue('status',status)
+                        rowNode.setSelected(true)
+                        
+                    }
+                    if(pageData.includes(rowNode.id) && !rowNode.data.isModified && taskActionype===2 && status==="Rejected"){
+                        rowNode.setDataValue('status',status)
+                        rowNode.setSelected(true)
+                    }
+                    else if(pageData.includes(rowNode.id) && (taskActionype!==2 || currMasterId===6)){
+                        rowNode.setDataValue('status',status)
+                        rowNode.setSelected(true)
+                    }
+                    
+                })
+                break;
+            default:
+                return;
+
+        }
+  
+        if(status === 'Approved'){
+            toggleApproveAllModal(false);
+        }
+        else{
+            toggleRejectAllModal(false);
+        }
+    }
+
+    const onSelectionTypeSuccess1 = (status:string,) => {       
         if (selectionType === 'All') {
             bulkUploadAllRecords(status);
             return;
@@ -383,7 +565,7 @@ useEffect(() => {
                 headerName:"Task Name",
                 cellRenderer:TaskPendingLinkCellRenderer,
                 cellRendererParams:{
-                    onClick:handleOnClick
+                    onClick:handleBulkAction
                 }
             },
             {
@@ -418,7 +600,10 @@ useEffect(() => {
         onSelectionTypeSuccess,
         setSelectionType,
         noDataMessage,
-        chunkSize
+        chunkSize,
+        onSelectionTypeSuccess1,
+        handleChangePage1,
+        isBulkAction
     }
 }
 
