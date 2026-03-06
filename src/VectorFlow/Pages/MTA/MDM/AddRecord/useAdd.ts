@@ -43,7 +43,7 @@ const useAdd=()=>{
     const [errorData,setErrorData] = useState<Array<any>>([]);
     const [isSubmitDisabled,setIsSubmitDisabled] = useState(false);
     const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
-    const chunkSize = EnvConfig['ChunkSizeForModifyAddDelete']; 
+    const chunkSize = parseInt(EnvConfig['ChunkSizeForModifyAddDelete']); 
 
     const invalidDataColdefs:ColDef[] = [
         {

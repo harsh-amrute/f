@@ -19,7 +19,7 @@ const useDelete=()=>{
     const options = useSelector((state:RootState)=>state.mdm.options)
     const selectedOptions = useSelector((state:RootState)=>state.mdm.selectedOptions)
     const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
-    const chunkSize = EnvConfig['ChunkSizeForModifyAddDelete']; 
+    const chunkSize = parseInt(EnvConfig['ChunkSizeForModifyAddDelete']); 
     const draftID = useSelector((state:RootState) => state.mdm.draftId);
     const dispatch = useDispatch();
     const navigate = useNavigate();

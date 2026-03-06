@@ -162,7 +162,7 @@ const useViewModify = (pageType: string) => {
   const VIEWRECORD_PAGE = EnvConfig["VIEWRECORD_PAGE"];
   const ADDRECORD_PAGE = EnvConfig["ADDRECORD_PAGE"];
   const DELETERECORD_PAGE = EnvConfig["DELETERECORD_PAGE"];
-  const chunkSize = EnvConfig['ChunkSizeForModifyAddDelete']; 
+  const chunkSize = parseInt(EnvConfig['ChunkSizeForModifyAddDelete']); 
   const rowsPerPage = useMemo(() => {
     if (pageType === "add") return parseInt(ADDRECORD_PAGE || "50");
     else if (pageType === "remove") return parseInt(DELETERECORD_PAGE || "50");
