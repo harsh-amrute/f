@@ -19,6 +19,7 @@ import { useUserData } from "../../../../../../context/index";
 import BPPRenderer from "../../../Common/BPRRenderer/BPPRenderer";
 import CommonGridview from "../../../../../../helpers/CommonGridview";
 import { SCDynamicContainer } from "../../../Common/GridView/styles.css";
+import CustomTagTooltip from "./CustomTagTooltip";
 
 
 const APIFilterConfig = {
@@ -60,6 +61,7 @@ const OTIFAnalysis = () => {
   const colDefCustomizations = {
     Tags: {
       tooltipValueGetter: (params: any) => params.value,
+      tooltipComponent:CustomTagTooltip,
       cellRenderer: TagCellToolTip,
       cellStyle: {
         display: 'flex',
