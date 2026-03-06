@@ -112,7 +112,6 @@ const useViewModify = (pageType: string) => {
     (state: RootState) => state.mdm.isUploadModalOpen
   );
   const draftID = useSelector((state: RootState) => state.mdm.draftId);
-  const chunkSize = useSelector((state: RootState) => state.mdm.chunkSize);
   const recordCount = useSelector((state: RootState) => state.mdm.recordCount);
   const isDataAvailableLocally = useSelector(
     (state: RootState) => state.mdm.isDataAvailableLocally
@@ -163,6 +162,7 @@ const useViewModify = (pageType: string) => {
   const VIEWRECORD_PAGE = EnvConfig["VIEWRECORD_PAGE"];
   const ADDRECORD_PAGE = EnvConfig["ADDRECORD_PAGE"];
   const DELETERECORD_PAGE = EnvConfig["DELETERECORD_PAGE"];
+  const chunkSize = EnvConfig['ChunkSizeForModifyAddDelete']; 
   const rowsPerPage = useMemo(() => {
     if (pageType === "add") return parseInt(ADDRECORD_PAGE || "50");
     else if (pageType === "remove") return parseInt(DELETERECORD_PAGE || "50");
@@ -371,8 +371,6 @@ const useViewModify = (pageType: string) => {
 
       setAllMasterState(allMasterData);
 
-      const allOptions: Option[] = generateOptions(allMasterData);
-      dispatch(FILL_OPTIONS(allOptions));
           
       const masterIdsArray = getSelectedMasterValues();
 
@@ -1329,7 +1327,7 @@ const useViewModify = (pageType: string) => {
       const processId = uuidv4();
 
       formData.append("process_id", JSON.stringify({ processId: processId }));
-      formData.append("RECORD_UPLOAD_LIMIT",JSON.stringify({RECORD_UPLOAD_LIMIT:850000}));
+      formData.append("RECORD_UPLOAD_LIMIT",JSON.stringify({RECORD_UPLOAD_LIMIT}));
       formData.append("SELECTED_KEYS",JSON.stringify({SELECTED_KEYS:selectedKeys}));
 
       // intervalID = setInterval(async ()=>{

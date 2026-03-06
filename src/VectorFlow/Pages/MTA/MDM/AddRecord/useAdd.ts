@@ -17,7 +17,7 @@ const useAdd=()=>{
     const allMasters = useSelector((state:RootState)=>state.mdm.allMasters); //empty arrya jaha data jaega api se
     const selectedMasters = useSelector((state:RootState)=>state.mdm.masters)
     const activeMaster = useSelector((state:RootState)=>state.mdm.activeMaster)
-    const chunkSize = useSelector((state:RootState)=>state.mdm.chunkSize)
+    
     const options = useSelector((state:RootState)=>state.mdm.options)
     const selectedOptions = useSelector((state:RootState)=>state.mdm.selectedOptions)
     const dispatch = useDispatch();
@@ -42,6 +42,8 @@ const useAdd=()=>{
     const [errorCounts,setErrorCount] = useState<number>(0);
     const [errorData,setErrorData] = useState<Array<any>>([]);
     const [isSubmitDisabled,setIsSubmitDisabled] = useState(false);
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const chunkSize = EnvConfig['ChunkSizeForModifyAddDelete']; 
 
     const invalidDataColdefs:ColDef[] = [
         {
