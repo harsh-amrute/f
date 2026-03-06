@@ -71,7 +71,6 @@ const months = [
 ];
 
 const DayWiseCoverage = () => {
-    const currentMonth = format(new Date(), "yyyy-MM");
     const minDate = useMemo(() => startOfMonth(add(new Date(), { months: -2 })), [])
     const maxDate = useMemo(() => endOfMonth(new Date()), []);
 
@@ -389,11 +388,14 @@ const DayWiseCoverage = () => {
             // Determine what to save
             const currentCS = coldefs || currentGridRef?.current?.api.getColumnState() || [];
             const currentSize = newPageSize || userPageSize;
+            const isPivot = currentGridRef?.current?.api.isPivotMode();
+
 
             // Construct the full config object
             const fullConfig = {
                 cs: currentCS,
-                pageSize: currentSize
+                pageSize: currentSize,
+                pivotMode: isPivot
             };
 
             const payload = {
@@ -413,7 +415,6 @@ const DayWiseCoverage = () => {
         }
     }
     const onPageSizeChange = (newSize: number) => {
-        setUserPageSize(newSize);
         handleSaveClick(undefined, newSize); // Trigger save immediately
     }
 

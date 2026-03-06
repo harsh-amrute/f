@@ -1,4 +1,4 @@
-import { ExcelCell, ExcelExportParams, ExcelRow, GridOptions, ProcessRowGroupForExportParams } from "ag-grid-enterprise";
+import { ExcelCell, GridOptions } from "ag-grid-enterprise";
 import { useEffect, useMemo, useRef, useState } from "react";
 import VFTable from "../../../Common/VFTable";
 import CustomGroupCellRenderer from "./CustomGroupCellRenderer";
@@ -47,13 +47,6 @@ const DayWiseCoverageTable = ({
   configLoaded
 
 }: IDayWiseCoverageProps) => {
-  // const extra = [
-  //   {
-  //       headerName: "Action",
-  //       cellRenderer: () => <div>Hello</div>,
-  //       position: 0
-  //   }
-  // ]
   const gridRef = useRef<any>(null);
   const [rowData, setRowData] = useState([]);
   const { mutateAsync: getData, isLoading: isGridLoading } =
@@ -64,7 +57,6 @@ const DayWiseCoverageTable = ({
 
   const [currentPage, setCurrentPage] = useState<number>(1);
 const [totalRows, setTotalRows] = useState<number>(0);
-// const [pageSize, setPageSize] = useState<number>(20); 
 
   const getGridData = async (pageNumber = 1,size = userPageSize) => {
     if (selectedDate) {
@@ -78,7 +70,6 @@ const [totalRows, setTotalRows] = useState<number>(0);
         page: pageNumber, 
         page_size: size,
       });
-      console.log("dataaaa",data.data.data.results);
       const convertToArray = !Array.isArray(data?.data?.data.results) ? [] : data?.data?.data.results;
       const count = data?.data?.data?.count || 0;
       setTotalRows(count);
@@ -93,19 +84,7 @@ const [totalRows, setTotalRows] = useState<number>(0);
   };
   const brand = theme_ui === "REGALBLAZE" ? "REGALBLAZE" : "DEFAULT";
 
-  const CustomStatusPanel = () => {
-    return (
-      <div className={gridFilterWrapper} style={{ marginTop: "15px" }}>
-        <button
-          className={textBtn[brand]}
-          onClick={clearGridFilter}
-          disabled={isDisabled}
-        >
-          Clear All Grid Filters
-        </button>
-      </div>
-    );
-  };
+
 
  useEffect(() => {
     // Only fetch if config is loaded to avoid fetching with default 20 then switching to saved 50
@@ -184,47 +163,6 @@ const handlePageSizeChange = (newSize: any) => {
   };
 
 
-  // const getRows = (params: ProcessRowGroupForExportParams) => {
-  //   const childData = params?.node?.data?.children;
-  
-  //   if (!childData || !childData.length) return [];
-  
-  //   const childColDefHeaders: string[] = [];
-  //   childColDef.forEach((col: any) => {
-  //     if (col?.headerName) {
-  //       childColDefHeaders.push(col.headerName);
-  //     }
-  //   });
-  
-  //   const rows = [
-  //     {
-  //       outlineLevel: 2,
-  //       cells: [
-  //         cell(""),
-  //         ...childColDefHeaders.map((col) => cell(col, "header")),
-  //       ],
-  //     },
-  //     ...childData.map((data: any) => ({
-  //       outlineLevel: 2,
-  //       cells: [
-  //         cell(""),
-  //         ...childColDef.map((col: any) => cell(data[col.field], "data")),
-  //       ],
-  //     })),
-  //   ];
-  
-  //   return rows;
-  // };
-  
-
-  // const defaultExcelExportParams = useMemo<ExcelExportParams>(() => {
-  //   return {
-  //     getCustomContentBelowRow: (params) => getRows(params) as ExcelRow[],
-  //     columnWidth: 120,
-  //     fileName: "ag-grid.xlsx",
-  //   };
-  // }, [gridRef.current, childColDef, rowData]);
-
   return (
     <>
      <div className={TableWrapper}>
@@ -254,7 +192,6 @@ const handlePageSizeChange = (newSize: any) => {
           }
         });
       }}
-      // defaultExcelExportParams={defaultExcelExportParams}  
       maintainColumnOrder={true}  
       groupLockGroupColumns={1}
       />

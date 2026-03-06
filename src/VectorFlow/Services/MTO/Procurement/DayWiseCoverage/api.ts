@@ -11,11 +11,14 @@ import axios from "axios"
                 FromDate: startDate,
                 ToDate: endDate,
                 planned_release_date: plannedReleaseDate,
-                page: page,
-                page_size: pageSize,
-                isExcelExport: isExcelExport,
+                export: isExcelExport,
                 report_name: report_name,
-                isChildren: isChildren
+                isChildren: isChildren,
+
+                ...(!isExcelExport && {
+                  page: page,
+                 page_size: pageSize,
+                }),
 
             },
             responseType: isExcelExport ? 'blob' : 'json'

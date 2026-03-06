@@ -5229,14 +5229,12 @@ export const getBodyForExcelExport = ({
   colDefMap,
   groupedColDefsRef,
 }: any) => {
-  console.log(headersdata,"headersdataaa")
   const filteredHeadersData = headersdata?.filter(
-    (col: any) =>
-      col.colId !== "DropDown" &&
-      col.colId !== "Action" &&
-      col.hide !== true &&
-      !col.colId.includes("History") &&
-      col.colId !== "Default Attribute-Remark"
+    (col: any) =>{
+      if(col.colId !== "DropDown" && col.colId !== "Action" && (col.hide !== true || col.rowGroup !== false) && !col.colId.includes('History') && (col.colId!=="Default Attribute-Remark")){
+        return true;
+      }
+    }
   );
 
   try {
