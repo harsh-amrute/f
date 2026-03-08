@@ -539,7 +539,7 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
         </div>
       )}
 
-      {isBTRReport && (
+      {isBTRReport && currentTab !== 'summary' && (
         <div className={filterGroup} style={{ marginTop: "1px" }}>
           <div className={filterColumn}>
             <div className={textWrapper}>Category</div>

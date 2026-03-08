@@ -5,9 +5,9 @@ const COLOR_MAP: Record<string, { bg: string; text: string }> = {
   Red: { bg: "#D32F2F", text: "#fff" },
   Green: { bg: "#388E3C", text: "#fff" },
   Yellow: { bg: "#F9A825", text: "#1a1a1a" },
-  White: { bg: "#E0E0E0", text: "#1a1a1a" },
-  Grey: { bg: "#424242", text: "#fff" },
-  Gray: { bg: "#424242", text: "#fff" },
+  White: { bg: "white", text: "#1a1a1a" },
+  Grey: { bg: "#D3D3D3", text: "#1a1a1a" },
+  Gray: { bg: "#D3D3D3", text: "#1a1a1a" },
   Blue: { bg: "#1565C0", text: "#fff" },
   Black: { bg: "#212121", text: "#fff" },
 };
@@ -28,7 +28,7 @@ const TodaysColorCellRenderer = (props: ICellRendererParams) => {
       style={{
         backgroundColor: bg,
         color: text,
-        maxWidth: 55,
+        maxWidth: 90,
       }}
       data-testid="color-cell"
     >
