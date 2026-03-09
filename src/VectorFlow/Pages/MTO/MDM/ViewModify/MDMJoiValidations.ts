@@ -316,10 +316,10 @@ export const CALENDAR_Add_VALIDATION_SCHEMA = Joi.object({
   }),
  
   dsc: Joi.string().required().max(100).messages({
-    "string.base": "Title cannot be empty!",
-    "any.required": "Title cannot be empty!",
-    "string.max": "Title cannot exceed 100 characters!",
-    "string.empty": "Title cannot be empty!",
+    "string.base": "Description cannot be empty!",
+    "any.required": "Description cannot be empty!",
+    "string.max": "Description cannot exceed 100 characters!",
+    "string.empty": "Description cannot be empty!",
   }),
 
   sd: Joi.date()
@@ -332,7 +332,7 @@ export const CALENDAR_Add_VALIDATION_SCHEMA = Joi.object({
   
     ed: Joi.date()
     .required()
-    .min(Joi.ref('sd')) // ✅ Allows ed >= sd
+    .min(Joi.ref('sd')) 
     .messages({
       "date.base": "End date cannot be empty!",
       "any.required": "End date cannot be empty!",
