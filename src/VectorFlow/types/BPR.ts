@@ -103,6 +103,7 @@ export interface BPRFilterState{
     generalFilter:BPRFilterGroup
     customAttributeFilter:BPRFilterGroup,
     horizonFilter:BPRFilterGroup,
+    historicalFilter:BPRFilterGroup,
 }
 
 
