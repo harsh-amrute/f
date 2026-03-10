@@ -208,9 +208,10 @@ const MTOAddRecord = () => {
                         : setIsDisabled(true);
                     }
                   }}
-                  defaultColDef= {
-                    {flex: (activeMaster.id===501 || activeMaster.id===503)? 1: 0}
-                  }
+                  defaultColDef= {{
+                    flex: (activeMaster.id===501 || activeMaster.id===503)? 1: 0,
+                      suppressHeaderMenuButton:true
+                  }}
                   // onCellEditingStopped={ onDataChange}
                   maintainColumnOrder
                   />

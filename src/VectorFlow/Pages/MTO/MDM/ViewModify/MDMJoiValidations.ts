@@ -85,6 +85,8 @@ export const BUFFER_VALIDATION_SCHEMA = Joi.object({
 
   isdel : Joi.optional(),
 
+  tempRowId: Joi.any().optional(),
+
 });
 
 
@@ -201,6 +203,8 @@ export const CCR_VALIDATION_SCHEMA = Joi.object({
   id : Joi.any().optional(),
 
   isdel : Joi.optional(),
+  tempRowId: Joi.any().optional(),
+
 });
 
 export const CALENDAR_VALIDATION_SCHEMA = Joi.object({
@@ -371,38 +375,65 @@ export const CALENDAR_Add_VALIDATION_SCHEMA = Joi.object({
 });
 
 
-// export const POOGI_VALIDATION_SCHEMA = Joi.object({
-//   plnm: Joi.string().min(1).required().messages({
-//     'string.empty': 'Plant name cannot be empty!',
-//     'any.required': 'Plant name cannot be empty!',
-//   }),
+export const POOGI_VALIDATION_SCHEMA = Joi.object({
+  plnm: Joi.string().min(1).required().messages({
+    "string.base": "Plant name cannot be empty!",
+    "string.empty": "Plant name cannot be empty!",
+    "any.required": "Plant name cannot be empty!",
+  }),
 
-//   majdsc: Joi.string().allow('', null).when('mindsc', {
-//     is: Joi.string().min(1), 
-//     then: Joi.string().min(1).required().messages({
-//       'string.empty': 'State the major reason to which the minor reason belongs!',
-//       'any.required': 'State the major reason to which the minor reason belongs!',
-//     }),
-//   }).messages({
-//     'string.empty': 'Major reason description cannot be empty!',
-//     'any.required': 'Major reason description cannot be empty!',
-//   }),
+  majdsc: Joi.string().empty(null).empty("").messages({
+    "string.base": "Major reason description cannot be empty!",
+    "string.empty": "Major reason description cannot be empty!",
+    "any.required": "Major reason description cannot be empty!",
+  }),
 
-//   mindsc: Joi.string().allow('', null).when('majdsc', {
-//     is: Joi.string().min(1),
-//     then: Joi.string().min(1).required().messages({
-//       'string.empty': 'Each major reason must have at least one minor reason!',
-//       'any.required': 'Each major reason must have at least one minor reason!',
-//     }),
-//   }),
+  mindsc: Joi.string().empty(null).empty("").messages({
+    "string.base": "Minor reason must be a string!",
+    "string.empty": "Minor reason must be a string!",
+    "any.required": "Minor reason must be a string!",
+  }),
 
-//   majcd : Joi.string(),
+  tempRowId: Joi.any().optional(),
+  
+  majcd: Joi.string().allow("", null),
 
-//   mincd : Joi.string(),
+  mincd: Joi.string().allow("", null),
 
-//   err : Joi.object({
-//     error: Joi.string().allow("").optional(), 
-//     warning: Joi.string().allow("").optional(),
-//   }).optional(),
-
-// });
+  err: Joi.object({
+    error: Joi.string().allow("").optional(),
+    warning: Joi.string().allow("").optional(),
+  }).optional(),
+}).when(
+  Joi.object({
+    majdsc: Joi.string().min(1),
+  }).unknown(),
+  {
+    then: Joi.object({
+      mindsc: Joi.string().min(1).required().messages({
+        "string.base": 
+          "Each major reason must have at least one minor reason!",
+        "string.empty":
+          "Each major reason must have at least one minor reason!",
+        "any.required":
+          "Each major reason must have at least one minor reason!",
+      }),
+    }),
+  }
+).when(
+  Joi.object({
+    mindsc: Joi.string().min(1),
+  }).unknown(),
+  {
+    then: Joi.object({
+      majdsc: Joi.string().min(1).required().messages({
+        "stirng.base":
+          "State the major reason to which the minor reason belongs!",
+        "string.empty":
+          "State the major reason to which the minor reason belongs!",
+        "any.required":
+          "State the major reason to which the minor reason belongs!",
+      }),
+    }),
+  }
+);

@@ -113,7 +113,7 @@ import PoogiEditDeleteCell from "./PoogiEditDeleteCell";
 import ToggleButton from "./ToggleButton";
 import moment from "moment";
 import {CustomStatusPanel } from "../CustomStatusPannel";
-import { validateBuffer, validateCCR } from "./CommonUtils";
+import { validateBuffer, validateCCR, validatePoogi } from "./CommonUtils";
 
 const useViewModify = (pageType: string) => {
   const dispatch = useDispatch();
@@ -949,7 +949,7 @@ const useViewModify = (pageType: string) => {
       const newData: any = [];
       allRows.forEach((e: any, index: number) => {
         const newVal = _.cloneDeep(e);
-        newVal.err = validateCCR(e, activeMaster, ccrInitialData, ccrModifyData, CCRGroupMaterSetRef, plantMaster, deptMaster);
+        newVal.err = validateCCR(e, activeMaster, ccrInitialData, ccrModifyData, CCRGroupMaterSetRef, plantMaster, deptMaster, allRows);
         newData.push(newVal);
       });
       
@@ -963,55 +963,7 @@ const useViewModify = (pageType: string) => {
       const newData: any = [];
       allRows.forEach((e: any) => {
         const newVal = _.cloneDeep(e);
-        
-        if (
-          plantMaster.length &&
-          !plantMaster.some(
-            (plant: any) =>
-              plant.plant_name === e.plnm || plant.plant_id === e.plnm
-          )
-        ) {
-          newVal.err = {
-            error: "Please select a valid plant from the dropdown",
-            warning: "",
-          };
-        } else if (e.plnm === "" || !e.plnm) {
-          newVal.err = { error: "Plant name cannot be empty!", warning: "" };
-        }
-        if (e.majdsc === "" || e.majdsc === null) {
-          newVal.err = {
-            error: "Major reason description cannot be empty!",
-            warning: "",
-          };
-        } else if (e.mindsc === "" || e.mindsc === null) {
-          newVal.err = {
-            error: "Each major reason must have at least one minor reason!",
-            warning: "",
-          };
-        }
-        if (
-          e.mindsc !== "" &&
-          e.mindsc !== null &&
-          (e.majdsc === "" || e.majdsc === null)
-        ) {
-          newVal.err = {
-            error: "State the major reason to which the minor reason belongs!",
-            warning: "",
-          };
-        }
-
-        // Assuming newData is an array of objects and e is an object with majdsc and mindsc properties
-        const isDuplicate = newData.some((item:any) => (
-          item.majdsc === e.majdsc && item.mindsc === e.mindsc
-        ));
-
-        if (isDuplicate) {
-          newVal.err = {
-            error: "Minor reason should be unique for each major reason!",
-            warning: ""
-          };
-        }
-
+        newVal.err = validatePoogi(e, activeMaster, poogiInitialData, poogiModifyData, plantMaster, allRows);
         newData.push(newVal);
       });
 
@@ -1131,16 +1083,15 @@ const useViewModify = (pageType: string) => {
     },
     rowSelection: "multiple",
     suppressRowClickSelection: true,
+    defaultColDef:{
+      suppressHeaderMenuButton:true,
+    },
     components: customCellRenderers,
     onGridReady: (params: any) => {
       if (activeMaster.id === 501) {
         params.api.sizeColumnsToFit();
       }
     },
-    getRowId: (params: any)=>{
-      return params.data.majId
-    },
-
     onCellEditingStopped(event) {
       const data = event.data;
       const field: any = event.colDef.field;
@@ -1149,6 +1100,7 @@ const useViewModify = (pageType: string) => {
       newRow[field] = newValue;
       if(activeMaster.id===503){
         ref.current?.api.applyTransaction({update: [newRow]})
+        setSelectedMajReason(newRow);
       }
       if (pageType === "add") {
         const newRowData = _.cloneDeep(
@@ -2538,6 +2490,7 @@ const useViewModify = (pageType: string) => {
       setDownloadData(false);
       setTempDownloadData(false);
       setFilterButtonStatus([]);
+      setSelectedMajReason("");
       
       dispatch(RESET_MTO_STATE());
       
@@ -2792,36 +2745,6 @@ const useViewModify = (pageType: string) => {
       return id;
     }
   };
-
-  // function myCCRFormatter(params: any) {
-  //   console.log(params, "params");
-  //   console.log(params?.data[params.column.colId], "params");
-  //   const currDropdownValue = params?.data[params.column.colId];
-
-  //   let val = params?.data[params.column.colId];
-  //   if (params.column.colId === "pl" || params.column.colId === "plnm") {
-  //     if (plantMaster) {
-  //       plantMaster.forEach((ele: any) => {
-  //         if (ele?.plant_id?.toString() === currDropdownValue?.toString()) {
-  //           val = ele.plant_name;
-  //         }
-  //       });
-  //     }
-  //   } else if (params.column.colId === "dp") {
-  //     if (deptMaster) {
-  //       deptMaster.forEach((ele: any) => {
-  //         if (ele?.dept_id?.toString() === currDropdownValue?.toString()) {
-  //           val = ele.dept_name;
-  //         }
-  //       });
-  //     }
-  //   } else if (params.column.colId === "cgid") {
-  //     if (ccrGroupMaster) {
-  //       val = getCCRGroupKeyById(ccrGroupMaster, currDropdownValue);
-  //     }
-  //   }
-  //   return val;
-  // }
   
   function myCCRFormatter(params: any, columnId?: any, isValue = false): any {
     const colId = columnId || params?.column?.colId;
@@ -2971,9 +2894,9 @@ const useViewModify = (pageType: string) => {
         majdsc: "",
         majId: newId,
         ie: false,
-        minData: [{ majId: newId, editable: true, mindsc: "", minId: newIdMin, ie: false, ia: true, iu: true,}],
+        minData: [{ majId: newId, editable: true, mindsc: "", minId: newIdMin, ie: false, ia: true, iu: false,}],
         ia: true,
-        iu: true,
+        iu: false,
         editable: true
       };
       setSelectedMajReason(newRow);
@@ -2983,9 +2906,10 @@ const useViewModify = (pageType: string) => {
       addEditableToLastColumn();
     }
     else{
-      ref.current?.api.applyTransaction({add: [newRow], addIndex: 0});
+      const res = ref.current?.api.applyTransaction({add: [newRow], addIndex: 0});
       ref.current?.api.refreshCells();
-
+      ref.current?.api.deselectAll();
+      res?.add?.[0]?.setSelected(true);
     }
   };
 
@@ -3000,11 +2924,11 @@ const useViewModify = (pageType: string) => {
       minId: newMinId,
       ie: false,
       ia: true,
-      iu: true,
+      iu: false,
     };
     const newSelectedMajReason = {
       ...selectedMajReason,
-      minData: [
+      minData: [  
         newMinReason,
         ...selectedMajReason.minData,
       ],
@@ -3012,6 +2936,7 @@ const useViewModify = (pageType: string) => {
     ref.current?.api.applyTransaction({update: [newSelectedMajReason]});
     tempRefPoogi.current?.api.applyTransaction({add: [newMinReason], addIndex:0});
     tempRefPoogi.current?.api.refreshCells();
+    setSelectedMajReason(newSelectedMajReason);
   };
 
 
@@ -3294,6 +3219,7 @@ const useViewModify = (pageType: string) => {
       notifyError("Failed to create task!");
     }
   };
+
   const onMTOAddPoogiData = async () => {
     notifyLoader("Saving Poogi Task...");
 
@@ -3339,7 +3265,7 @@ const useViewModify = (pageType: string) => {
 
         if (!existingMajor) {
           existingMajor = {
-            majdsc,
+            majdsc: majdsc.trimEnd(),
             majid: null,
             majId: null,
             majcd: "*",
@@ -3355,7 +3281,7 @@ const useViewModify = (pageType: string) => {
         }
 
         existingMajor.minData.push({
-          mindsc,
+          mindsc: mindsc.trimEnd(),
           minid: null,
           majid: null,
           majId: null,
@@ -3368,6 +3294,7 @@ const useViewModify = (pageType: string) => {
       });
     }
     PoogiPostObj.reasonData = finPoogiPostData;
+
     try {
       const response = await savePOOGIMasterTask(PoogiPostObj);
 
@@ -3547,7 +3474,7 @@ const useViewModify = (pageType: string) => {
       ref.current?.api.forEachNode((node: any) => {
         allMajorRows.push(_.cloneDeep(node.data));
       });
-
+      
       // 2. Check if any row is still in editable mode (major or any of its minData)
       const hasEditable = allMajorRows.some((row: any) => {
         if (row.editable) return true;
@@ -3568,7 +3495,6 @@ const useViewModify = (pageType: string) => {
         reasonData: [],
         at: pageType === "add" ? "Add" : "Modify",
       };
-
       allMajorRows.forEach((ele: any) => {
         // If ia: true AND id: true, skip entirely (newly added then deleted)
         if (ele.ia && ele.id) return;
@@ -4008,10 +3934,6 @@ const useViewModify = (pageType: string) => {
     deptMaster
   ]);
 
-  useEffect(()=>{
-    console.log("selectedMajreaons changed", selectedMajReason?.minData || [])
-  },[selectedMajReason])
-
   const onMajReasonSelected = () => {
     setSelectedMajReason(ref?.current?.api?.getSelectedRows()[0]);
   };
@@ -4020,29 +3942,30 @@ const useViewModify = (pageType: string) => {
     // TODO: update both the minReasonRowData and activeMaster
 
     const data = event.data;
-      const field: any = event.colDef.field;
-      const newValue = event.newValue;
-      const newRow = { ...data };
-      newRow[field] = newValue;
-
-
-      // updated the majreason
-    ref.current?.api.forEachNode((node: any)=>{
-      if(node.data.minData.some((ele:any)=>ele.minId===event.data.minId)){
-        node.data.minData.forEach((ele:any)=>{
-          if(ele.minId===event.data.minId){
-            ele[field] = newValue;
-          }
-        })
-      }
-    })
-
+    const field: any = event.colDef.field;
+    const newValue = event.newValue;
+    const newRow = { ...data };
+    newRow[field] = newValue;
+    //update minor reason
     tempRefPoogi.current.api.applyTransaction({
-      update: [newRow]})
-
+      update: [newRow]});
+      //update major reason
+    const updatedMajReason = {
+      ...selectedMajReason,
+      minData: selectedMajReason.minData.map((min: any) =>
+        min.minId === event.data.minId
+          ? { ...min, [field]: newValue }
+          : min
+      ),
+    };
     
+    ref.current?.api.applyTransaction({
+      update: [updatedMajReason],
+    });
+      
+    setSelectedMajReason(updatedMajReason);
     
-  };
+  }
 
   const getCombinedPoogiDataForExcelExport = () => {
     if(activeMaster?.id!== 503) return [];

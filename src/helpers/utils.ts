@@ -1371,10 +1371,17 @@ export const mapTaskStatusToColDefs = (taskStatus: ColDef[], color: string) => {
 
 export const mapPendingTaskToColumnDefs = (colDefs: ColDef[]): ColDef[] => {
   return colDefs.map((colDef: ColDef) => {
+    let filterType = "agMultiColumnFilter";
+
+      if (colDef.cellDataType === "date") {
+        filterType = "agDateColumnFilter";
+      } else if (colDef.cellDataType === "number" || colDef.cellDataType === "decimal") {
+        filterType = "agNumberColumnFilter";
+      }
     return {
       ...colDef,
       floatingFilter: true,
-      filter: "agMultiColumnFilter",
+      filter: filterType,
       minWidth: 180,
       cellStyle: (params) => {
         if (params.colDef.colId === "TaskName")
@@ -5512,25 +5519,18 @@ export const parseMTOExcelData = async (
     throw new Error("File Contains zero rows.");
   }
 
-  if (
-    master.id === 501 ||
-    master.id === 502 ||
-    master.id === 503 ||
-    master.id === 504
-  ) {
-    const bufferData: any = [];
-    for (let i = 1; i < data?.length; i++) {
-      const buffData: any = {};
-      for (let j = 0; j < data[i].length; j++) {
-        buffData[headerKeys[j]] = data[i][j];
-      }
-      buffData["err"] = "";
-      bufferData.push(buffData);
+  
+  const bufferData: any = [];
+  for (let i = 1; i < data?.length; i++) {
+    const buffData: any = {};
+    for (let j = 0; j < data[i].length; j++) {
+      buffData[headerKeys[j]] = data[i][j];
     }
-    return bufferData;
+    buffData["err"] = "";
+    buffData["tempRowId"] = i; //for unique id 
+    bufferData.push(buffData);
   }
-
-  return [];
+  return bufferData;
 };
 
 export const generateMTOFilterOptions = (
