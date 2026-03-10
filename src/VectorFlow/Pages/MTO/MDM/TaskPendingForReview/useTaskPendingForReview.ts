@@ -833,7 +833,7 @@ const useTaskPendingForReview = ()=>{
                 try{
                     const response = await putMTOBufferData([finData]);
                     if(response.status=== 200){
-                        notifySuccess("DB Updated Successfully");
+                        notifySuccess("Task updated successfully.");
                         dispatch(SET_TASK_PENDING_ROW_DATA([]));
                         setIsViewTableOpen(true);
                         GetInitialData(mid);
@@ -903,7 +903,7 @@ const useTaskPendingForReview = ()=>{
             try{
                 const response = await putMTOCCRData([finData]);
                 if(response.status=== 200){
-                    notifySuccess("DB Updated Successfully");
+                    notifySuccess("Task updated successfully.");
                     dispatch(SET_TASK_PENDING_ROW_DATA([]));
                     setIsViewTableOpen(true);
                     GetInitialData(mid);
@@ -952,7 +952,7 @@ const useTaskPendingForReview = ()=>{
         
             const response = await putMTOAddPoogiMaster([finData]);
             if(response.status=== 200){
-                notifySuccess("DB Updated Successfully");
+                notifySuccess("Task updated successfully.");
                 dispatch(SET_TASK_PENDING_ROW_DATA([]));
                 setIsViewTableOpen(true);
                 GetInitialData(mid);
@@ -995,7 +995,7 @@ const useTaskPendingForReview = ()=>{
         
             const response = await getMtoCalendarMasterData(finalData);
             if(response.status=== 200){
-                notifySuccess("DB Updated Successfully");
+                notifySuccess("Task updated successfully.");
                 dispatch(SET_TASK_PENDING_ROW_DATA([]));
                 setIsViewTableOpen(true);
                 GetInitialData(mid);
