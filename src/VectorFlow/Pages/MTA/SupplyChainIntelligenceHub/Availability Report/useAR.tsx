@@ -360,7 +360,6 @@ const useAR = () => {
     const loaderId = notifyLoader("Loading data");
     try {
       const data = await getARData(payload);
-      console.log("data Tech::--------------", data);
       setTechRowData(mapARRowData(data.data.data.tech));
     } catch (err: any) {
       notifyError(err);

@@ -12,7 +12,6 @@ const COLOR_MAP: Record<string, { bg: string; text: string }> = {
   Black: { bg: "#212121", text: "#fff" },
 };
 
-
 const TodaysColorCellRenderer = (props: ICellRendererParams) => {
   const tc: string = props.data?.tc ?? "White";
   const tp = parseFloat(props.data?.tp ?? "0");
@@ -20,8 +19,12 @@ const TodaysColorCellRenderer = (props: ICellRendererParams) => {
   const { bg, text } = COLOR_MAP[tc] ?? { bg: "#9E9E9E", text: "#fff" };
 
   const isNoData = tp <= -9999999;
-  const displayValue = isNoData ? `-999.99%` : `${tp.toFixed(2)}%`;
-
+  const displayValue =
+    tp === null || tp === undefined || isNaN(tp)
+      ? "X"
+      : isNoData
+      ? "-999.99%"
+      : `${tp.toFixed(2)}%`;
   return (
     <div
       className={BPRColorCellRendererWrapper}
