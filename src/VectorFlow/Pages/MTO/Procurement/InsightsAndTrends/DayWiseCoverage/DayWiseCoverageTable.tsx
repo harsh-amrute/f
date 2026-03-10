@@ -1,4 +1,5 @@
-import { ExcelCell, GridOptions } from "ag-grid-enterprise";
+import { ExcelCell, ExcelExportParams, ExcelRow, GridOptions, ProcessRowGroupForExportParams } from "ag-grid-enterprise";
+
 import { useEffect, useMemo, useRef, useState } from "react";
 import VFTable from "../../../Common/VFTable";
 import CustomGroupCellRenderer from "./CustomGroupCellRenderer";
@@ -162,6 +163,48 @@ const handlePageSizeChange = (newSize: any) => {
     };
   };
 
+  const getRows = (params: ProcessRowGroupForExportParams) => {
+    const childData = params?.node?.data?.children;
+  
+    if (!childData || !childData.length) return [];
+  
+    const childColDefHeaders: string[] = [];
+    childColDef.forEach((col: any) => {
+      if (col?.headerName) {
+        childColDefHeaders.push(col.headerName);
+      }
+    });
+  
+    const rows = [
+      {
+        outlineLevel: 2,
+        cells: [
+          cell(""),
+          ...childColDefHeaders.map((col) => cell(col, "header")),
+        ],
+      },
+      ...childData.map((data: any) => ({
+        outlineLevel: 2,
+        cells: [
+          cell(""),
+          ...childColDef.map((col: any) => cell(data[col.field], "data")),
+        ],
+      })),
+    ];
+  
+    return rows;
+  };
+  
+
+  const defaultExcelExportParams = useMemo<ExcelExportParams>(() => {
+    return {
+      getCustomContentBelowRow: (params) => getRows(params) as ExcelRow[],
+      columnWidth: 120,
+      fileName: "ag-grid.xlsx",
+    };
+  }, [gridRef.current, childColDef, rowData]);
+
+
 
   return (
     <>
@@ -192,6 +235,7 @@ const handlePageSizeChange = (newSize: any) => {
           }
         });
       }}
+      defaultExcelExportParams={defaultExcelExportParams}
       maintainColumnOrder={true}  
       groupLockGroupColumns={1}
       />

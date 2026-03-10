@@ -448,11 +448,12 @@ const DayWiseCoverage = () => {
       }, []);
 
 
-    // const ExcelExport =()=>{
-    //     currentGridRef?.current?.api?.exportDataAsExcel({ fileName: `Day_Wise_Coverage` , sheetName: 'Day Wise Coverage'});
-    //   }
+      // --- Excel Export Logic ---
 
-  // --- Excel Export Logic ---
+    const ExcelExport =()=>{
+        currentGridRef?.current?.api?.exportDataAsExcel({ fileName: `Day_Wise_Coverage` , sheetName: 'Day Wise Coverage'});
+      }
+
     const executeExcelExport = async (isChildren = 0) => {
         try {
             const headersdata = currentGridRef?.current?.api.getColumnState();
@@ -485,18 +486,38 @@ const DayWiseCoverage = () => {
         }
     };
 
-    const onExcelExportClick = () => {
-        setShowExcelModal(true);
+
+    const handleExportClick = (isChildren = 0) => {
+      const columnState = currentGridRef?.current?.api?.getColumnState() || [];
+      
+      const groupedColumnsCount = columnState.filter((col:any) => col.rowGroup).length;
+
+      if (groupedColumnsCount > 1) {
+          ExcelExport();
+      } else {
+          executeExcelExport(isChildren);
+      }
+  };
+
+const onExcelExportClick = () => {
+        const columnState = currentGridRef?.current?.api?.getColumnState() || [];
+        const groupedColumnsCount = columnState.filter((col:any) => col.rowGroup).length;
+
+        if (groupedColumnsCount > 1) {
+            ExcelExport();
+        } else {
+            setShowExcelModal(true);
+        }
     };
 
     const handleExcelConfirm = () => {
         setShowExcelModal(false);
-        executeExcelExport(1); 
+        handleExportClick(1);
     };
 
     const handleExcelCancel = () => {
         setShowExcelModal(false);
-        executeExcelExport(0); 
+       handleExportClick(0);
     };
 
   return (
