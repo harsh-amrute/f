@@ -1120,6 +1120,16 @@ const useViewModify = (pageType: string) => {
         });
         validateMTOMaster(activeMaster.id, newRowData);
       }
+      if(pageType!== "add" && activeMaster.id!==503){
+        const newRowData = activeMaster.rowData.map((row: any) => {
+          if (JSON.stringify(row) === JSON.stringify(data)) {
+            return newRow;
+          }
+          return row;
+        });
+        // setEnableEditOnlineReset(true)
+        dispatch(UPDATE_ROW_DATA([...newRowData]));
+      }
 
     },
     statusBar:{
