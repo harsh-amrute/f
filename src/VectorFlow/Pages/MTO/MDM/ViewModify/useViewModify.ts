@@ -1216,7 +1216,7 @@ const useViewModify = (pageType: string) => {
         columnKeys: activeMaster.colDefs
           .filter(
             (col: ColDef) =>
-              col.headerName !== "Warning" && col.headerName !== "Error"
+              col.headerName !== "Warning" 
           )
           .map((col: ColDef) => col.field),
       };
@@ -1226,8 +1226,16 @@ const useViewModify = (pageType: string) => {
             ? "Error-" + downloadFileName
             : "Error-" + activeMaster.name,
           columnKeys: Colparams.columnKeys,
+          processCellCallback(params) {
+            if(params.column.getColId() === "err"){
+              return params.value.error || params.value.warning || "";
+            }else if(params.value instanceof Date){
+              return params.value.toLocaleDateString("en-CA");
+            }
+            return params.value;
+        },
         });
-      // if (tempDownloadData) event.api.exportDataAsExcel({  fileName: downloadFileName ? 'Error-' + downloadFileName : 'Error-' + activeMaster.name});
+      
     },
   };
 
