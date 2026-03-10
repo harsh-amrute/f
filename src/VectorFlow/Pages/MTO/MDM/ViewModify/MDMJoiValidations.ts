@@ -300,7 +300,6 @@ export const CALENDAR_VALIDATION_SCHEMA = Joi.object({
 });
 
 export const CALENDAR_Add_VALIDATION_SCHEMA = Joi.object({
-
   hid: Joi.any().optional(),
 
   ccr: Joi.string().required().optional().messages({
@@ -308,13 +307,13 @@ export const CALENDAR_Add_VALIDATION_SCHEMA = Joi.object({
     "string.empty": "CCR cannot be empty!",
     "any.required": "CCR cannot be empty!",
   }),
-  
+
   ccr_id: Joi.number().required().messages({
     "number.base": "CCR cannot be empty!",
     "number.empty": "CCR cannot be empty!",
     "any.required": "CCR cannot be empty!",
   }),
- 
+
   dsc: Joi.string().required().max(100).messages({
     "string.base": "Description cannot be empty!",
     "any.required": "Description cannot be empty!",
@@ -322,27 +321,33 @@ export const CALENDAR_Add_VALIDATION_SCHEMA = Joi.object({
     "string.empty": "Description cannot be empty!",
   }),
 
-  sd: Joi.date()
+  sd: Joi.date().required().messages({
+    "date.base": "Start date cannot be empty!",
+    "any.required": "Start date cannot be empty!",
+    "date.less": "Start date must be less than End date!",
+  }),
+
+  ed: Joi.date()
     .required()
+    .custom((value, helpers) => {
+      const { sd } = helpers.state.ancestors[0];
+
+      const start = new Date(sd).setHours(0, 0, 0, 0);
+      const end = new Date(value).setHours(0, 0, 0, 0);
+
+      if (end < start) {
+        return helpers.error("date.min");
+      }
+
+      return value;
+    })
     .messages({
-      "date.base": "Start date cannot be empty!",
-      "any.required": "Start date cannot be empty!",
-      "date.less": "Start date must be less than End date!",
-    }),
-  
-    ed: Joi.date()
-    .required()
-    .min(Joi.ref('sd')) 
-    .messages({
-      "date.base": "End date cannot be empty!",
-      "any.required": "End date cannot be empty!",
       "date.min": "End date must be equal to or after Start date!",
     }),
-  
+
   iwd: Joi.boolean().required().messages({
     "boolean.base": "Is Working Day must be either true or false!",
     "any.required": "Is Working Day is required!",
-
   }),
 
   plid: Joi.number().messages({
@@ -354,7 +359,6 @@ export const CALENDAR_Add_VALIDATION_SCHEMA = Joi.object({
     error: Joi.string().allow("").optional(),
     warning: Joi.string().allow("").optional(),
   }),
-
 });
 
 
