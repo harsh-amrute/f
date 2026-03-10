@@ -19,15 +19,7 @@ export const setupAxios = () => {
   axios.defaults.withCredentials = true
 
   axios.interceptors.request.use(async function (config) {
-    const encryptedUserId = localStorage.getItem('User-ID');
-    const encryptedUserName = localStorage.getItem('User-Name');
-
-    const decryptedUserId = await decryptStorageData(encryptedUserId);
-    const decryptedUserName = await decryptStorageData(encryptedUserName);
-    
-    config.headers['User-ID'] = decryptedUserId;
-    config.headers['User-Name'] = decryptedUserName;
-
+  
     window.dispatchEvent(new CustomEvent('api-request-start'));
     
     return config;

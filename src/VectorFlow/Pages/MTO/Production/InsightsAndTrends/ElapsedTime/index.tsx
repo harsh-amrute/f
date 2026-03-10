@@ -43,9 +43,6 @@ const ElapsedTime = () => {
 
     const { mutateAsync: getElapsedTimeDataExcelExport , isLoading:gridDataLoading} = useGetElapsedTimeDataForExcelExport();  
     
-    
-    
-    
     const themeUi = user?.user?.theme_ui
 
     const getDeptWiseChartData = async () => {
