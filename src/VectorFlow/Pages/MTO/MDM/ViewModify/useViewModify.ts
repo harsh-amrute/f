@@ -2132,6 +2132,10 @@ const useViewModify = (pageType: string) => {
             const match = ccrGroupNameFromId(value)
             return match ? match : value
           }
+
+          if(params.value instanceof Date){
+            return params.value.toLocaleDateString("en-CA");
+          }
       
           return value?.toString() || "";       
         },
