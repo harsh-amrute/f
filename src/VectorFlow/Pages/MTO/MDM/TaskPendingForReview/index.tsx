@@ -44,6 +44,7 @@ const MTOTaskPendingForReview = () => {
             rowSelection: "multiple",
             defaultColDef: {
               flex: 1,
+              suppressHeaderMenuButton: true
             },
           }}
           statusBar={{
@@ -79,6 +80,7 @@ const MTOTaskPendingForReview = () => {
         gridOptions={{
           defaultColDef: {
             flex: currentMaster === 503 ? 1 : 0,
+            suppressHeaderMenuButton: true
           },
           readOnlyEdit: false,
           getRowStyle: (params: any) => {

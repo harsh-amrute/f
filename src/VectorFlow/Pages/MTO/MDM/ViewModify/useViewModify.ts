@@ -77,7 +77,6 @@ import {
 } from "../../../../types/MDM";
 
 import _ from "lodash";
-import moment from "moment";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify/unstyled";
 import { v4 as uuidv4 } from "uuid";
@@ -100,9 +99,7 @@ import {
   useGetPlantMasterData
 } from "../../../../../VectorFlow/Services/MTO/Common/Masters";
 import { useGetCCRGroupMaster } from "../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation";
-import { CustomStatusPanel } from "../CustomStatusPannel";
 import AddRemoveCellRenderer from "./AddRemoveCellRenderer";
-import { validateBuffer, validateCCR } from "./CommonUtils";
 import ConflictErrorCellRenderer from "./ConflictErrorCellRenderer";
 import DaysOfWeekRenderer from "./DaysOfWeekRenderer";
 import MajReasonDescCell from "./MajReasonDescCell";
@@ -112,6 +109,9 @@ import MTOCalendarEditCellRenderer from "./MTOCalendarEditCellRenderer";
 import MTOErrorWarningCell from "./MTOErrorWarningCell";
 import PoogiEditDeleteCell from "./PoogiEditDeleteCell";
 import ToggleButton from "./ToggleButton";
+import moment from "moment";
+import {CustomStatusPanel } from "../CustomStatusPannel";
+import { validateBuffer, validateCCR, validatePoogi } from "./CommonUtils";
 
 const useViewModify = (pageType: string) => {
   const dispatch = useDispatch();
@@ -190,7 +190,7 @@ const useViewModify = (pageType: string) => {
     []
   );
   const [seasonalityRowData, setSeasonalityRowData] = useState<any>([]);
-
+  const tempRefPoogi = useRef<any>(null);
 
   const {
     mutateAsync: MTOMasterUIConfiguration, isLoading /*isLoading: MTOBufferLoading*/,
@@ -482,7 +482,7 @@ const useViewModify = (pageType: string) => {
   
     const commonStyle = (params: any) => {
       const { data } = params;
-      if (params?.colDef?.colId && !params?.colDef?.colId?.toLowerCase()?.includes("action") && data?.id) { 
+      if (params?.colDef?.colId && !params?.colDef?.colId?.toLowerCase()?.includes("action") && data?.isdel) { 
         return {
           filter: "blur(1px)",
           opacity: 0.6,
@@ -859,7 +859,7 @@ const useViewModify = (pageType: string) => {
       const newData: any = [];
       allRows.forEach((e: any, index: number) => {
         const newVal = _.cloneDeep(e);
-        newVal.err = validateCCR(e, activeMaster, ccrInitialData, ccrModifyData, CCRGroupMaterSetRef, plantMaster, deptMaster);
+        newVal.err = validateCCR(e, activeMaster, ccrInitialData, ccrModifyData, CCRGroupMaterSetRef, plantMaster, deptMaster, allRows);
         newData.push(newVal);
       });
       
@@ -873,55 +873,7 @@ const useViewModify = (pageType: string) => {
       const newData: any = [];
       allRows.forEach((e: any) => {
         const newVal = _.cloneDeep(e);
-        
-        if (
-          plantMaster.length &&
-          !plantMaster.some(
-            (plant: any) =>
-              plant.plant_name === e.plnm || plant.plant_id === e.plnm
-          )
-        ) {
-          newVal.err = {
-            error: "Please select a valid plant from the dropdown",
-            warning: "",
-          };
-        } else if (e.plnm === "" || !e.plnm) {
-          newVal.err = { error: "Plant name cannot be empty!", warning: "" };
-        }
-        if (e.majdsc === "" || e.majdsc === null) {
-          newVal.err = {
-            error: "Major reason description cannot be empty!",
-            warning: "",
-          };
-        } else if (e.mindsc === "" || e.mindsc === null) {
-          newVal.err = {
-            error: "Each major reason must have at least one minor reason!",
-            warning: "",
-          };
-        }
-        if (
-          e.mindsc !== "" &&
-          e.mindsc !== null &&
-          (e.majdsc === "" || e.majdsc === null)
-        ) {
-          newVal.err = {
-            error: "State the major reason to which the minor reason belongs!",
-            warning: "",
-          };
-        }
-
-        // Assuming newData is an array of objects and e is an object with majdsc and mindsc properties
-        const isDuplicate = newData.some((item:any) => (
-          item.majdsc === e.majdsc && item.mindsc === e.mindsc
-        ));
-
-        if (isDuplicate) {
-          newVal.err = {
-            error: "Minor reason should be unique for each major reason!",
-            warning: ""
-          };
-        }
-
+        newVal.err = validatePoogi(e, activeMaster, poogiInitialData, poogiModifyData, plantMaster, allRows);
         newData.push(newVal);
       });
 
@@ -975,7 +927,7 @@ const useViewModify = (pageType: string) => {
          })
 
          newVal.err = {
-            error: errorOrders[0].message,
+            error: errorOrders[0]?.message,
             warning: ""
           }
 
@@ -993,7 +945,6 @@ const useViewModify = (pageType: string) => {
   };
 
   const agGridProps: AgGridReactProps = {
-    singleClickEdit:true,
     tooltipShowDelay: 0,
     readOnlyEdit: true,
     tooltipTrigger: "hover",
@@ -1023,7 +974,6 @@ const useViewModify = (pageType: string) => {
           }
         });
         validateMTOMaster(activeMaster.id, newRowData);
-        return;
       }
     },
     onCellValueChanged: (event) => {
@@ -1032,9 +982,7 @@ const useViewModify = (pageType: string) => {
       const newValue = event.newValue;
       const newRow = { ...data };
       newRow[field] = newValue;
-      // if(activeMaster.id===503){
-      //   return;
-      // }
+
       if (pageType === "add") {
         const newRowData = _.cloneDeep(
           activeMaster.rowData.map((row: any) => {
@@ -1055,74 +1003,27 @@ const useViewModify = (pageType: string) => {
         return;
       }
     },
-    onRowDataUpdated: (event: any) => {
-      if (activeMaster.id === 503) {
-        const nodesToSelect: any = [];
-
-        event.api.forEachNode((node: any) => {
-          if (
-            !node.data.minId &&
-            node.data?.majId === selectedMajReason?.majId
-          ) {
-            nodesToSelect.push(node);
-          }
-        });
-        event.api.setNodesSelected({ nodes: nodesToSelect, newValue: true });
-      }
-
-      const downloadableColumnKeys: string[] = [];
-      activeMaster.fields.forEach((field: Field) => {
-        if (field.isDownload) {
-          downloadableColumnKeys.push(field.key);
-        }
-      });
-
-      if (downloadData) {
-        const currentMaster = masters.find(
-          (master: MDMMasterState) => master.id === activeMaster.id
-        );
-        const visibleColumns = ref.current?.api.getAllDisplayedColumns();
-        const validColumnKeys: string[] = [];
-        if (visibleColumns) {
-          visibleColumns.forEach((col: any) => {
-            if (
-              isUploadModalOpen &&
-              !downloadableColumnKeys.includes(col.colId)
-            ) {
-              return;
-            }
-            validColumnKeys.push(col.colId);
-          });
-        }
-        // if (currentMaster) {
-        //   event.api.exportDataAsExcel(onExcelExprot(colDefs));
-        // }
-      }
-    },
     rowSelection: "multiple",
     suppressRowClickSelection: true,
-    components: customCellRenderers,
-    onSelectionChanged: () => {
-      if (ref.current?.api) {
-        setSelectedRowsCount(ref.current?.api.getSelectedRows().length);
-      }
+    defaultColDef:{
+      suppressHeaderMenuButton:true,
     },
+    components: customCellRenderers,
     onGridReady: (params: any) => {
       if (activeMaster.id === 501) {
         params.api.sizeColumnsToFit();
       }
     },
-
     onCellEditingStopped(event) {
       const data = event.data;
       const field: any = event.colDef.field;
       const newValue = event.newValue;
       const newRow = { ...data };
       newRow[field] = newValue;
-      
-      // if(activeMaster.id===503){
-      //   return;
-      // }
+      if(activeMaster.id===503){
+        ref.current?.api.applyTransaction({update: [newRow]})
+        setSelectedMajReason(newRow);
+      }
       if (pageType === "add") {
         if(activeMaster.id === 504 && field === "plid"){
           newRow.ccr_id = null; 
@@ -1130,7 +1031,7 @@ const useViewModify = (pageType: string) => {
         }
         const newRowData = _.cloneDeep(
           activeMaster.rowData.map((row: any) => {
-            if (row.hid === data.hid) {
+            if(row.tempRowId === data.tempRowId){
               return newRow;
             }
             return row;
@@ -1144,10 +1045,8 @@ const useViewModify = (pageType: string) => {
           }
         });
         validateMTOMaster(activeMaster.id, newRowData);
-        return;
       }
-
-      if (data.minId === undefined) {
+      if(pageType!== "add" && activeMaster.id!==503){
         const newRowData = activeMaster.rowData.map((row: any) => {
           if (JSON.stringify(row) === JSON.stringify(data)) {
             return newRow;
@@ -1156,20 +1055,8 @@ const useViewModify = (pageType: string) => {
         });
         // setEnableEditOnlineReset(true)
         dispatch(UPDATE_ROW_DATA([...newRowData]));
-      } else if (activeMaster.id === 503) {
-        const newRowData = activeMaster.rowData.map((row: any) => {
-          if (JSON.stringify(row.majId) === JSON.stringify(data.majId)) {
-            row.minData.map((ele: any) => {
-              if (ele.minId === data.minId) {
-                return data;
-              }
-              return ele;
-            });
-          }
-          return row;
-        });
-        dispatch(UPDATE_ROW_DATA([...newRowData]));
       }
+
     },
     statusBar:{
       statusPanels: [
@@ -1241,7 +1128,7 @@ const useViewModify = (pageType: string) => {
           )
           .map((col: ColDef) => col.field),
       };
-      if (tempDownloadData)
+      if (tempDownloadData){
         event.api.exportDataAsExcel({
           fileName: downloadFileName
             ? "Error-" + downloadFileName
@@ -1252,13 +1139,22 @@ const useViewModify = (pageType: string) => {
               return params.value.error || params.value.warning || "";
             }else if(params.value instanceof Date){
               return params.value.toLocaleDateString("en-CA");
+            }else if(params.column.getColId() === "ccr_id" && activeMaster.id === 504){
+              return getCCRNamesFromId(ccrsData,[params?.node?.data?.ccr_id])
             }
             return params.value;
         },
-        });
-      
+      });
+      closeIfNoRowData();
+    }      
     },
   };
+
+  function closeIfNoRowData(){
+    if(!activeMaster.rowData.length){
+      onBackButton();
+    }
+  }
 
   const addCheckBoxColDefs = () => {
     const checkboxColDefs: ColDef[] = [
@@ -1880,8 +1776,7 @@ const useViewModify = (pageType: string) => {
         notifyError("Please select a file to upload.");
         return;
       }
-      // const selectedColumns = ref.current?.api.getAllDisplayedColumns();
-      // const toasId = notifyLoader("Reading File");
+
       setIsOverlayVisible(true);
 
       // TODO : MTO check for which all master this needs to be done
@@ -1928,7 +1823,6 @@ const useViewModify = (pageType: string) => {
         mode: "upload",
       });
 
-
       dispatch(
         UPDATE_COLDEFS([
           {
@@ -1948,53 +1842,11 @@ const useViewModify = (pageType: string) => {
       formData.append("file", file);
       formData.append("ui_config", JSON.stringify(activeMaster.fields));
       formData.append("screen_type", JSON.stringify({ screenType: pageType }));
-      // const processId = uuidv4();
-
-      // TODO: checked for buffer only make it dynamic
-      //   if(activeMaster.id!==501 && activeMaster.id!==502 && activeMaster.id!==503 && activeMaster.id!==504){
-
-      //     intervalID = setInterval(async () => {
-      //       const progress = await getUploadProgress(processId);
-      //       setUploadProgress(progress.data.progress);
-      //       setTotalProgress(progress.data.totalRows)
-      //     }, 1000)
-
-      //     const response = await validateMaster({ formData, masterId: activeMaster.id });
-      //     clearInterval(intervalID);
-      //     let result = JSON.parse(response.data)
-      //     const errorAndWarningData = result.filter((data: any) => data.error.length > 0 || data.warning.length > 0)
-      //     result = [...errorAndWarningData, ...result.filter((data: any) => data.error.length === 0 && data.warning.length === 0)]
-
-      //     setIsOverlayVisible(false);
-
-      //   const ifErrorExists = result.find((data: any) => data.error.length > 1);
-      //   const ifWarningExists = result.find((data: any) => data.warning.length > 1);
-
-      //   if (ifErrorExists) {
-      //     dispatch(UPDATE_PROGRESS_STATE('error'));
-      //     addInvalidDataColDefs('error');
-      //   }
-      //   if (ifWarningExists) {
-      //     // dispatch(UPDATE_PROGRESS_STATE('error'));
-      //     addInvalidDataColDefs('warning');
-      //   }
-      //   if (!ifErrorExists) {
-      //     if (activeMaster.progress === 'deleteView') dispatch(UPDATE_PROGRESS_STATE('deleteUploaded'));
-      //     else dispatch(UPDATE_PROGRESS_STATE('uploaded'));
-      //     addCheckBoxColDefs();
-      //   }
-
-      //   dispatch(SET_RECORD_COUNT(result.length));
-      //   dispatch(UPDATE_ROW_DATA(result));
-      //   dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
-      // }
-      // else{
+     
       dispatch(SET_RECORD_COUNT(buffData?.length));
       dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
 
       dispatch(UPDATE_ROW_DATA(buffData));
-
-      // }
 
       dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
       dispatch(TOGGLE_UPLOAD_MODAL(false));
@@ -2155,6 +2007,10 @@ const useViewModify = (pageType: string) => {
 
           if(params.value instanceof Date){
             return params.value.toLocaleDateString("en-CA");
+          }
+
+          if(params.column.getColId() === "ccr_id" && activeMaster.id === 504){
+            return getCCRNamesFromId(ccrsData,[params?.node?.data?.ccr_id])
           }
       
           return value?.toString() || "";       
@@ -2594,6 +2450,7 @@ const useViewModify = (pageType: string) => {
       setDownloadData(false);
       setTempDownloadData(false);
       setFilterButtonStatus([]);
+      setSelectedMajReason("");
       
       dispatch(RESET_MTO_STATE());
       
@@ -2848,36 +2705,6 @@ const useViewModify = (pageType: string) => {
       return id;
     }
   };
-
-  // function myCCRFormatter(params: any) {
-  //   console.log(params, "params");
-  //   console.log(params?.data[params.column.colId], "params");
-  //   const currDropdownValue = params?.data[params.column.colId];
-
-  //   let val = params?.data[params.column.colId];
-  //   if (params.column.colId === "pl" || params.column.colId === "plnm") {
-  //     if (plantMaster) {
-  //       plantMaster.forEach((ele: any) => {
-  //         if (ele?.plant_id?.toString() === currDropdownValue?.toString()) {
-  //           val = ele.plant_name;
-  //         }
-  //       });
-  //     }
-  //   } else if (params.column.colId === "dp") {
-  //     if (deptMaster) {
-  //       deptMaster.forEach((ele: any) => {
-  //         if (ele?.dept_id?.toString() === currDropdownValue?.toString()) {
-  //           val = ele.dept_name;
-  //         }
-  //       });
-  //     }
-  //   } else if (params.column.colId === "cgid") {
-  //     if (ccrGroupMaster) {
-  //       val = getCCRGroupKeyById(ccrGroupMaster, currDropdownValue);
-  //     }
-  //   }
-  //   return val;
-  // }
   
   function myCCRFormatter(params: any, columnId?: any, isValue = false): any {
     const colId = columnId || params?.column?.colId;
@@ -2939,7 +2766,7 @@ const useViewModify = (pageType: string) => {
       ccr_names,
       mode: "edit",
     });
-
+   
     const isFromSaveDraft503 = prevPath === saveDraft && activeMaster.id === 503;
 
     if(isFromSaveDraft503){
@@ -2973,52 +2800,6 @@ const useViewModify = (pageType: string) => {
     }
   };
 
-  const addEditableToLastMinColumn = async () => {
-    const modifiedColDefs = activeMaster.colDefs.map((colDef: any) => {
-      const editable = (params: any) => {
-        return params.node.rowIndex === 0 && params.colDef.colId === "mindsc";
-      };
-
-      if (activeMaster.id === 503) {
-        return {
-          ...colDef,
-          cellStyle: (params: any) => {
-            if (
-              params.data.majId?.toString().startsWith("m") ||
-              params.data.minId?.toString().startsWith("m") ||
-              params.data.ie === false ||
-              params.data.iu === true ||
-              params.data.id === true
-            ) {
-              return { color: "rgb(128, 0, 64)" };
-            }
-          },
-          editable,
-        };
-      } else {
-        return {
-          ...colDef,
-          cellEditor: "agNumberCellEditor",
-          editable,
-          cellStyle: (params: any) => {
-            if (
-              params.data.bid === null ||
-              params.data.bid === undefined ||
-              params.data.iv === false
-            ) {
-              return { color: "rgb(128, 0, 64)" };
-            }
-          },
-        };
-      }
-    });
-
-    // if (modifiedColDefs.find((colDef: any) => colDef.field === "actions")) {
-    //   return;
-    // }
-
-    dispatch(UPDATE_COLDEFS([actionsCol(true), ...modifiedColDefs]));
-  };
 
   const addRowToMtoGrid = () => {
     let newRow: any = {};
@@ -3079,43 +2860,49 @@ const useViewModify = (pageType: string) => {
         majdsc: "",
         majId: newId,
         ie: false,
-        minData: [{ majId: newId, mindsc: "", minId: newIdMin, ie: false, ia: true, iu: true,}],
+        minData: [{ majId: newId, editable: true, mindsc: "", minId: newIdMin, ie: false, ia: true, iu: false,}],
         ia: true,
-        iu: true,
+        iu: false,
+        editable: true
       };
       setSelectedMajReason(newRow);
     }
-    // addRowToMtoMinGrid();
-    dispatch(UPDATE_ROW_DATA([newRow, ...activeMaster.rowData]));
-    addEditableToLastColumn();
+    if(activeMaster.id !== 503){
+      dispatch(UPDATE_ROW_DATA([newRow, ...activeMaster.rowData]));
+      addEditableToLastColumn();
+    }
+    else{
+      const res = ref.current?.api.applyTransaction({add: [newRow], addIndex: 0});
+      ref.current?.api.refreshCells();
+      ref.current?.api.deselectAll();
+      res?.add?.[0]?.setSelected(true);
+    }
   };
 
   const addRowToMtoMinGrid = () => {
     const newMinId = "min" + uuidv4();
+   
+    // const selectedMajReason = ref.current?.api.getSelectedRows()[0];
+    const newMinReason = {
+      majId: selectedMajReason.majId,
+      editable: true,
+      mindsc: "",
+      minId: newMinId,
+      ie: false,
+      ia: true,
+      iu: false,
+    };
     const newSelectedMajReason = {
       ...selectedMajReason,
-      minData: [
-        {
-          majId: selectedMajReason.majId,
-          ie: false,
-          minId: newMinId,
-          mindsc: "",
-       
-        },
+      minData: [  
+        newMinReason,
         ...selectedMajReason.minData,
       ],
     };
-    const newRowData: any = [];
-    activeMaster.rowData.forEach((element) => {
-      if (element.majId === selectedMajReason.majId) {
-        newRowData.push(newSelectedMajReason);
-      } else {
-        newRowData.push(element);
-      }
-    });
-    dispatch(UPDATE_ROW_DATA(newRowData));
+    ref.current?.api.applyTransaction({update: [newSelectedMajReason]});
+    tempRefPoogi.current?.api.applyTransaction({add: [newMinReason], addIndex:0});
+    tempRefPoogi.current?.api.refreshCells();
     setSelectedMajReason(newSelectedMajReason);
-    addEditableToLastMinColumn();
   };
 
 
@@ -3130,6 +2917,7 @@ const useViewModify = (pageType: string) => {
           el.dow = [];
           el.iu = false;
           el.id = false;
+          el.iwd = el.iwd === "true" || el.iwd === true ? true : false;
     })
     return data
   }
@@ -3389,6 +3177,7 @@ const useViewModify = (pageType: string) => {
       notifyError("Failed to create task!");
     }
   };
+
   const onMTOAddPoogiData = async () => {
     notifyLoader("Saving Poogi Task...");
 
@@ -3434,7 +3223,7 @@ const useViewModify = (pageType: string) => {
 
         if (!existingMajor) {
           existingMajor = {
-            majdsc,
+            majdsc: majdsc.trimEnd(),
             majid: null,
             majId: null,
             majcd: "*",
@@ -3450,7 +3239,7 @@ const useViewModify = (pageType: string) => {
         }
 
         existingMajor.minData.push({
-          mindsc,
+          mindsc: mindsc.trimEnd(),
           minid: null,
           majid: null,
           majId: null,
@@ -3463,6 +3252,7 @@ const useViewModify = (pageType: string) => {
       });
     }
     PoogiPostObj.reasonData = finPoogiPostData;
+
     try {
       const response = await savePOOGIMasterTask(PoogiPostObj);
 
@@ -3636,6 +3426,26 @@ const useViewModify = (pageType: string) => {
       return;
     } else if (activeMaster.id === 503) {
       notifyLoader("Saving POOGI Task...");
+
+      // 1. Collect all major rows from the grid ref
+      const allMajorRows: any[] = [];
+      ref.current?.api.forEachNode((node: any) => {
+        allMajorRows.push(_.cloneDeep(node.data));
+      });
+      
+      // 2. Check if any row is still in editable mode (major or any of its minData)
+      const hasEditable = allMajorRows.some((row: any) => {
+        if (row.editable) return true;
+        if (row.minData?.some((min: any) => min.editable)) return true;
+        return false;
+      });
+
+      if (hasEditable) {
+        toast.dismiss();
+        notifyError("Please complete all editing before creating the task.");
+        return;
+      }
+
       const POOGIPostObj: any = {
         mid: activeMaster.id,
         uid: user.user.user.id.toString(),
@@ -3643,65 +3453,82 @@ const useViewModify = (pageType: string) => {
         reasonData: [],
         at: pageType === "add" ? "Add" : "Modify",
       };
+      allMajorRows.forEach((ele: any) => {
+        // If ia: true AND id: true, skip entirely (newly added then deleted)
+        if (ele.ia && ele.id) return;
 
-      poogiModifyData?.forEach((ele: any) => {
+        // Only include rows that have some change: ia, iu, or id
+        if (!ele.ia && !ele.iu && !ele.id) {
+          // Check if any minData has changes
+          const hasMinChanges = ele.minData?.some((min: any) => min.ia || min.iu || min.id);
+          if (!hasMinChanges) return;
+        }
+
         const e = _.cloneDeep(ele);
         e.majid = ele.majId;
         e.majcd = ele.majcd ? ele.majcd : "*";
-        if (typeof e.majId === "string" && e.majId.startsWith("m")) {
+
+        if (ele.ia) {
+          // Newly added major reason - remove custom majId
           e.majId = null;
           e.majid = null;
           e.ie = false;
         } else {
           e.ie = true;
         }
+
         e.id = ele.id ? ele.id : false;
         e.iu = ele.iu ? ele.iu : false;
 
-        // Iterate through minData to check and update minId if it starts with 'm'
-        e.minData.forEach((minElement: any) => {
-          minElement.id = minElement.id ? minElement.id : false;
-          if (
-            typeof minElement.minId === "string" &&
-            minElement.minId.startsWith("m")
-          ) {
-            minElement.minId = null;
-            minElement.majId = null;
-            minElement.minid = null;
-            minElement.majid = null;
-            minElement.ie = false;
-            minElement.mincd = minElement.mincd ? minElement.mincd : "*";
-          } else {
-            minElement.ie = true;
-          }
-          minElement.minid = minElement.minId;
-          minElement.majid = minElement.majId;
-          minElement.mincd = minElement.mincd ? minElement.mincd : "*";
-          minElement.iu = minElement.iu ? minElement.iu : false;
-        });
+        // Process minData
+        if (e.minData) {
+          e.minData = e.minData
+            .filter((minElement: any) => {
+              // If ia: true AND id: true, skip (newly added then deleted)
+              if (minElement.ia && minElement.id) return false;
+              return true;
+            })
+            .map((minElement: any) => {
+              const min = { ...minElement };
+              min.id = minElement.id ? minElement.id : false;
+              min.iu = minElement.iu ? minElement.iu : false;
+
+              if (minElement.ia) {
+                // Newly added minor reason - remove custom minId/majId
+                min.minId = null;
+                min.majId = null;
+                min.minid = null;
+                min.majid = null;
+                min.ie = false;
+              } else {
+                min.ie = true;
+                min.minid = minElement.minId;
+                min.majid = minElement.majId;
+              }
+
+              min.mincd = minElement.mincd ? minElement.mincd : "*";
+              return min;
+            });
+        }
 
         plantMaster?.forEach((elm: any) => {
           if (elm.plant_name === ele.plnm) e.pl = elm.plant_id;
         });
+
         POOGIPostObj.reasonData.push(
-          _.omit(e, ["editable", "error", "warning", "plnm"])
+          _.omit(e, ["editable", "error", "warning", "plnm", "oldValue", "ipd"])
         );
       });
+
       try {
         const response = await savePOOGIMasterTask(POOGIPostObj);
         if (response.status === 200) {
           toast.dismiss();
           notifySuccess("Saved POOGI Task Successfully");
-          const newPoogiInitialData = _.cloneDeep(poogiInitialData);
-          const finNewPoogiInitialData = newPoogiInitialData.filter(
-            (item: any) =>
-              !item.majId?.toString().startsWith("m") &&
-              !item.minData.some((minItem: any) =>
-                minItem.minId?.toString().startsWith("m")
-              )
-          );
-          dispatch(UPDATE_ROW_DATA(finNewPoogiInitialData));
-          dispatch(SET_POOGI_INITIAL_DATA(newPoogiInitialData));
+          // Refresh data from server
+          const result = await getPOOGIMasterData({});
+          dispatch(SET_POOGI_INITIAL_DATA(result.data.data));
+          dispatch(UPDATE_ROW_DATA(result.data.data));
           dispatch(SET_POOGI_MODIFY_DATA([]));
           setMTOProgress("submitted Once");
         } else {
@@ -4069,21 +3896,34 @@ const useViewModify = (pageType: string) => {
     setSelectedMajReason(ref?.current?.api?.getSelectedRows()[0]);
   };
 
-  const onMinReasonEditingStopped = (params: any) => {
-    const newData = _.cloneDeep(activeMaster.rowData);
-    let majIdIndex = 0;
-    activeMaster.rowData.forEach((ele: any, index: number) => {
-      if (ele?.majId === selectedMajReason?.majId) {
-        majIdIndex = index;
-      }
-    });
+  const onMinReasonEditingStopped = (event: any) => {
+    // TODO: update both the minReasonRowData and activeMaster
 
-    newData[majIdIndex] &&
-      (newData[majIdIndex].minData[params.node.rowIndex].mindsc =
-        params.newValue);
-    dispatch(UPDATE_ROW_DATA(newData));
-    setSelectedMajReason(newData[majIdIndex]);
-  };
+    const data = event.data;
+    const field: any = event.colDef.field;
+    const newValue = event.newValue;
+    const newRow = { ...data };
+    newRow[field] = newValue;
+    //update minor reason
+    tempRefPoogi.current.api.applyTransaction({
+      update: [newRow]});
+      //update major reason
+    const updatedMajReason = {
+      ...selectedMajReason,
+      minData: selectedMajReason.minData.map((min: any) =>
+        min.minId === event.data.minId
+          ? { ...min, [field]: newValue }
+          : min
+      ),
+    };
+    
+    ref.current?.api.applyTransaction({
+      update: [updatedMajReason],
+    });
+      
+    setSelectedMajReason(updatedMajReason);
+    
+  }
 
   const getCombinedPoogiDataForExcelExport = () => {
     if(activeMaster?.id!== 503) return [];
@@ -4202,7 +4042,9 @@ const useViewModify = (pageType: string) => {
         cellStyle: {
           textAlign: "center",
         },
-        valueGetter: "node.rowIndex + 1",
+         valueGetter: (params: any)=>{
+          return params.node.rowIndex + 1;
+        },
       },
       ...activeMaster.colDefs
         .filter(
@@ -4215,7 +4057,10 @@ const useViewModify = (pageType: string) => {
           if (col.colId === "mindsc") {
             return {
               ...col,
-              cellRenderer: MinReasonDescCell,
+              // cellRenderer: MinReasonDescCell,
+              editable: (params: any)=>{
+                return params.data.editable;
+              }
             };
           }
           return col;
@@ -4223,6 +4068,10 @@ const useViewModify = (pageType: string) => {
       {
         headerName: "Action",
         cellRenderer: "poogiEditDeleteCellRenderer",
+        cellRendererParams: {
+          majorRef: ref,
+          minRef: tempRefPoogi
+        },
         maxWidth: 100,
         filter: false
       },
@@ -4234,7 +4083,9 @@ const useViewModify = (pageType: string) => {
         cellStyle: {
           textAlign: "center",
         },
-        valueGetter: "node.rowIndex + 1",
+        valueGetter: (params: any)=>{
+          return params.node.rowIndex + 1;
+        },
       },
       ...activeMaster.colDefs
         .filter(
@@ -4248,7 +4099,10 @@ const useViewModify = (pageType: string) => {
           if (col.colId === "majdsc") {
             return {
               ...col,
-              cellRenderer: MajReasonDescCell,
+              // cellRenderer: MajReasonDescCell,
+              editable: (params: any)=>{
+                return params.data.editable;
+              }
             };
           }
           else if(col.colId === 'plnm'){
@@ -4258,6 +4112,9 @@ const useViewModify = (pageType: string) => {
               cellEditorParams: {
                 values: plantMaster?.map((item: any) => item.plant_name),
               },
+              editable: (params: any)=>{
+                return params.data.editable;
+              }
             }
           }
           return col;
@@ -4265,6 +4122,10 @@ const useViewModify = (pageType: string) => {
       {
         headerName: "Action",
         cellRenderer: "poogiEditDeleteCellRenderer",
+         cellRendererParams: {
+          majorRef: ref,
+          minRef: tempRefPoogi
+        },
         maxWidth: 100,
         filter: false
       },
@@ -4280,7 +4141,9 @@ const useViewModify = (pageType: string) => {
     showModal,
     setShowModal,
     bufferDataConfirm: onIncompleteDataConfirm,
-    isAPILoading
+    isAPILoading,
+    tempRefPoogi,
+    selectedMajReason,
   };
 };
 export default useViewModify;
