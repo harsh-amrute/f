@@ -939,6 +939,27 @@ const useViewModify = (pageType: string) => {
         const isValidCCRForPlant = plantCrrMap[palntNameToId]?.some((ccr:any)=> ccr.value === e.ccr_id)
 
         const {error} = CALENDAR_Add_VALIDATION_SCHEMA.validate(e,{abortEarly:false})
+        const isDuplicate = newData.some((item: any) => {
+          const sd1 = new Date(item.sd).getTime();
+          const ed1 = new Date(item.ed).getTime();
+        
+          const sd2 = new Date(e.sd).getTime();
+          const ed2 = new Date(e.ed).getTime();
+        
+          return (
+            sd1 === sd2 &&
+            ed1 === ed2 &&
+            item.plid === e.plid &&
+            item.ccr_id === e.ccr_id
+          );
+        });
+
+        if(isDuplicate){
+          newVal.err = {
+            error: "Duplicate entry for the same date range, plant and CCR!",
+            warning: ""
+          }
+        }
         
         if(!isValidCCRForPlant){
           newVal.err = {
@@ -1883,7 +1904,6 @@ const useViewModify = (pageType: string) => {
         buffData.forEach((calendar: any) => {
           const ccrFound = ccrNames.find((ccr: any) => ccr.ccr_name === calendar.ccr_id);
           const plantFound = plantMaster.find((plant: any) => plant.plant_name === calendar.plid);
-          calendar.hid = uuidv4()
           if (ccrFound) {
             calendar.ccr_id = ccrFound.ccr_id;
           }
