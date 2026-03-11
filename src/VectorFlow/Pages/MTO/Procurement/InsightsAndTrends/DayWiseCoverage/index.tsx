@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import  { useCallback, useEffect, useMemo, useState } from "react";
 import DayWiseCoverageCalender from "./DayWiseCoverageCalender";
 import DayWiseCoverageHeader from "./DayWiseCoverageHeader";
 import DayWiseCoverageTable from "./DayWiseCoverageTable";
@@ -23,12 +23,11 @@ import {
   useGetUserUIConfigData,
   useUpdateUserUIConfigData,
 } from "../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig";
-import { FilterPageName, UIGridCode } from "../../../Common/Enum";
+import { FilterPageName, pagination, UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from "../../../../../../helpers/utils";
 import ColorCellRenderer from "../../../Common/ColorCellRenderer/ColorCellRenderer";
-import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
 import SafeLottie from "../../../../../../components/commons/SafeLottie";
 import { useGetFilterData } from '../../../../../..//VectorFlow/Services/MTO/Common/CommonFilter';
 import useFilter from '../../../../../../hooks/useFilter';
@@ -98,7 +97,7 @@ const DayWiseCoverage = () => {
 
 
 
-    const [userPageSize, setUserPageSize] = useState<number>(20); 
+    const [userPageSize, setUserPageSize] = useState<number>(pagination.mtoPageSize); 
     const [userConfigFetched, setUserConfigFetched] = useState(false); 
     const [showExcelModal, setShowExcelModal] = useState(false);
 
@@ -354,8 +353,8 @@ const DayWiseCoverage = () => {
             
             // Extract column state
             const newColState = configData.cs || []; 
-            // Extract page size (fallback to 20 if not found)
-            const savedPageSize = configData.pageSize ? Number(configData.pageSize) : 20;
+            // Extract page size (fallback to default if not found)
+            const savedPageSize = configData.pageSize ? Number(configData.pageSize) : pagination.mtoPageSize;
 
             setColumnState(newColState);
             setUserPageSize(savedPageSize);
@@ -425,8 +424,7 @@ const DayWiseCoverage = () => {
 
     useEffect(() => {
         if (isReset) {
-          handleSaveClick(masterUIConfig, 20); 
-          setUserPageSize(20);
+          handleSaveClick(masterUIConfig); 
           setIsReset(false);
         }
       }, [isReset]);
