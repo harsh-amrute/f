@@ -113,6 +113,7 @@ export const TableContainer = style({
   borderRadius: "8px",
   display: "flex",
   flex: 1,
+  minHeight: "400px",
   justifyContent: "center",
   alignItems: "center",
   width: "100%",
@@ -225,4 +226,26 @@ export const zoom075 = style({
   selectors: {
     "&": { zoom: "0.75 !important" }
   }
+});
+export const TableWrapper = style({
+  height: "100%",
+  flex: 1,
+  width: "100%",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+});
+
+globalStyle(`${TableWrapper} > .ag-theme-alpine`, {
+  height: "100%",
+  width: "100%",
+  marginLeft: "3rem",
+  marginTop: "1rem",
+  marginBottom: 0,
+});
+
+globalStyle(`${TableWrapper} > div[data-testid="vf_pagination"]`, {
+  width: "100%",
+  margin: "0 0 0 30px",
+  // padding: "0px 15px !important",
 });

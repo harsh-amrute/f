@@ -143,7 +143,7 @@ const MTOAddRecord = () => {
    const calendarModifiedColDefs = ()=>{
     if(activeMaster.id === 504){
       const calendarModifiedColDef = activeMaster.colDefs.filter((colDef: any) => {
-        if (colDef.field !== "plid" && colDef.field !== "rb" && colDef.field !== "rd") {
+        if (colDef.field !== "rb" && colDef.field !== "rd") {
           return true;
         }
         return false;

@@ -412,8 +412,16 @@ const useTaskPendingForReview = ()=>{
                 const uiConfigurationResponse = await MTOMasterUIConfiguration();
             
                 const masters:Master[] = uiConfigurationResponse.data.data
-                const currentMasterFields = masters.find((master:Master)=>master.id==currentTaskMasterId)?.fields
+                const pageType = taskData?.TaskName.split('-')[0].trim()?.toLowerCase();
+                let currentMasterFields;
                 
+                // To remove unwanted fields in Add Calendar Records
+                if(pageType === "add" && taskData.mid === 504){
+                    const masterFields = masters.find((master:Master)=>master.id===taskData.mid)?.fields
+                    currentMasterFields = masterFields?.filter((field: any) => field.key !== 'dow' && field.key !== 'rb' && field.key !== "rd" )
+                }else{
+                    currentMasterFields = masters.find((master:Master)=>master.id==currentTaskMasterId)?.fields
+                }
                 if(currentMasterFields){
 
                     // TODO do the modification of column definations here!

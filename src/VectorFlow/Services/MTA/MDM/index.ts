@@ -1,11 +1,12 @@
 import { useQuery, useMutation } from '@tanstack/react-query'
-import { GetMasterDataPayload } from '../../../types/MDM';
+import { GetMasterDataPayload, GetMasterDataPayloadExcel } from '../../../types/MDM';
 import { MDMService } from './api'
 
 
 export const QUERY_KEYS = {
   useGetMasterUIConfiguration: ['MDMService.useGetMasterUIConfiguration'],
   useGetMasterData: ['MDMService.useGetMasterData'],
+  useGetMasterData1: ['MDMService.useGetMasterData1'],
   useGetAllDrafts: ['MDMService.useGetAllDrafts'],
   useGetDraftCount: ['MDMService.useGetDraftCount'],
   useGetDraftById: ['MDMService.useGetDraftById'],
@@ -56,6 +57,12 @@ export const useGetRetailCount = () => {
 export const useGetMasterData = () => {
   return useMutation(async (body: GetMasterDataPayload) => {
     return await MDMService.getMasterData(body)
+  })
+}
+
+export const useGetMasterData1 = () => {
+  return useMutation(async (body: GetMasterDataPayloadExcel) => {
+    return await MDMService.getMasterData1(body)
   })
 }
 
@@ -169,6 +176,12 @@ export const useApproveTask = () => {
   })
 }
 
+export const useBulkApproveTask = () => {
+  return useMutation(async (body: { taskId: string, isApproveAll :any , Comments:any }) => {
+    return await MDMService.bulkApproveTask(body)
+  })
+}
+
 export const useRemoveMasterData = () => {
   return useMutation(async (body: any) => {
     return await MDMService.deleteMasterData(body)
@@ -178,6 +191,12 @@ export const useRemoveMasterData = () => {
 export const useModifyMasterData = () => {
   return useMutation(async (body: any) => {
     return await MDMService.modifyMasterData(body)
+  })
+}
+
+export const useBulkModifyMasterData = () => {
+  return useMutation(async (body: any) => {
+    return await MDMService.bulkmodifyMasterData(body)
   })
 }
 
@@ -193,6 +212,12 @@ export const useAddMasterData = () => {
   })
 }
 
+export const useBulkAddMasterData = () => {
+  return useMutation(async (body: any) => {
+    return await MDMService.bulkaddMasterData(body)
+  })
+}
+
 export const useAddMasterDataRetail = () => {
   return useMutation(async (body: any) => {
     return await MDMService.addMasterDataRetail(body)
@@ -202,6 +227,12 @@ export const useAddMasterDataRetail = () => {
 export const useDeleteMasterData = () => {
   return useMutation(async (body: any) => {
     return await MDMService.deleteMasterData(body)
+  })
+}
+
+export const useBulkDeleteMasterData = () => {
+  return useMutation(async (body: any) => {
+    return await MDMService.bulkdeleteMasterData(body)
   })
 }
 
