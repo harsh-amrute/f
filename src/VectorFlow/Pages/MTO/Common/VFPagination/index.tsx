@@ -54,22 +54,23 @@ const VFPagination = (props: VFPaginationProps) => {
   }, [userPageSize]);
 
   const defaultPaginationLimit = 100;
-  const totalPages = Math.max(
-    1,
-    Math.ceil(totalRows / (rowsPerPage || defaultPaginationLimit))
-  );
+  const totalPages = totalRows === 0 
+    ? 0 
+    : Math.ceil(totalRows / (rowsPerPage || defaultPaginationLimit));
 
   const clearGridFilter = () => {
     resetGridRef?.current?.api.setFilterModel(null);
   };
 
-  const getTotalItemsString = () => {
-    if (totalRows <= rowsPerPage) return `1 to ${totalRows}`;
-    if (currentPage === 1) return `1 to ${rowsPerPage}`;
-    const start = currentPage * rowsPerPage - rowsPerPage + 1;
-    const end = Math.min(currentPage * rowsPerPage, totalRows);
-    return `${start} to ${end}`;
-  };
+    const getTotalItemsString = () => {
+        if (totalRows === 0) return "0 to 0"; 
+        if (totalRows <= rowsPerPage) return `1 to ${totalRows}`;
+        if (currentPage === 1) return `1 to ${rowsPerPage}`;
+        const start = (currentPage * rowsPerPage) - rowsPerPage + 1;
+        const end = (currentPage) * rowsPerPage;
+        if (end >= totalRows) return `${start} to ${totalRows}`;
+        return `${start} to ${(currentPage) * rowsPerPage}`;
+    }
 
   const handleOnClick = (newPage: number) => {
     if (newPage === currentPage) return;

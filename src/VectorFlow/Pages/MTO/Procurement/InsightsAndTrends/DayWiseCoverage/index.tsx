@@ -36,6 +36,7 @@ import { ITooltipParams } from 'ag-grid-enterprise';
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
 import useColDef from '../../../../../../hooks/useColDef';
 import BomExcelModal from '../../../Common/BomExcelModal';
+import SwipePointer from "../../../../../../lottie/swipe pointer.json";
 
 enum Colors {
   Selected = "#B93B7E",
@@ -578,7 +579,7 @@ const onExcelExportClick = () => {
         ) : (
           <div className={AnimationWrapper}>
             <SafeLottie
-              src={"/assets/img/VectorFLOW/BPR/swipe pointer.json"}
+              src={SwipePointer}
               loop
               autoplay
               style={{ height: 100, width: 100 }}
@@ -620,7 +621,7 @@ const onExcelExportClick = () => {
             date={date}
             toggleCurrentTab={toggleCurrentTab}
           />
-          {(isMatReqDayWiseLoading || isMatReqLoading) && <VFLoader />}
+          {(isMatReqDayWiseLoading || isMatReqLoading) && <OverlayLoader />}
         </div>
       </VFModalCard>
       {calenderData?.[selectedDate] && (
@@ -638,7 +639,7 @@ const onExcelExportClick = () => {
           }}
           onClick={handleMaterialRequirementClick}
         >
-          Material Requirement{" "}
+          Material Requirement
           <svg
             id="Layer_2"
             data-name="Layer 2"

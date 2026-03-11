@@ -22,7 +22,7 @@ const colorMapper = (color: string) => {
         case "Underloaded":
             return { bg: ColorsMTO.Orange.code, text: ColorsMTO.White.code }
         case "Balanced":
-            return { bg: "#A8A8A8", text: ColorsMTO.White.code }
+            return { bg: "#A8A8A8", text: ColorsMTO.White.code } 
         default:
             return { bg: ColorsMTO.White.code, text: ColorsMTO.Black.code };
 

@@ -18,7 +18,7 @@ export const scDynamicContainer = style({
       height: '70vh',
     },
     [`screen and (min-width: ${size.desktop})`]: {
-      height: '110vh',
+      height: '70vh',
     },
   },
 });
