@@ -227,7 +227,8 @@ export const validatePoogi = (
       return plant ? plant.plant_id : null;
     };
 
-    if (plantMaster.length && getPlantId(rowData.plnm) === null) {
+    const rowPlantId = getPlantId(rowData.plnm);
+    if (plantMaster.length && rowPlantId === null) {
       return {
         error: "Please select a valid plant from the dropdown",
         warning: "",
@@ -235,7 +236,7 @@ export const validatePoogi = (
     }
 
     if (plantMaster.length) {
-      const plantId = getPlantId(rowData.plnm);
+      const plantId = rowPlantId;
       const major = rowData.majdsc.trimEnd();
       const minor = rowData.mindsc.trimEnd();
 

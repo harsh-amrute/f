@@ -482,7 +482,7 @@ const useViewModify = (pageType: string) => {
   
     const commonStyle = (params: any) => {
       const { data } = params;
-      if (params?.colDef?.colId && !params?.colDef?.colId?.toLowerCase()?.includes("action") && data?.id) { 
+      if (params?.colDef?.colId && !params?.colDef?.colId?.toLowerCase()?.includes("action") && data?.isdel) { 
         return {
           filter: "blur(1px)",
           opacity: 0.6,
