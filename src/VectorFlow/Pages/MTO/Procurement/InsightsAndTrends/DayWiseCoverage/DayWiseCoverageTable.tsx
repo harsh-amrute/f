@@ -1,18 +1,14 @@
 import { ExcelCell, ExcelExportParams, ExcelRow, GridOptions, ProcessRowGroupForExportParams } from "ag-grid-enterprise";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useUserData } from "../../../../../../context";
+import { formatFilterJSON } from "../../../../../../helpers/utils";
+import { useGetDayWiseCoverageData } from "../../../../../../VectorFlow/Services/MTO/Procurement/DayWiseCoverage";
+import VFPagination from "../../../Common/VFPagination";
 import VFTable from "../../../Common/VFTable";
 import CustomGroupCellRenderer from "./CustomGroupCellRenderer";
 import DayWiseCoverageDetailsCellRenderer from "./DayWiseCoverageDetailsCellRenderer";
-import { useGetDayWiseCoverageData } from "../../../../../../VectorFlow/Services/MTO/Procurement/DayWiseCoverage";
-import {
-  gridFilterWrapper,
-  textBtn,
-} from "../../../Common/VFPagination/styles.css";
-import { useUserData } from "../../../../../../context";
-import { formatFilterJSON } from "../../../../../../helpers/utils";
 import { TableWrapper } from "./style.css";
-import VFPagination from "../../../Common/VFPagination";
 
 interface IDayWiseCoverageProps {
   columnState: any,
@@ -54,7 +50,6 @@ const DayWiseCoverageTable = ({
     useGetDayWiseCoverageData();
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const { user } = useUserData();
-  const theme_ui = user.user.theme_ui;
 
   const [currentPage, setCurrentPage] = useState<number>(1);
 const [totalRows, setTotalRows] = useState<number>(0);
@@ -78,12 +73,6 @@ const [totalRows, setTotalRows] = useState<number>(0);
       setRowData(convertToArray);
     }
   };
-
-  const clearGridFilter = () => {
-    gridRef?.current?.api.setFilterModel(null);
-    setIsDisabled(true);
-  };
-  const brand = theme_ui === "REGALBLAZE" ? "REGALBLAZE" : "DEFAULT";
 
 
 
@@ -251,6 +240,7 @@ const handlePageSizeChange = (newSize: any) => {
       handleChangePage={handlePageChange}
       customPageSizeEnabled={true}
       savePageSize={handlePageSizeChange}
+      userPageSize={userPageSize}
     />
     </div>
 

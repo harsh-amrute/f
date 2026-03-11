@@ -1,9 +1,4 @@
-import  { useCallback, useEffect, useMemo, useState } from "react";
-import DayWiseCoverageCalender from "./DayWiseCoverageCalender";
-import DayWiseCoverageHeader from "./DayWiseCoverageHeader";
-import DayWiseCoverageTable from "./DayWiseCoverageTable";
-import { AnimationWrapper, HelperText, TableContainer } from "./style.css";
-import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
+import { ITooltipParams } from 'ag-grid-enterprise';
 import {
   add,
   eachMonthOfInterval,
@@ -12,30 +7,35 @@ import {
   getMonth,
   startOfMonth,
 } from "date-fns";
-import { useGetDayWiseCoverageData } from "../../../../../../VectorFlow/Services/MTO/Procurement/DayWiseCoverage";
-import OverlayLoader from "../../../Common/Loader";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
-import { DAYWISE_COVERAGE_ANALYTICS } from "../../../../../../redux/actions/MTO";
+import { useGetFilterData } from '../../../../../..//VectorFlow/Services/MTO/Common/CommonFilter';
+import SafeLottie from "../../../../../../components/commons/SafeLottie";
+import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
 import VFModalCard from "../../../../../../components/VectorFLOW/commons/VFModalCard";
-import MaterialRequirementComponent from "../../MaterialRequirement/MaterialRequirementComponent";
-import useMaterialReq from "../../MaterialRequirement/useMaterialRequirements";
+import { useUserData } from "../../../../../../context/index";
+import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
+import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from "../../../../../../helpers/utils";
+import useColDef from '../../../../../../hooks/useColDef';
+import useFilter from '../../../../../../hooks/useFilter';
+import SwipePointer from "../../../../../../lottie/swipe pointer.json";
+import { DAYWISE_COVERAGE_ANALYTICS } from "../../../../../../redux/actions/MTO";
+import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import {
   useGetUserUIConfigData,
   useUpdateUserUIConfigData,
 } from "../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig";
-import { FilterPageName, pagination, UIGridCode } from "../../../Common/Enum";
-import { useUserData } from "../../../../../../context/index";
-import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
-import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from "../../../../../../helpers/utils";
-import ColorCellRenderer from "../../../Common/ColorCellRenderer/ColorCellRenderer";
-import SafeLottie from "../../../../../../components/commons/SafeLottie";
-import { useGetFilterData } from '../../../../../..//VectorFlow/Services/MTO/Common/CommonFilter';
-import useFilter from '../../../../../../hooks/useFilter';
-import { ITooltipParams } from 'ag-grid-enterprise';
-import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
-import useColDef from '../../../../../../hooks/useColDef';
+import { useGetDayWiseCoverageData } from "../../../../../../VectorFlow/Services/MTO/Procurement/DayWiseCoverage";
 import BomExcelModal from '../../../Common/BomExcelModal';
-import SwipePointer from "../../../../../../lottie/swipe pointer.json";
+import ColorCellRenderer from "../../../Common/ColorCellRenderer/ColorCellRenderer";
+import { FilterPageName, pagination, UIGridCode } from "../../../Common/Enum";
+import OverlayLoader from "../../../Common/Loader";
+import MaterialRequirementComponent from "../../MaterialRequirement/MaterialRequirementComponent";
+import useMaterialReq from "../../MaterialRequirement/useMaterialRequirements";
+import DayWiseCoverageCalender from "./DayWiseCoverageCalender";
+import DayWiseCoverageHeader from "./DayWiseCoverageHeader";
+import DayWiseCoverageTable from "./DayWiseCoverageTable";
+import { AnimationWrapper, HelperText, TableContainer } from "./style.css";
 
 enum Colors {
   Selected = "#B93B7E",
@@ -273,6 +273,7 @@ const DayWiseCoverage = () => {
 
     useEffect(()=>{
         if(selectedDate && selectedDate.length && currentGridRef){
+          if(!masterUIConfig.length)
             setColumnDef();
         }
     },[currentGridRef])
