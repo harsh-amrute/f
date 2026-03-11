@@ -306,6 +306,8 @@ export const CALENDAR_VALIDATION_SCHEMA = Joi.object({
 export const CALENDAR_Add_VALIDATION_SCHEMA = Joi.object({
   hid: Joi.any().optional(),
 
+  tempRowId: Joi.any().optional(),
+
   ccr: Joi.string().required().optional().messages({
     "string.base": "CCR cannot be empty!",
     "string.empty": "CCR cannot be empty!",

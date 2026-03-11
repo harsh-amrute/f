@@ -927,7 +927,7 @@ const useViewModify = (pageType: string) => {
          })
 
          newVal.err = {
-            error: errorOrders[0].message,
+            error: errorOrders[0]?.message,
             warning: ""
           }
 
@@ -1139,6 +1139,8 @@ const useViewModify = (pageType: string) => {
               return params.value.error || params.value.warning || "";
             }else if(params.value instanceof Date){
               return params.value.toLocaleDateString("en-CA");
+            }else if(params.column.getColId() === "ccr_id" && activeMaster.id === 504){
+              return getCCRNamesFromId(ccrsData,[params?.node?.data?.ccr_id])
             }
             return params.value;
         },
@@ -2005,6 +2007,10 @@ const useViewModify = (pageType: string) => {
 
           if(params.value instanceof Date){
             return params.value.toLocaleDateString("en-CA");
+          }
+
+          if(params.column.getColId() === "ccr_id" && activeMaster.id === 504){
+            return getCCRNamesFromId(ccrsData,[params?.node?.data?.ccr_id])
           }
       
           return value?.toString() || "";       
@@ -2911,6 +2917,7 @@ const useViewModify = (pageType: string) => {
           el.dow = [];
           el.iu = false;
           el.id = false;
+          el.iwd = el.iwd === "true" || el.iwd === true ? true : false;
     })
     return data
   }
