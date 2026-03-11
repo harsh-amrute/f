@@ -1,6 +1,6 @@
 import { ColDef, ColGroupDef } from "ag-grid-enterprise"
 import { useEffect, useRef, useState } from "react"
-import { useApproveTask, useGetMasterUIConfiguration, useGetPendingTasks, useGetTaskCount, useGetTaskDetails } from "../../../../../VectorFlow/Services/MTA/MDM"
+import { useApproveTask, useBulkApproveTask, useGetMasterUIConfiguration, useGetPendingTasks, useGetTaskCount, useGetTaskDetails } from "../../../../../VectorFlow/Services/MTA/MDM"
 
 import { createTaskPendingSubmitPayload, getActionName, getExistingColumnFields, getExistingColumns, mapMasterToColumnGroupDefs, mapNewAndOldMasterRowDataToCustomRowData, mapPendingTaskToColumnDefs } from "../../../../../helpers/utils"
 import { GridRef, Master, TaskDataType } from "../../../../../VectorFlow/types/MDM"
@@ -31,7 +31,6 @@ const useTaskPendingForReview = ()=>{
     const [showApproveAllModal,toggleApproveAllModal] = useState<boolean>(false);
     const [showRejectAllModal,toggleRejectAllModal] = useState<boolean>(false);
     const [selectionType,setSelectionType] = useState<string>('');
-
     const [currMasterId,setCurrMasterId] = useState<number>(0)
 
     const recordCount = useSelector((state:RootState) => state.mdm.recordCount)
@@ -46,8 +45,7 @@ const useTaskPendingForReview = ()=>{
     const {mutateAsync:getTaskCount} = useGetTaskCount();
 
     const {mutateAsync:approveTask } = useApproveTask();
-
-    const chunkSize = useSelector((state:RootState) => state.mdm.chunkSize) 
+    const {mutateAsync : bulkApproveTask} = useBulkApproveTask();
 
     const showLoader = isLoading || isMasterUiConfigurationLoading || isViewTableLoading;
 
@@ -58,6 +56,10 @@ const useTaskPendingForReview = ()=>{
     const [noDataMessage, setNoDataMessage] = useState<string>('');
     const [colGenArgs, setColGenArgs] = useState<any>(null);
     const [isDisabled, setIsDisabled] = useState<boolean>(false);
+    const EnvConfig = useSelector((state: RootState) => state.mta.EnvConfig);
+    const TASKPENDINGFORREVIEW_PAGE = EnvConfig['TASKPENDINGFORREVIEW_PAGE'];
+    const chunkSize = TASKPENDINGFORREVIEW_PAGE
+    const [isBulkAction , setIsBulkAction] = useState<boolean>(false);
 
     useEffect(() => {
         if (!isViewTableOpen && ref.current?.api && detailTableRowData?.length > 0) {
@@ -96,7 +98,21 @@ useEffect(() => {
         setTaskActionType(0)
         dispatch(SET_RECORD_COUNT(0))
         setSelectedRows(0)
+        setCurrentPage(1)
     }
+
+    const handleBulkAction = async(taskData:TaskDataType)=>{
+        const arr = ['Modify-SkuLocationMaster' , 'Modify-LocationMaster' ,'Modify-SKUMaster' , 'Add-SkuLocationMaster' , 'Add-LocationMaster' ,'Add-SKUMaster' ,'Remove-SkuLocationMaster' , 'Remove-LocationMaster' , 'Remove-SKUMaster']
+        if (arr.includes(taskData.TaskName)) {
+        setIsBulkAction(true);
+        await handleOnClick1(taskData);
+        }
+        else{
+            setIsBulkAction(false);
+            await handleOnClick(taskData)
+        }
+    }
+
 
     const handleOnClick = async(taskData:TaskDataType)=>{
         let toastId;
@@ -109,7 +125,6 @@ useEffect(() => {
             
             const tempToastId = notifyLoader('Loading Data')
             const res:any = await getTaskCount(taskData.TaskID);
-
             const taskCount = JSON.parse(res.data.recordCount)[0].recordcount;
             dispatch(SET_RECORD_COUNT(taskCount));
          
@@ -150,12 +165,11 @@ useEffect(() => {
                 const currentTaskMaster = taskDataStore[0];
                 const currentTaskMasterId: number = currentTaskMaster.MasterId;
                 setCurrMasterId(currentTaskMasterId);
-
                 // ...existing code for processing data
                 setNoDataMessage(''); // Clear message if we have data
                 
                     const uiConfigurationResponse = await getMasterUIConfiguration(getActionName(taskData.Actiontype).value)
-                
+                    
                     const masters:Master[] = uiConfigurationResponse.data.data
                     const currentMasterFields = masters.find((master:Master)=>master.id==currentTaskMasterId)?.fields
                     if(currentMasterFields){
@@ -169,9 +183,7 @@ useEffect(() => {
                                        
                         let existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields);
                         if(taskData.Actiontype === 3){
-                            existingColumnFields = existingColumnFields.filter(field =>
-                                field?.isDelete || field?.key === 'sd' || field?.key === 'wd'
-                              );
+                            existingColumnFields = existingColumnFields.filter(field => field?.isDelete);
                         }
                         // setDetailTableColDefs(mapMasterToColumnGroupDefs(existingColumnFields,currentTaskMasterId,themeUi,getActionName(taskData.Actiontype).value,toggleApproveAllModal,toggleRejectAllModal,actionStatus,isDisabled))
                         setColGenArgs({
@@ -200,29 +212,146 @@ useEffect(() => {
         
     }
 
+
+    const handleOnClick1 = async(taskData:TaskDataType)=>{
+        let toastId;
+        try {
+            resetState()
+            
+            setTaskId(taskData.TaskID)
+            
+            setTaskActionType(taskData.Actiontype)
+            
+            const tempToastId = notifyLoader('Loading Data')
+            const res:any = await getTaskCount(taskData.TaskID);
+
+
+            const taskCount = JSON.parse(res.data.recordCount)[0].recordcount;
+            dispatch(SET_RECORD_COUNT(taskCount));
+            const payload = {
+                taskId:taskData.TaskID,
+                paginationParameter:{
+                    pageNumber:1,
+                    recordsPerPage:chunkSize
+                }
+            }
+                toast.dismiss(tempToastId)
+                toastId = notifyLoader(`Downloading Data...`)
+                const result = await getTaskDetails(payload);
+                const taskDataStore = result?.data?.data || [];
+                toast.dismiss(toastId);
+                if (taskDataStore.length > 0 && taskDataStore[0]?.data?.length != undefined) {
+                    const currentTaskMaster = taskDataStore[0];
+                    const currentTaskMasterId: number = currentTaskMaster.MasterId;
+                    setCurrMasterId(currentTaskMasterId);
+                    setNoDataMessage('');
+                     const uiConfigurationResponse = await getMasterUIConfiguration(getActionName(taskData.Actiontype).value);
+                    const masters:Master[] = uiConfigurationResponse.data.data;
+                    const currentMasterFields = masters.find((master: Master)=>master.id==currentTaskMasterId)?.fields
+                    if (currentMasterFields) {
+                        const existingColumns = getExistingColumns(
+                            currentTaskMaster.data ?
+                                (taskData.Actiontype === 2 && currentTaskMasterId !== 6 && currentTaskMasterId !== 10) || (currentTaskMasterId === 13) ?
+                                JSON.parse(currentTaskMaster?.data[0].new) :
+                                currentTaskMaster?.data[0] : []
+                        );
+                        let existingColumnFields = getExistingColumnFields(existingColumns, currentMasterFields);
+                        if(taskData.Actiontype === 3) {
+                            existingColumnFields = existingColumnFields.filter(field =>
+                                field?.isDelete || field?.key === 'sd' || field?.key === 'wd'
+                            );
+                        }
+                        setColGenArgs({
+                            existingColumnFields: existingColumnFields, 
+                            currentTaskMasterId: currentTaskMasterId,
+                            taskActionTypeValue: getActionName(taskData.Actiontype).value
+                        });
+                        setDetailTableRowData(mapNewAndOldMasterRowDataToCustomRowData(
+                            currentTaskMaster.data,
+                            existingColumnFields,
+                            getActionName(taskData.Actiontype).value,
+                            currentTaskMasterId
+                        ));
+                }
+            } else {
+                // No data case
+                setNoDataMessage('No Data To Approve.');
+            }
+            
+
+            notifySuccess("Task Details Fetched Successfully");
+            setIsViewTableOpen(false)
+            
+        } catch (error) {
+            toast.dismiss();
+            console.log(error)
+            notifyError("Something Went Wrong");
+            
+        }
+        
+    }
+
     const handleChangePage = async (pageNo:any) => {
         setCurrentPage(pageNo);
         ref.current?.api.paginationGoToPage(pageNo);
-      }
+    }
 
+    const handleChangePage1 = async (pageNo:number) => {
+        let toastId;
+        try {
+            setCurrentPage(pageNo);
+            setDetailTableRowData([]);
+            toastId = notifyLoader(`Loading Page ${pageNo}...`);
+
+            const payload = {
+                taskId: TASK_ID,
+                paginationParameter: {
+                    pageNumber: pageNo,
+                    recordsPerPage: chunkSize
+                }
+            };
+
+            const result = await getTaskDetails(payload);
+            const taskDataStore = result?.data?.data || [];
+
+            toast.dismiss(toastId);
+
+            if (taskDataStore.length > 0 && taskDataStore[0]?.data && colGenArgs) {
+                const currentTaskMaster = taskDataStore[0];
+
+                const newRowData = mapNewAndOldMasterRowDataToCustomRowData(
+                    currentTaskMaster.data,
+                    colGenArgs.existingColumnFields,
+                    getActionName(taskActionype || 0).value,
+                    currMasterId
+                );
+
+                setDetailTableRowData(newRowData);
+
+                if (ref.current?.api) {
+                    ref.current.api.ensureIndexVisible(0);
+                }
+            }
+
+        } catch (error) {
+            toast.dismiss(toastId);
+            notifyError("Failed to load page");
+            console.error(error);
+        }
+    }
     const onCancel = ()=>setIsViewTableOpen(true)
 
-    const onTaskSubmit = async () => {  
-        
-       
+    const onTaskSubmit = async () => {
         let toastId;
         const updatedRowData = createTaskPendingSubmitPayload(detailTableRowData,taskActionype || 0,currMasterId)
-        console.log(updatedRowData)
-        
         try {
             const noActionPerformed = updatedRowData.find((row:any)=>row.status === '');
 
-            if(noActionPerformed){
+            if (noActionPerformed) {
                 notifyError("Please Update the Status for all Rows before submitting")
                 return
             }
             let submitProgress = 0;
- 
             const payload:any =  {
                 taskId:TASK_ID,
                 recordCount:recordCount,
@@ -259,10 +388,38 @@ useEffect(() => {
             toast.dismiss();
             notifyError('Something Went Wrong');
         }
-       
     }
 
-    const onSelectionTypeSuccess = (status:string,) => {
+    const bulkUploadAllRecords = async (status: string) => {
+        if (status !== "Approved" && status !== "Rejected") return;
+        const isApproveAll = status === "Approved" ? "1" : "0";
+        const payload = {
+            taskId: TASK_ID,
+            isApproveAll,
+            Comments: ""
+        };
+
+        const toastId = notifyLoader(`Submitting ${recordCount} records`);
+
+        try {
+            await bulkApproveTask(payload);
+            toast.dismiss(toastId);
+            setIsViewTableOpen(true);
+            setDetailTableColDefs([]);
+            setDetailTableRowData([]);
+            setCurrentPage(1);
+            setSelectedRows(0);
+            setSelectionType('');
+            refetch()
+            notifySuccess('Data submitted successfully and Task status updated');
+        } catch (error) {
+            toast.dismiss(toastId);
+            notifyError('Something Went Wrong');
+            console.error(error);
+        }
+    }
+
+    const onSelectionTypeSuccess = (status: string,) => {
         const pageSize:any = ref.current?.api.paginationGetPageSize()
         const currentPage:any = ref.current?.api.paginationGetCurrentPage()
         const filteredData:any = []
@@ -324,6 +481,67 @@ useEffect(() => {
         }
     }
 
+    const onSelectionTypeSuccess1 = (status:string,) => {       
+        if (selectionType === 'All') {
+            bulkUploadAllRecords(status);
+            return;
+
+        }
+        const pageSize:any = ref.current?.api.paginationGetPageSize()
+        const currentPage:any = ref.current?.api.paginationGetCurrentPage()
+        const filteredData:any = []
+        ref.current?.api.forEachNodeAfterFilter((n) => {
+            filteredData.push(n.id)
+        })
+        const startIndex = currentPage * pageSize
+        const endIndex = startIndex + pageSize
+        const pageData = filteredData.slice(startIndex, endIndex);
+        switch (selectionType){
+            // case 'All':
+            //      ref.current?.api.forEachNode((rowNode)=>{
+            //         if(rowNode.data.isModified){
+            //             rowNode.setDataValue('status',status)
+            //             rowNode.setSelected(true)
+            //         }
+            //         if(!rowNode.data.isModified && taskActionype===2 && status==="Rejected"){
+            //             rowNode.setDataValue('status',status)
+            //             rowNode.setSelected(true)
+            //         }
+            //         else if(taskActionype!==2 || currMasterId===6){
+            //             rowNode.setDataValue('status',status)
+            //             rowNode.setSelected(true)
+            //         }
+            //     })
+            //     setActionStatus(status);
+            //     break;
+            case 'Current':
+                ref.current?.api.forEachNode((rowNode)=>{
+                    if(pageData.includes(rowNode.id) && rowNode.data.isModified){
+                        rowNode.setDataValue('status',status)
+                        rowNode.setSelected(true)
+                        
+                    }
+                    if(pageData.includes(rowNode.id) && !rowNode.data.isModified && taskActionype===2 && status==="Rejected"){
+                        rowNode.setDataValue('status',status)
+                        rowNode.setSelected(true)
+                    }
+                    else if(pageData.includes(rowNode.id) && (taskActionype!==2 || currMasterId===6)){
+                        rowNode.setDataValue('status',status)
+                        rowNode.setSelected(true)
+                    }     
+                })
+                break;
+            default:
+                return;
+        }
+        if(status === 'Approved') {
+            toggleApproveAllModal(false);
+        }
+        else{
+            toggleRejectAllModal(false);
+        }
+    }
+
     useEffect(()=>{
         setViewTableColDefs(mapPendingTaskToColumnDefs([
             {
@@ -347,7 +565,7 @@ useEffect(() => {
                 headerName:"Task Name",
                 cellRenderer:TaskPendingLinkCellRenderer,
                 cellRendererParams:{
-                    onClick:handleOnClick
+                    onClick:handleBulkAction
                 }
             },
             {
@@ -381,7 +599,11 @@ useEffect(() => {
         toggleRejectAllModal,
         onSelectionTypeSuccess,
         setSelectionType,
-        noDataMessage
+        noDataMessage,
+        chunkSize,
+        onSelectionTypeSuccess1,
+        handleChangePage1,
+        isBulkAction
     }
 }
 

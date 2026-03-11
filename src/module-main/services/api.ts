@@ -108,15 +108,6 @@ export namespace MainService {
       .post(`/${API_USER}/login/`, payload)
       .then(async (resp) => {
       
-        localStorage.setItem(
-          LOCAL_STORAGE_KEY.User_ID,
-         await encryptStorageData(resp?.data?.data?.user?.id)
-        );
-
-        localStorage.setItem(
-          LOCAL_STORAGE_KEY.User_Name,
-          await encryptStorageData(resp?.data?.data?.user?.name)
-        );
         
         if (process.env.REACT_APP_VTM_ENABLED==='True' ) {
           try {

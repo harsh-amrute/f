@@ -54,10 +54,9 @@ const VFPagination = (props: VFPaginationProps) => {
   }, [userPageSize]);
 
   const defaultPaginationLimit = 100;
-  const totalPages = Math.max(
-    1,
-    Math.ceil(totalRows / (rowsPerPage || defaultPaginationLimit))
-  );
+  const totalPages = totalRows === 0 
+    ? 0 
+    : Math.ceil(totalRows / (rowsPerPage || defaultPaginationLimit));
 
   const clearGridFilter = () => {
     resetGridRef?.current?.api.setFilterModel(null);

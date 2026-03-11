@@ -3,7 +3,6 @@ import {
   style,
   keyframes,
   createVar,
-  styleVariants,
 } from "@vanilla-extract/css";
 
 /* ========== Theme runtime vars ========== */
@@ -12,6 +11,8 @@ export const primaryBgVar = createVar(); // maps to chooseThemeColor[themeUi].co
 export const primaryWidthVar = createVar();
 export const primaryHeightVar = createVar();
 export const primaryRadiusVar = createVar();
+
+
 
 /* ========== Skeleton animation ========== */
 const skeletonFade = keyframes({
@@ -58,7 +59,7 @@ export const textArea = style({
 
   selectors: {
     "&:active, &:focus": {
-      outlineColor: focusOutlineVar,
+      outlineColor: focusOutlineVar 
     },
   },
 });
@@ -100,7 +101,7 @@ export const button = buttonBase;
 export const primaryButton = style([
   buttonBase,
   {
-    backgroundColor: primaryBgVar,
+    backgroundColor: primaryBgVar, 
     color: "white",
     selectors: {
       "&:hover:not(:disabled)": { boxShadow: "0 0 0 3px rgba(0,0,0,.05)" },

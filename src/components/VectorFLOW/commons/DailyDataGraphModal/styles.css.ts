@@ -32,6 +32,8 @@ export const SCSeasonalityStatusDetails = style({
   width: '20%',
   height: '100%',
   boxShadow: '-6px 6px 16px #0000000F',
+  marginTop: '20px',      
+  alignSelf: 'flex-start',
   '@media': {
     'screen and (min-width:1024px) and (max-width:1688px)': {
       zoom: '0.7',
