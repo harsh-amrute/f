@@ -14,12 +14,11 @@ import {
   createConflictRowData,
   createErrorRowData,
   generateOptions,
-  generateSesonalityChartData,
   getActionId,
   getCCRNamesFromId,
   mapMasterToMasterState,
   mapStateFiltersToPayload,
-  parseMTOExcelData,
+  parseMTOExcelData
 } from "../../../../../helpers/utils";
 import {
   ADD_COLDEFS,
@@ -56,7 +55,6 @@ import {
   useGetCCRMasterData,
   useGetMTOMasterUIConfiguration,
   useGetPOOGIMasterData,
-  useGetSeasonalityDetails,
   useModifyDraft,
   useModifyMasterData,
   useModifyMasterDataRetail,
@@ -67,7 +65,7 @@ import {
   useSaveCCRMasterDraft,
   useSaveCCRMasterTask,
   useSavePOOGIMasterDraft,
-  useSavePOOGIMasterTask,
+  useSavePOOGIMasterTask
 } from "../../../../Services/MTA/MDM";
 import {
   type Field,
@@ -79,6 +77,7 @@ import {
 } from "../../../../types/MDM";
 
 import _ from "lodash";
+import moment from "moment";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify/unstyled";
 import { v4 as uuidv4 } from "uuid";
@@ -101,7 +100,9 @@ import {
   useGetPlantMasterData
 } from "../../../../../VectorFlow/Services/MTO/Common/Masters";
 import { useGetCCRGroupMaster } from "../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation";
+import { CustomStatusPanel } from "../CustomStatusPannel";
 import AddRemoveCellRenderer from "./AddRemoveCellRenderer";
+import { validateBuffer, validateCCR } from "./CommonUtils";
 import ConflictErrorCellRenderer from "./ConflictErrorCellRenderer";
 import DaysOfWeekRenderer from "./DaysOfWeekRenderer";
 import MajReasonDescCell from "./MajReasonDescCell";
@@ -111,9 +112,6 @@ import MTOCalendarEditCellRenderer from "./MTOCalendarEditCellRenderer";
 import MTOErrorWarningCell from "./MTOErrorWarningCell";
 import PoogiEditDeleteCell from "./PoogiEditDeleteCell";
 import ToggleButton from "./ToggleButton";
-import moment from "moment";
-import {CustomStatusPanel } from "../CustomStatusPannel";
-import { validateBuffer, validateCCR } from "./CommonUtils";
 
 const useViewModify = (pageType: string) => {
   const dispatch = useDispatch();
@@ -146,8 +144,6 @@ const useViewModify = (pageType: string) => {
   const [isWarningModalOpen, toggleWarningModal] = useState<boolean>(false);
   const [isShowAll, setIsShowAll] = useState<boolean>(true);
   const [isOverlayVisible, setIsOverlayVisible] = useState<boolean>(false);
-  // const [isUploadModalOpen,toggleUploadModal] = useState<boolean>(false)
-  // const [recordCount,setRecordCount] = useState<number>(0)
   const [downloadFileName, setDownloadFileName] = useState("");
   const [file, setFile] = useState<File>();
   const [isTableDataLoading, setIsTableDataLoading] = useState<boolean>(false);
@@ -262,12 +258,6 @@ const useViewModify = (pageType: string) => {
   /***Add the below line to fetch MTO Buffer */
   const [totalProgress] = useState("");
 
-  // const [isDataAvailableLocally,setIsDataAvailableLocally] = useState(false);
-
-  // const allMasters:Master[] = masterUIConfiguration?.data.data || [];
-
-  // const allMastersState:MDMMasterState[] = mapMasterToMasterState(allMasters);
-
   const validStopStatuses = [1, 2, 3, 4, 5, 6, 21];
 
   const validResumeStatuses = [23];
@@ -340,7 +330,7 @@ const useViewModify = (pageType: string) => {
   const [ccrGroupMaster, setCCRGroupMaster] = useState<any>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [plantNames, setPlantNames] =  useState<any>([]);
-  const [ccrNames, setCCRNames]= useState([]);
+  const [ccrNames, setCCRNames] = useState<any>([]);
   const [selectedData, setSelectedData] = useState<any>({});
   const location = useLocation();
   const prevPath: string | undefined  = location?.state?.backUrl.split('/').pop();
@@ -348,10 +338,14 @@ const useViewModify = (pageType: string) => {
   const navigate = useNavigate()
   const saveDraft = "saved-drafts"
   // adding all ccrName in ccr_names array
-  const ccr_names :string[] = []
-  for(const ccr of ccrsData){
-    ccr_names.push(ccr.cnm)
-  }
+  const ccr_names = useMemo(()=>{
+    const ccrnms = [];
+    for(const ccr of ccrsData){
+      ccrnms.push(ccr.cnm)
+    }
+    return ccrnms
+  },[ccrsData])
+
   const [calendarFormData, setCalendarFormData] = useState({});
   const CCRGroupMaterSetRef = useRef<Set<string>>(new Set());
   const [isDisabled, setIsDisabled] = useState(true);
@@ -458,12 +452,20 @@ const useViewModify = (pageType: string) => {
       getDeptMasterData();
       getCCRGroupMasterData();
     }
-    else if(activeMaster.id===504){
-      getCCRGroupMasterData();
-
-    }
     getInitialData();
   }, [activeMaster.id]);
+
+  const plantCrrMapfn = ()=>{
+    const map: any = {};
+    
+    for(const ccr of ccrNames){
+      if(!map[ccr.plant]){
+        map[ccr.plant] = []
+      }
+      map[ccr.plant].push({value: ccr.ccr_id, label: ccr.ccr_name})
+    }
+    return map;
+  }
 
   const getUpdatedColDefs = ({
     colDefs,
@@ -480,7 +482,7 @@ const useViewModify = (pageType: string) => {
   
     const commonStyle = (params: any) => {
       const { data } = params;
-      if (params?.colDef?.colId !== "actions" && data?.isdel) { 
+      if (params?.colDef?.colId && !params?.colDef?.colId?.toLowerCase()?.includes("action") && data?.id) { 
         return {
           filter: "blur(1px)",
           opacity: 0.6,
@@ -493,7 +495,7 @@ const useViewModify = (pageType: string) => {
       return {};
     };
   
-    const newColDef =  clonedColDef.map((col: any) => {
+    const newColDef :any =  clonedColDef.map((col: any) => {
       const baseCol = { ...col };
   
       // 🔹 Common: Disable editing on 'actions' and 'iv'
@@ -528,10 +530,12 @@ const useViewModify = (pageType: string) => {
         pl: plantMaster?.map((i: any) => i.plant_id),
         plnm: plantMaster?.map((i: any) => i.plant_name),
         pid: plantMaster?.map((i: any) => i.plant_id),
+        plid: plantMaster?.map((i: any) => i.plant_id),
         dp: deptMaster?.map((i: any) => i.dept_id),
         cgid: Object.keys(ccrGroupMaster || {}),
         ccrId: ccr_names,
-        ib: [true, false]
+        ib: [true, false],
+        iwd:[true, false],
       };
   
       // 🔹 Handle field-specific editors
@@ -549,18 +553,40 @@ const useViewModify = (pageType: string) => {
           cellStyle: commonStyle,
         };
       }
-  
-      if (["pl", "plnm", "pid", "dp", "cgid", "ccrId"].includes(col.field)) {
+      if (["pl", "plnm", "pid", "plid", "dp", "cgid", "ccrId", "ccr_id"].includes(col.field)) {
         return {
           ...baseCol,
           editable,
           cellEditor: "agRichSelectCellEditor",
-          cellEditorParams: {
-            values: dropdowns[col.field],
-            formatValue: (id: any) => myCCRFormatter(id, col.field, true),
+          cellEditorParams: (params: any) => {
+            if (activeMaster.id === 504 && col.field === "ccr_id") {
+              const plantCrrMap : any = plantCrrMapfn();
+              const plantId = params.data?.plid;
+              const ccrList = plantCrrMap[plantId] || [];
+              return {
+                values: ccrList.map((ccr: any) => ccr.value),
+      
+                formatValue: (id: any) => {
+                  const match = ccrList.find((c: any) => c.value === id);
+                  return match ? match.label : "";
+                }
+              };
+            }
+      
+            return {
+              values: dropdowns[col.field],
+              formatValue: (id: any) => myCCRFormatter(id, col.field, true),
+            };
           },
           valueGetter: myCCRFormatter,
+          valueFormatter: (params: any) => {
+            if (activeMaster.id === 504 && col.field === "ccr_id" && pageType === "add") {
+              return ccrNames.find((ccr: any) => ccr.ccr_id == params?.data?.ccr_id)?.ccr_name || params.value;
+            }
+            return params.value;
+          },
           cellStyle: commonStyle,
+          filter: "agMultiColumnFilter",
         };
       }
   
@@ -578,7 +604,7 @@ const useViewModify = (pageType: string) => {
         return { ...baseCol, editable, cellStyle: commonStyle };
       }
   
-      if (col.field === "ib") {
+      if (['ib'].includes(col.field)) {
         return {
           ...baseCol,
           editable,
@@ -601,14 +627,44 @@ const useViewModify = (pageType: string) => {
           editable,
           cellDataType: "date",
           cellEditor: "agDateCellEditor",
-          valueFormatter: (params: any) => {
-            if (!params.value) return "";
-            const date = new Date(params.value);
-            return date.toLocaleDateString("en-CA");
+          valueGetter: (params:any) => {
+            const val = params.data?.[col.field];
+            return val ? new Date(val) : null;
           },
+          valueFormatter: (params:any) => {
+            return params.value instanceof Date 
+              ? params.value.toLocaleDateString("en-CA") 
+              : "";
+          },
+          filter: "agDateColumnFilter",
+          filterParams: {
+            comparator: (filterDate:any, cellValue:any) => {
+              if (!cellValue) return -1;
+              const cellDate = new Date(cellValue).setHours(0, 0, 0, 0);
+              const filterAtMidnight = filterDate.setHours(0, 0, 0, 0);
+              if (cellDate === filterAtMidnight) return 0;
+              return cellDate < filterAtMidnight ? -1 : 1;
+            }
+          },
+          floatingFilter: true,
+          cellStyle: commonStyle,
         };
       }
   
+      if(['iwd'].includes(col.field)){
+        return {
+          ...baseCol,
+          editable,
+          cellDataType: "text",
+          filter: "agTextColumnFilter",
+          floatingFilter: true,
+          cellStyle: commonStyle,
+          cellEditor: "agRichSelectCellEditor",
+          cellEditorParams: {
+            values: dropdowns[col.field],
+          },
+        }
+      }
       if (activeMaster.id === 503) {
         return {
           ...baseCol,
@@ -631,21 +687,16 @@ const useViewModify = (pageType: string) => {
       }
   
       if (activeMaster.id === 504) {
-        return {
+       return {
           ...baseCol,
           editable,
-          cellStyle: (params: any) => {
-            const d = params.data;
-            if (d?.id)
-              return {
-                filter: "blur(1px)",
-                opacity: 0.4,
-                transition: "all 0.3s ease-in-out",
-                backgroundColor: "#f0f0f0",
-              };
-            if (d?.iu || d?.ia) return { color: "rgb(173, 5, 89)" };
-            return {};
-          },
+          filter: "agTextColumnFilter",
+          floatingFilter: true,
+          cellRenderer: ['dow'].includes(col.field) ? DaysOfWeekRenderer : baseCol?.cellRenderer ,
+          valueFormatter : ['ccr_id'].includes(col.field) ? (params:any) => {
+            return getCCRNamesFromId(ccrsData,params?.data?.ccr_id)
+          } : baseCol?.valueFormatter,
+          cellStyle: commonStyle
         };
       }
   
@@ -656,6 +707,26 @@ const useViewModify = (pageType: string) => {
         cellStyle: commonStyle,
       };
     });
+    if (activeMaster.id === 504 && pageType !== 'add') {
+      if (!newColDef.some((col: ColDef) => col.headerName === "Action")) {
+        const actionColDef = {
+          colId: "Action",
+          headerName: "Action",
+          cellRenderer: MTOCalendarEditCellRenderer,
+          cellRendererParams: {
+            handleOpenClick: (index: number, data: any) => {
+              setIsModalOpen(true);
+              setCalendarFormData(data);
+            },
+            onDeleteUndoHandler,
+            onDeleteHandler,
+          },
+          filter: false,
+          pinned: "left",
+        };
+        newColDef.unshift(actionColDef);
+      }
+    }
 
     return newColDef;
   };
@@ -665,7 +736,7 @@ const useViewModify = (pageType: string) => {
   
     if (
       (activeMaster.id === 501 && bufferTypeData) ||
-      (activeMaster.id === 502 && ccrGroupMaster && plantMaster && deptMaster)
+      (activeMaster.id === 502 && ccrGroupMaster && plantMaster && deptMaster) || activeMaster.id === 504
     ) {
       const newColDef = getUpdatedColDefs({
         colDefs: activeMaster.colDefs,
@@ -679,178 +750,16 @@ const useViewModify = (pageType: string) => {
         prevPath,
         saveDraft,
       });
-  
       if (!newColDef.find((col: any) => col.colId === "actions") && prevPath === saveDraft && pageType === "modify") {
         
         dispatch(UPDATE_COLDEFS([actionsCol(false), ...newColDef]));
 
       } else {
-
         dispatch(UPDATE_COLDEFS([...newColDef]));
       }
     }
-  }, [activeMaster.id, activeMaster.rowData, bufferTypeData, plantMaster, deptMaster, ccrGroupMaster]);
+  }, [activeMaster.id, activeMaster.rowData, bufferTypeData, plantMaster, deptMaster, ccrGroupMaster,  ccr_names]);
   
-  
-  // useEffect(() => {
-  //   if (activeMaster.id === 501) {
-  //     if (bufferTypeData) {
-  //       const newColDef = _.cloneDeep(activeMaster.colDefs);
-  //       // Iterate over the column definitions and update based on colId
-  //       newColDef.forEach((col: any) => {
-  //         if (col.colId === "bt") {
-  //           col.cellEditorParams = {
-  //             values: bufferTypeData?.map((item: any) => item.id),
-  //             formatValue: (id: any) => getCategoryName(id)
-  //           };
-  //           col.valueGetter = (params: any) => {
-  //             return getCategoryName(params?.data?.bt)
-  //           }
-  //           col.filter = 'agTextColumnFilter';
-  //         }
-  //         if (col.colId === "iv") {
-  //           col.cellRenderer = ToggleButton;
-  //           col.pinned = 'right';
-  //           col.filter = false;
-  //         }
-  //       });
-  //       newColDef.forEach((ele: any) => {
-  //         ele.cellStyle = (params: any) => {
-  //           if (
-  //             params.data.bid === null ||
-  //             params.data.bid === undefined ||
-  //             params.data.iv === false
-  //           ) {
-  //             return { color: "rgb(128, 0, 64)" };
-  //           }
-  //         };
-  //       });
-        
-  //       dispatch(UPDATE_COLDEFS([...newColDef]));
-  //     }
-  //   }
-  // }, [bufferTypeData]);
-  
-  // useEffect(() => {
-  //   if (
-  //     (activeMaster.id===501 || activeMaster.id === 502 || activeMaster.id === 503 || activeMaster.id === 504) &&
-  //     ccrGroupMaster &&
-  //     plantMaster &&
-  //     deptMaster &&
-  //     activeMaster.colDefs.length > 0
-  //   ) {
-  //     const newColDef: any = _.cloneDeep(activeMaster.colDefs);
-
-  //     // Iterate over the column definitions and update based on colId
-  //     newColDef.forEach((col: any) => {
-  //       if (col.colId === "iv") {
-  //         col.cellRenderer = ToggleButton;
-  //         col.pinned = 'right';
-  //         col.filter = false;
-  //         col.floatingFilter = false
-  //       }
-  //       if (col.colId === "bt") {
-  //         col.cellEditorParams = {
-  //           values: bufferTypeData?.map((item: any) => item.id),
-  //           formatValue: (id: any) => getCategoryName(id)
-  //         };
-  //         col.valueGetter = (params: any) => {
-  //           return getCategoryName(params?.data?.bt)
-  //         }
-  //         col.filter = 'agTextColumnFilter';
-  //       }
-
-  //       if(col.colId !== "actions" && col.colId !== "iv"){
-  //         col.cellStyle = (params:any)=>{
-  //           const { data } = params;
-  
-  //           if (data?.isdel ) {
-  //             return { 
-  //               filter: "blur(1px)",
-  //               opacity: 0.6,
-  //               transition: "all 0.3s ease-in-out",
-  //               backgroundColor: "#f0f0f0", 
-  //             }
-  //           } else if(data?.ia){
-  //             return { color: "rgb(173, 5, 89)" };
-  //           }
-  //           return {};
-  //         }
-  //       }
-          
-        
-  //     });
-
-  //     if (activeMaster.id === 502) {
-  //       newColDef.forEach((ele: any) => {
-  //         if(ele.colId !== "actions" && ele.colId !== "iv"){
-  //           ele.cellStyle = (params:any)=>{
-  //             const { data } = params;
-    
-  //             if (data?.isdel ) {
-  //               return { 
-  //                 filter: "blur(1px)",
-  //                 opacity: 0.6,
-  //                 transition: "all 0.3s ease-in-out",
-  //                 backgroundColor: "#f0f0f0", 
-  //               }
-  //             } else if(data?.ia){
-  //               return { color: "rgb(173, 5, 89)" };
-  //             }
-  //             return {};
-  //           }
-  //         }
-  //         ele.valueFormatter = myCCRFormatter;
-  //       });
-  //     } else if (activeMaster.id === 503) {
-  //       newColDef.forEach((ele: any) => {
-  //         ele.cellStyle = (params: any) => {
-  //           if (
-  //             params.data.majId?.toString().startsWith("m") ||
-  //             params.data.minId?.toString().startsWith("m") ||
-  //             params.data.iu === true ||
-  //             params.data.id === true ||
-  //             params.data.ie === false
-  //           ) {
-  //             return { color: "rgb(128, 0, 64)" };
-  //           }
-  //         };
-  //         ele.valueFormatter = myCCRFormatter;
-  //       });
-  //     } else if(activeMaster.id === 504){
-  //       newColDef.forEach((ele:any)=>{
-  //         if(ele.headerName !== "Action"){
-
-  //           ele.cellStyle = (params: any) => {
-  //             const { data } = params;
-              
-  //             if (data?.id ) {
-  //               return { 
-  //                 filter: "blur(1px)",
-  //                 opacity: 0.4,
-  //                 transition: "all 0.3s ease-in-out",
-  //                 backgroundColor: "#f0f0f0", 
-  //               }
-  //             } else if (data?.iu) {
-  //               return { color: "rgb(173, 5, 89)" };
-  //             }else if(data?.ia){
-  //               return { color: "rgb(173, 5, 89)" };
-  //             }
-  //             return {}; // ensure a default return to avoid undefined
-  //           }
-  //         }
-  //       })
-  //     }
-  //     if(!newColDef.find((col:any)=> col.colId === "actions") && prevPath === saveDraft && activeMaster.id !== 503 && activeMaster.id !== 504 && pageType === "modify"){
-        
-  //       dispatch(UPDATE_COLDEFS([actionsCol(false),...newColDef]));
-
-  //     }else{
-
-  //       dispatch(UPDATE_COLDEFS([...newColDef]));
-  //     }
-  //   }
-  // }, [ccrGroupMaster, plantMaster, deptMaster, activeMaster.id,activeMaster.rowData]);
 
   useEffect(() => {
     if (masters.length > 0 && filterButtonStatus.length !== 0) {
@@ -872,17 +781,18 @@ const useViewModify = (pageType: string) => {
       try {
         const { data } = await MTOMasterUIConfiguration();
         if(pageType==='add'){
-          setAllMasterState(mapMasterToMasterState(data.data).map((e: any) => {
+          const config = mapMasterToMasterState(data.data).map((e: any) => {
             if (e.id === 501 || e.id === 502) {
               e.fields = e.fields.filter((field: any) => field.key !== "iv");
               e.colDefs = e.colDefs.filter((col: any) => col.colId !== "iv");
             }
             if (e.id === 504) {
-              e.fields = e.fields.filter((field: any) => field.key !== "dow");
-              e.colDefs = e.colDefs.filter((col: any) => col.colId !== "dow");
+              e.fields = e.fields.filter((field: any) => field.key !== "dow" && field.key !== "plnm" && field.key !== "rb" && field.key !== "rd");
+              e.colDefs = e.colDefs.filter((col: any) => col.colId !== "dow" && col.colId !== "plnm" && col.colId !== "rb" && col.colId !== "rd");
             }
             return e;
-            }))
+            });
+          setAllMasterState(config)
         }
         else{
           setAllMasterState(mapMasterToMasterState(data.data));
@@ -1024,9 +934,39 @@ const useViewModify = (pageType: string) => {
 
       allRows.forEach((e:any)=>{
         const newVal = _.cloneDeep(e);
+        const palntNameToId = plantNames.find((plant:any)=> plant.plant_name === e.plid || plant.plant_id === e.plid)?.plant_id
+        const plantCrrMap = plantCrrMapfn();
+        const isValidCCRForPlant = plantCrrMap[palntNameToId]?.some((ccr:any)=> ccr.value === e.ccr_id)
 
         const {error} = CALENDAR_Add_VALIDATION_SCHEMA.validate(e,{abortEarly:false})
+        const isDuplicate = newData.some((item: any) => {
+          const sd1 = new Date(item.sd).getTime();
+          const ed1 = new Date(item.ed).getTime();
+        
+          const sd2 = new Date(e.sd).getTime();
+          const ed2 = new Date(e.ed).getTime();
+        
+          return (
+            sd1 === sd2 &&
+            ed1 === ed2 &&
+            item.plid === e.plid &&
+            item.ccr_id === e.ccr_id
+          );
+        });
 
+        if(isDuplicate){
+          newVal.err = {
+            error: "Duplicate entry for the same date range, plant and CCR!",
+            warning: ""
+          }
+        }
+        
+        if(!isValidCCRForPlant){
+          newVal.err = {
+            error: "Please select a valid CCR for the selected plant!",
+            warning: "",
+          };
+        }
         if(error){
           const fieldOrders = activeMaster.fields.map(field =>field.key)
 
@@ -1039,12 +979,9 @@ const useViewModify = (pageType: string) => {
             warning: ""
           }
 
-          newData.push(newVal)
-
-        }else{
-
-          newData.push(newVal)
         }
+
+        newData.push(newVal)
       })
 
       dispatch(UPDATE_ROW_DATA(newData));
@@ -1052,21 +989,6 @@ const useViewModify = (pageType: string) => {
   };
 
   const sideBar: SideBarDef = {
-    // toolPanels: [
-    //   {
-    //     id: "columns",
-    //     labelDefault: "Columns",
-    //     labelKey: "columns",
-    //     iconKey: "columns",
-    //     toolPanel: "agColumnsToolPanel",
-    //     toolPanelParams: {
-    //       suppressPivots: true,
-    //       suppressRowGroups: true,
-    //       suppressPivotMode: true,
-    //       suppressValues: true
-    //     },
-    //   },
-    // ],
     defaultToolPanel: defaultToolPanel,
   };
 
@@ -1202,9 +1124,13 @@ const useViewModify = (pageType: string) => {
       //   return;
       // }
       if (pageType === "add") {
+        if(activeMaster.id === 504 && field === "plid"){
+          newRow.ccr_id = null; 
+
+        }
         const newRowData = _.cloneDeep(
           activeMaster.rowData.map((row: any) => {
-            if (JSON.stringify(row) === JSON.stringify(data)) {
+            if (row.hid === data.hid) {
               return newRow;
             }
             return row;
@@ -1311,7 +1237,7 @@ const useViewModify = (pageType: string) => {
         columnKeys: activeMaster.colDefs
           .filter(
             (col: ColDef) =>
-              col.headerName !== "Warning" && col.headerName !== "Error"
+              col.headerName !== "Warning" 
           )
           .map((col: ColDef) => col.field),
       };
@@ -1321,8 +1247,16 @@ const useViewModify = (pageType: string) => {
             ? "Error-" + downloadFileName
             : "Error-" + activeMaster.name,
           columnKeys: Colparams.columnKeys,
+          processCellCallback(params) {
+            if(params.column.getColId() === "err"){
+              return params.value.error || params.value.warning || "";
+            }else if(params.value instanceof Date){
+              return params.value.toLocaleDateString("en-CA");
+            }
+            return params.value;
+        },
         });
-      // if (tempDownloadData) event.api.exportDataAsExcel({  fileName: downloadFileName ? 'Error-' + downloadFileName : 'Error-' + activeMaster.name});
+      
     },
   };
 
@@ -1384,20 +1318,6 @@ const useViewModify = (pageType: string) => {
       hasNoValue: "dnc",
       // Add more mappings as needed
     };
-
-    // 'lt': 'lt',
-    //     'lte': 'lte',
-    //     'gt': 'gt',
-    //     'gte': 'gte',
-    //     'sw': 'istartswith',
-    //     'ew': 'iendswith',
-    //     'et': 'exact',
-    //     'cn': 'icontains',
-    //     'dnc': 'donotcontains',
-    //     'dsw': 'doesnotstartswith',
-    //     'dew' : 'doesnotendswith',
-    //     'hv' : 'hv',
-    //     'net' : 'notequalto'
 
     return input.reduce((acc, { attributeName, op, value }) => {
       acc[attributeName] = {
@@ -1513,7 +1433,6 @@ const useViewModify = (pageType: string) => {
         const rowData = _.cloneDeep(activeMaster.rowData || []);
         let newData = _.cloneDeep(selectedData);
         const {error} = CALENDAR_VALIDATION_SCHEMA.validate(selectedData,{abortEarly:false})
-
         if(error){
           const fieldOrders = activeMaster.colDefs.filter((item:any)=> item.headerName !== "Action").map((item:any)=> item.field);
 
@@ -1980,6 +1899,20 @@ const useViewModify = (pageType: string) => {
           }
         });
       }
+
+      if(activeMaster.id === 504){
+        buffData.forEach((calendar: any) => {
+          const ccrFound = ccrNames.find((ccr: any) => ccr.ccr_name === calendar.ccr_id);
+          const plantFound = plantMaster.find((plant: any) => plant.plant_name === calendar.plid);
+          if (ccrFound) {
+            calendar.ccr_id = ccrFound.ccr_id;
+          }
+
+          if(plantFound){
+            calendar.plid = plantFound.plant_id;
+          }
+        });
+      }
       
       getInitialData();
 
@@ -1995,132 +1928,6 @@ const useViewModify = (pageType: string) => {
         mode: "upload",
       });
 
-      /////
-      // const updatedColdefs:any = activeMaster?.colDefs?.map((col: ColDef) => {
-      //   // const isEditable = activeMaster.fields.find((field: Field) => field.key === col.colId)?.isEdit;
-      //   if (col.field === "iv") return { ...col, cellRenderer: ToggleButton, pinned: 'right', filter: false };
-      //   if (col.field === "bt")
-      //     return {
-      //       ...col,
-      //       editable: true,
-      //       cellEditor: "agRichSelectCellEditor",
-      //       cellEditorParams: {
-      //         values: bufferTypeData?.map((item: any) => item.id),
-      //         formatValue: (id: any) => getCategoryName(id)
-      //       },
-      //       valueGetter: (params: any) => {
-      //         return getCategoryName(params?.data?.bt)
-      //       },
-      //       filter: 'agTextColumnFilter',
-      //     }
-      //   if (col.field === "pl" || col.field === "plnm" || col.field ==='pid')
-      //     return {
-      //       ...col,
-      //       editable: true,
-      //       cellEditor: "agRichSelectCellEditor",
-      //       cellEditorParams: {
-      //         values: plantMaster?.map((item: any) => item.plant_name),
-      //       },
-      //     };
-      
-        
-      //   if(col.field === "ccrId"){
-      //     return {
-      //       ...col,
-      //       editable: true,
-      //       cellEditor: "agRichSelectCellEditor",
-      //       cellEditorParams:{
-      //         values: ccr_names?.map((ccr: string) => ccr),
-      //       }
-      //     }
-      //   }
-
-      //   if (col.field === "sd" || col.field === "ed") {
-      //     return {
-      //       ...col,
-      //       cellDataType:'date',
-      //       editable: true,
-      //       cellEditor:"agDateCellEditor",
-      //       valueFormatter: (params: any) => {
-      //         if(params.value === null || params.value === undefined) return '';
-      //         const date = new Date(params.value);
-      //         return date.toLocaleDateString("en-CA");
-
-      //       },
-      //       // cellRenderer: DueDateCellRenderer,
-      //     };
-      //   }
-
-      //   if (col.field === "dp")
-      //     return {
-      //       ...col,
-      //       editable: true,
-      //       cellEditor: "agRichSelectCellEditor",
-      //       cellEditorParams: {
-      //         values: deptMaster?.map((item: any) => item.dept_name),
-      //       },
-      //     };
-
-      //   if (col.field === "cgid")
-      //     return {
-      //       ...col,
-      //       editable: true,
-      //       cellEditor: "agRichSelectCellEditor",
-      //       cellEditorParams: {
-      //         values: Object.keys(ccrGroupMaster || {}),
-      //       },
-      //     };
-      //   if (col.field === "slt")
-      //     return {
-      //       ...col,
-      //       editable: true,
-      //       cellEditor: "agNumberCellEditor",
-      //     };
-      //   if (col.field === "mlt")
-      //     return {
-      //       ...col,
-      //       editable: true,
-      //       cellEditor: "agNumberCellEditor",
-      //     };
-      //   if (col.field === "cpd")
-      //     return {
-      //       ...col,
-      //       editable: true,
-      //       cellEditor: "agNumberCellEditor",
-      //     };
-      //   if (col.field === "whpd")
-      //     return {
-      //       ...col,
-      //       editable: true,
-      //       cellEditor: "agNumberCellEditor",
-      //     };
-      //   if (col.field === "sh")
-      //     return {
-      //       ...col,
-      //       editable: true,
-      //       cellEditor: "agNumberCellEditor",
-      //     };
-      //   if (col.field === "rb")
-      //     return {
-      //       ...col,
-      //       editable: true,
-      //       cellEditor: "agNumberCellEditor",
-      //     };
-      //   if (col.field === "fh")
-      //     return {
-      //       ...col,
-      //       editable: true,
-      //       cellEditor: "agNumberCellEditor",
-      //     };
-      //   if (col.field === "cwl")
-      //     return {
-      //       ...col,
-      //       editable: true,
-      //       cellEditor: "agNumberCellEditor",
-      //     };
-      //   else return { ...col, editable: true, singleClickEdit: true };
-      //   // return { ...col }
-      // })
 
       dispatch(
         UPDATE_COLDEFS([
@@ -2265,7 +2072,7 @@ const useViewModify = (pageType: string) => {
         validData.push(data);
       }
     });
-    setTempGridData(erroneusData);
+        setTempGridData(erroneusData);
     setTempDownloadData(true);
 
     // if(activeMaster.progress!=='submitted'){
@@ -2344,6 +2151,10 @@ const useViewModify = (pageType: string) => {
           if(isCCRExport && column.getColId() === 'cgid'){
             const match = ccrGroupNameFromId(value)
             return match ? match : value
+          }
+
+          if(params.value instanceof Date){
+            return params.value.toLocaleDateString("en-CA");
           }
       
           return value?.toString() || "";       
@@ -3073,7 +2884,7 @@ const useViewModify = (pageType: string) => {
     const currDropdownValue = isValue ? params : params?.data?.[colId];
     let val = currDropdownValue;
   
-    if ((colId === "pl" || colId === "plnm") && plantMaster) {
+    if ((colId === "pl" || colId === "plnm" || colId === "plid") && plantMaster) {
       const plant = plantMaster.find(
         (ele: any) => ele?.plant_id?.toString() === currDropdownValue?.toString()
       );
@@ -3088,11 +2899,17 @@ const useViewModify = (pageType: string) => {
         val = department.dept_name;
       }
     } else if (colId === "cgid" && ccrGroupMaster) {
-      val = getCCRGroupKeyById(ccrGroupMaster, currDropdownValue) || currDropdownValue;
+      if(colId === "ccr_id" && activeMaster.id === 504 && pageType === "add"){
+        val = ccrNames.find((ccr: any) => ccr.ccr_id.toString() === currDropdownValue?.toString())?.ccr_id || currDropdownValue;
+      }else{
+
+        val = getCCRGroupKeyById(ccrGroupMaster, currDropdownValue) || currDropdownValue;
+      }
     }
   
     return val;
   }
+  
 
   const getDropDown = (colField: any) => {
     if (colField === "pl" || colField === "plnm") {
@@ -3122,201 +2939,6 @@ const useViewModify = (pageType: string) => {
       ccr_names,
       mode: "edit",
     });
-    // const modifiedColDefs = activeMaster.colDefs.map((colDef: any) => {
-    //   const editable = (params: any) => {
-    //     if(activeMaster.id === 503){
-    //       return params.data.ia === true
-    //     }else{
-    //       return params.data.iu === true
-    //     }
-    //   };
-    //   if(colDef.field === 'actions' || colDef.field === 'iv' ){
-    //     return {
-    //       ...colDef,
-    //       editable: false,
-    //       filter:false,
-    //       floatingFilter: false,
-    //     }
-    //   }
-
-    //   if (colDef.field === "bt") {
-    //     return {
-    //       ...colDef,
-    //       cellEditor: "agRichSelectCellEditor",
-    //       cellEditorParams: {
-    //         values: bufferTypeData?.map((item: any) => item.id),
-    //         formatValue: (id: any) => getCategoryName(id)
-    //       },
-    //       valueGetter: (params: any) => {
-    //         return getCategoryName(params?.data?.bt)
-    //       },
-    //       filter: 'agTextColumnFilter',
-    //       cellStyle: (params: any) => {
-    //         if (
-    //           params.data.bid === null ||
-    //           params.data.bid === undefined ||
-    //           params.data.iv === false
-    //         ) {
-    //           return { color: "rgb(128, 0, 64)" };
-    //         }
-    //       },
-    //       editable,
-    //     };
-    //   }
-    //   if (
-    //     colDef.field === "slt" ||
-    //     colDef.field === "mlt" ||
-    //     colDef.field === "bsz"
-    //   ) {
-    //     return {
-    //       ...colDef,
-    //       cellEditor: "agNumberCellEditor",
-    //       cellStyle: (params: any) => {
-    //         if (
-    //           params.data.bid === null ||
-    //           params.data.bid === undefined ||
-    //           params.data.iv === false
-    //         ) {
-    //           return { color: "rgb(128, 0, 64)" };
-    //         }
-    //       },
-    //       editable,
-    //     };
-    //   }
-    //   if (colDef.field === "ib") {
-    //     return {
-    //       ...colDef,
-    //       cellRenderer: "agCheckboxCellRenderer",
-    //       cellEditor: "agCheckboxCellEditor",
-    //       editable,
-    //     };
-    //   } else if (colDef.field === "bcd" || colDef.field === "bd") {
-    //     return {
-    //       ...colDef,
-    //       cellStyle: (params: any) => {
-    //         if (
-    //           params.data.bid === null ||
-    //           params.data.bid === undefined ||
-    //           params.data.iv === false
-    //         ) {
-    //           return { color: "rgb(128, 0, 64)" };
-    //         }
-    //       },
-    //       editable,
-    //     };
-    //   }
-
-    //   if (activeMaster.id === 502) {
-    //     if(colDef.field === 'actions' || colDef.field === 'iv'){
-    //       return {
-    //         ...colDef,
-    //         editable: false,
-    //         filter: false,
-    //         floatingFilter: false,
-            
-    //       }
-    //     }
-        
-    //     if (
-    //       colDef.field === "pl" ||
-    //       colDef.field === "dp" ||
-    //       colDef.field === "cgid"
-    //     ) {
-    //       return {
-    //         ...colDef,
-    //         cellEditor: "agRichSelectCellEditor",
-    //         valueFormatter: myCCRFormatter,
-    //         cellEditorParams: {
-    //           values: getDropDown(colDef.field),
-    //         },
-    //         editable,
-    //       };
-    //     }
-    //     if (colDef.field === "rb") {
-    //       return {
-    //         ...colDef,
-    //         editable,
-    //         cellEditor: "agNumberCellEditor"
-    //       };
-    //     }
-    //     if (
-    //       (colDef.field === "cpd" ||
-    //       colDef.field === "whpd" ||
-    //       colDef.field === "sh" || 
-    //       colDef.field === "fh" ||
-    //       colDef.field === "cwl")
-    //     ) {
-    //       return {
-    //         ...colDef,
-    //         editable,
-    //         cellEditor: "agNumberCellEditor",
-    //         cellEditorParams: {
-    //           min: 0,
-    //           max: 1000000
-    //         },
-    //       };
-    //     }
-    //     return {
-    //       ...colDef,
-    //       editable,
-    //     };
-    //   }
-    //   if (activeMaster.id === 503) {
-    //     if (colDef.field === "plnm") {
-    //       return {
-    //         ...colDef,
-    //         cellEditor: "agRichSelectCellEditor",
-    //         valueFormatter: myCCRFormatter,
-    //         cellEditorParams: {
-    //           values: getDropDown(colDef.field),
-    //         },
-    //         cellStyle: (params: any) => {
-    //           if (
-    //             params.data.majId?.toString().startsWith("m") ||
-    //             params.data.minId?.toString().startsWith("m") ||
-    //             params.data.iu === true ||
-    //             params.data.id === true ||
-    //             params.data.ie === false
-    //           ) {
-    //             return { color: "rgb(128, 0, 64)" };
-    //           }
-    //         },
-    //         editable,
-    //       };
-    //     }
-    //     return {
-    //       ...colDef,
-    //       cellStyle: (params: any) => {
-    //         if (
-    //           params.data.majId?.toString().startsWith("m") ||
-    //           params.data.minId?.toString().startsWith("m") ||
-    //           params.data.ie === false ||
-    //           params.data.iu === true ||
-    //           params.data.id === true
-    //         ) {
-    //           return { color: "rgb(128, 0, 64)" };
-    //         }
-    //       },
-    //       // editable: (params: any) =>{ (params.data.minId && params.node.rowIndex === useSelector((state: any) => state.mto.editableMinRow)) || ((!params.data.minId) && params.node.rowIndex === useSelector((state: any) => state.mto.editableMajRow))  }
-    //       editable,
-    //     };
-    //   } else {
-    //     return {
-    //       ...colDef,
-    //       cellEditor: "agNumberCellEditor",
-    //       editable,
-    //       cellStyle: (params: any) => {
-    //         if (
-    //           params.data.bid === null ||
-    //           params.data.bid === undefined ||
-    //           params.data.iv === false
-    //         ) {
-    //           return { color: "rgb(128, 0, 64)" };
-    //         }
-    //       },
-    //     };
-    //   }
-    // });
 
     const isFromSaveDraft503 = prevPath === saveDraft && activeMaster.id === 503;
 
@@ -3499,24 +3121,15 @@ const useViewModify = (pageType: string) => {
 
   const AddCalendarModifyData = (data: any) => {
     data?.forEach((el:any)=>{
-      if(!Array.isArray(el.ccr_id) && !el.hid && !el.plid){
-        const ccrIdAndPlantIdFromName = ccrsData.find((ccr: any) => ccr.cnm.toLowerCase().trim() === el.ccr_id.toLowerCase().trim());
-        if(ccrIdAndPlantIdFromName){
-          el.ccr_id = [ccrIdAndPlantIdFromName.cid];
-          el.plid = ccrIdAndPlantIdFromName.plant;
+          el.ccr_id = [el.ccr_id];
           el.hid = null;
           el.rd = null;
           el.rb = '';
           el.sd = moment(el.sd).format('YYYY-MM-DD');
           el.ed = moment(el.ed).format('YYYY-MM-DD');
-          el.dow = []
-          el.iu = false
-          el.id = false
-        }else{
-          throw new Error("CCR || Plant name is not valid");
-        }
-      
-      }
+          el.dow = [];
+          el.iu = false;
+          el.id = false;
     })
     return data
   }
