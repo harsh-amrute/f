@@ -344,7 +344,7 @@ const useViewModify = (pageType: string) => {
       ccrnms.push(ccr.cnm)
     }
     return ccrnms
-  },[])
+  },[ccrsData])
 
   const [calendarFormData, setCalendarFormData] = useState({});
   const CCRGroupMaterSetRef = useRef<Set<string>>(new Set());
