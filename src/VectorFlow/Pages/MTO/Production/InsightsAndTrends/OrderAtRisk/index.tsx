@@ -269,7 +269,7 @@ const OrderAtRisk = () => {
   function TooltipRenderer({ datum }: any) {
     return `
       <div class="insightOrderRisk-tooltip-title">
-        Major Reason
+         Reasons
       </div>
       <div class="insightOrderRisk-tooltip-content">
         <div class="insightOrderRisk-tooltip-divider"></div>
@@ -297,6 +297,9 @@ const OrderAtRisk = () => {
   useEffect(() => {
     setOptions({
       data: rawData,
+      tooltip: {
+            mode: "single",
+        },
 
       series: [
         {
@@ -455,11 +458,17 @@ const OrderAtRisk = () => {
       }
     }, [currentPage]);
 
+    
+
 
   
     useEffect(() => {
       if (Object.entries(appliedFilters).length && userConfigFetched ) {
-        setCurrentPage(1);
+        if(currentPage == 1){
+          getData();
+        }else{
+          setCurrentPage(1);
+        } 
     }
   }, [appliedFilters, userConfigFetched]);
 
