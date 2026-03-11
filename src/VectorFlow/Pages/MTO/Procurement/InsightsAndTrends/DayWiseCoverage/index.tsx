@@ -520,7 +520,7 @@ const DayWiseCoverage = () => {
             date={date}
             toggleCurrentTab={toggleCurrentTab}
           />
-          {(isMatReqDayWiseLoading || isMatReqLoading) && <VFLoader />}
+          {(isMatReqDayWiseLoading || isMatReqLoading) && <OverlayLoader />}
         </div>
       </VFModalCard>
       {calenderData?.[selectedDate] && (

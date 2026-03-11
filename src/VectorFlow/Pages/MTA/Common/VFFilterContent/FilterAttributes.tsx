@@ -349,7 +349,6 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
                 data-theme={user.user.theme_ui}
                 style={{
                   opacity: isRowComplete(row.id) ? 0 : 1,
-                  cursor: isRowComplete(row.id) ? "default" : "pointer",
                 }}
               >
                 <img
@@ -368,6 +367,7 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
                 style={{
                   [accentColorVar]: brand,
                   [disabledVar]: isMaxRows ? "true" : "false",
+                  cursor: isRowComplete(row.id) ? "default" : "pointer",
                 }}
                 onClick={handleAddRow}
               >
@@ -381,6 +381,7 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
                 style={{
                   [accentColorVar]: brand,
                   [disabledVar]: isMinRows ? "true" : "false",
+                  cursor: isRowComplete(row.id) ? "default" : "pointer",
                 }}
                 onClick={() => handleRemoveRowWithFilter(row.id)}
               >

@@ -249,54 +249,6 @@ const FullKitAssignment = () => {
     return loadData.ccr_id == ccrId;
   };
 
-  const calculateTagsAndOrderinFullkitToday = (rows: any, graphdata: any) => {
-    // --------------Logic-----------------------
-    //- if anyone ccr is overloaded, show overloaded
-    //- if anyone ccr is underloaded and no ccr is overloaded, show underloaded
-    //- else show balanced
-    //-------------------------------------------
-    const newRows = rows.map((row: any) => {
-      const ccrs = row.ccr_ids;
-      const tags = { overloaded: 0, underloaded: 0, balanced: 0 };
-      const oifkt = ((row.fka ?? 0) / (row.oq ?? 1)) * 100;
-      ccrs?.forEach((ccrId: any) => {
-        const isOverloaded = graphdata["overloaded"].find((loadData: any) =>
-          findTag(loadData, ccrId)
-        );
-
-        if (isOverloaded) {
-          tags.overloaded = tags.overloaded + 1;
-          return;
-        }
-        const isUnderloaded = graphdata["underloaded"].find((loadData: any) =>
-          findTag(loadData, ccrId)
-        );
-        if (isUnderloaded) {
-          tags.underloaded = tags.underloaded + 1;
-          return;
-        }
-        tags.balanced = tags.balanced + 1;
-      });
-      if (tags.overloaded > 0) {
-        return { ...row, t: "Overloaded", sortKey: 1, oifkt };
-      } else if (tags.overloaded == 0 && tags.underloaded > 0) {
-        return { ...row, t: "Underloaded", sortKey: 2, oifkt };
-      } else if (
-        tags.overloaded == 0 &&
-        tags.underloaded == 0 &&
-        tags.balanced > 0
-      ) {
-        return { ...row, t: "Balanced", sortKey: 3, oifkt };
-      }
-      return { ...row, sortKey: 4, oifkt };
-    });
-    return newRows.sort((a: any, b: any) => {
-      return a.sortKey - b.sortKey;
-    });
-  };
-
-  // const noOfCalls = useRef(0);
-
   const fetchOrders = async (
     isExcelExport = false,
     page?: number,
@@ -369,20 +321,11 @@ const FullKitAssignment = () => {
           );
         });
       }
-      //modify griddata for adding tags
-      const newRows = calculateTagsAndOrderinFullkitToday(
-        griddata,
-        newGraphdata
-      );
-      setOrders(newRows);
+      setOrders(griddata);
       setChartOptions({ ...chartoptions, data: graph });
       graphDataOgFormat.current = newGraphdata;
     } else {
-      const newRows = calculateTagsAndOrderinFullkitToday(
-        griddata,
-        graphDataOgFormat.current
-      ); // already fetched graph data
-      setOrders(newRows);
+      setOrders(griddata);
     }
     setTotalRows(data?.data?.data?.count);
   };
@@ -750,7 +693,7 @@ const FullKitAssignment = () => {
       wrapHeaderText: true,
       autoHeaderHeight: true,
       filter: "agTextColumnFilter",
-      floatingFilterComponentParams: { suppressFilterButton: true },
+      floatingFilterComponentParams: { suppressFilterButton: false },
       floatingFilter: true,
       enableRowGroup: true,
     },

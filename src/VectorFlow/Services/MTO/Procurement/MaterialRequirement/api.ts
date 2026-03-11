@@ -6,7 +6,7 @@ import { pagination } from '../../../../../VectorFlow/Pages/MTO/Common/Enum';
 export namespace MaterialRequirementService {
     export const getMaterialRequirementData = async ({currPage, releaseDate, appliedFilters,body,isExcelExport = false, report_name, page_size}: any) => {
         if(isExcelExport) {
-            return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getMaterialRequirementData/?releaseDate=${releaseDate}&page_size=${page_size || pagination.mtoPageSize}`, 
+            return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getMaterialRequirementData/?releaseDate=${releaseDate}`, 
             body,
             {
     
