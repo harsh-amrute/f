@@ -27,7 +27,6 @@ import { AgGridReactProps } from "ag-grid-react";
 import { BPRTagsCellRenderer } from "../../SupplyChainIntelligenceHub/BPR/BPRCellRenderers";
 import AvailabilityToolTip from "./AvailabilityToolTip";
 import CategoryToolTip from "./CategoryToolTip";
-import { SeasonalityGraphCellRenderer } from "../../../../../components/VectorFLOW/commons/SeasonalityCellRenderers";
 import { VFPaginationProps } from "../../../../../components/VectorFLOW/commons/VFPagination";
 import VFPagination from "../../../MTO/Common/VFPagination";
 import CustomVFTable from "./CustomVFTable";
@@ -37,10 +36,6 @@ import {
   notifySuccess,
 } from "../../../../../helpers/notify";
 import { toast } from "react-toastify/unstyled";
-import {
-  TOGGLE_GRAPH_MODAL,
-  UPDATE_DAILY_DATA,
-} from "../../../../../redux/actions/MTA";
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { useUserData } from "../../../../../context";
 import { BPRFilterState } from "../../../../types/BPR";
@@ -48,30 +43,18 @@ import { BTRCategoryTextToNumberMapper } from "../../../../../helpers/BPRConstan
 import useGetLastRunData from "../../../../../hooks/useGetLastRunData";
 
 import _ from "lodash";
-import { useGetDailyData } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BPR";
+
 import { useSelector, useDispatch } from "react-redux";
-import BPRGraphCellRenderer from "../BPR/BPRGraphCellRenderer";
 import type { RootState } from "../../../../../redux/store/store";
 
 import { useGetUIConfigData } from "../../../../Services/MTA/Common/UIConfig";
 import { UIColumnConfigName } from "../../../../../helpers/Enum";
-import { format } from "date-fns";
 import { useGetState } from "../../../../Services/MTA/Common/UserUIConfig";
 import { GridRef } from "../../../../types/MDM";
 import Summary from "./Summary";
 import TodaysColorCellRenderer from "./TodaysColorCellRenderer";
 
 const useAR = () => {
-  const showDailyDataGraphModal = useSelector(
-    (state: RootState) => state.mta.showDailyDataGraphModal
-  );
-  const showNormChangeHistoryTable = useSelector(
-    (state: RootState) => state.mta.showNormChangeHistoryTable
-  );
-  const dailyData = useSelector((state: RootState) => state.mta.dailyData);
-
-  const { mutateAsync: getDailyData } = useGetDailyData();
-
   const ecoRef = useRef<GridRef>();
   const techRef = useRef<GridRef>();
   const tempRef = useRef();
@@ -101,8 +84,6 @@ const useAR = () => {
   ];
 
   const { user } = useUserData();
-  const dispatch = useDispatch();
-
   const themeUi = user.user.theme_ui;
 
   const [currentPageTech, setCurrentPageTech] = useState<number>(1);
@@ -145,8 +126,8 @@ const useAR = () => {
   const [ecoSummaryData, setEcoSummaryData] = useState<any[]>([]);
   const {
     data: countData,
-    mutateAsync: getBTRDataCount,
-    isLoading: isBTRCountLoading,
+    mutateAsync: getARDataCount,
+    isLoading: isARCountLoading,
   } = useGetARDataCount();
 
   const {
@@ -160,13 +141,11 @@ const useAR = () => {
 
   const ecoTotalRows = useMemo(() => {
     return countData?.data.data.EcoCount;
-  }, [isBTRCountLoading]);
+  }, [isARCountLoading]);
 
   const techTotalRows = useMemo(() => {
     return countData?.data.data.TechCount;
-  }, [isBTRCountLoading]);
-
-  const [dateLabels, setDateLabels] = useState<any>();
+  }, [isARCountLoading]);
 
   const [tempDownloadData, setTempDownloadData] = useState<boolean>(false);
 
@@ -281,8 +260,6 @@ const useAR = () => {
       getMainMenuItems: MainMenuItemsCustomization,
       gridOptions: {
         components: {
-          grapCellRenderer: BPRGraphCellRenderer,
-          graphCellRenderer: SeasonalityGraphCellRenderer,
           categoryCellRenderer: CategoryCellRenderer,
           categoryToolTip: CategoryToolTip,
           availabilityCellRenderer: AvailabilityCellRenderer,
@@ -519,23 +496,27 @@ const useAR = () => {
     setCurrentPageTechForBoth(1);
     setCurrentPageEcoForBoth(1);
     const tempFilter = getPreparedFilter(filter);
-    const payload = {
-      id: 0,
-      name: "",
-      fields: [],
-      filters: tempFilter,
-      paginationParameter: {
-        pageNumber: 1,
-        recordsPerPage: RowsPerPageCurrTab,
-      },
-    };
-    if (currentTab?.value === "summary") getSummaryData(tempFilter, 1);
-    else {
-      getBTRDataCount(payload);
+
+    if (currentTab?.value === "summary") {
+      getSummaryData(tempFilter, 1);
+    } else {
+      const payload = {
+        id: 0,
+        name: "",
+        fields: [],
+        filters: tempFilter,
+        paginationParameter: {
+          pageNumber: 1,
+          recordsPerPage: RowsPerPageCurrTab,
+        },
+      };
+
+      getARDataCount(payload);
       if (currentTab?.value === "on-hand") getDataTech(tempFilter, 1);
       else if (currentTab?.value === "pipeline") getDataEco(tempFilter, 1);
       else getData(tempFilter, 1);
     }
+
     getBPRUiConfig();
   };
 
@@ -549,74 +530,7 @@ const useAR = () => {
 
   const toggleCurrentTab = (tab: VFFloatingTabItemProps) => setCurrentTab(tab);
 
-  const Extras = () => {
-    if (dateLabels) {
-      return Object.entries(dateLabels).map((item: any, index: any) => {
-        return {
-          field: item[0],
-          colId: item[0],
-          headerName: format(item[1], "PP"),
-          cellRenderer: "colorCellRenderer",
-          cellRendererParams: (params: any) => {
-            return {
-              colorValue: params.data[item[0]],
-            };
-          },
-          minWidth: 100,
-          position: index + initialColumnState.length,
-          ...(item[0].startsWith("D") &&
-          parseInt(item[0].slice(1)) >= 1 &&
-          parseInt(item[0].slice(1)) <= 90
-            ? { filter: "agNumberColumnFilter" }
-            : {}),
-        };
-      });
-    } else {
-      return [];
-    }
-  };
-
-  const onOpenDailyDataGraph = async (params: any) => {
-    console.log(params, "params");
-    const payload: any = {
-      SKUCode: params.data["SKUCode"],
-      WHCode: params.data["WhCode"],
-    };
-    const result = await getDailyData(payload);
-    const data = result.data.data[0];
-    const dailyData: DailyDataGraph = {
-      rowData: params.data,
-      chartData: data["StockData"],
-      normChangeData: data["NormChangeHistoryData"],
-      masterData: data["MasterData"]?.[0],
-      suggestionData: data["SuggestionHistoryData"]
-        ? data["SuggestionHistoryData"]
-        : [],
-      monitoringData: data["MonitoringData"],
-    };
-
-    console.log("dailyDataaa", dailyData);
-
-    dispatch(UPDATE_DAILY_DATA(dailyData));
-    dispatch(TOGGLE_GRAPH_MODAL(true));
-  };
-
   const CustomHeader = {
-    dailydatagraph: {
-      width: 45,
-      minWidth: 45,
-      filter: false,
-      cellRenderer: "grapCellRenderer",
-      cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph },
-      lockPosition: true,
-      resizable: false,
-      floatingFilter: false,
-      suppressColumnsToolPanel: false,
-      headerTooltip: "Daily Data Graph",
-      sortable: false,
-      headerName: "Daily Data Graph",
-      suppressMenu: true,
-    },
     Category: {
       cellRenderer: "categoryCellRenderer",
       tooltipField: "Category",
@@ -681,11 +595,7 @@ const useAR = () => {
 
   const techColDefs = useMemo((): Array<ColDef> => {
     if (initialColumnState) {
-      const colDefs = getColumnDefinationsMTA(
-        initialColumnState,
-        CustomHeader,
-        Extras()
-      );
+      const colDefs = getColumnDefinationsMTA(initialColumnState, CustomHeader);
       colDefs.map((colDef: any) => {
         if (
           initialColumnState.find(
@@ -697,15 +607,10 @@ const useAR = () => {
         }
         return colDef;
       });
-      const result = colDefs.filter(
-        (r: any) =>
-          !r.colId?.startsWith("D") ||
-          r.colId === "DailyDataGraph" ||
-          (r.colId.startsWith("D") && parseInt(r.colId.slice(1)) > 90 - horizon)
-      );
-      return result;
+
+      return colDefs;
     } else return [];
-  }, [techRowData, currentTab, verticalView, dateLabels]);
+  }, [techRowData, currentTab, verticalView]);
 
   const ecoColDefs = useMemo((): Array<ColDef> => {
     if (initialColumnState) {
@@ -727,15 +632,11 @@ const useAR = () => {
         colDefs = getColumnDefinationsMTA(
           initialColumnState,
           CustomHeader,
-          Extras(),
+          [],
           removeCols
         );
       } else {
-        colDefs = getColumnDefinationsMTA(
-          initialColumnState,
-          CustomHeader,
-          Extras()
-        );
+        colDefs = getColumnDefinationsMTA(initialColumnState, CustomHeader);
       }
       colDefs.map((colDef: any) => {
         if (
@@ -748,37 +649,65 @@ const useAR = () => {
         }
         return colDef;
       });
-      const result = colDefs.filter(
-        (r: any) =>
-          !r.colId?.startsWith("D") ||
-          (r.colId.startsWith("D") && parseInt(r.colId.slice(1)) > 90 - horizon)
-      );
-      return result;
+      return colDefs;
     } else return [];
-  }, [ecoRowData, dateLabels, verticalView, currentTab]);
+  }, [ecoRowData, verticalView, currentTab]);
 
   useEffect(() => {
     if (initialColumnState) {
-      if (currentTab.id === "1" && techColDefs?.length)
+      if (currentTab.id === "1") {
         getSummaryData(currFilter, 1);
-      if (currentTab.id === "2" && techColDefs?.length)
-        getDataTech(currFilter, 1);
-      if (currentTab.id === "3") getDataEco(currFilter, 1);
-      if (currentTab.id === "4") getData(currFilter, 1);
+      } else {
+        const payload = {
+          id: 0,
+          name: "",
+          fields: [],
+          filters: currFilter,
+          paginationParameter: {
+            pageNumber: 1,
+            recordsPerPage: RowsPerPageCurrTab,
+          },
+        };
+        getARDataCount(payload);
+
+        if (currentTab.id === "2" && techColDefs?.length) {
+          getDataTech(currFilter, 1);
+        } else if (currentTab.id === "3") {
+          getDataEco(currFilter, 1);
+        } else if (currentTab.id === "4") {
+          getData(currFilter, 1);
+        }
+      }
     }
   }, []);
 
   useEffect(() => {
     if (initialColumnState) {
-      if (currentTab.id === "1" && techColDefs?.length)
+      if (currentTab.id === "1") {
         getSummaryData(currFilter, 1);
-      if (currentTab.id === "2" && techColDefs?.length)
-        getDataTech(currFilter, 1);
-      if (currentTab.id === "3") getDataEco(currFilter, 1);
-      if (currentTab.id === "4") getData(currFilter, 1);
+      } else {
+        const payload = {
+          id: 0,
+          name: "",
+          fields: [],
+          filters: currFilter,
+          paginationParameter: {
+            pageNumber: 1,
+            recordsPerPage: RowsPerPageCurrTab,
+          },
+        };
+        getARDataCount(payload);
+
+        if (currentTab.id === "2" && techColDefs?.length) {
+          getDataTech(currFilter, 1);
+        } else if (currentTab.id === "3") {
+          getDataEco(currFilter, 1);
+        } else if (currentTab.id === "4") {
+          getData(currFilter, 1);
+        }
+      }
     }
   }, [currentTab]);
-
   useEffect(() => {
     if (initialColumnState) {
       if (currentTab.id === "2" && techColDefs.length && techInternalRef?.api) {
@@ -999,7 +928,7 @@ const useAR = () => {
     verticalView,
     isLoading:
       isLoading ||
-      isBTRCountLoading ||
+      isARCountLoading ||
       isUIConfigLoading ||
       isSavedDataLoading ||
       isARSummaryLoading,
@@ -1028,9 +957,6 @@ const useAR = () => {
     ecoColDefs,
     setHorizon,
     lastRunDate,
-    dailyData,
-    showDailyDataGraphModal,
-    showNormChangeHistoryTable,
     onResetCallback,
   };
 };

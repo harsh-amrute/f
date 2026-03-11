@@ -4,7 +4,7 @@ import axios from 'axios';
 export namespace ARService {
 
   export const getARDataCount = async (body: any) => {
-    return await axios.post(process.env.REACT_APP_API_HOST + `api/mta/GetBTRDataCount`, body, {
+    return await axios.post(process.env.REACT_APP_API_HOST + `api/mta/GetAvailabilityReportCount`, body, {
       headers: { 'Content-Type': 'application/json' }
     });
   }

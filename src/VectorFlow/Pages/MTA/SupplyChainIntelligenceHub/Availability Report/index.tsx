@@ -38,12 +38,10 @@ const AvailabilityReport = () => {
     setTempDownloadData,
     tempAgGridProps,
     exportExcelRowData,
-    showNormChangeHistoryTable,
     setExportExcelRowData,
     exportExcelColumns,
     setExportExcelColumns,
     currFilter,
-    dailyData,
     setCurrFilter,
     onDeleteFilter,
     onApplyFilter,
@@ -52,7 +50,6 @@ const AvailabilityReport = () => {
     ecoColDefs,
     setHorizon,
     lastRunDate,
-    showDailyDataGraphModal,
     onResetCallback,
   } = useBTR();
 
@@ -94,22 +91,6 @@ const AvailabilityReport = () => {
         />
       </div>
       {lastRunDate && <LastRunDateComponent lastRunDate={lastRunDate} />}
-      {showDailyDataGraphModal && (
-        <DailyDataGraphModal
-          rowData={dailyData.rowData}
-          chartData={dailyData.chartData}
-          normChangeData={dailyData.normChangeData}
-          masterData={dailyData.masterData}
-          isModalOpen={showDailyDataGraphModal}
-          suggestionData={dailyData.suggestionData}
-          monitoringData={dailyData.monitoringData}
-          skuKey={"SKUCode"}
-          whKey={"LocationName"}
-        />
-      )}
-      {showNormChangeHistoryTable && (
-        <NormChangeHistoryTable data={dailyData.normChangeData} />
-      )}
       <div className={ARLayoutWrapper}>
         <div className={ARLayoutTabsWrapper}>
           <div style={{ zoom: 0.6 }}>
