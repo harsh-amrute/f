@@ -1004,21 +1004,6 @@ const useViewModify = (pageType: string) => {
   };
 
   const sideBar: SideBarDef = {
-    // toolPanels: [
-    //   {
-    //     id: "columns",
-    //     labelDefault: "Columns",
-    //     labelKey: "columns",
-    //     iconKey: "columns",
-    //     toolPanel: "agColumnsToolPanel",
-    //     toolPanelParams: {
-    //       suppressPivots: true,
-    //       suppressRowGroups: true,
-    //       suppressPivotMode: true,
-    //       suppressValues: true
-    //     },
-    //   },
-    // ],
     defaultToolPanel: defaultToolPanel,
   };
 
@@ -1105,7 +1090,7 @@ const useViewModify = (pageType: string) => {
       if (pageType === "add") {
         const newRowData = _.cloneDeep(
           activeMaster.rowData.map((row: any) => {
-            if (JSON.stringify(row) === JSON.stringify(data)) {
+            if(row.tempRowId === data.tempRowId){
               return newRow;
             }
             return row;
@@ -1202,16 +1187,25 @@ const useViewModify = (pageType: string) => {
           )
           .map((col: ColDef) => col.field),
       };
-      if (tempDownloadData)
+      if (tempDownloadData){
         event.api.exportDataAsExcel({
           fileName: downloadFileName
             ? "Error-" + downloadFileName
             : "Error-" + activeMaster.name,
           columnKeys: Colparams.columnKeys,
         });
+
+        closeIfNoRowData()
+      }
       // if (tempDownloadData) event.api.exportDataAsExcel({  fileName: downloadFileName ? 'Error-' + downloadFileName : 'Error-' + activeMaster.name});
     },
   };
+
+  function closeIfNoRowData(){
+    if(!activeMaster.rowData.length){
+      onBackButton();
+    }
+  }
 
   const addCheckBoxColDefs = () => {
     const checkboxColDefs: ColDef[] = [

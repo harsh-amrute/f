@@ -55,6 +55,7 @@ import { decryptStorageData } from "../VectorFlow/Pages/MTO/Common/encryption";
 import "./style.css";
 import { getNumberFormat } from "./numberFormat";
 import axios from 'axios';
+import { v4 as uuidv4 } from "uuid";
 
 const keyboardCharacters = [
   // '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -5527,7 +5528,7 @@ export const parseMTOExcelData = async (
       buffData[headerKeys[j]] = data[i][j];
     }
     buffData["err"] = "";
-    buffData["tempRowId"] = i; //for unique id 
+    buffData["tempRowId"] = uuidv4(); //for unique id 
     bufferData.push(buffData);
   }
   return bufferData;
