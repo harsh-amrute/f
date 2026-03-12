@@ -1,5 +1,4 @@
 import { useTranslation } from "react-i18next";
-
 import {
   SignInArea,
   SignInContainer,
@@ -35,11 +34,12 @@ import WelcomeBoard from "./welcome-board";
 import { useEffect, useState } from "react";
 import LoadingSpinner from "../../../components/commons/LoadingSpinner";
 import {
-  loadCaptchaEnginge,
   LoadCanvasTemplateNoReload,
   validateCaptcha,
 } from "react-simple-captcha";
 import VFLoader from "../../../components/VectorFLOW/commons/VFLoader";
+import { reloadCaptcha} from "../../../helpers/utils";
+
 
 function ChangePasswordContainer() {
   const { t } = useTranslation();
@@ -56,12 +56,15 @@ function ChangePasswordContainer() {
     if (!token || !userId) {
       navigate("/login", { replace: true });
     }
-    loadCaptchaEnginge(6);
+    reloadCaptcha(setCaptchaInput);
+
     const interval = setInterval(() => {
-      loadCaptchaEnginge(6);
+      reloadCaptcha(setCaptchaInput);
+
     }, 120000);
     return () => clearInterval(interval);
   }, [token, userId, navigate]);
+
 
   const form = useForm<{
     new_password: string;
@@ -87,7 +90,7 @@ function ChangePasswordContainer() {
   const onSave = () => {
     if (!captchaInput || !validateCaptcha(captchaInput)) {
       notifyError("Invalid Captcha. Please try again.");
-      setCaptchaInput("");
+      reloadCaptcha(setCaptchaInput);
       return;
     }
 
@@ -102,19 +105,20 @@ function ChangePasswordContainer() {
       onSuccess: (data: any) => {
         if (data?.status === 400) {
           notifyError(data?.response?.msg);
-          loadCaptchaEnginge(6);
-          setCaptchaInput("");
+          reloadCaptcha(setCaptchaInput);
+
           setLoading(false);
           return;
         }
         notifySuccess(data?.data?.msg || "Password changed successfully");
         setRequestSend(true);
+        setCaptchaInput("");
         setLoading(false);
       },
       onError: () => {
         notifyError("Something went wrong!");
-        loadCaptchaEnginge(6);
-        setCaptchaInput("");
+        reloadCaptcha(setCaptchaInput);
+
         setLoading(false);
       },
     });
@@ -220,14 +224,11 @@ function ChangePasswordContainer() {
 
                 {/* Captcha */}
                 <div className={CaptchaContainer}>
-                  <LoadCanvasTemplateNoReload />
+                    <LoadCanvasTemplateNoReload />
                   <button
                     type="button"
                     className={CaptchaReload}
-                    onClick={() => {
-                      loadCaptchaEnginge(6);
-                      setCaptchaInput("");
-                    }}
+                      onClick={() => reloadCaptcha(setCaptchaInput)}
                   >
                     <img src="/assets/img/reload.svg" alt="Reload" />
                   </button>
@@ -247,15 +248,15 @@ function ChangePasswordContainer() {
                   }}
                 />
 
-                {/* Submit */}
-                <button
-                  className={
-                    loading || Object.keys(errors).length > 0
-                      ? SCButtonLoginDisabled
-                      : SCButtonLogin
-                  }
-                  disabled={loading || Object.keys(errors).length > 0}
-                >
+                {/* Submit */} 
+                  <button
+                    className={
+                      loading || Object.keys(errors).length > 0
+                        ? SCButtonLoginDisabled
+                        : SCButtonLogin
+                    }
+                    disabled={loading || Object.keys(errors).length > 0}
+                  >
                   <div className={ButtonSubmit}>
                     {loading ? (
                       <>
@@ -271,9 +272,7 @@ function ChangePasswordContainer() {
                             alignItems: "center",
                           }}
                         >
-                          <VFLoader
-                            styles={{ width: "50px", height: "50px" }}
-                          />
+                        <VFLoader styles={{ width: "50px", height: "50px" }} />
                         </div>
                       </>
                     ) : (
@@ -294,7 +293,7 @@ function ChangePasswordContainer() {
                       </>
                     )}
                   </div>
-                </button>
+                  </button>
               </form>
             </>
           )}

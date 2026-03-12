@@ -4,8 +4,6 @@ import {
   ChangePassText,
   CircleLogin,
   IputLogin,
-  KeepSingIn,
-  KeepMe,
   LinkRouter,
   SCButtonLogin,
   SCButtonLoginDisabled,
@@ -35,12 +33,11 @@ import { LoginRequest } from "../../../module-main/types";
 import { useLoginAccount } from "../../../module-main/services";
 import {  useNavigate } from "react-router";
 import { notifyError, notifySuccess, notifyWarningWithoutAutoClose } from "../../../helpers/notify";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import WelcomeBoard from "./welcome-board";
 import { hashPassword } from "../../../helpers/utils";
 import VFLoader from "../../../components/VectorFLOW/commons/VFLoader";
 import {
-  loadCaptchaEnginge,
   LoadCanvasTemplateNoReload,
   validateCaptcha,
 } from "react-simple-captcha";
@@ -49,6 +46,7 @@ import { useDispatch } from "react-redux";
 import { UPDATE_ENV_CONFIG } from "../../../redux/actions/MTA";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
 import { Link } from 'react-router-dom';
+import { reloadCaptcha} from "../../../helpers/utils";
 
 function LoginContainer() {
   const { t } = useTranslation();
@@ -56,10 +54,10 @@ function LoginContainer() {
 
   useEffect(() => {
    
-    loadCaptchaEnginge(6);
-
+    reloadCaptcha(setCaptchaInput);
+    
     const interval = setInterval(() => {
-      loadCaptchaEnginge(6);
+      reloadCaptcha(setCaptchaInput);
     }, 120000);
 
     return () => clearInterval(interval);
@@ -80,8 +78,6 @@ function LoginContainer() {
   } = form;
 
   const { mutate: mutateLogin, isLoading } = useLoginAccount();
-  // const [remember, setRemember] = useState(true);
-  const recaptchaRef: any = useRef();
   const [captchaInput, setCaptchaInput] = useState("");
   const dispatch = useDispatch();
   const { mutateAsync: getAllEnvConfiguration } =
@@ -102,7 +98,7 @@ function LoginContainer() {
   const onSave = async () => {
     if (!captchaInput || !validateCaptcha(captchaInput)) {
       notifyError("Invalid Captcha. Please try again.");
-      setCaptchaInput("");
+      reloadCaptcha(setCaptchaInput);
       return;
     }
 
@@ -120,7 +116,7 @@ function LoginContainer() {
             notifyError("Something went wrong");
           }
           // Reload captcha
-          loadCaptchaEnginge(6);
+          reloadCaptcha(setCaptchaInput);
         } else {
           const url = "/landing-page";
           navigate(url, { replace: true });
@@ -137,8 +133,7 @@ function LoginContainer() {
         } else {
           notifyError(error?.error?.non_field_errors[0]);
         }
-        loadCaptchaEnginge(6);
-        setCaptchaInput("");
+        reloadCaptcha(setCaptchaInput);
       },
     });
   };
@@ -241,10 +236,7 @@ function LoginContainer() {
               <button
                 className={CaptchaReload}
                 type="button"
-                onClick={() => {
-                  loadCaptchaEnginge(6);
-                  setCaptchaInput("");
-                }}
+                onClick={() => reloadCaptcha(setCaptchaInput)}
               >
                 <img src="/assets/img/reload.svg" alt="Reload" />
               </button>

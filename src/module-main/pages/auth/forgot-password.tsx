@@ -39,7 +39,7 @@ import {
   LoadCanvasTemplateNoReload,
   validateCaptcha,
 } from "react-simple-captcha";
-import { SITE_KEY } from "../../../helpers/constants";
+import { reloadCaptcha} from "../../../helpers/utils";
 
 function ForgotPasswordContainer() {
   const { t } = useTranslation();
@@ -68,7 +68,7 @@ function ForgotPasswordContainer() {
   const onSave = () => {
     if (!captchaInput || !validateCaptcha(captchaInput)) {
       notifyError("Invalid Captcha. Please try again.");
-      setCaptchaInput("");
+      reloadCaptcha(setCaptchaInput);
       return;
     }
 
@@ -81,8 +81,7 @@ function ForgotPasswordContainer() {
         setMessage(data?.data?.msg);
         if (data?.status === 400) {
           notifyError(data?.response?.msg[0]);
-          loadCaptchaEnginge(6);
-          setCaptchaInput("");
+          reloadCaptcha(setCaptchaInput);
         } else {
           setRequestSend(true);
           notifySuccess("Password reset link sent to your email.");
@@ -93,16 +92,15 @@ function ForgotPasswordContainer() {
         setMessage(error?.data?.msg);
         notifyError(error?.error || "Something went wrong");
         setLoading(false);
-        loadCaptchaEnginge(6);
-        setCaptchaInput("");
+        reloadCaptcha(setCaptchaInput);
       },
     });
   };
 
   useEffect(() => {
-    loadCaptchaEnginge(6);
+    reloadCaptcha(setCaptchaInput);
     const interval = setInterval(() => {
-      loadCaptchaEnginge(6);
+      reloadCaptcha(setCaptchaInput);
     }, 120000);
 
     return () => clearInterval(interval);
@@ -151,13 +149,10 @@ function ForgotPasswordContainer() {
                 {/* Captcha */}
                 <div className={CaptchaContainer}>
                   <LoadCanvasTemplateNoReload />
-                  <button
-                    type="button"
-                    className={CaptchaReload}
-                    onClick={() => {
-                      loadCaptchaEnginge(6);
-                      setCaptchaInput("");
-                    }}
+                    <button
+                      type="button"
+                      className={CaptchaReload}
+                      onClick={()=>reloadCaptcha(setCaptchaInput)}
                   >
                     <img src="/assets/img/reload.svg" alt="Reload" />
                   </button>
