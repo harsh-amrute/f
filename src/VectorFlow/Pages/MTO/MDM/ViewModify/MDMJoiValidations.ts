@@ -85,6 +85,8 @@ export const BUFFER_VALIDATION_SCHEMA = Joi.object({
 
   isdel : Joi.optional(),
 
+  tempRowId: Joi.any().optional(),
+
 });
 
 
@@ -201,6 +203,8 @@ export const CCR_VALIDATION_SCHEMA = Joi.object({
   id : Joi.any().optional(),
 
   isdel : Joi.optional(),
+  tempRowId: Joi.any().optional(),
+
 });
 
 export const CALENDAR_VALIDATION_SCHEMA = Joi.object({
@@ -300,109 +304,129 @@ export const CALENDAR_VALIDATION_SCHEMA = Joi.object({
 });
 
 export const CALENDAR_Add_VALIDATION_SCHEMA = Joi.object({
-  dow: Joi.any(),
-
-  plnm: Joi.string().required().optional().messages({
-    "string.base": "Plant name cannot be empty!",
-    "any.required": "Plant name cannot be empty!",
-    "string.empty": "Plant name cannot be empty!",
-  }),
-
-  rb: Joi.any(),
-
   hid: Joi.any().optional(),
 
-  rd : Joi.any(),
+  tempRowId: Joi.any().optional(),
 
   ccr: Joi.string().required().optional().messages({
     "string.base": "CCR cannot be empty!",
     "string.empty": "CCR cannot be empty!",
     "any.required": "CCR cannot be empty!",
   }),
-  
-  ccr_id: Joi.any(),
- 
-  dsc: Joi.string().required().max(100).messages({
-    "string.base": "Title cannot be empty!",
-    "any.required": "Title cannot be empty!",
-    "string.max": "Title cannot exceed 100 characters!",
-    "string.empty": "Title cannot be empty!",
+
+  ccr_id: Joi.number().required().messages({
+    "number.base": "CCR cannot be empty!",
+    "number.empty": "CCR cannot be empty!",
+    "any.required": "CCR cannot be empty!",
   }),
 
-  sd: Joi.date()
+  dsc: Joi.string().required().max(100).messages({
+    "string.base": "Description cannot be empty!",
+    "any.required": "Description cannot be empty!",
+    "string.max": "Description cannot exceed 100 characters!",
+    "string.empty": "Description cannot be empty!",
+  }),
+
+  sd: Joi.date().required().messages({
+    "date.base": "Start date cannot be empty!",
+    "any.required": "Start date cannot be empty!",
+    "date.less": "Start date must be less than End date!",
+  }),
+
+  ed: Joi.date()
     .required()
+    .custom((value, helpers) => {
+      const { sd } = helpers.state.ancestors[0];
+
+      const start = new Date(sd).setHours(0, 0, 0, 0);
+      const end = new Date(value).setHours(0, 0, 0, 0);
+
+      if (end < start) {
+        return helpers.error("date.min");
+      }
+
+      return value;
+    })
     .messages({
-      "date.base": "Start date cannot be empty!",
-      "any.required": "Start date cannot be empty!",
-      "date.less": "Start date must be less than End date!",
-    }),
-  
-    ed: Joi.date()
-    .required()
-    .min(Joi.ref('sd')) // ✅ Allows ed >= sd
-    .messages({
-      "date.base": "End date cannot be empty!",
-      "any.required": "End date cannot be empty!",
       "date.min": "End date must be equal to or after Start date!",
     }),
-  
+
   iwd: Joi.boolean().required().messages({
     "boolean.base": "Is Working Day must be either true or false!",
     "any.required": "Is Working Day is required!",
-
   }),
 
-  plid: Joi.number().allow(null).optional().messages({
-    "number.base": "Plant Id cannot be empty!",
-    "any.required": "Plant Id cannot be empty!",
+  plid: Joi.number().messages({
+    "number.base": "Please select a valid plant from the dropdown!",
+    "any.required": "Please select a valid plant from the dropdown!",
   }),
 
   err: Joi.object({
     error: Joi.string().allow("").optional(),
     warning: Joi.string().allow("").optional(),
   }),
-
-  ia: Joi.boolean().default(false).optional(),
-  iu: Joi.boolean().default(false).optional(),
-  id: Joi.boolean().default(false).optional(),
-  rid: Joi.any(),
-  did: Joi.any(),
-
 });
 
 
-// export const POOGI_VALIDATION_SCHEMA = Joi.object({
-//   plnm: Joi.string().min(1).required().messages({
-//     'string.empty': 'Plant name cannot be empty!',
-//     'any.required': 'Plant name cannot be empty!',
-//   }),
+export const POOGI_VALIDATION_SCHEMA = Joi.object({
+  plnm: Joi.string().min(1).required().messages({
+    "string.base": "Plant name cannot be empty!",
+    "string.empty": "Plant name cannot be empty!",
+    "any.required": "Plant name cannot be empty!",
+  }),
 
-//   majdsc: Joi.string().allow('', null).when('mindsc', {
-//     is: Joi.string().min(1), 
-//     then: Joi.string().min(1).required().messages({
-//       'string.empty': 'State the major reason to which the minor reason belongs!',
-//       'any.required': 'State the major reason to which the minor reason belongs!',
-//     }),
-//   }).messages({
-//     'string.empty': 'Major reason description cannot be empty!',
-//     'any.required': 'Major reason description cannot be empty!',
-//   }),
+  majdsc: Joi.string().empty(null).empty("").messages({
+    "string.base": "Major reason description cannot be empty!",
+    "string.empty": "Major reason description cannot be empty!",
+    "any.required": "Major reason description cannot be empty!",
+  }),
 
-//   mindsc: Joi.string().allow('', null).when('majdsc', {
-//     is: Joi.string().min(1),
-//     then: Joi.string().min(1).required().messages({
-//       'string.empty': 'Each major reason must have at least one minor reason!',
-//       'any.required': 'Each major reason must have at least one minor reason!',
-//     }),
-//   }),
+  mindsc: Joi.string().empty(null).empty("").messages({
+    "string.base": "Minor reason must be a string!",
+    "string.empty": "Minor reason must be a string!",
+    "any.required": "Minor reason must be a string!",
+  }),
 
-//   majcd : Joi.string(),
+  tempRowId: Joi.any().optional(),
+  
+  majcd: Joi.string().allow("", null),
 
-//   mincd : Joi.string(),
+  mincd: Joi.string().allow("", null),
 
-//   err : Joi.object({
-//     error: Joi.string().allow("").optional(), 
-//     warning: Joi.string().allow("").optional(),
-//   }).optional(),
-
-// });
+  err: Joi.object({
+    error: Joi.string().allow("").optional(),
+    warning: Joi.string().allow("").optional(),
+  }).optional(),
+}).when(
+  Joi.object({
+    majdsc: Joi.string().min(1),
+  }).unknown(),
+  {
+    then: Joi.object({
+      mindsc: Joi.string().min(1).required().messages({
+        "string.base": 
+          "Each major reason must have at least one minor reason!",
+        "string.empty":
+          "Each major reason must have at least one minor reason!",
+        "any.required":
+          "Each major reason must have at least one minor reason!",
+      }),
+    }),
+  }
+).when(
+  Joi.object({
+    mindsc: Joi.string().min(1),
+  }).unknown(),
+  {
+    then: Joi.object({
+      majdsc: Joi.string().min(1).required().messages({
+        "stirng.base":
+          "State the major reason to which the minor reason belongs!",
+        "string.empty":
+          "State the major reason to which the minor reason belongs!",
+        "any.required":
+          "State the major reason to which the minor reason belongs!",
+      }),
+    }),
+  }
+);

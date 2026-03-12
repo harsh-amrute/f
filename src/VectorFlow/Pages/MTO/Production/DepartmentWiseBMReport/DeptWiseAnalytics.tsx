@@ -2,6 +2,7 @@ import { ColDef } from "ag-grid-enterprise";
 import React, { useMemo, useState } from "react";
 import { BMReportAnaytics } from "./helper";
 import { useSelector } from "react-redux";
+import * as globalStyles from "../../../../../styles/global";
 
 import {
   BPRDailyAnalyticsHeader,
@@ -21,10 +22,15 @@ import {
   BPRDailyAnalyticsTableCellText,
 } from "./styles.css";
 import Tooltip from "../../Common/Tooltip";
+import {
+  analyticsHeaderBorderColorVar,
+  analyticsBgVar,
+  analyticsTextColorVar,
+} from "./styles.css";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
+import { useUserData } from "../../../../../context";
 
 const DeptWiseAnalytics = () => {
-  // const user = useUserData();
-  // const themeUi = user.user.theme_ui;
   const [isLoading] = useState<boolean>(false);
 
   const rowData = useSelector((state: any) => state.mto.BMReportAnalytics);
@@ -155,14 +161,29 @@ const DeptWiseAnalytics = () => {
     }
   };
 
+  const { user } = useUserData();
+  const themeUi = user?.user?.theme_ui;
+  const themeColor = (themeUi && themeUi === 'NOIRFUSION') ? globalStyles.chooseThemeColor[themeUi]?.color3 : "#383737";
+
   if (isLoading) {
     return (
       <div className={BPRDailyAnalyticsWrapper}>
         <div
           className={BPRDailyAnalyticsContainer}
-          style={{ aspectRatio: "0.9", width: "90%" }}
+          style={{
+            aspectRatio: "0.9",
+            width: "90%",
+            ...assignInlineVars({
+            [analyticsBgVar]: themeColor,
+            [analyticsTextColorVar]: "white",
+            }),
+            }}
         >
-          <div className={BPRDailyAnalyticsHeader}>
+          <div className={BPRDailyAnalyticsHeader}
+             style={assignInlineVars({          
+              [analyticsHeaderBorderColorVar]: 'white',
+          })}
+            >
             Analytics (For all orders)
           </div>
           <div
@@ -185,7 +206,7 @@ const DeptWiseAnalytics = () => {
       <div className={BPRDailyAnalyticsWrapper}>
         <div
           className={BPRDailyAnalyticsContainer}
-          style={{ aspectRatio: "0.9", width: "90%" }}
+          style={{ aspectRatio: "0.9", width: "90%" }}        
         >
           <div className={BPRDailyAnalyticsHeader}>
             Analytics (For all orders)
@@ -207,8 +228,13 @@ const DeptWiseAnalytics = () => {
 
   return (
     <div className={BPRDailyAnalyticsWrapper}>
-      <div className={BPRDailyAnalyticsContainer}>
-        <div className={BPRDailyAnalyticsHeader}>
+      <div className={BPRDailyAnalyticsContainer}  style={assignInlineVars({
+            [analyticsBgVar]: themeColor,                  // bg 
+            [analyticsTextColorVar]: "white",             // text color
+          })}>
+        <div className={BPRDailyAnalyticsHeader}   style={assignInlineVars({          
+              [analyticsHeaderBorderColorVar]: 'white',
+          })}>
           Analytics (For all orders)
         </div>
         <div className={BPRDailyAnalyticsTableContainer}>

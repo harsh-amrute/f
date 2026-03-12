@@ -40,6 +40,9 @@ const FullKitGraph = (props: any) => {
 
   const options: AgChartOptions = {
     data: rawData,
+      tooltip:{
+      mode: "single",
+    },
     series: [
       {
         type: "bar",

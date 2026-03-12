@@ -15,83 +15,166 @@ interface ApproveAllModalProps {
   onSuccess: (status: string) => void;
   onClose: () => void;
   setSelectionType: any;
+  approveButtonLabel:any;
+  isAllDataVisible:any;
+  isBulkAction: any;
 }
 
 const ApproveAllModal = (props: ApproveAllModalProps) => {
-  const { onSuccess, onClose, setSelectionType } = props;
+  const {
+    onSuccess,
+    onClose,
+    setSelectionType,
+    approveButtonLabel,
+    isAllDataVisible,
+    isBulkAction,
+  } = props;
 
   const { user } = useUserData();
 
   const themeUi = user.user.theme_ui;
 
   return (
-    <VFModalCard
-      headerText={"Approve All"}
-      closeModal={onClose}
-      openModal={true}
-      headerIcon={"/assets/img/VectorFLOW/NMS/approveall.svg"}
-      closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}
-    >
-      <div
-        className={RadioContainer}
-        style={{
-          display: "flex",
-          alignItems: "center",
-          flexDirection: "row",
-          marginTop: "10px",
-        }}
-      >
-        <div
-          className={RadioButtonGroup}
-          style={assignInlineVars({
+    <>
+      {isBulkAction ? (
+        <VFModalCard
+          headerText={"Approve All"}
+          closeModal={onClose}
+          openModal={true}
+          headerIcon={"/assets/img/VectorFLOW/NMS/approveall.svg"}
+          closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}
+        >
+          <div
+            className={RadioContainer}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              flexDirection: "row",
+              marginTop: "10px",
+            }}
+          >
+            {isAllDataVisible ? (
+              <div
+                className={RadioButtonGroup}
+                style={assignInlineVars({
             [radioAccentVar]: globalStyles.chooseThemeColor[themeUi].color5,
           })}
-        >
-          <input
-            type="radio"
-            value="option1"
-            onChange={() => setSelectionType("All")}
-            name="Approve"
-            id="ApproveAll"
-          />
-          <label
-            htmlFor="ApproveAll"
-            style={{ fontSize: "15px", fontWeight: "300px" }}
-          >
-            Approve across all the pages
-          </label>
-        </div>
-        <div className={ButtonSeperator} />
-        <div
-          className={RadioButtonGroup}
-          style={assignInlineVars({
+              >
+                <input
+                  type="radio"
+                  value="option1"
+                  onChange={() => setSelectionType("All")}
+                  name="Approve"
+                  id="ApproveAll"
+                />
+                <label
+                  htmlFor="ApproveAll"
+                  style={{ fontSize: "15px", fontWeight: "300" }}
+                >
+                  Approve across all the pages
+                </label>
+              </div>
+            ) : (
+              <div
+                className={RadioButtonGroup}
+                style={assignInlineVars({
             [radioAccentVar]: globalStyles.chooseThemeColor[themeUi].color5,
           })}
+              >
+                <input
+                  type="radio"
+                  value="option2"
+                  onChange={() => setSelectionType("Current")}
+                  name="Approve"
+                  id="ApproveCurrent"
+                />
+                <label
+                  htmlFor="ApproveCurrent"
+                  style={{ fontSize: "15px", fontWeight: "300" }}
+                >
+                  Approve only the current page
+                </label>
+              </div>
+            )}
+          </div>
+          <div className={SubmitButtonWrapper}>
+            <VFButton
+              themeUi={user.user.theme_ui}
+              onClick={() => onSuccess("Approved")}
+            >
+              {approveButtonLabel}
+            </VFButton>
+          </div>
+        </VFModalCard>
+      ) : (
+        <VFModalCard
+          headerText={"Approve All"}
+          closeModal={onClose}
+          openModal={true}
+          headerIcon={"/assets/img/VectorFLOW/NMS/approveall.svg"}
+          closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}
         >
-          <input
-            type="radio"
-            value="option2"
-            onChange={() => setSelectionType("Current")}
-            name="Approve"
-            id="ApproveCurrent"
-          />
-          <label
-            htmlFor="ApproveCurrent"
-            style={{ fontSize: "15px", fontWeight: "300px" }}
+          <div
+            className={RadioContainer}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              flexDirection: "row",
+              marginTop: "10px",
+            }}
           >
-            Approve only the current page
-          </label>
-        </div>
-      </div>
-      <div className={SubmitButtonWrapper}>
-        <VFButton
-          themeUi={user.user.theme_ui}
-          onClick={() => onSuccess("Approved")}
-        >
-          Ok
-        </VFButton>
-      </div>
-    </VFModalCard>
+            <div
+              className={RadioButtonGroup}
+              style={assignInlineVars({
+            [radioAccentVar]: globalStyles.chooseThemeColor[themeUi].color5,
+          })}
+            >
+              <input
+                type="radio"
+                value="option1"
+                onChange={() => setSelectionType("All")}
+                name="Approve"
+                id="ApproveAll"
+              />
+              <label
+                htmlFor="ApproveAll"
+                style={{ fontSize: "15px", fontWeight: "300" }}
+              >
+                Approve across all the pages
+              </label>
+            </div>
+            <ButtonSeperator />
+            <div
+              className={RadioButtonGroup}
+              style={assignInlineVars({
+            [radioAccentVar]: globalStyles.chooseThemeColor[themeUi].color5,
+          })}
+            >
+              <input
+                type="radio"
+                value="option2"
+                onChange={() => setSelectionType("Current")}
+                name="Approve"
+                id="ApproveCurrent"
+              />
+              <label
+                htmlFor="ApproveCurrent"
+                style={{ fontSize: "15px", fontWeight: "300" }}
+              >
+                Approve only the current page
+              </label>
+            </div>
+          </div>
+          <div className={SubmitButtonWrapper}>
+            <VFButton
+              themeUi={user.user.theme_ui}
+              onClick={() => onSuccess("Approved")}
+            >{approveButtonLabel}
+            </VFButton>
+          </div>
+        </VFModalCard>
+      )}
+    </>
   );
 };
 

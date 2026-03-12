@@ -87,7 +87,7 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
 
   const isRowComplete = (rowId: number) => {
     const row = rowSelections[rowId];
-    return row && row.operation && row.value && row.value.trim() !== "";
+    return row && row.column && row.operation && row.value && row.value.trim() !== "";
   };
 
   const [rowFilterIndexMap, setRowFilterIndexMap] = useState<
@@ -590,7 +590,6 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
                   data-theme={user.user.theme_ui}
                   style={{
                     opacity: isRowComplete(row.id) ? 0 : 1,
-                    cursor: isRowComplete(row.id) ? "default" : "pointer",
                   }}
                 >
                   <img
@@ -603,6 +602,7 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
                   style={{
                     [accentColorVar]: brand,
                     [disabledVar]: isMaxRows ? "true" : "false",
+                    cursor: isRowComplete(row.id) ? "default" : "pointer",
                   }}
                   onClick={handleAddRow}
                 >
@@ -616,6 +616,7 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
                   style={{
                     [accentColorVar]: brand,
                     [disabledVar]: isMinRows ? "true" : "false",
+                    cursor: isRowComplete(row.id) ? "default" : "pointer",
                   }}
                   onClick={() => handleRemoveRowWithFilter(row.id)}
                 >

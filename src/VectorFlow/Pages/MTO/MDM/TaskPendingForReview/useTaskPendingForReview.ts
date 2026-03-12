@@ -298,12 +298,12 @@ const useTaskPendingForReview = ()=>{
         
         data.forEach((item: any) => {
             const tempMajId = "maj_" + uuidv4();
-            const tempMinId = "min_" + uuidv4();
-    
+                      
             // Push each minData object with the corresponding majId and plnm
             if (item.minData && Array.isArray(item.minData)) {
                 
                 item.minData.forEach((minItem: any) => {
+                    const tempMinId = "min_" + uuidv4();
                     result.push({
                         majId: item.majId ? item.majId : tempMajId,
                         majdsc: item.majdsc,
@@ -338,15 +338,16 @@ const useTaskPendingForReview = ()=>{
         const majIdMap = new Map<string | null, any>();
     
         data.forEach((item) => {
-            const majId = item.majId?.startsWith('m') ? null : item.majId;
-            const minId = item.minId?.startsWith('m') ? null : item.minId;
+            const majId = item.majId;
+            const minId = item.minId;
     
             // Get or create the main object
-            let mainObject = majIdMap.get(majId);
+            let mainObject = majIdMap.get(String(majId));
+
             if (!mainObject) {
                 mainObject = {
                     majdsc: item.majdsc,
-                    majid: majId,
+                    majid: item.majId?.startsWith('m') ? null : item.majId,
                     trmId: item.trmId,
                     ia: !!item.appStatus,
                     ie: !!item.ie,
@@ -357,14 +358,16 @@ const useTaskPendingForReview = ()=>{
                     pl: item.pl,
                     minData: [],
                 };
-                majIdMap.set(majId, mainObject);
+                majIdMap.set(String(majId), mainObject);
+
                 result.push(mainObject);
+
             }
     
             // Add minData only if minId exists
-            if (item.minId) {
+            if (minId) {
                 mainObject.minData.push({
-                    minid: minId,
+                    minid: item.minId?.startsWith('m') ? null : item.minId,
                     mindsc: item.mindsc,
                     mintid: item.mintid,
                     ie: !!item.ie,
@@ -375,6 +378,7 @@ const useTaskPendingForReview = ()=>{
                     cm: item.cm || "",
                 });
             }
+
         });
     
         return result;
@@ -408,8 +412,16 @@ const useTaskPendingForReview = ()=>{
                 const uiConfigurationResponse = await MTOMasterUIConfiguration();
             
                 const masters:Master[] = uiConfigurationResponse.data.data
-                const currentMasterFields = masters.find((master:Master)=>master.id==currentTaskMasterId)?.fields
+                const pageType = taskData?.TaskName.split('-')[0].trim()?.toLowerCase();
+                let currentMasterFields;
                 
+                // To remove unwanted fields in Add Calendar Records
+                if(pageType === "add" && taskData.mid === 504){
+                    const masterFields = masters.find((master:Master)=>master.id===taskData.mid)?.fields
+                    currentMasterFields = masterFields?.filter((field: any) => field.key !== 'dow' && field.key !== 'rb' && field.key !== "rd" )
+                }else{
+                    currentMasterFields = masters.find((master:Master)=>master.id==currentTaskMasterId)?.fields
+                }
                 if(currentMasterFields){
 
                     // TODO do the modification of column definations here!
@@ -673,6 +685,7 @@ const useTaskPendingForReview = ()=>{
                 field:"SrNo",
                 colId:"SrNo",
                 headerName:"Sr No.",
+                cellDataType:"number"
             },
             {
                 field:"PendingSince",
@@ -683,6 +696,7 @@ const useTaskPendingForReview = ()=>{
                 field:"ageing",
                 colId:"ageing",
                 headerName:"Ageing",
+                cellDataType:"number"
             },
             {
                 field:"TaskName",
@@ -833,7 +847,7 @@ const useTaskPendingForReview = ()=>{
                 try{
                     const response = await putMTOBufferData([finData]);
                     if(response.status=== 200){
-                        notifySuccess("DB Updated Successfully");
+                        notifySuccess("Task updated successfully.");
                         dispatch(SET_TASK_PENDING_ROW_DATA([]));
                         setIsViewTableOpen(true);
                         GetInitialData(mid);
@@ -903,7 +917,7 @@ const useTaskPendingForReview = ()=>{
             try{
                 const response = await putMTOCCRData([finData]);
                 if(response.status=== 200){
-                    notifySuccess("DB Updated Successfully");
+                    notifySuccess("Task updated successfully.");
                     dispatch(SET_TASK_PENDING_ROW_DATA([]));
                     setIsViewTableOpen(true);
                     GetInitialData(mid);
@@ -952,7 +966,7 @@ const useTaskPendingForReview = ()=>{
         
             const response = await putMTOAddPoogiMaster([finData]);
             if(response.status=== 200){
-                notifySuccess("DB Updated Successfully");
+                notifySuccess("Task updated successfully.");
                 dispatch(SET_TASK_PENDING_ROW_DATA([]));
                 setIsViewTableOpen(true);
                 GetInitialData(mid);
@@ -995,7 +1009,7 @@ const useTaskPendingForReview = ()=>{
         
             const response = await getMtoCalendarMasterData(finalData);
             if(response.status=== 200){
-                notifySuccess("DB Updated Successfully");
+                notifySuccess("Task updated successfully.");
                 dispatch(SET_TASK_PENDING_ROW_DATA([]));
                 setIsViewTableOpen(true);
                 GetInitialData(mid);
