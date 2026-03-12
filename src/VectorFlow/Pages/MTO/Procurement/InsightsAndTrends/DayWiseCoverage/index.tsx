@@ -1,9 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import DayWiseCoverageCalender from "./DayWiseCoverageCalender";
-import DayWiseCoverageHeader from "./DayWiseCoverageHeader";
-import DayWiseCoverageTable from "./DayWiseCoverageTable";
-import { AnimationWrapper, HelperText, TableContainer } from "./style.css";
-import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
+import { ITooltipParams } from 'ag-grid-enterprise';
 import {
   add,
   eachMonthOfInterval,
@@ -12,28 +7,35 @@ import {
   getMonth,
   startOfMonth,
 } from "date-fns";
-import { useGetDayWiseCoverageData } from "../../../../../../VectorFlow/Services/MTO/Procurement/DayWiseCoverage";
-import OverlayLoader from "../../../Common/Loader";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
-import { DAYWISE_COVERAGE_ANALYTICS } from "../../../../../../redux/actions/MTO";
+import { useGetFilterData } from '../../../../../..//VectorFlow/Services/MTO/Common/CommonFilter';
+import SafeLottie from "../../../../../../components/commons/SafeLottie";
+import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
 import VFModalCard from "../../../../../../components/VectorFLOW/commons/VFModalCard";
-import MaterialRequirementComponent from "../../MaterialRequirement/MaterialRequirementComponent";
-import useMaterialReq from "../../MaterialRequirement/useMaterialRequirements";
+import { useUserData } from "../../../../../../context/index";
+import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
+import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from "../../../../../../helpers/utils";
+import useColDef from '../../../../../../hooks/useColDef';
+import useFilter from '../../../../../../hooks/useFilter';
+import SwipePointer from "../../../../../../lottie/swipe pointer.json";
+import { DAYWISE_COVERAGE_ANALYTICS } from "../../../../../../redux/actions/MTO";
+import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import {
   useGetUserUIConfigData,
   useUpdateUserUIConfigData,
 } from "../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig";
-import { FilterPageName, UIGridCode } from "../../../Common/Enum";
-import { useUserData } from "../../../../../../context/index";
-import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
-import { getColumnDefinations } from "../../../../../../helpers/utils";
+import { useGetDayWiseCoverageData } from "../../../../../../VectorFlow/Services/MTO/Procurement/DayWiseCoverage";
+import BomExcelModal from '../../../Common/BomExcelModal';
 import ColorCellRenderer from "../../../Common/ColorCellRenderer/ColorCellRenderer";
-import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
-import SafeLottie from "../../../../../../components/commons/SafeLottie";
-import { useGetFilterData } from '../../../../../..//VectorFlow/Services/MTO/Common/CommonFilter';
-import useFilter from '../../../../../../hooks/useFilter';
-import { ITooltipParams } from 'ag-grid-enterprise';
-import SwipePointer from "../../../../../../lottie/swipe pointer.json";
+import { FilterPageName, pagination, UIGridCode } from "../../../Common/Enum";
+import OverlayLoader from "../../../Common/Loader";
+import MaterialRequirementComponent from "../../MaterialRequirement/MaterialRequirementComponent";
+import useMaterialReq from "../../MaterialRequirement/useMaterialRequirements";
+import DayWiseCoverageCalender from "./DayWiseCoverageCalender";
+import DayWiseCoverageHeader from "./DayWiseCoverageHeader";
+import DayWiseCoverageTable from "./DayWiseCoverageTable";
+import { AnimationWrapper, HelperText, TableContainer } from "./style.css";
 
 enum Colors {
   Selected = "#B93B7E",
@@ -69,7 +71,6 @@ const months = [
 ];
 
 const DayWiseCoverage = () => {
-    const currentMonth = format(new Date(), "yyyy-MM");
     const minDate = useMemo(() => startOfMonth(add(new Date(), { months: -2 })), [])
     const maxDate = useMemo(() => endOfMonth(new Date()), []);
 
@@ -92,6 +93,13 @@ const DayWiseCoverage = () => {
     const { mutateAsync: getData, isLoading: isCalenderLoading } = useGetDayWiseCoverageData();
     const { mutateAsync: getUIConfigData } = useGetUIConfigData();
     const [masterUIConfig, setMasterUIConfig] = useState([]);
+    const { colDefMap, getColDef } = useColDef()
+
+
+
+    const [userPageSize, setUserPageSize] = useState<number>(pagination.mtoPageSize); 
+    const [userConfigFetched, setUserConfigFetched] = useState(false); 
+    const [showExcelModal, setShowExcelModal] = useState(false);
 
     const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
     const { 
@@ -265,6 +273,7 @@ const DayWiseCoverage = () => {
 
     useEffect(()=>{
         if(selectedDate && selectedDate.length && currentGridRef){
+          if(!masterUIConfig.length)
             setColumnDef();
         }
     },[currentGridRef])
@@ -325,6 +334,7 @@ const DayWiseCoverage = () => {
         try {
             const childResponse = await getUIConfigData("DayWiseCoverageChild");
           const response = await getUIConfigData(reportName);
+          getColDef(response);
           setChildColDef(getColumnDefinations(childResponse.data.data,childColDefCustomizations))
           setColDef(getColumnDefinations(response.data.data, colDefCustomizations))
         }
@@ -333,31 +343,39 @@ const DayWiseCoverage = () => {
         }
     },[])
 
-  const getUserColumnConfig = async () => {
-    try {
-      const data = await getUserUIReportConfigData({
-        un: user.user.name,
-        rn_id: UIGridCode.ProcDayWiseCov,
-      });
+   const getUserColumnConfig = async () => {
+        try {
+            const data = await getUserUIReportConfigData({
+                un: user.user.name,
+                rn_id: UIGridCode.ProcDayWiseCov
+            });
 
-      const newConfig = data?.data?.data[0]?.columns_settings
-        ? JSON.parse(data?.data?.data[0]?.columns_settings)
-        : [];
-      setColumnState(newConfig);
+            const configData = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : {};
+            
+            // Extract column state
+            const newColState = configData.cs || []; 
+            // Extract page size (fallback to default if not found)
+            const savedPageSize = configData.pageSize ? Number(configData.pageSize) : pagination.mtoPageSize;
 
-      if (!data) {
-        console.error("Failed to apply column state");
-      }
-    } catch (error) {
-      console.error(error);
+            setColumnState(newColState);
+            setUserPageSize(savedPageSize);
+            setUserConfigFetched(true); // Mark as fetched
+
+            if (!data) {
+                console.error('Failed to apply column state');
+            }
+        } catch (error) {
+            console.error(error);
+        }
     }
-  };
-
-  useEffect(() => {
-    if (colDef?.length && currentGridRef?.current) {
-      setMasterUIConfig(currentGridRef?.current.api.getColumnState());
-    }
-  }, [colDef, currentGridRef]);
+    
+    useEffect(() => {
+        if (colDef?.length && currentGridRef?.current) {
+            
+          setMasterUIConfig(currentGridRef?.current.api.getColumnState());
+          
+        }
+      }, [colDef,currentGridRef]);
 
   useEffect(() => {
     if (masterUIConfig && masterUIConfig.length) {
@@ -365,43 +383,52 @@ const DayWiseCoverage = () => {
     }
   }, [masterUIConfig]);
 
-  const handleSaveClick = async (coldefs?: any) => {
-    try {
-      if (coldefs) {
-        const payload = {
-          un: user.user.name,
-          rn_id: UIGridCode.ProcDayWiseCov,
-          cs: JSON.stringify(coldefs),
-        };
-        await updateUserUIReportConfigData([payload]);
-        setColumnState([...coldefs]);
-      } else {
-        if (currentGridRef?.current?.api) {
-          const config = currentGridRef.current.api.getColumnState();
 
-          const payload = {
-            un: user.user.name,
-            rn_id: UIGridCode.ProcDayWiseCov,
-            cs: JSON.stringify(config),
-          };
-          await updateUserUIReportConfigData([payload]);
+    const handleSaveClick = async (coldefs?: any, newPageSize?: number) => {
+        try {
+            // Determine what to save
+            const currentCS = coldefs || currentGridRef?.current?.api.getColumnState() || [];
+            const currentSize = newPageSize || userPageSize;
+            const isPivot = currentGridRef?.current?.api.isPivotMode();
+
+
+            // Construct the full config object
+            const fullConfig = {
+                cs: currentCS,
+                pageSize: currentSize,
+                pivotMode: isPivot
+            };
+
+            const payload = {
+                un: user.user.name,
+                rn_id: UIGridCode.ProcDayWiseCov,
+                cs: JSON.stringify(fullConfig), // Save the whole object
+            };
+            
+            await updateUserUIReportConfigData([payload]);
+            
+            // Update local state
+            if(coldefs) setColumnState(coldefs);
+            if(newPageSize) setUserPageSize(newPageSize);
+
+        } catch (error) {
+            console.error(error);
         }
-      }
-    } catch (error) {
-      console.error(error);
     }
-  };
+    const onPageSizeChange = (newSize: number) => {
+        handleSaveClick(undefined, newSize); // Trigger save immediately
+    }
 
   const handleResetClick = () => {
     setIsReset(true);
   };
 
-  useEffect(() => {
-    if (isReset) {
-      handleSaveClick(masterUIConfig);
-      setIsReset(false);
-    }
-  }, [isReset]);
+    useEffect(() => {
+        if (isReset) {
+          handleSaveClick(masterUIConfig); 
+          setIsReset(false);
+        }
+      }, [isReset]);
 
   const handleMaterialRequirementClick = () => {
     setShowModal(true);
@@ -421,9 +448,77 @@ const DayWiseCoverage = () => {
       }, []);
 
 
+      // --- Excel Export Logic ---
+
     const ExcelExport =()=>{
-        currentGridRef?.current?.api?.exportDataAsExcel({ fileName: `Day_Wise_Coverage${format(Date.now(), "dd/MM/yyyy")}` , sheetName: 'Day Wise Coverage'});
+        currentGridRef?.current?.api?.exportDataAsExcel({ fileName: `Day_Wise_Coverage` , sheetName: 'Day Wise Coverage'});
       }
+
+    const executeExcelExport = async (isChildren = 0) => {
+        try {
+            const headersdata = currentGridRef?.current?.api.getColumnState();
+            const formattedFilters = formatFilterJSON(appliedFilters);
+
+            const body = getBodyForExcelExport({
+                headersdata: headersdata, filterData: formattedFilters, colDefMap: colDefMap
+            });
+
+
+            const excelResponse = await getData({
+                startDate: format(startOfMonth(startDate), "yyyy-MM-dd"),
+                endDate: format(endOfMonth(endDate), "yyyy-MM-dd"),
+                plannedReleaseDate: selectedDate,
+                isExcelExport: 1,
+                body,
+                report_name: FilterPageName.Proc_Day_Wise_Coverage,
+                isChildren: isChildren
+            });
+
+            if (excelResponse?.status === 200) {
+                DownloadExcel(excelResponse, "Day_Wise_Coverage_Report");
+                notifySuccess("Excel exported successfully!");
+            } else {
+                notifyError("Failed to export Excel ");
+            }
+        } catch (error) {
+            console.error("Excel Export Error:", error);
+            notifyError("An error occurred during export");
+        }
+    };
+
+
+    const handleExportClick = (isChildren = 0) => {
+      const columnState = currentGridRef?.current?.api?.getColumnState() || [];
+      
+      const groupedColumnsCount = columnState.filter((col:any) => col.rowGroup).length;
+
+      if (groupedColumnsCount > 1) {
+          ExcelExport();
+      } else {
+          executeExcelExport(isChildren);
+      }
+  };
+
+const onExcelExportClick = () => {
+        const columnState = currentGridRef?.current?.api?.getColumnState() || [];
+        const groupedColumnsCount = columnState.filter((col:any) => col.rowGroup).length;
+
+        if (groupedColumnsCount > 1) {
+            ExcelExport();
+        } else {
+            setShowExcelModal(true);
+        }
+    };
+
+    const handleExcelConfirm = () => {
+        setShowExcelModal(false);
+        handleExportClick(1);
+    };
+
+    const handleExcelCancel = () => {
+        setShowExcelModal(false);
+       handleExportClick(0);
+    };
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
@@ -440,11 +535,12 @@ const DayWiseCoverage = () => {
           setMultiFilter={setCurrFilter}
           onFilterRemove={onFilterRemove}
           isMfgSelected={isMfgSelected}
-          onExcelExportClick={ExcelExport}
+          onExcelExportClick={onExcelExportClick}
           handleSaveClick={() => handleSaveClick()}
           handleResetClick={handleResetClick}
         />
       </div>
+          
       <DayWiseCoverageHeader
         max={maxDate}
         min={minDate}
@@ -474,6 +570,10 @@ const DayWiseCoverage = () => {
             selectedDate={selectedDate}
             appliedFilters={appliedFilters}
             childColDef={childColDef}
+
+                        userPageSize={userPageSize}
+                        onSavePageSize={onPageSizeChange}
+                        configLoaded={userConfigFetched}
           />
         ) : (
           <div className={AnimationWrapper}>
@@ -520,7 +620,7 @@ const DayWiseCoverage = () => {
             date={date}
             toggleCurrentTab={toggleCurrentTab}
           />
-          {(isMatReqDayWiseLoading || isMatReqLoading) && <VFLoader />}
+          {(isMatReqDayWiseLoading || isMatReqLoading) && <OverlayLoader />}
         </div>
       </VFModalCard>
       {calenderData?.[selectedDate] && (
@@ -562,6 +662,16 @@ const DayWiseCoverage = () => {
               fill="#b93b7e"
             />
           </svg>
+            
+              <BomExcelModal
+                open={showExcelModal}
+                onClose={() => setShowExcelModal(false)}
+                onConfirm={handleExcelConfirm}
+                onCancel={handleExcelCancel}
+                themeUi={themeUi}
+                headerText={"Excel Export"}
+                messageText={"Do you want to download Excel with BOM Data?"}
+            />
         </div>
       )}
     </div>

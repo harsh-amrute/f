@@ -129,7 +129,9 @@ const MTOViewModify = () => {
     showModal,
     setShowModal,
     bufferDataConfirm,
-    isAPILoading
+    isAPILoading,
+    tempRefPoogi,
+    selectedMajReason,
   } = useViewModify("modify");
 
   useSimpleBlocker(activeMaster, onBackButton);
@@ -140,6 +142,8 @@ const MTOViewModify = () => {
   const ccrModifyData = useSelector((state: any) => state.mto.ccrModifyData);
   const editStatus: string = useSelector((state: any) => state.mto.editStatus);
 
+  const hasMajorSelection = selectedMajReason && Object.entries(selectedMajReason).length > 0;
+  
   const handleExportData = useCallback(() => {
     notifyLoader("Exporting Data");
     try {
@@ -180,8 +184,6 @@ const MTOViewModify = () => {
       }
     }
   }, [isTableDataLoading]);
-
-  const tempRefPoogi = React.useRef<any>(null);
 
   const clearGridFilterPoogi1 = () => {
     ref?.current?.api.setFilterModel(null);
@@ -321,9 +323,11 @@ const MTOViewModify = () => {
                   >
                     <VFTable
                       ref={ref}
+                      key={"major"}
                       columnDefs={MTOPoogiMajorColdef}
                       rowData={activeMaster.rowData}
                       {...agGridProps}
+                      getRowId={(row: any) => { return row.data.majId }}
                       statusBar={{
                         statusPanels: [
                           {
@@ -396,9 +400,11 @@ const MTOViewModify = () => {
                     />
                     <VFTable
                       columnDefs={MTOPoogiMinorColdef}
-                      rowData={minReasonRowData}
                       ref={tempRefPoogi}
+                      key={selectedMajReason?.majId || "min"}
                       {...agGridProps}
+                      rowData={selectedMajReason?.minData || []}
+                      getRowId={(row: any) => { return row.data.minId }}
                       tabToNextCell={() => {
                         return null;
                       }}
@@ -524,29 +530,23 @@ const MTOViewModify = () => {
                         justifyContent: "space-between",
                         width: "90px",
                         margin: "8px",
-                        cursor: "pointer",
+                        cursor: hasMajorSelection ? "pointer" : "default",
                         background: "#fff",
                       }}
                       onClick={() => {
                         !activeMaster.colDefs.some(
                           (x) => x.field === "actions" || x.field === "pactions"
                         ) &&
-                          ref &&
-                          ref.current &&
-                          ref?.current?.api?.getSelectedRows()?.length > 0 &&
+                          hasMajorSelection &&
                           addRowToMtoMinGrid();
                       }}
                     >
-                      {!activeMaster.colDefs.some(
-                        (x) => x.field === "actions" || x.field === "pactions"
-                      ) &&
-                      ref &&
-                      ref.current &&
-                      ref?.current?.api?.getSelectedRows()?.length > 0 ? (
+                      {
+                      hasMajorSelection ? (
                         <>
                           <img
                             src="/assets/img/AddBufferMasterIcon.svg"
-                            alt="Add Master Button"
+                            alt="Add Minor Button"
                           />
                           <p
                             style={{
@@ -561,7 +561,7 @@ const MTOViewModify = () => {
                         <>
                           <img
                             src="/assets/img/AddBufferMasterIconGrey.svg"
-                            alt="Add Master Button"
+                            alt="Add Minor Button"
                           />
                           <p
                             style={{

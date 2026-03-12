@@ -110,7 +110,7 @@ const GridView = ({
             selectedRows={0}
             rowsPerPage={userPageSize || pagination.mtoPageSize}
             totalRows={totalRows}
-            currentPage={currentPage}
+            currentPage={totalRows === 0 ? 0 : currentPage}
             handleChangePage={handleChangePage}
             isDisabled={isDisabled}
             customPageSizeEnabled={true}
