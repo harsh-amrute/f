@@ -17,7 +17,6 @@ import CategoryCellRenderer from "./CategoryCellRenderer"
 import AvailabilityCellRenderer from "./AvailabilityCellRenderer"
 import ColorCellRenderer from "./ColorCellRenderer"
 import { AgGridReactProps } from "ag-grid-react"
-import TagsCellRenderer from "./TagsCellRenderer"
 import AvailabilityToolTip from "./AvailabilityToolTip"
 import CategoryToolTip from "./CategoryToolTip"
 import { SeasonalityGraphCellRenderer } from "../../../../../components/VectorFLOW/commons/SeasonalityCellRenderers"
@@ -45,6 +44,7 @@ import { format } from "date-fns"
 import { useGetState } from "../../../../Services/MTA/Common/UserUIConfig"
 import { GridRef } from "../../../../../VectorFlow/types/MDM"
 import BTRColorCellRenderer from "./BTRColorCellRenderer";
+import { BPRTagsCellRenderer } from "../../SupplyChainIntelligenceHub/BPR/BPRCellRenderers";
 
 const useBTR = () => {
 
@@ -230,7 +230,7 @@ const useBTR = () => {
                     categoryToolTip: CategoryToolTip,
                     availabilityCellRenderer: AvailabilityCellRenderer,
                     colorCellRenderer: BTRColorCellRenderer,
-                    tagsCellRenderer: TagsCellRenderer,
+                    tagsCellRenderer: BPRTagsCellRenderer,
                     availabilityToolTip: AvailabilityToolTip,
                     // paginationPageSize:parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100'),
 
