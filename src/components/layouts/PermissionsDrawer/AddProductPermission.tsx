@@ -11,6 +11,7 @@ import {
   primaryButton,
   skeleton,
   focusOutlineVar,
+  primaryBgVar,
 } from "../../commons/styled/index.css";
 import { useUserData } from "../../../context";
 import { notifyError, notifySuccess } from "../../../helpers/notify";
@@ -183,6 +184,9 @@ const AddProductPermission = (props: { cb: () => void }) => {
     );
   const focusColor =
     globalStyles.chooseThemeColor[themeUi]?.color4 ?? "transparent";
+   const bgColor =
+      globalStyles.chooseThemeColor[themeUi]?.color5 ?? "transparent";
+  
 
   return (
     <>
@@ -257,6 +261,7 @@ const AddProductPermission = (props: { cb: () => void }) => {
             type="button"
             style={assignInlineVars({
               [focusOutlineVar]: focusColor,
+              [primaryBgVar]: bgColor,  
             })}
             onClick={() => toggleUploadModal(true)}
           >
@@ -267,6 +272,8 @@ const AddProductPermission = (props: { cb: () => void }) => {
             disabled={isFormInvalid || isSubmitting}
             style={assignInlineVars({
               [focusOutlineVar]: focusColor,
+              [primaryBgVar]: bgColor,  
+              
             })}
           >
             Add Permission

@@ -80,7 +80,15 @@ export interface GetMasterDataPayload {
     paginationParameter?: PaginationPayload | object
 
 }
+export interface GetMasterDataPayloadExcel {
+    id: number,
+    name: string,
+    filters: Array<{ attributeName: string, op: string, value: string }>,
+    fields: Array<{ key: string }>,
+    Stream: number
+    pageType: string
 
+}
 export interface PaginationPayload {
     pageNumber: number,
     recordsPerPage: number
@@ -121,7 +129,14 @@ export interface QueryFilteredDataConfigs {
     currentPage?: number
     rowsPerPage?: number
 }
-
+export interface QueryFilteredDataConfigsExcel {
+    filters: Array<{ attributeName: string, op: string, value: string }>,
+    fields: Array<{ key: string }>
+    showAll?: boolean,
+    count?: boolean,
+    pageType: string,
+    Stream?: number
+}
 export interface UploadModalRadioButtonsType {
     label: string
     value: any

@@ -66,12 +66,15 @@ const MaterialRequirement = () => {
     const { user } = useUserData();
     const themeUi = user?.user?.theme_ui;
 
+    const dateLabel = currentTab?.label === "Selected Day View" ? "Release Date" : "Release Date Till";
+
     return (
         <div style={{ display: "flex", flexDirection: "column", height: "100%", paddingBottom: "2rem" }}>
             {(isMatReqLoading || isMatReqDayWiseLoading || isUpdateUserConfig || isGetUserConfig) && (
                 <OverlayLoader/>
             )}
             <ActionToolBar
+                releaseDateLabel={dateLabel}
                 isReleaseDate
                 themeUi={themeUi}
                 isAddFilterButton

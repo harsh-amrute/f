@@ -18,7 +18,7 @@ import { toast } from "react-toastify/unstyled"
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
 import { GridRef } from "../../../../../VectorFlow/types/MDM"
-import {  BPRSubmitRemarkCellRenderer } from "../BPR/BPRCellRenderers"
+import {  BPRSubmitRemarkCellRenderer, BPRTagsCellRenderer } from "../BPR/BPRCellRenderers"
 import useViewPort from "../../../../../hooks/useViewPort"
 import { BORRemarksCellRenderer } from "./BORCellRenderers"
 import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
@@ -100,8 +100,8 @@ export const useBOR =()=>{
         grapCellRenderer:BPRGraphCellRenderer,
         colorDispatchCellRenderer:DispatchColorCellRenderer,
         submitRemarkCellRenderer:BPRSubmitRemarkCellRenderer,
-        remarksCellRenderer:BORRemarksCellRenderer
-
+        remarksCellRenderer:BORRemarksCellRenderer,
+        TagsCellRenderer: BPRTagsCellRenderer,
         
       }), []);
 
@@ -623,6 +623,9 @@ export const useBOR =()=>{
       suppressHeaderMenuButton: true,
       resizable: false,
       floatingFilter: false,
+    },
+    Tags: {
+      cellRenderer: 'TagsCellRenderer',
     },
   }
   

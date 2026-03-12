@@ -486,6 +486,7 @@ const DynamicReleaseManagement = () => {
     Action: {
       floatingFilter: false,
       resizable: false,
+      filter:false,
       suppressHeaderMenuButton: true,
       cellRenderer: (params: any) => {
         if (!_.isEmpty(params.data)) {
@@ -599,6 +600,7 @@ const DynamicReleaseManagement = () => {
       maxWidth: 50,
       suppressHeaderMenuButton: true,
       floatingFilter: false,
+      filter: false,
     },
   };
 
