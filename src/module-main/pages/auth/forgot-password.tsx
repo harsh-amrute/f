@@ -35,7 +35,6 @@ import WelcomeBoard from "./welcome-board";
 import LoadingSpinner from "../../../components/commons/LoadingSpinner";
 // eslint-disable-next-line import/no-named-as-default
 import {
-  loadCaptchaEnginge,
   LoadCanvasTemplateNoReload,
   validateCaptcha,
 } from "react-simple-captcha";
