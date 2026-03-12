@@ -293,7 +293,7 @@ const ReasonForDelayOrder = () => {
                  const headersdata = currentGridRef?.current?.api.getColumnState();
                  const formattedFilters = formatFilterJSON(appliedFilters);
                  const body = getBodyForExcelExport({ headersdata, appliedFilters: formattedFilters, colDefMap });
-                 const apiResponse = await getPoogiReasonsDelayedOrderExcelExport({ wip: wipval == true ? 1 : 0, body, isExcelExport: 1, report_name: FilterPageName.Poogi_Reason_For_Delayed_Orders })
+                 const apiResponse = await getPoogiReasonsDelayedOrderExcelExport({ wip: wipval == true ? 0 : 1, body, isExcelExport: 1, report_name: FilterPageName.Poogi_Reason_For_Delayed_Orders })
                  if (apiResponse.status == 200) {
                      DownloadExcel(apiResponse, FilterPageName.Poogi_Reason_For_Delayed_Orders)
                     } else { 

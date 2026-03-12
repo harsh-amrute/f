@@ -7,6 +7,8 @@ import {
   type GridRef,
   type QueryFilteredDataConfigs,
   type MDMMasterState,
+  QueryFilteredDataConfigsExcel, 
+  GetMasterDataPayloadExcel
 } from "../../../../types/MDM";
 import {
   generateOptions,
@@ -24,6 +26,7 @@ import {
 } from "../../../../../helpers/utils";
 import {
   useGetMasterData,
+  useGetMasterData1,
   useGetMasterUIConfiguration,
   useGetCount,
   useCreateDraft,
@@ -37,6 +40,7 @@ import {
   useGetRetailCount,
   useGetMasterDataRetail,
   useGetUploadProgress,
+  useBulkModifyMasterData,
 } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -108,7 +112,6 @@ const useViewModify = (pageType: string) => {
     (state: RootState) => state.mdm.isUploadModalOpen
   );
   const draftID = useSelector((state: RootState) => state.mdm.draftId);
-  const chunkSize = useSelector((state: RootState) => state.mdm.chunkSize);
   const recordCount = useSelector((state: RootState) => state.mdm.recordCount);
   const isDataAvailableLocally = useSelector(
     (state: RootState) => state.mdm.isDataAvailableLocally
@@ -159,6 +162,7 @@ const useViewModify = (pageType: string) => {
   const VIEWRECORD_PAGE = EnvConfig["VIEWRECORD_PAGE"];
   const ADDRECORD_PAGE = EnvConfig["ADDRECORD_PAGE"];
   const DELETERECORD_PAGE = EnvConfig["DELETERECORD_PAGE"];
+  const chunkSize = parseInt(EnvConfig['ChunkSizeForModifyAddDelete']); 
   const rowsPerPage = useMemo(() => {
     if (pageType === "add") return parseInt(ADDRECORD_PAGE || "50");
     else if (pageType === "remove") return parseInt(DELETERECORD_PAGE || "50");
@@ -198,6 +202,8 @@ const useViewModify = (pageType: string) => {
 
   const { mutateAsync: getMasterData } = useGetMasterData();
 
+  const {mutateAsync:getMasterData1} = useGetMasterData1();
+
   const { mutateAsync: getMasterDataRetail } = useGetMasterDataRetail();
 
   const { mutateAsync: getCount } = useGetCount();
@@ -211,6 +217,8 @@ const useViewModify = (pageType: string) => {
   const { mutateAsync: deleteDraft } = useDeleteDraft();
 
   const { mutateAsync: modifyMaster } = useModifyMasterData();
+  const {mutateAsync:bulkmodifyMaster} = useBulkModifyMasterData();
+
 
   const { mutateAsync: modifyMasterRetail } = useModifyMasterDataRetail();
 
@@ -363,8 +371,6 @@ const useViewModify = (pageType: string) => {
 
       setAllMasterState(allMasterData);
 
-      const allOptions: Option[] = generateOptions(allMasterData);
-      dispatch(FILL_OPTIONS(allOptions));
           
       const masterIdsArray = getSelectedMasterValues();
 
@@ -733,6 +739,37 @@ const useViewModify = (pageType: string) => {
 
     return resultData;
   };
+  
+  const queryFilteredDataExcel = async (configs:QueryFilteredDataConfigsExcel) => {
+    const {filters,fields,count} = configs;
+    const payload:GetMasterDataPayloadExcel = {
+      id:activeMaster.id,
+      name:activeMaster.name,
+      filters:filters,
+      fields:fields,
+      pageType: pageType,
+      Stream:1
+    }
+    let resultData;
+    if(count){
+      if(activeMaster.id > 14){
+        resultData =  await getRetailCount(payload);
+      }
+      else{
+        resultData =  await getCount(payload);
+      }
+    }
+    else{
+      if(activeMaster.id > 14){
+        resultData = await getMasterDataRetail(payload); 
+      }
+      else{
+        resultData = await getMasterData1(payload); 
+      }
+    }
+
+    return resultData;
+  }
 
   const queryAllData = async (configs: QueryFilteredDataConfigs) => {
     const { pagination, fields, count, currentPage, rowsPerPage } = configs;
@@ -1261,7 +1298,6 @@ const useViewModify = (pageType: string) => {
   };
 
   const onUploadMaster = async (RECORD_UPLOAD_LIMIT: any) => {
-    console.log("onUploadMaster button clicked");
 
     let intervalID: any;
     try {
@@ -1270,17 +1306,18 @@ const useViewModify = (pageType: string) => {
         return;
       }
       const selectedColumns = ref.current?.api.getAllDisplayedColumns();
+      let selectedKeys:any;
+          if(pageType==='add'){
+            selectedKeys = activeMaster.fields.filter((field:Field)=>field.isAdd).map((field:Field)=>field.key);
+          }
+          else{
+            selectedKeys = selectedColumns?.map((col:any)=>col.colId);
+          }
       // const toasId = notifyLoader("Reading File");
       setIsOverlayVisible(true)
 
       if (activeMaster.id < 14) {
-        await parseExcelData(
-          file,
-          activeMaster,
-          pageType,
-          selectedColumns,
-          RECORD_UPLOAD_LIMIT
-        );
+        await parseExcelData(file,activeMaster,pageType,selectedColumns);
       }
 
       const formData = new FormData();
@@ -1290,6 +1327,8 @@ const useViewModify = (pageType: string) => {
       const processId = uuidv4();
 
       formData.append("process_id", JSON.stringify({ processId: processId }));
+      formData.append("RECORD_UPLOAD_LIMIT",JSON.stringify({RECORD_UPLOAD_LIMIT}));
+      formData.append("SELECTED_KEYS",JSON.stringify({SELECTED_KEYS:selectedKeys}));
 
       // intervalID = setInterval(async ()=>{
       //   const progress = await getUploadProgress(processId);
@@ -1304,6 +1343,17 @@ const useViewModify = (pageType: string) => {
         masterId: activeMaster.id,
       });
       // clearInterval(intervalID);
+      if (response.status == 400) {
+        const rawError = (response as any).response; 
+        if (rawError) {
+            const parsedError = JSON.parse(rawError);
+            toast.dismiss();
+            console.error(parsedError.error);
+            notifyError(parsedError.error);
+            setIsOverlayVisible(false);
+            return  
+        }
+      }
       let result = JSON.parse(response.data);
       const errorAndWarningData = result.filter(
         (data: any) => data.error.length > 0 || data.warning.length > 0
@@ -1371,101 +1421,110 @@ const useViewModify = (pageType: string) => {
 
       const payloadFields: any = getCurrentVisbileColumns();
 
-      const numberOfPages = Math.ceil(recordCount / chunkSize);
-      const toastId = notifyLoader(`Downloading Data 0 / ${recordCount}`);
-      const rows = [];
-      for (let i = 1; i <= numberOfPages; i++) {
-        const result = await queryFilteredData({
-          filters: payloadFilters,
-          fields: payloadFields,
-          showAll: false,
-          pagination: true,
-          currentPage: i,
-          rowsPerPage: chunkSize,
-        });
-        if (result.data.data === null) throw new Error("Something Went Wrong");
-        rows.push(...result.data.data);
-        if (i === numberOfPages)
-          toast.update(toastId, {
-            render: `Downloading Data ${recordCount} / ${recordCount}`,
-          });
-        else
-          toast.update(toastId, {
-            render: `Downloading Data ${i * chunkSize} / ${recordCount}`,
-          });
-      }
+      const toastId = notifyLoader("Preparing Excel…");
 
-      dispatch(UPDATE_ROW_DATA(rows));
-      dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-      setDownloadData(true);
+      const result = await queryFilteredDataExcel({
+        filters: payloadFilters,
+        fields: payloadFields,
+        pageType: pageType,
+        Stream: 1,
+      });
+
+      const blob = new Blob(
+        [result.data],
+        {
+          type:
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        }
+      );
+
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      const masterName = activeMaster?.name || activeMaster?.name || "MasterData";
+      const safeFileName = masterName.replace(/[^a-zA-Z0-9-_ ]/g, "").trim();
+      a.href = url;
+      a.download = `${safeFileName}.xlsx`;
+      document.body.appendChild(a);
+      a.click();
+
+      a.remove();
+      window.URL.revokeObjectURL(url);
+
       toast.dismiss(toastId);
+
       if (fromUploadModal) {
         setIsUploadButtonDisabled(false);
-        notifySuccess(`Data Downloaded Successfully`);
+        notifySuccess("Data Downloaded Successfully");
         return;
       }
 
-      notifySuccess(`Data Exported Successfully`);
-    } catch (error) {
+      notifySuccess("Data Exported Successfully");
+    }
+    catch (error) {
       toast.dismiss();
       notifyError("Something Went Wrong");
     }
   };
-  const onClearExportError = (source: string) => {
+    const onClearExportError = (source: string) => {
     const erroneusData: any[] = [];
-    const validData: any[] = [];
+    const validData: any[] = []
     activeMaster.rowData.forEach((data: any) => {
-      if (data["warning"] && data["warning"].length > 0) {
-        setWarningFlag(true);
-        erroneusData.push(data);
+      if (data['warning'] && data['warning'].length > 0) {
+        setWarningFlag(true)
+        erroneusData.push(data)
       }
 
-      if (data["error"] && data["error"].length > 0) {
+      if (data['error'] && data['error'].length > 0) {
         erroneusData.push(data);
-      } else {
+      }
+      else {
         validData.push(data);
       }
     });
     setTempGridData(erroneusData);
     setTempDownloadData(true);
-    setErrorDownloadPrefix(source);
+    setErrorDownloadPrefix(source)
 
-    if (
-      activeMaster.progress !== "submitted" &&
-      activeMaster.progress !== "deleteOnlineSubmitted"
-    ) {
+    if ((activeMaster.progress !== 'submitted') && (activeMaster.progress !== 'deleteOnlineSubmitted')) {
       dispatch(UPDATE_ROW_DATA(validData));
 
-      dispatch(REMOVE_COLDEFS(["error", "warning"]));
+      dispatch(REMOVE_COLDEFS(['error', 'warning']));
 
-      if (pageType === "remove") {
+
+      if (pageType === 'remove') {
+
         if (validData.length === 0) {
-          dispatch(UPDATE_PROGRESS_STATE("submitted"));
-        } else {
-          dispatch(UPDATE_PROGRESS_STATE("deleteUploaded"));
+
+          dispatch(UPDATE_PROGRESS_STATE('submitted'))
         }
-      } else if (pageType === "add" || pageType == "modify") {
+        else {
+          dispatch(UPDATE_PROGRESS_STATE('deleteUploaded'));
+        }
+      }
+      else if (pageType === 'add' || pageType == 'modify') {
         if (validData.length === 0) {
-          dispatch(UPDATE_PROGRESS_STATE("submitted"));
-        } else {
-          dispatch(UPDATE_PROGRESS_STATE("uploaded"));
+          dispatch(UPDATE_PROGRESS_STATE('submitted'))
+        }
+        else {
+          dispatch(UPDATE_PROGRESS_STATE('uploaded'));
         }
       }
       // else if(validData.length!==0) dispatch(UPDATE_PROGRESS_STATE('uploaded'));
       else if (validData.length === 0) {
         if (draftID.length === 0) {
-          dispatch(UPDATE_PROGRESS_STATE("Discard"));
+          dispatch(UPDATE_PROGRESS_STATE('Discard'))
         } else {
-          dispatch(UPDATE_PROGRESS_STATE("DiscardDraft"));
+          dispatch(UPDATE_PROGRESS_STATE('DiscardDraft'))
         }
       }
-      dispatch(SET_RECORD_COUNT(validData.length));
+      dispatch(SET_RECORD_COUNT(validData.length))
       dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
       if (validData.length !== 0) {
         addCheckBoxColDefs();
       }
     }
-  };
+
+  }
 
   const deleteSelected = () => {
     const selectedRows = ref.current?.api.getSelectedRows();
@@ -1544,6 +1603,8 @@ const useViewModify = (pageType: string) => {
     }
 
     // Convert To String
+    
+    if(activeMaster.id > 3){
     rowData = rowData.map((row: any) => {
       const tempRow: any = {};
       Object.keys(row).forEach((key: string) => {
@@ -1555,6 +1616,7 @@ const useViewModify = (pageType: string) => {
       });
       return tempRow;
     });
+  }
     let taskId: any = "";
     let toastId: any = "";
     let conflictCount = 0;
@@ -1595,7 +1657,12 @@ const useViewModify = (pageType: string) => {
         if (activeMaster.id > 14) {
           data = await modifyMasterRetail(payload);
         } else {
-          data = await modifyMaster(payload);
+          if(activeMaster.id == 1 || activeMaster.id == 2 || activeMaster.id ==3){
+            data = await bulkmodifyMaster(payload);
+          }
+          else{
+            data = await modifyMaster(payload);
+          }
           if (data.status !== 200) {
             throw new Error(`Request failed with status`);
           }

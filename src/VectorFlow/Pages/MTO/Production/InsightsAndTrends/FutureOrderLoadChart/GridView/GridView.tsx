@@ -176,7 +176,7 @@ const GridView = ({
           context={context}
           maintainColumnOrder
           onGridReady={(params: any) => {
-            params.api.autoSizeAllColumns();
+            params.api.sizeColumnsToFit();
             setCurrentGridRef(gridRef);
           }}
           onFilterChanged={() => {

@@ -97,6 +97,7 @@ interface MTOActionToolBarProps {
   ReleaseOrderHeader?: ReactElement | null;
   saveBtnName?:string;
   resetBtnName?:string;
+  releaseDateLabel?: string;
   //// new props
 }
 
@@ -135,6 +136,7 @@ const MTOActionToolBar = ({
     ReleaseOrderHeader,
     saveBtnName,
     resetBtnName,
+    releaseDateLabel = "Release Date Till",
 }: MTOActionToolBarProps) => {
   const handleRemoveFilter = (category: string, name: string) => {
     if (removeFilters) {
@@ -196,7 +198,7 @@ const MTOActionToolBar = ({
                 width: "100%",
               }}
             >
-              &nbsp;<p>Release Date Till</p>&nbsp;&nbsp;
+              &nbsp;<p>{releaseDateLabel}</p>&nbsp;&nbsp;
               <VFDatePicker
                 date={date ? new Date(date) : null}
                 onDateChange={onDateChange}

@@ -56,7 +56,7 @@ import "./style.css";
 import { getNumberFormat } from "./numberFormat";
 import axios from 'axios';
 import { loadCaptchaEnginge } from "react-simple-captcha";
-
+import { v4 as uuidv4 } from "uuid";
 
 const keyboardCharacters = [
   // '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -928,180 +928,152 @@ export const checkError = (
   return { error, warning };
 };
 
-export const parseExcelData = async (
-  file: any,
-  master: MDMMasterState,
-  pageType: string,
-  selectedColumns: any,
-  RECORD_UPLOAD_LIMIT?: any
-) => {
-  const currMasterKeys = master.fields.map((field: Field) => field.key); //array containing keys of current master fields
-  const result: object[] = [];
-  const buffer = await file.arrayBuffer();
+export const parseExcelData = async (file: any, master: MDMMasterState, pageType: string, selectedColumns: any,RECORD_UPLOAD_LIMIT?:any) => {
 
-  let selectedKeys: any;
+  // const currMasterKeys = master.fields.map((field: Field) => field.key); //array containing keys of current master fields
+  // const result: object[] = [];
+  // const buffer = await file.arrayBuffer();
+
+  // let selectedKeys:any;
 
   //Selected Columns Keys
-  if (pageType === "add") {
-    selectedKeys = master.fields
-      .filter((field: Field) => field.isAdd)
-      .map((field: Field) => field.key);
-  } else {
-    selectedKeys = selectedColumns.map((col: any) => col.colId);
-  }
+  // if(pageType==='add'){
+  //   selectedKeys = master.fields.filter((field:Field)=>field.isAdd).map((field:Field)=>field.key);
+  // }
+  // else{
+  //   selectedKeys = selectedColumns.map((col:any)=>col.colId);
+  // }
+
 
   const numberOfSheets = await readSheetNames(file);
-  if (numberOfSheets.length > 1) {
-    throw new Error("File cannot contain multiple sheets");
+  if(numberOfSheets.length > 1){
+    throw new Error('File cannot contain multiple sheets') 
   }
 
-  if (numberOfSheets[0] != "ag-grid") {
-    throw new Error("Sheet Name is changed");
+  if(numberOfSheets[0]!='ag-grid'){
+    throw new Error('Sheet Name is changed') 
   }
-
-  const data = await readXlsxFile(buffer, {
-    parseNumber: (string: any) => string,
-  });
-
+   
+  // const data = await readXlsxFile(buffer,{
+  //   parseNumber: (string:any) => string
+  // });
+  
   //Check if File Contains a Column that is Duplicate
-  const isDuplicateHeader = data[0].some(
-    (header: any, index: number) => data[0].indexOf(header) !== index
-  );
+  // const isDuplicateHeader = data[0].some((header:any,index:number)=>data[0].indexOf(header)!==index);
 
-  if (data.length > parseInt(RECORD_UPLOAD_LIMIT || "50000")) {
-    throw new Error(
-      `Number of rows should not exceed ${RECORD_UPLOAD_LIMIT || "50000"}`
-    );
-  }
-
-  if (isDuplicateHeader) {
-    throw new Error("File Contains Duplicate Headers");
-  }
+  // if (data.length > parseInt(RECORD_UPLOAD_LIMIT || "50000")) {
+  //   throw new Error(`Number of rows should not exceed ${RECORD_UPLOAD_LIMIT || '50000'}`);
+  // }
+  
+  // if(isDuplicateHeader){
+  //   throw new Error("File Contains Duplicate Headers")
+  // }
 
   //displayName to key mapper
-  const headerKeys = data[0].map((headerName: any) => {
-    const fieldObj = master.fields.find(
-      (field: Field) => field.displayName === headerName
-    );
-    if (fieldObj) return fieldObj.key;
-    else return "";
-  });
+  // const headerKeys = data[0].map((headerName: any) => {
+  //   const fieldObj = master.fields.find((field: Field) => field.displayName === headerName);
+  //   if (fieldObj) return fieldObj.key;
+  //   else return '';
+  // })
 
-  if (
-    master.id === 501 ||
-    master.id === 502 ||
-    master.id === 503 ||
-    master.id === 504
-  ) {
-    const objKeys: string[] = [];
-    selectedColumns.forEach((ele: any) => {
-      objKeys.push(ele.colId);
-    });
 
-    const bufferData: any = [];
-    for (let i = 1; i < data.length; i++) {
-      const buffData: any = {};
-      for (let j = 0; j < data[i].length; j++) {
-        buffData[objKeys[j]] = data[i][j];
-      }
-      buffData["err"] = "";
-      bufferData.push(buffData);
-    }
 
-    return bufferData;
-  }
+  // if(master.id===501 || master.id===502 || master.id===503 || master.id===504){
+  //   const objKeys: string[] = [];
+  //   selectedColumns.forEach((ele:any)=>{
+  //     objKeys.push(ele.colId);
+  //   })
 
-  let headers: any = []; //Not Selected Headers
-  let error = false;
+  //   const bufferData:any = [];
+  //   for(let i=1; i< data.length; i++){
+  //     const buffData:any = {};
+  //     for(let j=0; j< data[i].length; j++){
+  //       buffData[objKeys[j]]= data[i][j];
+  //     }
+  //     buffData["err"]= "";
+  //     bufferData.push(buffData);
+  //   }
 
-  if (pageType === "modify") {
-    //Check if File Contains a Column that is not Downloadabl;
-    headerKeys.forEach((key: string) => {
-      const fieldObj = master.fields.find(
-        (field: Field) => field.key === key && !field.isDownload
-      );
-      if (fieldObj) {
-        headers.push(fieldObj.displayName);
-        error = true;
-      }
-    });
+  //   return bufferData;
+  // }
 
-    if (error) {
-      throw new Error(
-        `File Contains ${headers.join(
-          ", "
-        )} field which are not allowed to Upload.`
-      );
-    }
+  // let headers: any = [] //Not Selected Headers
+  // let error = false;
 
-    //Check if All Selected Keys are Present in The Uploaded
-    selectedKeys.forEach((key: string) => {
-      const fieldObj = master.fields.find((field: Field) => field.key === key);
-      if (!headerKeys.includes(key) && fieldObj?.isDownload) {
-        error = true;
-        headers.push(
-          master.fields.find((field: Field) => field.key === key)?.displayName
-        );
-      }
-    });
-  }
 
-  if (pageType == "add") {
-    selectedKeys.forEach((key: string) => {
-      const fieldObj = master.fields.find((field: Field) => field.key === key);
-      if (!headerKeys.includes(key) && fieldObj?.isAdd) {
-        error = true;
-        headers.push(
-          master.fields.find((field: Field) => field.key === key)?.displayName
-        );
-      }
-    });
-  }
-  if (pageType == "remove") {
-    selectedKeys.forEach((key: string) => {
-      const fieldObj = master.fields.find((field: Field) => field.key === key);
+//   if (pageType === 'modify') {
 
-      if (!headerKeys.includes(key) && fieldObj?.isDelete) {
-        error = true;
-        headers.push(
-          master.fields.find((field: Field) => field.key === key)?.displayName
-        );
-      }
-    });
-  }
+//     //Check if File Contains a Column that is not Downloadabl;
+//     headerKeys.forEach((key: string) => {
+//       const fieldObj = master.fields.find((field: Field) => (field.key === key) && !field.isDownload)
+//       if (fieldObj) {
+//         headers.push(fieldObj.displayName);
+//         error = true;
+//       }
+//     })
 
-  if (error) {
-    throw new Error(
-      `File is missing the following columns: ${headers.join(", ")}`
-    );
-  }
+//     if (error) {
+//       throw new Error(`File Contains ${headers.join(', ')} field which are not allowed to Upload.`)
+//     }
 
-  error = false;
-  headers = [];
+//   //Check if All Selected Keys are Present in The Uploaded
+//   selectedKeys.forEach((key: string) => {
+//     const fieldObj = master.fields.find((field: Field) => field.key === key)
+//     if (!headerKeys.includes(key) && fieldObj?.isDownload) {
+//       error = true;
+//       headers.push(master.fields.find((field: Field) => field.key === key)?.displayName)
+//     }
+//   })
+// }
 
-  headerKeys.forEach((key: string) => {
-    if (!currMasterKeys.includes(key)) {
-      throw new Error("Please Upload a Valid Master");
-    }
-    if (!selectedKeys.includes(key)) {
-      error = true;
-      headers.push(
-        master.fields.find((field: Field) => field.key === key)?.displayName
-      );
-    }
-  });
+//   if (pageType == "add") {
+//     selectedKeys.forEach((key: string) => {
+//       const fieldObj = master.fields.find((field: Field) => field.key === key)
+//       if (!headerKeys.includes(key) && fieldObj?.isAdd) {
+//         error = true;
+//         headers.push(master.fields.find((field: Field) => field.key === key)?.displayName)
+//       }
+//     })
+//   }
+//   if (pageType == "remove") {
+//     selectedKeys.forEach((key: string) => {
+//       const fieldObj = master.fields.find((field: Field) => field.key === key)
+      
+//       if (!headerKeys.includes(key) && fieldObj?.isDelete) {
+//         error = true;
+//         headers.push(master.fields.find((field: Field) => field.key === key)?.displayName)
+//       }
 
-  if (error) {
-    throw new Error(
-      `File Contains ${headers.join(", ")} which were not selected`
-    );
-  }
+//     })
+//   }
+
+//   if (error) {
+//     throw new Error(`File is missing the following columns: ${headers.join(', ')}`);
+//   }
+
+  // error = false;
+  // headers = [];
+
+  // headerKeys.forEach((key: string) => {
+
+  //   if (!currMasterKeys.includes(key)) {
+  //     throw new Error("Please Upload a Valid Master");
+  //   }
+  //   if (!selectedKeys.includes(key)) {
+  //     error = true;
+  //     headers.push(master.fields.find((field: Field) => field.key === key)?.displayName)
+  //   }
+  // })
+
+  // if (error) {
+  //   throw new Error(`File Contains ${headers.join(', ')} which were not selected`)
+  // }
 
   // let rowObj:any = {};
   // let temp = 0;
-  if (data.slice(1).length === 0) {
-    throw new Error(`File Contains zero rows.`);
-  }
+  // if (data.slice(1).length === 0) {
+  //   throw new Error(`File Contains zero rows.`)
+  // }
   // data.slice(1).map((row:any)=>{
 
   //   row.map((value:any)=>{
@@ -1134,8 +1106,11 @@ export const parseExcelData = async (
 
   // })
 
-  return result;
-};
+
+
+
+  return ;
+}
 
 export const mapMasterToColumnDefs = (
   fields: Field[],
@@ -1373,10 +1348,17 @@ export const mapTaskStatusToColDefs = (taskStatus: ColDef[], color: string) => {
 
 export const mapPendingTaskToColumnDefs = (colDefs: ColDef[]): ColDef[] => {
   return colDefs.map((colDef: ColDef) => {
+    let filterType = "agMultiColumnFilter";
+
+      if (colDef.cellDataType === "date") {
+        filterType = "agDateColumnFilter";
+      } else if (colDef.cellDataType === "number" || colDef.cellDataType === "decimal") {
+        filterType = "agNumberColumnFilter";
+      }
     return {
       ...colDef,
       floatingFilter: true,
-      filter: "agMultiColumnFilter",
+      filter: filterType,
       minWidth: 180,
       cellStyle: (params) => {
         if (params.colDef.colId === "TaskName")
@@ -5232,12 +5214,11 @@ export const getBodyForExcelExport = ({
   groupedColDefsRef,
 }: any) => {
   const filteredHeadersData = headersdata?.filter(
-    (col: any) =>
-      col.colId !== "DropDown" &&
-      col.colId !== "Action" &&
-      col.hide !== true &&
-      !col.colId.includes("History") &&
-      col.colId !== "Default Attribute-Remark"
+    (col: any) =>{
+      if(col.colId !== "DropDown" && col.colId !== "Action" && (col.hide !== true || col.rowGroup !== false) && !col.colId.includes('History') && (col.colId!=="Default Attribute-Remark")){
+        return true;
+      }
+    }
   );
 
   try {
@@ -5273,9 +5254,11 @@ export const getBodyForExcelExport = ({
     else {
       const headers = filteredHeadersData
         ?.map((col: any) => {
-          const header_data = colDefMap?.current?.get(col.colId);
+          const header_data = {...colDefMap?.current?.get(col.colId), rowGroup : col.rowGroup};
+    
           return {
             ...header_data,
+            
           };
         })
         .filter((col: any) => col?.hd !== undefined && col?.scc !== undefined);
@@ -5514,25 +5497,18 @@ export const parseMTOExcelData = async (
     throw new Error("File Contains zero rows.");
   }
 
-  if (
-    master.id === 501 ||
-    master.id === 502 ||
-    master.id === 503 ||
-    master.id === 504
-  ) {
-    const bufferData: any = [];
-    for (let i = 1; i < data?.length; i++) {
-      const buffData: any = {};
-      for (let j = 0; j < data[i].length; j++) {
-        buffData[headerKeys[j]] = data[i][j];
-      }
-      buffData["err"] = "";
-      bufferData.push(buffData);
+  
+  const bufferData: any = [];
+  for (let i = 1; i < data?.length; i++) {
+    const buffData: any = {};
+    for (let j = 0; j < data[i].length; j++) {
+      buffData[headerKeys[j]] = data[i][j];
     }
-    return bufferData;
+    buffData["err"] = "";
+    buffData["tempRowId"] = uuidv4(); //for unique id 
+    bufferData.push(buffData);
   }
-
-  return [];
+  return bufferData;
 };
 
 export const generateMTOFilterOptions = (

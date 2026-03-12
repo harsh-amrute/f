@@ -501,7 +501,7 @@ const DailyDataGraphModal = ({
           dailyDataObject?.cs,
           params.datum.normRed,
           params.datum.normGreen * 2,
-          Math.floor(params.datum.normYellow * 3),
+          Math.round(params.datum.normYellow * 3),
           params.datum.normBlue
         );
       }
@@ -786,17 +786,19 @@ const DailyDataGraphModal = ({
   const onChangeHorizon = (horizon: number) => {
     setHorizon(horizon);
   };
-
+  const themeColor =
+  user.user.theme_ui === "REGALBLAZE" ? "#14213D" : "#000000";
   return (
     <VFModalCard
       openModal={isModalOpen}
       closeModal={() => dispatch(TOGGLE_GRAPH_MODAL(false))}
       headerIcon=""
       headerText="Daily Data Graph"
-      headerBgColor="white"
-      headerTextColor="black"
+      headerBgColor={themeColor}
+      headerTextColor="white"
       paddingLeftAndRight={27}
-      closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}
+      absolute
+      closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}
     >
       <div className={SCSeasonalityContainer}>
         <div className={SCChartContainer}>
@@ -804,6 +806,7 @@ const DailyDataGraphModal = ({
             options={{
               ...generateChartOptions(),
               padding: { right: 30 },
+              height: 450,
             }}
           />
         </div>

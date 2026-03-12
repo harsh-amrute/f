@@ -262,7 +262,6 @@ const DatePickForm = ({
     c.filter(Boolean).join(" ");
 
   return (
-    <>
       <fieldset
         disabled={isFieldDisabled}
         style={{
@@ -535,7 +534,6 @@ const DatePickForm = ({
         </div>
         </div>
       </fieldset>
-    </>
   );
 };
 
