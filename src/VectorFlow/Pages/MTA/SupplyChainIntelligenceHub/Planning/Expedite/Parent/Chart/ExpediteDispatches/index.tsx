@@ -5,10 +5,10 @@ import "../../../styles.css";
 import { ColDef } from "ag-grid-enterprise";
 import {
   SCDynamicContainer,
-} from "../../../styles";
+} from "../../../style.css";
 import VFCharts from "../../../../../../../../../components/VectorFLOW/commons/VFCharts";
-import {convertToInt, getProductAndLocationHeirarchiesFromEnv} from '../../../../../../../../../helpers/utils';
-import {generateChartOptions} from '../../../../../../../../../helpers/utils'
+import {convertToInt, getProductAndLocationHeirarchiesFromEnv,generateChartOptions} from '../../../../../../../../../helpers/utils';
+
 import { chartParams1 , chartParams2 } from "./chartParams";
 import {colDefForPie as colDefs2} from '../../../colDefs'
 import { useSelector } from "react-redux";
@@ -110,7 +110,7 @@ const sortData = (data:any,key:string|string[],) => {
 
   return (
     <>
-      <SCDynamicContainer style={{height:'77vh'}}>
+      <div className={SCDynamicContainer} style={{height:'77vh'}}>
         <Allotment>
           <Allotment.Pane preferredSize={"50%"}>
 
@@ -138,7 +138,7 @@ const sortData = (data:any,key:string|string[],) => {
 
           </Allotment.Pane>
         </Allotment>
-      </SCDynamicContainer>
+      </div>
     </>
   );
 };

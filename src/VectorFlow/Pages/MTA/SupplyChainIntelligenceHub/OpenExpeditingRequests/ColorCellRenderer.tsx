@@ -1,4 +1,4 @@
-import {BPRColorCellRendererWrapper} from '../../SupplyChainIntelligenceHub/BPR/styles'
+import {BPRColorCellRendererWrapper} from '../BPR/styles.css'
 
 
 const colorMapper =(color:string)=> {
@@ -41,16 +41,16 @@ const colorMapper =(color:string)=> {
 
     if(!color){
         return(
-            <BPRColorCellRendererWrapper style={{backgroundColor:"white",color:"black",maxWidth:90}} data-testid='color-cell'>
+            <div className={BPRColorCellRendererWrapper} style={{backgroundColor:"white",color:"black",maxWidth:90}} data-testid='color-cell'>
                 NULL
-            </BPRColorCellRendererWrapper>
+            </div>
         )
     }
 
     return(
-        <BPRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text,maxWidth:90}} data-testid='color-cell'>
+        <div className={BPRColorCellRendererWrapper} style={{backgroundColor:cellColor.bg,color:cellColor.text,maxWidth:90}} data-testid='color-cell'>
             {color}
-        </BPRColorCellRendererWrapper>
+        </div>
     )
 }
 

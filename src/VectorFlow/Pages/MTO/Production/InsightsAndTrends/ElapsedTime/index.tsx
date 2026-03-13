@@ -8,7 +8,7 @@ import MTOActionToolBar from '../../../../../../components/VectorFLOW/commons/MT
 import { useUserData } from "../../../../../../context/index"
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify'
 import OverlayLoader from '../../../Common/Loader'
-import { BTRAllomentSection, BTRTableWrapper, HorizontalViewWrapper } from '../../../Common/SplitGraphContainer/styles'
+import { BTRAllomentSection, BTRTableWrapper, HorizontalViewWrapper } from '../../../Common/SplitGraphContainer/styles.css'
 import TagCellToolTip from '../../../Poogi/InsightAndTrends/OTIFAnalysis/TagCellRenderer/TagCellRenderer'
 import DeptWiseGraph from './DeptWiseGraph'
 import WeekWiseGraph from './WeekWiseGraph'
@@ -20,7 +20,7 @@ import { GridOptions } from 'ag-grid-enterprise'
 import CommonGridview from '../../../../../../helpers/CommonGridview'
 import BPPRenderer from '../../../Common/BPRRenderer/BPPRenderer'
 import CustomTagTooltip from '../../../Poogi/InsightAndTrends/OTIFAnalysis/CustomTagTooltip'
-import { SCDynamicContainer } from './GridView/styles'
+import { scDynamicContainer } from './GridView/styles.css'
 
 const ElapsedTime = () => {
 
@@ -42,9 +42,6 @@ const ElapsedTime = () => {
 
 
     const { mutateAsync: getElapsedTimeDataExcelExport , isLoading:gridDataLoading} = useGetElapsedTimeDataForExcelExport();  
-    
-    
-    
     
     const themeUi = user?.user?.theme_ui
 
@@ -185,7 +182,7 @@ const ElapsedTime = () => {
            
           />
         )}
-        <HorizontalViewWrapper style={{ flex: 1 }}>
+        <div className={HorizontalViewWrapper} style={{ flex: 1 }}>
           {isGridView ? (
            
             <CommonGridview
@@ -210,31 +207,31 @@ const ElapsedTime = () => {
                 isGridView: isGridView,
                 setIsGridView: setIsGridView,
               }}
-              VFWrapper={SCDynamicContainer}
+              vfWrapperClassName={scDynamicContainer}
             />
           ) : (
             
-              <BTRTableWrapper style={{ height:"95%", paddingLeft: "20px" }}>
+              <div className={BTRTableWrapper} style={{ height:"95%", paddingLeft: "20px" }}>
                 <Allotment vertical={false} separator={false}>
                   <Allotment.Pane
                     minSize={400}
                     preferredSize={"50%"}
                     className="allotment-pane-custom"
                   >
-                    <BTRAllomentSection>
+                    <div className={BTRAllomentSection}>
                       <DeptWiseGraph
                         chartData={deptwiseChartData}
                         chartTableData={deptwiseChartTableData}
                         alertData={alertData}
                       />
-                    </BTRAllomentSection>
+                    </div>
                   </Allotment.Pane>
                   <Allotment.Pane
                     minSize={400}
                     preferredSize={"50%"}
                     className="allotment-pane-custom"
                   >
-                    <BTRAllomentSection>
+                    <div className={BTRAllomentSection}>
                       <WeekWiseGraph
                         handleSelectionChange={handleSelectionChange}
                         chartTableData={weeklyChartTableData}
@@ -242,13 +239,13 @@ const ElapsedTime = () => {
                         plant={selectedPlant}
                         dept={selectedDept}
                       />
-                    </BTRAllomentSection>
+                    </div>
                   </Allotment.Pane>
                 </Allotment>
-              </BTRTableWrapper>
+              </div>
             
           )}
-        </HorizontalViewWrapper>
+        </div>
       </div>
     );
 }

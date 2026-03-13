@@ -1,5 +1,5 @@
 
-import { BPRColorCellRendererWrapper } from '../../../MTA/SupplyChainIntelligenceHub/BPR/styles';
+import { BPRColorCellRendererWrapper } from '../../../MTA/SupplyChainIntelligenceHub/BPR/styles.css';
 import { ColorsMTO } from '../Colors';
 
 const colorMapper = (color: string) => {
@@ -22,7 +22,7 @@ const colorMapper = (color: string) => {
         case "Underloaded":
             return { bg: ColorsMTO.Orange.code, text: ColorsMTO.White.code }
         case "Balanced":
-            return { bg: "#A8A8A8", text: ColorsMTO.White.code }
+            return { bg: "#A8A8A8", text: ColorsMTO.White.code } 
         default:
             return { bg: ColorsMTO.White.code, text: ColorsMTO.Black.code };
 
@@ -36,11 +36,11 @@ const ColorCellRenderer = (params: any) => {
 
     return (
         <>
-            {color && <BPRColorCellRendererWrapper
+            {color && <div className={BPRColorCellRendererWrapper}
                 style={{ backgroundColor: cellColor.bg, color: cellColor.text, maxWidth: '80px' }}
                 data-testid='color-cell'>
                 {color}
-            </BPRColorCellRendererWrapper>}
+            </div>}
         
         </>
     );

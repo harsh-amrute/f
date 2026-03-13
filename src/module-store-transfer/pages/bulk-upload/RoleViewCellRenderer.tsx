@@ -1,28 +1,32 @@
-import React, { useEffect, useRef, useState } from "react";
-import styled, { css, CSSProperties, keyframes } from "styled-components";
+import React, { CSSProperties, useEffect, useRef, useState } from "react";
+// import styled, { css, CSSProperties, keyframes } from "styled-components";
 import { CustomCellRendererProps } from "ag-grid-react";
 import VFButton from "../../../components/VectorFLOW/commons/VFButton";
 import { useUserData } from "../../../context";
 import Portal from "../../../components/VectorFLOW/layouts/Portal";
-import { DropdownWrapper } from "../../../components/commons/CustomDropdown/style";
+import {
+  dropdownWrapper,
+  topVar,
+  leftVar,
+} from "../../../components/commons/CustomDropdown/style.css";
 import Checkbox from "../../../components/VectorFLOW/commons/MTO/Checkbox";
 import VFButtonOutline from "../../../components/VectorFLOW/commons/VFButtonOutline";
 import {
-  ContainerDrop,
-  CheckboxRow,
-  OptionsSection,
-  CategoryHeader,
-  SubItem,
-  BottomButtons,
-  Container,
+  containerDrop,
+  checkboxRow,
+  optionsSection,
+  categoryHeader,
+  subItem,
+  bottomButtons,
+  container,
   ImageSpan,
-} from "./style";
-
+} from "./style.css";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 
 const RoleDropdown = ({ allRoles, width, onApplyRole, currentRoles }: any) => {
   const user = useUserData();
   const themeUi = user.user.user.theme_ui;
-  const [selected, setSelected] = useState<Set<string>>(new Set(currentRoles));
+  // const [selected, setSelected] = useState<Set<string>>(new Set(currentRoles));
 
   const [selectedRoles, setSelectedRoles] = useState<Set<any>>(
     currentRoles ? currentRoles : new Set()
@@ -39,8 +43,7 @@ const RoleDropdown = ({ allRoles, width, onApplyRole, currentRoles }: any) => {
   };
 
   const handleSelectAll = () => {
-    const allSelected = allRoles.every((id: any) => selected.has(id));
-    setSelectedRoles(allSelected ? new Set() : new Set(allRoles));
+    setSelectedRoles(new Set(allRoles));
   };
 
   const applicationGroups = Array.from(
@@ -56,8 +59,9 @@ const RoleDropdown = ({ allRoles, width, onApplyRole, currentRoles }: any) => {
   };
 
   return (
-    <ContainerDrop style={{ width: width + "px" }}>
-      <CheckboxRow
+    <div className={containerDrop} style={{ width: width + "px" }}>
+      <div
+        className={checkboxRow}
         style={{ width: "100%", cursor: "pointer" }}
         onClick={handleSelectAll}
       >
@@ -74,16 +78,19 @@ const RoleDropdown = ({ allRoles, width, onApplyRole, currentRoles }: any) => {
           onChange={handleSelectAll}
         />
         <label style={{ cursor: "pointer" }}>Select all</label>
-      </CheckboxRow>
+      </div>
 
-      <OptionsSection>
+      <div className={optionsSection}>
         {applicationGroups.map((appName: any) => {
           const roles = allRoles.filter(
             (role: any) => role.application_name === appName
           );
           return (
             <div key={appName}>
-              <CategoryHeader onClick={() => toggleExpand(appName)}>
+              <div
+                className={categoryHeader}
+                onClick={() => toggleExpand(appName)}
+              >
                 <span>{appName}</span>
                 <span>
                   {expanded[appName] ? (
@@ -92,10 +99,11 @@ const RoleDropdown = ({ allRoles, width, onApplyRole, currentRoles }: any) => {
                     <img src="\assets\img\mto\dayWiseCoverage\arrow_right.svg"></img>
                   )}
                 </span>
-              </CategoryHeader>
+              </div>
               {expanded[appName] &&
                 roles.map((role: any) => (
-                  <SubItem
+                  <div
+                    className={subItem}
                     key={role.id}
                     style={{
                       userSelect: "none",
@@ -132,14 +140,14 @@ const RoleDropdown = ({ allRoles, width, onApplyRole, currentRoles }: any) => {
                       />
                     </div>
                     <label style={{ cursor: "pointer" }}>{role.name}</label>
-                  </SubItem>
+                  </div>
                 ))}
             </div>
           );
         })}
-      </OptionsSection>
+      </div>
 
-      <BottomButtons>
+      <div className={bottomButtons}>
         <VFButtonOutline
           style={{ fontSize: "10px", height: "22px", width: "60px" }}
           themeUi={themeUi}
@@ -156,8 +164,8 @@ const RoleDropdown = ({ allRoles, width, onApplyRole, currentRoles }: any) => {
         >
           Apply
         </VFButton>
-      </BottomButtons>
-    </ContainerDrop>
+      </div>
+    </div>
   );
 };
 
@@ -234,22 +242,30 @@ const RoleViewCellRenderer = (params: MyCellRendererProps) => {
     // }
 
     params.data.roles = selectedRoles;
-    // params.data.permissions = permissions;
+    const isValidRoles = selectedRoles.size > 0;
+    params.data.errorRole = !isValidRoles;
+     // params.data.permissions = permissions;
     params.api?.refreshCells({ rowNodes: [params.node] });
     setOpen(false);
   };
 
+  function toCssUnit(v?: string | number) {
+    if (v === undefined || v === null) return "auto";
+    return typeof v === "number" ? `${v}px` : v;
+  }
+
   if (!roles || roles.length === 0) {
     return (
-      <Container>
-        {
-          params.data.errorRole &&
-          <ImageSpan>
+      <div className={container}>
+        {params.data.errorRole && (
+          <span className={ImageSpan}>
             <img
               style={{ width: "20px", height: "20px" }}
-              src="\assets\img\error_icon.svg" alt="" />
-          </ImageSpan>
-        }
+              src="\assets\img\error_icon.svg"
+              alt=""
+            />
+          </span>
+        )}
         <VFButton
           disabled={false}
           style={{ width: "80%", height: "25px", fontSize: "1rem" }}
@@ -260,10 +276,13 @@ const RoleViewCellRenderer = (params: MyCellRendererProps) => {
         </VFButton>
         {open && (
           <Portal wrapperId="checkbox-dropdown">
-            <DropdownWrapper
+            <div
+              className={dropdownWrapper}
               ref={dropdownRef}
-              topPos={dropdownPosition.top + "px"}
-              leftPos={dropdownPosition.left + "px"}
+              style={assignInlineVars({
+                [topVar]: toCssUnit(dropdownPosition.top + "px"),
+                [leftVar]: toCssUnit(dropdownPosition.left + "px"),
+              })}
             >
               <RoleDropdown
                 currentRoles={params.data.roles}
@@ -274,32 +293,35 @@ const RoleViewCellRenderer = (params: MyCellRendererProps) => {
                   params.eGridCell.getBoundingClientRect().left
                 }
               ></RoleDropdown>
-            </DropdownWrapper>
+            </div>
           </Portal>
         )}
-      </Container>
+      </div>
     );
   }
 
   return (
-    <Container>
-      <ImageSpan>
-        {
-          params.data.errorRole ?
-            <ImageSpan>
-              <img
-                style={{ width: "20px", height: "20px" }}
-                src="\assets\img\error_icon.svg" alt="" />
-            </ImageSpan>
-            :
-            <ImageSpan>
-              <img
-                style={{ width: "20px", height: "20px" }}
-                src="\assets\img\check_list_icon.svg" alt="" />
-            </ImageSpan>
-        }
-      </ImageSpan>
-      
+    <div className={container}>
+      <span className={ImageSpan}>
+        {params.data.errorRole ? (
+          <span className={ImageSpan}>
+            <img
+              style={{ width: "20px", height: "20px" }}
+              src="\assets\img\error_icon.svg"
+              alt=""
+            />
+          </span>
+        ) : (
+          <span className={ImageSpan}>
+            <img
+              style={{ width: "20px", height: "20px" }}
+              src="\assets\img\check_list_icon.svg"
+              alt=""
+            />
+          </span>
+        )}
+      </span>
+
       <VFButton
         disabled={false}
         style={{ width: "80%", height: "25px", fontSize: "1rem" }}
@@ -311,10 +333,13 @@ const RoleViewCellRenderer = (params: MyCellRendererProps) => {
 
       {open && (
         <Portal wrapperId="checkbox-dropdown">
-          <DropdownWrapper
+          <div
+            className={dropdownWrapper}
             ref={dropdownRef}
-            topPos={dropdownPosition.top + "px"}
-            leftPos={dropdownPosition.left + "px"}
+            style={assignInlineVars({
+              [topVar]: toCssUnit(dropdownPosition.top + "px"),
+              [leftVar]: toCssUnit(dropdownPosition.left + "px"),
+            })}
           >
             <RoleDropdown
               allRoles={allRoles}
@@ -325,11 +350,11 @@ const RoleViewCellRenderer = (params: MyCellRendererProps) => {
                 params.eGridCell.getBoundingClientRect().left
               }
             ></RoleDropdown>
-          </DropdownWrapper>
+          </div>
         </Portal>
       )}
-    </Container>
+    </div>
   );
 };
 
-export default RoleViewCellRenderer;
+export default React.memo(RoleViewCellRenderer);

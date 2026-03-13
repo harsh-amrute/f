@@ -3,7 +3,7 @@ import VFTable from '../Common/VFTable';
 import { mapProcPlanningChildrenFieldsToColDefs } from '../../../../helpers/utils';
 import GetProcHeaderChildren from './Planning/GetProcHeaderChildren.json';
 import ChildrenColor from "../Common/ChildrenColor/ChildrenColor";
-import { ChildTableWrapper } from './Planning/styles';
+import { ChildTableWrapper } from './Planning/styles.css';
 
 const ChildrenProcPlanningCellRenderer = (params: any) => {
     const {colDef} = params
@@ -14,7 +14,7 @@ const ChildrenProcPlanningCellRenderer = (params: any) => {
 
     return (
         <div>
-            <ChildTableWrapper>
+            <div className={ChildTableWrapper}>
 
                 <VFTable
                     data-testid='VFTable'
@@ -50,7 +50,7 @@ const ChildrenProcPlanningCellRenderer = (params: any) => {
                     hideStatusBar={true} 
                     sideBar={false} 
                 />
-            </ChildTableWrapper>
+            </div>
         </div>
     );
 };

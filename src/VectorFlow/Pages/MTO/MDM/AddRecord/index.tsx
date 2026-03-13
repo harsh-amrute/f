@@ -4,7 +4,7 @@ import useViewModify from "../ViewModify/useViewModify";
 import useAdd from "./useAdd";
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
 import VFTab from "../../../../../components/VectorFLOW/commons/MTO/VFTab";
-import { SCContainer } from "../ViewModify/styles";
+import { SCContainer } from "../ViewModify/styles.css";
 import VFTable from "../../Common/VFTable";
 import UploadModal from "../ViewModify/UploadModal";
 import VFTaskBar from "../ViewModify/VFTaskbar";
@@ -143,7 +143,7 @@ const MTOAddRecord = () => {
    const calendarModifiedColDefs = ()=>{
     if(activeMaster.id === 504){
       const calendarModifiedColDef = activeMaster.colDefs.filter((colDef: any) => {
-        if (colDef.field !== "plid" && colDef.field !== "rb" && colDef.field !== "rd") {
+        if (colDef.field !== "rb" && colDef.field !== "rd") {
           return true;
         }
         return false;
@@ -162,7 +162,7 @@ const MTOAddRecord = () => {
 
     return(
         <React.Fragment>
-          <SCContainer>
+          <div className={SCContainer}>
               <VFTab 
                 activeMaster={activeMaster}
                 themeUi={themeUi}
@@ -208,9 +208,10 @@ const MTOAddRecord = () => {
                         : setIsDisabled(true);
                     }
                   }}
-                  defaultColDef= {
-                    {flex: (activeMaster.id===501 || activeMaster.id===503)? 1: 0}
-                  }
+                  defaultColDef= {{
+                    flex: (activeMaster.id===501 || activeMaster.id===503)? 1: 0,
+                      suppressHeaderMenuButton:true
+                  }}
                   // onCellEditingStopped={ onDataChange}
                   maintainColumnOrder
                   />
@@ -235,7 +236,7 @@ const MTOAddRecord = () => {
                     handleChangePage={(e)=>handleChangePage(e)}  
                   />
               }
-          </SCContainer>
+          </div>
           {isUploadModalOpen && 
           <UploadModal 
             header={"Addition"}

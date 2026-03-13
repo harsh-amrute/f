@@ -1,7 +1,7 @@
 import { Allotment } from 'allotment'
 import { useEffect, useRef, useState } from 'react'
 import MTOActionToolBar from '../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar'
-import { BTRAllomentSection, BTRTableWrapper, HorizontalViewWrapper } from '../../../Common/SplitGraphContainer/styles'
+import { BTRAllomentSection, BTRTableWrapper, HorizontalViewWrapper } from '../../../Common/SplitGraphContainer/styles.css'
 import IFFaildGraph from './IFFailedGraph'
 import OTFailedGraph from './OTFailedGraph'
 import { useGetOTAndIFAnalysisData, useGetOTAndIFAnalysisDataExcelExport } from '../../../../../../VectorFlow/Services/MTO/Poogi/InsightAndTrends/OTAndIFAnalysis'
@@ -19,7 +19,8 @@ import useColDef from '../../../../../../hooks/useColDef'
 import BPPRenderer from '../../../Common/BPRRenderer/BPPRenderer'
 import moment from 'moment'
 import CommonGridview from '../../../../../../helpers/CommonGridview'
-import { SCDynamicContainer } from './styles'
+import { SCDynamicContainer } from '../../../Common/GridView/styles.css'
+import CustomTagTooltip from '../OTIFAnalysis/CustomTagTooltip'
 
 const APIFilterConfig = {
     filSecVisConfig: {
@@ -37,8 +38,7 @@ const OTAndIFAnalysis = () => {
     const [isGridView, setIsGridView] = useState(false);
     const { mutateAsync: getOTAndIFAnalysisData, isLoading, isError, isSuccess } = useGetOTAndIFAnalysisData();
     const [graphData, setGraphData] = useState<any>({});
-    const [currentGridRef, setCurrentGridRef] = useState<any>(null);
-    const [HeaderData, setHeaderData] = useState([]);
+    const [currentGridRef] = useState<any>(null);
     const [filterData, setFilterData] = useState({});
     const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
     const { 
@@ -53,16 +53,10 @@ const OTAndIFAnalysis = () => {
         appliedFilters,
         setAppliedFilters
     } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Poogi_OTIF_And_Analysis);
-    const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
-    const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
-    const { mutateAsync: getUIConfigData } = useGetUIConfigData()
     const { user } = useUserData();
-    const { colDefMap , getColDef} = useColDef();
+    const { colDefMap } = useColDef();
     const { mutateAsync: getOTAndIFAnalysisDataExcelExport } = useGetOTAndIFAnalysisDataExcelExport();
-    // const [masterUIConfig, setMasterUIConfig] = useState([]);
-    const [userConfigFetched, setUserConfigFetched] = useState(false);
-    const [columnState, setColumnState] = useState<any>([]);
-    const [userPageSize, setUserPageSize] = useState<number>();
+    const [userPageSize] = useState<number>();
     const themeUi = user?.user?.theme_ui;
     
     const getGraphData = async (params: any,pageSize?:any) => {
@@ -121,6 +115,7 @@ const OTAndIFAnalysis = () => {
     const colDefCustomizations = {
         Tags: {
             tooltipValueGetter: (params: any) => params.value,
+            tooltipComponent: CustomTagTooltip,
             cellRenderer: TagCellToolTip,
             cellStyle: {
                 display: 'flex',
@@ -133,17 +128,6 @@ const OTAndIFAnalysis = () => {
             minWidth:100,
         },
     }
-
-    // const setColumnDef = async () => {
-    //     try {
-    //         const response = await getUIConfigData('OTandIFAnalysis');
-    //         getColDef(response);
-    //         // setHeaderData(response?.data?.data);
-    //     }
-    //     catch (e) {
-    //         console.log(e);
-    //     }
-    // }
 
     const getFilterData = async () => {
         try {
@@ -162,7 +146,6 @@ const OTAndIFAnalysis = () => {
       }, [appliedFilters, isGridView, userPageSize]);
 
     useEffect(() => {
-        // setColumnDef();
         getFilterData();
 
     }, [])
@@ -179,7 +162,7 @@ const OTAndIFAnalysis = () => {
     return (
         <>
             {
-                (isLoading|| isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />
+                (isLoading) && <OverlayLoader />
             }
 
             {!isGridView && (
@@ -203,22 +186,22 @@ const OTAndIFAnalysis = () => {
             {
                 !isGridView ?
                     <>
-                        <HorizontalViewWrapper style={{ margin: '20px 14px', height: '85%', display: 'flex' }}>
-                            <BTRTableWrapper style={{ flex: '1', margin: '0' }}>
+                        <div className={HorizontalViewWrapper} style={{ margin: '20px 14px', height: '85%', display: 'flex' }}>
+                            <div className={BTRTableWrapper} style={{ flex: '1', margin: '0' }}>
                                 <Allotment vertical={false} separator={false}   >
                                     <Allotment.Pane minSize={400} preferredSize={'50%'} className='allotment-pane-custom'>
-                                        <BTRAllomentSection>
+                                        <div className={BTRAllomentSection}>
                                             <OTFailedGraph OTFailedData={graphData?.ot} />
-                                        </BTRAllomentSection>
+                                        </div>
                                     </Allotment.Pane>
                                     <Allotment.Pane minSize={400} preferredSize={'50%'} className='allotment-pane-custom'>
-                                        <BTRAllomentSection>
+                                        <div className={BTRAllomentSection}>
                                             <IFFaildGraph IFFailedData={graphData?.if} />
-                                        </BTRAllomentSection>
+                                        </div>
                                     </Allotment.Pane>
                                 </Allotment>
-                            </BTRTableWrapper>
-                        </HorizontalViewWrapper>
+                            </div>
+                        </div>
                     </>
                     :
                     <>
@@ -254,7 +237,7 @@ const OTAndIFAnalysis = () => {
                                 setMultiFilter: setCurrFilter,
                                 isMfgSelected,
                             }}
-                            VFWrapper={SCDynamicContainer} 
+                            vfWrapperClassName={SCDynamicContainer} 
                         />
                     </>
             }

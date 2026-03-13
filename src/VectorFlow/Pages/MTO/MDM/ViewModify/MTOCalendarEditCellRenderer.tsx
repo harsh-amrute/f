@@ -8,9 +8,10 @@ const MTOCalendarEditCellRenderer = (props:any ) => {
   const activeMaster = useSelector(
     (state: RootState) => state.mdm.activeMaster
   );
-
+   
   return (
     <>
+    {node.data.ia && 
      <div style={{display: 'flex', margin:'4px auto', width: '80px', justifyContent:'center',opacity:node.data.id ? 0.6: 1}}>
         <button onClick={()=>{handleOpenClick(props.node.rowIndex, props.data)}} style={{background: 'transparent'}}>
             <img height={16} width={16} src="/assets/img/VectorFLOW/NMS/edit-draft.svg" />
@@ -32,6 +33,7 @@ const MTOCalendarEditCellRenderer = (props:any ) => {
         }
        
     </div>
+  }
     </>
   )
 }

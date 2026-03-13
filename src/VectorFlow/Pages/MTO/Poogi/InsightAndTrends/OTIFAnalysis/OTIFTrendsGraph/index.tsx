@@ -93,6 +93,9 @@ const OTIFTrendsGraph = (props: any) => {
         min: 0
       },
     ],
+    tooltip: {
+      mode: "single",
+  },
 
     legend: {
       item: {

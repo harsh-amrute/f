@@ -7,8 +7,8 @@ import { useState } from 'react';
 
 import { notifyError,notifyLoader,notifySuccess } from '../../../../../helpers/notify';
 import _ from 'lodash';
-import { toast } from 'react-toastify';
-import { useAddMasterData,useDeleteTask,useDeleteDraft,useAddMasterDataRetail } from '../../../../../VectorFlow/Services/MTA/MDM';
+import { toast } from "react-toastify/unstyled";
+import { useAddMasterData,useDeleteTask,useDeleteDraft,useAddMasterDataRetail, useBulkAddMasterData } from '../../../../../VectorFlow/Services/MTA/MDM';
 import { createErrorRowData} from '../../../../../helpers/utils'
 import { ColDef } from 'ag-grid-enterprise';
 
@@ -17,7 +17,7 @@ const useAdd=()=>{
     const allMasters = useSelector((state:RootState)=>state.mdm.allMasters); //empty arrya jaha data jaega api se
     const selectedMasters = useSelector((state:RootState)=>state.mdm.masters)
     const activeMaster = useSelector((state:RootState)=>state.mdm.activeMaster)
-    const chunkSize = useSelector((state:RootState)=>state.mdm.chunkSize)
+    
     const options = useSelector((state:RootState)=>state.mdm.options)
     const selectedOptions = useSelector((state:RootState)=>state.mdm.selectedOptions)
     const dispatch = useDispatch();
@@ -28,6 +28,7 @@ const useAdd=()=>{
     const draftID = useSelector((state:RootState) => state.mdm.draftId);
 
     const {mutateAsync:addMaster} = useAddMasterData();
+    const {mutateAsync:bulkaddMaster} = useBulkAddMasterData();
 
     const {mutateAsync:addMasterRetail} = useAddMasterDataRetail()
 
@@ -41,6 +42,8 @@ const useAdd=()=>{
     const [errorCounts,setErrorCount] = useState<number>(0);
     const [errorData,setErrorData] = useState<Array<any>>([]);
     const [isSubmitDisabled,setIsSubmitDisabled] = useState(false);
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const chunkSize = parseInt(EnvConfig['ChunkSizeForModifyAddDelete']); 
 
     const invalidDataColdefs:ColDef[] = [
         {
@@ -211,7 +214,12 @@ const useAdd=()=>{
                 data = await addMasterRetail(payload);
               }
               else{
-                data = await addMaster(payload);
+                if(activeMaster.id == 1 || activeMaster.id == 2 || activeMaster.id == 3){
+                  data = await bulkaddMaster(payload);
+                }
+                else{
+                  data = await addMaster(payload);
+                }
               }
 
               if(taskId === '' && i!==0) throw new Error("Something Went Wrong");

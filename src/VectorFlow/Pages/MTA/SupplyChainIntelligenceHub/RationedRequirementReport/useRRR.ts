@@ -6,7 +6,7 @@ import { useUserData } from "../../../../../context"
 import { RRREcoColorCellRenderer,RRRTechColorCellRenderer,RRRDispatchColorCellRenderer } from "./RRRCellRenderers"
 import { convertUiConfigToOptions, MainMenuItemsCustomization, getColumnDefinationsMTA, CsvExportMTA} from "../../../../../helpers/utils"
 import { notifyError, notifyLoader, notifySuccess} from "../../../../../helpers/notify"
-import { toast } from "react-toastify";
+import { toast } from "react-toastify/unstyled";
 
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
@@ -17,6 +17,7 @@ import { useGetUIConfigData } from "../../../../Services/MTA/Common/UIConfig"
 import { UIColumnConfigName, UserUIColumnConfigName } from "../../../../../helpers/Enum"
 import { useSelector } from "react-redux"
 import { RootState } from "../../../../../redux/store/store"
+import { BPRTagsCellRenderer } from "../BPR/BPRCellRenderers"
 
  
   
@@ -86,7 +87,7 @@ const useRRR =()=>{
     useEffect(() => {
         const getTableState = async () => {
             try {
-                const MappedColumns = getColumnDefinationsMTA(initialColumnState);
+                const MappedColumns = getColumnDefinationsMTA(initialColumnState, CustomHeader);
                   
                 setGridState({
                     charts: [],
@@ -268,10 +269,15 @@ const useRRR =()=>{
         grapCellRenderer:'',
         colorTechCellRenderer:RRRTechColorCellRenderer,
         colorEcoCellRenderer:RRREcoColorCellRenderer,
-        colorDispatchRender:RRRDispatchColorCellRenderer
+        colorDispatchRender:RRRDispatchColorCellRenderer,
+        TagsCellRenderer: BPRTagsCellRenderer,
       }), []);
 
-      
+    const CustomHeader = {
+        Tags: {
+            cellRenderer: 'TagsCellRenderer',
+        },
+    }
   const defaultColDefObject = useMemo(()=>{
     return {
         floatingFilter: true,

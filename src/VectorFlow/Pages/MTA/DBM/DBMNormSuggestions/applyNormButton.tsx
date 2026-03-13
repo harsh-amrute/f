@@ -1,21 +1,17 @@
-import {DBMApplyNormButton} from "./styles"
+import { DBMApplyNormButton } from "./styles.css";
 import Checkbox from "../../../../../components/commons/Checkbox";
 
-export const DBMApplyNormChange = (props:{onCheck:()=>void}) => {
+export const DBMApplyNormChange = (props: { onCheck: () => void }) => {
+  const { onCheck } = props;
 
-    const {
-        onCheck
-    } = props
+  const callTick = () => {
+    onCheck();
+  };
 
-    const callTick = () => {
-        onCheck();
-    }
-
-    return (
-        <DBMApplyNormButton>
-
-            <Checkbox onChange={callTick} name='' value="" defaultChecked={false}/>
-            <p>Apply Selected Norms</p>
-        </DBMApplyNormButton>
-    )
-}
+  return (
+    <div className={DBMApplyNormButton}>
+      <Checkbox onChange={callTick} name="" value="" defaultChecked={false} />
+      <p>Apply Selected Norms</p>
+    </div>
+  );
+};

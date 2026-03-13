@@ -65,7 +65,7 @@ const OrderDetailsCellRenderer = (params: any) => {
     columnDefs: colDefs,
     masterDetail: true,
     defaultColDef: {
-      suppressMenu: true,
+      suppressHeaderMenuButton: true,
       cellStyle: {
         textAlign: "center"
       },

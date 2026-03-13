@@ -1,24 +1,35 @@
-import {CaptionProps,useNavigation} from 'react-day-picker'
+import { CaptionProps, useNavigation } from "react-day-picker";
 
-import {format} from 'date-fns'
+import { format } from "date-fns";
 
-import { CustomCalenderCaptionArrow, CustomCalenderCaptionHeader, CustomCalenderCaptionWrapper } from "./styles"
+import {
+  customCalenderCaptionArrow,
+  customCalenderCaptionHeader,
+  customCalenderCaptionWrapper,
+} from "./styles.css";
 
+const CustomCalenderCaption = (props: CaptionProps) => {
+  const { nextMonth, previousMonth, goToMonth } = useNavigation();
 
+  return (
+    <div className={customCalenderCaptionWrapper}>
+      <img
+        className={customCalenderCaptionArrow}
+        style={{ transform: "rotate(90deg)" }}
+        src="/assets/img/VectorFLOW/BPR/calender-left-arrow.svg"
+        onClick={() => previousMonth && goToMonth(previousMonth)}
+      />
+      <p className={customCalenderCaptionHeader}>
+        {format(props.displayMonth, "MMM yyy")}
+      </p>
+      <img
+        className={customCalenderCaptionArrow}
+        style={{ transform: "rotate(90deg)" }}
+        src="/assets/img/VectorFLOW/BPR/calender-right-arrow.svg"
+        onClick={() => nextMonth && goToMonth(nextMonth)}
+      />
+    </div>
+  );
+};
 
-const CustomCalenderCaption = (props:CaptionProps)=>{
-
-    const {nextMonth,previousMonth,goToMonth} = useNavigation()
-
-    return(
-        <CustomCalenderCaptionWrapper>
-            <CustomCalenderCaptionArrow style={{transform:'rotate(90deg)'}} src='/assets/img/VectorFLOW/BPR/calender-left-arrow.svg' onClick={()=>previousMonth && goToMonth(previousMonth)}/>
-            <CustomCalenderCaptionHeader>
-                {format(props.displayMonth,'MMM yyy')}
-            </CustomCalenderCaptionHeader>
-            <CustomCalenderCaptionArrow  style={{transform:'rotate(90deg)'}} src='/assets/img/VectorFLOW/BPR/calender-right-arrow.svg' onClick={()=>nextMonth && goToMonth(nextMonth)}/>
-        </CustomCalenderCaptionWrapper>
-    )
-}
-
-export default CustomCalenderCaption
+export default CustomCalenderCaption;

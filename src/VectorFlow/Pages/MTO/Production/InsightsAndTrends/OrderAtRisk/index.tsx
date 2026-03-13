@@ -1,13 +1,21 @@
 import { useEffect, useMemo, useState } from "react";
 import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
-import { HorizontalViewWrapper, OrderAtRiskChartWrapper } from "./styles";
-import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from "../../../../../../helpers/utils";
+import { horizontalViewWrapper, orderAtRiskChartWrapper } from "./styles.css";
+import {
+  DownloadExcel,
+  formatFilterJSON,
+  getBodyForExcelExport,
+  getColumnDefinations,
+} from "../../../../../../helpers/utils";
 import { reasonColConfig } from "./MockData";
 import SplitGraphContainer from "../../../Common/SplitGraphContainer";
 import VFInfoToolTip from "../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 import { ProductionInsightsAndTrendsString } from "../../../Common/String";
 import { format } from "date-fns";
-import { useGetOrderRiskData, useGetOrderRiskDataExcelExport } from "../../../../../Services/MTO/Production/InsightsAndTrends/OrderAtRisk";
+import {
+  useGetOrderRiskData,
+  useGetOrderRiskDataExcelExport,
+} from "../../../../../Services/MTO/Production/InsightsAndTrends/OrderAtRisk";
 import { ReasonOrderAtRiskType } from "../../../../../../../src/types/MTO/types";
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import OverlayLoader from "../../../Common/Loader";
@@ -15,22 +23,22 @@ import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../.
 import { ExcelExportName, FilterPageName, UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 import GridView from "./GridView";
-import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
-import useFilter from '../../../../../../hooks/useFilter';
+import { useGetFilterData } from "../../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
+import useFilter from "../../../../../../hooks/useFilter";
 import { notifyError } from "../../../../../../helpers/notify";
 import useColDef from "../../../../../../hooks/useColDef";
 import BPPRenderer from "../../../Common/BPRRenderer/BPPRenderer";
 import { useGetDate } from "../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting";
-
+import "./style.css";
 const APIFilterConfig = {
   filSecVisConfig: {
-    "Prod_Order_At_Risk" : {
-      mjr : true,
+    Prod_Order_At_Risk: {
+      mjr: true,
       or: true,
       res: true,
-      cus: false
+      cus: false,
     },
-  }
+  },
 };
 
 const OrderAtRisk = () => {
@@ -45,32 +53,39 @@ const OrderAtRisk = () => {
   const [isReset, setIsReset] = useState<any>(undefined);
   const [colDef, setColDef] = useState([{}]);
   const [filterData, setFilterData] = useState({});
-  const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
-  const { 
-    state: currFilter, 
-    setState: setCurrFilter, 
-    onFilterRemove, 
-    isFilterOpen, 
+  const { mutateAsync: getPageWiseFilterData /*isLoading*/ } =
+    useGetFilterData();
+  const {
+    state: currFilter,
+    setState: setCurrFilter,
+    onFilterRemove,
+    isFilterOpen,
     isMfgSelected,
-    onAddFilter, 
-    onApplyFilter, 
+    onAddFilter,
+    onApplyFilter,
     toggleFilter,
-    appliedFilters
+    appliedFilters,
   } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_Order_At_Risk);
-  const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
-  const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
-  const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+  const {
+    mutateAsync: updateUserUIReportConfigData,
+    isLoading: isUpdateUserConfig,
+  } = useUpdateUserUIConfigData();
+  const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } =
+    useGetUserUIConfigData();
+  const { mutateAsync: getUIConfigData } = useGetUIConfigData();
   const { user } = useUserData();
   const reportName = "OrdersAtRisk";
-  const { mutateAsync: getOrderAtRiskData, isLoading } = useGetOrderRiskData() || {};
-  const {colDefMap ,getColDef} = useColDef();
-  const { mutateAsync : getOrderAtRiskDataExcelExport} = useGetOrderRiskDataExcelExport();
+  const { mutateAsync: getOrderAtRiskData, isLoading } =
+    useGetOrderRiskData() || {};
+  const { colDefMap, getColDef } = useColDef();
+  const { mutateAsync: getOrderAtRiskDataExcelExport } =
+    useGetOrderRiskDataExcelExport();
   const [masterUIConfig, setMasterUIConfig] = useState([]);
 
   const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
   const [userPageSize, setUserPageSize] = useState<any>();
-  const [totalRow, setTotalRow] = useState<number>(0)
-  const [currentPage, setCurrentPage] = useState<number>(1)
+  const [totalRow, setTotalRow] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   const themeUi = user?.user?.theme_ui;
 
@@ -83,34 +98,37 @@ const OrderAtRisk = () => {
     try {
       const response = await getUIConfigData(reportName);
       getColDef(response);
-      setColDef(getColumnDefinations(response.data.data, colDefCustomizations, []));
-    }
-    catch (e) {
+      setColDef(
+        getColumnDefinations(response.data.data, colDefCustomizations, [])
+      );
+    } catch (e) {
       console.log(e);
     }
-  }
+  };
 
   const getUserColumnConfig = async () => {
     try {
       const data = await getUserUIReportConfigData({
         un: user.user.name,
-        rn_id: UIGridCode.ProdOrderAtRisk
+        rn_id: UIGridCode.ProdOrderAtRisk,
       });
 
-      setUserConfigFetched(true)
+      setUserConfigFetched(true);
       const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
-      setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
+      setUserPageSize(
+        newConfig.pageSize ? Number(newConfig.pageSize) : undefined
+      );
       setColumnState(newConfig.cs);
 
       if (!data) {
-        console.error('Failed to apply column state');
+        console.error("Failed to apply column state");
       }
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
-  const handleSaveClick = async (coldefs?: any,page_size?: any) => {
+  const handleSaveClick = async (coldefs?: any, page_size?: any) => {
     try {
       if (coldefs) {
         const fullConfig = { cs: coldefs, pageSize: userPageSize };
@@ -121,70 +139,66 @@ const OrderAtRisk = () => {
         };
         await updateUserUIReportConfigData([payload]);
         setColumnState([...coldefs]);
-
-      } 
-      else if (page_size) {
-        const config = columnState
+      } else if (page_size) {
+        const config = columnState;
         const fullConfig = { cs: config, pageSize: page_size };
         const payload = {
           un: user.user.name,
           rn_id: UIGridCode.ProdOrderAtRisk,
           cs: JSON.stringify(fullConfig),
-        }
+        };
         await updateUserUIReportConfigData([payload]);
-      }
-      else {
+      } else {
         if (currentGridRef?.current?.api) {
           const config = currentGridRef.current.api.getColumnState();
           const fullConfig = { cs: config, pageSize: userPageSize };
           const payload = {
             un: user.user.name,
             rn_id: UIGridCode.ProdOrderAtRisk,
-            cs: JSON.stringify(fullConfig)
-          }
+            cs: JSON.stringify(fullConfig),
+          };
           await updateUserUIReportConfigData([payload]);
           await getUserColumnConfig();
         }
       }
-
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
-   const savePageSize = (pageSize: any) => {
-        if (pageSize) {
-          setUserPageSize(pageSize);
-          handleSaveClick(false, pageSize);
-          } else {
-            notifyError("Invalide page size");
-        }
-        
+  const savePageSize = (pageSize: any) => {
+    if (pageSize) {
+      setUserPageSize(pageSize);
+      handleSaveClick(false, pageSize);
+    } else {
+      notifyError("Invalide page size");
     }
+  };
 
   const handleResetClick = () => {
     setIsReset(true);
-  }
+  };
 
   const getFilterData = async () => {
     try {
-        const response = await getPageWiseFilterData({page_name: FilterPageName.Prod_Order_At_Risk });
-        setFilterData(response?.data.data);
+      const response = await getPageWiseFilterData({
+        page_name: FilterPageName.Prod_Order_At_Risk,
+      });
+      setFilterData(response?.data.data);
     } catch (error) {
-        console.error(error);
+      console.error(error);
     }
-  }
+  };
 
   useEffect(() => {
     setColumnDef();
     getFilterData();
-  }, [])
-
+  }, []);
 
   const colDefCustomizations = {
     BPP: {
       cellRenderer: BPPRenderer,
-      minWidth:100
+      minWidth: 100,
     },
   };
 
@@ -254,37 +268,39 @@ const OrderAtRisk = () => {
 
   function TooltipRenderer({ datum }: any) {
     return `
-           <div class="ag-chart-tooltip-title" style="background-color: #2E2E2E; display: flex; justify-content: center; color: lightgray;">
-              Major Reason
-           </div>
-           <div class="ag-chart-tooltip-content" style="color: white; background-color: #2E2E2E">
-           <div style="border-top: 1px dashed lightgray"></div>
-            <div style="display:flex;width: 100%; justify-content: space-between; color: lightgray;">
-              <span style="padding: 5px 20px">Total Order</span>
-              <span style="padding: 5px 18px">Black</span>
-              <span style="padding: 5px 20px">Red</span>
-            </div>
-            <div style="border-top: 1px dashed lightgray"></div>
-            <div style="display:flex ;width: 100%; justify-content: space-around; color: lightgray">
-              <span style="padding: 5px ">${(datum?.bo || 0) + (datum?.ro || 0)
-      }</span>
-              <span style="padding: 5px; margin-left: 30px; ">${datum?.bo || 0
-      }</span>
-              <span style="padding: 5px ">${datum?.ro || 0}</span>
-            </div>
-           <div>
-            </div>`;
+      <div class="insightOrderRisk-tooltip-title">
+         Reasons
+      </div>
+      <div class="insightOrderRisk-tooltip-content">
+        <div class="insightOrderRisk-tooltip-divider"></div>
+        <div class="insightOrderRisk-tooltip-row header-row">
+          <span class="insightOrderRisk-tooltip-cell total-order">Total Order</span>
+          <span class="insightOrderRisk-tooltip-cell">Black</span>
+          <span class="insightOrderRisk-tooltip-cell red-order">Red</span>
+        </div>
+        <div class="insightOrderRisk-tooltip-divider"></div>
+        <div class="insightOrderRisk-tooltip-row value-row">
+          <span class="insightOrderRisk-tooltip-cell total-order">${
+            (datum?.bo || 0) + (datum?.ro || 0)
+          }</span>
+          <span class="insightOrderRisk-tooltip-cell black-order">${datum?.bo || 0}</span>
+          <span class="insightOrderRisk-tooltip-cell red-order">${datum?.ro || 0}</span>
+        </div>
+      </div>
+    `;
   }
 
-  // const options: AgChartOptions = 
+  // const options: AgChartOptions =
 
   const [options, setOptions] = useState({});
-  
-  useEffect(()=>{
 
-   setOptions( {
+  useEffect(() => {
+    setOptions({
       data: rawData,
-      
+      tooltip: {
+            mode: "single",
+        },
+
       series: [
         {
           type: "bar",
@@ -311,7 +327,7 @@ const OrderAtRisk = () => {
           },
         },
       ],
-      
+
       axes: [
         {
           type: "category",
@@ -442,18 +458,23 @@ const OrderAtRisk = () => {
       }
     }, [currentPage]);
 
+    
+
 
   
     useEffect(() => {
       if (Object.entries(appliedFilters).length && userConfigFetched ) {
-        setCurrentPage(1);
+        if(currentPage == 1){
+          getData();
+        }else{
+          setCurrentPage(1);
+        } 
     }
-    }, [appliedFilters,userConfigFetched])
+  }, [appliedFilters, userConfigFetched]);
 
-  
-    const handleChangePage = async (currPage: number) => {
-      setCurrentPage(currPage);
-    }
+  const handleChangePage = async (currPage: number) => {
+    setCurrentPage(currPage);
+  };
 
   useEffect(() => {
     if (isReset) {
@@ -469,22 +490,24 @@ const OrderAtRisk = () => {
     }
   }, [colDef, currentGridRef, isGridView]);
 
-  const ExcelExport = () =>{
-    getData(true)
-  }
+  const ExcelExport = () => {
+    getData(true);
+  };
 
-  useEffect(()=>{
-    getData(false,userPageSize);
-  },[userPageSize])
+  useEffect(() => {
+    getData(false, userPageSize);
+  }, [userPageSize]);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-      {(isLoading|| isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />}
+      {(isLoading || isUpdateUserConfig || isGetUserConfig) && (
+        <OverlayLoader />
+      )}
       <MTOActionToolBar
         comp={"orderAtRisk"}
         isGridView={isGridView}
         themeUi={themeUi}
-        isExcelExport = {isGridView ? true : false} 
+        isExcelExport={isGridView ? true : false}
         onExcelExportClick={ExcelExport}
         isChartGridToggle
         isAddFilterButton
@@ -500,7 +523,7 @@ const OrderAtRisk = () => {
         onFilterRemove={onFilterRemove}
         isMfgSelected={isMfgSelected}
       />
-      <HorizontalViewWrapper style={{ flex: 1 }}>
+      <div className={horizontalViewWrapper} style={{ flex: 1 }}>
         {isGridView ? (
           <GridView
             gridData={gridData}
@@ -516,7 +539,14 @@ const OrderAtRisk = () => {
             customPageSize={true}
           />
         ) : (
-          <OrderAtRiskChartWrapper style={{ maxHeight: "95%", paddingLeft: "20px", paddingBottom:"20px" }}>
+          <div
+            className={orderAtRiskChartWrapper}
+            style={{
+              maxHeight: "95%",
+              paddingLeft: "20px",
+              paddingBottom: "20px",
+            }}
+          >
             <SplitGraphContainer
               tableLoading={tableLoading}
               chartLoading={chartLoading}
@@ -534,9 +564,9 @@ const OrderAtRisk = () => {
               TooltipRenderer={TooltipRenderer}
               graphType={6}
             />
-          </OrderAtRiskChartWrapper>
+          </div>
         )}
-      </HorizontalViewWrapper>
+      </div>
     </div>
   );
 };

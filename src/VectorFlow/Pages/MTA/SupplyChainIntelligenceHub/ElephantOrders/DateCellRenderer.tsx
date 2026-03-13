@@ -1,16 +1,17 @@
-import { useEffect, useRef, useState } from 'react';
-import moment from 'moment';
-import Calendar, { CalendarProps } from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
-import ReactDOM from 'react-dom';
+import { useEffect, useRef, useState } from "react";
+import moment from "moment";
+import Calendar, { CalendarProps } from "react-calendar";
+import "react-calendar/dist/Calendar.css";
+import ReactDOM from "react-dom";
 import { useUserData } from "../../../../../context/index";
 import {
-  DatePickerWrapper,
-  TextInputWrapper,
-  ButtonWrapper,
-  ImageWrapper,
-  StyledCalendar
-} from './styles';
+  datePickerWrapper,
+  textInputWrapper,
+  buttonWrapper,
+  imageWrapper,
+  calendarBase,
+  // calendarPopup,
+} from "./styles.css";
 
 interface AGGridProps {
   value: string;
@@ -21,10 +22,17 @@ interface AGGridProps {
   [key: string]: any;
 }
 
-type Value = CalendarProps['value'];
+type Value = CalendarProps["value"];
 
 const DateCellRenderer = (props: AGGridProps) => {
-  const { value, onDateChange: externalOnDateChange, onClearDate, disabled = false, style, imgStyle } = props;
+  const {
+    value,
+    onDateChange: externalOnDateChange,
+    onClearDate,
+    disabled = false,
+    style,
+    imgStyle,
+  } = props;
 
   const [showCalendar, setShowCalendar] = useState(false);
   const [calendarPosition, setCalendarPosition] = useState({ top: 0, left: 0 });
@@ -48,8 +56,8 @@ const DateCellRenderer = (props: AGGridProps) => {
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showCalendar]);
 
   const toggleCalendar = () => {
@@ -58,40 +66,41 @@ const DateCellRenderer = (props: AGGridProps) => {
     if (rect) {
       setCalendarPosition({
         top: rect.bottom + window.scrollY,
-        left: rect.left + window.scrollX - 20
+        left: rect.left + window.scrollX - 20,
       });
     }
-    setShowCalendar(prev => !prev);
+    setShowCalendar((prev) => !prev);
   };
 
   const handleClearDate = () => {
-    props.setValue?.('');
-    externalOnDateChange?.('', props.data); // optional fall-back
+    props.setValue?.("");
+    externalOnDateChange?.("", props.data); // optional fall-back
     onClearDate?.(props.data); // Call to parent clear handler
   };
-  
+
   const handleCalendarChange = (value: Value) => {
     if (value instanceof Date) {
-      const formatted = moment(value).format('YYYY-MM-DD');
-  
-      if (typeof props.setValue === 'function') {
+      const formatted = moment(value).format("YYYY-MM-DD");
+
+      if (typeof props.setValue === "function") {
         props.setValue(formatted); // update AG Grid cell
       }
-  
-      if (typeof externalOnDateChange === 'function') {
+
+      if (typeof externalOnDateChange === "function") {
         externalOnDateChange(formatted, props.data); // send row data back
       }
-  
+
       setShowCalendar(false);
     }
   };
-  
+
   return (
-    <DatePickerWrapper>
-      <TextInputWrapper
+    <div className={datePickerWrapper}>
+      <input
         ref={inputRef}
+        className={textInputWrapper}
         type="text"
-        value={value ? moment(value).format('YYYY-MM-DD') : ''}
+        value={value ? moment(value).format("YYYY-MM-DD") : ""}
         placeholder="YYYY-MM-DD"
         readOnly
         onClick={toggleCalendar}
@@ -99,60 +108,66 @@ const DateCellRenderer = (props: AGGridProps) => {
         style={style}
       />
 
-      <ButtonWrapper type="button" onClick={toggleCalendar}>
-        <ImageWrapper
+      <button type="button" className={buttonWrapper} onClick={toggleCalendar}>
+        <img
+          className={imageWrapper}
           style={imgStyle}
           src={
-            themeUi === 'REGALBLAZE'
-              ? '/assets/img/mto/OrderRescheduling/edit-calendar-yellow.svg'
-              : '/assets/img/mto/OrderRescheduling/edit-calendar.svg'
+            themeUi === "REGALBLAZE"
+              ? "/assets/img/mto/OrderRescheduling/edit-calendar-yellow.svg"
+              : "/assets/img/mto/OrderRescheduling/edit-calendar.svg"
           }
           alt="calendar-icon"
         />
-      </ButtonWrapper>
+      </button>
 
-      <ButtonWrapper type="button" onClick={handleClearDate}>
-        <ImageWrapper
+      <button type="button" className={buttonWrapper} onClick={handleClearDate}>
+        <img
+          className={imageWrapper}
           style={imgStyle}
           src={
-            themeUi === 'REGALBLAZE'
-              ? '/assets/img/Clear_Due_Date_Yellow.svg'
-              : '/assets/img/Clear_Due_Date.svg'
+            themeUi === "REGALBLAZE"
+              ? "/assets/img/Clear_Due_Date_Yellow.svg"
+              : "/assets/img/Clear_Due_Date.svg"
           }
           alt="clear-icon"
         />
-      </ButtonWrapper>
+      </button>
 
       {showCalendar &&
         ReactDOM.createPortal(
           <div
             ref={calendarRef}
-            style={{
-              position: 'absolute',
-              top: calendarPosition.top,
-              left: calendarPosition.left,
-              zIndex: 9999,
-              backgroundColor: 'white',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.3)'
-            }}
+            // className={calendarPopup}
+            style={{ top: calendarPosition.top, left: calendarPosition.left }}
           >
-            <StyledCalendar
-              themeUi={themeUi}
+            <Calendar
+              className={`${calendarBase} ${
+                themeUi === "REGALBLAZE" ? "regalblaze" : "magenta"
+              }`}
               onChange={handleCalendarChange}
               value={value ? new Date(value) : new Date()}
               minDate={undefined}
               tileDisabled={({ date }) => {
                 if (!props.data?.EPD) return false;
                 const epdDate = new Date(props.data.EPD);
-                const epdOnly = new Date(epdDate.getFullYear(), epdDate.getMonth(), epdDate.getDate());
-                const current = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-                return current < epdOnly; 
+                const epdOnly = new Date(
+                  epdDate.getFullYear(),
+                  epdDate.getMonth(),
+                  epdDate.getDate()
+                );
+                const current = new Date(
+                  date.getFullYear(),
+                  date.getMonth(),
+                  date.getDate()
+                );
+                return current < epdOnly;
               }}
             />
           </div>,
           document.body
         )}
-    </DatePickerWrapper>
+    </div>
   );
 };
 

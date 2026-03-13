@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
-import styled from "styled-components";
-import {  SearchInputMultiple } from "../../../components";
+import { SearchInputMultiple } from "../../../components";
 import { useUserData } from "../../../context";
 import Checkbox from "../../../components/VectorFLOW/commons/MTO/Checkbox";
 import { set } from "lodash";
-import { SelectAllWrapper, SectionContainer, SectionTitle, SelectContainer, Label, Grid, TitleContainer } from "./style";
+import { selectAllWrapper,
+  sectionContainer,
+  sectionTitle,
+  selectContainer,
+  label,
+  grid, titleContainer } from "./style.css";
 
 
 const PermissionForm = ({
@@ -13,11 +17,10 @@ const PermissionForm = ({
   setSelectedPermissions,
   selectedApplication,
 }: any) => {
-
   const [LL1, setLL1] = useState<any>(
     Object.keys(currentAppAllPermissions.location_permission)
   );
-  const [LL2,setLL2] = useState<any>([]);
+  const [LL2, setLL2] = useState<any>([]);
   const [LL3, setLL3] = useState<any>([]);
   const [PL1, setPL1] = useState<any>(
     Object.keys(currentAppAllPermissions.product_permission)
@@ -110,112 +113,109 @@ const PermissionForm = ({
 
   // When LL1 changes → update LL2 options and selected LL2 (keep LL3 unchanged)
   useEffect(() => {
-    if (!selectedApplication ) return;
+    if (!selectedApplication) return;
 
     const selectedLocPerms =
       selectedPermissions[selectedApplication]?.location_permission || [];
     const newLL2Opts: any[] = [];
 
-    const selectedL1Keys = selectedLocPerms.map((e:any)=>e[0])
+    const selectedL1Keys = selectedLocPerms.map((e: any) => e[0]);
 
-
-    LL2.forEach((ele:any)=>{
-      if(selectedL1Keys.some((val:any)=> val===ele.split('>')[0])){
+    LL2.forEach((ele: any) => {
+      if (selectedL1Keys.some((val: any) => val === ele.split(">")[0])) {
         newLL2Opts.push(ele);
       }
-    })
-    setLL2Opts(newLL2Opts.map((e:any) => ({ label: e, value: e })));
-  }, [LL2,selectedPermissions, selectedApplication]);
+    });
+    setLL2Opts(newLL2Opts.map((e: any) => ({ label: e, value: e })));
+  }, [LL2, selectedPermissions, selectedApplication]);
 
   useEffect(() => {
-    if (!selectedApplication ) return;
-  
+    if (!selectedApplication) return;
+
     const selectedLocPerms =
       selectedPermissions[selectedApplication]?.location_permission || [];
     const newLL3Opts: any[] = [];
-  
+
     const selectedL2Keys = selectedLocPerms
       .filter((e: any) => e.length >= 2)
       .map((e: any) => `${e[0]}>${e[1]}`);
-  
+
     LL3.forEach((ele: any) => {
-      if (selectedL2Keys.some((val: any) => val === ele.split('>').slice(0, 2).join('>'))) {
+      if (
+        selectedL2Keys.some(
+          (val: any) => val === ele.split(">").slice(0, 2).join(">")
+        )
+      ) {
         newLL3Opts.push(ele);
       }
     });
-  
-    setLL3Opts(newLL3Opts.map(e => ({ label: e, value: e })));
-  }, [LL3,selectedPermissions, selectedApplication]);
+
+    setLL3Opts(newLL3Opts.map((e) => ({ label: e, value: e })));
+  }, [LL3, selectedPermissions, selectedApplication]);
 
   useEffect(() => {
-    if (!selectedApplication ) return;
-  
+    if (!selectedApplication) return;
+
     const selectedProdPerms =
       selectedPermissions[selectedApplication]?.product_permission || [];
     const newPL2Opts: any[] = [];
-  
+
     const selectedP1Keys = selectedProdPerms.map((e: any) => e[0]);
-  
+
     PL2.forEach((ele: any) => {
-      if (selectedP1Keys.some((val: any) => val === ele.split('>')[0])) {
+      if (selectedP1Keys.some((val: any) => val === ele.split(">")[0])) {
         newPL2Opts.push(ele);
       }
     });
 
-  
-    setPL2Opts(newPL2Opts.map(e => ({ label: e, value: e })));
-  }, [PL2,selectedPermissions, selectedApplication]);
+    setPL2Opts(newPL2Opts.map((e) => ({ label: e, value: e })));
+  }, [PL2, selectedPermissions, selectedApplication]);
 
   useEffect(() => {
     if (!selectedApplication) return;
-  
+
     const selectedProdPerms =
       selectedPermissions[selectedApplication]?.product_permission || [];
     const newPL3Opts: any[] = [];
 
-    
     const selectedP2Keys = selectedProdPerms
-    .filter((e: any) => e.length >= 2)
-    .map((e: any) => `${e[0]}>${e[1]}`);
-    
+      .filter((e: any) => e.length >= 2)
+      .map((e: any) => `${e[0]}>${e[1]}`);
+
     PL3.forEach((ele: any) => {
-      if (selectedP2Keys.some((val: any) => val === ele.split('>').slice(0, 2).join('>'))) {
+      if (
+        selectedP2Keys.some(
+          (val: any) => val === ele.split(">").slice(0, 2).join(">")
+        )
+      ) {
         newPL3Opts.push(ele);
       }
     });
 
-  
-    setPL3Opts(newPL3Opts.map(e => ({ label: e, value: e })));
-  }, [PL3,selectedPermissions, selectedApplication]);
-  
-  
-  
+    setPL3Opts(newPL3Opts.map((e) => ({ label: e, value: e })));
+  }, [PL3, selectedPermissions, selectedApplication]);
 
-  
-
-  const getUniqueObjects=(arr:any, key:any)=> {
+  const getUniqueObjects = (arr: any, key: any) => {
     const seen = new Set();
-    return arr.filter((item:any) => {
+    return arr.filter((item: any) => {
       const val = item[key];
       if (seen.has(val)) return false;
       seen.add(val);
       return true;
     });
-  }
+  };
   const getSelectedPermissions = ({
     selectedPermissions,
     selectedApplication,
     permissionType,
     level,
   }: any) => {
-    const currentPermissions =  (selectedPermissions && selectedPermissions?.[selectedApplication]) || {};
+    const currentPermissions =
+      (selectedPermissions && selectedPermissions?.[selectedApplication]) || {};
 
     const permissionSet = currentPermissions?.[permissionType] || [];
 
     let val: { value: string; label: string }[] = [];
-
-
-
 
     if (level === 0) {
       val = permissionSet
@@ -232,7 +232,7 @@ const PermissionForm = ({
         .map((e: any) => {
           const joined = e.slice(0, 2).join(">");
           return { value: joined, label: joined };
-        })
+        });
     }
 
     if (level === 2) {
@@ -255,15 +255,15 @@ const PermissionForm = ({
     level,
   }: any) => {
     if (!val || !Array.isArray(val)) return;
-  
+
     // Extract the `value` property from each object in `val`
     const values = val.map((item: any) => item.value);
-  
+
     const prevPerms =
       selectedPermissions?.[selectedApplication]?.[permissionType] || [];
-  
+
     const selectPermissions = Array.isArray(prevPerms) ? prevPerms : [];
-  
+
     let newPerm: any[] = [];
 
     if (level === 0) {
@@ -273,27 +273,27 @@ const PermissionForm = ({
         new Set(selectPermissions.map((perm: any) => perm[0]))
       );
       // Remove permissions that start with deselected level 0 values
-      const permissionsToKeep = selectPermissions.filter((perm: any) => 
+      const permissionsToKeep = selectPermissions.filter((perm: any) =>
         values.includes(perm[0])
       );
-      
+
       // Add new level 0 permissions that don't exist
       const newLevel0Permissions = values
         .filter((value: string) => !existingLevel0Values.includes(value))
         .map((value: string) => [value]);
-      
+
       newPerm = [...permissionsToKeep, ...newLevel0Permissions];
     }
-  
+
     if (level === 1) {
       // Level 1: Update second-level permissions
       const valMap = values.map((item: string) => item.split(">"));
-      
+
       // Get all existing level 1 combinations (parent>child)
       const existingLevel1Combinations = selectPermissions
         .filter((perm: any) => perm.length >= 2)
         .map((perm: any) => `${perm[0]}>${perm[1]}`);
-      
+
       // Keep permissions that match selected level 1 values OR are deeper levels of selected values
       const permissionsToKeep = selectPermissions.filter((perm: any) => {
         if (perm.length === 1) {
@@ -306,7 +306,7 @@ const PermissionForm = ({
         }
         return false;
       });
-      
+
       // Add new level 1 permissions
       const newLevel1Permissions = valMap
         .filter(([parent, child]) => {
@@ -314,34 +314,35 @@ const PermissionForm = ({
           return !existingLevel1Combinations.includes(key);
         })
         .map(([parent, child]) => [parent, child]);
-      
+
       // Add back level 0 permissions for parents that have level 1 selections
       const parentsWithLevel1 = Array.from(
         new Set(valMap.map(([parent]) => parent))
       );
       const level0ToAdd = parentsWithLevel1
-        .filter((parent: string) => 
-          !selectPermissions.some((perm: any) => 
-            perm.length === 1 && perm[0] === parent
-          ) && 
-          !permissionsToKeep.some((perm: any) => 
-            perm.length === 1 && perm[0] === parent
-          )
+        .filter(
+          (parent: string) =>
+            !selectPermissions.some(
+              (perm: any) => perm.length === 1 && perm[0] === parent
+            ) &&
+            !permissionsToKeep.some(
+              (perm: any) => perm.length === 1 && perm[0] === parent
+            )
         )
         .map((parent: string) => [parent]);
-      
+
       newPerm = [...permissionsToKeep, ...newLevel1Permissions, ...level0ToAdd];
     }
-  
+
     if (level === 2) {
       // Level 2: Update third-level permissions
       const valMap = values.map((item: string) => item.split(">"));
-      
+
       // Get all existing level 2 combinations
       const existingLevel2Combinations = selectPermissions
         .filter((perm: any) => perm.length >= 3)
         .map((perm: any) => `${perm[0]}>${perm[1]}>${perm[2]}`);
-      
+
       // Keep permissions that match selected level 2 values OR are not affected by this level
       const permissionsToKeep = selectPermissions.filter((perm: any) => {
         if (perm.length === 1) {
@@ -349,8 +350,8 @@ const PermissionForm = ({
           return !valMap.some(([parent]) => parent === perm[0]);
         } else if (perm.length === 2) {
           // Keep level 1 permissions that don't have any level 2 selections affecting them
-          return !valMap.some(([parent, child]) => 
-            parent === perm[0] && child === perm[1]
+          return !valMap.some(
+            ([parent, child]) => parent === perm[0] && child === perm[1]
           );
         } else if (perm.length >= 3) {
           // Keep level 2+ permissions that are in the selected values
@@ -359,7 +360,7 @@ const PermissionForm = ({
         }
         return false;
       });
-      
+
       // Add new level 2 permissions
       const newLevel2Permissions = valMap
         .filter(([parent, child, subChild]) => {
@@ -367,31 +368,42 @@ const PermissionForm = ({
           return !existingLevel2Combinations.includes(key);
         })
         .map(([parent, child, subChild]) => [parent, child, subChild]);
-      
+
       // Add back level 0 and level 1 permissions for hierarchy
-      const parentsWithLevel2 = Array.from(new Set(valMap.map(([parent]) => parent)));
-      const level1WithLevel2 = Array.from(new Set(valMap.map(([parent, child]) => `${parent}>${child}`)));
-      
+      const parentsWithLevel2 = Array.from(
+        new Set(valMap.map(([parent]) => parent))
+      );
+      const level1WithLevel2 = Array.from(
+        new Set(valMap.map(([parent, child]) => `${parent}>${child}`))
+      );
+
       const level0ToAdd = parentsWithLevel2
-        .filter((parent: string) => 
-          !permissionsToKeep.some((perm: any) => 
-            perm.length === 1 && perm[0] === parent
-          )
+        .filter(
+          (parent: string) =>
+            !permissionsToKeep.some(
+              (perm: any) => perm.length === 1 && perm[0] === parent
+            )
         )
         .map((parent: string) => [parent]);
-      
+
       const level1ToAdd = level1WithLevel2
         .filter((parentChild: string) => {
-          const [parent, child] = parentChild.split('>');
-          return !permissionsToKeep.some((perm: any) => 
-            perm.length === 2 && perm[0] === parent && perm[1] === child
+          const [parent, child] = parentChild.split(">");
+          return !permissionsToKeep.some(
+            (perm: any) =>
+              perm.length === 2 && perm[0] === parent && perm[1] === child
           );
         })
-        .map((parentChild: string) => parentChild.split('>'));
-      
-      newPerm = [...permissionsToKeep, ...newLevel2Permissions, ...level0ToAdd, ...level1ToAdd];
+        .map((parentChild: string) => parentChild.split(">"));
+
+      newPerm = [
+        ...permissionsToKeep,
+        ...newLevel2Permissions,
+        ...level0ToAdd,
+        ...level1ToAdd,
+      ];
     }
-  
+
     // Update the selected permissions state
     setSelectedPermissions((prev: any) => ({
       ...prev,
@@ -402,7 +414,7 @@ const PermissionForm = ({
     }));
   };
 
-  const themeUi= useUserData().user.user.theme_ui
+  const themeUi = useUserData().user.user.theme_ui;
 
   const isSelectAll = (selectedPermissions: any, isProduct: boolean) => {
     if (!selectedApplication) return false;
@@ -449,16 +461,16 @@ const PermissionForm = ({
         },
       }));
     }
-  }
+  };
 
   return (
     <div style={{ padding: "40px 20px 20px 20px" }}>
-      <SectionContainer>
-        <TitleContainer>
-            <SectionTitle>Product Permission</SectionTitle>
+      <div className={sectionContainer}>
+        <div className={titleContainer}>
+        <h4 className={sectionTitle}>Product Permission</h4>
             <div style={{ marginBottom: "20px", fontSize: "14px", fontWeight: 600, display: 'flex', justifyContent: 'right', alignItems: 'center'}}>
-              <SelectAllWrapper>
-              <Checkbox
+            <div className={selectAllWrapper}>
+            <Checkbox
                           style={{ zoom: 0.5 }}
                           theme={themeUi}
                           type="checkbox"
@@ -468,14 +480,14 @@ const PermissionForm = ({
                           />
                         <label style={{ cursor: "pointer" }}>Select All</label>
 
-              </SelectAllWrapper>
+              </div>
             </div>
           
-        </TitleContainer>
-        <Grid>
-          <SelectContainer>
-              <Label>Business</Label>
-            <SearchInputMultiple
+        </div>
+        <div className={grid}>
+        <div className={selectContainer}>
+        <label className={label}>Business</label>
+        <SearchInputMultiple
               disabled={false}
               placeholder="Select"
               options={PL1Opts}
@@ -496,9 +508,9 @@ const PermissionForm = ({
               }}
               key={1}
             />
-          </SelectContainer>
-          <SelectContainer>
-            <Label>Category</Label>
+          </div>
+          <div className={selectContainer}>
+            <label className={label}>Category</label>
             <SearchInputMultiple
               placeholder="Select"
               disabled={false}
@@ -520,9 +532,9 @@ const PermissionForm = ({
               }}
               key={2}
             />
-          </SelectContainer>
-          <SelectContainer>
-            <Label>Value</Label>
+          </div>
+          <div className={selectContainer}>
+            <label className={label}>Value</label>
             <SearchInputMultiple
               placeholder="Select"
               disabled={false}
@@ -544,16 +556,16 @@ const PermissionForm = ({
               }}
               key={3}
             />
-          </SelectContainer>
-        </Grid>
-      </SectionContainer>
+          </div>
+        </div>
+      </div>
 
-      <SectionContainer>
-        <TitleContainer>
-        <SectionTitle>Location Permission</SectionTitle>
+      <div className={sectionContainer}>
+      <div className={titleContainer}>
+      <h4 className={sectionTitle}>Location Permission</h4>
               <div style={{ marginBottom: "20px", fontSize: "14px", fontWeight: 600, display: 'flex', justifyContent: 'right', alignItems: 'center'}}>
-                <SelectAllWrapper>
-                <Checkbox
+              <div className={selectAllWrapper}>
+              <Checkbox
                             style={{ zoom: 0.5 }}
                             theme={themeUi}
                             type="checkbox"
@@ -563,13 +575,13 @@ const PermissionForm = ({
                             />
                           <label style={{ cursor: "pointer" }}>Select All</label>
 
-                </SelectAllWrapper>
+                </div>
               </div>
               
-            </TitleContainer>
-        <Grid>
-          <SelectContainer>
-            <Label>Zone</Label>
+            </div>
+            <div className={grid}>
+            <div className={selectContainer}>
+            <label className={label}>Zone</label>
             <SearchInputMultiple
               placeholder="Select"
               disabled={false}
@@ -591,9 +603,9 @@ const PermissionForm = ({
               }}
               key={4}
             />
-          </SelectContainer>
-          <SelectContainer>
-            <Label>Location Group</Label>
+          </div>
+          <div className={selectContainer}>
+            <label className={label}>Location Group</label>
             <SearchInputMultiple
               placeholder="Select"
               disabled={false}
@@ -615,9 +627,9 @@ const PermissionForm = ({
               }}
               key={5}
             />
-          </SelectContainer>
-          <SelectContainer>
-            <Label>WH Type</Label>
+          </div>
+          <div className={selectContainer}>
+            <label className={label}>WH Type</label>
             <SearchInputMultiple
               placeholder="Select"
               disabled={false}
@@ -639,9 +651,9 @@ const PermissionForm = ({
               }}
               key={6}
             />
-          </SelectContainer>
-        </Grid>
-      </SectionContainer>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

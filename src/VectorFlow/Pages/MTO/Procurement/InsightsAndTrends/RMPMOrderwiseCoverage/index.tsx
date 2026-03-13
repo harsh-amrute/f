@@ -2,13 +2,9 @@ import { useState, useEffect } from 'react'
 import ActionToolBar from '../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar'
 import GridView from './GridView/GridView'
 import GraphView from './GraphView/GraphView'
-import { InsightsAndTrendsString } from '../../../Common/String'
-import { Order } from '../../../../../../VectorFlow/types/MTO'
-import { ColDef } from 'ag-grid-enterprise'
-import columnData from './ColumnData'
 import { AgGridReactProps } from 'ag-grid-react'
 import { useGetOrderwiseCoverageData, useGetOrderwiseCoverageDataForExcelExport } from '../../../../../../VectorFlow/Services/MTO/Procurement/OrderwiseCoverage'
-import { toast } from 'react-toastify'
+import { toast } from "react-toastify/unstyled"
 import { notifyError, notifyLoader, notifySuccess } from '../../../../../../helpers/notify'
 import { useGetUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UIConfig'
 import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from '../../../../../../helpers/utils'
@@ -114,7 +110,7 @@ const RMPMOrderwiseCoverage = () => {
             defaultColDef: {
                 filter: "agTextColumnFilter",
                 floatingFilter: true,
-                suppressMenu: true,
+                suppressHeaderMenuButton: true,
                 resizable: true,
 
                 cellStyle: {
@@ -187,31 +183,6 @@ const RMPMOrderwiseCoverage = () => {
         }
     }
 
-    const mapDataToColumns = (data: any, columns: ColDef[]) => {
-
-        return data?.map((item: any) => {
-
-            const rmpmColumnExist = columns.find((col) => col.field == "rmpm");
-
-            if (rmpmColumnExist && rmpmColumnExist.field) {
-                if (item['or'] > 0) {
-                    item[rmpmColumnExist.field]=InsightsAndTrendsString.ordersWithRMPM;
-                }
-                else if (item['po'] > 0) {
-                    item[rmpmColumnExist.field] = InsightsAndTrendsString.ordersWithFullkitOPO;
-                }
-                else if (item['sit'] > 0) {
-                    item[rmpmColumnExist.field] = InsightsAndTrendsString.ordersWithFullkitSIT;
-                }
-                else {
-                    item[rmpmColumnExist.field] = InsightsAndTrendsString.ordersWithFullkitOHS;
-                }
-            }
-
-            return item;
-
-        });
-    };
 
     const GetData = async (graph: any, page: any, isExcelExport = false,pageSize?:any) => {
         if (isExcelExport) {
@@ -378,7 +349,7 @@ const RMPMOrderwiseCoverage = () => {
     }, [appliedFilters,userConfigFetched]);
 
     useEffect(() => {
-        setConvertedData(mapDataToColumns(apiGridData, columnData));
+        setConvertedData(apiGridData);
     }, [apiGridData])
 
     useEffect(() => {

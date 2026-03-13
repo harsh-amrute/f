@@ -1,6 +1,6 @@
 import { useEffect, useState} from 'react'
 import { notifyError,notifySuccess } from '../../../../../helpers/notify'
-import { toast } from "react-toastify";
+import { toast } from "react-toastify/unstyled";
 import { useGetBufferTrendsGraph } from "../../../../Services/MTA/InsightsAndTrends/BufferTrends";
 import { BufferTrendsGraphState } from '../../../../../VectorFlow/types/BPR'
 import useBPRFilter from '../../../../../hooks/useBPRFilter';
@@ -55,8 +55,9 @@ const useBufferTrends = () => {
         const obj = {...data};
         obj.data.absolute = data?.data?.absolute.map((item: any) => ({
             ...item,
-            total: Object.values(item).reduce((acc: number, value: any) => {
-                if (!isNaN(value)) {
+            total: Object.values(item).reduce((acc: number, value: any, index: number) => {
+                const key = Object.keys(item)[index];
+                if (key !== "total" && !isNaN(value)) {
                     return acc + parseFloat(value);
                 }
                 return acc;
@@ -65,8 +66,9 @@ const useBufferTrends = () => {
 
         obj.data.percentage = data?.data?.percentage.map((item: any) => ({
             ...item,
-            total: Object.values(item).reduce((acc: number, value: any) => {
-                if (!isNaN(value)) {
+            total: Object.values(item).reduce((acc: number, value: any, index: number) => {
+                const key = Object.keys(item)[index];
+                if (key !== "total" && !isNaN(value)) {
                     return acc + parseFloat(value);
                 }
                 return acc;

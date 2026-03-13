@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { LeftSectionWrapper } from "./style";
+import { leftSectionWrapper } from "./style.css";
 import LeftCommonCom from "./LeftCommonCom";
 import VFTable from "../../../VectorFlow/Pages/MTO/Common/VFTable";
 import { AgGridReact } from "ag-grid-react";
@@ -32,7 +32,7 @@ function UploadLeftSection({setNoData,setErrorCount, setErrorData, setValidData,
 
   
   return (
-    <LeftSectionWrapper>
+    <div className={leftSectionWrapper}>
       <LeftCommonCom
         step={1}
         img="/assets/img/download.svg"
@@ -56,7 +56,7 @@ function UploadLeftSection({setNoData,setErrorCount, setErrorData, setValidData,
           ref={downloadGridRef}
         />
       </div>
-    </LeftSectionWrapper>
+    </div>
   );
 }
 

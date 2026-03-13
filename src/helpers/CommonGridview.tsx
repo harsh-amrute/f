@@ -93,11 +93,6 @@ type CommonGridviewProps = {
     onClose: () => void;
     showExcelModal: boolean;
   }>;
-  VFWrapper: React.ComponentType<{
-    children: React.ReactNode;
-    className?: string;
-    style?: React.CSSProperties;
-  }>;
   vfWrapperStyle?: React.CSSProperties;
   vfWrapperClassName?: string;
 };
@@ -280,7 +275,6 @@ function CommonGridview(props: CommonGridviewProps) {
     gridDataLoading,
     BomExcelExport,
     setCurrentFilters,
-    VFWrapper,
     vfWrapperStyle,
     vfWrapperClassName,
   } = props;
@@ -684,7 +678,7 @@ function CommonGridview(props: CommonGridviewProps) {
         resetBtnName={"Reset"}
       />
 
-      <VFWrapper
+      <div
         className={vfWrapperClassName ?? ".ag-theme-alpine"}
         style={vfWrapperStyle ?? {}}
       >
@@ -729,7 +723,7 @@ function CommonGridview(props: CommonGridviewProps) {
           savePageSize={savePageSize}
           userPageSize={userPageSize}
         />
-      </VFWrapper>
+      </div>
     </div>
   );
 }

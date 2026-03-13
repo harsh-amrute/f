@@ -7,7 +7,10 @@ const mockFunction = jest.fn()
 const dummyprops = {
   onSuccess:mockFunction,
   onClose:mockFunction,
-  setSelectionType:mockFunction
+  setSelectionType:mockFunction,
+  approveButtonLabel:mockFunction,
+  isAllDataVisible:mockFunction,
+  isBulkAction:mockFunction
 }
 
 describe("ApproveAllModal Component", () => {

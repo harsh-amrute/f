@@ -1,7 +1,7 @@
 // src/components/LastRunDateComponent.tsx
 import React from 'react';
-import { Skeleton } from '../styled';
-import { LastRunDate,LastRunDateHeader } from '../../../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BPR/styles';
+import { skeleton } from '../styled/index.css';
+import { LastRunDate,LastRunDateHeader } from '../../../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BPR/styles.css';
 
 interface LastRunDateComponentProps {
   lastRunDate: string;
@@ -9,13 +9,13 @@ interface LastRunDateComponentProps {
 
 const LastRunDateComponent: React.FC<LastRunDateComponentProps> = ({ lastRunDate }) => {
   return (
-    <LastRunDate>
+    <div className={LastRunDate}>
       {lastRunDate === "Loading" ? (
-        <Skeleton style={{ height: 30, width: 150 }} />
+        <div className={skeleton} style={{ height: 30, width: 150 }} />
       ) : (
-        <LastRunDateHeader>{lastRunDate}</LastRunDateHeader>
+        <div className={LastRunDateHeader}>{lastRunDate}</div>
       )}
-    </LastRunDate>
+    </div>
   );
 };
 

@@ -17,14 +17,14 @@ import {
   TabSwitchContainer,
   TabSwitchHeading,
   TabsWrapper,
-} from "./styles";
+} from "./styles.css";
 // import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard";
 // import { FilterAccordianWrapper, FilterContainer, FilterHeading, HorizontalLine, PlantInput, SearchBar } from "./FilterModal/styles";
 // import FilterAccordian from "./FilterAccordian";
 import { useGetEnquiryResData } from "../../../../Services/MTO/Production/EnquiryResponse";
 import { useUserData } from "../../../../../context/index";
 import { notifyError, notifyLoader } from "../../../../../helpers/notify";
-import { toast } from "react-toastify"
+import { toast } from "react-toastify/unstyled";
 import VFCapsule from "../../../../../components/VectorFLOW/commons/VFCapsule";
 import { Allotment } from "allotment";
 import useViewPort from "../../../../../hooks/useViewPort";
@@ -32,7 +32,10 @@ import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Commo
 import { getColumnDefinations } from "../../../../../helpers/utils";
 import FullkitCellRenderer from "../../Common/FullKitCellRenderer/FullkitCellRenderer";
 import { UIGridCode } from "../../Common/Enum";
-import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
+import {
+  useGetUserUIConfigData,
+  useUpdateUserUIConfigData,
+} from "../../../../../VectorFlow/Services/MTO/Common/UserUIConfig";
 import OverlayLoader from "../../Common/Loader";
 import { format } from "date-fns";
 import { ExcelExportName } from "../../Common/Enum";
@@ -41,7 +44,10 @@ const tabOptions = [{ label: "RM Not Available", value: "RM Not Available" }, { 
 
 const EnquiryResponse = () => {
   const [activeTab, setActiveTab] = useState<number>(0);
-  const [activeCapsule, setActiveCapsule] = useState<{ label: string, value: string }>(tabOptions[0]);
+  const [activeCapsule, setActiveCapsule] = useState<{
+    label: string;
+    value: string;
+  }>(tabOptions[0]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [tableData, setTableData] = useState<any>([]);
   const [filterData, setFilterData] = useState<any>([]);
@@ -50,33 +56,37 @@ const EnquiryResponse = () => {
   const [currentGridRef, setCurrentGridRef] = useState<any>(null);
   const [columnState, setColumnState] = useState<any>([]);
   const [isReset, setIsReset] = useState<any>(undefined);
-  const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
-  const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
+  const {
+    mutateAsync: updateUserUIReportConfigData,
+    isLoading: isUpdateUserConfig,
+  } = useUpdateUserUIConfigData();
+  const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } =
+    useGetUserUIConfigData();
   const { data } = useGetEnquiryResData() || {};
   const [masterUIConfig, setMasterUIConfig] = useState([]);
-  const { screenHeight } = useViewPort()
+  const { screenHeight } = useViewPort();
 
   const [HeaderData, setHeaderData] = useState([]);
-  const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+  const { mutateAsync: getUIConfigData } = useGetUIConfigData();
 
   const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
   const [userPageSize, setUserPageSize] = useState<any>();
-  const [currentPage, setCurrentPage] = useState<number>(1)
-  const [totalRow, setTotalRow] = useState<number>(0)
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalRow, setTotalRow] = useState<number>(0);
 
   const reportName = "EnquiryResponse";
   const [myColDefs, setMyColDefs] = useState([{}]);
   const gridRef = useRef<any>();
 
-  const setColumnDef = async () => {          //intial column names and set kr rha hai in headerData
+  const setColumnDef = async () => {
+    //intial column names and set kr rha hai in headerData
     try {
       const response = await getUIConfigData(reportName);
       setHeaderData(response.data.data);
-    }
-    catch (e) {
+    } catch (e) {
       console.log(e);
     }
-  }
+  };
 
   const [selectedOptions, setSelectedOptions] = useState<any>({
     plantName: "",
@@ -90,7 +100,7 @@ const EnquiryResponse = () => {
   const themeUi = user.user.theme_ui;
 
   const handleTabChange = (tab: any) => {
-    if (tab?.label === 'RM Not Available') {
+    if (tab?.label === "RM Not Available") {
       setActiveTab(0);
     } else {
       setActiveTab(1);
@@ -117,7 +127,10 @@ const EnquiryResponse = () => {
       if (existIndex !== -1) {
         simData[existIndex] = {
           ...simData[existIndex],
-          cnm: ((element.fol <= simData[existIndex].fol) ? element.cnm : simData[existIndex].cnm),
+          cnm:
+            element.fol <= simData[existIndex].fol
+              ? element.cnm
+              : simData[existIndex].cnm,
           fol: Math.min(simData[existIndex].fol, element.fol),
         };
       } else {
@@ -130,12 +143,22 @@ const EnquiryResponse = () => {
 
   function getWeekOfMonth(dateString: string): string {
     const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
     ];
 
     // Parse the input date string
-    const [dayStr, monthStr, yearStr] = dateString.split(' ');
+    const [dayStr, monthStr, yearStr] = dateString.split(" ");
     const day = parseInt(dayStr, 10);
     const monthIndex = months.findIndex(
       (m) => m.toLowerCase() === monthStr.toLowerCase()
@@ -167,14 +190,12 @@ const EnquiryResponse = () => {
   };
 
   const getEarliestDate = (array: number[]) => {
-
     const today = new Date();
     const result = new Date(today);
     let daysToAdd = 0;
 
     for (let index = 0; index < array.length; index++) {
       daysToAdd = daysToAdd + array[index];
-
     }
 
     return getFormattedDate(
@@ -184,61 +205,151 @@ const EnquiryResponse = () => {
 
   const getRMUI = () => {
     if (filterData) {
-
       const simData = getTableSimData(filterData);
 
       return (
-        <RmUICont style={{ background: 'white' }}>
+        <div className={RmUICont} style={{ background: "white" }}>
+          <table
+            style={{
+              margin: "10px 0",
+              borderSpacing: "0",
+              fontFamily: "Roboto",
+            }}
+          >
+            <thead style={{ marginBottom: "20px", textAlign: "center" }}>
+              <tr style={{ rowGap: "2px" }}>
+                <td
+                  style={{
+                    borderRight: "1px solid grey",
+                    borderBottom: "5px solid white",
+                    paddingLeft: "16px",
+                  }}
+                >
+                  Plant
+                </td>
+                {!activeTab && (
+                  <td
+                    style={{
+                      borderRight: "1px solid grey",
+                      borderBottom: "5px solid white",
+                      paddingLeft: "6px",
+                    }}
+                  >
+                    Procurement Buffer
+                  </td>
+                )}
+                <td
+                  style={{
+                    borderRight: "1px solid grey",
+                    borderBottom: "5px solid white",
+                    paddingLeft: "6px",
+                  }}
+                >
+                  Production Buffer
+                </td>
+                <td
+                  style={{
+                    borderRight: "1px solid grey",
+                    borderBottom: "5px solid white",
+                    paddingLeft: "6px",
+                  }}
+                >
+                  Least Loaded CCR
+                </td>
 
-          <table style={{ margin: '10px 0', borderSpacing: '0', fontFamily: 'Roboto' }}>
-            <thead style={{ marginBottom: '20px', textAlign: 'center' }}>
-              <tr style={{ rowGap: '2px' }}>
-                <td style={{ borderRight: '1px solid grey', borderBottom: '5px solid white', paddingLeft: '16px' }}>Plant</td>
-                {(!activeTab) &&
-
-                  <td style={{ borderRight: '1px solid grey', borderBottom: '5px solid white', paddingLeft: '6px' }}>Procurement Buffer</td>
-
-                }
-                <td style={{ borderRight: '1px solid grey', borderBottom: '5px solid white', paddingLeft: '6px' }}>Production Buffer</td>
-                <td style={{ borderRight: '1px solid grey', borderBottom: '5px solid white', paddingLeft: '6px' }}>Least Loaded CCR</td>
-
-                <td style={{ paddingLeft: '6px', borderBottom: '5px solid white' }}>Earliest Readiness Date</td>
+                <td
+                  style={{
+                    paddingLeft: "6px",
+                    borderBottom: "5px solid white",
+                  }}
+                >
+                  Earliest Readiness Date
+                </td>
               </tr>
             </thead>
             <tbody>
-
-
-              {simData.map((row: any, index: any) => (
-                (row.it[selectedOptions.productGroup[0]]) &&
-
-                <tr style={{ background: `${(((index % 2 === 0))) ? '#F8F8F8' : 'white'}` }} key={index}>
-                  <td style={{ padding: '5px', paddingLeft: '16px', textAlign: 'center' }}>{row.plnm}</td>
-                  {
-                    (!activeTab) &&
-                    <td style={{ paddingLeft: '4px', textAlign: 'center', paddingRight: '20px' }}>{row.it[selectedOptions.productGroup[0]]?.proc_size} &nbsp; days</td>
-
-                  }
-                  <td style={{ paddingLeft: '4px', textAlign: 'center', paddingRight: '20px' }} >{row.it[selectedOptions.productGroup[0]]?.prod_size}&nbsp; days</td>
-                  <td style={{ paddingLeft: '4px', textAlign: 'center' }} >{row.cnm}</td>
-                  {
-                    (!activeTab) ?
-
-                      <td style={{ color: '#BC3D81', paddingLeft: '6px', textAlign: 'center', fontWeight: 'bold' }} >{getEarliestDate([row.fol, row.it[selectedOptions.productGroup[0]]?.proc_size, row.it[selectedOptions.productGroup[0]]?.prod_size])}</td>
-                      :
-                      <td style={{ color: '#BC3D81', paddingLeft: '6px', textAlign: 'center', fontWeight: 'bold' }} >{getEarliestDate([row.fol, row.it[selectedOptions.productGroup[0]]?.prod_size])}</td>
-                  }
-                </tr>
-
-              ))}
-
+              {simData.map(
+                (row: any, index: any) =>
+                  row.it[selectedOptions.productGroup[0]] && (
+                    <tr
+                      style={{
+                        background: `${index % 2 === 0 ? "#F8F8F8" : "white"}`,
+                      }}
+                      key={index}
+                    >
+                      <td
+                        style={{
+                          padding: "5px",
+                          paddingLeft: "16px",
+                          textAlign: "center",
+                        }}
+                      >
+                        {row.plnm}
+                      </td>
+                      {!activeTab && (
+                        <td
+                          style={{
+                            paddingLeft: "4px",
+                            textAlign: "center",
+                            paddingRight: "20px",
+                          }}
+                        >
+                          {row.it[selectedOptions.productGroup[0]]?.proc_size}
+                          &nbsp; days
+                        </td>
+                      )}
+                      <td
+                        style={{
+                          paddingLeft: "4px",
+                          textAlign: "center",
+                          paddingRight: "20px",
+                        }}
+                      >
+                        {row.it[selectedOptions.productGroup[0]]?.prod_size}
+                        &nbsp; days
+                      </td>
+                      <td style={{ paddingLeft: "4px", textAlign: "center" }}>
+                        {row.cnm}
+                      </td>
+                      {!activeTab ? (
+                        <td
+                          style={{
+                            color: "#BC3D81",
+                            paddingLeft: "6px",
+                            textAlign: "center",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          {getEarliestDate([
+                            row.fol,
+                            row.it[selectedOptions.productGroup[0]]?.proc_size,
+                            row.it[selectedOptions.productGroup[0]]?.prod_size,
+                          ])}
+                        </td>
+                      ) : (
+                        <td
+                          style={{
+                            color: "#BC3D81",
+                            paddingLeft: "6px",
+                            textAlign: "center",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          {getEarliestDate([
+                            row.fol,
+                            row.it[selectedOptions.productGroup[0]]?.prod_size,
+                          ])}
+                        </td>
+                      )}
+                    </tr>
+                  )
+              )}
             </tbody>
           </table>
-        </RmUICont>
+        </div>
       );
     }
-    return (
-      <></>
-    )
+    return <></>;
   };
 
   const handleNameChange = (arr: any) => {
@@ -358,14 +469,12 @@ const EnquiryResponse = () => {
   const updatedSelectedFilters = (options: any) => {
     const filters: { label: string; values: string[] }[] = [];
 
-
     if (options?.plantName) {
-      const names = options.plantName.map((plantName:any)=>plantName.name)
+      const names = options.plantName.map((plantName: any) => plantName.name);
       filters.push({
         label: "Plant",
         values: [...names],
       });
-      
     }
     if (options?.productGroup?.length > 0) {
       filters.push({
@@ -393,7 +502,7 @@ const EnquiryResponse = () => {
     }
 
     setSelectedFilters(filters);
-  }
+  };
 
   const applyFilter = (options: any) => {
     let data = [];
@@ -434,9 +543,12 @@ const EnquiryResponse = () => {
   const departmentOptions: any = [];
   const ccrGroupOptions: any = [];
   const ccrNameOptions: any = [];
-  const plantOptions: any = []
+  const plantOptions: any = [];
 
-  function getUniqueValues<T extends Record<any, any>>(array: T[], key: any): T[] {
+  function getUniqueValues<T extends Record<any, any>>(
+    array: T[],
+    key: any
+  ): T[] {
     const uniqueArray: T[] = [];
     const uniqueValues: any[] = [];
 
@@ -452,7 +564,11 @@ const EnquiryResponse = () => {
   for (let i = 0; i < tableData?.length; i++) {
     const ccrObj = tableData[i];
     if (ccrObj?.plnm) {
-      plantOptions.push({ value: ccrObj.plnm, label: ccrObj.plnm, name: ccrObj.plnm });
+      plantOptions.push({
+        value: ccrObj.plnm,
+        label: ccrObj.plnm,
+        name: ccrObj.plnm,
+      });
       // plantOptions = getUniqueValues(plantOptions)
     }
     if (ccrObj?.it) {
@@ -487,33 +603,31 @@ const EnquiryResponse = () => {
     {
       key: "plnm",
       heading: "Plant",
-      options: getUniqueValues(plantOptions, 'value')
+      options: getUniqueValues(plantOptions, "value"),
     },
     {
-      key: 'prdGrp',
+      key: "prdGrp",
       heading: "Product Group",
       options: productGroupOptions,
     },
     {
-      key: 'dept',
+      key: "dept",
       heading: "Department",
       options: departmentOptions,
     },
     {
-      key: 'ccrGrp',
+      key: "ccrGrp",
       heading: "CCR Group",
       options: ccrGroupOptions,
     },
     {
-      key: 'ccrNm',
+      key: "ccrNm",
       heading: "CCR",
       options: ccrNameOptions,
     },
   ];
 
   const removeFilters = (category: string, name: string) => {
-
-
     const updtedCCRName = selectedOptions?.ccrName;
     const updtedDept = selectedOptions?.department;
     const updtedCCRGrp = selectedOptions?.ccrGroup;
@@ -521,23 +635,22 @@ const EnquiryResponse = () => {
     let updatedProductGrp = selectedOptions?.productGroup;
 
     if (category === "Plant") {
-      updatedPlantName = updatedPlantName.filter((item: any) => item.name !== name);
+      updatedPlantName = updatedPlantName.filter(
+        (item: any) => item.name !== name
+      );
       if (updatedPlantName.length === 0) {
-
         updatedPlantName = "";
 
         setSelectedOptions((prev: any) => ({
           ...prev,
-          plantName: updatedPlantName
+          plantName: updatedPlantName,
         }));
-      }
-      else {
+      } else {
         setSelectedOptions((prev: any) => ({
           ...prev,
-          plantName: updatedPlantName
+          plantName: updatedPlantName,
         }));
       }
-
     }
     if (category === "Product Group") {
       updatedProductGrp = [];
@@ -557,7 +670,7 @@ const EnquiryResponse = () => {
       delete updtedCCRGrp[name];
       setSelectedOptions((prev: any) => ({
         ...prev,
-        ccrGroup: updtedCCRGrp
+        ccrGroup: updtedCCRGrp,
       }));
     }
     if (category === "CCR Name") {
@@ -572,56 +685,56 @@ const EnquiryResponse = () => {
       productGroup: updatedProductGrp,
       department: updtedDept,
       ccrGroup: updtedCCRGrp,
-      ccrName: updtedCCRName
+      ccrName: updtedCCRName,
     });
     applyFilter({
       plantName: updatedPlantName,
       productGroup: updatedProductGrp,
       department: updtedDept,
       ccrGroup: updtedCCRGrp,
-      ccrName: updtedCCRName
+      ccrName: updtedCCRName,
     });
   };
-  
+
   const getData = (data: any) => {
     try {
-          setTableData(data?.data?.data);
-          setTotalRow(data?.data?.data.length);
-        } catch (e) {
-          console.log(e);
-          notifyError('Failed to set Enquiry data!');
-        }
-    
-  }
+      setTableData(data?.data?.data);
+      setTotalRow(data?.data?.data.length);
+    } catch (e) {
+      console.log(e);
+      notifyError("Failed to set Enquiry data!");
+    }
+  };
 
   const savePageSize = (pageSize: any) => {
-      if (pageSize) {
-        setUserPageSize(pageSize);
-          setCurrentPage(1)
-          handleSaveClick(undefined, pageSize);
-        } else {
-          notifyError("Invalide page size");
-      }
-      
-  }
-  const getUserColumnConfig = async () => {   
+    if (pageSize) {
+      setUserPageSize(pageSize);
+      setCurrentPage(1);
+      handleSaveClick(undefined, pageSize);
+    } else {
+      notifyError("Invalide page size");
+    }
+  };
+  const getUserColumnConfig = async () => {
     try {
       const data = await getUserUIReportConfigData({
         un: user.user.name,
-        rn_id: UIGridCode.ProdEnquiryResponse
+        rn_id: UIGridCode.ProdEnquiryResponse,
       });
 
-      setUserConfigFetched(true)
+      setUserConfigFetched(true);
       const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
-      setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
+      setUserPageSize(
+        newConfig.pageSize ? Number(newConfig.pageSize) : undefined
+      );
       setColumnState(newConfig.cs);
       if (!data) {
-        console.error('Failed to apply column state');
+        console.error("Failed to apply column state");
       }
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   const handleSaveClick = async (coldefs?: any, page_size?: any) => {
     try {
@@ -634,41 +747,35 @@ const EnquiryResponse = () => {
         };
         await updateUserUIReportConfigData([payload]);
         setColumnState([...coldefs]);
-        
       } else if (page_size) {
         const fullConfig = { cs: columnState, pageSize: page_size };
         const payload = {
           un: user.user.name,
           rn_id: UIGridCode.ProdEnquiryResponse,
           cs: JSON.stringify(fullConfig),
-        };  
+        };
         await updateUserUIReportConfigData([payload]);
-  
-      }
-      else {
+      } else {
         if (currentGridRef?.current?.api) {
           const config = currentGridRef.current.api.getColumnState();
           const fullConfig = { cs: config, pageSize: userPageSize };
           const payload = {
             un: user.user.name,
             rn_id: UIGridCode.ProdEnquiryResponse,
-            cs: JSON.stringify(fullConfig)
-          }
+            cs: JSON.stringify(fullConfig),
+          };
           await updateUserUIReportConfigData([payload]);
           await getUserColumnConfig();
-
-
         }
       }
-
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   const handleResetClick = () => {
     setIsReset(true);
-  }
+  };
 
   useEffect(() => {
     if (isReset) {
@@ -684,12 +791,12 @@ const EnquiryResponse = () => {
   }, [myColDefs]);
 
   useEffect(() => {
-    notifyLoader("Loading Grid Data")
-    if (data?.data?.data  && userConfigFetched) {
+    notifyLoader("Loading Grid Data");
+    if (data?.data?.data && userConfigFetched) {
       setCurrentPage(1);
       setTableData(data?.data?.data);
     }
-    toast.dismiss()
+    toast.dismiss();
   }, [data, userConfigFetched]);
 
   useEffect(() => {
@@ -698,13 +805,13 @@ const EnquiryResponse = () => {
 
   useEffect(() => {
     setColumnDef();
-  }, [])
+  }, []);
 
   const CustomHeader = {
-    'FOL(inDays)': {
-      cellRenderer: FullkitCellRenderer
-    }
-  }
+    "FOL(inDays)": {
+      cellRenderer: FullkitCellRenderer,
+    },
+  };
 
   useEffect(() => {
     if (HeaderData.length > 0) {
@@ -720,76 +827,87 @@ const EnquiryResponse = () => {
     gridRef.current?.api?.exportDataAsExcel({ fileName: exportName,sheetName: exportName })
   }
   return (
-    <EnquiryWrapper>
+    <div className={EnquiryWrapper}>
       {(isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />}
-      
-        <MTOActionToolBar
-          comp={"EnquiryResponse"}
-          isAddFilterButton
-          isAsOnDate
-          isExcelExport
-          onExcelExportClick={ExcelExport}
-          onAddFilter={handleModalToggle}
-          selectedFilters={selectedFilters}
-          removeFilters={removeFilters}
-          themeUi={themeUi}
-          handleSaveClick={handleSaveClick}
-          handleResetClick={handleResetClick}
-        />
-      
-      <div style={{ paddingLeft: '25px' }}>
-        <BTRTableWrapper style={{ height: screenHeight - 145, margin: '0' }}>
-          <Allotment vertical separator   >
-            <Allotment.Pane preferredSize={'55%'}>
-              <BTRAllomentSection>
-                <ResizableTable 
+
+      <MTOActionToolBar
+        comp={"EnquiryResponse"}
+        isAddFilterButton
+        isAsOnDate
+        isExcelExport
+        onExcelExportClick={ExcelExport}
+        onAddFilter={handleModalToggle}
+        selectedFilters={selectedFilters}
+        removeFilters={removeFilters}
+        themeUi={themeUi}
+        handleSaveClick={handleSaveClick}
+        handleResetClick={handleResetClick}
+      />
+
+      <div style={{ paddingLeft: "25px" }}>
+        <div
+          className={BTRTableWrapper}
+          style={{ height: screenHeight - 145, margin: "0" }}
+        >
+          <Allotment vertical separator>
+            <Allotment.Pane preferredSize={"55%"}>
+              <div className={BTRAllomentSection}>
+                <ResizableTable
                   gridRef={gridRef}
-                  colDef={myColDefs} 
+                  colDef={myColDefs}
                   data={filterData}
                   setCurrentGridRef={setCurrentGridRef}
                   currentGridRef={currentGridRef}
                   columnState={columnState}
                   savePageSize={savePageSize}
                   userPageSize={userPageSize}
-
                 />
-              </BTRAllomentSection>
+              </div>
             </Allotment.Pane>
-            <Allotment.Pane preferredSize={'45%'}>
-              <BTRAllomentSection style={{ paddingTop: '10px' }}>
-                <EstimatedWrapper>
+            <Allotment.Pane preferredSize={"45%"}>
+              <div
+                className={BTRAllomentSection}
+                style={{ paddingTop: "10px" }}
+              >
+                <div className={EstimatedWrapper}>
                   <div
-                    style={{ WebkitFilter: `blur(${hasProductGroup ? "0px" : "3px"})`, padding: "20px 25px" }}
+                    style={{
+                      WebkitFilter: `blur(${hasProductGroup ? "0px" : "3px"})`,
+                      padding: "20px 25px",
+                    }}
                   >
-                    <TabSwitchContainer>
-                      <TabSwitchHeading>Estimated Due Date</TabSwitchHeading>
-                      <TabsWrapper>
-                        <VFCapsule activeBtn={activeCapsule} capsules={tabOptions} handleClick={handleTabChange} />
-                      </TabsWrapper>
-                    </TabSwitchContainer>
+                    <div className={TabSwitchContainer}>
+                      <div className={TabSwitchHeading}>Estimated Due Date</div>
+                      <div className={TabsWrapper}>
+                        <VFCapsule
+                          activeBtn={activeCapsule}
+                          capsules={tabOptions}
+                          handleClick={handleTabChange}
+                        />
+                      </div>
+                    </div>
                     {getRMUI()}
                     <Note type="danger" message={message} />
                   </div>
 
-                  <BlurCover style={{ display: hasProductGroup ? "none" : "block" }}>
-                    <CardCover>
-                      <DashedCard>
-                        <MessageText>
-                          Please select filter for product group to view estimated due
-                          date
-                        </MessageText>
-                      </DashedCard>
-                    </CardCover>
-                  </BlurCover>
-                </EstimatedWrapper>
-
-              </BTRAllomentSection>
+                  <div
+                    className={BlurCover}
+                    style={{ display: hasProductGroup ? "none" : "block" }}
+                  >
+                    <div className={CardCover}>
+                      <div className={DashedCard}>
+                        <span className={MessageText}>
+                          Please select filter for product group to view
+                          estimated due date
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </Allotment.Pane>
           </Allotment>
-
-
-
-        </BTRTableWrapper>
+        </div>
         <FilterModal
           filters={filters}
           isOpen={isModalOpen}
@@ -801,7 +919,7 @@ const EnquiryResponse = () => {
           themeUi={themeUi}
         />
       </div>
-    </EnquiryWrapper>
+    </div>
   );
 };
 

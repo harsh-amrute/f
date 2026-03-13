@@ -1,4 +1,4 @@
-import { TableWrapper } from "../UserURLsDrawer/styles"
+import { tableWrapper } from "../UserURLsDrawer/styles.css"
 import VFTable from "../../VectorFLOW/commons/VFTable"
 import { AgGridReactProps } from 'ag-grid-react';
 
@@ -12,7 +12,7 @@ const agGridProps:AgGridReactProps = {
 }
     return (
       <>
-         <TableWrapper>
+         <div className={tableWrapper}>
             <VFTable
                 defaultColDef={{
                     flex:1,
@@ -24,7 +24,7 @@ const agGridProps:AgGridReactProps = {
                 columnDefs={columnDefs}
                 {...agGridProps}
             />
-        </TableWrapper>
+        </div>
       </>
     );
   };

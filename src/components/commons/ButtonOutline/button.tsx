@@ -1,11 +1,12 @@
-import { CSSProperties } from 'react'
-import { SCImgOutline, SCButtonOutlineNoIcon } from './styles'
-interface ButtonOutline {
-  onChange: () => void
-  text: string
-  icon: string
-  status: boolean,
-  style?:CSSProperties
+import { CSSProperties } from "react";
+import * as styles from "./styles.css";
+
+interface ButtonOutlineStatusProps {
+  onChange: () => void;
+  text: string;
+  icon: string;
+  status: boolean;
+  style?: CSSProperties;
 }
 
 const ButtonOutlineStatus = ({
@@ -13,14 +14,30 @@ const ButtonOutlineStatus = ({
   text,
   icon,
   status,
-  style
-}: ButtonOutline) => {
+  style,
+}: ButtonOutlineStatusProps) => {
   return (
-    <SCButtonOutlineNoIcon status={status} onClick={onChange} style={style} data-testid='button-outline-status'>
-      {icon ? <SCImgOutline src={`/assets/img/forced/${icon}.svg`} /> : ''}{' '}
+    <button
+      className={
+        status
+          ? styles.buttonOutlineNoIcon.active
+          : styles.buttonOutlineNoIcon.inactive
+      }
+      onClick={onChange}
+      style={style}
+      data-testid="button-outline-status"
+    >
+      {icon ? (
+        <img
+          className={styles.imgOutline}
+          src={`/assets/img/forced/${icon}.svg`}
+        />
+      ) : (
+        ""
+      )}
       {text}
-    </SCButtonOutlineNoIcon>
-  )
-}
+    </button>
+  );
+};
 
-export default ButtonOutlineStatus
+export default ButtonOutlineStatus;

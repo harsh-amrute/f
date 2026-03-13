@@ -1,0 +1,29 @@
+.tooltip-box {
+  background: white;
+  color: #000;
+  padding: 12px 16px;
+  min-width: 120px;
+  text-align: center;
+  border-radius: 6px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.15);
+  font-family: "Roboto", sans-serif;
+}
+
+.tooltip-label {
+  color: #555;
+  font-weight: 600;
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.limit-label {
+  color: #820f4c;
+}
+
+.tooltip-load {
+  font-size: 12px;
+}
+
+.past-label {
+  color: #ff5959;
+}

@@ -1,66 +1,86 @@
 import { ColDef } from "ag-grid-enterprise";
+import "./style.css";
 
-export function TooltipRenderer({ datum, xKey }: any) { 
-    return `
-<div style="
-  width: 180px;
-  border-radius: 5px;
-  overflow: hidden;
-">
-
-<div class="ag-chart-tooltip-title" style="background-color: #3E3C3C; height:25px; display: flex; justify-content: center; align-items: center;color: white; border-bottom:1px dashed white">
-    ${datum[xKey]}
-</div>
-<div class="ag-chart-tooltip-content" style="color: white; background-color: #3E3C3C; padding:10px">
-
-<div>
-    <div style="display: flex;">
-        <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #F4BD8E">
+export function TooltipRenderer({ datum, xKey }: any) {
+  return `
+      <div class="data-tooltip-container">
+        <div class="data-tooltip-title">
+          ${datum[xKey]}
         </div>
-        <div style="display:flex ; width: 100%; justify-content: space-between">
-            <div>1-2 days
+        <div class="data-tooltip-content">
+          <div class="data-tooltip-row">
+            <div class="color-box color-1-2-days"></div>
+            <div class="label-value">
+              <div>1-2 days</div><div>${datum["1_2_d"]}</div>
             </div>
-            <div> ${datum['1_2_d']}
+          </div>
+          <div class="data-tooltip-row">
+            <div class="color-box color-3-7-days"></div>
+            <div class="label-value">
+              <div>3-7 days</div><div>${datum["3_7_d"]}</div>
             </div>
+          </div>
+          <div class="data-tooltip-row">
+            <div class="color-box color-8-15-days"></div>
+            <div class="label-value">
+              <div>8-15 days</div><div>${datum["8_15_d"]}</div>
+            </div>
+          </div>
+          <div class="data-tooltip-row">
+            <div class="color-box color-16-30-days"></div>
+            <div class="label-value">
+              <div>16-30 days</div><div>${datum["16_30_d"]}</div>
+            </div>
+          </div>
         </div>
-    </div>
-    <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #F09241"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>3-7 days</div><div>${datum["3_7_d"]}</div></div></div>
-    <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #AD5000"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>8-15 days</div><div>${datum["8_15_d"]}</div></div></div>
-    <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #6A3001"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>16-30 days</div><div> ${datum["16_30_d"]}</div></div></div>
-</div>
-</div>
-`
+      </div>
+    `;
 }
 export function TooltipRendererIF({ datum, xKey }: any) {
-    return `
-<div style="
-  width: 180px;
-  border-radius: 5px;
-  overflow: hidden;
-">
-<div class="ag-chart-tooltip-title" style="background-color: #3E3C3C; height:25px; display: flex; justify-content: center; align-items: center;color: white; border-bottom:1px dashed white">
-    ${datum[xKey]}
-</div>
-<div class="ag-chart-tooltip-content" style="color: white; background-color: #3E3C3C; padding:10px">
-
-<div>
-    <div style="display: flex;">
-        <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #F4BD8E">
+  return `
+      <div class="data-tooltip-container">
+        <div class="data-tooltip-title">
+          ${datum[xKey]}
         </div>
-        <div style="display:flex ; width: 100%; justify-content: space-between">
-            <div>0%-20%
+        <div class="data-tooltip-content">
+          <div class="data-tooltip-row">
+            <div class="color-box color-0-20"></div>
+            <div class="label-value">
+              <div>0%-20%</div>
+              <div>${datum["0_2_p"]}</div>
             </div>
-            <div> ${datum['0_2_p']}
+          </div>
+          <div class="data-tooltip-row">
+            <div class="color-box color-20-40"></div>
+            <div class="label-value">
+              <div>20%-40%</div>
+              <div>${datum["20_40_p"]}</div>
             </div>
+          </div>
+          <div class="data-tooltip-row">
+            <div class="color-box color-40-60"></div>
+            <div class="label-value">
+              <div>40%-60%</div>
+              <div>${datum["40_60_p"]}</div>
+            </div>
+          </div>
+          <div class="data-tooltip-row">
+            <div class="color-box color-60-80"></div>
+            <div class="label-value">
+              <div>60%-80%</div>
+              <div>${datum["60_80_p"]}</div>
+            </div>
+          </div>
+          <div class="data-tooltip-row">
+            <div class="color-box color-80-100"></div>
+            <div class="label-value">
+              <div>80%-100%</div>
+              <div>${datum["80_100_p"]}</div>
+            </div>
+          </div>
         </div>
-    </div>
-    <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #F09241"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>20%-40%</div><div>${datum["20_40_p"]}</div></div></div>
-    <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #AD5000"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>40%-60%</div><div>${datum["40_60_p"]}</div></div></div>
-    <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #6A3001"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>60%-80%</div><div> ${datum["60_80_p"]}</div></div></div>
-    <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #6A3001"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>80%-100%</div><div> ${datum["80_100_p"]}</div></div></div>
-</div>
-</div>
-`
+      </div>
+    `;
 }
 
 export function createSeriesDataIF() {

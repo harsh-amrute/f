@@ -1,146 +1,147 @@
-import React, { Fragment, useEffect, useRef, useState } from "react";
-import { useUserData } from "../../../../context";
-import { listMenuParent } from "../../../../../src/components/layouts/NavbarMenu/listMenu";
-import {
-  AppBox,
-  ImageHolder,
-  LandingContainer,
-  LandingPageDivider,
-  Rectangle,
-  Image,
-  AppBoxDivider,
-  ClickBox,
-  CardContainer,
-  AppBoxDiv,
-} from "./LandingPage.styled";
-import { ApplicationName } from "../../MTO/Common/Enum";
+import { Fragment, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
+import { listMenuParent } from "../../../../../src/components/layouts/NavbarMenu/listMenu";
+import { useUserData } from "../../../../context";
+import { ApplicationName } from "../../MTO/Common/Enum";
+import {
+  appBox,
+  appBoxDiv,
+  appBoxDivider,
+  cardContainer,
+  clickBox,
+  image,
+  imageHolder,
+  landingContainer,
+  landingPageDivider,
+  rectangle,
+} from "./LandingPage.styled.css";
+import { NOIRFUSION, REGALBLAZE } from "../../../../styles/global";
 
 const LandingPage = () => {
   const { user } = useUserData();
   const [listMenu] = useState(listMenuParent);
-  const map = useRef(new Map());
   const { t } = useTranslation();
-  const [renderMap, setRenderMap] = useState(new Map());
   const navigate = useNavigate();
+  const [myMap, setMyMap] = useState<any>(null);
 
   const themeUi = user?.user?.theme_ui;
 
-  const findUrl = (item: any)=>{
-    const checkUrl = user?.url_permission?.some((value : any)=>{
-      return item.url == value;
-    })
-    if(checkUrl){
-      return item.url;
-    }else if(item?.child){
-      item.child.forEach((child : any)=>{
-        const foundUrl =  findUrl(child);
-        if(foundUrl){
-          return foundUrl;
-        }
-      })
-    }
-    return null;
+  const permittedUrls = new Set<string>(user?.url_permission ?? []);
+
+  const findUrl = (url: any) => {
+    return permittedUrls.has(url);
   }
 
-  const CreateMenuFunction = (app_id: any, item: any) => {
-    if (item?.lp_attr) {
-        const currentList = map.current.get(app_id) || [];
-        if (
-          !currentList.some(
-            (existingItem: any) => existingItem.name === item.name
-          )
-        ) 
-        {
-          const checkUrl = user?.url_permission?.some((value : any)=>{
-            return item.url == value;
-          })
-          let url = undefined;
-          if(checkUrl){
-              url = item.url
-          }else{
-            if(item?.child){
-              for (const child of item.child) {
-                url = findUrl(child);
-                if (url != null && url != undefined) {
-                  break;  // Exit the loop once URL is found
-                }
-              }
-            }
-          }
-          if(url != null && url != undefined){
-            currentList.push({
-              name: item.name,
-              img: themeUi === "REGALBLAZE" ? item.rp_img : item.lp_img,
-              // img:item.lp_img,
-              url: url,
-            });
-          }
-          map.current.set(app_id, currentList);
-        
-      }
-       else{
-        const curr = currentList.find((existingItem: any) => existingItem.name == item.name)
-        if(curr){
-          curr.img = themeUi === "REGALBLAZE" ? item.rp_img : item.lp_img;
-        }   
-      }
-    
-    } else if (item?.child) {
-      item?.child.forEach((child: any) => {
-        CreateMenuFunction(app_id, child);
-      });
+  const CreateMenuFunction = (item: any): string => {
+    if (findUrl(item.url)) return item.url;
+    if (!item.child?.length) return "";
+
+    for (const child of item.child) {
+      const result = findUrl(child.url)
+        ? child.url
+        : CreateMenuFunction(child);
+
+      if (result) return result;
     }
+
+    return "";
+  };
+
+
+  const pushToMap = (finMap: Map<any, any>, appId: any, node: any, url: string) => {
+    const foundItem = {
+      name: node.name,
+      img: themeUi === "REGALBLAZE" ? node.rp_img : node.lp_img,
+      url: url,
+    };
+
+    const mapArr = finMap.get(appId) || [];
+    mapArr.push(foundItem);
+    finMap.set(appId, mapArr);
   };
 
   const createMenu = () => {
-    listMenu?.forEach((item: any) => {
 
-        CreateMenuFunction(item?.app_id, item);
-      
+    const finMap = new Map();
+    listMenu?.forEach((item: any) => {
+      if (item?.lp_attr) {
+        const urlAvailable: string = CreateMenuFunction(item);
+
+        if (urlAvailable.length > 0) {
+          pushToMap(finMap, item?.app_id, item, urlAvailable);
+        }
+      }
+      else {
+        // MTA
+        item.child.forEach((child: any) => {
+          if (child.lp_attr && findUrl(child?.url)) {
+            pushToMap(finMap, item?.app_id, child, child?.url);
+          }
+          else {
+            child?.child?.forEach((grand_child: any) => {
+              if (grand_child.lp_attr && findUrl(grand_child?.url)) {
+                pushToMap(finMap, item?.app_id, grand_child, grand_child?.url);
+              }
+            })
+          }
+        })
+
+      }
     });
+    setMyMap(finMap)
   };
 
   useEffect(() => {
     createMenu();
-    setRenderMap(new Map(map.current));
-  }, [themeUi]);
+  }, [themeUi, user?.url_permission]);
 
 
-  const [myMap, setMyMap] = useState<any>(null);
-  useEffect(()=>{
-    setMyMap(map);
-  },[map])
-
-
-  const imageSrc = themeUi === "REGALBLAZE" 
-  ? "/assets/img/Clicktoview1.svg" 
-  : "/assets/img/Clicktoview.svg"; 
+  const imageSrc = themeUi === "REGALBLAZE"
+    ? "/assets/img/Clicktoview1.svg"
+    : "/assets/img/Clicktoview.svg";
   return (
-    <LandingContainer>
+    <div className={landingContainer}>
       <h1 style={{ fontSize: "2rem" }}>
         Welcome to{" "}
-        <span style={{ color: themeUi === "REGALBLAZE" ? "rgb(199, 129, 14)" : "#BC3D81", marginBottom: 0 }}>VectorFlow</span>
+        <span
+          style={{
+            color: themeUi === "REGALBLAZE" ? REGALBLAZE.color5 : NOIRFUSION.color5,
+            marginBottom: 0,
+          }}
+        >
+          VectorFlow
+        </span>
       </h1>
       <h3 style={{ color: "#707070", top: 0, marginTop: "-2%" }}>
         A seamless, end to end supply chain management system
       </h3>
-      <>
-        {myMap && Array.from(myMap?.current?.entries()).map(
+      {myMap &&
+        Array.from(myMap?.entries()).map(
           (item: any, index: number, array: any[]) => {
             if (item[1]?.length > 0) {
               return (
                 <Fragment key={index}>
-                  <Rectangle  text={ApplicationName[item[0]]} theme={themeUi}>
-                    <CardContainer>
+                  <div
+                    className={rectangle}
+                    data-label={ApplicationName[item[0]] ?? ""}
+                    data-theme={themeUi ?? ""}
+                  >
+                    <div className={cardContainer}>
                       {item[1].map((subItem: any, subIndex: number) => {
                         return (
-                          <AppBox key={subIndex}>
-                            <AppBoxDiv>
-                              <ImageHolder theme={themeUi}>
-                                <Image src={subItem.img} alt="Product" />
-                              </ImageHolder>
+                          <div className={appBox} key={subIndex}>
+                            <div className={appBoxDiv}>
+                              <div
+                                className={imageHolder}
+                                data-theme={themeUi}
+                              >
+                                <img
+                                  className={image}
+                                  src={subItem.img}
+                                  alt="Product"
+                                />
+                              </div>
                               <h3
                                 style={{
                                   zIndex: 4,
@@ -149,11 +150,21 @@ const LandingPage = () => {
                               >
                                 {t(subItem.name)}
                               </h3>
-                              <AppBoxDivider />
-                              <ClickBox onClick={()=>{
-                                navigate(subItem?.url);
-                              }}>
-                                <p style={{ color: themeUi === "REGALBLAZE" ? "rgb(199, 129, 14)" : "#820F4C" }}>
+                              <div className={appBoxDivider} />
+                              <div
+                                className={clickBox}
+                                onClick={() => {
+                                  navigate(subItem?.url);
+                                }}
+                              >
+                                <p
+                                  style={{
+                                    color:
+                                      themeUi === "REGALBLAZE"
+                                        ? REGALBLAZE.color5
+                                        : NOIRFUSION.color5,
+                                  }}
+                                >
                                   Click to view{" "}
                                 </p>
                                 <img
@@ -164,23 +175,22 @@ const LandingPage = () => {
                                   }}
                                   src={imageSrc}
                                 />
-                              </ClickBox>
-                            </AppBoxDiv>
-                          </AppBox>
+                              </div>
+                            </div>
+                          </div>
                         );
                       })}
-                    </CardContainer>
-                  </Rectangle>
+                    </div>
+                  </div>
                   {index < array.length - 1 && item.length > 0 && (
-                    <LandingPageDivider />
+                    <div className={landingPageDivider} />
                   )}
                 </Fragment>
               );
             }
           }
         )}
-      </>
-    </LandingContainer>
+    </div>
   );
 };
 

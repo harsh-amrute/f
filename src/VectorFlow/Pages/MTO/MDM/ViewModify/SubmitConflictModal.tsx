@@ -1,7 +1,7 @@
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard"
-import {SubmitDataTextContainer, SubmitDataButtonWrapper} from './styles'
+import {SubmitDataTextContainer, SubmitDataButtonWrapper} from './styles.css'
 import { useUserData } from "../../../../../context";
 
 interface SubmitConflictModalProps{
@@ -29,11 +29,11 @@ const SubmitConflictModal=(props:SubmitConflictModalProps)=>{
 
     return (
         <VFModalCard headerText="Submit Data" openModal={true} headerIcon={"/assets/img/VectorFLOW/NMS/approveall.svg"} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
-            <SubmitDataTextContainer style={{paddingBottom:'30px'}}>
+            <div className={SubmitDataTextContainer} style={{paddingBottom:'30px'}}>
                 {recordCount>0 && <><b>{recordCount}</b> {recordCount>1?"Records":"Record"} submitted successfully!<br/><br/></>}
                 {modificationCount>0 && <><b>{modificationCount}</b> out of <b>{totalCount}</b> records are under modification already</>}
-            </SubmitDataTextContainer>
-            <SubmitDataButtonWrapper>
+            </div>
+            <div className={SubmitDataButtonWrapper}>
                 {
                     modificationCount>0
                     ?
@@ -59,7 +59,7 @@ const SubmitConflictModal=(props:SubmitConflictModalProps)=>{
                             </VFButton>
 
                 }
-            </SubmitDataButtonWrapper>
+            </div>
         </VFModalCard>
     )
 }

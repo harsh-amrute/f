@@ -2,10 +2,10 @@ import { useState, useEffect, useRef } from "react";
 import VFFloatingTab from "../../../../../components/VectorFLOW/commons/VFFloatingTab";
 import MTOActionToolBar from "../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
 import {
-  ApplyZoomOut,
-  OrderReschedulingWrapper,
-  VFTableWrapper,
-} from "./styles";
+  applyZoomOut,
+  orderReschedulingWrapper,
+  vfTableWrapper,
+} from "./styles.css";
 import VFTable from "../../Common/VFTable";
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import DueDateCellRenderer from "./DueDateCellRenderer";
@@ -17,7 +17,7 @@ import {
 import { AgGridReactProps } from "ag-grid-react";
 import { GridRef } from "../../../../types/MDM";
 import { notifySuccess, notifyError } from "../../../../../helpers/notify";
-import { toast } from "react-toastify";
+import { toast } from "react-toastify/unstyled";
 import { IRowNode } from "ag-grid-enterprise";
 import OverlayLoader from "../../Common/Loader";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
@@ -39,7 +39,6 @@ import useFilter from "../../../../../hooks/useFilter";
 import { useGetFilterData } from "../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
 import _ from "lodash";
 
-
 interface RowDataType {
   odk: string;
   dd?: string;
@@ -51,9 +50,9 @@ const APIFilterConfig = {
       mjr: false,
       or: true,
       res: true,
-      cus: true
+      cus: true,
     },
-  }
+  },
 };
 
 const OrderRescheduling = () => {
@@ -85,9 +84,9 @@ const OrderRescheduling = () => {
   const { getColDef, colDefMap } = useColDef();
   const [masterUIConfig, setMasterUIConfig] = useState([]);
 
-  const [isDisabled, setIsDisabled]= useState<boolean>(true)
-  
-  const [ userPageSize, setUserPageSize] = useState<any>();
+  const [isDisabled, setIsDisabled] = useState<boolean>(true);
+
+  const [userPageSize, setUserPageSize] = useState<any>();
   const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
 
   const [filterData, setFilterData] = useState({});
@@ -108,12 +107,20 @@ const OrderRescheduling = () => {
 
   const themeUi = user?.user?.theme_ui;
 
-  const GetData = async (isExcelExport = false, page?: number, page_size?: number) => {  
-    setIsLoading(true); 
+  const GetData = async (
+    isExcelExport = false,
+    page?: number,
+    page_size?: number
+  ) => {
+    setIsLoading(true);
     if (isExcelExport) {
       const headersdata = refGraph1?.current?.api?.getColumnState();
       const formatedFilters = formatFilterJSON(appliedFilters);
-      const body = getBodyForExcelExport({ headersdata, filterData : formatedFilters, colDefMap });
+      const body = getBodyForExcelExport({
+        headersdata,
+        filterData: formatedFilters,
+        colDefMap,
+      });
       try {
         const response = await getOrderReschedulingExcelData({
           body,
@@ -127,14 +134,18 @@ const OrderRescheduling = () => {
     } else {
       try {
         const formatedFilters = formatFilterJSON(appliedFilters);
-        const APIData = await getOrderSchedulingPageData({pageNum:page, pageSize: page_size || userPageSize || pagination.mtoPageSize,appliedFilters: formatedFilters});
+        const APIData = await getOrderSchedulingPageData({
+          pageNum: page,
+          pageSize: page_size || userPageSize || pagination.mtoPageSize,
+          appliedFilters: formatedFilters,
+        });
         setCurrData(APIData);
         const newRowData = [...APIData.data.data.results];
         if (newRowData.length === 0) {
-          refGraph1.current?.api.showNoRowsOverlay(); 
-          setRowData(newRowData)
+          refGraph1.current?.api.showNoRowsOverlay();
+          setRowData(newRowData);
         } else {
-          refGraph1.current?.api.hideOverlay(); 
+          refGraph1.current?.api.hideOverlay();
           newRowData.forEach((el) => {
             el.oldDate = el.dd;
           });
@@ -155,10 +166,10 @@ const OrderRescheduling = () => {
     // const newRowData:any= _.cloneDeep([...rowData]);
     // newRowData.forEach((ele:any)=>{
     //   if(!selectedData?.find((el:any)=>{ele.odk===el.odk})){
-    //     newRowData.dd = newRowData.oldDate; 
+    //     newRowData.dd = newRowData.oldDate;
     //   }
     // })
-    
+
     if (selectedData) {
       let mergedData = [...selectedRowData]; // Start with the existing selected data
 
@@ -183,7 +194,6 @@ const OrderRescheduling = () => {
 
         if (isThere === 0) {
           mergedData = mergedData.filter((e) => e.odk !== item.odk);
-          
         }
       });
       setSelectedRowData(mergedData);
@@ -207,8 +217,8 @@ const OrderRescheduling = () => {
       wrapHeaderText: true,
       autoHeaderHeight: true,
       cellStyle: {
-        "textAlign": "center",
-        "textOverflow": "ellipsis",
+        textAlign: "center",
+        textOverflow: "ellipsis",
       },
       flex: 1,
     },
@@ -249,11 +259,11 @@ const OrderRescheduling = () => {
       colId: "",
       resizable: false,
       position: 0,
-      headerCheckboxSelection: (params:any) => {
+      headerCheckboxSelection: (params: any) => {
         // Only show if no grouping is applied
         return params.api.getRowGroupColumns().length === 0;
       },
-      checkboxSelection: (params:any) => {
+      checkboxSelection: (params: any) => {
         // Only show on leaf rows, not group rows
         return params.node && !params.node.group;
       },
@@ -262,14 +272,13 @@ const OrderRescheduling = () => {
       flex: 1,
       initialHide: false,
       pinned: "left",
-      suppressMenu: true,
+      suppressHeaderMenuButton: true,
       floatingFilter: false,
       filterParams: {
-        buttons: ['reset'], // Adds Apply and Clear buttons
+        buttons: ["reset"], // Adds Apply and Clear buttons
       },
     },
   ];
-
 
   const customHeader = {
     DueDate: {
@@ -298,20 +307,20 @@ const OrderRescheduling = () => {
       autoHeaderHeight: true,
       wrapHeaderText: true,
       flex: 1,
-      cellStyle: (params : any)=> {
-        if(params.node.isSelected()){
-        return {
-          backgroundColor: 'white',
-          border: '1px solid #b9bdba',
-          color: 'black',
-          padding: '1px',
+      cellStyle: (params: any) => {
+        if (params.node.isSelected()) {
+          return {
+            backgroundColor: "white",
+            border: "1px solid #b9bdba",
+            color: "black",
+            padding: "1px",
+          };
+        } else {
+          return {
+            backgroundColor: "white",
+          };
         }
-      }else{
-        return {
-          backgroundColor: 'white',
-        }
-      }
-    },
+      },
       filter: "agMultiColumnFilter",
       editable: (params: any) => params.node.isSelected(),
       floatingFilter: true,
@@ -319,10 +328,8 @@ const OrderRescheduling = () => {
   };
 
   useEffect(() => {
-     getFilterData();
-    
-  },[])     
-
+    getFilterData();
+  }, []);
 
   useEffect(() => {
     if (HeaderData.length > 0) {
@@ -333,11 +340,11 @@ const OrderRescheduling = () => {
   }, [HeaderData]);
 
   useEffect(() => {
-    if(currTab && userConfigFetched) {
+    if (currTab && userConfigFetched) {
       const headerDataCopy = JSON.parse(JSON.stringify(HeaderData));
       setColDef(getColumnDefinations(headerDataCopy, customHeader, extras));
       GetData(false, 1);
-      if(refGraph1){
+      if (refGraph1) {
         refGraph1.current?.api.deselectAll();
       }
     }
@@ -371,7 +378,6 @@ const OrderRescheduling = () => {
       ordData: [],
     };
 
-
     inputArray.forEach((item: any) => {
       const ordDataItem: OutputItem = {
         ok: item.odk || "",
@@ -387,19 +393,17 @@ const OrderRescheduling = () => {
     inputArray: any,
     username: string,
     isUnSch: number
-  ): Output| boolean {
+  ): Output | boolean {
     const output: Output = {
       unm: username,
       isUnSch: isUnSch,
       ordData: [],
-
     };
 
-
-    let validData:any = true;
+    let validData: any = true;
     inputArray.forEach((item: any) => {
-      if(item.dd===item.oldDate){
-        notifyError("Make sure you change the date before overwriting!")
+      if (item.dd === item.oldDate) {
+        notifyError("Make sure you change the date before overwriting!");
         validData = false;
       }
       const ordDataItem: OutputItem = {
@@ -410,7 +414,7 @@ const OrderRescheduling = () => {
       output.ordData.push(ordDataItem);
     });
 
-    if(validData === false)return validData;
+    if (validData === false) return validData;
     return output;
   }
 
@@ -426,22 +430,20 @@ const OrderRescheduling = () => {
 
   const savePageSize = (pageSize: any) => {
     if (pageSize) {
-        setCurrentPage(1)
-        setUserPageSize(pageSize);
-        handleSaveClick(undefined, pageSize);
-        GetData(false,1,pageSize);
+      setCurrentPage(1);
+      setUserPageSize(pageSize);
+      handleSaveClick(undefined, pageSize);
+      GetData(false, 1, pageSize);
     } else {
-        notifyError("Invalide page size");
+      notifyError("Invalide page size");
     }
-  }   
+  };
 
-    useEffect (() => {
-      if(Object.entries(appliedFilters).length && userConfigFetched){
-        GetData(false,1);
-      }
-    }, [appliedFilters,userConfigFetched])
-  
-
+  useEffect(() => {
+    if (Object.entries(appliedFilters).length && userConfigFetched) {
+      GetData(false, 1);
+    }
+  }, [appliedFilters, userConfigFetched]);
 
   const PostData = async (data: any, message: string): Promise<boolean> => {
     if (reasonCheck(data.ordData)) {
@@ -481,7 +483,11 @@ const OrderRescheduling = () => {
   const unschedule = async () => {
     setIsLoading(true);
     try {
-      const finalData = convertJsonForUnschedule(selectedRowData, user.user.name, 1);
+      const finalData = convertJsonForUnschedule(
+        selectedRowData,
+        user.user.name,
+        1
+      );
       const isSuccesss = await PostData(
         finalData,
         "Order Unscheduled Successfully !"
@@ -506,7 +512,7 @@ const OrderRescheduling = () => {
         0
       );
 
-      if(finalData===false){
+      if (finalData === false) {
         setIsLoading(false);
         return;
       }
@@ -537,7 +543,7 @@ const OrderRescheduling = () => {
 
   const onFirstDataRendered = (params: any) => {
     const nodesToSelect: IRowNode[] = [];
-  
+
     params.api.forEachNode((node: any) => {
       if (node.data && node.data.odk && existsInSelected(node.data.odk)) {
         node.data.rs = selectedRowData[0].r;
@@ -550,16 +556,13 @@ const OrderRescheduling = () => {
           }
         }
         nodesToSelect.push(node);
-        
       }
     });
-  
-   
+
     params.api.setNodesSelected({ nodes: nodesToSelect, newValue: true });
     params.api.sizeColumnsToFit();
     setCurrentGridRef(refGraph1);
   };
-  
 
   const getUserColumnConfig = async () => {
     try {
@@ -568,8 +571,12 @@ const OrderRescheduling = () => {
         rn_id: UIGridCode.ProdOrderRescheduling,
       });
 
-      const newConfig = data?.data?.data?.length ? JSON.parse(data?.data?.data?.[0]?.columns_settings) || [] : [];
-      setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
+      const newConfig = data?.data?.data?.length
+        ? JSON.parse(data?.data?.data?.[0]?.columns_settings) || []
+        : [];
+      setUserPageSize(
+        newConfig.pageSize ? Number(newConfig.pageSize) : undefined
+      );
       setColumnState(newConfig.cs);
       setUserConfigFetched(true);
 
@@ -581,10 +588,10 @@ const OrderRescheduling = () => {
     }
   };
 
-  const handleSaveClick = async (coldefs?: any,page_size?:any) => {
+  const handleSaveClick = async (coldefs?: any, page_size?: any) => {
     try {
       if (coldefs) {
-        const fullConfig = {cs: coldefs, pageSize:userPageSize };
+        const fullConfig = { cs: coldefs, pageSize: userPageSize };
         const payload = {
           un: user.user.name,
           rn_id: UIGridCode.ProdOrderRescheduling,
@@ -592,21 +599,18 @@ const OrderRescheduling = () => {
         };
         await updateUserUIReportConfigData([payload]);
         setColumnState([...coldefs]);
-
-      } else if(page_size){
-        const fullConfig = {cs: columnState, pageSize:page_size };
+      } else if (page_size) {
+        const fullConfig = { cs: columnState, pageSize: page_size };
         const payload = {
           un: user.user.name,
           rn_id: UIGridCode.ProdOrderRescheduling,
           cs: JSON.stringify(fullConfig),
         };
         await updateUserUIReportConfigData([payload]);
-      }
-      
-      else {
+      } else {
         if (currentGridRef?.current?.api) {
           const config = currentGridRef.current.api.getColumnState();
-          const fullConfig = { cs: config, pageSize:userPageSize };
+          const fullConfig = { cs: config, pageSize: userPageSize };
 
           const payload = {
             un: user.user.name,
@@ -629,12 +633,14 @@ const OrderRescheduling = () => {
 
   const getFilterData = async () => {
     try {
-        const response = await getPageWiseFilterData({page_name: FilterPageName.Prod_Order_Rescheduling });
-        setFilterData(response?.data.data);
+      const response = await getPageWiseFilterData({
+        page_name: FilterPageName.Prod_Order_Rescheduling,
+      });
+      setFilterData(response?.data.data);
     } catch (error) {
-        console.error(error);
+      console.error(error);
     }
-  }
+  };
 
   // const resetGridFilters = () =>{
   //   currentGridRef.current.api.setFilterModel(null)
@@ -647,7 +653,7 @@ const OrderRescheduling = () => {
       });
       if (!result) {
         console.error("Failed to apply column state 1", result);
-      } 
+      }
     }
   }, [columnState]);
 
@@ -657,13 +663,12 @@ const OrderRescheduling = () => {
       setIsReset(false);
     }
   }, [isReset]);
-  
+
   useEffect(() => {
     if (currentGridRef?.current && !masterUIConfig.length) {
       setMasterUIConfig(currentGridRef?.current.api.getColumnState());
     }
   }, [colDef]);
-
 
   const GetExcelData = async () => {
     GetData(true);
@@ -671,15 +676,7 @@ const OrderRescheduling = () => {
 
   return (
     <>
-      <OrderReschedulingWrapper
-        style={{
-          width: "100%",
-          position: "relative",
-          height: "100%",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
+      <div className={orderReschedulingWrapper}>
         <MTOActionToolBar
           comp={"orderReschedule"}
           themeUi={themeUi}
@@ -687,7 +684,6 @@ const OrderRescheduling = () => {
           onExcelExportClick={GetExcelData}
           handleSaveClick={handleSaveClick}
           handleResetClick={handleResetClick}
-
           isAddFilterButton
           isFilterOpen={isFilterOpen}
           onAddFilter={onAddFilter}
@@ -697,9 +693,6 @@ const OrderRescheduling = () => {
           setMultiFilter={setCurrFilter}
           onFilterRemove={onFilterRemove}
           isMfgSelected={isMfgSelected}
-
-
-
         />
         {(isLoading || isUpdateUserConfig || isGetUserConfig) && (
           <OverlayLoader />
@@ -714,16 +707,17 @@ const OrderRescheduling = () => {
           }}
         >
           <div style={{ margin: "10px 0" }}>
-            <ApplyZoomOut>
+            <div className={applyZoomOut}>
               <VFFloatingTab
                 handleClick={(e) => setCurrTab(e.value)}
                 tabs={tabs}
                 defaultTab={0}
               />
-            </ApplyZoomOut>
+            </div>
           </div>
+
           <div style={{ width: "100%", height: "100%" }}>
-            <VFTableWrapper>
+            <div className={vfTableWrapper}>
               <VFTable
                 {...agGridProps}
                 disableZoomScaling
@@ -732,27 +726,32 @@ const OrderRescheduling = () => {
                 ref={refGraph1}
                 enableRangeSelection={true}
                 rowSelection="multiple"
-                onFilterChanged={()=>{Object.keys((currentGridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
-            
+                onFilterChanged={() => {
+                  Object.keys(
+                    currentGridRef?.current?.api?.getFilterModel() ?? {}
+                  )?.length > 0
+                    ? setIsDisabled(false)
+                    : setIsDisabled(true);
+                }}
                 onFirstDataRendered={onFirstDataRendered}
                 onGridReady={onFirstDataRendered}
                 onRowDataUpdated={onFirstDataRendered}
                 pagination={false}
-                height={"100%"}
-                maintainColumnOrder={true}
+                height="100%"
+                maintainColumnOrder
               />
+
               <VFPagination
                 selectedRows={0}
                 rowsPerPage={userPageSize || pagination.mtoPageSize}
                 totalRows={currData ? currData?.data?.data?.count : 0}
                 currentPage={currentPage}
-                handleChangePage={(page)=>{handlePageChangeCumulative(page)}}
+                handleChangePage={(page) => handlePageChangeCumulative(page)}
                 resetGridRef={currentGridRef}
                 isDisabled={isDisabled}
                 customPageSizeEnabled = {true}
                 savePageSize={savePageSize}
                 userPageSize={userPageSize}
-
               />
 
               <div style={{ width: "100%" }}>
@@ -766,12 +765,10 @@ const OrderRescheduling = () => {
                     alignItems: "center",
                   }}
                 >
-                  <ApplyZoomOut>
+                  <div className={applyZoomOut}>
                     {currTab === "Unschedule" ? (
                       <VFButton
-                        disabled={
-                          selectedRowData && selectedRowData[0] ? false : true
-                        }
+                        disabled={!(selectedRowData && selectedRowData[0])}
                         style={{ width: "150px" }}
                         themeUi={themeUi}
                         onClick={unschedule}
@@ -780,9 +777,7 @@ const OrderRescheduling = () => {
                       </VFButton>
                     ) : (
                       <VFButton
-                        disabled={
-                          selectedRowData && selectedRowData[0] ? false : true
-                        }
+                        disabled={!(selectedRowData && selectedRowData[0])}
                         style={{ width: "200px" }}
                         themeUi={themeUi}
                         onClick={overwriteDD}
@@ -790,13 +785,13 @@ const OrderRescheduling = () => {
                         Overwrite Due Date
                       </VFButton>
                     )}
-                  </ApplyZoomOut>
+                  </div>
                 </div>
               </div>
-            </VFTableWrapper>
+            </div>
           </div>
         </div>
-      </OrderReschedulingWrapper>
+      </div>
     </>
   );
 };

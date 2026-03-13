@@ -1,5 +1,5 @@
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard"
-import { ContactModalContentHeader, ContactModalContentValue, ContactModalContentWrapper } from "./styles"
+import { ContactModalContentHeader, ContactModalContentValue, ContactModalContentWrapper } from "./styles.css"
 
 
 interface ContactDetailsModalProps{
@@ -17,26 +17,26 @@ const ContactDetailsModal =(props:ContactDetailsModalProps)=>{
 
     return(
         <VFModalCard openModal={isOpen} headerIcon="/assets/img/VectorFLOW/BPR/user.svg" headerText="Contact Details" closeIcon="/assets/img/VectorFLOW/NMS/close-dark.svg" closeModal={onClose}>
-            <ContactModalContentWrapper>
-                <ContactModalContentHeader>
+            <div className={ContactModalContentWrapper}>
+                <p className={ContactModalContentHeader}>
                     Name
-                </ContactModalContentHeader>
-                <ContactModalContentValue>
+                </p>
+                <p className={ContactModalContentValue}>
                     {data.TransporterName}
-                </ContactModalContentValue>
-                <ContactModalContentHeader>
+                </p>
+                <p className={ContactModalContentHeader}>
                     Phone No
-                </ContactModalContentHeader>
-                <ContactModalContentValue>
+                </p>
+                <p className={ContactModalContentValue}>
                     {data.TransporterContact}
-                </ContactModalContentValue>
-                <ContactModalContentHeader>
+                </p>
+                <p className={ContactModalContentHeader}>
                     Email ID
-                </ContactModalContentHeader>
-                <ContactModalContentValue>
+                </p>
+                <p className={ContactModalContentValue}>
                     {data.TransporterEmail}
-                </ContactModalContentValue>
-            </ContactModalContentWrapper>
+                </p>
+            </div>
         </VFModalCard>
     )
 }

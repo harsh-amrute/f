@@ -1,9 +1,10 @@
 import moment from 'moment'
 import { useState } from 'react'
 import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VFInfoToolTip'
-import { SCChartHeaderContainer, SCChartMainContainer } from '../../../../Common/SplitGraphContainer/styles'
+import { SCChartHeaderContainer, scChartMainContainer } from '../../../../Common/SplitGraphContainer/styles.css'
 import { useGetDate } from '../../../../../../Services/MTO/Production/InsightsAndTrends/RMPMExpediting'
 import BoxPlotContainer from '../../../../Common/BoxPlotContainer'
+import { nonce } from '../../../../../../../helpers/utils'
 
 const DeptWiseGraph = ({chartTableData, chartData, alertData}: any) => {
 
@@ -17,9 +18,9 @@ const DeptWiseGraph = ({chartTableData, chartData, alertData}: any) => {
     const generateHeader = () => {
         return (
             <>
-                <SCChartMainContainer style={{ zoom: 1, width: '100%' }}>
+                <div className={scChartMainContainer} style={{ zoom: 1, width: '100%' }}>
 
-                    <SCChartHeaderContainer style={{ width: '100%', display: 'flex', justifyContent: 'end' }}>
+                    <div className={SCChartHeaderContainer} style={{ width: '100%', display: 'flex', justifyContent: 'end' }}>
 
                         <div style={{ marginLeft: 30, marginBottom: '-5px' }}>
                             <VFInfoToolTip infoList={graph1} />
@@ -27,8 +28,8 @@ const DeptWiseGraph = ({chartTableData, chartData, alertData}: any) => {
                         <div onClick={() => { toggleChart1(!hideChart1) }} style={{ marginLeft: 10, marginBottom: '-5px', marginRight: '10px' }}>
                             <img src='/assets/img/VectorFLOW/BPR/minimize.svg' height={13} width={13} color={"#CCCCCC"} />
                         </div>
-                    </SCChartHeaderContainer>
-                </SCChartMainContainer>
+                    </div>
+                </div>
             </>
 
         )
@@ -49,7 +50,7 @@ const DeptWiseGraph = ({chartTableData, chartData, alertData}: any) => {
         },
         chart: {
             type: 'boxPlot',
-
+            nonce: nonce,
             zoom: {
                 enabled: false,
             },

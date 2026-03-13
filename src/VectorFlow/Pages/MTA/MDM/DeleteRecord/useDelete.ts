@@ -5,12 +5,12 @@ import { MDMMasterState,Field } from '../../../../../VectorFlow/types/MDM';
 import { UPDATE_ACTIVE_MASTER,RESET_STATE, REMOVE_MASTER, ADD_MASTER,SET_RECORD_COUNT,TOGGLE_SELECT_MASTER_SCREEN,UPDATE_PROGRESS_STATE,UPDATE_COLDEFS,FILL_MASTERS, TOGGLE_UPLOAD_MODAL, UPDATE_ROW_DATA, SYNC_ACTIVE_MASTER_TO_MASTER, REMOVE_COLDEFS,ADD_COLDEFS,SET_DRAFT_ID } from '../../../../../redux/actions/MDM';
 import { useNavigate } from "react-router";
 import { ColDef } from 'ag-grid-enterprise';
-import { useDeleteMasterData ,useDeleteTask,useDeleteDraft,useDeleteMasterDataRetail} from '../../../../..//VectorFlow/Services/MTA/MDM';
+import { useDeleteMasterData ,useDeleteTask,useDeleteDraft,useDeleteMasterDataRetail, useBulkDeleteMasterData} from '../../../../..//VectorFlow/Services/MTA/MDM';
 import {createErrorRowData } from '../../../../../helpers/utils';
 
 import _ from 'lodash';
 import { notifyError,notifyLoader,notifySuccess } from '../../../../../helpers/notify';
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify/unstyled";
 
 const useDelete=()=>{
     const allMasters = useSelector((state:RootState)=>state.mdm.allMasters); 
@@ -18,12 +18,14 @@ const useDelete=()=>{
     const selectedMasters = useSelector((state:RootState)=>state.mdm.masters)
     const options = useSelector((state:RootState)=>state.mdm.options)
     const selectedOptions = useSelector((state:RootState)=>state.mdm.selectedOptions)
-    const chunkSize = useSelector((state:RootState)=>state.mdm.chunkSize);
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const chunkSize = parseInt(EnvConfig['ChunkSizeForModifyAddDelete']); 
     const draftID = useSelector((state:RootState) => state.mdm.draftId);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const {mutateAsync:deleteMasterData} = useDeleteMasterData()
+    const {mutateAsync:bulkdeleteMasterData} = useBulkDeleteMasterData()
 
     const {mutateAsync:deleteMasterDataRetail} = useDeleteMasterDataRetail()
 
@@ -204,13 +206,15 @@ const useDelete=()=>{
         rowData = rowData.map((row:any)=>_.omit(row,'error','warning','users',columnsToOmit));
 
        // Convert To String
-       rowData = rowData.map((row:any)=>{
-        const tempRow:any = {};
-        Object.keys(row).forEach((key:string)=>{
-          tempRow[key] = row[key].toString();
-        })
-        return tempRow;
-      });
+        if(activeMaster.id > 3){
+          rowData = rowData.map((row:any)=>{
+            const tempRow:any = {};
+            Object.keys(row).forEach((key:string)=>{
+              tempRow[key] = row[key].toString();
+            })
+            return tempRow;
+          });
+        }
 
       const deletableKeys = activeMaster.fields.filter(field => field.isDelete === true).map(field => field.key)
       rowData = rowData.map((obj: any) => {
@@ -258,7 +262,12 @@ const useDelete=()=>{
                 data = await deleteMasterDataRetail(payload);
               }
               else{
-                data = await deleteMasterData(payload);
+                if(activeMaster.id == 1 || activeMaster.id == 2 || activeMaster.id == 3){
+                  data = await bulkdeleteMasterData(payload);
+                }
+                else{
+                  data = await deleteMasterData(payload);
+                }
                 if (data.status !== 200) {
                   throw new Error(`Request failed with status`);
                }
