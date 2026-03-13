@@ -54,7 +54,7 @@ const TableUserManagement = ({
             notifySuccess(data?.data?.msg);
           }
           setIsOpenDelete(false);
-          refetch();
+          gridRef?.current?.api?.applyTransaction({ remove: [{ id: idUser }] })
         },
         onError: (error: any) => {
           notifyError(error.response.msg || error.message);
@@ -279,18 +279,10 @@ const TableUserManagement = ({
         flex: 1,
         filter: false,
         suppressTooltips: true,
-        cellRenderer: (params: any) => {
-          return (
-            <ToggleCell
-              data={params.data}
-              permission={permission}
-              is_admin={is_admin}
-            />
-          );
-        },
+        cellRenderer: ToggleCell,
       },
     ],
-    [is_admin, permission]
+    [is_admin, permission, gridRef]
   );
 
   return (
@@ -300,11 +292,21 @@ const TableUserManagement = ({
         ref={gridRef}
         rowData={dataAllUsers}
         columnDefs={columnDefs}
+        defaultColDef={
+          {
+            suppressMenu: true,
+            cellRendererParams: {
+              is_admin: is_admin,
+              permission: permission
+            }
+          }
+        }
         domLayout="normal"
         rowHeight={55}
         pagination={false}
         height="450px"
         sideBar={false}
+        getRowId={(params: any) => params.data.id}
         getRowStyle={(params: any) => {
           if (params.node.rowIndex % 2 === 0) {
             return { background: "#F4F4F4" };

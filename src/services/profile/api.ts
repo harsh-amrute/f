@@ -27,7 +27,27 @@ export namespace MainService {
   }
 
   export const getAllPermissions = async () => {
-    return await axios.get(`${API_USER}/all-permissions/`)
+    const response =  await axios.get(`${API_USER}/all-permissions/`)
+    
+    const fixHierarchySpelling = (data: any): any => {
+      if (Array.isArray(data)) {
+        return data.map(fixHierarchySpelling);
+      } else if (typeof data === 'object' && data !== null) {
+        return Object.keys(data).reduce((acc: any, key) => {
+          const newKey = key.includes('heirarchy') ? key.replace('heirarchy', 'hierarchy') : key;
+          acc[newKey] = fixHierarchySpelling(data[key]);
+          return acc;
+        }, {});
+      }
+      return data;
+    }
+
+    if (response.data) {
+       response.data = fixHierarchySpelling(response.data);
+    }
+    return response
+
+    
   }
 
   export const putDeleteUser = async (id: any) => {

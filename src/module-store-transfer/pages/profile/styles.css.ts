@@ -5,21 +5,25 @@ import * as globalStyles from '../../../styles/global';
 export const profileOverView = style({
   background: (globalStyles as any).white ?? '#fff',
   marginBottom: '20px',
-  borderRadius: '6px',
+  borderRadius: '12px',
+  boxShadow: '0px 10px 20px #c4c8d066',
+  border: '1px solid #cecece',
 });
 
 /* Header pad: avatar + name */
 export const profilePad = style({
   display: 'flex',
   alignItems: 'center',
-  padding: '28px 50px',
+  padding: '18px 50px'
 });
 
 export const profileImg = style({
-  borderRadius: '6px',
+  borderRadius: '50%',
   border: `3px solid ${(globalStyles as any).white ?? '#fff'}`,
   boxShadow: '0px 10px 20px #c4c8d066',
-  width: '100%',
+  width: '70px',
+  height: '70px',
+  padding: '4px',
   maxWidth: '95px',
 });
 
@@ -34,6 +38,12 @@ export const tabsWrapper = style({
   width: '100%',
   display: 'flex',
   justifyContent: 'space-between',
+  background: 'white',
+  padding: '8px',
+  borderTop: '1px solid #cecece',
+  borderLeft: '1px solid #cecece',
+  borderRight: '1px solid #cecece',
+  borderRadius: '12px 12px 0px 0px',
 });
 
 /* (If you re-enable the buttons, this wraps them) */
