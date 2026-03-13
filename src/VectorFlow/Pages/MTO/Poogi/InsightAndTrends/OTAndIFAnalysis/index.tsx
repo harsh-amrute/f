@@ -38,7 +38,11 @@ const OTAndIFAnalysis = () => {
     const [isGridView, setIsGridView] = useState(false);
     const { mutateAsync: getOTAndIFAnalysisData, isLoading, isError, isSuccess } = useGetOTAndIFAnalysisData();
     const [graphData, setGraphData] = useState<any>({});
+<<<<<<< HEAD
     const [currentGridRef] = useState<any>(null);
+=======
+    const [currentGridRef, setCurrentGridRef] = useState<any>(null);
+>>>>>>> abc4812de236e9e61a228bb818c68b48c613a578
     const [filterData, setFilterData] = useState({});
     const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
     const { 

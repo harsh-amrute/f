@@ -422,6 +422,7 @@ const MTOActionToolBar = ({
           ))}
 
         <>
+
           {isExcelExport && (
             <>
               <div className={SCVerticalDivider} />
