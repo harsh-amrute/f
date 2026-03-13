@@ -95,7 +95,6 @@ const OTAndIFAnalysis = () => {
         }else{
                 try {
                     const formattedFilters = formatFilterJSON(appliedFilters);
-                    console.log('filterss', formattedFilters)
                     const response = await getOTAndIFAnalysisData({
                       ...params,
                       appliedFilters: formattedFilters,
