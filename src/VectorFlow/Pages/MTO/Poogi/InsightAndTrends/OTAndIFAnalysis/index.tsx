@@ -8,8 +8,6 @@ import { useGetOTAndIFAnalysisData, useGetOTAndIFAnalysisDataExcelExport } from 
 import OverlayLoader from '../../../Common/Loader';
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
 import TagCellToolTip from '../../../Poogi/InsightAndTrends/OTIFAnalysis/TagCellRenderer/TagCellRenderer';
-import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
-import { useGetUIConfigData } from '../../../../../Services/MTO/Common/UIConfig';
 import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from '../../../../../../helpers/utils';
 import { useUserData } from "../../../../../../context/index";
 import { FilterPageName, pagination, UIGridCode } from "../../../Common/Enum";
@@ -38,11 +36,7 @@ const OTAndIFAnalysis = () => {
     const [isGridView, setIsGridView] = useState(false);
     const { mutateAsync: getOTAndIFAnalysisData, isLoading, isError, isSuccess } = useGetOTAndIFAnalysisData();
     const [graphData, setGraphData] = useState<any>({});
-<<<<<<< HEAD
     const [currentGridRef] = useState<any>(null);
-=======
-    const [currentGridRef, setCurrentGridRef] = useState<any>(null);
->>>>>>> abc4812de236e9e61a228bb818c68b48c613a578
     const [filterData, setFilterData] = useState({});
     const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
     const { 
@@ -210,7 +204,7 @@ const OTAndIFAnalysis = () => {
                     :
                     <>
                         <CommonGridview
-                            reportName="OTandIFAnalysis" //OTIFAnalysis
+                            reportName="OTandIFAnalysis"
                             columnDefinationProps={{
                                 customColDef: colDefCustomizations,
                             }}
