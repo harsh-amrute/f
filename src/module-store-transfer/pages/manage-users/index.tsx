@@ -59,10 +59,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   
   // Loading States
   const [isLoadingRoles, setIsLoadingRoles] = useState(true);
-  const [isLoadingHeaders, setIsLoadingHeaders] = useState(true);
   const [selectedPermissions, setSelectedPermissions] = useState<any>({});
-
-
   const { data: dataFetch,refetch, isFetching } = useGetAllUsers();
   const { data: dataPermissions } = useGetAllPermissions();
   const { mutateAsync: getUserPermissions, isLoading: edit } = useGetUserPermissions();
@@ -797,7 +794,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
           </div>
         </div>
 
-        {isFetching || isLoadingRoles || isLoadingHeaders || !dataPermissions ? (
+        {isFetching || isLoadingRoles || !dataPermissions ? (
           <div style={{ padding: '40px', display: 'flex', justifyContent: 'center' }}>
             <VFLoader />
           </div>
