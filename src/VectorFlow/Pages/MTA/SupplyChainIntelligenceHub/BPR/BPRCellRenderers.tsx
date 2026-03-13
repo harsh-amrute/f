@@ -222,10 +222,11 @@ export const BPRTagsCellRenderer = (params: any) => {
   if (!params.value || params.value.length === 0) {
     return null;
   }
-  const themeUi = user?.user?.theme_ui;
-
-  const bg = themeUi === "REGALBLAZE" ? "#FCA311 0% 0% no-repeat padding-box" : "#B93B7E 0% 0% no-repeat padding-box";
-
+  const bg =
+    user.user.theme_ui === "REGALBLAZE"
+      ? "#FCA311 0% 0% no-repeat padding-box"
+      : "#B93B7E 0% 0% no-repeat padding-box";
+      
   return (
     <div
       className={BPRTagsCellRendererWrapper}

@@ -350,7 +350,7 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
 
   const shouldShowColorFilters = currCategory === 'BPR' || currCategory === 'BOR' || currCategory === 'RRR';
 
-  const shouldShowTags = currCategory === 'BPR';
+  const shouldShowTags = currCategory === 'BPR' || currCategory === 'RRR' || currCategory === 'BOR';
 
   return (
     <>
