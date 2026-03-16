@@ -8,14 +8,12 @@ import { useGetOTAndIFAnalysisData, useGetOTAndIFAnalysisDataExcelExport } from 
 import OverlayLoader from '../../../Common/Loader';
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
 import TagCellToolTip from '../../../Poogi/InsightAndTrends/OTIFAnalysis/TagCellRenderer/TagCellRenderer';
-import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from '../../../../../../helpers/utils';
+import { formatFilterJSON } from '../../../../../../helpers/utils';
 import { useUserData } from "../../../../../../context/index";
 import { FilterPageName, pagination, UIGridCode } from "../../../Common/Enum";
 import useFilter from '../../../../../../hooks/useFilter'
 import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter'
-import useColDef from '../../../../../../hooks/useColDef'
 import BPPRenderer from '../../../Common/BPRRenderer/BPPRenderer'
-import moment from 'moment'
 import CommonGridview from '../../../../../../helpers/CommonGridview'
 import { SCDynamicContainer } from '../../../Common/GridView/styles.css'
 import CustomTagTooltip from '../OTIFAnalysis/CustomTagTooltip'
@@ -36,7 +34,6 @@ const OTAndIFAnalysis = () => {
     const [isGridView, setIsGridView] = useState(false);
     const { mutateAsync: getOTAndIFAnalysisData, isLoading, isError, isSuccess } = useGetOTAndIFAnalysisData();
     const [graphData, setGraphData] = useState<any>({});
-    const [currentGridRef] = useState<any>(null);
     const [filterData, setFilterData] = useState({});
     const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
     const { 
@@ -52,7 +49,6 @@ const OTAndIFAnalysis = () => {
         setAppliedFilters
     } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Poogi_OTIF_And_Analysis);
     const { user } = useUserData();
-    const { colDefMap } = useColDef();
     const { mutateAsync: getOTAndIFAnalysisDataExcelExport } = useGetOTAndIFAnalysisDataExcelExport();
     const [userPageSize] = useState<number>();
     const themeUi = user?.user?.theme_ui;
