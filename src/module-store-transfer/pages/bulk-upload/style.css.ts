@@ -60,7 +60,7 @@ export const leftStep = style({
   padding: "8px 25px 8px 15px",
   fontWeight: "bold",
   borderRadius: "6px 0 0 6px",
-  fontSize: "0.8rem",
+  fontSize: "1.2rem",
   clipPath: "polygon(0 0, 80% 0, 100% 50%, 80% 100%, 0 100%, 0% 50%)",
 });
 
@@ -71,8 +71,8 @@ export const leftCommonComUploadWrapper = style({
   width: "90%",
   backgroundColor: "#fff",
   border: "1.8px dashed rgba(249, 28, 28, 0.5)",
-  borderRadius: "2px",
-  padding: "1rem 3rem",
+  borderRadius: "8px",
+  padding: "2rem 3rem",
   height: "8rem",
 });
 

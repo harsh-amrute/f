@@ -6,11 +6,20 @@ export const tabs = style({
 });
 
 export const tab = style({
-  fontSize: "1.8rem",
+  fontSize: "1.4rem",
   fontWeight: 500,
   marginRight: "40px",
-  color: "#6B7280", // fallback; real base color comes from globalStyles in JSX if needed
+  color: `${globalStyles.secondaryColor}`, // fallback; real base color comes from globalStyles in JSX if needed
   cursor: "pointer",
+
+  selectors: {
+    '&:hover': {
+      color: `${globalStyles.mainColor}`,
+      opacity: '0.7',
+      fontWeight: '600'
+    },
+  },
+
 });
 
 export const tabActive = style({

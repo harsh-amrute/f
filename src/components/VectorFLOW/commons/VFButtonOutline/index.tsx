@@ -1,10 +1,10 @@
+import React,{CSSProperties, ReactNode} from 'react';
 import {
   scButtonOutline,
   disabled as disabledCls,
   strokeColorVar,
   widthPxVar,
 } from "./styles.css";
-import React, { CSSProperties, ReactNode } from "react";
 import * as globalStyles from "../../../../styles/global";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
 
