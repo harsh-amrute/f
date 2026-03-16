@@ -59,40 +59,6 @@ const OTAndIFAnalysis = () => {
     
     const getGraphData = async (params: any,pageSize?:any) => {
 
-        if(params.isExcelExport){
-
-            const gridAPi = currentGridRef?.current?.api;
-
-            if (!gridAPi) {
-                notifyError('Grid is not ready for Excel export!');
-                return;
-            }
-
-            const isPivot = gridAPi.isPivotMode(); 
-            const isValue = gridAPi.getValueColumns().length > 0;
-            const isRowGroup = gridAPi.getRowGroupColumns().length > 0;
-
-            if(isPivot || isValue || isRowGroup){
-                const exportName = `${FilterPageName.Poogi_OTIF_And_Analysis}_${moment().format("DD-MM-YYYY")}`;
-                
-                gridAPi.exportDataAsExcel({
-                    fileName: exportName,
-                    sheetName: exportName
-                })
-                
-            }
-            else {
-                const headersdata = currentGridRef?.current?.api.getColumnState();
-                const formattedFilters = formatFilterJSON(appliedFilters);
-                const body = getBodyForExcelExport({ headersdata, filterData: formattedFilters,colDefMap})
-                const response = await getOTAndIFAnalysisDataExcelExport({body, isExcelExport : 1, graphflag : 0,report_name : FilterPageName.Poogi_OTIF_And_Analysis})
-                if(response.status === 200){
-                    DownloadExcel(response, FilterPageName.Poogi_OTIF_And_Analysis)
-                }else{
-                    notifyError('Failed to export Excel!');
-                }
-            }        
-        }else{
                 try {
                     const formattedFilters = formatFilterJSON(appliedFilters);
                     const response = await getOTAndIFAnalysisData({
@@ -107,7 +73,6 @@ const OTAndIFAnalysis = () => {
                 notifyError('Failed to fetch Graph data!');
             }
         }
-    }
 
     const colDefCustomizations = {
         Tags: {
@@ -158,11 +123,10 @@ const OTAndIFAnalysis = () => {
 
     return (
         <>
-            {
-                (isLoading) && <OverlayLoader />
-            }
-
-            {!isGridView && (
+        {isLoading && <OverlayLoader />}
+    
+        {!isGridView ? (
+            <>
                 <MTOActionToolBar
                     comp={"BTRMTO"}
                     themeUi={themeUi}
@@ -179,66 +143,76 @@ const OTAndIFAnalysis = () => {
                     onFilterRemove={onFilterRemove}
                     isMfgSelected={isMfgSelected}
                 />
-            )}
-            {
-                !isGridView ?
-                    <>
-                        <div className={HorizontalViewWrapper} style={{ margin: '20px 14px', height: '85%', display: 'flex' }}>
-                            <div className={BTRTableWrapper} style={{ flex: '1', margin: '0' }}>
-                                <Allotment vertical={false} separator={false}   >
-                                    <Allotment.Pane minSize={400} preferredSize={'50%'} className='allotment-pane-custom'>
-                                        <div className={BTRAllomentSection}>
-                                            <OTFailedGraph OTFailedData={graphData?.ot} />
-                                        </div>
-                                    </Allotment.Pane>
-                                    <Allotment.Pane minSize={400} preferredSize={'50%'} className='allotment-pane-custom'>
-                                        <div className={BTRAllomentSection}>
-                                            <IFFaildGraph IFFailedData={graphData?.if} />
-                                        </div>
-                                    </Allotment.Pane>
-                                </Allotment>
-                            </div>
-                        </div>
-                    </>
-                    :
-                    <>
-                        <CommonGridview
-                            reportName="OTandIFAnalysis"
-                            columnDefinationProps={{
-                                customColDef: colDefCustomizations,
-                            }}
-                            getRowData={getOTAndIFAnalysisData}
-                            gridDataLoading={isLoading}
-                                reportNameId={UIGridCode.PoogiOTAndIFAnalysis}
-                                excelExportParams={{
-                                    isExcelExportFromBackend: true,
-                                    excelExportReportName: FilterPageName.Poogi_OTIF_And_Analysis,
-                                    excelExportSheetName: FilterPageName.Poogi_OTIF_And_Analysis,
-                                }}
-                            getExcelExportData={getOTAndIFAnalysisDataExcelExport}
-                            setAppliedFilters={setAppliedFilters}
-                            setCurrentFilters={setCurrFilter}
-                            appliedFilters={appliedFilters}     
-                            actionToolBarProps={{
-                                comp: "OTIFAnalysis",
-                                isAddFilterButton: true,
-                                isChartGridToggle: true,
-                                isGridView,
-                                setIsGridView,
-                                isFilterOpen,
-                                onAddFilter,
-                                toggleFilter,
-                                onApplyFilter,
-                                onFilterRemove,
-                                multiFilter: currFilter,
-                                setMultiFilter: setCurrFilter,
-                                isMfgSelected,
-                            }}
-                            vfWrapperClassName={SCDynamicContainer} 
-                        />
-                    </>
-            }
-        </>
+    
+                <div
+                    className={HorizontalViewWrapper}
+                    style={{ margin: "20px 14px", height: "85%", display: "flex" }}
+                >
+                    <div
+                        className={BTRTableWrapper}
+                        style={{ flex: "1", margin: "0" }}
+                    >
+                        <Allotment vertical={false} separator={false}>
+                            <Allotment.Pane
+                                minSize={400}
+                                preferredSize={"50%"}
+                                className="allotment-pane-custom"
+                            >
+                                <div className={BTRAllomentSection}>
+                                    <OTFailedGraph OTFailedData={graphData?.ot} />
+                                </div>
+                            </Allotment.Pane>
+    
+                            <Allotment.Pane
+                                minSize={400}
+                                preferredSize={"50%"}
+                                className="allotment-pane-custom"
+                            >
+                                <div className={BTRAllomentSection}>
+                                    <IFFaildGraph IFFailedData={graphData?.if} />
+                                </div>
+                            </Allotment.Pane>
+                        </Allotment>
+                    </div>
+                </div>
+            </>
+        ) : (
+            <CommonGridview
+                reportName="OTandIFAnalysis"
+                columnDefinationProps={{
+                    customColDef: colDefCustomizations,
+                }}
+                getRowData={getOTAndIFAnalysisData}
+                gridDataLoading={isLoading}
+                reportNameId={UIGridCode.PoogiOTAndIFAnalysis}
+                excelExportParams={{
+                    isExcelExportFromBackend: true,
+                    excelExportReportName: FilterPageName.Poogi_OTIF_And_Analysis,
+                    excelExportSheetName: FilterPageName.Poogi_OTIF_And_Analysis,
+                }}
+                getExcelExportData={getOTAndIFAnalysisDataExcelExport}
+                setAppliedFilters={setAppliedFilters}
+                setCurrentFilters={setCurrFilter}
+                appliedFilters={appliedFilters}
+                actionToolBarProps={{
+                    comp: "OTIFAnalysis",
+                    isAddFilterButton: true,
+                    isChartGridToggle: true,
+                    isGridView,
+                    setIsGridView,
+                    isFilterOpen,
+                    onAddFilter,
+                    toggleFilter,
+                    onApplyFilter,
+                    onFilterRemove,
+                    multiFilter: currFilter,
+                    setMultiFilter: setCurrFilter,
+                    isMfgSelected,
+                }}
+                vfWrapperClassName={SCDynamicContainer}
+            />
+        )}
+    </>
     )
 }
 

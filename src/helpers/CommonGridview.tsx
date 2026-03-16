@@ -622,7 +622,7 @@ function CommonGridview(props: CommonGridviewProps) {
   const [isExcelDisabled, setIsExcelDisabled] = useState<boolean>(false)
   
   useEffect(() => {
-    setIsExcelDisabled(rowData.length === 0);
+    setIsExcelDisabled(rowData && rowData.length === 0);
   }, [rowData]);
   
   

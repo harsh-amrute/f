@@ -30,7 +30,6 @@ import {
   DateValue,
   VFSelectedFilterLabel,
   AddFilterWrapper,
-  // setWithBgOverrides,
 } from "./styles.css";
 import {  ReactElement } from "react";
 
@@ -71,8 +70,6 @@ interface MTOActionToolBarProps {
   themeUi?: Theme | any;
   quickFilter?: ReactElement | null;
   WIPFilter?: ReactElement | null;
-
-  //// new props
   isGoBackButton?: boolean;
   isReleaseDate?: boolean;
   isAsOnDate?: boolean;
@@ -96,7 +93,6 @@ interface MTOActionToolBarProps {
   resetBtnName?:string;
   releaseDateLabel?: string;
   isExcelDisabled?:boolean
-  //// new props
 }
 
 const MTOActionToolBar = ({
@@ -118,7 +114,6 @@ const MTOActionToolBar = ({
     isAddFilterButton,
     isExcelExport,
     isChartGridToggle,
-    // isWIPCheckBox,
     isFilterOpen,
     toggleFilter,
     multiFilter,
