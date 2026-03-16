@@ -55,6 +55,7 @@ import { decryptStorageData } from "../VectorFlow/Pages/MTO/Common/encryption";
 import "./style.css";
 import { getNumberFormat } from "./numberFormat";
 import axios from 'axios';
+import { loadCaptchaEnginge } from "react-simple-captcha";
 import { v4 as uuidv4 } from "uuid";
 
 const keyboardCharacters = [
@@ -5690,3 +5691,11 @@ const getNonce = (): string | undefined => {
 };
 
 export const nonce = getNonce();
+
+
+export const reloadCaptcha = (setCaptchaInput?: any) => {
+  loadCaptchaEnginge(6);
+  if (setCaptchaInput) {
+    setCaptchaInput("");
+  }
+};
