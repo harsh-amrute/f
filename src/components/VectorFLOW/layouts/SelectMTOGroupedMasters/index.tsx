@@ -1,8 +1,5 @@
 // SelectGroupedMasters.tsx
 import VFButtonOutline from "../../../VectorFLOW/commons/VFButtonOutline";
-import {
-  // replaced styled-components with vanilla-extract classes
-} from "./styles.css";
 import * as s from "./styles.css"; // alias "s" for classes
 
 import { useUserData } from "../../../../context";

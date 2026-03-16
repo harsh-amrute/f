@@ -69,11 +69,11 @@ const Overview = ({ themeUi }: any) => {
         }
       },
       onError: (errors: any) => {
-        console.log("errors", errors);
         notifyError(errors.response.msg);
       },
     });
   };
+
 
   return (
     <>
@@ -108,7 +108,12 @@ const Overview = ({ themeUi }: any) => {
                 {t("profile.tabContent.overview.role")}
               </div>
               <span className={SCSubTitleSpan}>
-                {user?.roles?.permission.toString().replace(/,/g, " | ")}
+                {user?.roles?.map((role: any, index: number) => {
+                  return (
+                    <span>{role.name} {index != (user.roles.length - 1) && " | "}</span>
+                  )
+
+                })}
               </span>
             </div>
           </div>
