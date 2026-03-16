@@ -103,17 +103,19 @@ function ChangePasswordContainer() {
     };
     mutateForgotPassword(formData, {
       onSuccess: (data: any) => {
-        if (data?.status === 400) {
+        if (data?.status === 200) {
+          notifySuccess(data?.data?.msg || "Password changed successfully");
+          setRequestSend(true);
+          setCaptchaInput("");
+          setLoading(false);
+        }
+        else {
           notifyError(data?.response?.msg);
           reloadCaptcha(setCaptchaInput);
-
           setLoading(false);
           return;
         }
-        notifySuccess(data?.data?.msg || "Password changed successfully");
-        setRequestSend(true);
-        setCaptchaInput("");
-        setLoading(false);
+       
       },
       onError: () => {
         notifyError("Something went wrong!");

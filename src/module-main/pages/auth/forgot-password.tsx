@@ -77,15 +77,16 @@ function ForgotPasswordContainer() {
 
     mutateForgotPassword(data, {
       onSuccess: (data: any) => {
-        setMessage(data?.data?.msg);
-        if (data?.status === 400) {
-          notifyError(data?.response?.msg[0]);
-          reloadCaptcha(setCaptchaInput);
-        } else {
+      setMessage(data?.data?.msg);
+        if (data?.status === 200) {
           setRequestSend(true);
           notifySuccess("Password reset link sent to your email.");
+        } else {
+          notifyError(data?.response?.msg[0]);
+          reloadCaptcha(setCaptchaInput);
         }
-        setLoading(false);
+        setLoading(false)  
+
       },
       onError: (error: any) => {
         setMessage(error?.data?.msg);
