@@ -82,7 +82,7 @@ function ForgotPasswordContainer() {
           setRequestSend(true);
           notifySuccess("Password reset link sent to your email.");
         } else {
-          notifyError(data?.response?.msg[0]);
+          notifyError(data?.response?.msg[0] || "Something went wrong");
           reloadCaptcha(setCaptchaInput);
         }
         setLoading(false)  
