@@ -67,44 +67,46 @@ const TaskStatus = ()=>{
         return new Date(year, month, day, hours, minutes);
       }
 
-      const onDownloadTaskDetails = async (payload: any) => {
-        try {
-            // 1. Show an immediate notification so the user knows the process started
-            console.log("Preparing download for large dataset... Please wait.");
-    
-            // 2. Call your original method (now returning a Blob)
-            const response = await getTaskDetailDownloadData({
-                taskId: payload.TaskID,
-                approverId: payload.ApproverId
-            });
-    
-            // 3. Create a Blob from the response data
-            // Even if it's 100k records, the browser handles this efficiently
-            const blob = new Blob([response.data], { type: 'text/csv' });
+        const onDownloadTaskDetails = async(payload:any)=>{
+                
+            try{
+                const actionName = getActionName(payload.Actiontype).value
+                const response = await getTaskDetailDownloadData({taskId:payload.TaskID,approverId:payload.ApproverId})
+                const currentTaskMaster = response.data.data[0]
+                const currentTaskMasterId:number = currentTaskMaster.MasterId
+                
+                const uiConfigurationResponse = await getMasterUIConfiguration(actionName)
+                
+                const masters:Master[] = uiConfigurationResponse.data.data
+                const currentMasterFields = masters.find((master:Master)=>master.id==currentTaskMasterId)
+        
+                if(!currentTaskMaster.data){
+                    notifyError('Task Details Can be only downloaded by the Approver');
+                    return
+                }
             
-            // 4. Create a download link
-            const url = window.URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            
-            link.href = url;
-            // Use the TaskID in the filename for easy identification
-            link.setAttribute('download', `Task_${payload.TaskID}_Details.csv`);
-            
-            // 5. Trigger the download and cleanup
-            document.body.appendChild(link);
-            link.click();
-            
-            // Cleanup to prevent memory leaks
-            document.body.removeChild(link);
-            window.URL.revokeObjectURL(url);
-    
-            console.log("Download started successfully.");
-    
-        } catch (error: any) {
-            console.error("Download Error:", error);
-            notifyError("Failed to download task details. The dataset might be too large or the session timed out.");
-        }
-    };
+                if(currentMasterFields) {
+                    setCurrentMasterName(currentMasterFields.name);
+                    let dataToAnalyze = currentTaskMaster.data[0];
+                    if (payload.Actiontype == 2 && dataToAnalyze.new) {
+                        dataToAnalyze = typeof dataToAnalyze.new === 'string'
+                            ? JSON.parse(dataToAnalyze.new)
+                            : dataToAnalyze.new;
+                    }
+                const existingColumns = getExistingColumns(dataToAnalyze);
+                let existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields.fields)
+                if(actionName === "remove") {
+                    existingColumnFields = existingColumnFields.filter(field => field?.isDelete);
+                }
+                setTempAgGridColDefs(mapMasterToTaskStatusColumnGroupDefs(currentTaskMasterId,existingColumnFields,currentTaskMasterId,actionName))
+                setTempAgridRowData(mapTaskStatusDataToRowData(currentTaskMasterId,currentTaskMaster.data,existingColumnFields,actionName))
+                setTempDownloadData(true)
+                }
+            }catch(error:any){
+                notifyError(error.message)
+            }
+            }
+ 
 
     const rowData = data?.data.data || []
     // rowData = rowData.map((row:any)=>{
