@@ -110,7 +110,7 @@ function ChangePasswordContainer() {
           setLoading(false);
         }
         else {
-          notifyError(data?.response?.msg);
+          notifyError(data?.response?.msg || "Something went wrong");
           reloadCaptcha(setCaptchaInput);
           setLoading(false);
           return;
