@@ -1,5 +1,5 @@
 import { Allotment } from "allotment";
-import { useCallback, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
 import STPLGraph from "./STPLGraph";
 import FullKitGraph from "./FullKitGraph";
