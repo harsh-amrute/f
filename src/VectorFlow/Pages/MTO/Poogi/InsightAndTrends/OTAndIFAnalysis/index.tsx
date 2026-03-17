@@ -60,7 +60,6 @@ const OTAndIFAnalysis = () => {
                     const response = await getOTAndIFAnalysisData({
                       ...params,
                       appliedFilters: formattedFilters,
-                      page_size: pageSize ?? pagination.mtoPageSize,
                     });
                 setGraphData(response.data.data);
             }
