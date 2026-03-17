@@ -10,7 +10,7 @@ import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
 import TagCellToolTip from '../../../Poogi/InsightAndTrends/OTIFAnalysis/TagCellRenderer/TagCellRenderer';
 import { formatFilterJSON } from '../../../../../../helpers/utils';
 import { useUserData } from "../../../../../../context/index";
-import { FilterPageName, pagination, UIGridCode } from "../../../Common/Enum";
+import { FilterPageName, UIGridCode } from "../../../Common/Enum";
 import useFilter from '../../../../../../hooks/useFilter'
 import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter'
 import BPPRenderer from '../../../Common/BPRRenderer/BPPRenderer'
@@ -53,7 +53,7 @@ const OTAndIFAnalysis = () => {
     const [userPageSize] = useState<number>();
     const themeUi = user?.user?.theme_ui;
     
-    const getGraphData = async (params: any,pageSize?:any) => {
+    const getGraphData = async (params: any) => {
 
                 try {
                     const formattedFilters = formatFilterJSON(appliedFilters);
