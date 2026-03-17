@@ -1,6 +1,7 @@
 import {
   primaryButton,
   secondaryButton,
+  primaryBgVar
 } from "../../commons/styled/index.css";
 import {
   urlsForm,
@@ -33,7 +34,7 @@ const DeleteUrl = (props: { onSuccess: () => void; onFailure: () => void }) => {
           Cancel
         </button>
         <button className={primaryButton} type="button" style={assignInlineVars({
-              [focusOutlineVar]: focusColor,
+              [primaryBgVar]: focusColor,
             })}
  onClick={onSuccess}>
           Confirm

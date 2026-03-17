@@ -145,6 +145,7 @@ const AppLayout = () => {
     "/mto/manufacturing-intelligence-hub/forward-exceution/expetiting-rm-supplier",
     "/mto/manufacturing-intelligence-hub/forward-exceution/rm-pm-buffer-trend",
     "/mto/manufacturing-intelligence-hub/improvement-areas/resource-wip-profile",
+    "/profile"
   ];
   // const urlExclusdeHeader = ['/mta/master-data-management/control-panel/view-modify','/master-data-management/task-pending','/mta/master-data-management/control-panel/add','/mta/master-data-management/control-panel/delete','/supply-chain-intelligence-hub/bpr','/master-data-management/task-status','/master-data-management/saved-drafts'];
   let urlExclusdeHeader = [

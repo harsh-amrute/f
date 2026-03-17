@@ -21,7 +21,15 @@ const ArrowList = ({ listData, setListData, infoUser, setInfoUser }: any) => {
     } else {
       newData.roles.splice(index, 1)
     }
-    setInfoUser(newData);
+    const currentUserActiveApplications = new Set<string>();
+    listData.forEach((app: any) => {
+      if(newData.roles.some((roleId: any) => app.child.some((role: any) => role.id === roleId))) {
+        currentUserActiveApplications.add(app.title);
+      }
+    }
+    );
+
+    setInfoUser({...newData, activeApplications: Array.from(currentUserActiveApplications)});
   }
   
   return (

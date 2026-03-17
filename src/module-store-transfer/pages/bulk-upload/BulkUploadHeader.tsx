@@ -1,6 +1,5 @@
 import React, { CSSProperties, useEffect, useRef, useState } from "react";
 import VFButton from "../../../components/VectorFLOW/commons/VFButton";
-// import { CSSProperties } from "styled-components";
 import Portal from "../../../components/VectorFLOW/layouts/Portal";
 import { dropdownWrapper, topVar, leftVar} from "../../../components/commons/CustomDropdown/style.css";
 import { SCGoBackContainer, SCGoBackText } from "../../../components/VectorFLOW/commons/MTO/ActionToolBar/styles.css";

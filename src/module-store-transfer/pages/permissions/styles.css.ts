@@ -163,3 +163,56 @@ export const overviewFlex = style({
   display: "flex",
   justifyContent: "space-between",
 });
+
+/* New Styles for Permissions Page Refactor */
+export const tabsContainer = style({
+  display: "flex",
+  gap: "14px",
+  background: "#fff",
+  padding: "10px 10px 0 10px",
+  overflowX: "auto",
+  marginLeft: "80px",
+});
+
+export const tabBase = style({
+  padding: "8px 16px",
+  cursor: "pointer",
+  fontSize: "1.6rem",
+  borderRadius: "24px",
+  whiteSpace: "nowrap",
+  selectors: {
+    "&:hover": {
+      color: "#b0277bff",
+      backgroundColor: "#f3e5f5",
+    },
+  },
+});
+
+export const tabInactive = style({
+  borderBottom: "2px solid transparent",
+  color: "#666",
+  background: "#eceeeeff",
+  fontWeight: "normal",
+});
+
+export const tabActive = style({
+  borderBottom: "2px solid #b02792ff",
+  color: "#b02790ff",
+  background: "#e6b0dc64",
+  fontWeight: "bold",
+});
+
+export const contentContainer = style({
+  display: "flex",
+  height: "calc(100vh - 200px)",
+  overflow: "hidden",
+  justifyContent: "center",
+});
+
+export const canvasSection = style({
+  flex: "none",
+  width: "90%",
+  position: "relative",
+  overflow: "hidden",
+  marginTop: "20px",
+});

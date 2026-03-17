@@ -7,7 +7,6 @@ import BulkUploadHeader from "./BulkUploadHeader";
 import VFModalCard from "../../../components/VectorFLOW/commons/VFModalCard";
 import {
   useGetAllPermissions,
-  useGetAllRoles,
   useGetRoles,
   usePostBulkUploadUsers,
 } from "../../../services/profile";
@@ -170,6 +169,13 @@ const PermissionSelectionPage = ({
         ...node.data,
         permissions: selectedPermissions,
       };
+
+    return setErrorPermissions(updatedData);
+
+  }
+
+  const setErrorPermissions = (updatedData: any) => {
+
       let isValidPermission = true;
 
       updatedData.roles.forEach((role: any) => {
@@ -214,6 +220,8 @@ const PermissionSelectionPage = ({
         permissions: {},
         roles: {}
       };
+
+      const isDynamicPermissions = (user.user.config_data.INHERITED_ACCESS === "1") || false;
     
       let permIdCounter = 1;
     
@@ -239,37 +247,138 @@ const PermissionSelectionPage = ({
     
         // Set permissions
         const userPerms:any = user.permissions || {};
-        const formattedPerms:any = {
-          location_permissions: [],
-          product_permissions: []
-        };
+        const formattedPerms:any = {};
     
         for (const [appName, perms] of Object.entries(userPerms) as [string, any][]) {
-          const application_id = getAppId(appName); // You can customize this mapping
+          const application_id = getAppId(appName); 
+          const appData = dataAllPermissions.find((d: any) => d.application_name === appName);
+          
+          if (!appData) continue;
+
+          // Helper to process a permission type
+          const processPermissionType = (permType: string, paths: string[][]) => {
+              if (!paths || paths.length === 0) return [];
+
+              const prefix = permType.split("_")[0]; // location or product
+              const defKey1 = `${permType}_ids`;
+            const definitions = appData[defKey1] || [];
+              
+              if (!Array.isArray(definitions)) return [];
+
+              const ids: string[] = [];
+
+              paths.forEach((path: string[]) => {
+                // Updated IA Detection Logic: Prime Suffix
+                const lastElement = path[path.length - 1] || '';
+                const isIA = lastElement.endsWith("'");
+                const hierarchyPath = isIA
+                  ? [...path.slice(0, -1), lastElement.slice(0, -1)]
+                  : path;
+                  
+                  if (!isDynamicPermissions) {
+                       // LEGACY / CASCADE MODE: Drill down to find all children
+                       const matchedDefs = definitions.filter((def: any) => {
+                         const h1 = def[`${prefix}_hierarchy_1`] ?? def[`hierarchy_1`] ?? def[`${prefix}_heirarchy_1`] ?? def[`heirarchy_1`] ?? '';
+                         const h2 = def[`${prefix}_hierarchy_2`] ?? def[`hierarchy_2`] ?? def[`${prefix}_heirarchy_2`] ?? def[`heirarchy_2`] ?? '';
+                         const h3 = def[`${prefix}_hierarchy_3`] ?? def[`hierarchy_3`] ?? def[`${prefix}_heirarchy_3`] ?? def[`heirarchy_3`] ?? '';
+
+                         // IA Case: Specific Match Only (isActive: true)
+                          if (isIA) {
+                              if (h1 !== hierarchyPath[0]) return false;
+                              if (hierarchyPath.length > 1 && h2 !== hierarchyPath[1]) return false;
+                              // IA node check
+                              if (def.isActive !== true) return false;
+                              
+                            // Level match check (ensure exact level match for IA)
+                              if (hierarchyPath.length === 1 && (h2 && h2 !== "")) return false;
+                              if (hierarchyPath.length === 2 && (h3 && h3 !== "")) return false;
+                              
+                              return true;
+                          }
+
+                          // Standard Case: Cascade Drill Down
+                          if (h1 !== hierarchyPath[0]) return false;
+                          if (hierarchyPath.length > 1 && h2 !== hierarchyPath[1]) return false;
+                          if (hierarchyPath.length > 2 && h3 !== hierarchyPath[2]) return false;
+
+                         // Must be Leaf (h3 exists) or specific node type
+                         // Assuming intent is to select all LEAVES under this path
+                         if (!h1 || h1 === "") return false;
+                         if (!h2 || h2 === "") return false;
+                          if (!h3 || h3 === "") return false;
+
+                          return true;
+                       });
+
+                       matchedDefs.forEach((d: any) => ids.push(d.h_id));
+
+                  } else {
+                       // DYNAMIC MODE: Exact Match + Underscore
+                       const matchedDef = definitions.find((def: any) => {
+                         const h1 = def[`${prefix}_hierarchy_1`] ?? def[`hierarchy_1`] ?? def[`${prefix}_heirarchy_1`] ?? def[`heirarchy_1`] ?? '';
+                         const h2 = def[`${prefix}_hierarchy_2`] ?? def[`hierarchy_2`] ?? def[`${prefix}_heirarchy_2`] ?? def[`heirarchy_2`] ?? '';
+                         const h3 = def[`${prefix}_hierarchy_3`] ?? def[`hierarchy_3`] ?? def[`${prefix}_heirarchy_3`] ?? def[`heirarchy_3`] ?? '';
+                           
+                           if (h1 !== hierarchyPath[0]) return false;
+                           
+                           if (hierarchyPath.length > 1) {
+                               if (h2 !== hierarchyPath[1]) return false;
+                           } else {
+                               if (h2 && h2 !== "") return false;
+                           }
+                           
+                           if (hierarchyPath.length > 2) {
+                               if (h3 !== hierarchyPath[2]) return false;
+                           } else {
+                               if (!isIA && h3 && h3 !== "") return false;
+                           }
+                           
+                           if (isIA && def.isActive !== true) return false;
+                           
+                           return true;
+                       });
+
+                       if (matchedDef) {
+                           if (isIA) {
+                               ids.push(matchedDef.h_id);
+                           } else {
+                             const h3 = matchedDef[`${prefix}_hierarchy_3`] ?? matchedDef[`hierarchy_3`] ?? matchedDef[`${prefix}_heirarchy_3`] ?? matchedDef[`heirarchy_3`] ?? '';
+                               const isLeaf = (h3 && h3 !== "");
+                               
+                               if (isLeaf) {
+                                   ids.push(matchedDef.h_id);
+                               } else {
+                                   ids.push(`${matchedDef.h_id}_`);
+                               }
+                           }
+                       }
+                  }
+              });
+              
+              return Array.from(new Set(ids));
+          };
+
+          // Location Permissions
           if (perms?.location_permission) {
-            formattedPerms.location_permissions.push({
-              application_id,
-              permissions: perms.location_permission.map((locPath: string[]) => {
-                const obj: any = {};
-                locPath.forEach((lvl, i) => {
-                  obj[`location_heirarchy_${i + 1}`] = lvl || "";
-                });
-                return obj;
-              })
-            });
+             const ids = processPermissionType("location_permission", perms.location_permission);
+             if (ids.length > 0) {
+               if (!formattedPerms["location_permission"]) formattedPerms["location_permission"] = [];
+               formattedPerms["location_permission"].push({
+                 appId: application_id,
+                 perm: ids
+                 });
+             }
           }
-    
+           // Product Permissions
           if (perms?.product_permission) {
-            formattedPerms.product_permissions.push({
-              application_id,
-              permissions: perms.product_permission.map((prodPath: string[]) => {
-                const obj: any = {};
-                prodPath.forEach((lvl, i) => {
-                  obj[`product_hierarchy_${i + 1}`] = lvl || "";
-                });
-                return obj;
-              })
-            });
+             const ids = processPermissionType("product_permission", perms.product_permission);
+             if (ids.length > 0) {
+               if (!formattedPerms["product_permission"]) formattedPerms["product_permission"] = [];
+               formattedPerms["product_permission"].push({
+                 appId: application_id,
+                 perm: ids
+                 });
+             }
           }
         }
     
@@ -393,25 +502,25 @@ const PermissionSelectionPage = ({
       // Task 1: Check if users with roles from compulsory apps have corresponding permissions
       finalData.users.forEach((user:any )=> {
           const userRoles = finalData.roles[user.rid]?.roles || [];
-          const userPermissions = finalData.permissions[user.perm_id] || {};
-          const userLocationPermissions = userPermissions.location_permissions || [];
-          const userProductPermissions = userPermissions.product_permissions || [];
+        const userPermissions = finalData.permissions[user.perm_id] || {};
+        const userLocationPermissions = userPermissions.location_permission || [];
+        const userProductPermissions = userPermissions.product_permission || [];
           
           // Get application IDs from user's permissions (both location and product)
           const userPermissionAppIdsLoc = new Set();
           const userPermissionAppIdsPerm = new Set();
-          
+
           // Add application IDs from location permissions
         userLocationPermissions.forEach((perm: any) => {
-          if (perm?.permissions?.length) {
-            userPermissionAppIdsLoc.add(perm.application_id);
+          if (perm?.perm?.length) {
+            userPermissionAppIdsLoc.add(Number(perm.appId));
           }
         });
           
           // Add application IDs from product permissions
         userProductPermissions.forEach((perm: any) => {
-          if (perm?.permissions?.length) {
-            userPermissionAppIdsPerm.add(perm.application_id);
+          if (perm?.perm?.length) {
+            userPermissionAppIdsPerm.add(Number(perm.appId));
           }
         });
 
@@ -429,14 +538,15 @@ const PermissionSelectionPage = ({
           
           // Check each role assigned to the user
           userRoles.forEach((roleId:any) => {
-              const appId = roleToAppMap[roleId];
+            const appId = Number(roleToAppMap[roleId]);
               // If the role belongs to a compulsory permissions app
-              if (compulsoryPermissions.includes(appId)) {
+            const appData = dataAllPermissions.find((ele: any) => Number(ele.application_id) === appId);
+            if (appData && appData.application_name === "Distribution") {
                   // Check if user has permissions for this application
                   if (!userPermissionAppIdsLoc.has(appId) || !userPermissionAppIdsPerm.has(appId)) {
                       errors.push({
                           type: 'MISSING_COMPULSORY_PERMISSION',
-                          message: `All users with a role of application: ${dataAllPermissions.find((ele:any)=>ele.application_id===appId).application_name} must have Location and Product Permissions`,
+                        message: `All users with a role of application: ${appData.application_name} must have Location and Product Permissions`,
                           userId: user.id,
                           userName: user.name,
                           email: user.email,
@@ -466,20 +576,20 @@ const PermissionSelectionPage = ({
           );
           
           // Handle location permissions
-          if (userPermissions.location_permissions) {
-              userPermissions.location_permissions = userPermissions.location_permissions.filter((perm:any) => {
-                  const shouldKeep = userRoleAppIds.has(perm.application_id);
+        if (userPermissions.location_permission) {
+          userPermissions.location_permission = userPermissions.location_permission.filter((perm: any) => {
+            const shouldKeep = userRoleAppIds.has(perm.appId);
                   
                   if (!shouldKeep) {
                       warnings.push({
                           type: 'LOCATION_PERMISSION_REMOVED',
-                          message: `Location permission for application id ${perm.application_id} removed for user ${user.name} (no corresponding role)`,
+                        message: `Location permission for application id ${perm.appId} removed for user ${user.name} (no corresponding role)`,
                           srNo: user.srNo,
                           userId: user.id,
                           userName: user.name,
                           email: user.email,
                           permId: user.perm_id,
-                          removedApplicationId: perm.application_id,
+                        removedApplicationId: perm.appId,
                           removedPermission: perm,
                           permissionType: 'location'
                       });
@@ -490,21 +600,21 @@ const PermissionSelectionPage = ({
           }
           
           // Handle product permissions
-          if (userPermissions.product_permissions) {
-              const originalProductPermissions = [...userPermissions.product_permissions];
-              userPermissions.product_permissions = userPermissions.product_permissions.filter((perm:any) => {
-                  const shouldKeep = userRoleAppIds.has(perm.application_id);
+        if (userPermissions.product_permission) {
+          const originalProductPermissions = [...userPermissions.product_permission];
+          userPermissions.product_permission = userPermissions.product_permission.filter((perm: any) => {
+            const shouldKeep = userRoleAppIds.has(perm.appId);
                   
                   if (!shouldKeep) {
                       warnings.push({
                           type: 'PRODUCT_PERMISSION_REMOVED',
-                          message: `Product permission for application ${perm.application_id} removed for user ${user.name} (no corresponding role)`,
+                        message: `Product permission for application ${perm.appId} removed for user ${user.name} (no corresponding role)`,
                           srNo: user.srNo,
                           userId: user.id,
                           userName: user.name,
                           email: user.email,
                           permId: user.perm_id,
-                          removedApplicationId: perm.application_id,
+                        removedApplicationId: perm.appId,
                           removedPermission: perm,
                           permissionType: 'product'
                       });
@@ -514,7 +624,7 @@ const PermissionSelectionPage = ({
               });
           }
       });
-      
+
       return {
           isValid: errors.length === 0,
           errors: errors,
@@ -600,7 +710,6 @@ const PermissionSelectionPage = ({
         notifyError("Failed to register Users! Please try again!")
         console.error("Error updating roles for selected users", e);
       }
-
     }
 
 
@@ -637,6 +746,9 @@ const PermissionSelectionPage = ({
       {
         headerName: "Sr.No",
         field: "srNo",
+        cellRenderer: (params: any) => {
+          return params.node.rowIndex + 1;
+        },
         maxWidth: 80,
         enablePivot: true,
         filter: 'agNumberColumnFilter',
@@ -644,7 +756,11 @@ const PermissionSelectionPage = ({
       },
       { headerName: "Username", field: "username", suppressFillHandle: true, filter: 'agMultiColumnFilter' },
       { headerName: "Email ID", field: "email", suppressFillHandle: true, filter: 'agMultiColumnFilter' },
-      { headerName: "Password", field: "pwd", suppressFillHandle: true, filter: 'agMultiColumnFilter'},
+      {
+        headerName: "Password", field: "pwd", suppressFillHandle: true, filter: 'agMultiColumnFilter', cellRenderer: (params: any) => {
+          return "********";
+        }
+      },
       {
         headerName: "Role",
         field: "roles",
@@ -832,7 +948,7 @@ const PermissionSelectionPage = ({
                 if (params.rowNode.rowIndex === index) {                
                   const userData = node.data;
                   userData.permissions = params.initialValues[0];
-                  node.setData(userData);
+                  node.setData(setErrorPermissions(userData));
                 }
               });
             }

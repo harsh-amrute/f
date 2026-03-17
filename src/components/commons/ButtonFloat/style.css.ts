@@ -21,6 +21,12 @@ export const buttonFloat = style({
   opacity: 1,
   alignItems: "center",
   justifyContent: "center",
+
+  selectors: {
+    '&:hover': {
+      scale: '1.02'
+    },
+  },
 });
 
 export const Img = style({
