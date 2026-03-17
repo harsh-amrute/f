@@ -98,8 +98,8 @@ const OTAndIFAnalysis = () => {
 
 
     useEffect(() => {
-        if (!isGridView) {
-          getGraphData({ graphflag: 1 }, userPageSize || pagination.mtoPageSize);
+        if (!isGridView && Object.keys(appliedFilters).length!==0) {
+          getGraphData({ graphflag: 1 });
         }
       }, [appliedFilters, isGridView, userPageSize]);
 
