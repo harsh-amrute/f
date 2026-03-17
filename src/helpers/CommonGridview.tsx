@@ -394,9 +394,9 @@ function CommonGridview(props: CommonGridviewProps) {
         const data = await getRowData({
           page: page || currentPage,
           graphflag: 0,
-          appliedFilters: formatedFilters,
+          appliedFilters:formatedFilters,
           page_size: pageSize || userPageSize,
-        });
+        });     
         setRowData(data?.data?.data?.results ?? []);
         setTotalRow(data?.data?.data?.count ?? 0);
         notifySuccess("Data Fetched Successfully!");
@@ -428,8 +428,9 @@ function CommonGridview(props: CommonGridviewProps) {
       setAppliedFilters(newConfig.fs);
       setCurrentFilters(newConfig.fs);
     }
-  },[ setAppliedFilters, setCurrentFilters]);
-
+    
+  }, [setAppliedFilters, setCurrentFilters]);
+  
   // Handle save click
   const handleSaveClick = useCallback(async (coldefs?: any, page_size?: any) => {
     try {
@@ -495,6 +496,7 @@ function CommonGridview(props: CommonGridviewProps) {
     setIsReset(true);
   },[]);
 
+
   // Handle page change
   const handlePageChange = useCallback(async (currPage: number) => {
     setCurrentPage(currPage);
@@ -534,7 +536,6 @@ function CommonGridview(props: CommonGridviewProps) {
     }
   }, [userConfigFetched, appliedFilters, isReset]);
 
-
   // Handle reset action
   useEffect(() => {
     if (isReset) {
@@ -561,6 +562,8 @@ function CommonGridview(props: CommonGridviewProps) {
       setIsReset(false);
     }
   }, [isReset]);
+
+  
 
   // Store master UI config on initial load
   useEffect(() => {
@@ -616,6 +619,13 @@ function CommonGridview(props: CommonGridviewProps) {
     isPivot.current = isPivotOn;
   },[]);
 
+  const [isExcelDisabled, setIsExcelDisabled] = useState<boolean>(false)
+  
+  useEffect(() => {
+    setIsExcelDisabled(rowData && rowData.length === 0);
+  }, [rowData]);
+  
+  
   // Handle Excel export click
   const onExcelExportClick = useCallback(() => {
     // Excel export from backend if enabled and not in pivot mode and no row groups or value columns
@@ -637,7 +647,6 @@ function CommonGridview(props: CommonGridviewProps) {
     }
   }, [excelExportParams, getGridData, excelExportFromGrid]);
 
-
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
       {(isUpdateUserConfig || isGetUserConfig || gridDataLoading) && (
@@ -649,6 +658,7 @@ function CommonGridview(props: CommonGridviewProps) {
         isAddFilterButton={isAddFilterButton}
         isChartGridToggle={isChartGridToggle}
         isExcelExport={isExcelExportIcon}
+        isExcelDisabled={isExcelDisabled} 
         isGridView={isGridView}
         setIsGridView={setIsGridView}
         handleSaveClick={handleSaveClick}

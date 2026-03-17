@@ -32,7 +32,7 @@ export function TooltipRenderer({ datum, xKey }: any) {
               <div>16-30 days</div><div>${datum["16_30_d"]}</div>
             </div>
           </div>
-        </div>
+        </div>  
       </div>
     `;
 }
