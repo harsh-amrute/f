@@ -10,7 +10,7 @@ export const Wrapper = style({
   marginTop: "2rem",
 });
 // ✅ descendants of Wrapper (plain selectors, no :global)
-globalStyle(`${Wrapper} > .ag-theme-alpine`, { height: "100%" });
+globalStyle(`${Wrapper} > .ag-theme-alpine`, { height: "90%" });
 globalStyle(`${Wrapper} div[data-testid="vf_pagination"]`, { padding: "0" });
 
 
