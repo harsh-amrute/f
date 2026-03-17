@@ -77,9 +77,9 @@ const STPLAndFullKits = () => {
       ? format(new Date(apiResponseData?.data?.data), "dd MMM yyyy")
       : "";
 
-  const getGraphData = useCallback(async (filters: any) => {
+  const getGraphData = async () => {
     try {
-      const formattedFilters = formatFilterJSON(filters);
+      const formattedFilters = formatFilterJSON(appliedFilters);
       const response = await getSTPLandFullkitInDaysData({
         graphflag: 1,
         appliedFilters: formattedFilters,
@@ -89,7 +89,7 @@ const STPLAndFullKits = () => {
       console.log(e);
       notifyError("Failed to fetch Graph data!");
     }
-  }, [getSTPLandFullkitInDaysData]);
+  };
 
   const getFilterData = async () => {
     try {
@@ -107,10 +107,10 @@ const STPLAndFullKits = () => {
   }, []);
 
   useEffect(() => {
-    if (!isGridView) {
-      getGraphData(appliedFilters);
+    if (!isGridView && Object.keys(appliedFilters).length) {
+      getGraphData();
     }
-  }, [appliedFilters, isGridView, getGraphData]);
+  }, [appliedFilters, isGridView]);
 
   useEffect(() => {
     if (isSuccess) notifySuccess("Fetched Data successfully!");
