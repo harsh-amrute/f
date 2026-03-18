@@ -30,11 +30,8 @@ import {
   DateValue,
   VFSelectedFilterLabel,
   AddFilterWrapper,
-  vBgRadius,
-  // setWithBgOverrides,
 } from "./styles.css";
-import { Fragment, ReactElement } from "react";
-import moment from "moment";
+import {  ReactElement } from "react";
 
 import { format } from "date-fns";
 import VFCommonFilter from "../../../../../VectorFlow/Pages/MTO/Common/VFCommonFilter";
@@ -52,7 +49,6 @@ import {
   textComparators,
   numberComparators,
 } from "../../../../../VectorFlow/Pages/MTO/Common/VFCommonFilter/InputTypes";
-import { assignInlineVars } from "@vanilla-extract/dynamic";
 
 type filterType = {
   label: string;
@@ -74,8 +70,6 @@ interface MTOActionToolBarProps {
   themeUi?: Theme | any;
   quickFilter?: ReactElement | null;
   WIPFilter?: ReactElement | null;
-
-  //// new props
   isGoBackButton?: boolean;
   isReleaseDate?: boolean;
   isAsOnDate?: boolean;
@@ -97,7 +91,8 @@ interface MTOActionToolBarProps {
   ReleaseOrderHeader?: ReactElement | null;
   saveBtnName?:string;
   resetBtnName?:string;
-  //// new props
+  releaseDateLabel?: string;
+  isExcelDisabled?:boolean
 }
 
 const MTOActionToolBar = ({
@@ -119,7 +114,6 @@ const MTOActionToolBar = ({
     isAddFilterButton,
     isExcelExport,
     isChartGridToggle,
-    // isWIPCheckBox,
     isFilterOpen,
     toggleFilter,
     multiFilter,
@@ -135,6 +129,8 @@ const MTOActionToolBar = ({
     ReleaseOrderHeader,
     saveBtnName,
     resetBtnName,
+    releaseDateLabel = "Release Date Till",
+    isExcelDisabled
 }: MTOActionToolBarProps) => {
   const handleRemoveFilter = (category: string, name: string) => {
     if (removeFilters) {
@@ -196,7 +192,7 @@ const MTOActionToolBar = ({
                 width: "100%",
               }}
             >
-              &nbsp;<p>Release Date Till</p>&nbsp;&nbsp;
+              &nbsp;<p>{releaseDateLabel}</p>&nbsp;&nbsp;
               <VFDatePicker
                 date={date ? new Date(date) : null}
                 onDateChange={onDateChange}
@@ -418,12 +414,18 @@ const MTOActionToolBar = ({
           ))}
 
         <>
+
           {isExcelExport && (
             <>
               <div className={SCVerticalDivider} />
               <div
                 className={SCViewContainerWithBg}
-                onClick={onExcelExportClick}
+                onClick={!isExcelDisabled ? onExcelExportClick : undefined}
+                style={{
+                  opacity: isExcelDisabled ? 0.5 : 1,
+                  pointerEvents: isExcelDisabled ? "none" : "auto",
+                  cursor: isExcelDisabled ? "not-allowed" : "pointer",
+                }}
               >
                 <>
                   <ExportExcelSVG theme={themeUi} />

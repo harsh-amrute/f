@@ -1,4 +1,4 @@
-import { primaryButton, secondaryButton } from "../../commons/styled/index.css";
+import { primaryButton, secondaryButton,  primaryBgVar } from "../../commons/styled/index.css";
 import {
   buttonsWrapper,
   urlsForm,
@@ -47,7 +47,7 @@ const DeleteUrl = (props: { onSuccess: () => void; onFailure: () => void }) => {
           className={primaryButton}
           type="button"
           style={assignInlineVars({
-            [focusOutlineVar]: focusColor,
+            [primaryBgVar]: focusColor,
           })}
           onClick={onSuccess}
         >

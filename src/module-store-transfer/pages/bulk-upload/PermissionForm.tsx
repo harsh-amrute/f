@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { SearchInputMultiple } from "../../../components";
+import { useEffect, useState } from "react";
+import {  SearchInputMultiple } from "../../../components";
 import { useUserData } from "../../../context";
 import Checkbox from "../../../components/VectorFLOW/commons/MTO/Checkbox";
-import { set } from "lodash";
 import { selectAllWrapper,
   sectionContainer,
   sectionTitle,
@@ -16,186 +15,171 @@ const PermissionForm = ({
   selectedPermissions,
   setSelectedPermissions,
   selectedApplication,
+  readOnly = false,
 }: any) => {
-  const [LL1, setLL1] = useState<any>(
-    Object.keys(currentAppAllPermissions.location_permission)
-  );
-  const [LL2, setLL2] = useState<any>([]);
-  const [LL3, setLL3] = useState<any>([]);
-  const [PL1, setPL1] = useState<any>(
-    Object.keys(currentAppAllPermissions.product_permission)
-  );
-  const [PL2, setPL2] = useState<any>([]);
-  const [PL3, setPL3] = useState<any>([]);
-  const [LL1Opts, setLL1Opts] = useState<any>(
-    LL1?.map((e: any) => {
-      return { label: e, value: e };
-    })
-  );
-  const [LL2Opts, setLL2Opts] = useState<any>([]);
-  const [LL3Opts, setLL3Opts] = useState<any>([]);
 
-  const [PL1Opts, setPL1Opts] = useState<any>(
-    PL1?.map((e: any) => {
-      return { label: e, value: e };
-    })
-  );
-  const [PL2Opts, setPL2Opts] = useState<any>([]);
-  const [PL3Opts, setPL3Opts] = useState<any>([]);
+
+  // Dynamic State
+  const [permissionTypes, setPermissionTypes] = useState<string[]>([]);
+  
+  // Stores all raw nodes for filtering: key = permissionType
+  const [allNodes, setAllNodes] = useState<Record<string, { L1: string[], L2: string[], L3: string[] }>>({});
+  
+  // Stores options for dropdowns: key = permissionType
+  const [options, setOptions] = useState<Record<string, { L1: any[], L2: any[], L3: any[] }>>({});
 
   useEffect(() => {
-    if (
-      !currentAppAllPermissions ||
-      !currentAppAllPermissions.location_permission ||
-      !currentAppAllPermissions.product_permission
-    ) {
-      return;
-    }
-    const l1Keys = Object.keys(currentAppAllPermissions.location_permission);
+    if (!currentAppAllPermissions) return;
 
-    const l2Keys: any = [];
-    const l3keys: any = [];
-    l1Keys.forEach((l1Key: any) => {
-      const l2Obj = currentAppAllPermissions.location_permission[l1Key];
+    const types = Object.keys(currentAppAllPermissions).filter(
+      (key) => key.endsWith("_permission") && typeof currentAppAllPermissions[key] === "object" && !Array.isArray(currentAppAllPermissions[key])
+    );
+    setPermissionTypes(types);
 
-      Object.keys(l2Obj).forEach((l2Key) => {
-        l2Keys.push(`${l1Key}>${l2Key}`);
+    const parsedNodes: Record<string, { L1: string[], L2: string[], L3: string[] }> = {};
 
-        const l3Array = l2Obj[l2Key];
-        if (Array.isArray(l3Array)) {
-          l3Array.forEach((entry: any) => {
-            if (entry.location_heirarchy_3) {
-              l3keys.push(`${l1Key}>${l2Key}>${entry.location_heirarchy_3}`);
+    types.forEach(type => {
+      const pData = currentAppAllPermissions[type];
+      const l1Keys = Object.keys(pData);
+      const l2Keys: string[] = [];
+      const l3Keys: string[] = [];
+
+      l1Keys.forEach(l1 => {
+        const l2Obj = pData[l1];
+        if (l2Obj) {
+          Object.keys(l2Obj).forEach(l2 => {
+            l2Keys.push(`${l1}>${l2}`);
+            
+            const l3Array = l2Obj[l2];
+            if (Array.isArray(l3Array)) {
+              l3Array.forEach((entry: any) => {
+                let l3Val = entry;
+                if (typeof entry === "object") {
+                     // Dynamic Key Extraction same as HeirarchyCanvas
+                     const prefix = type.split("_")[0];
+                     const candidateKeys = [
+                        `${prefix}_hierarchy_3`,
+                        "hierarchy_3"
+                    ];
+                    const foundKey = Object.keys(entry).find(k => candidateKeys.includes(k)) || Object.keys(entry)[0];
+                    l3Val = entry[foundKey];
+                }
+                
+                // Handle empty string L3
+                 if (l3Val !== undefined && l3Val !== null) {
+                    const l3Key = l3Val === "" 
+                        ? `${l1}>${l2}>` 
+                        : `${l1}>${l2}>${l3Val}`;
+                    l3Keys.push(l3Key);
+                }
+              });
             }
           });
         }
       });
+      parsedNodes[type] = { L1: l1Keys, L2: l2Keys, L3: l3Keys };
     });
-    setLL1(l1Keys);
-    setLL2(l2Keys);
-    setLL3(l3keys);
 
-    const P1Keys = Object?.keys(currentAppAllPermissions?.product_permission);
-    const p2Keys: any = [];
-    const p3keys: any = [];
-    P1Keys.forEach((p1Key: any) => {
-      const p2Obj = currentAppAllPermissions?.product_permission[p1Key];
-
-      Object.keys(p2Obj).forEach((p2Key) => {
-        p2Keys.push(`${p1Key}>${p2Key}`);
-        const p3Array = p2Obj[p2Key];
-        if (Array.isArray(p3Array)) {
-          p3Array.forEach((entry: any) => {
-            if (entry.product_hierarchy_3) {
-              p3keys.push(`${p1Key}>${p2Key}>${entry.product_hierarchy_3}`);
-            }
-          });
-        }
-      });
-    });
-    setPL1(P1Keys);
-    setPL2(p2Keys);
-    setPL3(p3keys);
+    setAllNodes(parsedNodes);
   }, [currentAppAllPermissions]);
 
+  // Effect to update Options based on Selections
   useEffect(() => {
-    setLL1Opts(
-      LL1.map((e: any) => {
-        return { label: e, value: e };
-      })
-    );
-    setPL1Opts(
-      PL1.map((e: any) => {
-        return { label: e, value: e };
-      })
-    );
-  }, [LL1, PL1]);
+    if (!selectedApplication || !permissionTypes.length) return;
 
-  // When LL1 changes → update LL2 options and selected LL2 (keep LL3 unchanged)
-  useEffect(() => {
-    if (!selectedApplication) return;
+    const newOptions: Record<string, { L1: any[], L2: any[], L3: any[] }> = {};
 
-    const selectedLocPerms =
-      selectedPermissions[selectedApplication]?.location_permission || [];
-    const newLL2Opts: any[] = [];
+    permissionTypes.forEach(type => {
+      const nodes = allNodes[type];
+      if (!nodes) return;
 
-    const selectedL1Keys = selectedLocPerms.map((e: any) => e[0]);
+      const currentPerms = selectedPermissions[selectedApplication]?.[type] || [];
+      
+      // Get IDs for IA check
+      const idKey = `${type}_permission_ids`;
+      const fallbackIdKey = `${type.replace("_permission", "")}_permission_ids`;
+      const permissionIds = currentAppAllPermissions[idKey] || currentAppAllPermissions[fallbackIdKey] || [];
 
-    LL2.forEach((ele: any) => {
-      if (selectedL1Keys.some((val: any) => val === ele.split(">")[0])) {
-        newLL2Opts.push(ele);
+      const checkIsIA = (level: number, parentKey: string, key: string) => {
+           // L1: hierarchy_1 == key, !hierarchy_2
+           // L2: hierarchy_1 == parentKey, hierarchy_2 == key, !hierarchy_3
+           const prefix = type.split('_')[0];
+           return permissionIds.some((p: any) => {
+               if (level === 0) {
+                   const h1 = p[`${prefix}_hierarchy_1`] || p.hierarchy_1;
+                   const h2 = p[`${prefix}_hierarchy_2`] || p.hierarchy_2;
+                   return h1 === key && (!h2 || h2 === "") && p.isActive;
+               } 
+               if (level === 1) {
+                   const h1 = p[`${prefix}_hierarchy_1`] || p.hierarchy_1;
+                   const h2 = p[`${prefix}_hierarchy_2`] || p.hierarchy_2;
+                   const h3 = p[`${prefix}_hierarchy_3`] || p.hierarchy_3;
+                   return h1 === parentKey && h2 === key && (!h3 || h3 === "") && p.isActive;
+               }
+               return false;
+           });
       }
-    });
-    setLL2Opts(newLL2Opts.map((e: any) => ({ label: e, value: e })));
-  }, [LL2, selectedPermissions, selectedApplication]);
 
-  useEffect(() => {
-    if (!selectedApplication) return;
+      // L1 Options: Include L1 Items AND L0 IA nodes
+      const l1Opts: any[] = [];
+      nodes.L1.forEach(k => {
+          l1Opts.push({ label: k, value: k });
+          // Check for L0 IA Node
+          if (checkIsIA(0, "", k)) {
+               // Value is now prime suffixed key: "ZoneA'"
+               l1Opts.push({ label: `${k}'`, value: `${k}'` });
+          }
+      });
+      
+      // L2 Options: Filter based on Selected L1
+      // We only care about standard L1 selections (e.g., ZoneA) for expansion.
+      // ZoneA' (IA) does not expand.
+      const selectedL1Keys = Array.from(new Set(currentPerms
+        .filter((e: any) => e.length >= 1 && !e[0].endsWith("'"))
+        .map((e: any) => e[0])));
+      
+      const l2Opts: any[] = [];
+      // 1. Add standard children
+      nodes.L2
+        .filter(l2 => selectedL1Keys.some((selL1: any) => selL1 === l2.split('>')[0]))
+        .forEach(l2 => {
+            l2Opts.push({ label: l2, value: l2 });
+            
+            // 2. Add L1 IA nodes for these children
+            // l2 is "ZoneA>GroupB"
+            const [p, c] = l2.split('>');
+            if (checkIsIA(1, p, c)) {
+                 // Value: "ZoneA>GroupB'"
+                 l2Opts.push({ label: `${l2}'`, value: `${l2}'` });
+            }
+        });
+        
+      // L3 Options: Filter based on Selected L2
+      // We only care about standard L2 selections.
+      const selectedL2Keys = Array.from(new Set(currentPerms
+        .filter((e: any) => e.length >= 2 && !e[1].endsWith("'") && !(e.length === 3 && e[2] === 'isActive')) // Clean up old isActive logic if present, but mainly check prime
+        .map((e: any) => `${e[0]}>${e[1]}`)));
+      
+      const l3Opts: any[] = [];
+      
+      // 1. Standard Children
+      nodes.L3
+        .filter(l3 => selectedL2Keys.some((selL2: any) => selL2 === l3.split('>').slice(0, 2).join('>')))
+        .forEach(l3 => {
+             const label = l3.endsWith('>') && l3.split('>').length === 3 && l3.split('>')[2] === '' 
+                ? l3.slice(0, -1) + '> ' 
+                : l3;
+             l3Opts.push({ label: label, value: l3 });
+        });
 
-    const selectedLocPerms =
-      selectedPermissions[selectedApplication]?.location_permission || [];
-    const newLL3Opts: any[] = [];
-
-    const selectedL2Keys = selectedLocPerms
-      .filter((e: any) => e.length >= 2)
-      .map((e: any) => `${e[0]}>${e[1]}`);
-
-    LL3.forEach((ele: any) => {
-      if (
-        selectedL2Keys.some(
-          (val: any) => val === ele.split(">").slice(0, 2).join(">")
-        )
-      ) {
-        newLL3Opts.push(ele);
-      }
-    });
-
-    setLL3Opts(newLL3Opts.map((e) => ({ label: e, value: e })));
-  }, [LL3, selectedPermissions, selectedApplication]);
-
-  useEffect(() => {
-    if (!selectedApplication) return;
-
-    const selectedProdPerms =
-      selectedPermissions[selectedApplication]?.product_permission || [];
-    const newPL2Opts: any[] = [];
-
-    const selectedP1Keys = selectedProdPerms.map((e: any) => e[0]);
-
-    PL2.forEach((ele: any) => {
-      if (selectedP1Keys.some((val: any) => val === ele.split(">")[0])) {
-        newPL2Opts.push(ele);
-      }
-    });
-
-    setPL2Opts(newPL2Opts.map((e) => ({ label: e, value: e })));
-  }, [PL2, selectedPermissions, selectedApplication]);
-
-  useEffect(() => {
-    if (!selectedApplication) return;
-
-    const selectedProdPerms =
-      selectedPermissions[selectedApplication]?.product_permission || [];
-    const newPL3Opts: any[] = [];
-
-    const selectedP2Keys = selectedProdPerms
-      .filter((e: any) => e.length >= 2)
-      .map((e: any) => `${e[0]}>${e[1]}`);
-
-    PL3.forEach((ele: any) => {
-      if (
-        selectedP2Keys.some(
-          (val: any) => val === ele.split(">").slice(0, 2).join(">")
-        )
-      ) {
-        newPL3Opts.push(ele);
-      }
+      newOptions[type] = { L1: l1Opts, L2: l2Opts, L3: l3Opts };
     });
 
-    setPL3Opts(newPL3Opts.map((e) => ({ label: e, value: e })));
-  }, [PL3, selectedPermissions, selectedApplication]);
+    setOptions(newOptions);
 
-  const getUniqueObjects = (arr: any, key: any) => {
+  }, [allNodes, selectedPermissions, selectedApplication, permissionTypes, currentAppAllPermissions]);
+
+  const getUniqueObjects=(arr:any, key:any)=> {
     const seen = new Set();
     return arr.filter((item: any) => {
       const val = item[key];
@@ -203,7 +187,8 @@ const PermissionForm = ({
       seen.add(val);
       return true;
     });
-  };
+  }
+  
   const getSelectedPermissions = ({
     selectedPermissions,
     selectedApplication,
@@ -220,28 +205,63 @@ const PermissionForm = ({
     if (level === 0) {
       val = permissionSet
         .filter((e: any) => e.length >= 1)
-        .map((e: any) => ({
-          value: e[0],
-          label: e[0],
-        }));
+        .map((e: any) => {
+             // Level 0 Dropdown: Show L1 Items AND L0 IA nodes
+             
+             // Case 1: L0 IA Node ("ZoneA'")
+             // It will be stored as ["ZoneA'"] (Length 1)
+             // Check if it ends with prime
+             if (e.length === 1 && e[0].endsWith("'")) {
+                 return { value: e[0], label: e[0] };
+             }
+             
+             // Case 2: Standard L1 Item ("ZoneA")
+             // It will be stored as ["ZoneA"] (Length 1)
+             return { value: e[0], label: e[0] };
+        })
+        .filter((e: any) => e !== null);
     }
 
     if (level === 1) {
       val = permissionSet
         .filter((e: any) => e.length >= 2)
         .map((e: any) => {
-          const joined = e.slice(0, 2).join(">");
-          return { value: joined, label: joined };
-        });
+           // Level 1: Show L2 Items AND L1 IA nodes
+           
+           // Filter out L0 IA nodes (already handled in L0)
+           // If permission is ["ZoneA'"] it waits in Level 0. Not here.
+           // Here we see length >= 2.
+           
+           // Case 1: L1 IA Node ("ZoneA>GroupB'")
+           // Stored as ["ZoneA", "GroupB'"]
+           if (e.length === 2 && e[1].endsWith("'")) {
+               return { value: `${e[0]}>${e[1]}`, label: `${e[0]}>${e[1]}` };
+           }
+
+           // Case 2: Standard L2 Item ("ZoneA>GroupB")
+           const joined = e.slice(0, 2).join(">");
+           return { value: joined, label: joined };
+        })
+        .filter((e: any) => e !== null);
     }
 
     if (level === 2) {
       val = permissionSet
         .filter((e: any) => e.length >= 3)
         .map((e: any) => {
+          // Level 2: Show L3 Items
+          
+          // Filter out L1 IA nodes (length 2).
+          
+          // Note: Standard L3 items are length 3.
           const joined = e.slice(0, 3).join(">");
-          return { value: joined, label: joined };
-        });
+          // Handle empty third level values
+          const displayLabel = e[2] === "" 
+            ? `${e[0]}>${e[1]}>` 
+            : joined;
+          return { value: joined, label: displayLabel };
+        })
+        .filter((e: any) => e !== null);
     }
 
     return getUniqueObjects(val, "value");
@@ -267,141 +287,249 @@ const PermissionForm = ({
     let newPerm: any[] = [];
 
     if (level === 0) {
-      // Level 0: Update top-level permissions
-      // Keep all permissions that don't start with any of the current level 0 values
+      // Update L0 Items (ZoneA) AND L0 IA Nodes (ZoneA')
+      
+      // Existing L0 Selections (Standard & IA)
+      // Both are length 1.
       const existingLevel0Values = Array.from(
         new Set(selectPermissions.map((perm: any) => perm[0]))
       );
-      // Remove permissions that start with deselected level 0 values
-      const permissionsToKeep = selectPermissions.filter((perm: any) =>
-        values.includes(perm[0])
-      );
-
-      // Add new level 0 permissions that don't exist
+      
+      const permissionsToKeep = selectPermissions.filter((perm: any) => {
+        // Keep if involved in current selection
+        // OR if it's deeper level (length > 1) and its parent is NOT involved in current interaction?
+        
+        // Wait. `values` contains ALL selected itmes for this dropdown.
+        // If "ZoneA" is unchecked, it won't be in `values`.
+        // If "ZoneA'" is unchecked, it won't be in `values`.
+        
+        // Check if this permission's L0 component is in `values`.
+        if (perm.length === 1) {
+            return values.includes(perm[0]);
+        }
+        
+        // For deeper permissions (children of ZoneA), we only keep them if their parent ZoneA is still "selected" implicitly?
+        // Actually, if ZoneA is unchecked in UI, we remove all children.
+        // But ZoneA is unchecked effectively if it is NOT in values.
+        // However, `values` only contains items visible in dropdown.
+        // If ZoneA is visible, and unselected -> Remove children.
+        // If ZoneA is hidden (not possible for L0), then keep.
+        
+        // But for L0, all L0 items are visible.
+        // So if `perm[0]` is not in `values`, passing.
+        
+        // EXCEPT: ZoneA' (IA) logic.
+        // ZoneA' is distinct. Unchecking ZoneA' should remove ZoneA'.
+        // Unchecking ZoneA should remove ZoneA children.
+        
+        // Logic:
+        // `values` contains "ZoneA" and "ZoneA'".
+        
+        // If `perm` is ["ZoneA'"] (Length 1, endsWith '):
+        // It must be in `values`.
+        if (perm.length === 1 && perm[0].endsWith("'")) {
+            return values.includes(perm[0]);
+        }
+        
+        // If `perm` starts with "ZoneA" (Standard):
+        // It must carry the semantic of "ZoneA parent selected".
+        // `values` must include "ZoneA".
+        if (perm[0].endsWith("'") === false) {
+             return values.includes(perm[0]);
+        }
+        
+        return false;
+      });
+      
       const newLevel0Permissions = values
         .filter((value: string) => !existingLevel0Values.includes(value))
-        .map((value: string) => [value]);
-
+        .map((value: string) => [value]); // Pure L0 or L0'
+      
       newPerm = [...permissionsToKeep, ...newLevel0Permissions];
     }
 
     if (level === 1) {
-      // Level 1: Update second-level permissions
-      const valMap = values.map((item: string) => item.split(">"));
+      // Update L1 Items (ZoneA>GroupB) AND L1 IA nodes (ZoneA>GroupB')
+      
+      const valMap = values; 
 
-      // Get all existing level 1 combinations (parent>child)
-      const existingLevel1Combinations = selectPermissions
-        .filter((perm: any) => perm.length >= 2)
+      // Identifying visible items in THIS dropdown
+      const existingVisibleCombinations = selectPermissions
+        .filter((perm: any) => {
+             // Exclude L0 IA (Length 1, endsWith ')
+             if (perm.length === 1 && perm[0].endsWith("'")) return false;
+             
+             // Include L1 IA (Length 2, endsWith ')
+             if (perm.length === 2 && perm[1].endsWith("'")) return true;
+             
+             // Include L1 Standard (Length >= 2, no ')
+             // Note: Standard items don't have ' in path parts usually.
+             if (perm.length >= 2 && !perm[1].endsWith("'")) return true;
+             
+             return false;
+        })
         .map((perm: any) => `${perm[0]}>${perm[1]}`);
-
-      // Keep permissions that match selected level 1 values OR are deeper levels of selected values
+      
       const permissionsToKeep = selectPermissions.filter((perm: any) => {
+        // 1. Keep L0 IA nodes untouched (Length 1)
+        if (perm.length === 1 && perm[0].endsWith("'")) return true;
+        
+        // 2. Check L0 Standard Items (Parents)
+        // If we represent ZoneA (via valMap or context), we normally explode it.
+        // If we serve ZoneA options, we remove generic ZoneA parent.
         if (perm.length === 1) {
-          // Keep level 0 permissions that don't have any level 1 selections
-          return !valMap.some(([parent]) => parent === perm[0]);
-        } else if (perm.length >= 2) {
-          // Keep level 1+ permissions that are in the selected values
-          const permLevel1Key = `${perm[0]}>${perm[1]}`;
-          return values.includes(permLevel1Key);
+            const parentName = perm[0];
+            const isParentInvolved = valMap.some((v: string) => v.split('>')[0] === parentName);
+            if (isParentInvolved) return false; // Replace generic parent with specific children
+            return true;
         }
+        
+        // 3. Visible Items (L1 IA or L1 Standard) -> Keep if in values
+        const isVisible = (
+            (perm.length === 2 && perm[1].endsWith("'")) ||
+            (perm.length >= 2 && !perm[1].endsWith("'"))
+        );
+        
+        if (isVisible) {
+             const key = `${perm[0]}>${perm[1]}`;
+             return values.includes(key);
+        }
+
+        // 4. Deeper Items (children of L1 items)
+        if (perm.length >= 3 && !perm[1].endsWith("'")) {
+             const parentKey = `${perm[0]}>${perm[1]}`;
+             return values.includes(parentKey);
+        }
+        
         return false;
       });
+      
+      // Add New
+      const newItems = valMap
+        .filter((v: string) => !existingVisibleCombinations.includes(v))
+        .map((v: string) => v.split('>'));
+      
+      newPerm = [...permissionsToKeep, ...newItems];
 
-      // Add new level 1 permissions
-      const newLevel1Permissions = valMap
-        .filter(([parent, child]) => {
-          const key = `${parent}>${child}`;
-          return !existingLevel1Combinations.includes(key);
-        })
-        .map(([parent, child]) => [parent, child]);
+      // Post-Processing: Restore Parent if Last Child Removed (Level 1)
+      const removedVisibleItems = existingVisibleCombinations.filter((comb: string) => !values.includes(comb));
 
-      // Add back level 0 permissions for parents that have level 1 selections
-      const parentsWithLevel1 = Array.from(
-        new Set(valMap.map(([parent]) => parent))
-      );
-      const level0ToAdd = parentsWithLevel1
-        .filter(
-          (parent: string) =>
-            !selectPermissions.some(
-              (perm: any) => perm.length === 1 && perm[0] === parent
-            ) &&
-            !permissionsToKeep.some(
-              (perm: any) => perm.length === 1 && perm[0] === parent
-            )
-        )
-        .map((parent: string) => [parent]);
+      removedVisibleItems.forEach((removedComb: string) => {
+        const parts = removedComb.split('>');
+        // Removed item is A>B (Length 2). Parent A (Length 1).
 
-      newPerm = [...permissionsToKeep, ...newLevel1Permissions, ...level0ToAdd];
+        if (parts.length > 1) {
+          const parentParts = parts.slice(0, -1);
+          const parentKey = parentParts.join('>');
+
+          // Check if Parent is already in newPerm
+          const parentExists = newPerm.some((p: any) => p.join('>') === parentKey);
+          if (parentExists) return;
+
+          // Check if any sibling exists in newPerm
+          const siblingExists = newPerm.some((p: any) => {
+            if (p.length <= parentParts.length) return false;
+            return p.slice(0, parentParts.length).join('>') === parentKey;
+          });
+
+          if (!siblingExists) {
+            newPerm.push(parentParts);
+          }
+        }
+      });
     }
 
     if (level === 2) {
-      // Level 2: Update third-level permissions
-      const valMap = values.map((item: string) => item.split(">"));
-
-      // Get all existing level 2 combinations
-      const existingLevel2Combinations = selectPermissions
-        .filter((perm: any) => perm.length >= 3)
-        .map((perm: any) => `${perm[0]}>${perm[1]}>${perm[2]}`);
-
-      // Keep permissions that match selected level 2 values OR are not affected by this level
+      // Update L2 Items (ZoneA>GroupB>WH1)
+      // L1 IA nodes (ZoneA>GroupB') are moved to L1 dropdown.
+      
+      const valMap = values; 
+      
+      const existingVisibleCombinations = selectPermissions
+        .filter((perm: any) => {
+             // Exclude L1 IA
+             if (perm.length === 2 && perm[1].endsWith("'")) return false;
+             // Include L2 Standard
+             if (perm.length >= 3) return true;
+             return false;
+        })
+        .map((perm: any) => perm.join('>')); 
+      
       const permissionsToKeep = selectPermissions.filter((perm: any) => {
-        if (perm.length === 1) {
-          // Keep level 0 permissions that don't have any level 2 selections affecting them
-          return !valMap.some(([parent]) => parent === perm[0]);
-        } else if (perm.length === 2) {
-          // Keep level 1 permissions that don't have any level 2 selections affecting them
-          return !valMap.some(
-            ([parent, child]) => parent === perm[0] && child === perm[1]
-          );
-        } else if (perm.length >= 3) {
-          // Keep level 2+ permissions that are in the selected values
-          const permLevel2Key = `${perm[0]}>${perm[1]}>${perm[2]}`;
-          return values.includes(permLevel2Key);
-        }
-        return false;
+         // 1. Keep Higher Level IA nodes untouched
+         if (perm.length === 1 && perm[0].endsWith("'")) return true;
+         if (perm.length === 2 && perm[1].endsWith("'")) return true;
+
+         // 2. Check Ancestors (L0, L1 Standard)
+         const currentPath = valMap.find((v: string) => {
+             return v.split('>').slice(0, perm.length).join('>') === perm.join('>');
+         });
+         
+         if (perm.length === 1 && currentPath) return false; 
+         if (perm.length === 2 && currentPath) return false; 
+         
+        // Fix: If Parent (Length 1 or 2) matches scope but has NO selected children, KEEP IT.
+        // This ensures that deselecting the last child reverts to the Parent selection (implicit all).
+        if (perm.length === 2 && !currentPath) return true;
+        if (perm.length === 1 && !currentPath) return true;
+
+         // 3. Visible Items (L3 Standard)
+         if (perm.length >= 3) {
+             const key = perm.join('>');
+             const match = values.some((v: string) => {
+                const vKey = v.endsWith('>') && v.split('>').length === 3 && v.split('>')[2] === '' 
+                    ? `${v} ` 
+                    : v;
+                return v === key;
+             });
+             return match;
+         }
+         
+         return false;
       });
+      
+      const newItems = valMap
+        .filter((v: string) => !existingVisibleCombinations.includes(v))
+        .map((v: string) => {
+          const parts = v.split(">");
+          if (parts.length === 2) parts.push("");
+          else if (parts.length === 3 && parts[2] === undefined) parts[2] = "";
+          return parts;
+        });
+      
+      newPerm = [...permissionsToKeep, ...newItems];
 
-      // Add new level 2 permissions
-      const newLevel2Permissions = valMap
-        .filter(([parent, child, subChild]) => {
-          const key = `${parent}>${child}>${subChild}`;
-          return !existingLevel2Combinations.includes(key);
-        })
-        .map(([parent, child, subChild]) => [parent, child, subChild]);
+      // Post-Processing: Restore Parent if Last Child Removed
+      // Identify what was removed
+      const removedVisibleItems = existingVisibleCombinations.filter((comb: string) => !values.includes(comb));
 
-      // Add back level 0 and level 1 permissions for hierarchy
-      const parentsWithLevel2 = Array.from(
-        new Set(valMap.map(([parent]) => parent))
-      );
-      const level1WithLevel2 = Array.from(
-        new Set(valMap.map(([parent, child]) => `${parent}>${child}`))
-      );
+      removedVisibleItems.forEach((removedComb: string) => {
+        const parts = removedComb.split('>');
+        // Potential Parent is parts.slice(0, -1)
+        // If we are at L2, removed item is A>B>C (Length 3). Parent A>B (Length 2).
+        // If we are at L1, removed item is A>B (Length 2). Parent A (Length 1).
 
-      const level0ToAdd = parentsWithLevel2
-        .filter(
-          (parent: string) =>
-            !permissionsToKeep.some(
-              (perm: any) => perm.length === 1 && perm[0] === parent
-            )
-        )
-        .map((parent: string) => [parent]);
+        if (parts.length > 1) {
+          const parentParts = parts.slice(0, -1);
+          const parentKey = parentParts.join('>');
 
-      const level1ToAdd = level1WithLevel2
-        .filter((parentChild: string) => {
-          const [parent, child] = parentChild.split(">");
-          return !permissionsToKeep.some(
-            (perm: any) =>
-              perm.length === 2 && perm[0] === parent && perm[1] === child
-          );
-        })
-        .map((parentChild: string) => parentChild.split(">"));
+          // Check if Parent is already in newPerm
+          const parentExists = newPerm.some((p: any) => p.join('>') === parentKey);
+          if (parentExists) return;
 
-      newPerm = [
-        ...permissionsToKeep,
-        ...newLevel2Permissions,
-        ...level0ToAdd,
-        ...level1ToAdd,
-      ];
+          // Check if any sibling exists in newPerm
+          // Sibling has same parent prefix
+          const siblingExists = newPerm.some((p: any) => {
+            if (p.length <= parentParts.length) return false;
+            return p.slice(0, parentParts.length).join('>') === parentKey;
+          });
+
+          if (!siblingExists) {
+            // Restore Parent!
+            newPerm.push(parentParts);
+          }
+        }
+      });
     }
 
     // Update the selected permissions state
@@ -416,244 +544,225 @@ const PermissionForm = ({
 
   const themeUi = useUserData().user.user.theme_ui;
 
-  const isSelectAll = (selectedPermissions: any, isProduct: boolean) => {
-    if (!selectedApplication) return false;
 
-    const currentPermissions = selectedPermissions[selectedApplication] || {};
-    if (isProduct) {
-      const prodPerms = currentPermissions["product_permission"] || [];
-      const totalProdPerms = PL3.length;
-      
-      const selectedProdPermsCount = prodPerms.filter((e: any) => e.length === 3).length;
-      return selectedProdPermsCount === totalProdPerms;
+  const getAllPossiblePermissions = (type: string) => {
+      const nodes = allNodes[type];
+      if (!nodes) return [];
 
-    } else {
-      const locPerms = currentPermissions["location_permission"] || [];
+      const idKey = `${type}_permission_ids`;
+      const fallbackIdKey = `${type.replace("_permission", "")}_permission_ids`;
+      const permissionIds = currentAppAllPermissions[idKey] || currentAppAllPermissions[fallbackIdKey] || [];
+      const prefix = type.split('_')[0];
+
+      const checkIsIA = (level: number, parentKey: string, key: string) => {
+           return permissionIds.some((p: any) => {
+               if (level === 0) {
+                   return (p[`${prefix}_hierarchy_1`] === key || p.hierarchy_1 === key) && 
+                          (!p[`${prefix}_hierarchy_2`] && !p.hierarchy_2) && 
+                          p.isActive;
+               } 
+               if (level === 1) {
+                   return (p[`${prefix}_hierarchy_1`] === parentKey || p.hierarchy_1 === parentKey) && 
+                          (p[`${prefix}_hierarchy_2`] === key || p.hierarchy_2 === key) && 
+                          (!p[`${prefix}_hierarchy_3`] && !p.hierarchy_3) && 
+                          p.isActive;
+               }
+               return false;
+           });
+      }
+
+      const l1 = nodes.L1.map(k => [k]);
+      // Use prime suffix for L0 IA
+      const l1IA = nodes.L1.filter(k => checkIsIA(0, "", k)).map(k => [`${k}'`]);
       
-      const totalLocPerms = LL3.length;
-      const selectedLocPermsCount = locPerms.filter((e: any) => e.length === 3).length;
-      return selectedLocPermsCount === totalLocPerms;
-    }
+      const l2 = nodes.L2.map(k => k.split('>'));
+      const l2IA = nodes.L2
+        .filter(k => {
+            const [p, c] = k.split('>');
+            return checkIsIA(1, p, c);
+        })
+        .map(k => {
+             const [p, c] = k.split('>');
+             // Use prime suffix for L1 IA child
+             return [p, `${c}'`];
+        });
+      
+      const l3 = nodes.L3.map(k => {
+          const parts = k.split('>');
+          if (parts.length === 2) parts.push("");
+          else if (parts.length === 3 && parts[2] === undefined) parts[2] = "";
+          return parts.length === 3 ? parts : [...parts, ""];
+      });
+
+      return [...l1, ...l1IA, ...l2, ...l2IA, ...l3];
   }
 
-  const setAllPermissions = (isProductPermission:boolean) => {
-    if (!selectedApplication) return;
+  const isSelectAll = (selectedPermissions: any, type: string) => {
+    if (!selectedApplication || !allNodes[type]) return false;
 
-    if (isSelectAll(selectedPermissions, isProductPermission)) {
+    const currentPermissions = selectedPermissions[selectedApplication]?.[type] || [];
+    const allPossible = getAllPossiblePermissions(type);
+    
+    if (allPossible.length === 0) return false;
+    
+    // Check if every possible permission is in currentPermissions
+    // We compare stringified versions for deep equality check
+    const currentSet = new Set(currentPermissions.map((p: any) => p.join('>')));
+    return allPossible.every(p => currentSet.has(p.join('>')));
+  }
+
+  const setAllPermissions = (type: string) => {
+    if (!selectedApplication || !allNodes[type]) return;
+
+    if (isSelectAll(selectedPermissions, type)) {
       // Deselect all
       setSelectedPermissions((prev: any) => ({
         ...prev,
         [selectedApplication]: {
-          location_permission: !isProductPermission ? [] : prev[selectedApplication]?.location_permission,
-          product_permission: isProductPermission ? [] : prev[selectedApplication]?.product_permission,
+          ...prev[selectedApplication],
+          [type]: [],
         },
       }));
     } else {
       // Select all
-      const allLocPerms = LL3.map((e: any) => e.split(">"));
-      const allProdPerms = PL3.map((e: any) => e.split(">"));
-
+      const allPerms = getAllPossiblePermissions(type);
+      
       setSelectedPermissions((prev: any) => ({
         ...prev,
         [selectedApplication]: {
-          location_permission: !isProductPermission ? allLocPerms : prev[selectedApplication]?.location_permission,
-          product_permission: isProductPermission ? allProdPerms : prev[selectedApplication]?.product_permission,
+          ...prev[selectedApplication],
+          [type]: allPerms,
         },
       }));
     }
   };
 
+  const getLabel = (type: string) => {
+      const name = type.replace("_permission", "").replace(/_/g, " ");
+      return name.charAt(0).toUpperCase() + name.slice(1) + " Permission"; 
+  }
+
+  // Define Headers manually if needed to match specific designs, or generic:
+  // Since we don't know the exact headers for dynamic types (e.g. Zone vs Business), 
+  // we will use generic Level 1, Level 2, Level 3 labels or derive from keys if possible.
+  // For now using generic labels or mapping if known type.
+  const getHeaderLabel = (type: string, level: number) => {
+      const base = type.split('_')[0];
+      if (base === 'location') {
+          if (level === 0) return 'Zone';
+          if (level === 1) return 'Location Group';
+          if (level === 2) return 'WH Type';
+      }
+      if (base === 'product') {
+          if (level === 0) return 'Business';
+          if (level === 1) return 'Category';
+          if (level === 2) return 'Value';
+      }
+      return `Level ${level + 1}`;
+  }
+
+
   return (
     <div style={{ padding: "40px 20px 20px 20px" }}>
-      <div className={sectionContainer}>
-        <div className={titleContainer}>
-        <h4 className={sectionTitle}>Product Permission</h4>
-            <div style={{ marginBottom: "20px", fontSize: "14px", fontWeight: 600, display: 'flex', justifyContent: 'right', alignItems: 'center'}}>
-            <div className={selectAllWrapper}>
-            <Checkbox
-                          style={{ zoom: 0.5 }}
-                          theme={themeUi}
-                          type="checkbox"
-                          checked={isSelectAll(selectedPermissions, true)}
-                          onClick={(e) => e.stopPropagation()} // prevent double trigger
-                          onChange={(e: any) => {setAllPermissions(true)}}
-                          />
-                        <label style={{ cursor: "pointer" }}>Select All</label>
-
-              </div>
-            </div>
-          
-        </div>
-        <div className={grid}>
-        <div className={selectContainer}>
-        <label className={label}>Business</label>
-        <SearchInputMultiple
-              disabled={false}
-              placeholder="Select"
-              options={PL1Opts}
-              value={getSelectedPermissions({
-                selectedPermissions,
-                selectedApplication,
-                permissionType: "product_permission",
-                level: 0,
-              })}
-              setValue={(e: any) => {
-                updateSelectedPermissions({
-                  val: e,
-                  selectedPermissions,
-                  selectedApplication,
-                  permissionType: "product_permission",
-                  level: 0,
-                });
-              }}
-              key={1}
-            />
-          </div>
-          <div className={selectContainer}>
-            <label className={label}>Category</label>
-            <SearchInputMultiple
-              placeholder="Select"
-              disabled={false}
-              options={PL2Opts}
-              value={getSelectedPermissions({
-                selectedPermissions,
-                selectedApplication,
-                permissionType: "product_permission",
-                level: 1,
-              })}
-              setValue={(e: any) => {
-                updateSelectedPermissions({
-                  val: e,
-                  selectedPermissions,
-                  selectedApplication,
-                  permissionType: "product_permission",
-                  level: 1,
-                });
-              }}
-              key={2}
-            />
-          </div>
-          <div className={selectContainer}>
-            <label className={label}>Value</label>
-            <SearchInputMultiple
-              placeholder="Select"
-              disabled={false}
-              options={PL3Opts}
-              value={getSelectedPermissions({
-                selectedPermissions,
-                selectedApplication,
-                permissionType: "product_permission",
-                level: 2,
-              })}
-              setValue={(e: any) => {
-                updateSelectedPermissions({
-                  val: e,
-                  selectedPermissions,
-                  selectedApplication,
-                  permissionType: "product_permission",
-                  level: 2,
-                });
-              }}
-              key={3}
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className={sectionContainer}>
-      <div className={titleContainer}>
-      <h4 className={sectionTitle}>Location Permission</h4>
-              <div style={{ marginBottom: "20px", fontSize: "14px", fontWeight: 600, display: 'flex', justifyContent: 'right', alignItems: 'center'}}>
-              <div className={selectAllWrapper}>
-              <Checkbox
-                            style={{ zoom: 0.5 }}
-                            theme={themeUi}
-                            type="checkbox"
-                            checked={isSelectAll(selectedPermissions, false)}
-                            onClick={(e) => e.stopPropagation()} // prevent double trigger
-                            onChange={(e: any) => {setAllPermissions(false)}}
-                            />
-                          <label style={{ cursor: "pointer" }}>Select All</label>
-
-                </div>
-              </div>
-              
-            </div>
-            <div className={grid}>
-            <div className={selectContainer}>
-            <label className={label}>Zone</label>
-            <SearchInputMultiple
-              placeholder="Select"
-              disabled={false}
-              options={LL1Opts}
-              value={getSelectedPermissions({
-                selectedPermissions,
-                selectedApplication,
-                permissionType: "location_permission",
-                level: 0,
-              })}
-              setValue={(e: any) => {
-                updateSelectedPermissions({
-                  val: e,
-                  selectedPermissions,
-                  selectedApplication,
-                  permissionType: "location_permission",
-                  level: 0,
-                });
-              }}
-              key={4}
-            />
-          </div>
-          <div className={selectContainer}>
-            <label className={label}>Location Group</label>
-            <SearchInputMultiple
-              placeholder="Select"
-              disabled={false}
-              options={LL2Opts}
-              value={getSelectedPermissions({
-                selectedPermissions,
-                selectedApplication,
-                permissionType: "location_permission",
-                level: 1,
-              })}
-              setValue={(e: any) => {
-                updateSelectedPermissions({
-                  val: e,
-                  selectedPermissions,
-                  selectedApplication,
-                  permissionType: "location_permission",
-                  level: 1,
-                });
-              }}
-              key={5}
-            />
-          </div>
-          <div className={selectContainer}>
-            <label className={label}>WH Type</label>
-            <SearchInputMultiple
-              placeholder="Select"
-              disabled={false}
-              options={LL3Opts}
-              value={getSelectedPermissions({
-                selectedPermissions,
-                selectedApplication,
-                permissionType: "location_permission",
-                level: 2,
-              })}
-              setValue={(e: any) => {
-                updateSelectedPermissions({
-                  val: e,
-                  selectedPermissions,
-                  selectedApplication,
-                  permissionType: "location_permission",
-                  level: 2,
-                });
-              }}
-              key={6}
-            />
-          </div>
-        </div>
-      </div>
+        {permissionTypes.map((type) => (
+             <div className={sectionContainer} key={type}>
+             <div className={titleContainer}>
+                 <div className={sectionTitle}>{getLabel(type)}</div>
+                 <div style={{ marginBottom: "20px", fontSize: "14px", fontWeight: 600, display: 'flex', justifyContent: 'right', alignItems: 'center'}}>
+                   {!readOnly && (
+                     <div className={selectAllWrapper}>
+                     <Checkbox
+                                 id={`selectAll_${type}`}
+                                 style={{ zoom: 0.5 }}
+                                 theme={themeUi}
+                                 type="checkbox"
+                                 checked={isSelectAll(selectedPermissions, type)}
+                                 onClick={(e) => e.stopPropagation()}
+                                 onChange={(e: any) => {setAllPermissions(type)}}
+                                 />
+                               <label htmlFor={`selectAll_${type}`} style={{ cursor: "pointer" }}>Select All</label>
+       
+                     </div>
+                   )}
+                 </div>
+               
+             </div>
+             <div className={grid}>
+               <div className={selectContainer}>
+                   <div className={label}>{getHeaderLabel(type, 0)}</div>
+                 <SearchInputMultiple
+                   disabled={readOnly}
+                   placeholder="Select"
+                   options={options[type]?.L1 || []}
+                   value={getSelectedPermissions({
+                     selectedPermissions,
+                     selectedApplication,
+                     permissionType: type,
+                     level: 0,
+                   })}
+                   setValue={(e: any) => {
+                     updateSelectedPermissions({
+                       val: e,
+                       selectedPermissions,
+                       selectedApplication,
+                       permissionType: type,
+                       level: 0,
+                     });
+                   }}
+                   key={1}
+                 />
+               </div>
+               <div className={selectContainer}>
+                 <div className={label}>{getHeaderLabel(type, 1)}</div>
+                 <SearchInputMultiple
+                   placeholder="Select"
+                   disabled={readOnly}
+                   options={options[type]?.L2 || []}
+                   value={getSelectedPermissions({
+                     selectedPermissions,
+                     selectedApplication,
+                     permissionType: type,
+                     level: 1,
+                   })}
+                   setValue={(e: any) => {
+                     updateSelectedPermissions({
+                       val: e,
+                       selectedPermissions,
+                       selectedApplication,
+                       permissionType: type,
+                       level: 1,
+                     });
+                   }}
+                   key={2}
+                 />
+               </div>
+               <div className={selectContainer}>
+                 <div className={label}>{getHeaderLabel(type, 2)}</div>
+                 <SearchInputMultiple
+                   placeholder="Select"
+                   disabled={readOnly}
+                   options={options[type]?.L3 || []}
+                   value={getSelectedPermissions({
+                     selectedPermissions,
+                     selectedApplication,
+                     permissionType: type,
+                     level: 2,
+                   })}
+                   setValue={(e: any) => {
+                     updateSelectedPermissions({
+                       val: e,
+                       selectedPermissions,
+                       selectedApplication,
+                       permissionType: type,
+                       level: 2,
+                     });
+                   }}
+                   key={3}
+                 />
+               </div>
+             </div>
+           </div>
+        ))}
     </div>
   );
 };

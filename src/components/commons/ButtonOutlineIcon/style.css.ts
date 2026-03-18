@@ -15,10 +15,16 @@ export const buttonOutlineIcon = style({
   border: `1px solid ${accent}`,
   backgroundColor: bgVar,
   cursor: "pointer",
+  display: 'flex', 
+  alignItems: 'center',
+  padding: '10px 16px',
   selectors: {
     '&[data-disabled="true"]': {
       cursor: "not-allowed",
       opacity: 0.7,
+    },
+    '&:hover': {
+      scale: '1.02' 
     },
   },
 });

@@ -11,10 +11,11 @@ interface TaskPendingTaskBarProps {
   onCancel: () => void;
   disableSubmit: boolean;
   isSideBarOpen: boolean;
+  isAllDataVisible:boolean;
 }
 
 const TaskPendingTaskBar = (props: TaskPendingTaskBarProps) => {
-  const { onCancel, onSubmit, disableSubmit, isSideBarOpen } = props;
+  const { onCancel, onSubmit, disableSubmit, isSideBarOpen, isAllDataVisible } = props;
 
   const { user } = useUserData();
 
@@ -36,14 +37,14 @@ const TaskPendingTaskBar = (props: TaskPendingTaskBarProps) => {
         >
           Cancel
         </VFButtonOutline>
-        <VFButton
+        {!isAllDataVisible && <VFButton
           onClick={onSubmit}
           themeUi={user.user.theme_ui}
           disabled={disableSubmit}
           width={137}
         >
           Submit
-        </VFButton>
+        </VFButton>}
       </div>
     </div>
   );

@@ -67,45 +67,46 @@ const TaskStatus = ()=>{
         return new Date(year, month, day, hours, minutes);
       }
 
-    const onDownloadTaskDetails = async(payload:any)=>{
+        const onDownloadTaskDetails = async(payload:any)=>{
+                
+            try{
+                const actionName = getActionName(payload.Actiontype).value
+                const response = await getTaskDetailDownloadData({taskId:payload.TaskID,approverId:payload.ApproverId})
+                const currentTaskMaster = response.data.data[0]
+                const currentTaskMasterId:number = currentTaskMaster.MasterId
+                
+                const uiConfigurationResponse = await getMasterUIConfiguration(actionName)
+                
+                const masters:Master[] = uiConfigurationResponse.data.data
+                const currentMasterFields = masters.find((master:Master)=>master.id==currentTaskMasterId)
         
-       try{
-        const actionName = getActionName(payload.Actiontype).value
-        const response = await getTaskDetailDownloadData({taskId:payload.TaskID,approverId:payload.ApproverId})
-        const currentTaskMaster = response.data.data[0]
-        const currentTaskMasterId:number = currentTaskMaster.MasterId
-        
-        const uiConfigurationResponse = await getMasterUIConfiguration(actionName)
-        
-        const masters:Master[] = uiConfigurationResponse.data.data
-        const currentMasterFields = masters.find((master:Master)=>master.id==currentTaskMasterId)
-
-        if(!currentTaskMaster.data){
-            notifyError('Task Details Can be only downloaded by the Approver');
-            return
-        }
-       
-         if(currentMasterFields) {
-            setCurrentMasterName(currentMasterFields.name);
-            let dataToAnalyze = currentTaskMaster.data[0];
-            if (payload.Actiontype == 2 && dataToAnalyze.new) {
-                dataToAnalyze = typeof dataToAnalyze.new === 'string'
-                    ? JSON.parse(dataToAnalyze.new)
-                    : dataToAnalyze.new;
+                if(!currentTaskMaster.data){
+                    notifyError('Task Details Can be only downloaded by the Approver');
+                    return
+                }
+            
+                if(currentMasterFields) {
+                    setCurrentMasterName(currentMasterFields.name);
+                    let dataToAnalyze = currentTaskMaster.data[0];
+                    if (payload.Actiontype == 2 && dataToAnalyze.new) {
+                        dataToAnalyze = typeof dataToAnalyze.new === 'string'
+                            ? JSON.parse(dataToAnalyze.new)
+                            : dataToAnalyze.new;
+                    }
+                const existingColumns = getExistingColumns(dataToAnalyze);
+                let existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields.fields)
+                if(actionName === "remove") {
+                    existingColumnFields = existingColumnFields.filter(field => field?.isDelete);
+                }
+                setTempAgGridColDefs(mapMasterToTaskStatusColumnGroupDefs(currentTaskMasterId,existingColumnFields,currentTaskMasterId,actionName))
+                setTempAgridRowData(mapTaskStatusDataToRowData(currentTaskMasterId,currentTaskMaster.data,existingColumnFields,actionName))
+                setTempDownloadData(true)
+                }
+            }catch(error:any){
+                notifyError(error.message)
             }
-        const existingColumns = getExistingColumns(dataToAnalyze);
-        let existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields.fields)
-          if(actionName === "remove") {
-            existingColumnFields = existingColumnFields.filter(field => field?.isDelete);
-          }
-          setTempAgGridColDefs(mapMasterToTaskStatusColumnGroupDefs(currentTaskMasterId,existingColumnFields,currentTaskMasterId,actionName))
-          setTempAgridRowData(mapTaskStatusDataToRowData(currentTaskMasterId,currentTaskMaster.data,existingColumnFields,actionName))
-          setTempDownloadData(true)
-        }
-       }catch(error:any){
-        notifyError(error.message)
-       }
-    }
+            }
+ 
 
     const rowData = data?.data.data || []
     // rowData = rowData.map((row:any)=>{

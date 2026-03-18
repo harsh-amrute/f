@@ -143,7 +143,7 @@ const MTOAddRecord = () => {
    const calendarModifiedColDefs = ()=>{
     if(activeMaster.id === 504){
       const calendarModifiedColDef = activeMaster.colDefs.filter((colDef: any) => {
-        if (colDef.field !== "plid" && colDef.field !== "rb" && colDef.field !== "rd") {
+        if (colDef.field !== "rb" && colDef.field !== "rd") {
           return true;
         }
         return false;
@@ -208,9 +208,10 @@ const MTOAddRecord = () => {
                         : setIsDisabled(true);
                     }
                   }}
-                  defaultColDef= {
-                    {flex: (activeMaster.id===501 || activeMaster.id===503)? 1: 0}
-                  }
+                  defaultColDef= {{
+                    flex: (activeMaster.id===501 || activeMaster.id===503)? 1: 0,
+                      suppressHeaderMenuButton:true
+                  }}
                   // onCellEditingStopped={ onDataChange}
                   maintainColumnOrder
                   />

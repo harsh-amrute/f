@@ -34,10 +34,10 @@ const VFTable = forwardRef((props: VFTableProps, ref: any) => {
 
   return (
     <div
-      className={`${VFTableWrapper} ${getClassName() || ""} ag-theme-alpine`.trim()}
+      className={`${VFTableWrapper} ${getClassName()} ag-theme-alpine vfwrap`}
+      role="table"
       style={assignInlineVars({
-        [vHeight]: props.height,
-        [vZoom]:"1"
+        [vHeight]: props.height || "auto",
       })}
     >
       <AgGridReact
@@ -47,6 +47,15 @@ const VFTable = forwardRef((props: VFTableProps, ref: any) => {
         defaultColDef={{
           resizable: true,
           ...props.defaultColDef,
+          cellStyle:{
+            "flex":1,
+            'textAlign':'center',
+            'height':'50px',
+            "fontStyle":"normal",
+            "display":"block",
+            'textOverflow':'ellipsis',
+            'whiteSpace':'nowrap'
+          },
         }}
         paginationPageSizeSelector={false}
         suppressDragLeaveHidesColumns={true}

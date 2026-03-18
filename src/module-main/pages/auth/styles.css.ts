@@ -72,7 +72,7 @@ export const CaptchaContainer = style({
   borderRadius: "8px",
   border: "1px solid #ccc",
   width: "fit-content",
-  marginTop: "20px",
+  marginTop: "25px",
 });
 
 export const CaptchaReload = style({
@@ -215,7 +215,6 @@ export const SCButtonLoginDisabled = style([
 ]);
 
 export const LinkRouter = style({
-  fontSize: "0.8vw",
   fontWeight: 500,
   fontFamily: "Roboto, sans-serif",
   letterSpacing: 0,
@@ -262,7 +261,7 @@ export const ArrowArea = style({ display: "flex", alignItems: "center" });
 
 /* -------------------- Inputs group / boxes -------------------- */
 export const InputArea = style({
-  marginTop: "6vh",
+  marginTop: "8vh",
   background:
     "transparent linear-gradient(278deg, #f2f3f6 0%, #e5e6ec 100%) 0% 0% no-repeat padding-box",
   boxShadow: "6px 6px 20px #c5c5c5, -6px -6px 20px #ffffff",
@@ -376,7 +375,6 @@ export const WelcomeText = style({
 });
 
 export const GoBackButton = style({
-  fontSize: "0.8vw",
   fontWeight: 500,
   fontFamily: "Roboto, sans-serif",
   letterSpacing: 0,

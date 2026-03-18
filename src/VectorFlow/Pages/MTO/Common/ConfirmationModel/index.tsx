@@ -144,7 +144,7 @@ const ConfirmationModel: React.FC<ConfirmationModelProps> = ({
             cursor: !selectedOption ? "not-allowed" : "pointer",
           }}
         >
-          Okay
+          Ok
         </VFButtonOutline>
       </div>
     </VFModalCard>
