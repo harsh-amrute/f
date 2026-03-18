@@ -1,9 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { type DailyDataGraph } from "../../../../types/MTA";
-
 import { VFFloatingTabItemProps } from "../../../../../components/VectorFLOW/commons/VFFloatingTab";
 import HorizontalSplitView from "./HorizontalSplitView";
-
 import VerticalSplitView from "./VerticalSplitView";
 import {
   getColumnsForExcelExport,
@@ -12,13 +9,11 @@ import {
   getColumnDefinationsMTA,
   CsvExportMTA,
 } from "../../../../../helpers/utils";
-
 import {
   useGetARDataCount,
   useGetARData,
   useGetARSummaryData,
 } from "../../../../Services/MTA/SupplyChainIntelligenceHub/AvailabilityReport";
-
 import { ColDef } from "ag-grid-enterprise";
 import { ARTableHeader } from "./styles.css";
 import CategoryCellRenderer from "./CategoryCellRenderer";
@@ -41,12 +36,9 @@ import { useUserData } from "../../../../../context";
 import { BPRFilterState } from "../../../../types/BPR";
 import { BTRCategoryTextToNumberMapper } from "../../../../../helpers/BPRConstants";
 import useGetLastRunData from "../../../../../hooks/useGetLastRunData";
-
 import _ from "lodash";
-
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import type { RootState } from "../../../../../redux/store/store";
-
 import { useGetUIConfigData } from "../../../../Services/MTA/Common/UIConfig";
 import { UIColumnConfigName } from "../../../../../helpers/Enum";
 import { useGetState } from "../../../../Services/MTA/Common/UserUIConfig";
@@ -103,19 +95,19 @@ const useAR = () => {
   } = useBPRFilter();
 
   const EnvConfig = useSelector((state: RootState) => state.mta.EnvConfig);
-  const BTR_ROWS_PER_PAGE = EnvConfig["BTR_ROWS_PER_PAGE"];
-  const rowsPerPage = parseInt(BTR_ROWS_PER_PAGE || "50");
+  const AR_ROWS_PER_PAGE = EnvConfig["AR_ROWS_PER_PAGE"];
+  const rowsPerPage = parseInt(AR_ROWS_PER_PAGE || "50");
 
   const [userPageSizeTech, setUserPageSizeTech] = useState<number>(
-    BTR_ROWS_PER_PAGE ? parseInt(BTR_ROWS_PER_PAGE) : 50
+    AR_ROWS_PER_PAGE ? parseInt(AR_ROWS_PER_PAGE) : 50
   );
   const [userPageSizeEco, setUserPageSizeEco] = useState<number>(
-    BTR_ROWS_PER_PAGE ? parseInt(BTR_ROWS_PER_PAGE) : 50
+    AR_ROWS_PER_PAGE ? parseInt(AR_ROWS_PER_PAGE) : 50
   );
   const [userPageSizeTechForBoth, setuserPageSizeTechForBoth] =
-    useState<number>(BTR_ROWS_PER_PAGE ? parseInt(BTR_ROWS_PER_PAGE) : 50);
+    useState<number>(AR_ROWS_PER_PAGE ? parseInt(AR_ROWS_PER_PAGE) : 50);
   const [userPageSizeEcoForBoth, setUserPageSizeEcoBoth] = useState<number>(
-    BTR_ROWS_PER_PAGE ? parseInt(BTR_ROWS_PER_PAGE) : 50
+    AR_ROWS_PER_PAGE ? parseInt(AR_ROWS_PER_PAGE) : 50
   );
 
   const { mutateAsync: getARData, isLoading } = useGetARData();
@@ -757,7 +749,7 @@ const useAR = () => {
                 rowData={techRowData}
                 {...gridProps}
                 pagination={false}
-                paginationPageSize={parseInt(BTR_ROWS_PER_PAGE || "100")}
+                paginationPageSize={parseInt(AR_ROWS_PER_PAGE || "100")}
                 maintainColumnOrder
                 onGridReady={(params) => setTechInternalRef(params)}
                 onFilterChanged={() => {
@@ -796,7 +788,7 @@ const useAR = () => {
                 rowData={ecoRowData}
                 {...gridProps}
                 pagination={false}
-                paginationPageSize={parseInt(BTR_ROWS_PER_PAGE || "100")}
+                paginationPageSize={parseInt(AR_ROWS_PER_PAGE || "100")}
                 maintainColumnOrder
                 onGridReady={(params) => setEcoInternalRef(params)}
                 onFilterChanged={() => {
@@ -900,7 +892,7 @@ const useAR = () => {
         pageNumber: pageNumber,
       },
       ISExport: "1",
-      reportName: "BTR",
+      reportName: "AR",
       stream: 1,
       responseType: `arraybuffer`,
     };

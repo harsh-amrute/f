@@ -15,9 +15,7 @@ import VFFloatingTab from "../../../../../components/VectorFLOW/commons/VFFloati
 import ActionToolBar from "../../SupplyChainIntelligenceHub/Planning/ActionToolBar";
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
 import LastRunDateComponent from "../../../../../components/commons/lastRundate";
-import DailyDataGraphModal from "../../../../../components/VectorFLOW/commons/DailyDataGraphModal";
 import OverlayLoader from "../../../../../VectorFlow/Pages/MTO/Common/Loader";
-import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons/NormChangeHistoryTable";
 import "./style.css";
 
 const AvailabilityReport = () => {
