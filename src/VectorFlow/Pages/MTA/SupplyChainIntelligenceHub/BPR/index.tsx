@@ -63,6 +63,8 @@ const BPR = () => {
       onResetCallback,
       savePageSize,
       userPageSize,
+      onTabChange,
+      activeTab,
     } = useBPR();
 
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
@@ -118,6 +120,8 @@ const BPR = () => {
           disableSubmitEditedRowsBtn={editedRows.length === 0}
           lastRunDate={lastRunDate}
           generalFilterOptions={generalFilterOptions}
+          onTabChange={(val: any) => onTabChange(val)}
+          activeNormTab={activeTab}
         />
       </div>
       {lastRunDate && <LastRunDateComponent lastRunDate={lastRunDate} />}
