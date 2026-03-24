@@ -352,8 +352,13 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
 
   const shouldShowTags = currCategory === 'BPR' || currCategory === 'RRR' || currCategory === 'BOR';
 
+  const isAvailabilityReport = window.location.pathname === '/mta/supply-chain-intelligence-hub/availability-report';
+
+  const visibleFilterOptions = isAvailabilityReport ? [] : availabilityFilterOptions;
+
   return (
     <>
+    {visibleFilterOptions.length > 0 && (
       <div className={filterGroup}>
         <div className={filterColumn} style={{ minWidth: "400px", maxWidth: "none" }}>
           <div className={textWrapper}>Select Operation</div>
@@ -432,7 +437,7 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
           ))}
         </div>
       </div>
-
+    )}
       {(shouldShowColorFilters || isBTRReport) && (
         <div className={filterGroup} style={{ marginTop: "1px" }}>
           <div className={filterColumn}>
