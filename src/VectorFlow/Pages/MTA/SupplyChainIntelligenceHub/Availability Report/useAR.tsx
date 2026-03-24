@@ -36,7 +36,6 @@ import { useUserData } from "../../../../../context";
 import { BPRFilterState } from "../../../../types/BPR";
 import { BTRCategoryTextToNumberMapper } from "../../../../../helpers/BPRConstants";
 import useGetLastRunData from "../../../../../hooks/useGetLastRunData";
-import _ from "lodash";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../../../../redux/store/store";
 import { useGetUIConfigData } from "../../../../Services/MTA/Common/UIConfig";
@@ -45,7 +44,7 @@ import { useGetState } from "../../../../Services/MTA/Common/UserUIConfig";
 import { GridRef } from "../../../../types/MDM";
 import Summary from "./Summary";
 import TodaysColorCellRenderer from "./TodaysColorCellRenderer";
-
+import _, { round } from "lodash";
 const useAR = () => {
   const ecoRef = useRef<GridRef>();
   const techRef = useRef<GridRef>();
@@ -374,25 +373,65 @@ const useAR = () => {
       }));
 
       if (techStats.length > 0) {
+        const techBlack = techStats.find(
+          (i: any) => i.TechColor.toLowerCase() === "black"
+        );
+        const techGrey = techStats.find(
+          (i: any) => i.TechColor.toLowerCase() === "grey"
+        );
+        const grandTotal = techStats[0].grand_total;
         formattedTech.push({
           Category: "Total",
-          AbsoluteNo: techStats[0].grand_total,
+          AbsoluteNo: grandTotal,
           Percentage: "100%",
         });
+
+        if (techBlack && techGrey) {
+          const techAvailability =
+            ((grandTotal - techBlack.color_count - techGrey.color_count) /
+              (grandTotal - techGrey.color_count)) *
+            100;
+
+          formattedTech.push({
+            Category: "Availability",
+            AbsoluteNo: "-",
+            Percentage: `${round(techAvailability)}%`,
+          });
+        }
       }
 
       const formattedEco = ecoStats.map((item: any) => ({
         Category: item.EcoColor,
-        AbsoluteNo: item.item_count,
+        AbsoluteNo: item.color_count,
         Percentage: `${item.percentage.toFixed(2)}%`,
       }));
 
       if (ecoStats.length > 0) {
+        const ecoBlack = ecoStats.find(
+          (i: any) => i.EcoColor.toLowerCase() === "black"
+        );
+        const ecoGrey = ecoStats.find(
+          (i: any) => i.EcoColor.toLowerCase() === "grey"
+        );
+        const grandTotal = ecoStats[0].grand_total;
         formattedEco.push({
           Category: "Total",
-          AbsoluteNo: ecoStats[0].grand_total,
+          AbsoluteNo: grandTotal,
           Percentage: "100%",
         });
+
+        if (ecoBlack && ecoGrey) {
+          const ecoAvailability =
+            ((grandTotal - ecoBlack.color_count - ecoGrey.color_count) /
+              (grandTotal - ecoGrey.color_count)) *
+            100;
+
+          formattedEco.push({
+            Category: "Availability",
+            AbsoluteNo: "-",
+            Percentage: `${round(ecoAvailability)}%`,
+          });
+        }
       }
 
       setTechSummaryData(formattedTech);

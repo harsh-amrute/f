@@ -169,7 +169,7 @@ const SummaryTable = ({
         disableZoomScaling
         rowHeight={38}
         sideBar={null}
-        height="93.6%"
+        height="103%"
         columnDefs={summaryColDefs}
         rowData={rowData}
         defaultColDef={summaryDefaultColDef}

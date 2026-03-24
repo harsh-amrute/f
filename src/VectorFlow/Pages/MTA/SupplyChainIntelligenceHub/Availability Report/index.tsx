@@ -3,7 +3,7 @@ import {
   ARLayoutWrapper,
   ToggleViewBtnWrapper,
 } from "./styles.css";
-import useBTR from "./useAR";
+import useAR from "./useAR";
 import {
   SCViewBackground,
   SCViewContainer,
@@ -49,7 +49,7 @@ const AvailabilityReport = () => {
     setHorizon,
     lastRunDate,
     onResetCallback,
-  } = useBTR();
+  } = useAR();
 
   return (
     <GridStateContext.Provider
