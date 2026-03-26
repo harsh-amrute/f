@@ -724,22 +724,8 @@ const MTOViewModify = () => {
       )}
       {!isSelectMasterOpen && (
           <VFTaskBar
-            showSubmittedExportError={errorCount > 0}
-            // masterProgress={(!bufferModifyData)?"initial":(bufferModifyData?"editOnline":"editOnlineSubmitted")}
-            masterProgress={editStatus}
-            disableSubmit={activeMaster.rowData?.length === 0}
-            enableEditOnlineReset={enableEditOnlineReset}
-            disableDeleteSelected={activeMaster.rowData?.length < 1}
-            onReset={onReset}
-            onSaveToDraft={
-              activeMaster.isMTO ? onMTOSaveAsDraft : onSaveToDraft
-            }
-            onEditOnlineSave={onEditOnlineSave}
-            editOnline={editOnline}
-            onEditOnline={() => onEditOnline("editOnline")}
             onBack={onBackButton}
             onClearAndExportErrors={onClearExportError}
-            onModifyData={() => toggleUploadModal(true)}
             onExportData={() => {
               if (activeMaster.id === 503) {
                 tempRef?.current?.api &&
@@ -756,16 +742,6 @@ const MTOViewModify = () => {
               }
               handleExportData();
             }}
-            onSubmit={onSubmit}
-            onSubmitConflictData={() => onSubmit(true)}
-            onDeleteSelected={deleteSelected}
-            onPhaseInPhaseOutStop={() => onPIPOStatusUpdate()}
-            onDeleteData={() => console.log("")}
-            onDeleteOnlineReset={() => console.log("")}
-            onDeleteOnlineSubmit={() => console.log("")}
-            onDeleteOnline={() => console.log("")}
-            masterId={activeMaster.id}
-            mtoSaveData={true}
             onMTOSaveData={onMTOSaveBufferData}
             isMTOSaveDataDisabled={isDataModified()}
             isMTODraftDisabled={
