@@ -38,7 +38,6 @@ import {
   SCFilterSeperator,
   SCLegend,
 } from "./styles.css";
-import { assignInlineVars } from '@vanilla-extract/dynamic';
 import SubmitConflictModal from "./SubmitConflictModal";
 import useViewModify from "./useViewModify";
 import VFTaskBar from "./VFTaskbar";
@@ -742,15 +741,15 @@ const MTOViewModify = () => {
               }
               handleExportData();
             }}
-            onMTOSaveData={onMTOSaveBufferData}
-            isMTOSaveDataDisabled={isDataModified()}
-            isMTODraftDisabled={
+            onSaveData={onMTOSaveBufferData}
+            isSaveDataDisabled={isDataModified()}
+            isDraftDisabled={
               (activeMaster.id === 501 &&
                 !(bufferModifyData && bufferModifyData?.length > 0)) ||
               (activeMaster.id === 502 &&
                 !(ccrModifyData && ccrModifyData?.length > 0))
             }
-            onMTOSaveAsDraft={onMTOSaveAsDraft}
+            onSaveAsDraft={onMTOSaveAsDraft}
           />
       )}
 

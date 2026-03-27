@@ -7,11 +7,11 @@ export interface VFTaskBarProps {
   onBack: () => void;
   onExportData: () => void;
   onClearAndExportErrors: (skipClear?: boolean) => void;
-  onMTOSaveData?: () => void;
-  isMTOSaveDataDisabled?: boolean;
-  onMTOSaveAsDraft?: () => void;
-  isMTODraftDisabled?: boolean;
-  isMTOExcludeButton?: boolean;
+  onSaveData?: () => void;
+  isSaveDataDisabled?: boolean;
+  onSaveAsDraft?: () => void;
+  isDraftDisabled?: boolean;
+  isExcludeButton?: boolean;
 }
 
 const VFTaskBar = (props: VFTaskBarProps) => {
@@ -19,11 +19,11 @@ const VFTaskBar = (props: VFTaskBarProps) => {
     onBack,
     onExportData,
     onClearAndExportErrors,
-    onMTOSaveData,
-    isMTOSaveDataDisabled,
-    onMTOSaveAsDraft,
-    isMTODraftDisabled,
-    isMTOExcludeButton,
+    onSaveData,
+    isSaveDataDisabled,
+    onSaveAsDraft,
+    isDraftDisabled,
+    isExcludeButton,
   } = props;
 
   const { user, isSideBarOpen } = useUserData();
@@ -88,7 +88,7 @@ const VFTaskBar = (props: VFTaskBarProps) => {
           >
             Export Data
           </VFButtonOutline>
-          {isMTOExcludeButton && (
+          {isExcludeButton && (
             <VFButton
               onClick={() => onClearAndExportErrors(false)}
               themeUi={themeUi}
@@ -101,28 +101,28 @@ const VFTaskBar = (props: VFTaskBarProps) => {
           <VFButtonOutline
             style={{ display: "none" }}
             onClick={
-              onMTOSaveAsDraft
-                ? onMTOSaveAsDraft
+              onSaveAsDraft
+                ? onSaveAsDraft
                 : () => {
                     return null;
                   }
             }
             themeUi={themeUi}
-            disabled={isMTODraftDisabled}
+            disabled={isDraftDisabled}
             width={139}
           >
             Save As Draft
           </VFButtonOutline>
           <VFButtonOutline
             onClick={
-              onMTOSaveData && !isMTOSaveDataDisabled
-                ? onMTOSaveData
+              onSaveData && !isSaveDataDisabled
+                ? onSaveData
                 : () => {
                     return null;
                   }
             }
             themeUi={themeUi}
-            disabled={isMTOSaveDataDisabled}
+            disabled={isSaveDataDisabled}
             width={139}
           >
             Save As Tasks

@@ -293,11 +293,11 @@ const MTOAddRecord = () => {
             onBack={onBackButton}
             onClearAndExportErrors={()=>onClearExportError()}
             onExportData={handleExportData}
-            onMTOSaveData={ onMTOSaveBufferData}
-            isMTOSaveDataDisabled={((activeMaster?.rowData?.some((row:any)=>row?.err?.error!=='')))}
-            onMTOSaveAsDraft={onMTOSaveAsDraft}
-            isMTODraftDisabled={((activeMaster?.rowData.some((row:any)=>row?.err?.error!=='')))}
-            isMTOExcludeButton={activeMaster?.rowData.some((row:any)=>row?.err?.error!=='')}
+            onSaveData={ onMTOSaveBufferData}
+            isSaveDataDisabled={((activeMaster?.rowData?.some((row:any)=>row?.err?.error!=='')))}
+            onSaveAsDraft={onMTOSaveAsDraft}
+            isDraftDisabled={((activeMaster?.rowData.some((row:any)=>row?.err?.error!=='')))}
+            isExcludeButton={activeMaster?.rowData.some((row:any)=>row?.err?.error!=='')}
           />
         }
         </React.Fragment>
