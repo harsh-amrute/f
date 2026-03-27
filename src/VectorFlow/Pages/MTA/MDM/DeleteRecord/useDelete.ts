@@ -34,7 +34,7 @@ const useDelete=()=>{
     const {mutateAsync:deleteDraft} = useDeleteDraft()
 
 
-    const [TASK_ID,setTaskId] = useState<string>();
+    // const [TASK_ID,setTaskId] = useState<string>();
     const [conflictCount,setConflictCount] = useState<number>(0);
     const [errorCount,setErrorCount] = useState<number>(0);
     const [errorData,setErrorData] = useState<Array<any>>([]);
@@ -274,17 +274,18 @@ const useDelete=()=>{
               }
               
               if(taskId === '' && i!==0) throw new Error("Something Went Wrong");
-
-              if(TASK_ID === '' || TASK_ID === undefined){
+             
+              
+              if(taskId === ''  || taskId === undefined || !taskId){
                 payload.TaskId = data.data.taskId;
                 taskId = data.data.taskId;
               }
               else{
-                payload.TaskId = TASK_ID;
-                taskId = TASK_ID;
+                payload.TaskId = taskId;
+                // taskId = TASK_ID;
               }
 
-              setTaskId(data.data.taskId);
+              // setTaskId(data.data.taskId);
               
               if(data.data.conflictErrorCount){
                 conflictCount += parseInt(data.data.conflictErrorCount,10);

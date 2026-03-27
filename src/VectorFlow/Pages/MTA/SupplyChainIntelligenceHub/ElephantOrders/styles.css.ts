@@ -115,6 +115,16 @@ export const imageWrapper = style({
   display: 'block',
 });
 
+
+export const calendarPopup = style({
+  position: 'fixed',
+  zIndex: 9999,
+  boxShadow: '0px 8px 24px rgba(0, 0, 0, 0.15)',
+  borderRadius: 8,
+  overflow: 'hidden',
+  // top / left are set inline from getBoundingClientRect()
+});
+
 /* ==================
    StyledCalendar base
    ================== */
