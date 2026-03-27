@@ -49,6 +49,8 @@ const AvailabilityReport = () => {
     setHorizon,
     lastRunDate,
     onResetCallback,
+    onTabChange,
+    activeTab,
   } = useAR();
 
   return (
@@ -86,6 +88,8 @@ const AvailabilityReport = () => {
           onApplyFilter={onApplyFilter}
           horizon={horizon}
           onChangeHorizon={(value: number) => setHorizon(value)}
+          onTabChange={(val: any) => onTabChange(val)}
+          activeTab={activeTab}
         />
       </div>
       {lastRunDate && <LastRunDateComponent lastRunDate={lastRunDate} />}

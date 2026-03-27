@@ -51,6 +51,24 @@ const useAR = () => {
   const tempRef = useRef();
   const [techInternalRef, setTechInternalRef] = useState<any>();
   const [ecoInternalRef, setEcoInternalRef] = useState<any>();
+  const [activeTab, setActiveTab] = useState<"norm" | "virtualnorm">(
+    "virtualnorm"
+  );
+
+  const onTabChange = (tabValue: "norm" | "virtualnorm") => {
+    setActiveTab(tabValue);
+    const tempFilter = getPreparedFilter(currFilter);
+
+    if (currentTab.id === "1") {
+      getSummaryData(tempFilter, 1, undefined, tabValue);
+    } else if (currentTab.id === "2") {
+      getDataTech(tempFilter, currentPageTech, userPageSizeTech, tabValue);
+    } else if (currentTab.id === "3") {
+      getDataEco(tempFilter, currentPageEco, userPageSizeEco, tabValue);
+    } else if (currentTab.id === "4") {
+      getData(tempFilter, 1);
+    }
+  };
   const tabs: Array<VFFloatingTabItemProps> = [
     {
       id: "1",
@@ -312,7 +330,8 @@ const useAR = () => {
   const getDataTech = async (
     filter: any,
     pageNumber: number,
-    pageSize?: number
+    pageSize?: number,
+    toggleOverride?: "norm" | "virtualnorm"
   ) => {
     const payload = {
       id: 0,
@@ -324,6 +343,7 @@ const useAR = () => {
         recordsPerPage: pageSize || userPageSizeTech,
       },
       ISExport: "0",
+      toggle: toggleOverride ?? activeTab,
     };
     const loaderId = notifyLoader("Loading data");
     try {
@@ -341,7 +361,8 @@ const useAR = () => {
   const getSummaryData = async (
     filter: any,
     pageNumber: number,
-    pageSize?: number
+    pageSize?: number,
+    toggleOverride?: "norm" | "virtualnorm"
   ) => {
     const payload = {
       id: 0,
@@ -353,6 +374,7 @@ const useAR = () => {
         recordsPerPage: pageSize || userPageSizeTech,
       },
       ISExport: "0",
+      toggle: toggleOverride ?? activeTab,
     };
 
     const loaderId = notifyLoader("Loading summary data");
@@ -446,7 +468,8 @@ const useAR = () => {
   const getDataEco = async (
     filter: any,
     pageNumber: number,
-    pageSize?: number
+    pageSize?: number,
+    toggleOverride?: "norm" | "virtualnorm"
   ) => {
     const payload = {
       id: 0,
@@ -458,6 +481,7 @@ const useAR = () => {
         recordsPerPage: pageSize || userPageSizeEco,
       },
       ISExport: "0",
+      toggle: toggleOverride ?? activeTab,
     };
     const loaderId = notifyLoader("Loading data");
     try {
@@ -989,6 +1013,8 @@ const useAR = () => {
     setHorizon,
     lastRunDate,
     onResetCallback,
+    onTabChange,
+    activeTab,
   };
 };
 
