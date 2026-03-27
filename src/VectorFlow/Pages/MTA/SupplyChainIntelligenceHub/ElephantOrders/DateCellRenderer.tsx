@@ -10,7 +10,7 @@ import {
   buttonWrapper,
   imageWrapper,
   calendarBase,
-  // calendarPopup,
+  calendarPopup,           
 } from "./styles.css";
 
 interface AGGridProps {
@@ -64,9 +64,15 @@ const DateCellRenderer = (props: AGGridProps) => {
     if (disabled) return;
     const rect = inputRef.current?.getBoundingClientRect();
     if (rect) {
+      const CALENDAR_WIDTH = 250;
+      const viewportWidth = window.innerWidth;
+      const wouldOverflowRight = rect.left + CALENDAR_WIDTH > viewportWidth;
+
       setCalendarPosition({
-        top: rect.bottom + window.scrollY,
-        left: rect.left + window.scrollX - 20,
+        top: rect.bottom + 4,
+        left: wouldOverflowRight
+          ? rect.right - CALENDAR_WIDTH   
+          : rect.left,                    
       });
     }
     setShowCalendar((prev) => !prev);
@@ -138,8 +144,11 @@ const DateCellRenderer = (props: AGGridProps) => {
         ReactDOM.createPortal(
           <div
             ref={calendarRef}
-            // className={calendarPopup}
-            style={{ top: calendarPosition.top, left: calendarPosition.left }}
+            className={calendarPopup}                   
+            style={{
+              top: calendarPosition.top,
+              left: calendarPosition.left,
+            }}
           >
             <Calendar
               className={`${calendarBase} ${

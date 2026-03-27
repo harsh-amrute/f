@@ -30,6 +30,7 @@ const useTaskPendingForReview = ()=>{
     const [currentPage,setCurrentPage] = useState<number>(1)
     const [showApproveAllModal,toggleApproveAllModal] = useState<boolean>(false);
     const [showRejectAllModal,toggleRejectAllModal] = useState<boolean>(false);
+    const [disableSubmitButton,setDisableSubmitButton] = useState<boolean>(false);
     const [selectionType,setSelectionType] = useState<string>('');
     const [currMasterId,setCurrMasterId] = useState<number>(0)
 
@@ -343,6 +344,7 @@ useEffect(() => {
 
     const onTaskSubmit = async () => {
         let toastId;
+        setDisableSubmitButton(true);
         const updatedRowData = createTaskPendingSubmitPayload(detailTableRowData,taskActionype || 0,currMasterId)
         try {
             const noActionPerformed = updatedRowData.find((row:any)=>row.status === '');
@@ -374,6 +376,7 @@ useEffect(() => {
                 await approveTask(payload);
             }
             toast.dismiss(toastId);
+            setDisableSubmitButton(false);
             setIsViewTableOpen(true);
             setDetailTableColDefs([]);
             setDetailTableRowData([]);
@@ -483,6 +486,13 @@ useEffect(() => {
 
     const onSelectionTypeSuccess1 = (status:string,) => {       
         if (selectionType === 'All') {
+            if(status === 'Approved') {
+            toggleApproveAllModal(false);
+            }
+            else{
+            toggleRejectAllModal(false);
+            }
+            
             bulkUploadAllRecords(status);
             return;
 
@@ -603,7 +613,8 @@ useEffect(() => {
         chunkSize,
         onSelectionTypeSuccess1,
         handleChangePage1,
-        isBulkAction
+        isBulkAction,
+        disableSubmitButton
     }
 }
 
