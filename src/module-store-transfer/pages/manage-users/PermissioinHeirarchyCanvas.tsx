@@ -81,6 +81,8 @@ const CustomNode = ({
   } = useNodeDataContext();
 
   const { user } = useUserData();
+const inherited_access = user.config_data?.INHERITED_ACCESS
+  const isInheritedOn = inherited_access === 1 || inherited_access === true || inherited_access === "1"
 
   const getPathArray = (key: string) => {
     if (!key) return [];
@@ -116,14 +118,16 @@ const CustomNode = ({
     };
   };
   
-  const { isActive, h_id } = getNodeMeta();
+  const { h_id } = getNodeMeta();
+
 // level 0 = L1, level 1 = L2, level 2 = L3
   const isL3Node = data.level==2;
   
   const shouldDisable =
-    readOnly || !h_id || (!isL3Node && !data?.hasChildren);  //L3 - no h_id , L1 and L2  - no h_id and no children = disable checkbox
-  
-
+    readOnly ||
+    !h_id ||
+    (!isL3Node && !data?.hasChildren && !isInheritedOn) 
+   
   const getSelectionState = (key: string) => {
     const path = getPathArray(key);
     const permissionList = getPermissionList();

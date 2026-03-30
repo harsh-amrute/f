@@ -27,8 +27,8 @@ const PermissionForm = ({
   
   // Stores options for dropdowns: key = permissionType
   const [options, setOptions] = useState<Record<string, { L1: any[], L2: any[], L3: any[] }>>({});
-  const user = useUserData();
-  const inherited_access = user.user.config_data.INHERITED_ACCESS
+  const {user} = useUserData();
+  const inherited_access = user.config_data?.INHERITED_ACCESS
   const isInheritedOn = inherited_access === 1 || inherited_access === true || inherited_access === "1"
 
   useEffect(() => {
@@ -91,6 +91,12 @@ const PermissionForm = ({
           return true;
         }
       
+        // h_id + no chidlren + no inherited_acess --> remove
+        if (has && !hasChildren && !isInheritedOn) {
+          return false;
+        }
+      
+
         // h_id + no children + OFF → remove
         return false;
       });
@@ -123,6 +129,11 @@ const PermissionForm = ({
             return true;
           }
         
+           //h_id+no chidlren + no inherited_acess --> remove
+            if (has && !hasChildren && !isInheritedOn) {
+          return false;
+          }
+          
           // h_id + no children + OFF → remove
           return false;
         });
