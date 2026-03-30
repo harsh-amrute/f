@@ -77,6 +77,7 @@ const CustomNode = ({
     selectedApplication,
     permissionType,
     readOnly,
+    permissionIds
   } = useNodeDataContext();
 
   const { user } = useUserData();
@@ -92,7 +93,36 @@ const CustomNode = ({
     (selectedPermissions?.[selectedApplication]?.[permissionType] ??
       []) as string[][];
 
-
+  const getNodeMeta = () => {
+    const path = getPathArray(data.key);
+    const prefix = permissionType.split("_")[0];
+  
+    const match = permissionIds?.find((p: any) => {
+      const h1 = p[`${prefix}_hierarchy_1`] || p.hierarchy_1;
+      const h2 = p[`${prefix}_hierarchy_2`] || p.hierarchy_2;
+      const h3 = p[`${prefix}_hierarchy_3`] || p.hierarchy_3;
+  
+      if (path.length === 1) return h1 === path[0] && (!h2 || h2 === "") && (!h3);
+      if (path.length === 2) return h1 === path[0] && h2 === path[1] && (!h3);
+      if (path.length === 3) return h1 === path[0] && h2 === path[1] && h3 === path[2];
+  
+      return false;
+    });
+  
+  
+    return {
+      isActive: match?.isActive ?? true,  
+      h_id: match?.h_id,
+    };
+  };
+  
+  const { isActive, h_id } = getNodeMeta();
+// level 0 = L1, level 1 = L2, level 2 = L3
+  const isL3Node = data.level==2;
+  
+  const shouldDisable =
+    readOnly || !h_id || (!isL3Node && !data?.hasChildren);  //L3 - no h_id , L1 and L2  - no h_id and no children = disable checkbox
+  
 
   const getSelectionState = (key: string) => {
     const path = getPathArray(key);
@@ -292,9 +322,10 @@ const CustomNode = ({
         <Checkbox
           checked={getSelectionState(data.key) !== "unchecked"}
           onChange={readOnly ? undefined : setTheChecked}
-          disabled={readOnly}
+          disabled={shouldDisable}
           theme={user.user.theme_ui}
           style={{
+            opacity : shouldDisable ? 0.8 : 1,
             zoom: 0.7,
             minWidth: '18px',
             minHeight: '18px',
@@ -877,8 +908,6 @@ export default function PermissionHeirarchyCanvas({
         });
       }
     });
-
-
     return { nodes: finalNodes, edges: finalEdges };
   };
 
@@ -979,6 +1008,10 @@ export default function PermissionHeirarchyCanvas({
         permissionType,
         setSelectedPermissions,
         readOnly,
+        permissionIds:
+      selectedAppAllPermissions?.[`${permissionType}_permission_ids`] ||
+      selectedAppAllPermissions?.[`${permissionType.replace("_permission", "")}_permission_ids`] ||
+      [],
       }}
     >
       <div

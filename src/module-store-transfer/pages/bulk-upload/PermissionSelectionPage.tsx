@@ -710,10 +710,8 @@ const PermissionSelectionPage = ({
         notifyError("Failed to register Users! Please try again!")
         console.error("Error updating roles for selected users", e);
       }
-    }
-
-
-    const columnDefs: ColDef[] = [
+  }
+  const columnDefs: ColDef[] = [
       {
         headerName: isFinalView?"Error":"",
         field: isFinalView?"error":"checkbox",
@@ -757,7 +755,7 @@ const PermissionSelectionPage = ({
       { headerName: "Username", field: "username", suppressFillHandle: true, filter: 'agMultiColumnFilter' },
       { headerName: "Email ID", field: "email", suppressFillHandle: true, filter: 'agMultiColumnFilter' },
       {
-        headerName: "Password", field: "pwd", suppressFillHandle: true, filter: 'agMultiColumnFilter', cellRenderer: (params: any) => {
+        headerName: "Password", field: "pwd", suppressFillHandle: true, filter:false, cellRenderer: (params: any) => {
           return "********";
         }
       },

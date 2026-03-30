@@ -138,6 +138,10 @@ const BulkUploadHeader = ({
     return typeof v === "number" ? `${v}px` : v;
   }  
 
+  const selectedCount = gridRef?.current?.api?.getSelectedRows()?.length || 0;
+  const isBulkDisabled =
+    !isBulkActionEnabled.bulkActionEnable || selectedCount <= 1;
+  
   return (
     <div
       style={{
@@ -178,7 +182,7 @@ const BulkUploadHeader = ({
 
         {/* Bulk Action Button */}
         <VFButton
-          disabled={!isBulkActionEnabled.bulkActionEnable}
+          disabled={isBulkDisabled}
           style={{ width: "150px", height: "35px", fontSize: "1rem" }}
           themeUi={themeUi}
           onClick={onSelectClick}
