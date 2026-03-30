@@ -49,6 +49,7 @@ const AppLayout = () => {
 
   const mtoPageUrls: any = [
     "/",
+    "/mto/manufacturing-intelligence-hub/forward-exceution/stpl-and-fullkit",
     "/mto/master-data-management/control-panel/add",
     "/mto/master-data-management/control-panel/view-modify",
     "/mto/master-data-management/saved-drafts",

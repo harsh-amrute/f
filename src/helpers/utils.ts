@@ -1464,6 +1464,8 @@ export const getExistingColumnFields = (
 //   return a === b
 // }
 export const areValuesEqual = (a: any, b: any): boolean => {
+  if (a === undefined) a = "";
+  if (b === undefined) b = "";
   const numA = Number(a);
   const numB = Number(b);
 

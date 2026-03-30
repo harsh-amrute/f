@@ -3,11 +3,15 @@
   display: flex;
   justify-content: center;
   align-items: center;
-}
+  border-bottom: 2px dotted white; 
+  color: white;
+  
+  }
 
 .stplGraph-tooltip-content {
   color: white;
   background-color: #6c696a;
+  padding: 10px;
 }
 
 .stplGraph-tooltip-row {

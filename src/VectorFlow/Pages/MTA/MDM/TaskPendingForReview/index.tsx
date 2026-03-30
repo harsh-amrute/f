@@ -40,7 +40,8 @@ const TaskPendingForReview = ()=>{
         currentPage,
         onSelectionTypeSuccess1,
         handleChangePage1,
-        isBulkAction
+        isBulkAction,
+        disableSubmitButton
     } = useTaskPendingForReview()
 
     const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
@@ -152,7 +153,7 @@ const TaskPendingForReview = ()=>{
                 }
                 <TaskPendingTaskBar
                     isSideBarOpen={isSideBarOpen}
-                    disableSubmit={selectedRows!==detailTableRowData?.length}
+                    disableSubmit={(selectedRows!==detailTableRowData?.length) || disableSubmitButton}
                     onCancel={onCancel}
                     onSubmit={onTaskSubmit}
                     isAllDataVisible={isAllDataVisible}

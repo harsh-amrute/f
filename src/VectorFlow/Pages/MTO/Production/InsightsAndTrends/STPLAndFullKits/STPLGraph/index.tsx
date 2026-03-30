@@ -120,7 +120,7 @@ const STPLGraph = (props: any) => {
 
   const options: AgChartOptions = {
     data: rawData,
-      tooltip:{
+    tooltip:{
       mode: "single",
     },
     series: createSeriesData(3),

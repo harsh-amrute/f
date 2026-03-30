@@ -6,7 +6,8 @@ export namespace STPLAndFullKitService {
 
     export const getSTPLandFullkitInDaysData = async ({ graphflag, page, appliedFilters,page_size }: { graphflag: number, page?: number, appliedFilters?: any,page_size?:any  }) => {
         if(graphflag){
-            return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getSTPLandFullkitInDaysData/?graphflag=${graphflag}`, 
+            return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getSTPLandFullkitInDaysData/?graphflag=${graphflag}`, 
+                appliedFilters,
             {
                 headers: {
                     'Content-Type': 'application/json',

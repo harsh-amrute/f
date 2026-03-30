@@ -325,7 +325,7 @@ const EconomicalWise = ({
     },
   };
   const graph1 = [
-    "This graph shows the trend of number of SKU Locations in Black, Red, Green, Yellow, and White.",
+    "This graph shows the trend of number of SKU Locations in Black, Red, Green, Yellow, Blue and White.",
   ];
 
   return (

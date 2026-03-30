@@ -43,10 +43,19 @@ const VFTable = forwardRef((props: VFTableProps, ref: any) => {
       <AgGridReact
         ref={ref}
         {...props}
-        rowHeight={props.rowHeight || 30}
+        rowHeight={30}
         defaultColDef={{
           resizable: true,
           ...props.defaultColDef,
+          cellStyle:{
+            "flex":1,
+            'textAlign':'center',
+            'height':'50px',
+            "fontStyle":"normal",
+            "display":"block",
+            'textOverflow':'ellipsis',
+            'whiteSpace':'nowrap'
+          },
         }}
         paginationPageSizeSelector={false}
         suppressDragLeaveHidesColumns={true}

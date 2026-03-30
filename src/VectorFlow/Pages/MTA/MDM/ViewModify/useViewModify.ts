@@ -184,7 +184,7 @@ const useViewModify = (pageType: string) => {
   const { mutateAsync: masterUIConfiguration, isLoading } =
     useGetMasterUIConfiguration();
 
-  const [TASK_ID, setTaskId] = useState<string>("");
+  // const [TASK_ID, setTaskId] = useState<string>("");
 
   const [uploadProgress, setUploadProgress] = useState("");
 
@@ -1670,15 +1670,15 @@ const useViewModify = (pageType: string) => {
 
         if (taskId === "" && i !== 0) throw new Error("Something Went Wrong");
 
-        if (TASK_ID === "") {
+        if(taskId === ''  || taskId === undefined || !taskId){
           payload.TaskId = data.data.taskId;
           taskId = data.data.taskId;
         } else {
-          payload.TaskId = TASK_ID;
-          taskId = TASK_ID;
+          payload.TaskId = taskId;
+          // taskId = TASK_ID;
         }
 
-        setTaskId(data.data.taskId);
+        // setTaskId(data.data.taskId);
 
         if (data.data.conflictErrorCount) {
           conflictCount += parseInt(data.data.conflictErrorCount, 10);
