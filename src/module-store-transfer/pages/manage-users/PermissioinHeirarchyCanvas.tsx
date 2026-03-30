@@ -325,7 +325,6 @@ const CustomNode = ({
           disabled={shouldDisable}
           theme={user.user.theme_ui}
           style={{
-            opacity : shouldDisable ? 0.8 : 1,
             zoom: 0.7,
             minWidth: '18px',
             minHeight: '18px',
