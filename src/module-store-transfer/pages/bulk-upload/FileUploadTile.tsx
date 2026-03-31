@@ -100,11 +100,16 @@ const FileUploadTile = ({ handleFileChange, handleUploadClick, file}: any) => {
             }}
             text={"Upload"}
             icon={"/assets/img/VectorFLOW/NMS/upload.svg"}
+            iconStyles={{height: "1.5rem"}}
             styles={{
               width: "12rem",
               height: "3rem",
               fontSize: "1rem",
               boxShadow: "0px 6px 10px rgba(33, 33, 33, 0.5)",
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "row",
+              display:"flex"
             }}
           ></ButtonFloat>
         </div>

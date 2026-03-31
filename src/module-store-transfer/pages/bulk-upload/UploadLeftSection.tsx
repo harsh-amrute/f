@@ -40,7 +40,7 @@ function UploadLeftSection({setNoData,setErrorCount, setErrorData, setValidData,
         subText="You can download attached sample templates"
         btnText="Download"
         btnImg="/assets/img/VectorFLOW/NMS/download.svg"
-        btnStyles={{width:"12rem", height:"3rem" , fontSize:"1rem",boxShadow:"0px 6px 10px rgba(33, 33, 33, 0.5)"}}
+        btnStyles={{width:"12rem", height:"3rem" , fontSize:"1rem",boxShadow:"0px 6px 10px rgba(33, 33, 33, 0.5)", justifyContent: "center",alignItems: "center",flexDirection: "row",display:"flex"}}
         imgStyles={{width:"4.5rem"}}
         handleClick={onDownloadClick}
       />

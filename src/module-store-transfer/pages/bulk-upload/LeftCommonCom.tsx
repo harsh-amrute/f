@@ -67,7 +67,7 @@ function LeftCommonCom({
               className={subTextStyle}
               style={assignInlineVars({
                 [subTextFontSizeVar]: "1.15rem",
-                [subTextFontWeightVar]: "300",
+                [subTextFontWeightVar]: "bold",
               })}
             >
               {subText}
