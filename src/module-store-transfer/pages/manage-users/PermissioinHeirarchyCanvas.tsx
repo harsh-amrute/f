@@ -81,8 +81,8 @@ const CustomNode = ({
   } = useNodeDataContext();
 
   const { user } = useUserData();
-const inherited_access = user.config_data?.INHERITED_ACCESS
-  const isInheritedOn = inherited_access === 1 || inherited_access === true || inherited_access === "1"
+  const inherited_access = user.config_data?.INHERITED_ACCESS
+  const isInheritedOn = inherited_access === "1"
 
   const getPathArray = (key: string) => {
     if (!key) return [];
@@ -123,10 +123,7 @@ const inherited_access = user.config_data?.INHERITED_ACCESS
 // level 0 = L1, level 1 = L2, level 2 = L3
   const isL3Node = data.level==2;
   
-  const shouldDisable =
-    readOnly ||
-    !h_id ||
-    (!isL3Node && !data?.hasChildren && !isInheritedOn) 
+  const isDisable =readOnly || !h_id || (!isL3Node && !data?.hasChildren && !isInheritedOn) 
    
   const getSelectionState = (key: string) => {
     const path = getPathArray(key);
@@ -326,7 +323,7 @@ const inherited_access = user.config_data?.INHERITED_ACCESS
         <Checkbox
           checked={getSelectionState(data.key) !== "unchecked"}
           onChange={readOnly ? undefined : setTheChecked}
-          disabled={shouldDisable}
+          disabled={isDisable}
           theme={user.user.theme_ui}
           style={{
             zoom: 0.7,

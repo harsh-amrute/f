@@ -72,11 +72,11 @@ const PermissionForm = ({
       let l1Keys = Object.keys(pData);
     
       l1Keys = l1Keys.filter(l1 => {
-        const has = hasHId(1, l1);
+        const isHIdPresent = hasHId(1, l1);
         const hasChildren = Object.keys(pData[l1] || {}).length > 0;
             
         // no h_id → always remove
-        if (!has) {
+        if (!isHIdPresent) {
           return false;
         }
       
@@ -92,7 +92,7 @@ const PermissionForm = ({
         }
       
         // h_id + no chidlren + no inherited_acess --> remove
-        if (has && !hasChildren && !isInheritedOn) {
+        if (isHIdPresent && !hasChildren && !isInheritedOn) {
           return false;
         }
       
@@ -110,11 +110,11 @@ const PermissionForm = ({
           let l2List = Object.keys(l2Obj);
 
         l2List = l2List.filter(l2 => {
-          const has = hasHId(2, l1, l2);
+          const isHIdPresent = hasHId(2, l1, l2);
           const hasChildren = (l2Obj[l2] || []).length > 0;
                 
           // no h_id → always remove
-          if (!has) {
+          if (!isHIdPresent) {
             return false;
           }
         
@@ -130,7 +130,7 @@ const PermissionForm = ({
           }
         
            //h_id+no chidlren + no inherited_acess --> remove
-            if (has && !hasChildren && !isInheritedOn) {
+            if (isHIdPresent && !hasChildren && !isInheritedOn) {
           return false;
           }
           
