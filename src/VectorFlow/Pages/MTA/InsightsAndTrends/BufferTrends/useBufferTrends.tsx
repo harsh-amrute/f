@@ -117,7 +117,11 @@ const useBufferTrends = () => {
             setCurrentGraphData(percentage);
         }
         if(summary.length!==0) {
-            setSummaryData(summary);
+            setSummaryData(summary.map((row: any) =>
+                row.category === 'Percentage'
+                    ? Object.fromEntries(Object.entries(row).map(([k, v]) => k === 'category' ? [k, v] : [k, `${v}%`]))
+                    : row
+            )as any);
         }
         setAvailability(avail);
     }, [graphData]);
