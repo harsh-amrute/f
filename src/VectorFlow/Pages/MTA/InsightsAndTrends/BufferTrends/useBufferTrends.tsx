@@ -33,7 +33,16 @@ const useBufferTrends = () => {
     const {date:lastRunDate} = useGetLastRunData()
 
     const {user} = useUserData()
-    const themeUI = user.user.theme_ui
+    const themeUI = user.user.theme_ui;
+    const [activeTab, setActiveTab] = useState<"norm" | "virtualnorm">(
+    "virtualnorm"
+  );
+
+  const onTabChange = (tabValue: "norm" | "virtualnorm") => {
+    setActiveTab(tabValue);
+
+  };
+ 
 
     const [graphs,setGraphs] = useState<Array<BufferTrendsGraphState>>([
         {
@@ -251,7 +260,9 @@ const useBufferTrends = () => {
         onDeleteFilter,
         onGoBack,
         themeUI,
-        lastRunDate
+        lastRunDate,
+          onTabChange,
+    activeTab,
     }
   
 }

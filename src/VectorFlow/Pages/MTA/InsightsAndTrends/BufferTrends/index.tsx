@@ -15,6 +15,11 @@ import {
   AvailabilityHeader,
   SummaryTableColumn,
   availabilityColorVar,
+  FormulaContent,
+  FractionWrapper,
+  FractionNumerator ,
+  FractionDenominator ,
+  FractionMultiplier
 } from "./styles.css";
 import LastRunDateComponent from "../../../../../components/commons/lastRundate";
 import OverlayLoader from "../../../../../VectorFlow/Pages/MTO/Common/Loader";
@@ -43,6 +48,8 @@ const BufferTrends = () => {
     onDeleteFilter,
     themeUI,
     lastRunDate,
+     onTabChange,
+    activeTab,
   } = useBufferTrends();
 
   const summaryColumnDefs: BPRViewTableColDef[] = [
@@ -114,7 +121,7 @@ const BufferTrends = () => {
               horizonDays={horizonDays}
             />
 
-            <div style={{ height: "200px" }}>
+            <div style={{ minHeight: "200px" }}>
               <div
                 style={{
                   zoom: 0.8,
@@ -123,13 +130,29 @@ const BufferTrends = () => {
                 }}
               >
                 <BPRViewTable
-                  tableHeader="Summary"
+                  tableHeader="Summary (As of today)"
                   tablePrefixSrc=""
                   rowData={summaryData}
                   colDefs={summaryColumnDefs}
                 />
                 <div className={AvailabilityContainer}>
                   <div className={AvailabilityHeader}>Overall Availability</div>
+                  <div className={FormulaContent} 
+                  style={assignInlineVars({
+                      [availabilityColorVar]:
+                        globalStyles.chooseThemeColor[themeUI].color5,
+                    })}>  
+                     <div className={FractionWrapper}>
+    <span className={FractionNumerator}>
+      Red + Yellow + Green + Blue + White
+    </span>
+    <span className={FractionDenominator}>
+      Red + Yellow + Green + Blue + White + Black
+    </span>
+  </div>
+  <span className={FractionMultiplier}>× 100</span>
+                   {/* (Red + Yellow + Green + Blue + White) / (Red + Yellow + Green + Blue + White + Black) * 100 */}
+                    </div>
                   <div
                     className={AvailabilityContent}
                     style={assignInlineVars({
@@ -178,6 +201,8 @@ const BufferTrends = () => {
         lastRunDate={lastRunDate}
         setMultiFilter={setMultiFilterState}
         onDelete={onDeleteFilter}
+         onTabChange={(val: any) => onTabChange(val)}
+          activeTab={activeTab}
       />
       {lastRunDate && <LastRunDateComponent lastRunDate={lastRunDate} />}
 
