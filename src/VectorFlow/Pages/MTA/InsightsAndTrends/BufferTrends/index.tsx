@@ -17,8 +17,8 @@ import {
   availabilityColorVar,
   FormulaContent,
   FractionWrapper,
-  FractionNumerator ,
-  FractionDenominator ,
+  FractionNumerator,
+  FractionDenominator,
   FractionMultiplier
 } from "./styles.css";
 import LastRunDateComponent from "../../../../../components/commons/lastRundate";
@@ -48,7 +48,7 @@ const BufferTrends = () => {
     onDeleteFilter,
     themeUI,
     lastRunDate,
-     onTabChange,
+    onTabChange,
     activeTab,
   } = useBufferTrends();
 
@@ -137,22 +137,21 @@ const BufferTrends = () => {
                 />
                 <div className={AvailabilityContainer}>
                   <div className={AvailabilityHeader}>Overall Availability</div>
-                  <div className={FormulaContent} 
-                  style={assignInlineVars({
+                  <div className={FormulaContent}
+                    style={assignInlineVars({
                       [availabilityColorVar]:
                         globalStyles.chooseThemeColor[themeUI].color5,
-                    })}>  
-                     <div className={FractionWrapper}>
-    <span className={FractionNumerator}>
-      Red + Yellow + Green + Blue + White
-    </span>
-    <span className={FractionDenominator}>
-      Red + Yellow + Green + Blue + White + Black
-    </span>
-  </div>
-  <span className={FractionMultiplier}>× 100</span>
-                   {/* (Red + Yellow + Green + Blue + White) / (Red + Yellow + Green + Blue + White + Black) * 100 */}
+                    })}>
+                    <div className={FractionWrapper}>
+                      <span className={FractionNumerator}>
+                        Red + Yellow + Green + Blue + White
+                      </span>
+                      <span className={FractionDenominator}>
+                        Black + Red + Yellow + Green + Blue + White
+                      </span>
                     </div>
+                    <span className={FractionMultiplier}>× 100</span>
+                  </div>
                   <div
                     className={AvailabilityContent}
                     style={assignInlineVars({
@@ -180,7 +179,7 @@ const BufferTrends = () => {
   };
 
   useEffect(() => {
-    if(currentGraphData?.length) BufferTrendsDataLoad();
+    if (currentGraphData?.length) BufferTrendsDataLoad();
   }, [currentTab]);
 
   return (
@@ -201,8 +200,8 @@ const BufferTrends = () => {
         lastRunDate={lastRunDate}
         setMultiFilter={setMultiFilterState}
         onDelete={onDeleteFilter}
-         onTabChange={(val: any) => onTabChange(val)}
-          activeTab={activeTab}
+        onTabChange={(val: any) => onTabChange(val)}
+        activeTab={activeTab}
       />
       {lastRunDate && <LastRunDateComponent lastRunDate={lastRunDate} />}
 

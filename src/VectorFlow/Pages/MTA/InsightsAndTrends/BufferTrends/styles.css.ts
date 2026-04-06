@@ -77,14 +77,13 @@ export const AvailabilityContainer = style({
   display: 'flex',
   flexDirection: 'column',
   marginTop: '58px',
-  marginLeft: '-10px',
+  // marginLeft: '-10px',
   boxShadow: 'rgb(155 155 155 / 16%) 6px 6px 12px',
   zIndex: 100,
   borderRadius: '0px 8px 8px 8px',
   width: '290px',
   minWidth: '220px',
-  height: '160px',        // ← increased from 130px to fit formula + value
-  // overflow: hidden     // ← remove this, it was clipping the bottom
+  minHeight: "200px"
 });
 
 
@@ -92,8 +91,8 @@ export const AvailabilityContainer = style({
 export const AvailabilityHeader = style({
   position: 'relative',
   width: '100%',          // ← was 250px, now matches container
-  flexShrink: 0, 
-  height: '48px',
+  flexShrink: 0,
+  height: '45px',
   padding: '10px',
   paddingTop: '15px',
   fontWeight: 600,
@@ -130,8 +129,8 @@ export const AvailabilityContent = style({
   justifyContent: 'center',
   backgroundColor: 'white',
   flexShrink: 0,
-  height: '52px',        
-  fontSize: '22px',
+  height: '50px',
+  fontSize: '20px',
   fontWeight: 300,
   color: availabilityColorVar,
   borderTop: '1px solid #f0f0f0',
@@ -145,9 +144,10 @@ export const FormulaContent = style({
   justifyContent: 'center',
   gap: '6px',
   backgroundColor: 'white',
-  padding: '14px 10px',
+  padding: '0px 10px',
   color: availabilityColorVar,
-flex: 1,            // ← take remaining vertical space between header and value
+  height: '50px',
+  flexShrink: 0,
 });
 
 
@@ -160,16 +160,15 @@ export const FractionWrapper = style({
 });
 
 export const FractionNumerator = style({
-  fontSize: '9px',
+  fontSize: '10px',
   fontWeight: 400,
   textAlign: 'center',
-  whiteSpace: 'nowrap',    // ← allow wrap inside fixed-width container
+  whiteSpace: 'nowrap',
   lineHeight: '13px',
   paddingBottom: '4px',
   width: '100%',
-  
+
   vars: {
-    // ← correct way to use a CSS var as a border color in vanilla-extract
     borderBottom: `1px solid ${availabilityColorVar}`,
   },
   borderBottom: `1px solid`,
@@ -177,10 +176,10 @@ export const FractionNumerator = style({
 });
 
 export const FractionDenominator = style({
-  fontSize: '9px',
+  fontSize: '10px',
   fontWeight: 400,
   textAlign: 'center',
-  whiteSpace: 'nowrap',   // ← allow wrap
+  whiteSpace: 'nowrap',
   lineHeight: '13px',
   paddingTop: '4px',
   width: '100%',
