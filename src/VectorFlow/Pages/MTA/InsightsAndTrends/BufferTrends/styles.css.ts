@@ -114,7 +114,7 @@ export const AvailabilityHeader = style({
       left: '1px',
       top: '4px',
       bottom: '4px',
-      backgroundColor: '#898585',
+      // backgroundColor: '#898585',
       width: '0.5px',
     },
     '&:last-child::after': { display: 'none' },
@@ -127,14 +127,15 @@ export const AvailabilityContent = style({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  backgroundColor: 'white',
+  // backgroundColor: 'white',
   flexShrink: 0,
   height: '50px',
   fontSize: '20px',
   fontWeight: 300,
   color: availabilityColorVar,
   borderTop: '1px solid #f0f0f0',
-  borderRadius: '0px 0px 8px 8px',
+  backgroundColor: "#8D8D8D29",
+  // borderRadius: '0px 0px 8px 8px',
 });
 
 
@@ -146,7 +147,7 @@ export const FormulaContent = style({
   backgroundColor: 'white',
   padding: '0px 10px',
   color: availabilityColorVar,
-  height: '50px',
+  height: '52px',
   flexShrink: 0,
 });
 

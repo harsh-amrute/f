@@ -102,6 +102,14 @@ const BufferTrends = () => {
       ),
       colId: "sumW",
     },
+    {
+      headerName: (
+        <p className={SummaryTableColumn} color="gray">
+          Grey
+        </p>
+      ),
+      colId: "sumW",
+    },
   ];
   const renderView = () => {
     switch (currentView) {
@@ -159,7 +167,7 @@ const BufferTrends = () => {
                         globalStyles.chooseThemeColor[themeUI].color5,
                     })}
                   >
-                    {availability} %
+                    {availability}%
                   </div>
                 </div>
               </div>
@@ -200,8 +208,6 @@ const BufferTrends = () => {
         lastRunDate={lastRunDate}
         setMultiFilter={setMultiFilterState}
         onDelete={onDeleteFilter}
-        onTabChange={(val: any) => onTabChange(val)}
-        activeTab={activeTab}
       />
       {lastRunDate && <LastRunDateComponent lastRunDate={lastRunDate} />}
 
