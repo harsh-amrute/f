@@ -48,8 +48,6 @@ const BufferTrends = () => {
     onDeleteFilter,
     themeUI,
     lastRunDate,
-    onTabChange,
-    activeTab,
   } = useBufferTrends();
 
   const summaryColumnDefs: BPRViewTableColDef[] = [
