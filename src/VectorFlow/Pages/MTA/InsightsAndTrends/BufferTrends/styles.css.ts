@@ -77,13 +77,15 @@ export const AvailabilityContainer = style({
   display: 'flex',
   flexDirection: 'column',
   marginTop: '58px',
-  // marginLeft: '-10px',
+  marginLeft: '10px',
   boxShadow: 'rgb(155 155 155 / 16%) 6px 6px 12px',
   zIndex: 100,
-  borderRadius: '0px 8px 8px 8px',
-  width: '290px',
-  minWidth: '220px',
-  minHeight: "200px"
+  borderRadius: '8px 8px 8px 8px',
+  width: '320px',
+  minWidth: '320px',
+  minHeight: "200px",
+   border: "1px solid #CCCCCC"
+
 });
 
 
@@ -106,7 +108,7 @@ export const AvailabilityHeader = style({
   whiteSpace: 'nowrap',
   textOverflow: 'ellipsis',
   backgroundColor: 'white',
-  borderRadius: '0px 8px 0px 0px',
+  borderRadius: '8px 8px 0px 0px',
   selectors: {
     '&::after': {
       content: '',
@@ -130,8 +132,8 @@ export const AvailabilityContent = style({
   // backgroundColor: 'white',
   flexShrink: 0,
   height: '50px',
-  fontSize: '20px',
-  fontWeight: 300,
+  fontSize: '23px',
+  fontWeight: 600,
   color: availabilityColorVar,
   borderTop: '1px solid #f0f0f0',
   backgroundColor: "#8D8D8D29",
@@ -161,7 +163,7 @@ export const FractionWrapper = style({
 });
 
 export const FractionNumerator = style({
-  fontSize: '10px',
+  fontSize: '12px',
   fontWeight: 400,
   textAlign: 'center',
   whiteSpace: 'nowrap',
@@ -177,7 +179,7 @@ export const FractionNumerator = style({
 });
 
 export const FractionDenominator = style({
-  fontSize: '10px',
+  fontSize: '12px',
   fontWeight: 400,
   textAlign: 'center',
   whiteSpace: 'nowrap',
@@ -186,8 +188,8 @@ export const FractionDenominator = style({
   width: '100%',
 });
 export const FractionMultiplier = style({
-  fontSize: '11px',
-  fontWeight: 500,
+  fontSize: '15px',
+  fontWeight: 400,
   flexShrink: 0,
   alignSelf: 'center',
   marginLeft: '4px',
