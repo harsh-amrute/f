@@ -268,7 +268,7 @@ const AddRecord = () => {
           </h1>
         </VFOverlay>
       )}
-      {!isSelectMasterOpen && (
+      {!isSelectMasterOpen && !isUploadModalOpen && (
         <div style={{ zoom: "var(--nms-filter-zoom)" }}>
           <VFTaskBar
             disableSubmit={isSubmitDisabled}

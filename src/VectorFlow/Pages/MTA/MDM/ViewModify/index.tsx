@@ -160,7 +160,7 @@ const ViewModify = () => {
   const CustomStatusPanel = useMemo(() => {
     const brand = themeUi === "REGALBLAZE" ? "REGALBLAZE" : "DEFAULT";
 
-    return ()=> (
+    return () => (
       <div className={gridFilterWrapper} style={{ marginTop: "25px" }}>
         <button
           className={textBtn[brand]}
@@ -245,7 +245,7 @@ const ViewModify = () => {
                   className={SCFilterContainer}
                   style={{ zoom: "var(--nms-filter-zoom)" }}
                 >
-                  <div className={SCFilterControls}>
+                  <div className={SCFilterControls} style={{ zIndex: 999 }}>
                     <legend className={SCLegend}>Filter</legend>
                     {activeMaster.filters.map((f: Filter) => {
                       if (f.masterId == activeMaster?.id) {

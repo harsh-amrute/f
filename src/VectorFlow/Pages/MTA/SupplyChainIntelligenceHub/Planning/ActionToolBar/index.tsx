@@ -58,10 +58,9 @@ interface ActionToolBarProps {
   hideUpdateInsightsBtn?: boolean;
   onSubmitEditedRows?: () => void;
   disableSubmitEditedRowsBtn?: boolean;
-  lastRunDate?:string 
-  isPlanning?:boolean,
-  generalFilterOptions?:any
-  
+  lastRunDate?: string;
+  isPlanning?: boolean;
+  generalFilterOptions?: any;
 }
 
 const ActionToolBar = ({
@@ -134,17 +133,17 @@ const ActionToolBar = ({
   const handleResetAllState = () => {
     onResetAllState(`${currCategory}${currentTab}`);
   };
-  
+
   const [isNewFilterOpen, setIsFilterOpen] = useState(false);
 
   const handleApplyFilters = (filters: any) => {
-    console.log('Applied filters:', filters);
+    console.log("Applied filters:", filters);
     setIsFilterOpen(false);
     // You can pass these filters to your parent component or context
   };
 
   const handleResetFilters = () => {
-    console.log('Filters reset');
+    console.log("Filters reset");
     // Handle reset logic if needed beyond the modal
   };
 
@@ -214,14 +213,15 @@ const ActionToolBar = ({
     ) {
       setIsFilterButtonVisible(true);
     }
-    if(pathname === "/mta/insights-and-trends/buffer-trend-report" 
-      ||  pathname === "/mta/insights-and-trends/buffer-trends"  
-      || pathname === "/mta/supply-chain-intelligence-hub/bpr"
-    || pathname === "/mta/supply-chain-intelligence-hub/rrr"
-    || pathname ===  "/mta/supply-chain-intelligence-hub/rrr-color-bandwise"
-    || pathname === "/mta/supply-chain-intelligence-hub/bor"
-    || pathname === "/mta/supply-chain-intelligence-hub/bor-color-bandwise"
-  ){
+    if (
+      pathname === "/mta/insights-and-trends/buffer-trend-report" ||
+      pathname === "/mta/insights-and-trends/buffer-trends" ||
+      pathname === "/mta/supply-chain-intelligence-hub/bpr" ||
+      pathname === "/mta/supply-chain-intelligence-hub/rrr" ||
+      pathname === "/mta/supply-chain-intelligence-hub/rrr-color-bandwise" ||
+      pathname === "/mta/supply-chain-intelligence-hub/bor" ||
+      pathname === "/mta/supply-chain-intelligence-hub/bor-color-bandwise"
+    ) {
       toggleFilter(true);
     }
   }, [pathname]);
@@ -231,11 +231,11 @@ const ActionToolBar = ({
       case "GITFromParent":
         return (
           <MTAVFMultiFilter
-              isOpen={isFilterOpen}
-              onApply={handleApplyFilter}
-              multiFilter={multiFilter}
-              onClose={() => toggleFilter(false)}
-              onReset={handleResetFilters}      
+            isOpen={isFilterOpen}
+            onApply={handleApplyFilter}
+            multiFilter={multiFilter}
+            onClose={() => toggleFilter(false)}
+            onReset={handleResetFilters}
           />
         );
       case "GITToChild":
@@ -245,7 +245,7 @@ const ActionToolBar = ({
             onApply={handleApplyFilter}
             multiFilter={multiFilter}
             onClose={() => toggleFilter(false)}
-            onReset={handleResetFilters}      
+            onReset={handleResetFilters}
           />
         );
       case "ExpediteFromParent":
@@ -255,7 +255,7 @@ const ActionToolBar = ({
             onApply={handleApplyFilter}
             multiFilter={multiFilter}
             onClose={() => toggleFilter(false)}
-            onReset={handleResetFilters}      
+            onReset={handleResetFilters}
           />
         );
       case "ExpediteToChild":
@@ -265,34 +265,33 @@ const ActionToolBar = ({
             onApply={handleApplyFilter}
             multiFilter={multiFilter}
             onClose={() => toggleFilter(false)}
-            onReset={handleResetFilters}      
+            onReset={handleResetFilters}
           />
         );
       case "ExcessInventory":
         return (
-            <MTAVFMultiFilter
-              isOpen={isFilterOpen}
-              onApply={handleApplyFilter}
-              multiFilter={multiFilter}
-              onClose={() => toggleFilter(false)}
-              onReset={handleResetFilters} 
-            />
+          <MTAVFMultiFilter
+            isOpen={isFilterOpen}
+            onApply={handleApplyFilter}
+            multiFilter={multiFilter}
+            onClose={() => toggleFilter(false)}
+            onReset={handleResetFilters}
+          />
         );
       case "OrderFulfillment":
         return (
-            <MTAVFMultiFilter
-              isOpen={isFilterOpen}
-              onApply={handleApplyFilter}
-              multiFilter={multiFilter}
-              onClose={() => toggleFilter(false)}
-              onReset={handleResetFilters}      
-              reportType="OrderFulfillment"     
-            />
+          <MTAVFMultiFilter
+            isOpen={isFilterOpen}
+            onApply={handleApplyFilter}
+            multiFilter={multiFilter}
+            onClose={() => toggleFilter(false)}
+            onReset={handleResetFilters}
+            reportType="OrderFulfillment"
+          />
         );
       case "BPR":
         if (pathname === "/mta/supply-chain-intelligence-hub/bpr") {
           return (
-
             <MTAVFMultiFilter
               isOpen={isFilterOpen}
               onApply={handleApplyFilter}
@@ -308,12 +307,12 @@ const ActionToolBar = ({
       case "RRR":
         if (pathname === "/mta/supply-chain-intelligence-hub/rrr") {
           return (
-             <MTAVFMultiFilter
+            <MTAVFMultiFilter
               isOpen={isFilterOpen}
               onApply={handleApplyFilter}
               multiFilter={multiFilter}
               onClose={() => toggleFilter(false)}
-              onReset={handleResetFilters}      
+              onReset={handleResetFilters}
               currCategory={currCategory}
               reportName={UIColumnConfigName.RRR}
             />
@@ -325,12 +324,12 @@ const ActionToolBar = ({
           pathname === "/mta/supply-chain-intelligence-hub/rrr-color-bandwise"
         ) {
           return (
-              <MTAVFMultiFilter
+            <MTAVFMultiFilter
               isOpen={isFilterOpen}
               onApply={handleApplyFilter}
               multiFilter={multiFilter}
               onClose={() => toggleFilter(false)}
-              onReset={handleResetFilters}   
+              onReset={handleResetFilters}
               reportName={UIColumnConfigName.RRR_OA}
             />
           );
@@ -364,12 +363,12 @@ const ActionToolBar = ({
       case "BOR":
         if (pathname === "/mta/supply-chain-intelligence-hub/bor") {
           return (
-              <MTAVFMultiFilter
+            <MTAVFMultiFilter
               isOpen={isFilterOpen}
               onApply={handleApplyFilter}
               multiFilter={multiFilter}
               onClose={() => toggleFilter(false)}
-              onReset={handleResetFilters}   
+              onReset={handleResetFilters}
               currCategory={currCategory}
               reportName={UIColumnConfigName.BOR}
             />
@@ -381,12 +380,12 @@ const ActionToolBar = ({
           pathname === "/mta/supply-chain-intelligence-hub/bor-color-bandwise"
         ) {
           return (
-             <MTAVFMultiFilter
+            <MTAVFMultiFilter
               isOpen={isFilterOpen}
               onApply={handleApplyFilter}
               multiFilter={multiFilter}
               onClose={() => toggleFilter(false)}
-              onReset={handleResetFilters}   
+              onReset={handleResetFilters}
               reportName={UIColumnConfigName.BOR_OA}
             />
           );
@@ -399,12 +398,12 @@ const ActionToolBar = ({
           "/mta/supply-chain-intelligence-hub/order-allocation-report"
         ) {
           return (
-          <MTAVFMultiFilter
+            <MTAVFMultiFilter
               isOpen={isFilterOpen}
               onApply={handleApplyFilter}
               multiFilter={multiFilter}
               onClose={() => toggleFilter(false)}
-              onReset={handleResetFilters}   
+              onReset={handleResetFilters}
               reportName={UIColumnConfigName.OAR}
             />
           );
@@ -416,7 +415,7 @@ const ActionToolBar = ({
           onChangeHorizon
         ) {
           return (
-             <MTAVFMultiFilter
+            <MTAVFMultiFilter
               isOpen={isFilterOpen}
               onApply={handleApplyFilter}
               multiFilter={multiFilter}
@@ -431,13 +430,12 @@ const ActionToolBar = ({
       case "BufferTrend":
         if (pathname === "/mta/insights-and-trends/buffer-trends") {
           return (
-              <MTAVFMultiFilter
+            <MTAVFMultiFilter
               isOpen={isFilterOpen}
               onApply={handleApplyFilter}
               multiFilter={multiFilter}
               onClose={() => toggleFilter(false)}
               onReset={handleResetFilters}
-                    
             />
           );
         }
@@ -445,12 +443,12 @@ const ActionToolBar = ({
       case "ResearchInsight":
         if (pathname === "/mta/insights-and-trends/research-insights") {
           return (
-             <MTAVFMultiFilter
+            <MTAVFMultiFilter
               isOpen={isFilterOpen}
               onApply={handleApplyFilter}
               multiFilter={multiFilter}
               onClose={() => toggleFilter(false)}
-              onReset={handleResetFilters}      
+              onReset={handleResetFilters}
             />
           );
         }
@@ -463,7 +461,7 @@ const ActionToolBar = ({
               onApply={handleApplyFilter}
               multiFilter={multiFilter}
               onClose={() => toggleFilter(false)}
-              onReset={handleResetFilters}      
+              onReset={handleResetFilters}
             />
           );
         }
@@ -471,12 +469,12 @@ const ActionToolBar = ({
       case "DBMNorm":
         if (pathname === "/mta/dbm/dbm-norm-suggestions") {
           return (
-        <MTAVFMultiFilter
+            <MTAVFMultiFilter
               isOpen={isFilterOpen}
               onApply={handleApplyFilter}
               multiFilter={multiFilter}
               onClose={() => toggleFilter(false)}
-              onReset={handleResetFilters}  
+              onReset={handleResetFilters}
               reportName={UIColumnConfigName.DBM}
             />
           );
@@ -488,12 +486,12 @@ const ActionToolBar = ({
           "/mta/supply-chain-intelligence-hub/open-expediting-requests"
         ) {
           return (
-           <MTAVFMultiFilter
+            <MTAVFMultiFilter
               isOpen={isFilterOpen}
               onApply={handleApplyFilter}
               multiFilter={multiFilter}
               onClose={() => toggleFilter(false)}
-              onReset={handleResetFilters}     
+              onReset={handleResetFilters}
               reportName={UIColumnConfigName.OER}
             />
           );
@@ -502,25 +500,25 @@ const ActionToolBar = ({
       case "InTransitWhereabouts":
         if (pathname === "/mta/logistics/intransit-whereabouts") {
           return (
-           <MTAVFMultiFilter
+            <MTAVFMultiFilter
               isOpen={isFilterOpen}
               onApply={handleApplyFilter}
               multiFilter={multiFilter}
               onClose={() => toggleFilter(false)}
-              onReset={handleResetFilters}      
+              onReset={handleResetFilters}
             />
           );
         }
         break;
       case "chronicunavailability":
         return (
-            <MTAVFMultiFilter
-              isOpen={isFilterOpen}
-              onApply={handleApplyFilter}
-              multiFilter={multiFilter}
-              onClose={() => toggleFilter(false)}
-              onReset={handleResetFilters}      
-            />
+          <MTAVFMultiFilter
+            isOpen={isFilterOpen}
+            onApply={handleApplyFilter}
+            multiFilter={multiFilter}
+            onClose={() => toggleFilter(false)}
+            onReset={handleResetFilters}
+          />
         );
       default:
         <></>;
@@ -535,19 +533,21 @@ const ActionToolBar = ({
 
   const renderFloatingTab = () => {
     return (
-      <VFFloatingTab
-        tabs={tabsList}
-        defaultTab={
-          tabsList.findIndex((object) => {
-            return object.value === currentTab;
-          }) == -1
-            ? 0
-            : tabsList.findIndex((object) => {
-                return object.value === currentTab;
-              })
-        }
-        handleClick={onFloatingTabChange}
-      />
+      <div style={{ width: "100%" }}>
+        <VFFloatingTab
+          tabs={tabsList}
+          defaultTab={
+            tabsList.findIndex((object) => {
+              return object.value === currentTab;
+            }) == -1
+              ? 0
+              : tabsList.findIndex((object) => {
+                  return object.value === currentTab;
+                })
+          }
+          handleClick={onFloatingTabChange}
+        />
+      </div>
     );
   };
   return (
@@ -566,17 +566,18 @@ const ActionToolBar = ({
           <div
             className={SCTaskFilterContainer}
             style={{
-              maxWidth: currCategory === "GuidedInsight" ? "100%" : "50%",
+              maxWidth: currCategory === "GuidedInsight" ? "100%" : "80%",
               width: currCategory === "GuidedInsight" ? "100%" : "unset",
               justifyContent:
                 currCategory === "GuidedInsight" ? "flex-start" : "unset",
               marginLeft: "10px",
+              flexWrap: "wrap",
             }}
           >
             {tabsList.length > 0 && renderFloatingTab()}
 
             {currCategory === "GuidedInsight" && (
-              <div style={{ marginLeft: "-10px", maxWidth: "40%" }}>
+              <div style={{ marginLeft: "-10px", width: "40%" }}>
                 <VFSelectedFilters
                   filters={multiFilter}
                   onRemoveFilter={onDelete}
@@ -695,7 +696,9 @@ const ActionToolBar = ({
                     />
                     <p>Reset Layout</p>
                   </div>
-                  {!disableChartAndGridViewToggle && <div className={SCVerticalDivider} />}
+                  {!disableChartAndGridViewToggle && (
+                    <div className={SCVerticalDivider} />
+                  )}
                 </>
               )
             }
@@ -919,7 +922,9 @@ const ActionToolBar = ({
                 {currCategory === "GuidedInsightchronicunavailability" ||
                 (currCategory === "BTR" && currentTab === "both") ? null : (
                   <>
-                    {isFilterButtonVisible && <div className={SCVerticalDivider} />}
+                    {isFilterButtonVisible && (
+                      <div className={SCVerticalDivider} />
+                    )}
                     {/* <SCViewContainerWithBg onClick={handleExportToExcel}> */}
                     <div
                       className={SCViewContainerWithBg}
