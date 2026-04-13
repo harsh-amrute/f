@@ -113,11 +113,15 @@ const useBufferTrends = () => {
         const { absolute, percentage, summary, avail } = graphData.data;
         if (currentPageTab === 'Absolute' && absolute.length !== 0) {
             setCurrentGraphData(absolute);
-        } else if (currentPageTab === 'percentage' && percentage.length !== 0) {
+        } else if (currentPageTab === 'Percentage' && percentage.length !== 0) {
             setCurrentGraphData(percentage);
         }
         if(summary.length!==0) {
-            setSummaryData(summary);
+            setSummaryData(summary.map((row: any) =>
+                row.category === 'Percentage'
+                    ? Object.fromEntries(Object.entries(row).map(([k, v]) => k === 'category' ? [k, v] : [k, `${v}%`]))
+                    : row
+            )as any);
         }
         setAvailability(avail);
     }, [graphData]);
@@ -202,14 +206,14 @@ const useBufferTrends = () => {
             const processedData = getGraphDataWithTotal(result.data);
             setIsSelectCategoryOpen(false);
             setGraphData(processedData);
-            if (currentPageTab === 'Percentage') {
-                setCurrentGraphData(processedData?.data?.percentage);
-            } else {
-                setCurrentGraphData(processedData?.data?.absolute);
-            }
-            setSummaryData(result.data?.data?.summary);
-            setAvailability(result.data?.data?.avail);
-            setGraphData(getGraphDataWithTotal(result.data));
+            // if (currentPageTab === 'Percentage') {
+            //     setCurrentGraphData(processedData?.data?.percentage);
+            // } else {
+            //     setCurrentGraphData(processedData?.data?.absolute);
+            // }
+            // setSummaryData(result.data?.data?.summary);
+            // setAvailability(result.data?.data?.avail);
+            // setGraphData(getGraphDataWithTotal(result.data));
             notifySuccess("Graph Details Fetched Successfully")
             
         } catch (error) {

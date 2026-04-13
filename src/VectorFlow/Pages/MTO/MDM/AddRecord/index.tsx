@@ -290,33 +290,14 @@ const MTOAddRecord = () => {
         {
           !isSelectMasterOpen && 
           <VFTaskBar
-          showSubmittedExportError={errorCount>0}
-            enableEditOnlineReset={false}
-            masterProgress={activeMaster.progress}
-            onReset={onReset}
-            onSaveToDraft={onSaveToDraft}
-            onEditOnlineSave={onEditOnlineSave}
-            editOnline={editOnline}
-            onEditOnline={()=>onEditOnline('editOnline')}
             onBack={onBackButton}
             onClearAndExportErrors={()=>onClearExportError()}
-            onModifyData={()=>toggleUploadModal(true)}
             onExportData={handleExportData}
-            onSubmit={onSubmit}
-            onDeleteSelected={deleteSelected}
-            onPhaseInPhaseOutStop={()=>console.log('')}
-            onDeleteData={()=>console.log('')}
-            onDeleteOnline={()=>console.log('')}
-            onDeleteOnlineReset={()=>console.log('')}
-            onSubmitConflictData={()=>console.log('')}
-            onDeleteOnlineSubmit={()=>console.log('')}
-            masterId={activeMaster.id}
-            mtoSaveData={true}
-            onMTOSaveData={ onMTOSaveBufferData}
-            isMTOSaveDataDisabled={((activeMaster?.rowData?.some((row:any)=>row?.err?.error!=='')))}
-            onMTOSaveAsDraft={onMTOSaveAsDraft}
-            isMTODraftDisabled={((activeMaster?.rowData.some((row:any)=>row?.err?.error!=='')))}
-            isMTOExcludeButton={activeMaster?.rowData.some((row:any)=>row?.err?.error!=='')}
+            onSaveData={ onMTOSaveBufferData}
+            isSaveDataDisabled={((activeMaster?.rowData?.some((row:any)=>row?.err?.error!=='')))}
+            onSaveAsDraft={onMTOSaveAsDraft}
+            isDraftDisabled={((activeMaster?.rowData.some((row:any)=>row?.err?.error!=='')))}
+            isExcludeButton={activeMaster?.rowData.some((row:any)=>row?.err?.error!=='')}
           />
         }
         </React.Fragment>
