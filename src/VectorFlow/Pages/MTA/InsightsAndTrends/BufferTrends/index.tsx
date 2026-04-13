@@ -106,7 +106,7 @@ const BufferTrends = () => {
           Grey
         </p>
       ),
-      colId: "sumW",
+      colId: "sumGY",
     },
   ];
   const renderView = () => {
@@ -136,13 +136,13 @@ const BufferTrends = () => {
                 }}
               >
                 <BPRViewTable
-                  tableHeader="Summary (As of today)"
+                  tableHeader={`Summary (As of ${lastRunDate})`}
                   tablePrefixSrc=""
                   rowData={summaryData}
                   colDefs={summaryColumnDefs}
                 />
                 <div className={AvailabilityContainer}>
-                  <div className={AvailabilityHeader}>Overall Availability</div>
+                  <div className={AvailabilityHeader}>{`Overall Availability (As of ${lastRunDate})`}</div>
                   <div className={FormulaContent}
                     style={assignInlineVars({
                       [availabilityColorVar]:
