@@ -820,23 +820,23 @@ const DailyDataGraphModal = ({
     >
       <div className={SCSeasonalityContainer}>
         <div className={SCChartContainer}>
-          {pathname === "/mta/supply-chain-intelligence-hub/bpr" && (
-                <div className={SCToggleWrapper}>
-                  <VFFloatingTab
-                    handleClick={(e: any) => {
-                      if (onTabChange) onTabChange(e.value ?? e);
-                    }}
-                    defaultTab={[
-                      { value: "virtualnorm" },
-                      { value: "norm" },
-                    ].findIndex((t) => t.value === (activeTab ?? "virtualnorm"))}
-                    tabs={[
-                      { id: "1", value: "virtualnorm", label: "Virtual Norm" },
-                      { id: "2", value: "norm", label: "Norm" },
-                    ]}
-                  />
-                </div>
-              )}
+          <div className={SCToggleWrapper}>
+            <div style={{ zoom: 0.6 }}>
+              <VFFloatingTab
+                handleClick={(e: any) => {
+                  if (onTabChange) onTabChange(e.value ?? e);
+                }}
+                defaultTab={[
+                  { value: "virtualnorm" },
+                  { value: "norm" },
+                ].findIndex((t) => t.value === (activeTab ?? "virtualnorm"))}
+                tabs={[
+                  { id: "1", value: "virtualnorm", label: "Virtual Norm" },
+                  { id: "2", value: "norm", label: "Norm" },
+                ]}
+              />
+            </div>
+          </div>
           <AgCharts
             options={{
               ...generateChartOptions(),

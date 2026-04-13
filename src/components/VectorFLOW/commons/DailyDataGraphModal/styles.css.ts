@@ -31,11 +31,12 @@ export const SCChartContainer = style({
 });
 
 export const SCToggleWrapper = style({
-  display: 'flex',
-  justifyContent: 'flex-end',
-  marginTop: '20px',
-  marginBottom: '7px',
-  zoom: 0.7,
+  display: "flex",
+  justifyContent: "flex-end",
+  alignItems: "center",
+  gap: "8px",
+  marginTop: '14px',
+  marginBottom: "4px",
 });
 export const SCSeasonalityStatusDetails = style({
   width: '20%',
