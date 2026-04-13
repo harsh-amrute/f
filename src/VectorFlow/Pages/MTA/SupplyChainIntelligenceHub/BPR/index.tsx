@@ -134,8 +134,11 @@ const BPR = () => {
           isModalOpen={showDailyDataGraphModal}
           suggestionData={dailyData.suggestionData}
           monitoringData={dailyData.monitoringData}
+          virtualNormData={dailyData.virtualNormData}
           skuKey={"SKUCode"}
           whKey={"WHName"}
+          onTabChange={(val: any) => onTabChange(val)}
+          activeTab={activeTab}
         />
       )}
       {showNormChangeHistoryTable && (

@@ -14,6 +14,7 @@ import {
   detailsTitleBgVar,
   textFontWeightVar,
   textFontSizeVar,
+  SCToggleWrapper,
 } from "./styles.css";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
 import * as globalStyles from "../../../../styles/global";
@@ -38,6 +39,8 @@ import { useUserData } from "../../../../context";
 import useGetLastRunData from "../../../../hooks/useGetLastRunData";
 import Tooltip from "../../../../../src/VectorFlow/Pages/MTO/Common/Tooltip";
 import "./style.css";
+import VFFloatingTab from "../VFFloatingTab";
+import { useLocation } from "react-router";
 
 interface DailyDataGraphModalProps {
   rowData: any;
@@ -47,8 +50,11 @@ interface DailyDataGraphModalProps {
   masterData: any;
   monitoringData: any;
   isModalOpen: boolean;
+  virtualNormData?: any;
   skuKey: string;
   whKey: string;
+  onTabChange?: (val: 'norm' | 'virtualnorm') => void;
+  activeTab?: 'norm' | 'virtualnorm';
 }
 
 interface NormData {
@@ -64,8 +70,11 @@ const DailyDataGraphModal = ({
   masterData,
   isModalOpen,
   monitoringData,
+  virtualNormData,
   skuKey,
   whKey,
+  onTabChange,
+  activeTab,
 }: DailyDataGraphModalProps) => {
   const { user } = useUserData();
   const themeUi = user.user.theme_ui;
@@ -80,6 +89,7 @@ const DailyDataGraphModal = ({
     { label: "Downward Consumption Based", value: "downwardConsumptionBased" },
   ];
 
+  const { pathname } = useLocation();
   const [horizon, setHorizon] = useState<number>(14);
   const [suspensionType, setSuspensionType] = useState("");
   const [normData, setNormData] = useState<any[]>([]);
@@ -207,17 +217,12 @@ const DailyDataGraphModal = ({
     useEffect(() => {
       {
         const lastIndex = missingData.length - 1;
-        // Calculate the start index based on the horizon
         const startIndex = Math.max(0, lastIndex - horizon + 1);
 
         const newadjustedChartData = missingData.slice(
           startIndex,
           lastIndex + 1
         );
-
-        // if(newadjustedChartData.length){
-        //   newadjustedChartData = addBoundaryDataPoints(newadjustedChartData);
-        // }
 
         setadjustedChartData(newadjustedChartData);
         const sortedNormChangeData = normChangeData
@@ -255,11 +260,24 @@ const DailyDataGraphModal = ({
           })
           .slice(startIndex, lastIndex + 1);
 
-        // let prevValueNormValue = parseInt(chartData?.[0]?.['bz'], 10) || 0
         updateNormData = updateNormData.map((data: NormData, index: number) => {
-          const normBand = parseFloat((data.norm / 3).toFixed(2));
-          const normBlue =
-            parseInt(newadjustedChartData?.[index]?.["bz"], 10) || 0;
+          let normBand = parseFloat((data.norm / 3).toFixed(2));
+          const bz = parseInt(newadjustedChartData?.[index]?.["bz"], 10) || 0;
+          
+          let normBlue = bz;
+
+          if (activeTab === 'virtualnorm') {
+            const currentDate = new Date(newadjustedChartData[index].dt).toDateString();
+            const virtualNormEntry = virtualNormData?.find(
+              (v: { vN: number; rD: string }) =>
+                new Date(v.rD).toDateString() === currentDate
+            );
+
+            if (virtualNormEntry) {
+              normBand = parseFloat((virtualNormEntry.vN / 3).toFixed(2));
+              normBlue = (bz + data.norm - virtualNormEntry.vN) < 0 ? 0 : (bz + data.norm - virtualNormEntry.vN);
+            }
+          }
 
           const normObj = {
             ...data,
@@ -292,12 +310,12 @@ const DailyDataGraphModal = ({
             downwardConsumptionBasedNorm:
               newadjustedChartData[index]["grc"] > 0 ? data.norm : 0,
           };
-          // prevValueNormValue = parseInt(newadjustedChartData[index]['bz'],10)
+          
           return normObj;
         });
         setNormData(updateNormData);
       }
-    }, [horizon, missingData]);
+    }, [horizon, missingData, activeTab]);
 
     function generateSuspensionReasons(
       rrs: number,
@@ -802,6 +820,23 @@ const DailyDataGraphModal = ({
     >
       <div className={SCSeasonalityContainer}>
         <div className={SCChartContainer}>
+          {pathname === "/mta/supply-chain-intelligence-hub/bpr" && (
+                <div className={SCToggleWrapper}>
+                  <VFFloatingTab
+                    handleClick={(e: any) => {
+                      if (onTabChange) onTabChange(e.value ?? e);
+                    }}
+                    defaultTab={[
+                      { value: "virtualnorm" },
+                      { value: "norm" },
+                    ].findIndex((t) => t.value === (activeTab ?? "virtualnorm"))}
+                    tabs={[
+                      { id: "1", value: "virtualnorm", label: "Virtual Norm" },
+                      { id: "2", value: "norm", label: "Norm" },
+                    ]}
+                  />
+                </div>
+              )}
           <AgCharts
             options={{
               ...generateChartOptions(),
