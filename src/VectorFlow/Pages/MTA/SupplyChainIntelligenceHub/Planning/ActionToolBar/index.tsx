@@ -62,7 +62,7 @@ interface ActionToolBarProps {
   isPlanning?:boolean,
   generalFilterOptions?:any
   onTabChange?: (val: 'norm' | 'virtualnorm') => void;
-  activeNormTab?: 'norm' | 'virtualnorm';
+  activeTab?: 'norm' | 'virtualnorm';
 }
 
 const ActionToolBar = ({
@@ -94,7 +94,7 @@ const ActionToolBar = ({
   onChangeHorizon,
   generalFilterOptions,
   onTabChange,
-  activeNormTab,
+  activeTab,
 }: ActionToolBarProps) => {
   const { user } = useUserData();
   const { ref } = useContext(GridStateContext);
@@ -894,7 +894,7 @@ const ActionToolBar = ({
             )
           )} */}
           <div className={SCCustomActionsContainer}>
-            {pathname === "/mta/supply-chain-intelligence-hub/bpr" && (
+            {(pathname === "/mta/supply-chain-intelligence-hub/bpr") && (
               <div style={{ zoom: 0.9, marginRight: "20px" }}>
                 <VFFloatingTab
                   handleClick={(e: any) => {
@@ -903,7 +903,7 @@ const ActionToolBar = ({
                   defaultTab={[
                     { value: "virtualnorm" },
                     { value: "norm" },
-                  ].findIndex((t) => t.value === (activeNormTab ?? "virtualnorm"))}
+                  ].findIndex((t) => t.value === (activeTab ?? "virtualnorm"))}
                   tabs={[
                     { id: "1", value: "virtualnorm", label: "Virtual Norm" },
                     { id: "2", value: "norm", label: "Norm" },

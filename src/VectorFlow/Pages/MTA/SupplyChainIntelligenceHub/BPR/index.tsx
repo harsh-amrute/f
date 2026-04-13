@@ -121,7 +121,7 @@ const BPR = () => {
           lastRunDate={lastRunDate}
           generalFilterOptions={generalFilterOptions}
           onTabChange={(val: any) => onTabChange(val)}
-          activeNormTab={activeTab}
+          activeTab={activeTab}
         />
       </div>
       {lastRunDate && <LastRunDateComponent lastRunDate={lastRunDate} />}
