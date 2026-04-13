@@ -7,14 +7,19 @@ import OverlayLoader from "../../../../../../VectorFlow/Pages/MTO/Common/Loader"
 import { chartParams1  } from "./chartParams";
 import { generateChartOptions, nonce } from "../../../../../../helpers/utils";
 import VFHorizon from "../../../../../../components/VectorFLOW/commons/VFHorizon";
+import { useChartDownload } from "../../../../../../hooks/useChartDownload";
+import ChartDownloadButton from "../../../Common/ChartDownloadButton/ChartDownloadButton";
 
 
 const AvailabilityAgeingTrend = ({themeUi,filter, horizon, setHorizon}:{themeUi:string,filter:any, ageing:number, setAgeing:any, horizon:number, setHorizon:any}) => {
   const { mutateAsync: GetAvailabilityAgeing, isLoading } =useGetAvailabilityAgeing();
   const [options, setOptions] = useState({})
   const [age,setAgeing]=useState(1);
+  const { chartWrapperRef, handleDownload } = useChartDownload({
+    title: chartParams1.title,
+    fileName: "AvailabilityAgeingTrend",
+  });
 
-  
   const OnHorizonChange = async (hvalue: any) => {
     setHorizon(hvalue);
     const param = { horison: hvalue, ageing: age,filters:filter};
@@ -198,8 +203,13 @@ const AvailabilityAgeingTrend = ({themeUi,filter, horizon, setHorizon}:{themeUi:
           <div style={{ marginLeft: 10 ,marginBottom:'-5px'}}>
             <VFInfoToolTip infoList={chartParams1.graphInfo} />
           </div>
+          <div style={{ marginLeft: 10, marginBottom: "-5px" }}>
+            <ChartDownloadButton themeUi={themeUi} onDownload={handleDownload} />
+          </div>
         </div>
-        <div style={{height:'85%'}}><AgCharts options={options} /></div>
+        <div ref={chartWrapperRef} style={{ height: "85%" }}>
+          <AgCharts options={options} />
+        </div>
       </div>
     </div>
   );
