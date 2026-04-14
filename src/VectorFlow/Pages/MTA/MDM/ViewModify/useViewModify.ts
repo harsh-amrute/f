@@ -42,6 +42,7 @@ import {
   useGetUploadProgress,
   useBulkModifyMasterData,
 } from "../../../../Services/MTA/MDM";
+import {ExportMode} from "../../../../types/MDM";
 import { useSelector, useDispatch } from "react-redux";
 import {
   FILL_MASTERS,
@@ -741,14 +742,15 @@ const useViewModify = (pageType: string) => {
   };
   
   const queryFilteredDataExcel = async (configs:QueryFilteredDataConfigsExcel) => {
-    const {filters,fields,count} = configs;
+    const {filters,fields,count,mode} = configs;
     const payload:GetMasterDataPayloadExcel = {
       id:activeMaster.id,
       name:activeMaster.name,
       filters:filters,
       fields:fields,
       pageType: pageType,
-      Stream:1
+      Stream:1,
+      mode: mode
     }
     let resultData;
     if(count){
@@ -1412,7 +1414,7 @@ const useViewModify = (pageType: string) => {
     }
   };
 
-  const exportToExcel = async (fromUploadModal?: boolean) => {
+  const exportToExcel = async (mode: ExportMode, fromUploadModal?: boolean) => {
     try {
       const currMasterFilters = activeMaster.filters;
       const payloadFilters = areMasterFiltersValid(currMasterFilters)
@@ -1428,6 +1430,7 @@ const useViewModify = (pageType: string) => {
         fields: payloadFields,
         pageType: pageType,
         Stream: 1,
+        mode: mode
       });
 
       const blob = new Blob(

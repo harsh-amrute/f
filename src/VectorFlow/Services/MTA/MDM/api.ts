@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import axios, { AxiosResponse } from 'axios'
-import { GetMasterDataPayload } from '../../../types/MDM';
+import { GetMasterDataPayload, GetMasterDataPayloadExcel } from '../../../types/MDM';
 
 
 export namespace MDMService {
@@ -31,7 +31,7 @@ export namespace MDMService {
   }
 
 
-  export const getMasterData1 = async (body:GetMasterDataPayload) => {
+  export const getMasterData1 = async (body:GetMasterDataPayloadExcel) => {
    
     return await axios.post(process.env.REACT_APP_API_HOST + `api/mta/GetMasterDataAsync`,body,{
       responseType: "blob",

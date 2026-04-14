@@ -289,7 +289,7 @@ const AddRecord = () => {
             onBack1={() => onBackButton1(location?.state?.backUrl)}
             onClearAndExportErrors={onClearExportError}
             onModifyData={() => toggleUploadModal(true)}
-            onExportData={exportToExcel}
+            onExportData={() => exportToExcel("ADD_TEMPLATE")}
             onSubmit={onSubmit}
             onDeleteSelected={deleteSelected}
             onPhaseInPhaseOutStop={() => console.log("")}
