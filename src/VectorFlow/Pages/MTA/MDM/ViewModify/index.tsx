@@ -245,7 +245,7 @@ const ViewModify = () => {
                   className={SCFilterContainer}
                   style={{ zoom: "var(--nms-filter-zoom)" }}
                 >
-                  <div className={SCFilterControls} style={{ zIndex: 999 }}>
+                  <div className={SCFilterControls} style={{ zIndex: 3 }}>
                     <legend className={SCLegend}>Filter</legend>
                     {activeMaster.filters.map((f: Filter) => {
                       if (f.masterId == activeMaster?.id) {
