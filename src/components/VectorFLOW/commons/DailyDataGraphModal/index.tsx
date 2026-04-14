@@ -89,7 +89,6 @@ const DailyDataGraphModal = ({
     { label: "Downward Consumption Based", value: "downwardConsumptionBased" },
   ];
 
-  const { pathname } = useLocation();
   const [horizon, setHorizon] = useState<number>(14);
   const [suspensionType, setSuspensionType] = useState("");
   const [normData, setNormData] = useState<any[]>([]);
