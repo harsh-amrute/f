@@ -219,7 +219,7 @@ const useDelete=()=>{
           return tempRow;
         });
         }
-      console.log("jodddd",rowData);
+
       const deletableKeys = activeMaster.fields.filter(field => field.isDelete === true).map(field => field.key)
       rowData = rowData.map((obj: any) => {
         return Object.keys(obj).reduce((acc: any, key) => {
