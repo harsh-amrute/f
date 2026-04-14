@@ -350,7 +350,8 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
 
   const shouldShowColorFilters = currCategory === 'BPR' || currCategory === 'BOR' || currCategory === 'RRR';
 
-  const shouldShowTags = currCategory === 'BPR' || currCategory === 'RRR' || currCategory === 'BOR';
+  const shouldShowTags = currCategory === 'BPR' || currCategory === 'RRR' || currCategory === 'BOR'  || window.location.pathname === '/mta/insights-and-trends/buffer-trends' ;
+
 
   return (
     <>

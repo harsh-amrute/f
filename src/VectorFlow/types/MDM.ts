@@ -87,7 +87,7 @@ export interface GetMasterDataPayloadExcel {
     fields: Array<{ key: string }>,
     Stream: number
     pageType: string
-
+    mode: string
 }
 export interface PaginationPayload {
     pageNumber: number,
@@ -135,8 +135,16 @@ export interface QueryFilteredDataConfigsExcel {
     showAll?: boolean,
     count?: boolean,
     pageType: string,
-    Stream?: number
+    Stream?: number,
+    mode: string
 }
+export type ExportMode =
+| "EXPORT"
+| "DOWNLOAD"
+| "ADD_TEMPLATE"
+| "DELETE"
+| "TASK_DETAILS"
+| "VIEW_MODIFY";  
 export interface UploadModalRadioButtonsType {
     label: string
     value: any

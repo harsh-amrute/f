@@ -326,13 +326,14 @@ const MonitorGITChildLocationWiseCharts = ({
                 </div>
               </div>
               <hr className={SCHorizontalDivider} />
-              <div className="boxplot-chart">
+              <div className="boxplot-chart" style={{height: '100%'}}>
                 {/* <GlobalStyle /> */} 
                 <Chart
                   options={{
                     chart: {
                       type: "boxPlot",
                       nonce: nonce,
+                      height: '75%',
                       animations: {
                         enabled: false,
                         easing: "easeinout",
@@ -393,6 +394,10 @@ const MonitorGITChildLocationWiseCharts = ({
                       tooltip: {
                         enabled: false,
                       },
+                      title: {
+                        text: "Receiving Location Name",
+                        style: { fontSize: "10px", fontFamily: "Roboto", color: "#6d6d6d" },
+                      },
                       labels: {
                         style: {
                           fontSize: "12px", // Font size of y-axis labels
@@ -436,12 +441,17 @@ const MonitorGITChildLocationWiseCharts = ({
                         },
                       },
                     },
+                    legend: {
+                        show: true,
+                        position: "bottom",
+                        markers: { fillColors: ["transparent", "transparent"], strokeColor: "transparent" },
+                        labels: { colors: ["transparent", "transparent"] },
+                      },
                   }}
                   series={series} // Make sure you have defined the series data
                   type="boxPlot"
-                  height={370}
+                  height={317}
                 />
-                <div className={Xaxislegend}>Receiving Location Name</div>
               </div>
 
               <VFModalCard

@@ -165,7 +165,7 @@ const OrderFulfillmentCustomCharts = ({
         toolPanelParams: {
           suppressPivots: false,
           suppressPivotMode: false,
-          suppressRowGroups: true,
+          suppressRowGroups: false,
           suppressValues: false,
         },
       },
@@ -247,6 +247,7 @@ const OrderFulfillmentCustomCharts = ({
           disableZoomScaling={true}
           rowHeight={30}
           suppressColumnVirtualisation={true}
+          className="custom-screen-table"
         />
       </div>
     </>
