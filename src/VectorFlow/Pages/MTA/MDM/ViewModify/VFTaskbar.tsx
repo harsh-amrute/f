@@ -313,9 +313,9 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                 <div className={TaskBarContainer}  data-testid="taskbar" style={{width:width}}>
                       <div className={VFTaskBarButtonGroup}>
                         <BackButton/>          
-                        <VFButtonOutline onClick={onSaveToDraft} themeUi={themeUi} disabled={isSavingToDraft} width={139}>
+                        {/* <VFButtonOutline onClick={onSaveToDraft} themeUi={themeUi} disabled={isSavingToDraft} width={139}>
                         Save as draft
-                        </VFButtonOutline>            
+                        </VFButtonOutline>             */}
                         <VFButton onClick={()=>onClearAndExportErrors('Validation ')} themeUi={themeUi} disabled={false} width={183}>
                             Clear & Export Errors
                         </VFButton>
@@ -335,9 +335,9 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                             </VFButtonOutline>
                         )
                        }
-                        <VFButtonOutline onClick={onSaveToDraft} themeUi={themeUi} disabled={masterId > 14 || isSavingToDraft || disableSubmit} width={139}>
+                        {/* <VFButtonOutline onClick={onSaveToDraft} themeUi={themeUi} disabled={masterId > 14 || isSavingToDraft || disableSubmit} width={139}>
                         Save as draft
-                        </VFButtonOutline>
+                        </VFButtonOutline> */}
                         <VFButton onClick={onSubmit} themeUi={themeUi} disabled={disableSubmit || isSavingToDraft} width={139}>
                             Submit All
                         </VFButton>
@@ -587,9 +587,9 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                     <VFButtonOutline themeUi={themeUi} onClick={onDeleteSelected} width={139}>  
                             Remove Selected
                     </VFButtonOutline >
-                    <VFButtonOutline onClick={onSaveToDraft} themeUi={themeUi} disabled={isSavingToDraft || disableSubmit} width={139}>
+                    {/* <VFButtonOutline onClick={onSaveToDraft} themeUi={themeUi} disabled={isSavingToDraft || disableSubmit} width={139}>
                         Save as draft
-                        </VFButtonOutline>
+                        </VFButtonOutline> */}
                     <VFButton themeUi={themeUi} onClick={onSubmit} disabled={disableSubmit || isSavingToDraft }>
                             Delete All
                         </VFButton>
