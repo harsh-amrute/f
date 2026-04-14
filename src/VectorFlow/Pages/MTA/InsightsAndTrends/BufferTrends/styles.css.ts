@@ -77,22 +77,26 @@ export const AvailabilityContainer = style({
   display: 'flex',
   flexDirection: 'column',
   marginTop: '58px',
-  marginLeft: '-10px',
+  marginLeft: '10px',
   boxShadow: 'rgb(155 155 155 / 16%) 6px 6px 12px',
   zIndex: 100,
-  borderRadius: '0px 8px 8px 0px',
+  borderRadius: '8px 8px 8px 8px',
+  width: '320px',
+  minWidth: '320px',
+  minHeight: "200px",
+   border: "1px solid #CCCCCC"
+
 });
+
+
 
 export const AvailabilityHeader = style({
   position: 'relative',
-  width: '250px',
-  overflow: 'hidden',
-  minWidth: '120px',
-  height: '53px',
+  width: '100%',          // ← was 250px, now matches container
+  flexShrink: 0,
+  height: '45px',
   padding: '10px',
   paddingTop: '15px',
-  fontStyle: 'normal',
-  fontVariant: 'normal',
   fontWeight: 600,
   fontSize: '13px',
   lineHeight: '13px',
@@ -104,7 +108,7 @@ export const AvailabilityHeader = style({
   whiteSpace: 'nowrap',
   textOverflow: 'ellipsis',
   backgroundColor: 'white',
-  borderRadius: '0px 8px 0px 0px',
+  borderRadius: '8px 8px 0px 0px',
   selectors: {
     '&::after': {
       content: '',
@@ -112,24 +116,83 @@ export const AvailabilityHeader = style({
       left: '1px',
       top: '4px',
       bottom: '4px',
-      backgroundColor: '#898585',
+      // backgroundColor: '#898585',
       width: '0.5px',
     },
-    '&:last-child::after': {
-      display: 'none',
-    },
+    '&:last-child::after': { display: 'none' },
   },
 });
 
+
+
 export const AvailabilityContent = style({
-  display: 'grid',
-  placeItems: 'center',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  // backgroundColor: 'white',
+  flexShrink: 0,
+  height: '50px',
+  fontSize: '23px',
+  fontWeight: 600,
+  color: availabilityColorVar,
+  borderTop: '1px solid #f0f0f0',
+  backgroundColor: "#8D8D8D29",
+  // borderRadius: '0px 0px 8px 8px',
+});
+
+
+export const FormulaContent = style({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '6px',
   backgroundColor: 'white',
-  height: '100%',
-  fontSize: '24px',
-  fontWeight: 500,
-  color: availabilityColorVar, // set at callsite
-  borderRadius: 'inherit',
+  padding: '0px 10px',
+  color: availabilityColorVar,
+  height: '52px',
+  flexShrink: 0,
+});
+
+
+export const FractionWrapper = style({
+  display: 'inline-flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  gap: '3px',
+  width: '100%',
+});
+
+export const FractionNumerator = style({
+  fontSize: '12px',
+  fontWeight: 400,
+  textAlign: 'center',
+  whiteSpace: 'nowrap',
+  lineHeight: '13px',
+  paddingBottom: '4px',
+  width: '100%',
+
+  vars: {
+    borderBottom: `1px solid ${availabilityColorVar}`,
+  },
+  borderBottom: `1px solid`,
+  borderColor: availabilityColorVar,
+});
+
+export const FractionDenominator = style({
+  fontSize: '12px',
+  fontWeight: 400,
+  textAlign: 'center',
+  whiteSpace: 'nowrap',
+  lineHeight: '13px',
+  paddingTop: '4px',
+  width: '100%',
+});
+export const FractionMultiplier = style({
+  fontSize: '15px',
+  fontWeight: 400,
+  flexShrink: 0,
+  alignSelf: 'center',
+  marginLeft: '4px',
 });
 
 /* ========== tiny utilities to replace inline styles ========== */
