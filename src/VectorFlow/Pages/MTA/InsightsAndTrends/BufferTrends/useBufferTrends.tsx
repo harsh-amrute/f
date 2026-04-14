@@ -139,20 +139,12 @@ const useBufferTrends = () => {
         switch(tab.value){
             case 'Absolute': 
                 setCurrentGraphData(graphData?.data?.absolute);
-                setSummaryData(graphData?.data?.summary.map((row: any) =>
-                row.category === 'Percentage'
-                    ? Object.fromEntries(Object.entries(row).map(([k, v]) => k === 'category' ? [k, v] : [k, `${v}%`]))
-                    : row
-            )as any);
+                setSummaryData(graphData?.data?.summary);
                 setAvailability(graphData?.data?.avail);
                 break;
             case 'Percentage':
                 setCurrentGraphData(graphData?.data?.percentage);
-                setSummaryData(graphData?.data?.summary.map((row: any) =>
-                row.category === 'Percentage'
-                    ? Object.fromEntries(Object.entries(row).map(([k, v]) => k === 'category' ? [k, v] : [k, `${v}%`]))
-                    : row
-            )as any);
+                setSummaryData(graphData?.data?.summary);
                 setAvailability(graphData?.data?.avail);
         }
     } 
