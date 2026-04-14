@@ -41,6 +41,8 @@ import Tooltip from "../../../../../src/VectorFlow/Pages/MTO/Common/Tooltip";
 import "./style.css";
 import VFFloatingTab from "../VFFloatingTab";
 import { useLocation } from "react-router";
+import { useChartDownload } from "../../../../hooks/useChartDownload";
+import ChartDownloadButton from "../../../../VectorFlow/Pages/MTA/Common/ChartDownloadButton/ChartDownloadButton";
 
 interface DailyDataGraphModalProps {
   rowData: any;
@@ -94,6 +96,10 @@ const DailyDataGraphModal = ({
   const [normData, setNormData] = useState<any[]>([]);
   const [adjustedChartData, setadjustedChartData] = useState<any[]>([]);
   const [missingData, setMissingData] = useState<any[]>([]);
+  const { chartWrapperRef, handleDownload } = useChartDownload({
+    title: "Daily Data Graph",
+    fileName: "DailyDataGraph",
+  });
 
   const fillNotAvailableDates = (data: any) => {
     const lastNinetyDates = eachDayOfInterval({
@@ -818,8 +824,9 @@ const DailyDataGraphModal = ({
       closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}
     >
       <div className={SCSeasonalityContainer}>
-        <div className={SCChartContainer}>
+        <div ref={chartWrapperRef} className={SCChartContainer}>
           <div className={SCToggleWrapper}>
+            <ChartDownloadButton themeUi={themeUi} onDownload={handleDownload}/>
             <div style={{ zoom: 0.6 }}>
               <VFFloatingTab
                 handleClick={(e: any) => {

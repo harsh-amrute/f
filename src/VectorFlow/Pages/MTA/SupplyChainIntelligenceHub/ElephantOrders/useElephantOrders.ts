@@ -98,7 +98,17 @@ const useElephantOrders= ()=>{
         if (!skucode || !whcode || !orderid) {
           return;
         }
-      
+        const hasPendingEdit = editedDueDateRows.some(
+            (row) =>
+                row.skucode === skucode &&
+                row.whcode === whcode &&
+                row.orderid === orderid
+        );
+        const hasExistingDueDate = rowData['DueDate'];
+
+        if (!hasPendingEdit && !hasExistingDueDate) {
+            return; 
+        }
         const cleared = {
           skucode,
           whcode,
