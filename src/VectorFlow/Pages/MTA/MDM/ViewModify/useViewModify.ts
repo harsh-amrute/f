@@ -1530,7 +1530,7 @@ const useViewModify = (pageType: string) => {
     const selectedRows = ref.current?.api.getSelectedRows();
     if (selectedRows && selectedRows.length > 0) {
       dispatch(REMOVE_ROW_DATA(selectedRows));
-      notifySuccess(`${selectedRows?.length} records deleted successfully`);
+      notifySuccess(`${selectedRows?.length} Records deleted successfully`);
       setSelectedRowsCount(0);
       if (recordCount - selectedRows?.length === 0) {
         dispatch(UPDATE_PROGRESS_STATE("submitted"));

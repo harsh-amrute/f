@@ -16,7 +16,7 @@ import useBPRFilter from '../../../../../hooks/useBPRFilter'
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify"
 import { toast } from "react-toastify/unstyled"
 import SuggestionCategoryCellRenderer from "./SuggestionCategoryCellRendere"
-import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
+import { defaultAgGridSideBarForBPR, DBMSuggestionsReasonsToIdMapper } from "../../../../../helpers/BPRConstants";
 import { ColDef } from 'ag-grid-community';
 import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
 import { UIColumnConfigName, UserUIColumnConfigName } from "../../../../../helpers/Enum"
@@ -259,7 +259,17 @@ const useDBM =()=>{
             maxWidth: 40,
             initialHide: false,
             pinned: 'left',
-            suppressMenu: true
+            suppressMenu: true,
+            filter: false,
+            sortable: true,
+            valueGetter: (params: any) => {
+              if (!params.data?.Comment) return "";
+              const id = DBMSuggestionsReasonsToIdMapper[params.data.Comment];
+              const upwards = ["1", "2", "3", "4", "6", "7", "8", "9", "10"];
+              return upwards.includes(id) ? "Up" : "Down";
+            },
+            tooltipField: "Suggestion",
+            headerTooltip: "Suggestion"
         },
 
     }
