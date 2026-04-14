@@ -48,6 +48,7 @@ const useDBM =()=>{
     const { mutateAsync: getUiConfig, isLoading: isUIConfigLoading } = useGetUIConfigData();
     
     const {mutateAsync:getDBMData, isLoading: isDBMDataLoading} =useGetDBMData();
+    const {mutateAsync: getDBMDataForExcelExport} = useGetDBMData();
     const {mutateAsync:getDBMApplySelectedNorm} =useGetDBMApplySelectedNorm();
     const {mutateAsync: getDBMUpdateSleepTbl} = useGetDBMUpdateSleepTbl();
     const {mutateAsync:getDBMDataCount, isLoading: isDBMDataCountLoading}=useGetDBMDataCount();
@@ -400,7 +401,7 @@ const useDBM =()=>{
     }
 
     const onExportToExcelCallBack= async(pageNo:any)=>{
-        const rowData =await getDBMData({
+        const rowData =await getDBMDataForExcelExport({
             filters:currentFilter,
             paginationParameter:{
                 pageNumber:pageNo,
@@ -408,7 +409,7 @@ const useDBM =()=>{
             }
         })
 
-        getDBMUiConfig()
+        // getDBMUiConfig()
         // console.log(rowData.data.data)
         return rowData.data.data
     }
