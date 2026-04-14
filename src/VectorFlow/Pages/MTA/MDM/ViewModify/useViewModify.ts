@@ -228,7 +228,7 @@ const useViewModify = (pageType: string) => {
 
   const { mutateAsync: getUploadProgress } = useGetUploadProgress();
 
-  const validStopStatuses = [1, 2, 3, 4, 5, 6, 21];
+  const validStopStatuses = [1, 2, 3, 4, 5, 6];
 
   const validResumeStatuses = [23];
 
