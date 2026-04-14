@@ -162,7 +162,7 @@ const ExcessInventoryCustomCharts = ({ recordCount }: { recordCount: any }) => {
         toolPanelParams: {
           suppressPivots: false,
           suppressPivotMode: false,
-          suppressRowGroups: true,
+          suppressRowGroups: false,
           suppressValues: false,
         },
       },
@@ -240,6 +240,7 @@ const ExcessInventoryCustomCharts = ({ recordCount }: { recordCount: any }) => {
           height={"100%"}
           maintainColumnOrder
           suppressColumnVirtualisation={true}
+          className="custom-screen-table"
         />
       </div>
     </>

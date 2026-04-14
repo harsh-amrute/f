@@ -42,6 +42,7 @@ import {
   useGetUploadProgress,
   useBulkModifyMasterData,
 } from "../../../../Services/MTA/MDM";
+import {ExportMode} from "../../../../types/MDM";
 import { useSelector, useDispatch } from "react-redux";
 import {
   FILL_MASTERS,
@@ -228,7 +229,7 @@ const useViewModify = (pageType: string) => {
 
   const { mutateAsync: getUploadProgress } = useGetUploadProgress();
 
-  const validStopStatuses = [1, 2, 3, 4, 5, 6, 21];
+  const validStopStatuses = [1, 2, 3, 4, 5, 6];
 
   const validResumeStatuses = [23];
 
@@ -741,14 +742,15 @@ const useViewModify = (pageType: string) => {
   };
   
   const queryFilteredDataExcel = async (configs:QueryFilteredDataConfigsExcel) => {
-    const {filters,fields,count} = configs;
+    const {filters,fields,count,mode} = configs;
     const payload:GetMasterDataPayloadExcel = {
       id:activeMaster.id,
       name:activeMaster.name,
       filters:filters,
       fields:fields,
       pageType: pageType,
-      Stream:1
+      Stream:1,
+      mode: mode
     }
     let resultData;
     if(count){
@@ -1412,7 +1414,7 @@ const useViewModify = (pageType: string) => {
     }
   };
 
-  const exportToExcel = async (fromUploadModal?: boolean) => {
+  const exportToExcel = async (mode: ExportMode, fromUploadModal?: boolean) => {
     try {
       const currMasterFilters = activeMaster.filters;
       const payloadFilters = areMasterFiltersValid(currMasterFilters)
@@ -1428,6 +1430,7 @@ const useViewModify = (pageType: string) => {
         fields: payloadFields,
         pageType: pageType,
         Stream: 1,
+        mode: mode
       });
 
       const blob = new Blob(
@@ -1443,7 +1446,12 @@ const useViewModify = (pageType: string) => {
       const masterName = activeMaster?.name || activeMaster?.name || "MasterData";
       const safeFileName = masterName.replace(/[^a-zA-Z0-9-_ ]/g, "").trim();
       a.href = url;
-      a.download = `${safeFileName}.xlsx`;
+      if(downloadFileName){
+        a.download = `${downloadFileName}.xlsx`
+      }
+      else{
+      a.download =  `${safeFileName}.xlsx`;
+      }
       document.body.appendChild(a);
       a.click();
 
@@ -1530,7 +1538,7 @@ const useViewModify = (pageType: string) => {
     const selectedRows = ref.current?.api.getSelectedRows();
     if (selectedRows && selectedRows.length > 0) {
       dispatch(REMOVE_ROW_DATA(selectedRows));
-      notifySuccess(`${selectedRows?.length} records deleted successfully`);
+      notifySuccess(`${selectedRows?.length} Records deleted successfully`);
       setSelectedRowsCount(0);
       if (recordCount - selectedRows?.length === 0) {
         dispatch(UPDATE_PROGRESS_STATE("submitted"));
