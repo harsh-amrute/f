@@ -197,6 +197,7 @@ const TechnicalWise = ({
       {
         type: "number",
         position: "left",
+        ...(graphs[0].pen.label === "Percentage" ? { max: 105, nice: false } : {}),
         label: {
           fontSize: 8,
           fontWeight: "bold",
