@@ -18,8 +18,6 @@ import {
 } from "../../SupplyChainIntelligenceHub/Planning/ActionToolBar/styles.css";
 import "./style.css";
 import { nonce } from "../../../../../helpers/utils";
-import { useChartDownload } from "../../../../../hooks/useChartDownload";
-import ChartDownloadButton from "../../Common/ChartDownloadButton/ChartDownloadButton";
 
 interface ExpandedGraphProps {
   id: number;
@@ -58,11 +56,6 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
   } = props;
 
   const activeCapsuleIndex = graphs[id - 1].pen;
-
-  const { chartWrapperRef, handleDownload } = useChartDownload({
-    title: `Technical Trend | Horizon - ${horizon} Days`,
-    fileName: "AvailabilityTrend",
-  });
 
   const onChange = (e: any, key: string) => {
     const doesFilterExist = graphs[id - 1].filters.find(
@@ -202,18 +195,16 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
 
     [data, nonce]
   );
-  const themeColor =
-  user.user.theme_ui === "REGALBLAZE" ? "#14213D" : "#000000";
+
   return (
     <VFModalCard
       openModal={isOpen}
       headerIcon=""
-      headerBgColor={themeColor}
+      headerBgColor="white"
       headerText={`Technical Trend | Horizon - ${horizon} Days`}
-      headerTextColor="white"
-      closeIcon="/assets/img/VectorFLOW/NMS/close-white.svg"
+      headerTextColor="black"
+      closeIcon="/assets/img/VectorFLOW/NMS/close-dark.svg"
       closeModal={handleClose}
-      absolute
     >
       <div className={ExpandedChartFilterWrapper}>
         <div className={ExpandedChartSelectWrapper}>
@@ -322,9 +313,7 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
             {/* <p>Reset</p> */}
           </div>
         </div>
-          <div style={{marginLeft: "-20px"}}>
-            <ChartDownloadButton themeUi={themeUi} onDownload={handleDownload}/>
-          </div>
+
         <div className={ExpandedChartCapsuleWrapper}>
           <VFCapsule
             activeBtn={activeCapsuleIndex}
@@ -431,7 +420,7 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
                   }}
               /> */}
 
-      <div ref={chartWrapperRef}><AgCharts options={chartOptions} /></div>
+      <AgCharts options={chartOptions} />
     </VFModalCard>
   );
 };

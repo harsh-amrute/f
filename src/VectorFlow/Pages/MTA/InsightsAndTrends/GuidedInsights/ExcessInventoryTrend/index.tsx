@@ -16,8 +16,6 @@ import {
 import VFHorizon from "../../../../../../components/VectorFLOW/commons/VFHorizon";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../../../redux/store/store";
-import { useChartDownload } from "../../../../../../hooks/useChartDownload";
-import ChartDownloadButton from "../../../Common/ChartDownloadButton/ChartDownloadButton";
 
 const ExcessInventoryTrend = ({
   filter,
@@ -185,16 +183,10 @@ const ExcessInventoryTrend = ({
 
 export default ExcessInventoryTrend;
 
-export const CustomizedChartComponent = ({chartOptions,chartParams, themeUi}:any) => {
+export const CustomizedChartComponent = ({chartOptions,chartParams}:any) => {
   const chartKey = chartOptions?.series?.length 
     ? `chart-series-${chartOptions.series.length}` 
     : 'chart-default';
-  
-  const { chartWrapperRef, handleDownload } = useChartDownload({
-    title: chartParams.title,
-    fileName: "AvailabilityTrend",
-  });
-
   return (
     <div className={SCChartContainer}>
       <div
@@ -221,9 +213,8 @@ export const CustomizedChartComponent = ({chartOptions,chartParams, themeUi}:any
           <div style={{ marginLeft: 10, marginBottom: "-5px" }}>
             <VFInfoToolTip infoList={chartParams.graphInfo} />
           </div>
-          <ChartDownloadButton themeUi={themeUi} onDownload={handleDownload} />
-         </div>
-       <div ref={chartWrapperRef}> <AgCharts key={chartKey} options={chartOptions} /> </div>
+        </div>
+        <AgCharts key={chartKey} options={chartOptions} />
       </div>
     </div>
   );
