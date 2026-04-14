@@ -15,6 +15,9 @@ import { AgCharts } from "ag-charts-react";
 import { AgChartOptions } from "ag-charts-community";
 import VFInfoToolTip from ".././../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 import "./style.css";
+import { useChartDownload } from "../../../../../../hooks/useChartDownload";
+import ChartDownloadButton from "../../../Common/ChartDownloadButton/ChartDownloadButton";
+
 interface EconomicalWiseProps {
   data: any;
   currentPageTab: string;
@@ -50,6 +53,11 @@ const EconomicalWise = ({
     total: parseFloat(item.total),
     // Parse the string to a floating-point number
   }));
+
+   const { chartWrapperRef, handleDownload } = useChartDownload({
+     title: "Buffer Trend Graph",
+     fileName: "BufferTrendGraph_Pipeline",
+   });
 
   const colors = [
     { label: "Black", value: "black" },
@@ -410,6 +418,7 @@ const EconomicalWise = ({
             className={SCChartHeaderContainer}
             style={{ display: "flex", marginBottom: "5px" }}
           >
+            <ChartDownloadButton themeUi={themeUi} onDownload={handleDownload} />
             <div className={capsuleWrapper}>
               <VFCapsule
                 activeBtn={graphs[0].pen}
@@ -431,7 +440,7 @@ const EconomicalWise = ({
 
         <SCHorizontalDivider />
         {/* <ChartWrapper> */}
-        <div style={{ height: "70%", width: "100%" }}>
+        <div ref={chartWrapperRef} style={{ height: "70%", width: "100%" }}>
           <div
             className="title"
             style={{

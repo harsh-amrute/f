@@ -15,6 +15,9 @@ import { AgCharts } from "ag-charts-react";
 import { AgChartOptions } from "ag-charts-community";
 import VFInfoToolTip from ".././../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 import "./style.css";
+import { useChartDownload } from "../../../../../../hooks/useChartDownload";
+import ChartDownloadButton from "../../../Common/ChartDownloadButton/ChartDownloadButton";
+
 interface TechnicalWiseProps {
   data: any;
   currentPageTab: string;
@@ -50,6 +53,11 @@ const TechnicalWise = ({
     total: parseFloat(item.total),
     // Parse the string to a floating-point number
   }));
+
+  const { chartWrapperRef, handleDownload } = useChartDownload({
+    title: "Buffer Trend Graph",
+    fileName: "BufferTrendGraph_On-Hand",
+  });
 
   const colors = [
     { label: "Black", value: "black" },
@@ -406,6 +414,7 @@ const TechnicalWise = ({
             </div>
           </div>
           <div className={SCChartHeaderContainer}>
+           <ChartDownloadButton themeUi={themeUi} onDownload={handleDownload} />
             <div className={CapsuleWrapper}>
               <VFCapsule
                 activeBtn={graphs[0].pen}
@@ -427,7 +436,7 @@ const TechnicalWise = ({
 
         <hr className={SCHorizontalDivider} />
         <div className={ChartWrapper}>
-          <div style={{ height: "100%", width: "100%" }}>
+          <div ref={chartWrapperRef} style={{ height: "100%", width: "100%" }}>
             <div
               className="title"
               style={{

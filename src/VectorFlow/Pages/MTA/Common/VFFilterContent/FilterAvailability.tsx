@@ -443,7 +443,7 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
               alignItems: "flex-start",
               flexWrap: "wrap" 
             }}>
-              {(currentTab === 'on-hand' || currentTab === 'both' || currCategory === 'BPR' || currCategory === 'RRR' || currCategory === 'BOR' || (isBTRReport && (currentTab === 'on-hand' || currentTab === 'both'))) && (
+             {(currCategory !== 'BOR' && (currentTab === 'on-hand' || currentTab === 'both' || currCategory === 'BPR' || currCategory === 'RRR' || (isBTRReport && (currentTab === 'on-hand' || currentTab === 'both')))) && (
                 <div style={{ 
                   flex: (currentTab === 'both') ? 1 : 'auto', 
                   minWidth: "280px",

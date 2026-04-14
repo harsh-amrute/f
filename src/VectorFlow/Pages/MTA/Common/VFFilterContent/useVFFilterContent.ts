@@ -117,12 +117,12 @@ export const numericOperators = [
 ]
 
 export const colorOptions = [
+  { value: "Black", label: "Black", color: "black" },
   { value: "Red", label: "Red", color: "red" },
   { value: "Yellow", label: "Yellow", color: "gold" },
   { value: "Green", label: "Green", color: "green" },
-  { value: "Black", label: "Black", color: "black" },
-  { value: "White", label: "White", color: "lightgrey" },
   { value: "Blue", label: "Blue", color: "blue" },
+  { value: "White", label: "White", color: "lightgrey" },
   { value: "Grey", label: "Grey", color: "grey" },
 ];
 
@@ -140,9 +140,9 @@ export const colorFilterOptions = [
   { value: 'black', label: 'Black' },
   { value: 'black/red', label: 'Black/Red' },
   { value: 'red', label: 'Red' },
-  { value: 'blue', label: 'Blue' },
   { value: 'yellow', label: 'Yellow' },
   { value: 'green', label: 'Green' },
+  { value: 'blue', label: 'Blue' },
   { value: 'white', label: 'White' },
 ]
 

@@ -96,11 +96,13 @@ export const HorizonFilter: React.FC<FilterSectionProps> = ({
       const endDateFilter = multiFilter.horizonFilter.filters.find(
         (f: any) => f.attributeName === "endDate"
       );
-      if (startDateFilter) setFromDate(startDateFilter.value);
-      if (endDateFilter) setToDate(endDateFilter.value);
+      setFromDate(startDateFilter?.value ?? "");
+      setToDate(endDateFilter?.value ?? "");
+    } else {
+      setFromDate("");
+      setToDate("");
     }
   }, [multiFilter?.horizonFilter?.filters]);
-
   useEffect(() => {
     const handleOutside = (e: MouseEvent) => {
       const target = e.target as Node;
