@@ -229,7 +229,7 @@ const useViewModify = (pageType: string) => {
 
   const { mutateAsync: getUploadProgress } = useGetUploadProgress();
 
-  const validStopStatuses = [1, 2, 3, 4, 5, 6, 21];
+  const validStopStatuses = [1, 2, 3, 4, 5, 6];
 
   const validResumeStatuses = [23];
 
@@ -1446,7 +1446,12 @@ const useViewModify = (pageType: string) => {
       const masterName = activeMaster?.name || activeMaster?.name || "MasterData";
       const safeFileName = masterName.replace(/[^a-zA-Z0-9-_ ]/g, "").trim();
       a.href = url;
-      a.download = `${safeFileName}.xlsx`;
+      if(downloadFileName){
+        a.download = `${downloadFileName}.xlsx`
+      }
+      else{
+      a.download =  `${safeFileName}.xlsx`;
+      }
       document.body.appendChild(a);
       a.click();
 
