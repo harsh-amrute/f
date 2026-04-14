@@ -124,12 +124,12 @@ const summaryDefaultColDef = {
 };
 
 const getRowStyle = (params: any) => {
-  if (
-    params.data?.Category === "Total" ||
-    params.data?.Category === "Availability"
-  ) {
-    return { background: "#f0f0f0", fontWeight: "bold" };
-  }
+  // if (
+  //   params.data?.Category === "Total" ||
+  //   params.data?.Category === "Availability"
+  // ) {
+  //   return {  fontWeight: "bold" };
+  // }
   return params.node.rowIndex % 2 === 0
     ? { background: "#EBEBEB" }
     : { background: "#F7F7F7" };
@@ -195,12 +195,40 @@ const SummaryTable = ({
 
 const Summary = (props: SplitViewProps) => {
   const { techTable, ecoTable } = props;
+  const CATEGORY_ORDER = [
+    "Black",
+    "Red",
+    "Yellow",
+    "Green",
+    "Blue",
+    "White",
+    "Total",
+    "Availability",
+    "Grey",
+  ];
+
+  const techSummaryRows = useMemo(
+    () =>
+      [...(techTable.rowData ?? [])].sort(
+        (a, b) =>
+          CATEGORY_ORDER.indexOf(a.Category) -
+          CATEGORY_ORDER.indexOf(b.Category)
+      ),
+    [techTable.rowData]
+  );
+
+  const ecoSummaryRows = useMemo(
+    () =>
+      [...(ecoTable.rowData ?? [])].sort(
+        (a, b) =>
+          CATEGORY_ORDER.indexOf(a.Category) -
+          CATEGORY_ORDER.indexOf(b.Category)
+      ),
+    [ecoTable.rowData]
+  );
 
   const ref1 = useRef<AgGridReact>(null);
   const ref2 = useRef<AgGridReact>(null);
-
-  const techSummaryRows = techTable.rowData ?? [];
-  const ecoSummaryRows = ecoTable.rowData ?? [];
   return (
     <div
       className={ARTableWrapper}
