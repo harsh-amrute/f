@@ -328,7 +328,7 @@ const DeleteRecord = () => {
             header={"Deletion"}
             openModal={isUploadModalOpen} 
             onCloseModal={()=>{setFile(undefined);toggleUploadModal(false)}} 
-            onDownload={() => exportToExcel(true)} 
+            onDownload={() => exportToExcel("DELETE", true)} 
             onUpload={async ()=>{
               await onUploadMaster(RECORD_UPLOAD_LIMIT)
             }}
@@ -385,7 +385,7 @@ const DeleteRecord = () => {
             onBack1={() => onBackButton1(location?.state?.backUrl)}
             onClearAndExportErrors={onClearExportError}
             onModifyData={() => toggleUploadModal(true)}
-            onExportData={exportToExcel}
+            onExportData={() => exportToExcel("DELETE",true)}
             onSubmit={() => onSubmit(ref)}
             onDeleteSelected={deleteSelected}
             onEditOnline={() => console.log("")}

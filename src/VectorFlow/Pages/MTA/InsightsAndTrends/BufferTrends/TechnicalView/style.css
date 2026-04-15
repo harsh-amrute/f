@@ -68,5 +68,8 @@
   background-color: blue;
  }
  .color-White{
-  background-color: gray;
+  background-color: #ded2d2ff;
+ }
+  .color-Grey{
+  background-color: grey;
  }

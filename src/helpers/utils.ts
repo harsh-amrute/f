@@ -513,6 +513,29 @@ export const mapRRRFieldsToColDefs = (fields: RRRField[]): ColDef[] => {
         filter: getCellFilter(f.DataType),
       };
     }
+    if (f.Col_Code === "PPen") {
+      return {
+        colId: f.Col_Code,
+        field: f.Col_Code,
+        headerName: f.Header,
+        hide: !f.Visible,
+        cellRenderer: "colorPhysicalInventoryPenColorCellRenderer",
+        cellDataType: getCellDataType(f.DataType),
+        filter: getCellFilter(f.DataType),
+      };
+    }
+    if (f.Col_Code === "DPen") {
+      return {
+        colId: f.Col_Code,
+        field: f.Col_Code,
+        headerName: f.Header,
+        hide: !f.Visible,
+        cellRenderer: "colorDispatchRender",
+        cellDataType: getCellDataType(f.DataType),
+        filter: getCellFilter(f.DataType),
+      };
+    }
+
     if (f.Col_Code === "EPen") {
       return {
         colId: f.Col_Code,
@@ -2806,9 +2829,12 @@ export const filterParams = {
 export const CellRenderersMapping: any = {
   DispatchPen: "colorDispatchRender",
   TechPen: "colorTechCellRenderer",
+  PhysicalInventoryPen:"colorPhysicalInventoryPenColorCellRenderer",
   EcoPen: "colorEcoCellRenderer",
   TPen: "colorTechCellRenderer",
+  PPen: "colorPhysicalInventoryPenColorCellRenderer",
   EPen: "colorEcoCellRenderer",
+  DPen: "colorDispatchRender",
 };
 
 const aggridDefaultColumnProps = {
@@ -3274,6 +3300,42 @@ export const mapBPRFieldsToColDefs = (
         },
       };
     }
+    if (f.Col_Code === "PhysicalInventoryPen") {
+      return {
+        colId: f.Col_Code,
+        field: f.Col_Code,
+        headerName: f.Header,
+        hide: !f.Visible,
+        cellRenderer: "colorPhysicalInventoryPenColorCellRenderer",
+        // tooltipField: f.Col_Code,
+        minWidth: 180,
+        cellDataType: getCellDataType(f.DataType),
+        filter: getCellFilter(f.DataType),
+        pinned: null,
+        filterParams: {
+          buttons: ["reset"], // Adds Apply and Clear buttons
+          // excelMode: 'windows',
+        },
+      };
+    }
+    if (f.Col_Code === "DispatchPen") {
+      return {
+        colId: f.Col_Code,
+        field: f.Col_Code,
+        headerName: f.Header,
+        hide: !f.Visible,
+        cellRenderer: "colorDispatchRender",
+        // tooltipField: f.Col_Code,
+        minWidth: 180,
+        cellDataType: getCellDataType(f.DataType),
+        filter: getCellFilter(f.DataType),
+        pinned: null,
+        filterParams: {
+          buttons: ["reset"], // Adds Apply and Clear buttons
+          // excelMode: 'windows',
+        },
+      };
+    }        
     if (f.Col_Code === "EcoPen") {
       return {
         colId: f.Col_Code,
@@ -3488,6 +3550,34 @@ export const mapResearchInsightsFieldsToColDefs = (
         headerName: f.Header,
         hide: !f.Visible,
         cellRenderer: "colorTechCellRenderer",
+        cellStyle: {
+          "min-width": 180,
+        },
+        cellDataType: getCellDataType(f.DataType),
+        filter: getCellFilter(f.DataType),
+      };
+    }
+    if (f.Col_Code === "PhysicalInventoryPen") {
+      return {
+        colId: f.Col_Code,
+        field: f.Col_Code,
+        headerName: f.Header,
+        hide: !f.Visible,
+        cellRenderer: "colorPhysicalInventoryPenColorCellRenderer",
+        cellStyle: {
+          "min-width": 180,
+        },
+        cellDataType: getCellDataType(f.DataType),
+        filter: getCellFilter(f.DataType),
+      };
+    }
+    if (f.Col_Code === "DispatchPen") {
+      return {
+        colId: f.Col_Code,
+        field: f.Col_Code,
+        headerName: f.Header,
+        hide: !f.Visible,
+        cellRenderer: "colorDispatchRender",
         cellStyle: {
           "min-width": 180,
         },
@@ -5584,7 +5674,7 @@ export function getColumnDefinationsMTA(
       rowGroupIndex: null,
       initialPivot: false,
       enablePivot: true,
-      enableRowGroup: false,
+      enableRowGroup: true,
       enableValue: true,
       pivotIndex: null,
 

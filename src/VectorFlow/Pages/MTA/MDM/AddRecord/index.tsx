@@ -268,7 +268,7 @@ const AddRecord = () => {
           </h1>
         </VFOverlay>
       )}
-      {!isSelectMasterOpen && (
+      {!isSelectMasterOpen && !isUploadModalOpen && (
         <div style={{ zoom: "var(--nms-filter-zoom)" }}>
           <VFTaskBar
             disableSubmit={isSubmitDisabled}
@@ -289,7 +289,7 @@ const AddRecord = () => {
             onBack1={() => onBackButton1(location?.state?.backUrl)}
             onClearAndExportErrors={onClearExportError}
             onModifyData={() => toggleUploadModal(true)}
-            onExportData={exportToExcel}
+            onExportData={() => exportToExcel("ADD_TEMPLATE")}
             onSubmit={onSubmit}
             onDeleteSelected={deleteSelected}
             onPhaseInPhaseOutStop={() => console.log("")}

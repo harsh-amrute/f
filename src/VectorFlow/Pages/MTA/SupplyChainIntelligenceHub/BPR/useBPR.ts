@@ -2,7 +2,7 @@ import { useState,useMemo, useEffect, CSSProperties,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 
 import { useGetBPRData, useGetBPRRemarkHistory, useSubmitBPRRemark, useGetDailyData, useGetBPRDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BPR"
-import { BPREcoColorCellRenderer,BPRRemarksCellRenderer,BPRSubmitRemarkCellRenderer,BPRTagsCellRenderer,BPRTechColorCellRenderer } from "./BPRCellRenderers"
+import { BPREcoColorCellRenderer,BPRRemarksCellRenderer,BPRSubmitRemarkCellRenderer,BPRTagsCellRenderer,BPRTechColorCellRenderer, BPRPhysicalInventoryPenColorCellRenderer, BPRDispatchPenColorCellRenderer } from "./BPRCellRenderers"
 import { convertUiConfigToOptions, mapBPRRowData, MainMenuItemsCustomization, getColumnDefinationsMTA, CsvExportMTA } from "../../../../../helpers/utils"
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify"
 import { toast } from "react-toastify/unstyled"
@@ -96,12 +96,30 @@ const useBPR =()=>{
     const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
     const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
     const BPR_ROWS_PER_PAGE = EnvConfig['BPR_ROWS_PER_PAGE']; 
-    const [userPageSize , setUserPageSize]  = useState<number>(BPR_ROWS_PER_PAGE?parseInt(BPR_ROWS_PER_PAGE):50)   
+    const [userPageSize , setUserPageSize]  = useState<number>(BPR_ROWS_PER_PAGE?parseInt(BPR_ROWS_PER_PAGE):50)  
+    const [activeTab, setActiveTab] = useState<'norm' | 'virtualnorm'>('virtualnorm');
+    
+    const TAB_COLUMNS: Record<'norm' | 'virtualnorm', string[]> = {
+        norm: ['EcoPen', 'EcoColor', 'TechPen', 'TechColor','Norm'],
+        virtualnorm: ['DispatchPen', 'DispatchColor', 'PhysicalInventoryPen', 'PhysicalInventoryColor','vn'],
+    };
+
     // useEffect(() => {   
     //     getInitialBPRRowData()
     //     getBPRUiConfig();
     // }, []);
     
+    const onTabChange = (tabValue: 'norm' | 'virtualnorm') => {
+        setActiveTab(tabValue);
+        if (ref?.current?.api) {
+            const allTabColumns = [...TAB_COLUMNS.norm, ...TAB_COLUMNS.virtualnorm];
+            const columnsToShow = TAB_COLUMNS[tabValue];
+            const columnsToHide = allTabColumns.filter(col => !columnsToShow.includes(col));
+
+            ref.current.api.setColumnsVisible(columnsToShow, true);
+            ref.current.api.setColumnsVisible(columnsToHide, false);
+        }
+    };
     const getBPRUiConfig = async () => {
         try {
             const response = await getUiConfig(UIColumnConfigName.BPR);
@@ -165,8 +183,13 @@ const useBPR =()=>{
             if (!result) {
                 console.error("Failed to apply column state", result);
             }
+            const allTabColumns = [...TAB_COLUMNS.norm, ...TAB_COLUMNS.virtualnorm];
+            const columnsToShow = TAB_COLUMNS[activeTab];
+            const columnsToHide = allTabColumns.filter(col => !columnsToShow.includes(col));
+            internalRef.api.setColumnsVisible(columnsToShow, true);
+            internalRef.api.setColumnsVisible(columnsToHide, false);
         }
-    },[internalRef,gridState])
+    }, [internalRef, gridState])
 
     const customCellRenderers = useMemo(() => ({
         grapCellRenderer:BPRGraphCellRenderer,
@@ -174,7 +197,9 @@ const useBPR =()=>{
         colorEcoCellRenderer:BPREcoColorCellRenderer,
         tagsCellRenderer:BPRTagsCellRenderer,
         submitRemarkCellRenderer:BPRSubmitRemarkCellRenderer,
-        remarksCellRenderer:BPRRemarksCellRenderer
+        remarksCellRenderer:BPRRemarksCellRenderer,
+        colorPhysicalInventoryPenColorCellRenderer:BPRPhysicalInventoryPenColorCellRenderer,
+        colorDispatchRender: BPRDispatchPenColorCellRenderer
       }), []);
 
 
@@ -495,7 +520,8 @@ const useBPR =()=>{
             normChangeData:data['NormChangeHistoryData'] || [],
             masterData:data['MasterData']?.[0] || [],
             suggestionData:data['SuggestionHistoryData'] ? data['SuggestionHistoryData'] : [],
-            monitoringData:data['MonitoringData'] || []
+            monitoringData:data['MonitoringData'] || [],
+            virtualNormData:data['VirtualNormData'] || []
         }
         dispatch(UPDATE_DAILY_DATA(dailyData));
         dispatch(TOGGLE_GRAPH_MODAL(true));
@@ -704,7 +730,9 @@ const useBPR =()=>{
         generalFilterOptions,
         onResetCallback,
         savePageSize,
-        userPageSize
+        userPageSize,
+        onTabChange,
+        activeTab,
 
     }
 }
