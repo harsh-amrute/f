@@ -404,7 +404,7 @@ const useAR = () => {
         const grandTotal = techStats[0].grand_total;
         formattedTech.push({
           Category: "Total",
-          AbsoluteNo: (grandTotal - techGrey.color_count),
+          AbsoluteNo: grandTotal,
           Percentage: "100%",
         });
         if (techBlack && techGrey) {
@@ -437,7 +437,7 @@ const useAR = () => {
         const grandTotal = ecoStats[0].grand_total;
         formattedEco.push({
           Category: "Total",
-          AbsoluteNo: (grandTotal - ecoGrey.color_count),
+          AbsoluteNo: grandTotal,
           Percentage: "100%",
         });
 
