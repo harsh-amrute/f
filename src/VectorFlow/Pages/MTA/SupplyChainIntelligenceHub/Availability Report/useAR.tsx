@@ -416,7 +416,7 @@ const useAR = () => {
           formattedTech.push({
             Category: "Availability",
             AbsoluteNo: "-",
-            Percentage: `${round(techAvailability)}%`,
+            Percentage: `${round(techAvailability).toFixed(2)}%`,
           });
         }
       }
@@ -450,7 +450,7 @@ const useAR = () => {
           formattedEco.push({
             Category: "Availability",
             AbsoluteNo: "-",
-            Percentage: `${round(ecoAvailability)}%`,
+            Percentage: `${round(ecoAvailability).toFixed(2)}%`,
           });
         }
       }
