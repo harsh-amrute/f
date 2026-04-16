@@ -136,6 +136,7 @@ const ViewModify = () => {
     canToggleMaster,
     setCanToggleMaster,
     getAllVisibleColums,
+    handleFileNameChange
   } = useViewModify("modify");
 
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
@@ -402,7 +403,7 @@ const ViewModify = () => {
             await onUploadMaster(RECORD_UPLOAD_LIMIT);
           }}
           inputText={downloadFileName}
-          setInputText={setDownloadFileName}
+          setInputText={handleFileNameChange}
           file={file}
           setFile={setFile}
           uploadButtonStatus={false}

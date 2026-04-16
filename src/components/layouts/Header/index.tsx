@@ -64,7 +64,7 @@ const Header = (props: HeaderProps) => {
     }, 300);
   };
 
-  const CLIENT_LOGO_PATH = "/client/logo.svg";
+  const CLIENT_LOGO_PATH = user?.config_data?.CLIENT_LOGO;
 
   const CLIENT_NAME = user?.config_data?.CLIENT_NAME;
   const headerBtnClass =
