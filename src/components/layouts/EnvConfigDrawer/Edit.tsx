@@ -227,7 +227,7 @@ const handleChangeValue = (
         </button>
         <button
           className={primaryButton}
-          type="button"
+          type="submit"
           disabled={!isFormValid || !isChanged}
           style={assignInlineVars({
             [primaryBgVar]: bg,
