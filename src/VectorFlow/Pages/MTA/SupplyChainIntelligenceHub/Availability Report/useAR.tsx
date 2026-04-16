@@ -409,14 +409,14 @@ const useAR = () => {
         });
         if (techBlack && techGrey) {
           const techAvailability =
-            ((grandTotal - techBlack.color_count - techGrey.color_count) /
-              (grandTotal - techGrey.color_count)) *
+            ((grandTotal - techBlack.color_count) /
+              (grandTotal)) *
             100;
 
           formattedTech.push({
             Category: "Availability",
             AbsoluteNo: "-",
-            Percentage: `${round(techAvailability).toFixed(2)}%`,
+            Percentage: `${techAvailability.toFixed(2)}%`,
           });
         }
       }
@@ -443,14 +443,14 @@ const useAR = () => {
 
         if (ecoBlack && ecoGrey) {
           const ecoAvailability =
-            ((grandTotal - ecoBlack.color_count - ecoGrey.color_count) /
-              (grandTotal - ecoGrey.color_count)) *
+            ((grandTotal - ecoBlack.color_count) /
+              (grandTotal)) *
             100;
 
           formattedEco.push({
             Category: "Availability",
             AbsoluteNo: "-",
-            Percentage: `${round(ecoAvailability).toFixed(2)}%`,
+            Percentage: `${ecoAvailability.toFixed(2)}%`,
           });
         }
       }
