@@ -184,49 +184,35 @@ const Header = (props: HeaderProps) => {
           style={{ ...logoWrapperVars, display: "flex", alignItems: "center" }}
           onMouseEnter={onMouseEnterLogo}
           onMouseLeave={onMouseLeaveLogo}
-        >
-          {!CLIENT_LOGO_PATH && !CLIENT_NAME && (
-            <img
-              className={H.SCImg}
-              style={assignInlineVars({
-                [H.imgMarginLeftVar]: "20px",
-              })}
-              src="/assets/img/header/VectorFlowLogoBlackNew.svg"
-              alt="logo"
-            />
-          )}
-          {!CLIENT_LOGO_PATH && (
-            <img
-              className={H.SCImg}
-              style={assignInlineVars({
-                [H.imgMarginLeftVar]: "20px",
-              })}
-              src="/assets/img/header/VectorFlowLogoBlackNew.svg"
-              alt="logo"
-            />
-          )}
-          {CLIENT_LOGO_PATH && (
-            <img
+          >
+          {CLIENT_LOGO_PATH ? (
+              <img
               className={H.SCImg}
               src={CLIENT_LOGO_PATH}
               alt="logo"
               onError={(e: any) => {
-                e.currentTarget.src =
-                  "/assets/img/header/VectorFlowLogoBlackNew.svg";
+                  e.currentTarget.src = "/assets/img/header/VectorFlowLogoBlackNew.svg";
               }}
-            />
+              />
+          ) : (
+              <img
+              className={H.SCImg}
+              style={assignInlineVars({ [H.imgMarginLeftVar]: "20px" })}
+              src="/assets/img/header/VectorFlowLogoBlackNew.svg"
+              alt="logo"
+              />
           )}
 
-          {CLIENT_NAME && (
+        {CLIENT_NAME && (
             <div
-              className={H.ClientNameText}
-              style={assignInlineVars({
+            className={H.ClientNameText}
+            style={assignInlineVars({
                 [H.imgMarginLeftVar]: !CLIENT_LOGO_PATH ? "15px" : "0px",
-              })}
+            })}
             >
-              {CLIENT_NAME}
+            {CLIENT_NAME}
             </div>
-          )}
+        )}
         </div>
       </>
     );

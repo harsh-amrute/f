@@ -544,14 +544,6 @@ const ActionToolBar = ({
         <div
         style={{
           flex: '0 0 auto',
-          width: 'fit-content',
-          overflow: 'visible',
-          display: 'inline-flex',
-          alignItems: 'center',
-          justifyContent: 'flex-start',
-          padding: '4px 6px',
-          // borderRadius: '999px',
-          boxSizing: 'border-box',
         }}
       >
         <VFFloatingTab
