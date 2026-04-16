@@ -149,6 +149,11 @@ const ActionToolBar = ({
     console.log("Filters reset");
     // Handle reset logic if needed beyond the modal
   };
+  const [tabKey, setTabKey] = useState(0);
+
+  useEffect(() => {
+    setTabKey(prev => prev + 1);
+  }, [activeTab, pathname]);
 
   const currentPageRecordCount = useMemo(() => {
     switch (currCategory) {
@@ -900,6 +905,7 @@ const ActionToolBar = ({
             {(pathname === "/mta/supply-chain-intelligence-hub/bpr") && (
               <div style={{ zoom: 0.9, marginRight: "20px" }}>
                 <VFFloatingTab
+                  key={tabKey}
                   handleClick={(e: any) => {
                     if (onTabChange) onTabChange(e.value ?? e);
                   }}
@@ -908,8 +914,8 @@ const ActionToolBar = ({
                     { value: "norm" },
                   ].findIndex((t) => t.value === (activeTab ?? "virtualnorm"))}
                   tabs={[
-                    { id: "1", value: "virtualnorm", label: "Virtual Norm" },
-                    { id: "2", value: "norm", label: "Norm" },
+                    { id: "main-tab-1", value: "virtualnorm", label: "Virtual Norm" },
+                    { id: "main-tab-2", value: "norm", label: "Norm" },
                   ]}
                 />
               </div>
