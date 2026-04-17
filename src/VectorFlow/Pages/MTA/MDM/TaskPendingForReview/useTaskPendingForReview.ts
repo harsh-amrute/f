@@ -298,7 +298,7 @@ useEffect(() => {
 
     const handleChangePage = async (pageNo:any) => {
         setCurrentPage(pageNo);
-        ref.current?.api.paginationGoToPage(pageNo);
+        ref.current?.api.paginationGoToPage(pageNo-1);
     }
 
     const handleChangePage1 = async (pageNo:number) => {

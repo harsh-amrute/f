@@ -714,6 +714,7 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
                   classNamePrefix="rs"
                   value={{ value: filterType, label: filterType }}
                   onChange={handleFilterTypeChange}
+                  isSearchable={false}
                 />
               </div>
             </div>

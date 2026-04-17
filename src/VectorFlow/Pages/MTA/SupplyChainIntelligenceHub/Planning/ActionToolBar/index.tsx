@@ -149,6 +149,11 @@ const ActionToolBar = ({
     console.log("Filters reset");
     // Handle reset logic if needed beyond the modal
   };
+  const [tabKey, setTabKey] = useState(0);
+
+  useEffect(() => {
+    setTabKey(prev => prev + 1);
+  }, [activeTab, pathname]);
 
   const currentPageRecordCount = useMemo(() => {
     switch (currCategory) {
@@ -536,7 +541,11 @@ const ActionToolBar = ({
 
   const renderFloatingTab = () => {
     return (
-      <div style={{ width: "100%" }}>
+        <div
+        style={{
+          flex: '0 0 auto',
+        }}
+      >
         <VFFloatingTab
           tabs={tabsList}
           defaultTab={
@@ -569,18 +578,29 @@ const ActionToolBar = ({
           <div
             className={SCTaskFilterContainer}
             style={{
-              maxWidth: currCategory === "GuidedInsight" ? "100%" : "80%",
-              width: currCategory === "GuidedInsight" ? "100%" : "unset",
-              justifyContent:
-                currCategory === "GuidedInsight" ? "flex-start" : "unset",
-              marginLeft: "10px",
-              flexWrap: "wrap",
+              maxWidth: currCategory === "GuidedInsight" ? '100%' : '80%',
+              width: currCategory === "GuidedInsight" ? '100%' : 'unset',
+              justifyContent: currCategory === "GuidedInsight" ? 'flex-start' : 'unset',
+              marginLeft: '10px',
+              flexWrap: 'wrap',
+              display: 'flex',
+              alignItems: 'flex-start',
+              columnGap: '16px',
+              rowGap: '8px',
             }}
           >
             {tabsList.length > 0 && renderFloatingTab()}
 
             {currCategory === "GuidedInsight" && (
-              <div style={{ marginLeft: "-10px", width: "40%" }}>
+              <div 
+                style={{
+                  marginLeft: '12px',
+                  flex: '1 1 320px',
+                  minWidth: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
                 <VFSelectedFilters
                   filters={multiFilter}
                   onRemoveFilter={onDelete}
@@ -900,6 +920,7 @@ const ActionToolBar = ({
             {(pathname === "/mta/supply-chain-intelligence-hub/bpr") && (
               <div style={{ zoom: 0.9, marginRight: "20px" }}>
                 <VFFloatingTab
+                  key={tabKey}
                   handleClick={(e: any) => {
                     if (onTabChange) onTabChange(e.value ?? e);
                   }}
@@ -908,8 +929,8 @@ const ActionToolBar = ({
                     { value: "norm" },
                   ].findIndex((t) => t.value === (activeTab ?? "virtualnorm"))}
                   tabs={[
-                    { id: "1", value: "virtualnorm", label: "Virtual Norm" },
-                    { id: "2", value: "norm", label: "Norm" },
+                    { id: "main-tab-1", value: "virtualnorm", label: "Virtual Norm" },
+                    { id: "main-tab-2", value: "norm", label: "Norm" },
                   ]}
                 />
               </div>

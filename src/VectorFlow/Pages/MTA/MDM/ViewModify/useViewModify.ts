@@ -2560,6 +2560,12 @@ const useViewModify = (pageType: string) => {
     setIsConflictModalOpen(false);
   };
 
+  const handleFileNameChange = (value:any) => {
+    const cleanedValue = value.replace(/[^a-zA-Z0-9]/g, '');
+    setDownloadFileName(cleanedValue);
+  };
+  
+
   return {
     colDefs,
     isSelectMasterOpen,
@@ -2648,6 +2654,7 @@ const useViewModify = (pageType: string) => {
     canToggleMaster,
     setCanToggleMaster,
     getAllVisibleColums,
+    handleFileNameChange
   };
 };
 

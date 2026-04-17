@@ -90,7 +90,7 @@ const DailyDataGraphModal = ({
     { label: "Upward Consumption Based", value: "upwardConsumptionBased" },
     { label: "Downward Consumption Based", value: "downwardConsumptionBased" },
   ];
-
+  const { pathname } = useLocation();
   const [horizon, setHorizon] = useState<number>(14);
   const [suspensionType, setSuspensionType] = useState("");
   const [normData, setNormData] = useState<any[]>([]);
@@ -827,6 +827,7 @@ const DailyDataGraphModal = ({
         <div ref={chartWrapperRef} className={SCChartContainer}>
           <div className={SCToggleWrapper}>
             <ChartDownloadButton themeUi={themeUi} onDownload={handleDownload}/>
+            {(pathname === "/mta/supply-chain-intelligence-hub/bpr") && (
             <div style={{ zoom: 0.6 }}>
               <VFFloatingTab
                 handleClick={(e: any) => {
@@ -837,12 +838,13 @@ const DailyDataGraphModal = ({
                   { value: "norm" },
                 ].findIndex((t) => t.value === (activeTab ?? "virtualnorm"))}
                 tabs={[
-                  { id: "1", value: "virtualnorm", label: "Virtual Norm" },
-                  { id: "2", value: "norm", label: "Norm" },
+                  { id: "modal-tab-1", value: "virtualnorm", label: "Virtual Norm" },
+                  { id: "modal-tab-2", value: "norm", label: "Norm" },
                 ]}
               />
             </div>
-          </div>
+            )}          
+            </div>
           <AgCharts
             options={{
               ...generateChartOptions(),

@@ -1,4 +1,4 @@
-import { useRef, useMemo, useState, useEffect } from "react";
+import { useRef, useMemo, useState, useEffect, useCallback } from "react";
 import { Allotment } from "allotment";
 import "allotment/dist/style.css";
 // import "./styles.css";
@@ -263,6 +263,26 @@ const MonitorGITChildLocationWiseCharts = ({
     "This box plot graph displays the statistical distribution of delay days in transport for various locations. Each box represents the range of delay days as on today",
   ];
 
+  const boxplotContainerRef = useRef<HTMLDivElement>(null);
+  const [boxplotHeight, setBoxplotHeight] = useState<number>(0);
+
+  useEffect(() => {
+    const container = boxplotContainerRef.current;
+    if (!container) return;
+  
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { height } = entry.contentRect;
+        if (height > 0) {
+          setBoxplotHeight(Math.floor(height));
+        }
+      }
+    });
+  
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <>
       <div className={SCDynamicContainer}>
@@ -281,9 +301,11 @@ const MonitorGITChildLocationWiseCharts = ({
           <Allotment.Pane preferredSize={"50%"}>
             <div
               className={`${SCChartContainer} ${ml20}`}
-              style={assignInlineVars({
-                [chartHeightVar]: "95%",
-              })}
+              style={{
+                ...assignInlineVars({ [chartHeightVar]: "95%" }),
+                display: 'flex',
+                flexDirection: 'column',
+              }}
             >
               <div
                 className={`${SCChartHeaderContainer}`}
@@ -326,14 +348,18 @@ const MonitorGITChildLocationWiseCharts = ({
                 </div>
               </div>
               <hr className={SCHorizontalDivider} />
-              <div className="boxplot-chart" style={{height: '100%'}}>
+              <div
+                className="boxplot-chart"
+                ref={boxplotContainerRef}
+                style={{ flex: 1, minHeight: 0, overflow: 'hidden' }}
+              >
                 {/* <GlobalStyle /> */} 
                 <Chart
                   options={{
                     chart: {
                       type: "boxPlot",
                       nonce: nonce,
-                      height: '75%',
+                      height: boxplotHeight - 49,
                       animations: {
                         enabled: false,
                         easing: "easeinout",
@@ -450,7 +476,7 @@ const MonitorGITChildLocationWiseCharts = ({
                   }}
                   series={series} // Make sure you have defined the series data
                   type="boxPlot"
-                  height={317}
+                  height={boxplotHeight - 49}
                 />
               </div>
 

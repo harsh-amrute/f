@@ -69,6 +69,7 @@ const AddRecord = () => {
     isDataAvailableLocally,
     isOverlayVisible,
     onDiscardDraftCallback,
+    handleFileNameChange
   } = useViewModify("add");
 
   const {
@@ -229,14 +230,14 @@ const AddRecord = () => {
                 }
               });
               if(currentMaster){
-                ref.current?.api.exportDataAsExcel({fileName:downloadFileName ==='' ? currentMaster.name : downloadFileName,columnKeys:downloadableColumnKeys});
+                ref.current?.api.exportDataAsExcel({fileName:downloadFileName ==='' ? currentMaster.name : `${downloadFileName}.xlsx`,columnKeys:downloadableColumnKeys});
               }
             }}
             onUpload={async ()=>{
               await onUploadMaster(RECORD_UPLOAD_LIMIT)
             }}
             inputText={downloadFileName}
-            setInputText={setDownloadFileName}
+            setInputText={handleFileNameChange}
             file={file}
             setFile={setFile}
             uploadButtonStatus={false}
