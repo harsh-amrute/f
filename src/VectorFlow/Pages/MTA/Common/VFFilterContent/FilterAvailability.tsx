@@ -229,8 +229,10 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
       ...rowSelections,
       [columnId]: { operation: null, value: "" },
     };
-    setRowSelections(updated);
-
+    setRowSelections((prev) => ({
+    ...prev,
+    [columnId]: { operation: null, value: "" },
+  }));
     const parentId = "availabilityFilter";
     const columnInfo = availabilityFilterOptions.find(
       (col) => col.value === columnId
@@ -301,7 +303,10 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
           };
         }
       });
-      setRowSelections(restoredRowSelections);
+      setRowSelections((prev) => ({
+        ...prev,
+        ...restoredRowSelections
+      }));
 
       setSelectedOptions({
         onHandInventoryColor: forOnHandInventoryColor.map((f) => f.value),

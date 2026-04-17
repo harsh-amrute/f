@@ -98,6 +98,7 @@ const DeleteRecord = () => {
     enableEditOnlineReset,
     tempRecordCount,
     onDiscardDraftCallback,
+    handleFileNameChange
   } = useViewModify("remove");
 
   const {
@@ -333,7 +334,7 @@ const DeleteRecord = () => {
               await onUploadMaster(RECORD_UPLOAD_LIMIT)
             }}
             inputText={downloadFileName}
-            setInputText={setDownloadFileName}
+            setInputText={handleFileNameChange}
             file={file}
             setFile={setFile}
             uploadButtonStatus={false}
