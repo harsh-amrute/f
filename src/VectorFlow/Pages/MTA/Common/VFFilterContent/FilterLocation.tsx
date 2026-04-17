@@ -724,6 +724,7 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
                     label: filterType,
                   }}
                   onChange={handleFilterTypeChange}
+                  isSearchable={false}
                 />
               </div>
             </div>
