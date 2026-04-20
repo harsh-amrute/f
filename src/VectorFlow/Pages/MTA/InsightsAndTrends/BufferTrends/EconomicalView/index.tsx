@@ -15,6 +15,9 @@ import { AgCharts } from "ag-charts-react";
 import { AgChartOptions } from "ag-charts-community";
 import VFInfoToolTip from ".././../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 import "./style.css";
+import { useChartDownload } from "../../../../../../hooks/useChartDownload";
+import ChartDownloadButton from "../../../Common/ChartDownloadButton/ChartDownloadButton";
+
 interface EconomicalWiseProps {
   data: any;
   currentPageTab: string;
@@ -46,9 +49,15 @@ const EconomicalWise = ({
     g: parseFloat(item.g),
     w: parseFloat(item.w),
     r: parseFloat(item.r),
+    gy: parseFloat(item.gy),
     total: parseFloat(item.total),
     // Parse the string to a floating-point number
   }));
+
+   const { chartWrapperRef, handleDownload } = useChartDownload({
+     title: "Buffer Trend Graph",
+     fileName: "BufferTrendGraph_Pipeline",
+   });
 
   const colors = [
     { label: "Black", value: "black" },
@@ -56,8 +65,14 @@ const EconomicalWise = ({
     { label: "Yellow", value: "#FFBF00" },
     { label: "Green", value: "Green" },
     { label: "Blue", value: "Blue" },
-    { label: "White", value: "grey" },
-  ];
+    { label: "White", value: "#ded2d2ff" },
+    { label: "Grey", value: "grey" },
+  ].filter((color) => {
+    if (graphs[0].pen.label === "Percentage" && color.label === "Grey") {
+      return false;
+    }
+    return true;
+  });
 
   function TooltipRenderer({ datum }: any) {
     return `
@@ -92,8 +107,10 @@ const EconomicalWise = ({
                                 ? "g"
                                 : color.value === "Blue"
                                 ? "bu"
-                                : color.value === "grey"
+                                : color.value === "#ded2d2ff"
                                 ? "w"
+                                :color.value === "grey"
+                                ? "gy"
                                 : null;
 
                             if (!key) return "";
@@ -120,9 +137,8 @@ const EconomicalWise = ({
                                                 return !isNaN(value) &&
                                                   !isNaN(total) &&
                                                   total > 0
-                                                  ? Math.round(
-                                                      (value / total) * 100
-                                                    ) + "%"
+                                                  ? ((value / total) * 100).toFixed(2)
+                                                     + "%"
                                                   : "0%";
                                               })()
                                             : (() => {
@@ -187,6 +203,7 @@ const EconomicalWise = ({
       {
         type: "number",
         position: "left",
+        ...(graphs[0].pen.label === "Percentage" ? { max: 105, nice: false } : {}),
         label: {
           fontSize: 8,
           fontWeight: "bold",
@@ -211,21 +228,7 @@ const EconomicalWise = ({
           renderer: TooltipRenderer,
         },
       },
-      {
-        type: "line",
-        xKey: "dt",
-        xName: "Date",
-        yKey: "bu",
-        yName: "Blue",
-        stroke: "Blue",
-        marker: {
-          fill: "Blue",
-          stroke: "Blue",
-        },
-        tooltip: {
-          renderer: TooltipRenderer,
-        },
-      },
+
       {
         type: "line",
         xKey: "dt",
@@ -275,17 +278,51 @@ const EconomicalWise = ({
         type: "line",
         xKey: "dt",
         xName: "Date",
-        yKey: "w",
-        yName: "White",
-        stroke: "grey",
+        yKey: "bu",
+        yName: "Blue",
+        stroke: "Blue",
         marker: {
-          fill: "grey",
-          stroke: "grey",
+          fill: "Blue",
+          stroke: "Blue",
         },
         tooltip: {
           renderer: TooltipRenderer,
         },
       },
+      {
+        type: "line",
+        xKey: "dt",
+        xName: "Date",
+        yKey: "w",
+        yName: "White",
+        stroke: "#ded2d2ff",
+        marker: {
+          fill: "#ded2d2ff",
+          stroke: "#ded2d2ff",
+        },
+        tooltip: {
+          renderer: TooltipRenderer,
+        },
+      },
+    ...(graphs[0].pen.label !== "Percentage"
+        ? [
+            {
+              type: "line" as any,
+              xKey: "dt",
+              xName: "Date",
+              yKey: "gy",
+              yName: "Grey",
+              stroke: "grey",
+              marker: {
+                fill: "grey",
+                stroke: "grey",
+              },
+              tooltip: {
+                renderer: TooltipRenderer,
+              },
+            },
+          ]
+        : []),
       {
         type: "line",
         xKey: "dt",
@@ -381,6 +418,7 @@ const EconomicalWise = ({
             className={SCChartHeaderContainer}
             style={{ display: "flex", marginBottom: "5px" }}
           >
+            <ChartDownloadButton themeUi={themeUi} onDownload={handleDownload} />
             <div className={capsuleWrapper}>
               <VFCapsule
                 activeBtn={graphs[0].pen}
@@ -402,7 +440,7 @@ const EconomicalWise = ({
 
         <SCHorizontalDivider />
         {/* <ChartWrapper> */}
-        <div style={{ height: "70%", width: "100%" }}>
+        <div ref={chartWrapperRef} style={{ height: "70%", width: "100%" }}>
           <div
             className="title"
             style={{

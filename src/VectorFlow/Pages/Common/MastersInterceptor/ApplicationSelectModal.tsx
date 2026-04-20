@@ -11,11 +11,13 @@ import {
   textColorVar,
 } from "./styles.css";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
+import OverlayLoader from "../../MTO/Common/Loader";
 
 const ActionSelectModal = ({ redirectUrl }: any) => {
   const navigate = useNavigate();
   const { user } = useUserData();
   const themeUi = user.user.theme_ui;
+  const [isRedirecting, setIsRedirecting] = React.useState(false); // ✅ added
 
   const ref = useRef<{
     appData: Array<{ text: string; icon: string; link: string }>;
@@ -65,6 +67,7 @@ const ActionSelectModal = ({ redirectUrl }: any) => {
   updateAppData(themeUi);
 
   useEffect(() => {
+    updateAppData(themeUi);
     if (urlPermissionArr.length > 0) {
       const urlPermission = urlPermissionArr.find(
         (item: any) => item.url === redirectUrl
@@ -78,6 +81,7 @@ const ActionSelectModal = ({ redirectUrl }: any) => {
 
     // Auto-redirect if only one option remains
     if (ref.current.appData.length === 1) {
+      setIsRedirecting(true); 
       navigate(ref.current.appData[0].link);
     }
   }, [urlPermissionArr, redirectUrl, navigate]);
@@ -89,6 +93,10 @@ const ActionSelectModal = ({ redirectUrl }: any) => {
     [iconBgVar]: themeUi === "REGALBLAZE" ? "#FFEED3" : "#ffe0f0",
     [textColorVar]: themeUi === "REGALBLAZE" ? "#C7810E" : "rgb(128, 0, 64)",
   };
+
+   if (isRedirecting) {
+    return <OverlayLoader />;
+  }
 
   return (
     <div className={container}>

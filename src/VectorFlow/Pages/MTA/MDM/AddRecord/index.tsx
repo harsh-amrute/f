@@ -69,6 +69,7 @@ const AddRecord = () => {
     isDataAvailableLocally,
     isOverlayVisible,
     onDiscardDraftCallback,
+    handleFileNameChange
   } = useViewModify("add");
 
   const {
@@ -229,14 +230,14 @@ const AddRecord = () => {
                 }
               });
               if(currentMaster){
-                ref.current?.api.exportDataAsExcel({fileName:downloadFileName ==='' ? currentMaster.name : downloadFileName,columnKeys:downloadableColumnKeys});
+                ref.current?.api.exportDataAsExcel({fileName:downloadFileName ==='' ? currentMaster.name : `${downloadFileName}.xlsx`,columnKeys:downloadableColumnKeys});
               }
             }}
             onUpload={async ()=>{
               await onUploadMaster(RECORD_UPLOAD_LIMIT)
             }}
             inputText={downloadFileName}
-            setInputText={setDownloadFileName}
+            setInputText={handleFileNameChange}
             file={file}
             setFile={setFile}
             uploadButtonStatus={false}
@@ -268,7 +269,7 @@ const AddRecord = () => {
           </h1>
         </VFOverlay>
       )}
-      {!isSelectMasterOpen && (
+      {!isSelectMasterOpen && !isUploadModalOpen && (
         <div style={{ zoom: "var(--nms-filter-zoom)" }}>
           <VFTaskBar
             disableSubmit={isSubmitDisabled}
@@ -289,7 +290,7 @@ const AddRecord = () => {
             onBack1={() => onBackButton1(location?.state?.backUrl)}
             onClearAndExportErrors={onClearExportError}
             onModifyData={() => toggleUploadModal(true)}
-            onExportData={exportToExcel}
+            onExportData={() => exportToExcel("ADD_TEMPLATE")}
             onSubmit={onSubmit}
             onDeleteSelected={deleteSelected}
             onPhaseInPhaseOutStop={() => console.log("")}

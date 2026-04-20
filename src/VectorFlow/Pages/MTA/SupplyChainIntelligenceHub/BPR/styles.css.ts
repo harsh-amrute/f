@@ -236,7 +236,7 @@ export const BPRViewTableRowContainer = style({
 
 export const BPRViewTableRow = style({
   width: "100%",
-  height: "40px",
+  height: "50px",
   display: "flex",
   selectors: {
     "&:nth-child(even)": {
@@ -289,7 +289,7 @@ export const BPRTagsCellRendererWrapper = style({
   padding: "4px 5px",
   maxWidth: "90px",
   height: "25px",
-  background: themeBg ,
+  background: themeBg,
   color: "#FFFFFF",
   boxShadow: "0px 6px 12px #8D8D8D29",
   borderRadius: "2px",

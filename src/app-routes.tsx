@@ -125,7 +125,7 @@ const lazyLoad = (children?: React.ReactNode) => {
     '/permission-forbidden',
     '/mta/master-data-management/control-panel',
     '/mta/master-data-management/control-panel/view-modify',
-    '/mta/master-data-management/saved-drafts',
+    // '/mta/master-data-management/saved-drafts',
     '/mta/master-data-management/task-status',
     '/mta/master-data-management/task-pending',
     '/mta/master-data-management/control-panel/add',
@@ -393,17 +393,17 @@ export const initRoutes = (): RouteObject[] => {
         ...getStoreTransferModuleRoutes()
       ]
     },
-    {
-      path: '/mta/master-data-management/saved-drafts',
-      element: <AppLayout />,
-      children: [
-        {
-          index: true,
-          element: lazyLoad(<SavedDrafts />  )
-        },
-        ...getStoreTransferModuleRoutes()
-      ]
-    },
+    // {
+    //   path: '/mta/master-data-management/saved-drafts',
+    //   element: <AppLayout />,
+    //   children: [
+    //     {
+    //       index: true,
+    //       element: lazyLoad(<SavedDrafts />  )
+    //     },
+    //     ...getStoreTransferModuleRoutes()
+    //   ]
+    // },
     {
       path: '/mta/master-data-management/task-status',
       element: <AppLayout />,

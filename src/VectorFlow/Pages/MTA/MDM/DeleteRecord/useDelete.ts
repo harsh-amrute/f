@@ -207,13 +207,17 @@ const useDelete=()=>{
 
        // Convert To String
         if(activeMaster.id > 3){
-          rowData = rowData.map((row:any)=>{
-            const tempRow:any = {};
-            Object.keys(row).forEach((key:string)=>{
+          rowData = rowData.map((row: any) => {
+          const tempRow: any = {};
+          Object.keys(row).forEach((key: string) => {
+            if (row[key] === undefined || row[key] === null) {
+              tempRow[key] = "";
+            } else {
               tempRow[key] = row[key].toString();
-            })
-            return tempRow;
+            }
           });
+          return tempRow;
+        });
         }
 
       const deletableKeys = activeMaster.fields.filter(field => field.isDelete === true).map(field => field.key)
@@ -355,7 +359,7 @@ const useDelete=()=>{
         
 
         if(isSubmitDisabled) return;
-        dispatch(REMOVE_COLDEFS(['checkbox']));
+        
 
         setIsSubmitDisabled(true)
  
@@ -437,10 +441,12 @@ const useDelete=()=>{
               }
             
          }
+        dispatch(REMOVE_COLDEFS(['checkbox']));
         }catch(err){
           notifyError("Something went wrong")
         }finally{
          setIsSubmitDisabled(false)
+         
         }
       }
 

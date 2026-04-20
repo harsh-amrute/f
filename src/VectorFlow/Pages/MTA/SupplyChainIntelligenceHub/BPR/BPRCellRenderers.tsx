@@ -166,6 +166,106 @@ export const BPRTechColorCellRenderer = (params: any) => {
   );
 };
 
+export const BPRPhysicalInventoryPenColorCellRenderer = (params: any) => {
+  const PhysicalInventoryColor = params?.data?.PhysicalInventoryColor;
+  
+  const cellColor = colorMapper(params?.data?.PhysicalInventoryColor);
+
+  if (!PhysicalInventoryColor || PhysicalInventoryColor.length < 0) {
+    return (
+      <React.Fragment />
+    );
+  }
+
+  if (params.data.PhysicalInventoryPen == null) {
+    return (
+      <div
+        className={BPRColorCellRendererWrapper}
+        onClick={() => console.log(params)}
+        style={{ backgroundColor: cellColor.bg, maxWidth: 90 }}
+      ></div>
+    );
+  }
+  if (params.data.PhysicalInventoryPen == "") {
+    return (
+      <div
+        className={BPRColorCellRendererWrapper}
+        onClick={() => console.log(params)}
+        style={{
+          backgroundColor: cellColor.bg,
+          color: cellColor.text,
+          maxWidth: 90,
+        }}
+      >
+        {params.data.PhysicalInventoryPen}
+      </div>
+    );
+  }
+  return (
+    <div
+      className={BPRColorCellRendererWrapper}
+      onClick={() => console.log(params)}
+      style={{
+        backgroundColor: cellColor.bg,
+        color: cellColor.text,
+        maxWidth: 90,
+      }}
+    >
+      {params.data.PhysicalInventoryPen}%
+    </div>
+  );
+};
+
+export const BPRDispatchPenColorCellRenderer = (params: any) => {
+  const DispatchColor = params?.data?.DispatchColor;
+  
+  const cellColor = colorMapper(params?.data?.DispatchColor);
+
+  if (!DispatchColor || DispatchColor.length < 0) {
+    return (
+      <React.Fragment />
+    );
+  }
+
+  if (params.data.DispatchPen == null) {
+    return (
+      <div
+        className={BPRColorCellRendererWrapper}
+        onClick={() => console.log(params)}
+        style={{ backgroundColor: cellColor.bg, maxWidth: 90 }}
+      ></div>
+    );
+  }
+  if (params.data.DispatchPen == "") {
+    return (
+      <div
+        className={BPRColorCellRendererWrapper}
+        onClick={() => console.log(params)}
+        style={{
+          backgroundColor: cellColor.bg,
+          color: cellColor.text,
+          maxWidth: 90,
+        }}
+      >
+        {params.data.DispatchPen}
+      </div>
+    );
+  }
+  return (
+    <div
+      className={BPRColorCellRendererWrapper}
+      onClick={() => console.log(params)}
+      style={{
+        backgroundColor: cellColor.bg,
+        color: cellColor.text,
+        maxWidth: 90,
+      }}
+    >
+      {params.data.DispatchPen}%
+    </div>
+  );
+};
+
 export const TextToTextColorMapper = (params: any) => {
   const styles = colorToColorMapper(params.value);
   return (

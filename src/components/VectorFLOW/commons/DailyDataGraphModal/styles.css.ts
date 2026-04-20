@@ -26,8 +26,18 @@ export const SCChartContainer = style({
   marginRight: '33px',
   width: '90%',
   height: '90%',
+  display: 'flex',
+  flexDirection: 'column',
 });
 
+export const SCToggleWrapper = style({
+  display: "flex",
+  justifyContent: "flex-end",
+  alignItems: "center",
+  gap: "8px",
+  marginTop: '14px',
+  marginBottom: "4px",
+});
 export const SCSeasonalityStatusDetails = style({
   width: '20%',
   height: '100%',

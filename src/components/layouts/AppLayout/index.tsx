@@ -155,7 +155,7 @@ const AppLayout = () => {
     "/mto/procurement/material-coverage-open-sales",
     "/mta/master-data-management/task-pending",
     "/mta/master-data-management/task-status",
-    "/mta/master-data-management/saved-drafts",
+    // "/mta/master-data-management/saved-drafts",
     "/mto/production-planning-scheduling/full-kit-assignment",
     "/mto/production-planning-scheduling/insight-and-trends/order-at-risk",
     "/mto/procurement-planning/planning",

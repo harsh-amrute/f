@@ -98,6 +98,7 @@ const DeleteRecord = () => {
     enableEditOnlineReset,
     tempRecordCount,
     onDiscardDraftCallback,
+    handleFileNameChange
   } = useViewModify("remove");
 
   const {
@@ -328,12 +329,12 @@ const DeleteRecord = () => {
             header={"Deletion"}
             openModal={isUploadModalOpen} 
             onCloseModal={()=>{setFile(undefined);toggleUploadModal(false)}} 
-            onDownload={() => exportToExcel(true)} 
+            onDownload={() => exportToExcel("DELETE", true)} 
             onUpload={async ()=>{
               await onUploadMaster(RECORD_UPLOAD_LIMIT)
             }}
             inputText={downloadFileName}
-            setInputText={setDownloadFileName}
+            setInputText={handleFileNameChange}
             file={file}
             setFile={setFile}
             uploadButtonStatus={false}
@@ -385,7 +386,7 @@ const DeleteRecord = () => {
             onBack1={() => onBackButton1(location?.state?.backUrl)}
             onClearAndExportErrors={onClearExportError}
             onModifyData={() => toggleUploadModal(true)}
-            onExportData={exportToExcel}
+            onExportData={() => exportToExcel("DELETE",true)}
             onSubmit={() => onSubmit(ref)}
             onDeleteSelected={deleteSelected}
             onEditOnline={() => console.log("")}

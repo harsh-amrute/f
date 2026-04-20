@@ -453,6 +453,7 @@ const useBTR = () => {
         else if(currentTab?.value === "pipeline") getDataEco(tempFilter, 1)
         else getData(tempFilter, 1)
         getBPRUiConfig()
+        getUserColumnConfig();  
     }
 
 
@@ -577,7 +578,7 @@ useEffect(() => {
             if (!result) {
                 console.error("Failed to apply column state", result);
             }
-        }, 2000);
+        }, 1000);
     }
 }, [techInternalRef, techGridState]);
 
@@ -595,7 +596,7 @@ useEffect(() => {
             if (!result) {
                 console.error("Failed to apply column state", result);
             }
-        }, 2000);
+        }, 1000);
     }
 }, [ecoInternalRef, ecoGridState]);
 
