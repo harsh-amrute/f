@@ -61,9 +61,6 @@ interface ActionToolBarProps {
   lastRunDate?:string 
   isPlanning?:boolean,
   generalFilterOptions?:any
-  onTabChange?: (val: 'norm' | 'virtualnorm') => void;
-  activeTab?: 'norm' | 'virtualnorm';
-  
 }
 
 const ActionToolBar = ({
@@ -93,9 +90,7 @@ const ActionToolBar = ({
   lastRunDate,
   isPlanning,
   onChangeHorizon,
-  generalFilterOptions,
-  onTabChange,
-  activeTab,
+  generalFilterOptions
 }: ActionToolBarProps) => {
   const { user } = useUserData();
   const { ref } = useContext(GridStateContext);
@@ -915,23 +910,6 @@ const ActionToolBar = ({
             )
           )} */}
           <div className={SCCustomActionsContainer}>
-           { (pathname === "/mta/supply-chain-intelligence-hub/availability-report") && (
-              <div style={{ zoom: 0.9, marginRight: "20px" }}>
-                <VFFloatingTab
-                  handleClick={(e: any) => {
-                    if (onTabChange) onTabChange(e.value ?? e);
-                  }}
-                  defaultTab={[
-                    { value: "virtualnorm" },
-                    { value: "norm" },
-                  ].findIndex((t) => t.value === (activeTab ?? "virtualnorm"))}
-                  tabs={[
-                    { id: "1", value: "virtualnorm", label: "Virtual Norm" },
-                    { id: "2", value: "norm", label: "Norm" },
-                  ]}
-                />
-              </div>
-            )}
             {pathname !=
               "/mta/supply-chain-intelligence-hub/SupplierWiseAllocation" &&
               pathname != "/mta/supply-chain-intelligence-hub/sdr" &&
