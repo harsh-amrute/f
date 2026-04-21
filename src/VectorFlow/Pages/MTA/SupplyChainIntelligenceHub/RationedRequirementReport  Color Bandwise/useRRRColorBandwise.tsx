@@ -181,6 +181,7 @@ const useRRRColorBandwise = () => {
       columns: masterUIConfig,
       pivot: false,
     })
+    await getRRRColorBandWiseUiConfig();
   }
 
   const handleGetRecordsCount = async (filter?: any) => {

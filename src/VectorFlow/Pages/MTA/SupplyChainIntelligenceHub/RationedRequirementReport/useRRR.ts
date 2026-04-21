@@ -180,6 +180,7 @@ const useRRR =()=>{
             columns: masterUIConfig,
             pivot: false,
         })
+        await getRRRUiConfig();
     }
 
     const getDataCount=async (filter?:any) => {

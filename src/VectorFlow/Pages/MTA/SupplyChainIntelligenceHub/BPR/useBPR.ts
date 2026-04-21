@@ -579,6 +579,7 @@ const useBPR =()=>{
           columns: masterUIConfig,
           pivot: false,
         })
+        getBPRUiConfig();
       }
     
     const CustomHeader = {

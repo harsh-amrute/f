@@ -293,7 +293,7 @@ const useViewModify = (pageType: string) => {
 
   useEffect(() => {
     setColDefs(activeMaster.colDefs);
-
+    setDownloadFileName("")
     if (filterButtonStatus.length !== 0) return;
 
     if (activeMaster.id === 0) {

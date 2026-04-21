@@ -580,6 +580,7 @@ export const useBOR =()=>{
       columns: masterUIConfig,
       pivot: false,
     })
+    await getBORUiConfig();
   }
 
   const CustomHeader = {

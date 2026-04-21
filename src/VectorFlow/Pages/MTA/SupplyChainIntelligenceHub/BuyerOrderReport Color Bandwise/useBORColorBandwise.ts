@@ -292,6 +292,7 @@ export const useBORColorBandwise =()=>{
       columns: masterUIConfig,
       pivot: false,
     })
+    await getBORColorBandWiseUiConfig()
   }
 
   const CustomHeader = {
