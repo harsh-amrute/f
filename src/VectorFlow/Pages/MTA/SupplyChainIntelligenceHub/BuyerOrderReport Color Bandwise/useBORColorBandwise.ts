@@ -436,6 +436,10 @@ export const useBORColorBandwise =()=>{
         }
 
         const onExportToExcelCallBack=async(pageNumber:number)=>{
+          if ((ref.current?.api?.getDisplayedRowCount() ?? 0) === 0) {
+              notifyError("No Data to Export");
+              return;
+          }
           const payload = {
               id: 1,
               name: '',
