@@ -1134,6 +1134,11 @@ const useViewModify = (pageType: string) => {
 
   const onWarningModalClose = () => {
     // dispatch(UPDATE_ROW_DATA([]));
+    if (tempRecordCount === 0) {
+      dispatch(UPDATE_ROW_DATA([]));
+      dispatch(UPDATE_PROGRESS_STATE("default"));
+      dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+    }
     toggleWarningModal(false);
     setIsTableDataLoading(false);
     setTempRecordCount(0);
