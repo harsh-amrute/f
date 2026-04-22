@@ -1981,58 +1981,49 @@ export const mapMasterToTaskStatusColumnGroupDefs = (
 ) => {
     const response = dirtyRowData?.map((entry) => {
       
-      if (
-      (taskType === "modify" && masterId !== 6 && masterId !== 10) ||
-      masterId === 13
-    ) {
-        const oldData = JSON.parse(entry.old);
-        const newData = JSON.parse(entry.new);
+    if ((taskType === "modify" && masterId !== 6 && masterId !== 10) || masterId === 13) 
+    {
+      const oldData = JSON.parse(entry.old);
+      const newData = JSON.parse(entry.new);
 
-        const oldDataPrefixed: any = {};
-        const newDataPrefixed: any = {};
-        let isRowModified = false; // A flag to check equality of the current and previous rows
-        existingColumnFields.map((f: Field) => {
-          const isReferenceException = taskType === "add" && (masterId === 1 || masterId === 2)
+      const oldDataPrefixed: any = {};
+      const newDataPrefixed: any = {};
+      let isRowModified = false;
+      existingColumnFields.map((f: Field) => {
+        const isReferenceException = taskType === "add" && (masterId === 1 || masterId === 2)
 
-          const isAvoidColumn =
-            !isReferenceException &&
-            (
-              TaskPendingAvoidColumnsMapper[masterId].includes(f.key) ||
-              TaskPendingAvoidColumnsMapperSpecific[masterId]?.includes(f.key)
-            )
-          if (!areValuesEqual(oldData[f.key], newData[f.key])) {
-            isRowModified = true;
+        const isAvoidColumn = !isReferenceException &&
+        (
+          TaskPendingAvoidColumnsMapper[masterId].includes(f.key) ||
+          TaskPendingAvoidColumnsMapperSpecific[masterId]?.includes(f.key)
+        )
+        if (!areValuesEqual(oldData[f.key], newData[f.key])) {
+          isRowModified = true;
+        }
+        const isSdModifyReference =
+          taskType === "modify" &&
+          (masterId === 1 || masterId === 2) &&
+          (f.key === "sd" || f.key === "wd")
+
+        if (isAvoidColumn && !isSdModifyReference) {
+          newDataPrefixed[f.key] = String(newData[f.key] !== undefined ? newData[f.key] : "");
+        } else {
+          oldDataPrefixed[`Old${f.key}`] = String(oldData[f.key] !== undefined ? oldData[f.key] : "");
+          newDataPrefixed[`New${f.key}`] = String(newData[f.key] !== undefined ? newData[f.key] : "");
+
+          if (isSdModifyReference) {
+            newDataPrefixed[f.key] = String(oldData[f.key] !== undefined ? oldData[f.key] : "")
           }
-          const isSdModifyReference =
-            taskType === "modify" &&
-            (masterId === 1 || masterId === 2) &&
-            (f.key === "sd" || f.key === "wd")
-
-          if (isAvoidColumn && !isSdModifyReference) {
-            newDataPrefixed[f.key] = String(
-            newData[f.key] !== undefined ? newData[f.key] : ""
-            );
-          } else {
-            oldDataPrefixed[`Old${f.key}`] = String(
-            oldData[f.key] !== undefined ? oldData[f.key] : ""
-          );
-            newDataPrefixed[`New${f.key}`] = String(
-            newData[f.key] !== undefined ? newData[f.key] : ""
-          );
-
-            if (isSdModifyReference) {
-              newDataPrefixed[f.key] = String(oldData[f.key] !== undefined ? oldData[f.key] : "")
-            }
-          } 
-        });
-        return {
-          ...oldDataPrefixed,
-          ...newDataPrefixed,
-          status: !isRowModified ? "Rejected" : "",
-          comments: isRowModified ? "" : "No modifications made in this record",
-          isModified: isRowModified,
-        };
-      }
+        } 
+      });
+      return {
+        ...oldDataPrefixed,
+        ...newDataPrefixed,
+        status: !isRowModified ? "Rejected" : "",
+        comments: isRowModified ? "" : "No modifications made in this record",
+        isModified: isRowModified,
+      };
+    }
       const dataPrefixed1: any = {};
       if ((masterId === 6 || masterId === 10) && taskType === "modify") {
         existingColumnFields.map((f: Field) => {
