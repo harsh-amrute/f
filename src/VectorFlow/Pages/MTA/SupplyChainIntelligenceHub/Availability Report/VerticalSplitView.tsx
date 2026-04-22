@@ -49,18 +49,14 @@ const VerticalSplitView = (props: SplitViewProps) => {
       (col: any) =>
         col.colId &&
         [
-          "dailydatagraph",
           "Category",
-          "LocationName",
-          "Norm",
+          "Tags",
           "SKUCode",
           "SKUDescription",
-          "Tags",
+          "WHCode",
+          "WHDescription",
+          "Norm",
           "VirtualNorm",
-          "RN",
-          "pc",
-          "pn",
-          "WhCode",
         ].includes(col.colId)
     );
     const newColDef = colDefs.map((colDef: any) => {
@@ -83,18 +79,14 @@ const VerticalSplitView = (props: SplitViewProps) => {
       (col: any) =>
         col.colId &&
         ![
-          "dailydatagraph",
           "Category",
-          "LocationName",
-          "Norm",
+          "Tags",
           "SKUCode",
           "SKUDescription",
-          "Tags",
+          "WHCode",
+          "WHDescription",
+          "Norm",
           "VirtualNorm",
-          "RN",
-          "pc",
-          "pn",
-          "WhCode",
         ].includes(col.colId)
     );
     const newColDef = colDefs.map((colDef: any) => {
@@ -111,18 +103,14 @@ const VerticalSplitView = (props: SplitViewProps) => {
       (col: any) =>
         col.colId &&
         ![
-          "dailydatagraph",
           "Category",
-          "LocationName",
-          "Norm",
+          "Tags",
           "SKUCode",
           "SKUDescription",
-          "Tags",
+          "WHCode",
+          "WHDescription",
+          "Norm",
           "VirtualNorm",
-          "RN",
-          "pc",
-          "pn",
-          "WhCode",
         ].includes(col.colId)
     );
     const newColDef = colDefs.map((colDef: any) => {

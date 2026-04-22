@@ -682,16 +682,13 @@ const useAR = () => {
       if (verticalView && currentTab.id === "2") {
         const removeCols = [
           "Category",
-          "LocationName",
-          "Norm",
+          "Tags",
           "SKUCode",
           "SKUDescription",
-          "Tags",
+          "WHCode",
+          "WHDescription",
+          "Norm",
           "VirtualNorm",
-          "RN",
-          "pc",
-          "pn",
-          "WhCode",
         ];
         colDefs = getColumnDefinationsMTA(
           initialColumnState,
