@@ -31,6 +31,7 @@ import { skeleton } from "../../../../../../components/commons/styled/index.css"
 import ConfirmationDataModal from "../../../DBM/DBMNormSuggestions/ConfirmationModal";
 import MTAVFMultiFilter from "../../../Common/MTAVFMultiFilter";
 import { UIColumnConfigName } from "../../../../../../helpers/Enum";
+import { notifyError } from "../../../../../../../src/helpers/notify";
 
 interface ActionToolBarProps {
   view: string;
@@ -178,6 +179,10 @@ const ActionToolBar = ({
     if (
       pathname === "/mta/supply-chain-intelligence-hub/open-expediting-requests"
     ) {
+      if (ref.current?.api?.getDisplayedRowCount() === 0) {
+        notifyError("No Data to Export");
+        return;
+      }
       ref.current.api.exportDataAsExcel({
         fileName: "OpenExpeditingRequests",
       });
@@ -534,6 +539,10 @@ const ActionToolBar = ({
   };
 
   const handleGIExportExcel = () => {
+    if (ref.current?.api?.getDisplayedRowCount() === 0) {
+      notifyError("No Data to Export");
+      return;
+    }
     ref?.current?.api?.exportDataAsExcel({
       fileName: "ChronicUnavailabilityexport.xlsx",
     });
