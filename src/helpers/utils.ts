@@ -1530,7 +1530,15 @@ export const mapMasterToColumnGroupDefs = (
           colId: f.key,
           hide: !f.visible,
           suppressSpanHeaderHeight: true,
-          valueFormatter: () => "Stop",
+          valueFormatter: (params: any) => {
+            if (params.value === "Stopped") {
+              return "Stop";
+            }
+            if (params.value === "Unknown") {
+              return "Resume";
+            }
+            return params.value;
+          },
           ...defaultColDefs,
           cellStyle: () => {
             return {
