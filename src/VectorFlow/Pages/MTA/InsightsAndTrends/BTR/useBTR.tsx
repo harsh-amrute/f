@@ -824,6 +824,13 @@ useEffect(() => {
     // }
 
     const onExportToExcelCallBack = async (pageNumber: number, page: string) => {
+        const activeRef = page === 'on-hand' ? techRef : ecoRef;
+        const visibleCount = activeRef.current?.api?.getDisplayedRowCount() ?? 0;
+        if (visibleCount === 0) {
+            notifyError("No Data to Export");
+            return;
+        }
+
         const tempFilter = getPreparedFilter(currFilter)
         const headersData = (page === 'on-hand') ? (techRef?.current?.api?.getColumnState() || []) : (ecoRef?.current?.api?.getColumnState() || []);
         const colDefs = (page === 'on-hand') ? techColDefs : ecoColDefs;
