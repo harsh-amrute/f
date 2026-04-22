@@ -836,7 +836,7 @@ const PermissionSelectionPage = ({
         setIsBulkActionEnabled(
           {
             removeUserEnable: (selectedRows.length > 0 && totalRows > 1 && selectedRows.length !== totalRows),
-            bulkActionEnable: selectedRows.length > 0
+            bulkActionEnable: selectedRows.length > 1
           });
       },
       suppressRowClickSelection: true,
