@@ -51,6 +51,7 @@ const AvailabilityReport = () => {
     onResetCallback,
     onTabChange,
     activeTab,
+    tabs
   } = useAR();
 
   return (
@@ -98,28 +99,8 @@ const AvailabilityReport = () => {
           <div style={{ zoom: 0.6 }}>
             <VFFloatingTab
               handleClick={(tab: any) => toggleCurrentTab(tab)}
-              tabs={[
-                {
-                  id: "1",
-                  value: "summary",
-                  label: "Summary",
-                },
-                {
-                  id: "2",
-                  value: "on-hand",
-                  label: "On-Hand Inv. View",
-                },
-                {
-                  id: "3",
-                  value: "pipeline",
-                  label: "Pipeline Inv. View",
-                },
-                {
-                  id: "4",
-                  value: "both",
-                  label: "Both On-Hand & Pipeline View",
-                },
-              ]}
+              tabs={tabs}
+              selectedTabId={currentTab.id}
             />
           </div>
           {currentTab?.id === "4" && (

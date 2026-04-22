@@ -44,7 +44,7 @@ import { useGetState } from "../../../../Services/MTA/Common/UserUIConfig";
 import { GridRef } from "../../../../types/MDM";
 import Summary from "./Summary";
 import TodaysColorCellRenderer from "./TodaysColorCellRenderer";
-import _, { round } from "lodash";
+import _ from "lodash";
 const useAR = () => {
   const ecoRef = useRef<GridRef>();
   const techRef = useRef<GridRef>();
@@ -66,7 +66,7 @@ const useAR = () => {
     } else if (currentTab.id === "3") {
       getDataEco(tempFilter, currentPageEco, userPageSizeEco, tabValue);
     } else if (currentTab.id === "4") {
-      getData(tempFilter, 1);
+      getData(tempFilter, 1, tabValue);
     }
   };
   const tabs: Array<VFFloatingTabItemProps> = [
@@ -78,17 +78,20 @@ const useAR = () => {
     {
       id: "2",
       value: "on-hand",
-      label: "On-Hand Inv. View",
+      label: activeTab === "norm" ? "Tech Inv. View" : "On-Hand Inv. View",
     },
     {
       id: "3",
       value: "pipeline",
-      label: "Pipeline Inv. View",
+      label: activeTab === "norm" ? "Eco Inv. View" : "Pipeline Inv. View",
     },
     {
       id: "4",
       value: "both",
-      label: "Both On-Hand & Pipeline View",
+      label:
+        activeTab === "norm"
+          ? "Both Tech & Eco View"
+          : "Both On-Hand & Pipeline View",
     },
   ];
 
@@ -343,7 +346,7 @@ const useAR = () => {
         recordsPerPage: pageSize || userPageSizeTech,
       },
       ISExport: "0",
-      toggle: toggleOverride ?? activeTab,
+      activeTab: toggleOverride ?? activeTab,
     };
     const loaderId = notifyLoader("Loading data");
     try {
@@ -374,7 +377,7 @@ const useAR = () => {
         recordsPerPage: pageSize || userPageSizeTech,
       },
       ISExport: "0",
-      toggle: toggleOverride ?? activeTab,
+      activeTab: toggleOverride ?? activeTab,
     };
 
     const loaderId = notifyLoader("Loading summary data");
@@ -391,7 +394,10 @@ const useAR = () => {
       const formattedTech = techStats.map((item: any) => ({
         Category: item.TechColor,
         AbsoluteNo: item.color_count,
-        Percentage: item.TechColor.toLowerCase() === "grey" ? "Not Applicable" : `${item.percentage.toFixed(2)}%`,
+        Percentage:
+          item.TechColor.toLowerCase() === "grey"
+            ? "Not Applicable"
+            : `${item.percentage.toFixed(2)}%`,
       }));
 
       if (techStats.length > 0) {
@@ -409,9 +415,7 @@ const useAR = () => {
         });
         if (techBlack && techGrey) {
           const techAvailability =
-            ((grandTotal - techBlack.color_count) /
-              (grandTotal)) *
-            100;
+            ((grandTotal - techBlack.color_count) / grandTotal) * 100;
 
           formattedTech.push({
             Category: "Availability",
@@ -424,7 +428,10 @@ const useAR = () => {
       const formattedEco = ecoStats.map((item: any) => ({
         Category: item.EcoColor,
         AbsoluteNo: item.color_count,
-        Percentage: item.EcoColor.toLowerCase() === "grey" ? "Not Applicable" : `${item.percentage.toFixed(2)}%`,
+        Percentage:
+          item.EcoColor.toLowerCase() === "grey"
+            ? "Not Applicable"
+            : `${item.percentage.toFixed(2)}%`,
       }));
 
       if (ecoStats.length > 0) {
@@ -443,9 +450,7 @@ const useAR = () => {
 
         if (ecoBlack && ecoGrey) {
           const ecoAvailability =
-            ((grandTotal - ecoBlack.color_count) /
-              (grandTotal)) *
-            100;
+            ((grandTotal - ecoBlack.color_count) / grandTotal) * 100;
 
           formattedEco.push({
             Category: "Availability",
@@ -480,7 +485,7 @@ const useAR = () => {
         recordsPerPage: pageSize || userPageSizeEco,
       },
       ISExport: "0",
-      toggle: toggleOverride ?? activeTab,
+      activeTab: toggleOverride ?? activeTab,
     };
     const loaderId = notifyLoader("Loading data");
     try {
@@ -496,7 +501,11 @@ const useAR = () => {
     }
   };
 
-  const getData = async (filter: any, pageNumber: number) => {
+  const getData = async (
+    filter: any,
+    pageNumber: number,
+    toggleOverride?: "norm" | "virtualnorm"
+  ) => {
     const payload = {
       id: 0,
       name: "both",
@@ -507,6 +516,7 @@ const useAR = () => {
         recordsPerPage: RowsPerPageCurrTab,
       },
       ISExport: "0",
+      activeTab: toggleOverride ?? activeTab,
     };
     const loaderId = notifyLoader("Loading data");
     try {
@@ -782,14 +792,16 @@ const useAR = () => {
         return (
           <Summary
             themeUi={themeUi}
+            activeTab={activeTab}
             techTable={{
               rowData: techSummaryData,
-              header: "On-Hand",
+              header: activeTab === "norm" ? "Tech Inv. Report" : "On-Hand",
               ...gridProps,
             }}
             ecoTable={{
               rowData: ecoSummaryData,
-              header: "In-Pipeline",
+              header: activeTab === "norm" ? "Eco Inv. Report" : "In-Pipeline",
+
               ...gridProps,
             }}
           />
@@ -798,7 +810,12 @@ const useAR = () => {
       case "2":
         return (
           <>
-            <p className={ARTableHeader}>On-Hand Inventory View Trend Report</p>
+            <p className={ARTableHeader}>
+              {" "}
+              {activeTab === "norm"
+                ? "Tech Inv. Report"
+                : "On-Hand Inventory View Trend Report"}{" "}
+            </p>
             <div style={{ height: "100%" }}>
               <CustomVFTable
                 height={"90%"}
@@ -836,7 +853,12 @@ const useAR = () => {
       case "3":
         return (
           <>
-            <p className={ARTableHeader}>Pipeline Inventory Trend Report</p>
+            <p className={ARTableHeader}>
+              {" "}
+              {activeTab === "norm"
+                ? "Eco Inv. Report"
+                : "Pipeline Inventory Trend Report"}
+            </p>
 
             <div style={{ height: "100%" }}>
               <CustomVFTable
@@ -881,7 +903,10 @@ const useAR = () => {
               techTable={{
                 columnDefs: techColDefs,
                 rowData: techRowData,
-                header: "On-Hand Inventory View Trend Report",
+                header:
+                  activeTab === "norm"
+                    ? "Tech Inv. Report"
+                    : "On-Hand Inventory View Trend Report",
                 paginationProps: techPaginationPropsForBoth,
                 ...gridProps,
               }}
@@ -889,7 +914,10 @@ const useAR = () => {
                 columnDefs: ecoColDefs,
                 paginationProps: ecoPaginationPropsForBoth,
                 rowData: ecoRowData,
-                header: "Pipeline Inventory Trend Report",
+                header:
+                  activeTab === "norm"
+                    ? "Eco Inv. Report"
+                    : "Pipeline Inventory Trend Report",
                 ...gridProps,
               }}
               isLocked={isLockMode}
@@ -925,7 +953,11 @@ const useAR = () => {
     }
   };
 
-  const onExportToExcelCallBack = async (pageNumber: number, page: string) => {
+  const onExportToExcelCallBack = async (
+    pageNumber: number,
+    page: string,
+    toggleOverride?: "norm" | "virtualnorm"
+  ) => {
     const tempFilter = getPreparedFilter(currFilter);
     const headersData =
       page === "on-hand"
@@ -957,6 +989,7 @@ const useAR = () => {
       reportName: "AR",
       stream: 1,
       responseType: `arraybuffer`,
+      activeTab: toggleOverride ?? activeTab,
     };
     notifyLoader("Downloading Data...");
     try {
@@ -1014,6 +1047,7 @@ const useAR = () => {
     onResetCallback,
     onTabChange,
     activeTab,
+    tabs,
   };
 };
 
