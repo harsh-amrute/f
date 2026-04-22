@@ -1222,14 +1222,16 @@ export const mapMasterToColumnDefs = (
     const seasonalityGraphColDef: ColDef = {
       field: "graph",
       colId: "graph",
-      headerName: "",
+      // headerName: "",
+      headerComponent: "graphColumnHeader",
       width: 40,
       cellRenderer: "seasonalityGraphCellRenderer",
       cellRendererParams: {
         onShowChart: onShowChart,
       },
         resizable:false,
-      suppressMenu: true,
+      suppressMenu: true, 
+      headerTooltip: "Seasonality Graph",      
     };
     return [
       seasonalityColorColDef,

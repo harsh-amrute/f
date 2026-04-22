@@ -84,6 +84,7 @@ import WarningCell from "../../../../../components/VectorFLOW/commons/WarningCel
 import {
   SeasonalityColorCellRenderer,
   SeasonalityGraphCellRenderer,
+  GraphColumnHeader
 } from "../../../../../components/VectorFLOW/commons/SeasonalityCellRenderers";
 import _ from "lodash";
 import { toast } from "react-toastify/unstyled";
@@ -287,6 +288,7 @@ const useViewModify = (pageType: string) => {
       seasonalityColorCellRenderer: SeasonalityColorCellRenderer,
       seasonalityGraphCellRenderer: SeasonalityGraphCellRenderer,
       conflictErrorCellRenderer: ConflictErrorCellRenderer,
+      graphColumnHeader: GraphColumnHeader,
     }),
     []
   );
