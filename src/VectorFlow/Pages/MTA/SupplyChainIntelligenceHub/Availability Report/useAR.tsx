@@ -39,7 +39,7 @@ import useGetLastRunData from "../../../../../hooks/useGetLastRunData";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../../../../redux/store/store";
 import { useGetUIConfigData } from "../../../../Services/MTA/Common/UIConfig";
-import { UIColumnConfigName } from "../../../../../helpers/Enum";
+import { UIColumnConfigName, UserUIColumnConfigName } from "../../../../../helpers/Enum";
 import { useGetState } from "../../../../Services/MTA/Common/UserUIConfig";
 import { GridRef } from "../../../../types/MDM";
 import Summary from "./Summary";
@@ -314,6 +314,34 @@ const useAR = () => {
     }
   };
 
+  const getUserColumnConfig = async () => {
+    if (currentTab.id === "2") {
+      const stateData = await getState({
+        reportname: UserUIColumnConfigName.AvailabilityReportonHand,
+      });
+
+      if (stateData.data.data.length !== 0) {
+        const parsedContent = JSON.parse(stateData.data.data);
+        setTechGridState(parsedContent);
+      } else {
+        console.log("State Data not available for AvailabilityReportonHand");
+      }
+    }
+
+    if (currentTab.id === "3") {
+      const stateData = await getState({
+        reportname: UserUIColumnConfigName.AvailabilityReportpipeline,
+      });
+      if (stateData.data.data.length !== 0) {
+        const parsedContent = JSON.parse(stateData.data.data);
+
+        setEcoGridState(parsedContent);
+      } else {
+        console.log("State Data not available AvailabilityReportpipeline");
+      }
+    }
+  };
+
   const onResetCallback = async () => {
     if (currentTab.id === "2") {
       setTechGridState({
@@ -582,6 +610,7 @@ const useAR = () => {
     }
 
     getBPRUiConfig();
+    getUserColumnConfig();
   };
 
   const onDeleteFilter = async (parentId: any, filterId: any, value: any) => {
@@ -716,6 +745,7 @@ const useAR = () => {
 
   useEffect(() => {
     if (initialColumnState) {
+      getUserColumnConfig();  
       if (currentTab.id === "1") {
         getSummaryData(currFilter, 1);
       } else {
@@ -744,6 +774,7 @@ const useAR = () => {
 
   useEffect(() => {
     if (initialColumnState) {
+      getUserColumnConfig();  
       if (currentTab.id === "1") {
         getSummaryData(currFilter, 1);
       } else {

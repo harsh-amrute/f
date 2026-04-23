@@ -53,5 +53,7 @@ export enum UserUIColumnConfigName{
     BTROnHand = "BTRon-hand",
     BTRPipeline = "BTRpipeline",
     SDR = "SDR",
-    EO = "EO"
+    EO = "EO",
+    AvailabilityReportonHand ="AvailabilityReporton-hand",
+    AvailabilityReportpipeline="AvailabilityReportpipeline"
 }
