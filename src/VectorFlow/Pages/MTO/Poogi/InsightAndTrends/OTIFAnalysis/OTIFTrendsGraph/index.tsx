@@ -31,7 +31,6 @@ const OTIFTrendsGraph = (props: any) => {
     const seriesData: any = [];
 
 
-    // const labels = ["OTIF % Trends", "OTIF % Trends (+3 days)"];
    const labels = [dynamicLabel1, dynamicLabel2];
 
     for (let i = 0; i < val; i++) {

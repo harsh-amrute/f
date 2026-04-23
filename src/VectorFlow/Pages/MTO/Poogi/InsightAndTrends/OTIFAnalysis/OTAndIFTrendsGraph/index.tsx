@@ -31,7 +31,6 @@ const OTAndIFTrendsGraph = (props: any) => {
 
   function createSeriesData(val: number) {
     const seriesData: any = [];
-    // const labels = ["On Time % (+3d)", "In Full % (5%)"];
    const labels = [dynamicLabel1, dynamicLabel2];
     for (let i = 0; i < val; i++) {
       const color = i === 0 ? "#838282" : "#CBCBCB";
