@@ -21,11 +21,18 @@ const OTAndIFTrendsGraph = (props: any) => {
   const [rawData, setRawData] = useState([]);
   const { data: apiResponseData } = useGetDate();
 
+  const tolerances = graphData?.tolerances || {};
+  const deliveryTol = tolerances?.delivery_tolerance || 3;
+  const mfgTol = tolerances?.mfg_tolerance || 5;
+
+  const dynamicLabel1 = `On Time %  (+${deliveryTol} Days)`;
+  const dynamicLabel2 = `In Full %  (+${mfgTol} %)`;
 
 
   function createSeriesData(val: number) {
     const seriesData: any = [];
-    const labels = ["On Time %", "In Full %"];
+    // const labels = ["On Time % (+3d)", "In Full % (5%)"];
+   const labels = [dynamicLabel1, dynamicLabel2];
     for (let i = 0; i < val; i++) {
       const color = i === 0 ? "#838282" : "#CBCBCB";
       const key = i === 0 ? "ot" : "if";
@@ -115,9 +122,21 @@ const OTAndIFTrendsGraph = (props: any) => {
     },
   };
 
-  const colDefs = useMemo(() => {
-    return getColumnDefinations(graphColumnConfig?.ot_n_if, {}, []);
-  }, []);
+ const colDefs = useMemo(() => {
+    const baseColumns = getColumnDefinations(graphColumnConfig?.ot_n_if, {}, []);
+
+    return baseColumns.map((col: any) => {
+      const columnKey = col.field ;
+
+      if (columnKey === "ot") {
+        return { ...col, headerName: dynamicLabel1 };
+      }
+      if (columnKey === "if") {
+        return { ...col, headerName: dynamicLabel2 };
+      }
+      return col;
+    });
+  }, [graphColumnConfig, deliveryTol, mfgTol]);
 
   const generateHeader = () => {
     return (
@@ -181,7 +200,7 @@ const OTAndIFTrendsGraph = (props: any) => {
     if (graphData) {
       // setStartDate(format(new Date(graphData.start), 'dd MMM yyyy'));
       // setEndDate(format(new Date(graphData.end), 'dd MMM yyyy'));
-      const updatedData = graphData.data?.map((d: any) => ({ ...d, ot: Number(d.ot.toFixed(2)), if: Number(d.if.toFixed(2)) }))
+      const updatedData = graphData?.ot_n_if?.data?.map((d: any) => ({ ...d, ot: Number(d.ot.toFixed(2)), if: Number(d.if.toFixed(2)) }))
 
       setRawData(updatedData);
     }

@@ -20,10 +20,20 @@ const OTIFTrendsGraph = (props: any) => {
   const [rawData, setRawData] = useState([]);
   const { data: apiResponseData } = useGetDate();
 
+  const tolerances = graphData?.tolerances || {};
+  const deliveryTol = tolerances?.delivery_tolerance || 3;
+  const mfgTol = tolerances?.mfg_tolerance || 3;
+
+  const dynamicLabel1 = "OTIF % Trends";
+  const dynamicLabel2 = `OTIF % Trends (+${deliveryTol} Days / +${mfgTol} %)`;
 
   function createSeriesData(val: number) {
     const seriesData: any = [];
-    const labels = ["OTIF % Trends", "OTIF % Trends (+3 days)"];
+
+
+    // const labels = ["OTIF % Trends", "OTIF % Trends (+3 days)"];
+   const labels = [dynamicLabel1, dynamicLabel2];
+
     for (let i = 0; i < val; i++) {
       const color = i === 0 ? "#BC3D81" : "#FCADD7";
       const key = i === 0 ? "otif" : "otif_plus";
@@ -112,9 +122,19 @@ const OTIFTrendsGraph = (props: any) => {
     },
   };
 
-  const colDefs = useMemo(() => {
-    return getColumnDefinations(graphColumnConfig?.otif, {}, []);
-  }, []);
+ const colDefs = useMemo(() => {
+    const baseColumns = getColumnDefinations(graphColumnConfig?.otif, {}, []);
+
+    return baseColumns.map((col: any) => {
+      if (col.field === "otif") {
+        return { ...col, headerName: dynamicLabel1 };
+      }
+      if (col.field === "otif_plus") {
+        return { ...col, headerName: dynamicLabel2 };
+      }
+      return col;
+    });
+  }, [graphColumnConfig, deliveryTol, mfgTol]);
 
   const generateHeader = () => {
     return (
@@ -178,7 +198,7 @@ const OTIFTrendsGraph = (props: any) => {
     if (graphData) {
       // setStartDate(format(new Date(graphData.start), 'dd MMM yyyy'));
       // setEndDate(format(new Date(graphData.end), 'dd MMM yyyy'));
-      setRawData(graphData.data);
+      setRawData(graphData?.otif?.data);
     }
   }, [graphData])
 

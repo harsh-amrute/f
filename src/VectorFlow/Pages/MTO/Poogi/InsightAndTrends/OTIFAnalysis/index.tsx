@@ -153,13 +153,13 @@ useEffect(() => {
         <Allotment vertical={false} separator={false}>
           <Allotment.Pane preferredSize={"50%"}>
             <div className={BTRAllomentSection}>
-              <OTIFTrendsGraph graphData={graphData?.otif} />
+              <OTIFTrendsGraph graphData={graphData} />
             </div>
           </Allotment.Pane>
 
           <Allotment.Pane preferredSize={"50%"}>
             <div className={BTRAllomentSection}>
-              <OTAndIFTrendsGraph graphData={graphData?.ot_n_if} />
+              <OTAndIFTrendsGraph graphData={graphData} />
             </div>
           </Allotment.Pane>
         </Allotment>
