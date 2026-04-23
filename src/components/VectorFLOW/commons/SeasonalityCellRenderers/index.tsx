@@ -38,3 +38,17 @@ export const SeasonalityColorCellRenderer = (params: any) => {
         />
       );
     };
+
+export const GraphColumnHeader = () => {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+      <img
+        src="/assets/img/VectorFLOW/NMS/seasonality-graph-icon.svg"
+        height={20}
+        width={20}
+        alt="graph"
+        style={{ filter: 'brightness(0) invert(1)' }}
+      />
+    </div>
+  );
+};
