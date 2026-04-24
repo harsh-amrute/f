@@ -91,6 +91,8 @@ import { toast } from "react-toastify/unstyled";
 import ConflictErrorCellRenderer from "./ConflictErrorCellRenderer";
 import { v4 as uuidv4 } from "uuid";
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
+import axios from "axios";
+import { format } from "date-fns/format";
 
 const useViewModify = (pageType: string) => {
   const dispatch = useDispatch();
@@ -774,6 +776,56 @@ const useViewModify = (pageType: string) => {
 
     return resultData;
   }
+  const queryFilteredDataCSV = async (configs:QueryFilteredDataConfigsExcel) => {
+    const { filters, fields, count, mode } = configs;
+  
+    const payload = {
+      id: activeMaster.id,
+      name: activeMaster.name,
+      filters,
+      fields,
+      pageType,
+      stream: 1,
+      mode
+    };
+    try{
+      if (!count) {
+        if (activeMaster.id > 14) {
+          return await getMasterDataRetail(payload);
+        }
+        else
+        {
+          const response = await axios.post(process.env.REACT_APP_API_HOST + `api/mta/GetNMSCSVDataAsync`,
+            payload,{
+              withCredentials: true, 
+              responseType: "blob",
+              headers: { 'Content-Type': 'application/json' }
+            }
+          );
+
+          const blob = await response.data;
+          const fileExtension = "csv";
+          const filename = activeMaster.name;
+          const downloadFileName = `${filename}__${format(Date.now(), "dd-MM-yyyy")}.${fileExtension}`;
+      
+          const blobUrl = window.URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.href = blobUrl;
+          link.setAttribute("download", downloadFileName);
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+          window.URL.revokeObjectURL(blobUrl);
+        } 
+      }
+    }
+    catch (e) {
+      console.error("Error downloading file:", e);
+      notifyError("Something went wrong while exporting");
+      throw e;
+    }
+    
+  };
 
   const queryAllData = async (configs: QueryFilteredDataConfigs) => {
     const { pagination, fields, count, currentPage, rowsPerPage } = configs;
@@ -1423,57 +1475,91 @@ const useViewModify = (pageType: string) => {
 
   const exportToExcel = async (mode: ExportMode, fromUploadModal?: boolean) => {
     try {
-      const currMasterFilters = activeMaster.filters;
-      const payloadFilters = areMasterFiltersValid(currMasterFilters)
-        ? mapStateFiltersToPayload(currMasterFilters)
-        : [];
+      if(recordCount > 1000000 && mode === "EXPORT")
+      {
+        const currMasterFilters = activeMaster.filters;
+        const payloadFilters = areMasterFiltersValid(currMasterFilters)
+          ? mapStateFiltersToPayload(currMasterFilters)
+          : [];
 
-      const payloadFields: any = getCurrentVisbileColumns();
+        const payloadFields: any = getCurrentVisbileColumns();
 
-      const toastId = notifyLoader("Preparing Excel…");
+        const toastId = notifyLoader("Preparing CSV…");
 
-      const result = await queryFilteredDataExcel({
-        filters: payloadFilters,
-        fields: payloadFields,
-        pageType: pageType,
-        Stream: 1,
-        mode: mode
-      });
+        const result = await queryFilteredDataCSV({
+          filters: payloadFilters,
+          fields: payloadFields,
+          pageType: pageType,
+          Stream: 1,
+          mode: mode
+        });
 
-      const blob = new Blob(
-        [result.data],
-        {
-          type:
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        toast.dismiss(toastId);
+
+        if (fromUploadModal) {
+          setIsUploadButtonDisabled(false);
+          notifySuccess("Data Downloaded Successfully");
+          return;
         }
-      );
 
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      const masterName = activeMaster?.name || activeMaster?.name || "MasterData";
-      const safeFileName = masterName.replace(/[^a-zA-Z0-9-_ ]/g, "").trim();
-      a.href = url;
-      if(downloadFileName){
-        a.download = `${downloadFileName}.xlsx`
+        notifySuccess("Data Exported Successfully");
+
       }
-      else{
-      a.download =  `${safeFileName}.xlsx`;
-      }
-      document.body.appendChild(a);
-      a.click();
+      
+      else
+      {
+        const currMasterFilters = activeMaster.filters;
+          const payloadFilters = areMasterFiltersValid(currMasterFilters)
+            ? mapStateFiltersToPayload(currMasterFilters)
+            : [];
 
-      a.remove();
-      window.URL.revokeObjectURL(url);
+          const payloadFields: any = getCurrentVisbileColumns();
 
-      toast.dismiss(toastId);
+          const toastId = notifyLoader("Preparing Excel…");
 
-      if (fromUploadModal) {
-        setIsUploadButtonDisabled(false);
-        notifySuccess("Data Downloaded Successfully");
-        return;
-      }
+          const result = await queryFilteredDataExcel({
+            filters: payloadFilters,
+            fields: payloadFields,
+            pageType: pageType,
+            Stream: 1,
+            mode: mode
+          });
 
-      notifySuccess("Data Exported Successfully");
+          const blob = new Blob(
+            [result.data],
+            {
+              type:
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            }
+          );
+
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          const masterName = activeMaster?.name || activeMaster?.name || "MasterData";
+          const safeFileName = masterName.replace(/[^a-zA-Z0-9-_ ]/g, "").trim();
+          a.href = url;
+          if(downloadFileName){
+            a.download = `${downloadFileName}.xlsx`
+          }
+          else{
+          a.download =  `${safeFileName}.xlsx`;
+          }
+          document.body.appendChild(a);
+          a.click();
+
+          a.remove();
+          window.URL.revokeObjectURL(url);
+
+          toast.dismiss(toastId);
+
+          if (fromUploadModal) {
+            setIsUploadButtonDisabled(false);
+            notifySuccess("Data Downloaded Successfully");
+            return;
+          }
+
+          notifySuccess("Data Exported Successfully");
+        }
     }
     catch (error) {
       toast.dismiss();
