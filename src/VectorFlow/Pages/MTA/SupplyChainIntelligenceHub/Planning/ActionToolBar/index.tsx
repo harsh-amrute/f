@@ -430,6 +430,7 @@ const ActionToolBar = ({
         ) {
           return (
             <MTAVFMultiFilter
+              key={activeTab}
               isOpen={isFilterOpen}
               onApply={handleApplyFilter}
               multiFilter={multiFilter}
@@ -437,6 +438,7 @@ const ActionToolBar = ({
               onReset={handleResetFilters}
               currentTab={currentTab}
               reportName={UIColumnConfigName.BuffertrendReport}
+              activeTab={activeTab}
             />
           );
         }

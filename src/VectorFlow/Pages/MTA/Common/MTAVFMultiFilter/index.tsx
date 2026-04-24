@@ -45,6 +45,7 @@ interface FilterModalProps {
   currCategory?: any;
   reportName?: any;
   reportType?: string;
+  activeTab?: "norm" | "virtualnorm"
 }
 
 interface SectionType {
@@ -114,6 +115,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
   currCategory,
   reportName,
   reportType,
+  activeTab,
 }) => {
   const { user } = useUserData();
   const EnvConfig = useSelector((state: RootState) => state.mta.EnvConfig);
@@ -307,6 +309,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
           onFilterChange={handleInputChange}
           currentTab={currentTab}
           currCategory={currCategory}
+          activeTab={activeTab} 
         />
       );
     }
