@@ -60,7 +60,8 @@ interface ActionToolBarProps {
   disableSubmitEditedRowsBtn?: boolean;
   lastRunDate?: string;
   isPlanning?: boolean;
-  generalFilterOptions?: any;onTabChange?: (val: 'norm' | 'virtualnorm') => void;
+  generalFilterOptions?: any;
+  onTabChange?: (val: 'norm' | 'virtualnorm') => void;
   activeTab?: 'norm' | 'virtualnorm';
 }
 
@@ -917,7 +918,7 @@ const ActionToolBar = ({
             )
           )} */}
           <div className={SCCustomActionsContainer}>
-            {(pathname === "/mta/supply-chain-intelligence-hub/bpr") && (
+            {(pathname === "/mta/supply-chain-intelligence-hub/bpr" || pathname === "/mta/insights-and-trends/buffer-trend-report") && (
               <div style={{ zoom: 0.9, marginRight: "20px" }}>
                 <VFFloatingTab
                   key={tabKey}

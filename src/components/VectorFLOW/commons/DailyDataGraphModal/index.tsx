@@ -54,9 +54,7 @@ interface DailyDataGraphModalProps {
   isModalOpen: boolean;
   virtualNormData?: any;
   skuKey: string;
-  whKey: string;
-  onTabChange?: (val: 'norm' | 'virtualnorm') => void;
-  activeTab?: 'norm' | 'virtualnorm';
+  whKey: string
 }
 
 interface NormData {
@@ -74,9 +72,7 @@ const DailyDataGraphModal = ({
   monitoringData,
   virtualNormData,
   skuKey,
-  whKey,
-  onTabChange,
-  activeTab,
+  whKey
 }: DailyDataGraphModalProps) => {
   const { user } = useUserData();
   const themeUi = user.user.theme_ui;
@@ -100,6 +96,8 @@ const DailyDataGraphModal = ({
     title: "Daily Data Graph",
     fileName: "DailyDataGraph",
   });
+
+  const [activeTab, setActiveTab] = useState<'norm' | 'virtualnorm'>('virtualnorm');
 
   const fillNotAvailableDates = (data: any) => {
     const lastNinetyDates = eachDayOfInterval({
@@ -218,6 +216,10 @@ const DailyDataGraphModal = ({
     if (lastRunDate) setMissingData(fillNotAvailableDates(chartData));
   }, [lastRunDate, chartData]);
 
+  const onTabChange = (tabValue: 'norm' | 'virtualnorm') => {
+      setActiveTab(tabValue);
+  };
+  
   const generateChartOptions = () => {
     useEffect(() => {
       {
@@ -827,7 +829,6 @@ const DailyDataGraphModal = ({
         <div ref={chartWrapperRef} className={SCChartContainer}>
           <div className={SCToggleWrapper}>
             <ChartDownloadButton themeUi={themeUi} onDownload={handleDownload}/>
-            {(pathname === "/mta/supply-chain-intelligence-hub/bpr") && (
             <div style={{ zoom: 0.6 }}>
               <VFFloatingTab
                 handleClick={(e: any) => {
@@ -842,9 +843,8 @@ const DailyDataGraphModal = ({
                   { id: "modal-tab-2", value: "norm", label: "Norm" },
                 ]}
               />
-            </div>
-            )}          
-            </div>
+            </div>      
+          </div>
           <AgCharts
             options={{
               ...generateChartOptions(),
