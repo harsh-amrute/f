@@ -543,6 +543,11 @@ export const useBOR =()=>{
     },[ref,tempDownloadData])
 
       const onExportToExcelCallBack=async(pageNumber:number)=>{
+        if ((ref.current?.api?.getDisplayedRowCount() ?? 0) === 0) {
+            notifyError("No Data to Export");
+            return;
+        }
+        
         const payload = {
           id: 1,
           name: '',
@@ -576,6 +581,7 @@ export const useBOR =()=>{
       columns: masterUIConfig,
       pivot: false,
     })
+    await getBORUiConfig();
   }
 
   const CustomHeader = {

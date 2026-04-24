@@ -293,6 +293,7 @@ export const useBORColorBandwise =()=>{
       columns: masterUIConfig,
       pivot: false,
     })
+    await getBORColorBandWiseUiConfig()
   }
 
   const CustomHeader = {
@@ -437,6 +438,10 @@ export const useBORColorBandwise =()=>{
         }
 
         const onExportToExcelCallBack=async(pageNumber:number)=>{
+          if ((ref.current?.api?.getDisplayedRowCount() ?? 0) === 0) {
+              notifyError("No Data to Export");
+              return;
+          }
           const payload = {
               id: 1,
               name: '',

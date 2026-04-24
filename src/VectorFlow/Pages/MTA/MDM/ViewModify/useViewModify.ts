@@ -84,6 +84,7 @@ import WarningCell from "../../../../../components/VectorFLOW/commons/WarningCel
 import {
   SeasonalityColorCellRenderer,
   SeasonalityGraphCellRenderer,
+  GraphColumnHeader
 } from "../../../../../components/VectorFLOW/commons/SeasonalityCellRenderers";
 import _ from "lodash";
 import { toast } from "react-toastify/unstyled";
@@ -287,13 +288,14 @@ const useViewModify = (pageType: string) => {
       seasonalityColorCellRenderer: SeasonalityColorCellRenderer,
       seasonalityGraphCellRenderer: SeasonalityGraphCellRenderer,
       conflictErrorCellRenderer: ConflictErrorCellRenderer,
+      graphColumnHeader: GraphColumnHeader,
     }),
     []
   );
 
   useEffect(() => {
     setColDefs(activeMaster.colDefs);
-
+    setDownloadFileName("")
     if (filterButtonStatus.length !== 0) return;
 
     if (activeMaster.id === 0) {
@@ -1132,6 +1134,11 @@ const useViewModify = (pageType: string) => {
 
   const onWarningModalClose = () => {
     // dispatch(UPDATE_ROW_DATA([]));
+    if (tempRecordCount === 0) {
+      dispatch(UPDATE_ROW_DATA([]));
+      dispatch(UPDATE_PROGRESS_STATE("default"));
+      dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+    }
     toggleWarningModal(false);
     setIsTableDataLoading(false);
     setTempRecordCount(0);
