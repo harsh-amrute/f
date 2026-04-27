@@ -1,18 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import {
   filterGroup,
   filterColumn,
   textWrapper,
   dropDownWrapper,
+  dropDownRow,
 } from "./style.css";
-import Select, { components, CSSObjectWithLabel } from "react-select";
-import { useColorThemeStyles } from "../../../../../hooks/useVFFilterContent";
-import useGetLocation from "../../../../../hooks/useGetLocation";
+import Select, {
+  components,
+  CSSObjectWithLabel,
+  MultiValue,
+  ActionMeta,
+} from "react-select";
+import {
+  useColorThemeStyles,
+  useThemeStyles,
+} from "../../../../../hooks/useVFFilterContent";
 import { useUserData } from "../../../../../context";
 import { useGetAllLocations } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 import { BPRFilter, BPRFilterState } from "../../../../../VectorFlow/types/BPR";
-import { useVFMultiFilter } from "./useVFFilterContent";
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
+import useGetLocation from "../../../../../hooks/useGetLocation";
 
 interface FilterSectionProps {
   filters: any;
@@ -20,9 +28,23 @@ interface FilterSectionProps {
   onMultiFilterChange: (newMultiFilter: BPRFilterState) => void;
 }
 
+interface LocationOption {
+  label: string;
+  value: string;
+  id: string;
+  originalData?: any;
+}
+
+type FilterType = "Location Code" | "Location Description" | "Location Type";
+
+const getFilterId = (type: FilterType): "SCF1" | "SCF2" =>
+  type === "Location Type" ? "SCF1" : "SCF2";
+
+const getAttributeName = (type: FilterType): string =>
+  type === "Location Type" ? "forlocation" : "forchildrenlocationcode";
+
 const CustomOption = (props: any) => {
   const optionStyles = useColorOptionStyles();
-
   return (
     <components.Option {...props}>
       <div style={optionStyles.optionContainer}>
@@ -42,172 +64,253 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
   multiFilter,
   onMultiFilterChange,
 }) => {
-  const { locations } = useGetLocation();
-  const colorStyles = useColorThemeStyles();
-
-  const { handleSelectChange, getSelectedValues, setSelectedValues } =
-    useVFMultiFilter({
-      multiFilter,
-      onMultiFilterChange,
-    });
-
-  const [selectedOptions, setSelectedOptions] = useState<{
-    ForLocation: string[];
-    ForChildren: string[];
-    ForChildrenLocationCode: string[];
-  }>({
-    ForLocation: [],
-    ForChildren: [],
-    ForChildrenLocationCode: [],
+  const { user } = useUserData();
+  const colorStyles = useColorThemeStyles({
+    minWidth: "720px",
+    minHeight: "48px",
+    valueContainerPaddingLeft: "175px",
+    inputColor: "#333",
+    placeholderColor: "#999",
+    menuListMaxHeight: 400,
+    gridColumns: 2,
+    menuWidth: "800px",
+    gridGap: "12px",
+    optionPadding: "8px 16px",
   });
+  const styles = useThemeStyles();
+
+  const parentId = "supplyChainFilter" as const;
+
+  const [filterType, setFilterType] = useState<FilterType>("Location Code");
+  const [selectedLocations, setSelectedLocations] = useState<LocationOption[]>(
+    []
+  );
+  const [searchQuery, setSearchQuery] = useState("");
+  const isUpdatingFromInternal = useRef(false);
 
   const { data: locationData, isLoading: isLocationDataLoading } =
     useGetAllLocations();
+  const { locations } = useGetLocation();
 
-  const locationCheckboxOptions =
-    locationData?.data?.data?.map((location: any) => ({
-      label: `${location.wc} (${location.wd})`,
-      id: location.wc,
-      value: location.wc,
-    })) || [];
+  const customFilterOption = (option: any, inputValue: string) => {
+    if (!inputValue) return false;
+    const searchTerm = inputValue.toLowerCase();
+    return (
+      option.label.toLowerCase().includes(searchTerm) ||
+      option.value.toLowerCase().includes(searchTerm)
+    );
+  };
 
-  const locationOptionsWithValue = locations.map((location: any) => ({
-    label: location.label,
-    id: location.id,
-    value: location.id || location.label,
-  }));
-
-  useEffect(() => {
-    if (multiFilter?.supplyChainFilter) {
-      const forLocationFilters = multiFilter.supplyChainFilter.filters.filter(
-        (f: BPRFilter) => f.name === "SCF1"
-      );
-      const forChildrenFilters = multiFilter.supplyChainFilter.filters.filter(
-        (f: BPRFilter) => f.name === "SCF2"
-      );
-
-      const forChildrenLocationCode =
-        multiFilter.supplyChainFilter.filters.filter(
-          (f: BPRFilter) => f.name === "SCF3"
-        );
-
-      setSelectedOptions((prev) => ({
-        ...prev,
-        ForLocation: forLocationFilters.map((f: BPRFilter) => f.value),
-        ForChildren: forChildrenFilters.map((f: BPRFilter) => f.value),
-        ForChildrenLocationCode: forChildrenLocationCode.map(
-          (f: BPRFilter) => f.value
-        ),
+  const locationOptions = useMemo((): LocationOption[] => {
+    if (filterType === "Location Type") {
+      return locations.map((lt: any) => ({
+        label: lt.label,
+        value: lt.id,
+        id: lt.id,
+        originalData: lt,
       }));
     }
-  }, [multiFilter]);
+
+    if (!locationData?.data?.data) return [];
+    return locationData.data.data.map((location: any) => ({
+      label: filterType === "Location Description" ? location.wd : location.wc,
+      value: location.wc,
+      id: location.wc,
+      originalData: location,
+    }));
+  }, [locationData, locations, filterType]);
+
+  const filteredOptions = searchQuery
+    ? locationOptions.filter((opt) => customFilterOption(opt, searchQuery))
+    : [];
+
+  useEffect(() => {
+    if (isUpdatingFromInternal.current) {
+      isUpdatingFromInternal.current = false;
+      return;
+    }
+
+    const savedFilters = (multiFilter?.[parentId]?.filters ||
+      []) as BPRFilter[];
+    const scf1Filters = savedFilters.filter((f) => f.name === "SCF1");
+    const scf2Filters = savedFilters.filter((f) => f.name === "SCF2");
+
+    if (scf1Filters.length > 0) {
+      setFilterType("Location Type");
+      setSelectedLocations(
+        scf1Filters.map((f: BPRFilter) => {
+          return {
+            value: f.value,
+             label: f.value, 
+            id: f.value,
+          };
+        })
+      );
+    } else if (scf2Filters.length > 0) {
+      setFilterType("Location Code");
+      setSelectedLocations(
+        scf2Filters.map((f: BPRFilter) => {
+          return {
+            value: f.value,
+            label: f.value, 
+            id: f.value,
+          };
+        })
+      );
+    } else {
+      setFilterType("Location Code");
+      setSelectedLocations([]);
+    }
+  }, [multiFilter?.[parentId]?.filters]);
+
+  const handleLocationSelectChange = (
+    newValue: MultiValue<any>,
+    _: ActionMeta<any>
+  ) => {
+    const selected = Array.isArray(newValue) ? [...newValue] : [];
+    setSelectedLocations(selected);
+    setSearchQuery("");
+
+    const currentFilterId = getFilterId(filterType);
+    const currentAttributeName = getAttributeName(filterType);
+
+    const existingFilters = (multiFilter[parentId]?.filters ||
+      []) as BPRFilter[];
+    const otherFilters = existingFilters.filter(
+      (f) => f.name !== currentFilterId
+    );
+
+    const newFilters: BPRFilter[] = selected.map((loc) => ({
+      attributeName: currentAttributeName,
+      value: loc.value,
+      operator: "=",
+      label: filterType,
+      name: currentFilterId,
+    }));
+
+    isUpdatingFromInternal.current = true;
+    onMultiFilterChange({
+      ...multiFilter,
+      [parentId]: {
+        ...multiFilter[parentId],
+        filters: [...otherFilters, ...newFilters],
+      },
+    });
+  };
+
+  const handleFilterTypeChange = (selected: any) => {
+    const newType = selected.value as FilterType;
+    const prevFilterId = getFilterId(filterType);
+    const newFilterId = getFilterId(newType);
+
+    setFilterType(newType);
+    setSelectedLocations([]);
+    setSearchQuery("");
+
+    const existingFilters = (multiFilter[parentId]?.filters ||
+      []) as BPRFilter[];
+    const otherFilters = existingFilters.filter(
+      (f) => f.name !== prevFilterId && f.name !== newFilterId
+    );
+
+    isUpdatingFromInternal.current = true;
+    onMultiFilterChange({
+      ...multiFilter,
+      [parentId]: { ...multiFilter[parentId], filters: otherFilters },
+    });
+  };
+
+  const handleInputChange = (inputValue: string, { action }: any) => {
+    if (action === "input-change") {
+      setSearchQuery(inputValue);
+    }
+  };
 
   if (isLocationDataLoading) {
     return <VFLoader />;
   }
 
   return (
-    <>
-      <div className={filterGroup}>
-        <div className={filterColumn}>
-          <div className={textWrapper}>For Location</div>
-          <div className={dropDownWrapper} style={{ gap: "20px" }}>
+    <div className={filterGroup}>
+      <div className={filterColumn}>
+        <div className={textWrapper}>For Children</div>
+        <div className={dropDownRow}>
+          <div className={dropDownWrapper} style={{ flex: 1 }}>
             <Select
-              options={locationOptionsWithValue}
-              isMulti
-              closeMenuOnSelect={false}
-              hideSelectedOptions={false}
-              classNamePrefix="rs"
+              placeholder="Search by name"
+              options={filteredOptions}
+              styles={{
+                ...colorStyles,
+                menu: (base) =>
+                  ({ ...base, minWidth: "620px" } as CSSObjectWithLabel),
+                input: (base) =>
+                  ({ ...base, color: "#333" } as CSSObjectWithLabel),
+              }}
               components={{
                 Option: CustomOption,
                 IndicatorSeparator: () => null,
-                ClearIndicator: () => null,
+                DropdownIndicator: () => null,
               }}
-              styles={{
-                ...colorStyles,
-                input: (base) => ({
-                  ...base,
-                  color: "#333",
-                }as CSSObjectWithLabel),
-                placeholder: (base) => ({
-                  ...base,
-                  color: "#999",
-                  display: "block",
-                }as CSSObjectWithLabel),
-                menuList: (base) => ({
-                  ...base,
-                  maxHeight: 500,
-                  overflowY: "auto",
-                  scrollbarWidth: "none",
-                }as CSSObjectWithLabel),
-              }}
-              placeholder="Location Type"
-              value={selectedOptions.ForLocation.map((option) => ({
-                label: option,
-                value: option,
-              }))}
-              onChange={(newValue) =>
-                handleSelectChange({
-                  newValue,
-                  header: "ForLocation",
-                  filterId: "SCF1",
-                  parentId: "supplyChainFilter",
-                })
+              isMulti
+              isSearchable
+              closeMenuOnSelect={false}
+              hideSelectedOptions={false}
+              value={selectedLocations}
+              onChange={handleLocationSelectChange}
+              onInputChange={handleInputChange}
+              inputValue={searchQuery}
+              filterOption={customFilterOption}
+              noOptionsMessage={({ inputValue }) =>
+                inputValue
+                  ? "No locations found"
+                  : "Start typing to search locations"
               }
             />
-          </div>
-        </div>
 
-        <div className={filterColumn}>
-          <div className={textWrapper}>For Children</div>
-          <div className={dropDownWrapper} style={{ gap: "20px" }}>
-            <Select
-              options={locationOptionsWithValue}
-              // classNamePrefix="rs"
-              isMulti
-              closeMenuOnSelect={false}
-              hideSelectedOptions={false}
-              components={{
-                Option: CustomOption,
-                IndicatorSeparator: () => null,
-                ClearIndicator: () => null,
-              }}
-              styles={{
-                ...colorStyles,
-                input: (base) => ({
-                  ...base,
-                  color: "#333",
-                }as CSSObjectWithLabel),
-                placeholder: (base) => ({
-                  ...base,
-                  color: "#999",
-                  display: "block",
-                }as CSSObjectWithLabel),
-                menuList: (base) => ({
-                  ...base,
-                  maxHeight: 500,
-                  overflowY: "auto",
-                  scrollbarWidth: "none",
-                }as CSSObjectWithLabel),
-              }}
-              placeholder="Location Type"
-              value={selectedOptions.ForChildren.map((option) => ({
-                label: option,
-                value: option,
-              }))}
-              onChange={(newValue) =>
-                handleSelectChange({
-                  newValue,
-                  header: "ForChildren",
-                  filterId: "SCF2",
-                  parentId: "supplyChainFilter",
-                })
-              }
-            />
+            <div style={{ width: 165, marginTop: -44, marginLeft: 4.5 }}>
+              <Select
+                placeholder="Location Code"
+                classNamePrefix="rs"
+                styles={{
+                  ...styles,
+                  control: (base: any, state: any) => ({
+                    ...base,
+                    minHeight: "39px",
+                    border: state.isFocused
+                      ? user.user.theme_ui === "REGALBLAZE"
+                        ? "2px solid #FCA311"
+                        : "2px solid #BC3D80"
+                      : "1px solid #c7c0c0ff",
+                    borderRadius: "7px",
+                    boxShadow: "none",
+                    outline: "none",
+                    "&:hover": {
+                      border: state.isFocused
+                        ? user.user.theme_ui === "REGALBLAZE"
+                          ? "2px solid #FCA311"
+                          : "2px solid #BC3D80"
+                        : "1px solid #c7c0c0ff",
+                    },
+                  }),
+                }}
+                components={{ IndicatorSeparator: () => null }}
+                options={[
+                  { value: "Location Code", label: "Location Code" },
+                  {
+                    value: "Location Description",
+                    label: "Location Description",
+                  },
+                  { value: "Location Type", label: "Location Type" },
+                ]}
+                value={{ value: filterType, label: filterType }}
+                onChange={handleFilterTypeChange}
+                isSearchable={false}
+              />
+            </div>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
