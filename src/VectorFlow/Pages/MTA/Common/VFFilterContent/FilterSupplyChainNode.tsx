@@ -66,7 +66,7 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
 }) => {
   const { user } = useUserData();
   const colorStyles = useColorThemeStyles({
-    minWidth: "720px",
+    minWidth: "745px",
     minHeight: "48px",
     valueContainerPaddingLeft: "175px",
     inputColor: "#333",
@@ -237,7 +237,7 @@ export const SupplyChainNodeFilters: React.FC<FilterSectionProps> = ({
         <div className={dropDownRow}>
           <div className={dropDownWrapper} style={{ flex: 1 }}>
             <Select
-              placeholder="Search by name"
+              placeholder="Type location code to search..."
               options={filteredOptions}
               styles={{
                 ...colorStyles,
