@@ -117,7 +117,11 @@ const useBufferTrends = () => {
             setCurrentGraphData(percentage);
         }
         if(summary.length!==0) {
-            setSummaryData(summary);
+            setSummaryData(summary.map((row: any) =>
+                row.category === 'Percentage'
+                    ? Object.fromEntries(Object.entries(row).map(([k, v]) => k === 'category' || k === "sumGY"? [k, v] : [k, `${v}%`]))
+                    : row
+            )as any);
         }
         setAvailability(avail);
     }, [graphData]);
@@ -135,12 +139,20 @@ const useBufferTrends = () => {
         switch(tab.value){
             case 'Absolute': 
                 setCurrentGraphData(graphData?.data?.absolute);
-                setSummaryData(graphData?.data?.summary);
+                setSummaryData(graphData?.data?.summary.map((row: any) =>
+                row.category === 'Percentage'
+                    ? Object.fromEntries(Object.entries(row).map(([k, v]) => k === 'category' || k === "sumGY"? [k, v] : [k, `${v}%`]))
+                    : row
+            )as any);
                 setAvailability(graphData?.data?.avail);
                 break;
             case 'Percentage':
                 setCurrentGraphData(graphData?.data?.percentage);
-                setSummaryData(graphData?.data?.summary);
+                setSummaryData(graphData?.data?.summary.map((row: any) =>
+                row.category === 'Percentage'
+                    ? Object.fromEntries(Object.entries(row).map(([k, v]) => k === 'category' || k === "sumGY"? [k, v] : [k, `${v}%`]))
+                    : row
+            )as any);
                 setAvailability(graphData?.data?.avail);
         }
     } 

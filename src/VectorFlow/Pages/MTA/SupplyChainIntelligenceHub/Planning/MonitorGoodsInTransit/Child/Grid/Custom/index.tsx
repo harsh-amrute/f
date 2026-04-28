@@ -145,7 +145,7 @@ const MonitorGITChildCustomCharts = ({recordCount}:{recordCount:number}) => {
                         toolPanelParams: {
                           suppressPivots: false,
                           suppressPivotMode: false,
-                          suppressRowGroups: true,
+                          suppressRowGroups: false,
                           suppressValues: false,
                         },
                       },
@@ -175,6 +175,7 @@ const MonitorGITChildCustomCharts = ({recordCount}:{recordCount:number}) => {
                 }}
                 disableZoomScaling={true}
                 rowHeight={30}
+                className="custom-screen-table"
             />
         </div>
         </>

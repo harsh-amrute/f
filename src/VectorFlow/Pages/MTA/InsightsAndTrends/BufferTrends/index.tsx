@@ -15,6 +15,11 @@ import {
   AvailabilityHeader,
   SummaryTableColumn,
   availabilityColorVar,
+  FormulaContent,
+  FractionWrapper,
+  FractionNumerator,
+  FractionDenominator,
+  FractionMultiplier
 } from "./styles.css";
 import LastRunDateComponent from "../../../../../components/commons/lastRundate";
 import OverlayLoader from "../../../../../VectorFlow/Pages/MTO/Common/Loader";
@@ -95,6 +100,14 @@ const BufferTrends = () => {
       ),
       colId: "sumW",
     },
+    {
+      headerName: (
+        <p className={SummaryTableColumn} color="gray">
+          Grey
+        </p>
+      ),
+      colId: "sumGY",
+    },
   ];
   const renderView = () => {
     switch (currentView) {
@@ -114,7 +127,7 @@ const BufferTrends = () => {
               horizonDays={horizonDays}
             />
 
-            <div style={{ height: "200px" }}>
+            <div style={{ minHeight: "200px" }}>
               <div
                 style={{
                   zoom: 0.8,
@@ -123,13 +136,28 @@ const BufferTrends = () => {
                 }}
               >
                 <BPRViewTable
-                  tableHeader="Summary"
+                  tableHeader={`Summary (As of ${lastRunDate})`}
                   tablePrefixSrc=""
                   rowData={summaryData}
                   colDefs={summaryColumnDefs}
                 />
                 <div className={AvailabilityContainer}>
-                  <div className={AvailabilityHeader}>Overall Availability</div>
+                  <div className={AvailabilityHeader}>{`Overall Availability (As of ${lastRunDate})`}</div>
+                  <div className={FormulaContent}
+                    style={assignInlineVars({
+                      [availabilityColorVar]:
+                        globalStyles.chooseThemeColor[themeUI].color5,
+                    })}>
+                    <div className={FractionWrapper}>
+                      <span className={FractionNumerator}>
+                        Red + Yellow + Green + Blue + White
+                      </span>
+                      <span className={FractionDenominator}>
+                        Black + Red + Yellow + Green + Blue + White
+                      </span>
+                    </div>
+                    <span className={FractionMultiplier}>× 100</span>
+                  </div>
                   <div
                     className={AvailabilityContent}
                     style={assignInlineVars({
@@ -137,7 +165,7 @@ const BufferTrends = () => {
                         globalStyles.chooseThemeColor[themeUI].color5,
                     })}
                   >
-                    {availability} %
+                    {availability}%
                   </div>
                 </div>
               </div>
@@ -157,7 +185,7 @@ const BufferTrends = () => {
   };
 
   useEffect(() => {
-    if(currentGraphData?.length) BufferTrendsDataLoad();
+    if (currentGraphData?.length) BufferTrendsDataLoad();
   }, [currentTab]);
 
   return (

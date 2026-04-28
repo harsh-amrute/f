@@ -513,6 +513,29 @@ export const mapRRRFieldsToColDefs = (fields: RRRField[]): ColDef[] => {
         filter: getCellFilter(f.DataType),
       };
     }
+    if (f.Col_Code === "PPen") {
+      return {
+        colId: f.Col_Code,
+        field: f.Col_Code,
+        headerName: f.Header,
+        hide: !f.Visible,
+        cellRenderer: "colorPhysicalInventoryPenColorCellRenderer",
+        cellDataType: getCellDataType(f.DataType),
+        filter: getCellFilter(f.DataType),
+      };
+    }
+    if (f.Col_Code === "DPen") {
+      return {
+        colId: f.Col_Code,
+        field: f.Col_Code,
+        headerName: f.Header,
+        hide: !f.Visible,
+        cellRenderer: "colorDispatchRender",
+        cellDataType: getCellDataType(f.DataType),
+        filter: getCellFilter(f.DataType),
+      };
+    }
+
     if (f.Col_Code === "EPen") {
       return {
         colId: f.Col_Code,
@@ -1199,14 +1222,16 @@ export const mapMasterToColumnDefs = (
     const seasonalityGraphColDef: ColDef = {
       field: "graph",
       colId: "graph",
-      headerName: "",
+      // headerName: "",
+      headerComponent: "graphColumnHeader",
       width: 40,
       cellRenderer: "seasonalityGraphCellRenderer",
       cellRendererParams: {
         onShowChart: onShowChart,
       },
         resizable:false,
-      suppressMenu: true,
+      suppressMenu: true, 
+      headerTooltip: "Seasonality Graph",      
     };
     return [
       seasonalityColorColDef,
@@ -1507,7 +1532,15 @@ export const mapMasterToColumnGroupDefs = (
           colId: f.key,
           hide: !f.visible,
           suppressSpanHeaderHeight: true,
-          valueFormatter: () => "Stop",
+          valueFormatter: (params: any) => {
+            if (params.value === "Stopped") {
+              return "Stop";
+            }
+            if (params.value === "Unknown") {
+              return "Resume";
+            }
+            return params.value;
+          },
           ...defaultColDefs,
           cellStyle: () => {
             return {
@@ -1948,58 +1981,49 @@ export const mapMasterToTaskStatusColumnGroupDefs = (
 ) => {
     const response = dirtyRowData?.map((entry) => {
       
-      if (
-      (taskType === "modify" && masterId !== 6 && masterId !== 10) ||
-      masterId === 13
-    ) {
-        const oldData = JSON.parse(entry.old);
-        const newData = JSON.parse(entry.new);
+    if ((taskType === "modify" && masterId !== 6 && masterId !== 10) || masterId === 13) 
+    {
+      const oldData = JSON.parse(entry.old);
+      const newData = JSON.parse(entry.new);
 
-        const oldDataPrefixed: any = {};
-        const newDataPrefixed: any = {};
-        let isRowModified = false; // A flag to check equality of the current and previous rows
-        existingColumnFields.map((f: Field) => {
-          const isReferenceException = taskType === "add" && (masterId === 1 || masterId === 2)
+      const oldDataPrefixed: any = {};
+      const newDataPrefixed: any = {};
+      let isRowModified = false;
+      existingColumnFields.map((f: Field) => {
+        const isReferenceException = taskType === "add" && (masterId === 1 || masterId === 2)
 
-          const isAvoidColumn =
-            !isReferenceException &&
-            (
-              TaskPendingAvoidColumnsMapper[masterId].includes(f.key) ||
-              TaskPendingAvoidColumnsMapperSpecific[masterId]?.includes(f.key)
-            )
-          if (!areValuesEqual(oldData[f.key], newData[f.key])) {
-            isRowModified = true;
+        const isAvoidColumn = !isReferenceException &&
+        (
+          TaskPendingAvoidColumnsMapper[masterId].includes(f.key) ||
+          TaskPendingAvoidColumnsMapperSpecific[masterId]?.includes(f.key)
+        )
+        if (!areValuesEqual(oldData[f.key], newData[f.key])) {
+          isRowModified = true;
+        }
+        const isSdModifyReference =
+          taskType === "modify" &&
+          (masterId === 1 || masterId === 2) &&
+          (f.key === "sd" || f.key === "wd")
+
+        if (isAvoidColumn && !isSdModifyReference) {
+          newDataPrefixed[f.key] = String(newData[f.key] !== undefined ? newData[f.key] : "");
+        } else {
+          oldDataPrefixed[`Old${f.key}`] = String(oldData[f.key] !== undefined ? oldData[f.key] : "");
+          newDataPrefixed[`New${f.key}`] = String(newData[f.key] !== undefined ? newData[f.key] : "");
+
+          if (isSdModifyReference) {
+            newDataPrefixed[f.key] = String(oldData[f.key] !== undefined ? oldData[f.key] : "")
           }
-          const isSdModifyReference =
-            taskType === "modify" &&
-            (masterId === 1 || masterId === 2) &&
-            (f.key === "sd" || f.key === "wd")
-
-          if (isAvoidColumn && !isSdModifyReference) {
-            newDataPrefixed[f.key] = String(
-            newData[f.key] !== undefined ? newData[f.key] : ""
-            );
-          } else {
-            oldDataPrefixed[`Old${f.key}`] = String(
-            oldData[f.key] !== undefined ? oldData[f.key] : ""
-          );
-            newDataPrefixed[`New${f.key}`] = String(
-            newData[f.key] !== undefined ? newData[f.key] : ""
-          );
-
-            if (isSdModifyReference) {
-              newDataPrefixed[f.key] = String(oldData[f.key] !== undefined ? oldData[f.key] : "")
-            }
-          } 
-        });
-        return {
-          ...oldDataPrefixed,
-          ...newDataPrefixed,
-          status: !isRowModified ? "Rejected" : "",
-          comments: isRowModified ? "" : "No modifications made in this record",
-          isModified: isRowModified,
-        };
-      }
+        } 
+      });
+      return {
+        ...oldDataPrefixed,
+        ...newDataPrefixed,
+        status: !isRowModified ? "Rejected" : "",
+        comments: isRowModified ? "" : "No modifications made in this record",
+        isModified: isRowModified,
+      };
+    }
       const dataPrefixed1: any = {};
       if ((masterId === 6 || masterId === 10) && taskType === "modify") {
         existingColumnFields.map((f: Field) => {
@@ -2806,9 +2830,12 @@ export const filterParams = {
 export const CellRenderersMapping: any = {
   DispatchPen: "colorDispatchRender",
   TechPen: "colorTechCellRenderer",
+  PhysicalInventoryPen:"colorPhysicalInventoryPenColorCellRenderer",
   EcoPen: "colorEcoCellRenderer",
   TPen: "colorTechCellRenderer",
+  PPen: "colorPhysicalInventoryPenColorCellRenderer",
   EPen: "colorEcoCellRenderer",
+  DPen: "colorDispatchRender",
 };
 
 const aggridDefaultColumnProps = {
@@ -3274,6 +3301,42 @@ export const mapBPRFieldsToColDefs = (
         },
       };
     }
+    if (f.Col_Code === "PhysicalInventoryPen") {
+      return {
+        colId: f.Col_Code,
+        field: f.Col_Code,
+        headerName: f.Header,
+        hide: !f.Visible,
+        cellRenderer: "colorPhysicalInventoryPenColorCellRenderer",
+        // tooltipField: f.Col_Code,
+        minWidth: 180,
+        cellDataType: getCellDataType(f.DataType),
+        filter: getCellFilter(f.DataType),
+        pinned: null,
+        filterParams: {
+          buttons: ["reset"], // Adds Apply and Clear buttons
+          // excelMode: 'windows',
+        },
+      };
+    }
+    if (f.Col_Code === "DispatchPen") {
+      return {
+        colId: f.Col_Code,
+        field: f.Col_Code,
+        headerName: f.Header,
+        hide: !f.Visible,
+        cellRenderer: "colorDispatchRender",
+        // tooltipField: f.Col_Code,
+        minWidth: 180,
+        cellDataType: getCellDataType(f.DataType),
+        filter: getCellFilter(f.DataType),
+        pinned: null,
+        filterParams: {
+          buttons: ["reset"], // Adds Apply and Clear buttons
+          // excelMode: 'windows',
+        },
+      };
+    }        
     if (f.Col_Code === "EcoPen") {
       return {
         colId: f.Col_Code,
@@ -3488,6 +3551,34 @@ export const mapResearchInsightsFieldsToColDefs = (
         headerName: f.Header,
         hide: !f.Visible,
         cellRenderer: "colorTechCellRenderer",
+        cellStyle: {
+          "min-width": 180,
+        },
+        cellDataType: getCellDataType(f.DataType),
+        filter: getCellFilter(f.DataType),
+      };
+    }
+    if (f.Col_Code === "PhysicalInventoryPen") {
+      return {
+        colId: f.Col_Code,
+        field: f.Col_Code,
+        headerName: f.Header,
+        hide: !f.Visible,
+        cellRenderer: "colorPhysicalInventoryPenColorCellRenderer",
+        cellStyle: {
+          "min-width": 180,
+        },
+        cellDataType: getCellDataType(f.DataType),
+        filter: getCellFilter(f.DataType),
+      };
+    }
+    if (f.Col_Code === "DispatchPen") {
+      return {
+        colId: f.Col_Code,
+        field: f.Col_Code,
+        headerName: f.Header,
+        hide: !f.Visible,
+        cellRenderer: "colorDispatchRender",
         cellStyle: {
           "min-width": 180,
         },
@@ -5584,7 +5675,7 @@ export function getColumnDefinationsMTA(
       rowGroupIndex: null,
       initialPivot: false,
       enablePivot: true,
-      enableRowGroup: false,
+      enableRowGroup: true,
       enableValue: true,
       pivotIndex: null,
 

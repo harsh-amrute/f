@@ -285,7 +285,7 @@ export const AttributesFilters: React.FC<FilterSectionProps> = ({
         className={filterColumn}
         style={{ minWidth: "400px", maxWidth: "none" }}
       >
-        <div className={textWrapper}>Select Attributes - SKU/Location</div>
+        <div className={textWrapper}>Select Attributes - SKU-Loc</div>
         {filterRows.map((row) => (
           <div
             className={dropDownRow}

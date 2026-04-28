@@ -136,6 +136,7 @@ const ViewModify = () => {
     canToggleMaster,
     setCanToggleMaster,
     getAllVisibleColums,
+    handleFileNameChange
   } = useViewModify("modify");
 
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
@@ -160,7 +161,7 @@ const ViewModify = () => {
   const CustomStatusPanel = useMemo(() => {
     const brand = themeUi === "REGALBLAZE" ? "REGALBLAZE" : "DEFAULT";
 
-    return ()=> (
+    return () => (
       <div className={gridFilterWrapper} style={{ marginTop: "25px" }}>
         <button
           className={textBtn[brand]}
@@ -245,7 +246,7 @@ const ViewModify = () => {
                   className={SCFilterContainer}
                   style={{ zoom: "var(--nms-filter-zoom)" }}
                 >
-                  <div className={SCFilterControls}>
+                  <div className={SCFilterControls} style={{ zIndex: 3 }}>
                     <legend className={SCLegend}>Filter</legend>
                     {activeMaster.filters.map((f: Filter) => {
                       if (f.masterId == activeMaster?.id) {
@@ -397,12 +398,12 @@ const ViewModify = () => {
             setFile(undefined);
             toggleUploadModal(false);
           }}
-          onDownload={() => exportToExcel(true)}
+          onDownload={()=>exportToExcel("VIEW_MODIFY",true,)} 
           onUpload={async () => {
             await onUploadMaster(RECORD_UPLOAD_LIMIT);
           }}
           inputText={downloadFileName}
-          setInputText={setDownloadFileName}
+          setInputText={handleFileNameChange}
           file={file}
           setFile={setFile}
           uploadButtonStatus={false}
@@ -493,7 +494,7 @@ const ViewModify = () => {
             onBack1={() => onBackButton1(location?.state?.backUrl)}
             onClearAndExportErrors={onClearExportError}
             onModifyData={() => toggleUploadModal(true)}
-            onExportData={exportToExcel}
+            onExportData={() => exportToExcel("EXPORT",true)}
             onSubmit={onSubmit}
             onSubmitConflictData={() => onSubmit(true)}
             onDeleteSelected={deleteSelected}

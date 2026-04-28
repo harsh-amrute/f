@@ -10,8 +10,12 @@ import {
   buttonWrapper,
   imageWrapper,
   calendarBase,
-  calendarPopup,           
+  calendarPopup,
+  calPrimaryVar,
+  calHoverVar,
+  calTodayVar,           
 } from "./styles.css";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 
 interface AGGridProps {
   value: string;
@@ -22,9 +26,29 @@ interface AGGridProps {
   [key: string]: any;
 }
 
+
 type Value = CalendarProps["value"];
 
 const DateCellRenderer = (props: AGGridProps) => {
+  const THEME = {
+    REGALBLAZE: {
+      accent: "#F7B500",
+      calPrimary: "#C7810E",
+      calHover: "#fee3b7",
+      calToday: "#E1B69F",
+      calendarIcon:
+        "/assets/img/mto/OrderRescheduling/edit-calendar-yellow.svg",
+      clearIcon: "/assets/img/Clear_Due_Date_Yellow.svg",
+    },
+    DEFAULT: {
+      accent: "#BC3D80",
+      calPrimary: "#82104C",
+      calHover: "#82104C",
+      calToday: "#e2a9c8",
+      calendarIcon: "/assets/img/mto/OrderRescheduling/edit-calendar.svg",
+      clearIcon: "/assets/img/Clear_Due_Date.svg",
+    },
+  } as const;
   const {
     value,
     onDateChange: externalOnDateChange,
@@ -99,7 +123,12 @@ const DateCellRenderer = (props: AGGridProps) => {
       setShowCalendar(false);
     }
   };
-
+  const tokens = themeUi === "REGALBLAZE" ? THEME.REGALBLAZE : THEME.DEFAULT;
+  const calVars = assignInlineVars({
+    [calPrimaryVar]: tokens.calPrimary,
+    [calHoverVar]: tokens.calHover,
+    [calTodayVar]: tokens.calToday,
+  });
   return (
     <div className={datePickerWrapper}>
       <input
@@ -148,6 +177,7 @@ const DateCellRenderer = (props: AGGridProps) => {
             style={{
               top: calendarPosition.top,
               left: calendarPosition.left,
+              ...calVars
             }}
           >
             <Calendar

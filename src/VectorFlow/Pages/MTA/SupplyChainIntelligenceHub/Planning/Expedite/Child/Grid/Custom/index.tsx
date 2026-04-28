@@ -140,7 +140,7 @@ const ExpediteChildCustomCharts = ({recordCount}:{recordCount:any}) => {
                         toolPanelParams: {
                             suppressPivots: false,
                             suppressPivotMode: false,
-                            suppressRowGroups: true,
+                            suppressRowGroups: false,
                             suppressValues: false,
                         },
                       }
@@ -174,6 +174,7 @@ const ExpediteChildCustomCharts = ({recordCount}:{recordCount:any}) => {
                 disableZoomScaling={true}
                 rowHeight={30}
                 height={"80%"}
+                className="custom-screen-table"
             />
         </div>
         </>
