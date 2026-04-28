@@ -27,6 +27,9 @@ const PermissionForm = ({
   
   // Stores options for dropdowns: key = permissionType
   const [options, setOptions] = useState<Record<string, { L1: any[], L2: any[], L3: any[] }>>({});
+  const {user} = useUserData();
+  const inherited_access = user.config_data?.INHERITED_ACCESS
+  const isInheritedOn = inherited_access === "1"
 
   useEffect(() => {
     if (!currentAppAllPermissions) return;
@@ -40,37 +43,127 @@ const PermissionForm = ({
 
     types.forEach(type => {
       const pData = currentAppAllPermissions[type];
-      const l1Keys = Object.keys(pData);
+      const prefix = type.split('_')[0];
+
+      const idKey = `${type}_permission_ids`;
+      const fallbackIdKey = `${type.replace("_permission", "")}_permission_ids`;
+      const permissionIds = currentAppAllPermissions[idKey] || currentAppAllPermissions[fallbackIdKey] || [];
+
+      //h_id 
+      const hasHId = (level: number, l1: string, l2?: string, l3?: string) => {
+        return permissionIds.some((p: any) => {
+          const h1 = p[`${prefix}_hierarchy_1`] || p.hierarchy_1;
+          const h2 = p[`${prefix}_hierarchy_2`] || p.hierarchy_2;
+          const h3 = p[`${prefix}_hierarchy_3`] || p.hierarchy_3;
+
+          if (level === 1) {
+            return h1 === l1 && (!h2 || h2 === "") && (!h3 || h3 === "") && p.h_id;
+          }
+          if (level === 2) {
+            return h1 === l1 && h2 === l2 && (!h3 || h3 === "") && p.h_id;
+          }
+          if (level === 3) {
+            return h1 === l1 && h2 === l2 && h3 === l3 && p.h_id;
+          }
+          return false;
+        });
+      };
+
+      let l1Keys = Object.keys(pData);
+    
+      l1Keys = l1Keys.filter(l1 => {
+        const isHIdPresent = hasHId(1, l1);
+        const hasChildren = Object.keys(pData[l1] || {}).length > 0;
+            
+        // no h_id → always remove
+        if (!isHIdPresent) {
+          return false;
+        }
+      
+        // h_id + children + inherited_acess → keep 
+        // h_id + children + !inherited_acess → keep
+        if (hasChildren) {
+          return true;
+        }
+      
+        // h_id + no children + inherited_acess → keep
+        if (!hasChildren && isInheritedOn) {
+          return true;
+        }
+      
+        // h_id + no chidlren + no inherited_acess --> remove
+        if (isHIdPresent && !hasChildren && !isInheritedOn) {
+          return false;
+        }
+      
+
+        // h_id + no children + OFF → remove
+        return false;
+      });
+
       const l2Keys: string[] = [];
       const l3Keys: string[] = [];
 
       l1Keys.forEach(l1 => {
         const l2Obj = pData[l1];
         if (l2Obj) {
-          Object.keys(l2Obj).forEach(l2 => {
+          let l2List = Object.keys(l2Obj);
+
+        l2List = l2List.filter(l2 => {
+          const isHIdPresent = hasHId(2, l1, l2);
+          const hasChildren = (l2Obj[l2] || []).length > 0;
+                
+          // no h_id → always remove
+          if (!isHIdPresent) {
+            return false;
+          }
+        
+          // h_id + children + ON → keep
+          // h_id + children + OFF → keep
+          if (hasChildren) {
+            return true;
+          }
+        
+          // h_id + no children + ON → keep
+          if (!hasChildren && isInheritedOn) {
+            return true;
+          }
+        
+           //h_id+no chidlren + no inherited_acess --> remove
+            if (isHIdPresent && !hasChildren && !isInheritedOn) {
+          return false;
+          }
+          
+          // h_id + no children + OFF → remove
+          return false;
+        });
+          
+          l2List.forEach(l2 => {
             l2Keys.push(`${l1}>${l2}`);
-            
+
             const l3Array = l2Obj[l2];
             if (Array.isArray(l3Array)) {
               l3Array.forEach((entry: any) => {
                 let l3Val = entry;
                 if (typeof entry === "object") {
-                     // Dynamic Key Extraction same as HeirarchyCanvas
-                     const prefix = type.split("_")[0];
-                     const candidateKeys = [
-                        `${prefix}_hierarchy_3`,
-                        "hierarchy_3"
-                    ];
-                    const foundKey = Object.keys(entry).find(k => candidateKeys.includes(k)) || Object.keys(entry)[0];
-                    l3Val = entry[foundKey];
+                  const candidateKeys = [
+                    `${prefix}_hierarchy_3`,
+                    "hierarchy_3"
+                  ];
+                  const foundKey = Object.keys(entry).find(k => candidateKeys.includes(k)) || Object.keys(entry)[0];
+                  l3Val = entry[foundKey];
                 }
-                
-                // Handle empty string L3
-                 if (l3Val !== undefined && l3Val !== null) {
-                    const l3Key = l3Val === "" 
-                        ? `${l1}>${l2}>` 
-                        : `${l1}>${l2}>${l3Val}`;
-                    l3Keys.push(l3Key);
+
+                if (l3Val !== undefined && l3Val !== null) {
+                  const hasL3HId = hasHId(3, l1, l2, l3Val);
+                  if (!hasL3HId) { //if no h_id - remove
+                    return;
+                  }
+
+                  const l3Key = l3Val === ""
+                    ? `${l1}>${l2}>`
+                    : `${l1}>${l2}>${l3Val}`;
+                  l3Keys.push(l3Key);
                 }
               });
             }
