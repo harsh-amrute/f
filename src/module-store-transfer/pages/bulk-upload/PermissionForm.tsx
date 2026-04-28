@@ -29,7 +29,7 @@ const PermissionForm = ({
   const [options, setOptions] = useState<Record<string, { L1: any[], L2: any[], L3: any[] }>>({});
   const {user} = useUserData();
   const inherited_access = user.config_data?.INHERITED_ACCESS
-  const isInheritedOn = inherited_access === 1 || inherited_access === true || inherited_access === "1"
+  const isInheritedOn = inherited_access === "1"
 
   useEffect(() => {
     if (!currentAppAllPermissions) return;
