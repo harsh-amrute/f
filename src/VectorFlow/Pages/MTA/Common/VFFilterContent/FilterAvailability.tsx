@@ -229,8 +229,10 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
       ...rowSelections,
       [columnId]: { operation: null, value: "" },
     };
-    setRowSelections(updated);
-
+    setRowSelections((prev) => ({
+    ...prev,
+    [columnId]: { operation: null, value: "" },
+  }));
     const parentId = "availabilityFilter";
     const columnInfo = availabilityFilterOptions.find(
       (col) => col.value === columnId
@@ -301,7 +303,10 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
           };
         }
       });
-      setRowSelections(restoredRowSelections);
+      setRowSelections((prev) => ({
+        ...prev,
+        ...restoredRowSelections
+      }));
 
       setSelectedOptions({
         onHandInventoryColor: forOnHandInventoryColor.map((f) => f.value),
@@ -350,7 +355,8 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
 
   const shouldShowColorFilters = currCategory === 'BPR' || currCategory === 'BOR' || currCategory === 'RRR';
 
-  const shouldShowTags = currCategory === 'BPR' || currCategory === 'RRR' || currCategory === 'BOR';
+  const shouldShowTags = currCategory === 'BPR' || currCategory === 'RRR' || currCategory === 'BOR'  || window.location.pathname === '/mta/insights-and-trends/buffer-trends' ;
+
 
   return (
     <>
@@ -442,7 +448,7 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
               alignItems: "flex-start",
               flexWrap: "wrap" 
             }}>
-              {(currentTab === 'on-hand' || currentTab === 'both' || currCategory === 'BPR' || currCategory === 'RRR' || currCategory === 'BOR' || (isBTRReport && (currentTab === 'on-hand' || currentTab === 'both'))) && (
+             {(currCategory !== 'BOR' && (currentTab === 'on-hand' || currentTab === 'both' || currCategory === 'BPR' || currCategory === 'RRR' || (isBTRReport && (currentTab === 'on-hand' || currentTab === 'both')))) && (
                 <div style={{ 
                   flex: (currentTab === 'both') ? 1 : 'auto', 
                   minWidth: "280px",

@@ -35,6 +35,11 @@ const useSaveAllState = (isPlanning?:boolean) => {
     const {pagination,callBack} = params
     const {recordCount,chunkSize} = pagination
     
+    const visibleCount = ref.current?.api?.getDisplayedRowCount() ?? 0;
+    if (visibleCount === 0) {
+        notifyError("No Data to Export");
+        return;
+    }
 
     try {
       //buggy line below

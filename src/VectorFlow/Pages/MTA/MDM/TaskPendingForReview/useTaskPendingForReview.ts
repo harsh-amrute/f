@@ -173,18 +173,25 @@ useEffect(() => {
                     
                     const masters:Master[] = uiConfigurationResponse.data.data
                     const currentMasterFields = masters.find((master:Master)=>master.id==currentTaskMasterId)?.fields
+                    let existingColumns:any=[];
                     if(currentMasterFields){
                         // console.log(currentTaskMaster.data[0].new)
-                        const existingColumns = getExistingColumns(
-                            currentTaskMaster.data?
-                            (taskData.Actiontype === 2 && currentTaskMasterId !== 6 && currentTaskMasterId !== 10) || (currentTaskMasterId === 13)
-                            ? JSON.parse(currentTaskMaster?.data[0].new)
-                            : currentTaskMaster?.data[0]:[]
-                        );
-                                       
+                        if(currentTaskMaster.data){
+                            if(taskData.Actiontype === 2){
+                                existingColumns = currentMasterFields.filter(field => 
+                                    field.isDownload === true|| field?.key === 'sd' || field?.key === 'wd' || field?.key === 'spd')
+                                    .map(field => field.key);
+                                }else{
+                                existingColumns = getExistingColumns(currentTaskMaster?.data[0])
+                            }
+                        }else{
+                            existingColumns = getExistingColumns([]);
+                        }
                         let existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields);
                         if(taskData.Actiontype === 3){
-                            existingColumnFields = existingColumnFields.filter(field => field?.isDelete);
+                            existingColumnFields = existingColumnFields.filter(field =>
+                                field?.isDelete || field?.key === 'sd' || field?.key === 'wd' || field?.key === 'spd'
+                            );
                         }
                         // setDetailTableColDefs(mapMasterToColumnGroupDefs(existingColumnFields,currentTaskMasterId,themeUi,getActionName(taskData.Actiontype).value,toggleApproveAllModal,toggleRejectAllModal,actionStatus,isDisabled))
                         setColGenArgs({
@@ -249,17 +256,23 @@ useEffect(() => {
                      const uiConfigurationResponse = await getMasterUIConfiguration(getActionName(taskData.Actiontype).value);
                     const masters:Master[] = uiConfigurationResponse.data.data;
                     const currentMasterFields = masters.find((master: Master)=>master.id==currentTaskMasterId)?.fields
+                    let existingColumns:any=[];
                     if (currentMasterFields) {
-                        const existingColumns = getExistingColumns(
-                            currentTaskMaster.data ?
-                                (taskData.Actiontype === 2 && currentTaskMasterId !== 6 && currentTaskMasterId !== 10) || (currentTaskMasterId === 13) ?
-                                JSON.parse(currentTaskMaster?.data[0].new) :
-                                currentTaskMaster?.data[0] : []
-                        );
+                        if(currentTaskMaster.data){
+                            if(taskData.Actiontype === 2){
+                                 existingColumns = currentMasterFields.filter(field => 
+                                    field.isDownload === true|| field?.key === 'sd' || field?.key === 'wd' || field?.key === 'spd')
+                                    .map(field => field.key);
+                            }else{
+                                existingColumns = getExistingColumns(currentTaskMaster?.data[0])
+                            }
+                        }else{
+                            existingColumns = getExistingColumns([]);
+                        }
                         let existingColumnFields = getExistingColumnFields(existingColumns, currentMasterFields);
                         if(taskData.Actiontype === 3) {
                             existingColumnFields = existingColumnFields.filter(field =>
-                                field?.isDelete || field?.key === 'sd' || field?.key === 'wd'
+                                field?.isDelete || field?.key === 'sd' || field?.key === 'wd' || field?.key === 'spd'
                             );
                         }
                         setColGenArgs({
@@ -294,7 +307,7 @@ useEffect(() => {
 
     const handleChangePage = async (pageNo:any) => {
         setCurrentPage(pageNo);
-        ref.current?.api.paginationGoToPage(pageNo);
+        ref.current?.api.paginationGoToPage(pageNo-1);
     }
 
     const handleChangePage1 = async (pageNo:number) => {

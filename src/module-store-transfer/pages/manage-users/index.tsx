@@ -25,7 +25,7 @@ import { useTranslation } from "react-i18next";
 import { generateRolesObject } from '../../../helpers/utils';
 import _ from 'lodash'
 import { useNavigate } from "react-router";
-import { notifyError, notifySuccess } from "../../../helpers/notify";
+import { notifyError, notifySuccess, notifyWarningWithoutAutoClose } from "../../../helpers/notify";
 import { APPLICATION_NAMES } from "../../../helpers/constants";
 import { useUserData } from "../../../context";
 import SingleUserPermissionSelectionModal from "../bulk-upload/SingleUserPermissionSelectionModal";
@@ -721,6 +721,11 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
           setIsOpenUser(false);
           refetch()
           notifySuccess("user created succesfully")
+          
+          if (response?.data?.msg?.warning) {
+            notifyWarningWithoutAutoClose(response.data.msg.warning);
+          }
+          
           setSelectedPermissions({});
         }
         else {

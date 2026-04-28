@@ -6,11 +6,14 @@ import OverlayLoader from "../../../../../../VectorFlow/Pages/MTO/Common/Loader"
 import { chartParams1 } from "./chartParams";
 import { generateChartOptions, nonce } from "../../../../../../helpers/utils";
 import VFHorizon from "../../../../../../components/VectorFLOW/commons/VFHorizon";
+import { useChartDownload } from "../../../../../../hooks/useChartDownload";
+import ChartDownloadButton from "../../../Common/ChartDownloadButton/ChartDownloadButton";
 
 const AvailabilityTrend = ({
   filter,
   horizon,
   setHorizon,
+  themeUi
 }: {
   themeUi: string;
   filter: any;
@@ -36,6 +39,12 @@ const AvailabilityTrend = ({
     "#f2f2f2",
     "#1a1a1a",
   ];
+
+  const { chartWrapperRef, handleDownload } = useChartDownload({
+    title: chartParams1.title,
+    fileName: "AvailabilityTrend",
+  });
+
 
   const [options, setOptions] = useState<any>({});
   const [locationTypeOrder, setLocationTypeOrder] = useState<string[]>([]);
@@ -151,8 +160,11 @@ const AvailabilityTrend = ({
         <div style={{ marginLeft: 10, marginBottom: "-5px" }}>
           <VFInfoToolTip infoList={chartParams1.graphInfo} />
         </div>
+        <div style={{ marginLeft: 10, marginBottom: "-5px" }}>
+          <ChartDownloadButton themeUi={themeUi} onDownload={handleDownload} />
+        </div>
       </div>
-      <div style={{ height: "85%", padding: "30px 0px" }}>
+      <div ref={chartWrapperRef} style={{ height: "85%", padding: "30px 0px" }}>
         <AgCharts
           options={{ ...chartOptions, padding: { right: 20, left: 20 } }}
         />

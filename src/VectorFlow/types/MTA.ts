@@ -26,7 +26,8 @@ export interface DailyDataGraph {
     masterData:any,
     suggestionData:any,
     monitoringData:any,
-    rowData:any
+    rowData:any,
+    virtualNormData?:any
 
 }
 

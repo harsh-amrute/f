@@ -48,7 +48,7 @@ const TaskPendingForReview = ()=>{
     const TASKPENDINGFORREVIEW_PAGE = EnvConfig['TASKPENDINGFORREVIEW_PAGE'];  
     const recordCount = useSelector((state:RootState) =>state.mdm.recordCount);
     let isAllDataVisible = true;
-    if (recordCount <= chunkSize) {
+    if (recordCount <= chunkSize || !isBulkAction) {
       isAllDataVisible = false;
     }
     const approveButtonLabel = isAllDataVisible ? "Submit All" : `Ok`;
@@ -126,7 +126,17 @@ const TaskPendingForReview = ()=>{
                         }
     
                     }}
-                    pagination={false}
+                    onGridReady={() => {
+                        const api = ref.current?.api;
+                        if (!api) return;
+                        api.forEachNode((rowNode) => {
+                            if (rowNode.data?.status === "Rejected") {
+                                rowNode.setSelected(true);
+                            }
+                        });
+                    }}
+                    pagination={true} 
+                    suppressPaginationPanel={true}
                     paginationPageSize={parseInt(TASKPENDINGFORREVIEW_PAGE || '100')}  
                     // paginationPageSize={50}
                     // suppressPaginationPanel={true}
