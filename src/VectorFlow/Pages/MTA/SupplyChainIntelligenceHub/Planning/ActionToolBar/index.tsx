@@ -307,6 +307,7 @@ const ActionToolBar = ({
         if (pathname === "/mta/supply-chain-intelligence-hub/bpr") {
           return (
             <MTAVFMultiFilter
+              key={activeTab}
               isOpen={isFilterOpen}
               onApply={handleApplyFilter}
               multiFilter={multiFilter}
@@ -314,6 +315,7 @@ const ActionToolBar = ({
               onReset={handleResetFilters}
               currCategory={currCategory}
               reportName={UIColumnConfigName.BPR}
+              activeTab={activeTab}
             />
           );
         }

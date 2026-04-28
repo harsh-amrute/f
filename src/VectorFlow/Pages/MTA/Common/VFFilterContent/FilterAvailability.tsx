@@ -368,8 +368,7 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
   const isBTRReport =
     window.location.pathname === "/mta/insights-and-trends/buffer-trend-report";
 
-  const isToggleTab =
-    window.location.pathname === "/mta/insights-and-trends/buffer-trend-report";
+  const isToggleTab = ["/mta/insights-and-trends/buffer-trend-report", "/mta/supply-chain-intelligence-hub/bpr"].includes(window.location.pathname);
 
   const shouldShowColorFilters =
     currCategory === "BPR" || currCategory === "BOR" || currCategory === "RRR";
