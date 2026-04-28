@@ -61,7 +61,8 @@ interface ActionToolBarProps {
   disableSubmitEditedRowsBtn?: boolean;
   lastRunDate?: string;
   isPlanning?: boolean;
-  generalFilterOptions?: any;onTabChange?: (val: 'norm' | 'virtualnorm') => void;
+  generalFilterOptions?: any;
+  onTabChange?: (val: 'norm' | 'virtualnorm') => void;
   activeTab?: 'norm' | 'virtualnorm';
 }
 
@@ -199,6 +200,7 @@ const ActionToolBar = ({
     else if (
       pathname === "/mta/insights-and-trends/buffer-trend-report" ||
       pathname === "/mta/supply-chain-intelligence-hub/bpr" ||
+      pathname === "/mta/supply-chain-intelligence-hub/availability-report" ||
       pathname === "/mta/supply-chain-intelligence-hub/rrr" ||
       pathname === "/mta/supply-chain-intelligence-hub/bor" ||
       pathname === "/mta/supply-chain-intelligence-hub/bor-color-bandwise" ||
@@ -230,6 +232,7 @@ const ActionToolBar = ({
       pathname === "/mta/insights-and-trends/buffer-trend-report" ||
       pathname === "/mta/insights-and-trends/buffer-trends" ||
       pathname === "/mta/supply-chain-intelligence-hub/bpr" ||
+      pathname === "/mta/supply-chain-intelligence-hub/availability-report" ||
       pathname === "/mta/supply-chain-intelligence-hub/rrr" ||
       pathname === "/mta/supply-chain-intelligence-hub/rrr-color-bandwise" ||
       pathname === "/mta/supply-chain-intelligence-hub/bor" ||
@@ -533,6 +536,24 @@ const ActionToolBar = ({
             onReset={handleResetFilters}
           />
         );
+        case "AvailabilityReport":
+          if (
+            pathname === "/mta/supply-chain-intelligence-hub/availability-report" &&
+            onChangeHorizon
+          ) {
+            return (
+              <MTAVFMultiFilter
+                isOpen={isFilterOpen}
+                onApply={handleApplyFilter}
+                multiFilter={multiFilter}
+                onClose={() => toggleFilter(false)}
+                onReset={handleResetFilters}
+                currentTab={currentTab}
+                reportName={UIColumnConfigName.AvailabilityReport}
+              />
+            );
+          }
+        break;
       default:
         <></>;
     }
@@ -926,7 +947,7 @@ const ActionToolBar = ({
             )
           )} */}
           <div className={SCCustomActionsContainer}>
-            {(pathname === "/mta/supply-chain-intelligence-hub/bpr") && (
+            {(pathname === "/mta/supply-chain-intelligence-hub/bpr" || pathname === "/mta/supply-chain-intelligence-hub/availability-report") && (
               <div style={{ zoom: 0.9, marginRight: "20px" }}>
                 <VFFloatingTab
                   key={tabKey}
@@ -970,7 +991,7 @@ const ActionToolBar = ({
             {currCategory === "BufferTrend" ? null : (
               <>
                 {currCategory === "GuidedInsightchronicunavailability" ||
-                (currCategory === "BTR" && currentTab === "both") ? null : (
+                ((currCategory === "BTR" || currCategory === "AvailabilityReport") && (currentTab === "both" || currentTab === "summary")) ? null : (
                   <>
                     {isFilterButtonVisible && (
                       <div className={SCVerticalDivider} />
@@ -996,6 +1017,7 @@ const ActionToolBar = ({
                         />
                         <p>
                           {currCategory === "BTR" ||
+                          currCategory === "AvailabilityReport" ||
                           currCategory === "BPR" ||
                           currCategory === "RRR" ||
                           currCategory === "BOR" ||
@@ -1012,7 +1034,7 @@ const ActionToolBar = ({
                 )}
                 {(currCategory === "GuidedInsight" &&
                   currentTab === "chronicunavailability") ||
-                (currCategory === "BTR" && currentTab === "both") ? null : (
+                ((currCategory === "BTR" || currCategory === "AvailabilityReport") && (currentTab === "both" || currentTab === "summary")) ? null : (
                   <>
                     <div className={SCVerticalDivider} />
                     <div
@@ -1069,6 +1091,7 @@ const ActionToolBar = ({
             currCategory === "RRR" ||
             currCategory === "BOR" ||
             currCategory === "BTR" ||
+            currCategory === "AvailabilityReport" ||
             currCategory === "ResearchInsight" ||
             currCategory === "DBMNorm" ||
             (currCategory === "GuidedInsight" &&

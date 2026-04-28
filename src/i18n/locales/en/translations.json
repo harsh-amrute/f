@@ -100,7 +100,8 @@
         "elephantOrders": "Elephant Orders",
         "buyerOrderReport": "Buyer Order Report",
         "vendorDispatchReport": "Vendor Dispatch Report",
-        "availabilityComparison": "Availability Comparison"
+        "availabilityComparison": "Availability Comparison",
+        "AvailabilityReport": "Availability Report"
       },
       "groupLifeCycleManagement": {
         "title": "Group Life Cycle Management",
