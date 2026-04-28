@@ -61,6 +61,16 @@ const PermissionSelectionPage = ({
   const dataAllPermissions = dataPermissions?.data;
   const dataAllRole = dataRoles?.data;
 
+  //  Sync latest grid data into React state
+  const syncGridToReact = () => {
+    if (!gridRef.current?.api) return;
+    const allLiveRows: any[] = [];
+    gridRef.current.api.forEachNode((node: any) => {
+      allLiveRows.push(node.data);
+    });
+    setValidUsersData(allLiveRows);
+  };
+
   const addMTOToCompulsoryPermissions = async(dataAllRole:any)=>{
     try{
       const response = await getDBRsettingsData();
@@ -123,9 +133,9 @@ const PermissionSelectionPage = ({
         const isRoleGiven = selectedRoles && selectedRoles.size > 0;
         userData.errorRole = !isRoleGiven;
         node.setData(userData);
-       
       }
     });
+    syncGridToReact(); //roles sync
   };
 
   const updatePermissionsForSelected = (selectedPermissions: Set<string>) => {
@@ -136,10 +146,10 @@ const PermissionSelectionPage = ({
           selectedPermissions,
           compulsoryPermissions
         );
-  
           node.setData(updatedData);
       }
     });
+    syncGridToReact(); // permission sync
   };
 
   const [rowIndex, setRowIndex] = useState<number | null>(0);
@@ -154,12 +164,12 @@ const PermissionSelectionPage = ({
           selectedPermissions,
           compulsoryPermissions
         );
-  
           node.setData(updatedData);
       }
     });
   
     setRowIndex(null);
+    syncGridToReact(); //row update sync
   };
   
 
@@ -402,7 +412,6 @@ const PermissionSelectionPage = ({
 
     const optimizePermissionsAndRoles = (data:any) => {
       const { users, permissions, roles } = data;
-      
       // Import lodash for deep comparison (assuming it's available)
       // const _ = require('lodash'); // for Node.js
       // or use the imported lodash from your environment
@@ -457,7 +466,6 @@ const PermissionSelectionPage = ({
       uniquePermissions.forEach(({ obj, newId }:any) => {
         optimizedPermissions[newId] = obj;
       });
-      
       // Create optimized roles object
       const optimizedRoles:any = {};
       uniqueRoles.forEach(({ obj, newId }:any) => {
@@ -480,7 +488,6 @@ const PermissionSelectionPage = ({
       
       return optimizedData;
     };
-    
     // Example usage:
     // const optimizedData = optimizePermissionsAndRoles(yourDataObject);
 
@@ -498,18 +505,15 @@ const PermissionSelectionPage = ({
       roles.forEach((role:any) => {
           roleToAppMap[role.id] = role.application_id;
       });
-      
       // Task 1: Check if users with roles from compulsory apps have corresponding permissions
       finalData.users.forEach((user:any )=> {
           const userRoles = finalData.roles[user.rid]?.roles || [];
         const userPermissions = finalData.permissions[user.perm_id] || {};
         const userLocationPermissions = userPermissions.location_permission || [];
         const userProductPermissions = userPermissions.product_permission || [];
-          
           // Get application IDs from user's permissions (both location and product)
           const userPermissionAppIdsLoc = new Set();
           const userPermissionAppIdsPerm = new Set();
-
           // Add application IDs from location permissions
         userLocationPermissions.forEach((perm: any) => {
           if (perm?.perm?.length) {
@@ -535,7 +539,6 @@ const PermissionSelectionPage = ({
               permId: user.perm_id
           });
           }
-          
           // Check each role assigned to the user
           userRoles.forEach((roleId:any) => {
             const appId = Number(roleToAppMap[roleId]);
@@ -558,9 +561,8 @@ const PermissionSelectionPage = ({
               }
           });
       });
-      
       // Task 2: Remove permissions for applications where user has no roles
-      const modifiedFinalData = JSON.parse(JSON.stringify(finalData)); // Deep clone
+      const modifiedFinalData = JSON.parse(JSON.stringify(finalData));
       
       finalData.users.forEach((user:any )=> {
           const userRoles = finalData.roles[user.perm_id]?.roles || [];
@@ -569,7 +571,6 @@ const PermissionSelectionPage = ({
           if (!userPermissions) {
               return;
           }
-          
           // Get application IDs from user's roles
           const userRoleAppIds = new Set(
               userRoles.map((roleId:any) => roleToAppMap[roleId]).filter((appId:any) => appId !== undefined)
@@ -598,7 +599,6 @@ const PermissionSelectionPage = ({
                   return shouldKeep;
               });
           }
-          
           // Handle product permissions
         if (userPermissions.product_permission) {
           const originalProductPermissions = [...userPermissions.product_permission];
@@ -812,9 +812,7 @@ const PermissionSelectionPage = ({
         }
         else if (isFinalView) {
           return { backgroundColor: "rgb(103, 242, 75,0.4)", } as RowStyle;
-
         }
-    
       },
       enableFillHandle: true,
       sideBar: false,
@@ -846,10 +844,9 @@ const PermissionSelectionPage = ({
     
   const removeSelectedUser = () => {
     if (gridRef.current) {
-
       const selectedUsersIds = gridRef.current.api.getSelectedRows()?.map((user: any) => user.id);
       
-      const newValidUser = validUserData.filter((validUserData: any) => !selectedUsersIds.includes(validUserData.id));
+      const newValidUser = validUserData.filter((row: any) => !selectedUsersIds.includes(row.id));
   
       newValidUser.forEach((row: any, index: number) => {
         row.srNo = index + 1;
@@ -940,6 +937,7 @@ const PermissionSelectionPage = ({
                   node.setData(userData);
                 }
               });
+              syncGridToReact(); //sync after fill
             }
             if (params.column.getColId() === "permissions") {
               params.api.forEachNode((node: any, index: number) => {
@@ -949,6 +947,7 @@ const PermissionSelectionPage = ({
                   node.setData(setErrorPermissions(userData));
                 }
               });
+              syncGridToReact(); 
             }
           }}
           statusBar={{
