@@ -5458,6 +5458,29 @@ export const CsvExportMTA = async (payload: any, filename = "ReportFile") => {
   }
 };
 
+export const CsvExportNMS = async (payload: any, filename: string) => {
+  const response = await axios.post(process.env.REACT_APP_API_HOST + `api/mta/GetNMSCSVDataAsync`,
+      payload,{
+        withCredentials: true, 
+        responseType: "blob",
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
+
+    const blob = await response.data;
+    const fileExtension = "csv";
+    const downloadFileName = `${filename}__${format(Date.now(), "dd-MM-yyyy")}.${fileExtension}`;
+
+    const blobUrl = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = blobUrl;
+    link.setAttribute("download", downloadFileName);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(blobUrl);
+
+}
 // Optional helper
 const getFileExtensionFromContentType = (contentType: string | null) => {
   switch (contentType) {

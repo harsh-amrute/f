@@ -23,6 +23,7 @@ import {
   createConflictRowData,
   createErrorRowData,
   MainMenuItemsCustomization,
+  CsvExportNMS,
 } from "../../../../../helpers/utils";
 import {
   useGetMasterData,
@@ -745,7 +746,7 @@ const useViewModify = (pageType: string) => {
     return resultData;
   };
   
-  const queryFilteredDataExcel = async (configs:QueryFilteredDataConfigsExcel) => {
+  const queryFilteredDataExcel = async (configs:QueryFilteredDataConfigsExcel, format: 'EXCEL' | 'CSV') => {
     const {filters,fields,count,mode} = configs;
     const payload:GetMasterDataPayloadExcel = {
       id:activeMaster.id,
@@ -770,63 +771,17 @@ const useViewModify = (pageType: string) => {
         resultData = await getMasterDataRetail(payload); 
       }
       else{
-        resultData = await getMasterData1(payload); 
+        if (format === 'CSV') {
+          resultData = await CsvExportNMS(payload, activeMaster.name);
+        }
+        else{
+          resultData = await getMasterData1(payload);
+        } 
       }
     }
 
     return resultData;
   }
-  const queryFilteredDataCSV = async (configs:QueryFilteredDataConfigsExcel) => {
-    const { filters, fields, count, mode } = configs;
-  
-    const payload = {
-      id: activeMaster.id,
-      name: activeMaster.name,
-      filters,
-      fields,
-      pageType,
-      stream: 1,
-      mode
-    };
-    try{
-      if (!count) {
-        if (activeMaster.id > 14) {
-          return await getMasterDataRetail(payload);
-        }
-        else
-        {
-          const response = await axios.post(process.env.REACT_APP_API_HOST + `api/mta/GetNMSCSVDataAsync`,
-            payload,{
-              withCredentials: true, 
-              responseType: "blob",
-              headers: { 'Content-Type': 'application/json' }
-            }
-          );
-
-          const blob = await response.data;
-          const fileExtension = "csv";
-          const filename = activeMaster.name;
-          const downloadFileName = `${filename}__${format(Date.now(), "dd-MM-yyyy")}.${fileExtension}`;
-      
-          const blobUrl = window.URL.createObjectURL(blob);
-          const link = document.createElement("a");
-          link.href = blobUrl;
-          link.setAttribute("download", downloadFileName);
-          document.body.appendChild(link);
-          link.click();
-          link.remove();
-          window.URL.revokeObjectURL(blobUrl);
-        } 
-      }
-    }
-    catch (e) {
-      console.error("Error downloading file:", e);
-      notifyError("Something went wrong while exporting");
-      throw e;
-    }
-    
-  };
-
   const queryAllData = async (configs: QueryFilteredDataConfigs) => {
     const { pagination, fields, count, currentPage, rowsPerPage } = configs;
     const payload: GetMasterDataPayload = {
@@ -1486,13 +1441,13 @@ const useViewModify = (pageType: string) => {
 
         const toastId = notifyLoader("Preparing CSV…");
 
-        const result = await queryFilteredDataCSV({
+        await queryFilteredDataExcel({
           filters: payloadFilters,
           fields: payloadFields,
           pageType: pageType,
           Stream: 1,
           mode: mode
-        });
+        }, 'CSV');
 
         toast.dismiss(toastId);
 
@@ -1523,8 +1478,12 @@ const useViewModify = (pageType: string) => {
             pageType: pageType,
             Stream: 1,
             mode: mode
-          });
+          }, 'EXCEL');
 
+          if (!result || !result.data) {
+            console.warn("No data received for Excel export");
+            return;
+          }
           const blob = new Blob(
             [result.data],
             {
