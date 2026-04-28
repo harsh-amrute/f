@@ -40,6 +40,10 @@ const OTIFAnalysis = () => {
   const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
   const [filterData, setFilterData] = useState({});
 
+  const tolerances = graphData?.tolerances || {};
+  const deliveryTol = tolerances?.delivery_tolerance || 3; 
+  const mfgTol = tolerances?.mfg_tolerance || 5;
+
   const {
     state: currFilter,
     setState: setCurrFilter,
@@ -153,13 +157,18 @@ useEffect(() => {
         <Allotment vertical={false} separator={false}>
           <Allotment.Pane preferredSize={"50%"}>
             <div className={BTRAllomentSection}>
-              <OTIFTrendsGraph graphData={graphData} />
+              <OTIFTrendsGraph graphData={graphData?.otif}
+              deliveryTol={deliveryTol} 
+                mfgTol={mfgTol} />
             </div>
           </Allotment.Pane>
 
           <Allotment.Pane preferredSize={"50%"}>
             <div className={BTRAllomentSection}>
-              <OTAndIFTrendsGraph graphData={graphData} />
+              <OTAndIFTrendsGraph graphData={graphData?.ot_n_if} 
+              deliveryTol={deliveryTol} 
+                mfgTol={mfgTol}
+              />
             </div>
           </Allotment.Pane>
         </Allotment>

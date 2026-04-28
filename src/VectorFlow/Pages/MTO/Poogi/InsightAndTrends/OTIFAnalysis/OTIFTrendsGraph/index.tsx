@@ -11,7 +11,7 @@ import { useGetDate } from "../../../../../../../VectorFlow/Services/MTO/Product
 import moment from "moment";
 
 const OTIFTrendsGraph = (props: any) => {
-  const { graphData } = props;
+  const { graphData, deliveryTol, mfgTol } = props;
   // const [startDate, setStartDate] = useState('-');
   // const [endDate, setEndDate] = useState('-');
   const [hideChart1, toggleChart1] = useState(false);
@@ -20,9 +20,6 @@ const OTIFTrendsGraph = (props: any) => {
   const [rawData, setRawData] = useState([]);
   const { data: apiResponseData } = useGetDate();
 
-  const tolerances = graphData?.tolerances || {};
-  const deliveryTol = tolerances?.delivery_tolerance || 3;
-  const mfgTol = tolerances?.mfg_tolerance || 3;
 
   const dynamicLabel1 = "OTIF % Trends";
   const dynamicLabel2 = `OTIF % Trends (+${deliveryTol} Days / +${mfgTol} %)`;
@@ -133,7 +130,7 @@ const OTIFTrendsGraph = (props: any) => {
       }
       return col;
     });
-  }, [graphColumnConfig, deliveryTol, mfgTol]);
+  }, [graphColumnConfig,dynamicLabel1,dynamicLabel2]);
 
   const generateHeader = () => {
     return (
@@ -195,9 +192,7 @@ const OTIFTrendsGraph = (props: any) => {
 
   useEffect(() => {
     if (graphData) {
-      // setStartDate(format(new Date(graphData.start), 'dd MMM yyyy'));
-      // setEndDate(format(new Date(graphData.end), 'dd MMM yyyy'));
-      setRawData(graphData?.otif?.data);
+      setRawData(graphData?.data);
     }
   }, [graphData])
 

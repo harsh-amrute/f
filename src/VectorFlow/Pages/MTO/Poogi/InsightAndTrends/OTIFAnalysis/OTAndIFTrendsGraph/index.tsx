@@ -11,19 +11,13 @@ import moment from "moment";
 import { useGetDate } from "../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting";
 
 const OTAndIFTrendsGraph = (props: any) => {
-  const { graphData } = props;
-  // const [startDate, setStartDate] = useState('-');
-  // const [endDate, setEndDate] = useState('-');
+  const { graphData, deliveryTol, mfgTol } = props;
   const [hideChart1, toggleChart1] = useState(false);
   const [chartLoading, setChartLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
-  // const [rawData] = useState(APIMock.graph.ot_n_if_graph.data);
   const [rawData, setRawData] = useState([]);
   const { data: apiResponseData } = useGetDate();
 
-  const tolerances = graphData?.tolerances || {};
-  const deliveryTol = tolerances?.delivery_tolerance || 3;
-  const mfgTol = tolerances?.mfg_tolerance || 5;
 
   const dynamicLabel1 = `On Time %  (+${deliveryTol} Days)`;
   const dynamicLabel2 = `In Full %  (+${mfgTol} %)`;
@@ -135,7 +129,7 @@ const OTAndIFTrendsGraph = (props: any) => {
       }
       return col;
     });
-  }, [graphColumnConfig, deliveryTol, mfgTol]);
+  }, [graphColumnConfig, dynamicLabel1, dynamicLabel2]);
 
   const generateHeader = () => {
     return (
@@ -195,15 +189,18 @@ const OTAndIFTrendsGraph = (props: any) => {
     );
   };
 
-  useEffect(() => {
+useEffect(() => {
     if (graphData) {
-      // setStartDate(format(new Date(graphData.start), 'dd MMM yyyy'));
-      // setEndDate(format(new Date(graphData.end), 'dd MMM yyyy'));
-      const updatedData = graphData?.ot_n_if?.data?.map((d: any) => ({ ...d, ot: Number(d.ot.toFixed(2)), if: Number(d.if.toFixed(2)) }))
+     
+      const updatedData = graphData?.data?.map((d: any) => ({ 
+        ...d, 
+        ot: Number(d.ot.toFixed(2)), 
+        if: Number(d.if.toFixed(2)) 
+      }));
 
       setRawData(updatedData);
     }
-  }, [graphData])
+  }, [graphData]);
 
   return (
     <div style={{ height: "100%", display: "flex", justifyContent: "left", marginLeft: '10px', paddingBottom: '10px' }}>
