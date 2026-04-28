@@ -24,10 +24,10 @@ import {
   createErrorRowData,
   MainMenuItemsCustomization,
   CsvExportNMS,
+  ExcelExportNMS,
 } from "../../../../../helpers/utils";
 import {
   useGetMasterData,
-  useGetMasterData1,
   useGetMasterUIConfiguration,
   useGetCount,
   useCreateDraft,
@@ -206,8 +206,6 @@ const useViewModify = (pageType: string) => {
   const { mutateAsync: getSeasonalityDetails } = useGetSeasonalityDetails();
 
   const { mutateAsync: getMasterData } = useGetMasterData();
-
-  const {mutateAsync:getMasterData1} = useGetMasterData1();
 
   const { mutateAsync: getMasterDataRetail } = useGetMasterDataRetail();
 
@@ -754,7 +752,7 @@ const useViewModify = (pageType: string) => {
       filters:filters,
       fields:fields,
       pageType: pageType,
-      Stream:1,
+      stream:1,
       mode: mode
     }
     let resultData;
@@ -775,7 +773,7 @@ const useViewModify = (pageType: string) => {
           resultData = await CsvExportNMS(payload, activeMaster.name);
         }
         else{
-          resultData = await getMasterData1(payload);
+          resultData = await ExcelExportNMS(payload, activeMaster.name);
         } 
       }
     }
@@ -1445,7 +1443,7 @@ const useViewModify = (pageType: string) => {
           filters: payloadFilters,
           fields: payloadFields,
           pageType: pageType,
-          Stream: 1,
+          stream: 1,
           mode: mode
         }, 'CSV');
 
@@ -1476,7 +1474,7 @@ const useViewModify = (pageType: string) => {
             filters: payloadFilters,
             fields: payloadFields,
             pageType: pageType,
-            Stream: 1,
+            stream: 1,
             mode: mode
           }, 'EXCEL');
 
@@ -1484,31 +1482,7 @@ const useViewModify = (pageType: string) => {
             console.warn("No data received for Excel export");
             return;
           }
-          const blob = new Blob(
-            [result.data],
-            {
-              type:
-              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            }
-          );
-
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          const masterName = activeMaster?.name || activeMaster?.name || "MasterData";
-          const safeFileName = masterName.replace(/[^a-zA-Z0-9-_ ]/g, "").trim();
-          a.href = url;
-          if(downloadFileName){
-            a.download = `${downloadFileName}.xlsx`
-          }
-          else{
-          a.download =  `${safeFileName}.xlsx`;
-          }
-          document.body.appendChild(a);
-          a.click();
-
-          a.remove();
-          window.URL.revokeObjectURL(url);
-
+          
           toast.dismiss(toastId);
 
           if (fromUploadModal) {

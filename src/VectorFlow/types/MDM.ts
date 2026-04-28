@@ -85,7 +85,7 @@ export interface GetMasterDataPayloadExcel {
     name: string,
     filters: Array<{ attributeName: string, op: string, value: string }>,
     fields: Array<{ key: string }>,
-    Stream: number
+    stream: number
     pageType: string
     mode: string
 }
@@ -135,7 +135,7 @@ export interface QueryFilteredDataConfigsExcel {
     showAll?: boolean,
     count?: boolean,
     pageType: string,
-    Stream?: number,
+    stream?: number,
     mode: string
 }
 export type ExportMode =

@@ -31,7 +31,7 @@ export namespace MDMService {
   }
 
 
-  export const getMasterData1 = async (body:GetMasterDataPayloadExcel) => {
+  export const getMasterDataExcel = async (body:GetMasterDataPayloadExcel) => {
    
     return await axios.post(process.env.REACT_APP_API_HOST + `api/mta/GetMasterDataAsync`,body,{
       responseType: "blob",

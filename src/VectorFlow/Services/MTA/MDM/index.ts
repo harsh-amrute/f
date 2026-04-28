@@ -60,9 +60,9 @@ export const useGetMasterData = () => {
   })
 }
 
-export const useGetMasterData1 = () => {
+export const useGetMasterDataExcel = () => {
   return useMutation(async (body: GetMasterDataPayloadExcel) => {
-    return await MDMService.getMasterData1(body)
+    return await MDMService.getMasterDataExcel(body)
   })
 }
 

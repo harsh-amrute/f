@@ -26,6 +26,7 @@ import {
   BTRDefaultColDefs,
   TaskPendingStopPIPOCustomColumns,
 } from "./MDMConstants";
+const {mutateAsync:getMasterDataExcel} = useGetMasterDataExcel();
 import ActionRenderer from "../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRenderer";
 import { subDays, format, differenceInSeconds, parse } from "date-fns";
 //import { formatMDMDateFromat } from './format';
@@ -57,6 +58,7 @@ import { getNumberFormat } from "./numberFormat";
 import axios from 'axios';
 import { loadCaptchaEnginge } from "react-simple-captcha";
 import { v4 as uuidv4 } from "uuid";
+import { useGetMasterDataExcel } from "../VectorFlow/Services/MTA/MDM";
 
 const keyboardCharacters = [
   // '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -5479,6 +5481,30 @@ export const CsvExportNMS = async (payload: any, filename: string) => {
     link.click();
     link.remove();
     window.URL.revokeObjectURL(blobUrl);
+
+}
+
+export const ExcelExportNMS = async (payload: any, activeMaster: string) => {
+  const resultData = await getMasterDataExcel(payload);
+  const blob = new Blob(
+    [resultData.data],
+    {
+      type:
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    }
+  );
+
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const masterName = activeMaster;
+  const safeFileName = masterName.replace(/[^a-zA-Z0-9-_ ]/g, "").trim();
+  a.href = url;
+  a.download =  `${safeFileName}.xlsx`;
+  document.body.appendChild(a);
+  a.click();
+
+  a.remove();
+  window.URL.revokeObjectURL(url);
 
 }
 // Optional helper
