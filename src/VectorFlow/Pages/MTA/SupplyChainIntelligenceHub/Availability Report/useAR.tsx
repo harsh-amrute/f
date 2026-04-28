@@ -432,16 +432,13 @@ const useAR = () => {
         const techBlack = techStats.find(
           (i: any) => i.TechColor.toLowerCase() === "black"
         );
-        const techGrey = techStats.find(
-          (i: any) => i.TechColor.toLowerCase() === "grey"
-        );
         const grandTotal = techStats[0].grand_total;
         formattedTech.push({
           Category: "Total",
           AbsoluteNo: grandTotal,
           Percentage: "100%",
         });
-        if (techBlack && techGrey) {
+        if (techBlack) {
           const techAvailability =
             ((grandTotal - techBlack.color_count) / grandTotal) * 100;
 
@@ -466,9 +463,6 @@ const useAR = () => {
         const ecoBlack = ecoStats.find(
           (i: any) => i.EcoColor.toLowerCase() === "black"
         );
-        const ecoGrey = ecoStats.find(
-          (i: any) => i.EcoColor.toLowerCase() === "grey"
-        );
         const grandTotal = ecoStats[0].grand_total;
         formattedEco.push({
           Category: "Total",
@@ -476,7 +470,7 @@ const useAR = () => {
           Percentage: "100%",
         });
 
-        if (ecoBlack && ecoGrey) {
+        if (ecoBlack) {
           const ecoAvailability =
             ((grandTotal - ecoBlack.color_count) / grandTotal) * 100;
 
