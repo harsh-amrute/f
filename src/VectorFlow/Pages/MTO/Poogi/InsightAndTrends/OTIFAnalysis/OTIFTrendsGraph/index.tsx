@@ -11,9 +11,7 @@ import { useGetDate } from "../../../../../../../VectorFlow/Services/MTO/Product
 import moment from "moment";
 
 const OTIFTrendsGraph = (props: any) => {
-  const { graphData, deliveryTol, mfgTol } = props;
-  // const [startDate, setStartDate] = useState('-');
-  // const [endDate, setEndDate] = useState('-');
+  const { graphData,chartTolerances } = props;
   const [hideChart1, toggleChart1] = useState(false);
   const [chartLoading, setChartLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
@@ -22,7 +20,7 @@ const OTIFTrendsGraph = (props: any) => {
 
 
   const dynamicLabel1 = "OTIF % Trends";
-  const dynamicLabel2 = `OTIF % Trends (+${deliveryTol} Days / +${mfgTol} %)`;
+  const dynamicLabel2 = `OTIF % Trends (+${chartTolerances.delivery} Days / +${chartTolerances.mfg} %)`;
 
   function createSeriesData(val: number) {
     const seriesData: any = [];

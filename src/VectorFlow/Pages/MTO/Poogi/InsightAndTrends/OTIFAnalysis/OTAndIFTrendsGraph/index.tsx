@@ -11,7 +11,7 @@ import moment from "moment";
 import { useGetDate } from "../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting";
 
 const OTAndIFTrendsGraph = (props: any) => {
-  const { graphData, deliveryTol, mfgTol } = props;
+  const { graphData,  chartTolerances } = props;
   const [hideChart1, toggleChart1] = useState(false);
   const [chartLoading, setChartLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
@@ -19,8 +19,8 @@ const OTAndIFTrendsGraph = (props: any) => {
   const { data: apiResponseData } = useGetDate();
 
 
-  const dynamicLabel1 = `On Time %  (+${deliveryTol} Days)`;
-  const dynamicLabel2 = `In Full %  (+${mfgTol} %)`;
+  const dynamicLabel1 = `On Time %  (+${chartTolerances?.delivery} Days)`;
+  const dynamicLabel2 = `In Full %  (+${chartTolerances?.mfg} %)`;
 
 
   function createSeriesData(val: number) {
