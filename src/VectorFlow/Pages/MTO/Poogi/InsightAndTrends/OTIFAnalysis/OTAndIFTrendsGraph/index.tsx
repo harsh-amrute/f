@@ -11,21 +11,21 @@ import moment from "moment";
 import { useGetDate } from "../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting";
 
 const OTAndIFTrendsGraph = (props: any) => {
-  const { graphData } = props;
-  // const [startDate, setStartDate] = useState('-');
-  // const [endDate, setEndDate] = useState('-');
+  const { graphData,  chartTolerances } = props;
   const [hideChart1, toggleChart1] = useState(false);
   const [chartLoading, setChartLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
-  // const [rawData] = useState(APIMock.graph.ot_n_if_graph.data);
   const [rawData, setRawData] = useState([]);
   const { data: apiResponseData } = useGetDate();
 
 
+  const dynamicLabel1 = `On Time %  (+${chartTolerances?.delivery} Days)`;
+  const dynamicLabel2 = `In Full %  (+${chartTolerances?.mfg} %)`;
+
 
   function createSeriesData(val: number) {
     const seriesData: any = [];
-    const labels = ["On Time %", "In Full %"];
+   const labels = [dynamicLabel1, dynamicLabel2];
     for (let i = 0; i < val; i++) {
       const color = i === 0 ? "#838282" : "#CBCBCB";
       const key = i === 0 ? "ot" : "if";
@@ -115,9 +115,21 @@ const OTAndIFTrendsGraph = (props: any) => {
     },
   };
 
-  const colDefs = useMemo(() => {
-    return getColumnDefinations(graphColumnConfig?.ot_n_if, {}, []);
-  }, []);
+ const colDefs = useMemo(() => {
+    const baseColumns = getColumnDefinations(graphColumnConfig?.ot_n_if, {}, []);
+
+    return baseColumns.map((col: any) => {
+      const columnKey = col.field ;
+
+      if (columnKey === "ot") {
+        return { ...col, headerName: dynamicLabel1 };
+      }
+      if (columnKey === "if") {
+        return { ...col, headerName: dynamicLabel2 };
+      }
+      return col;
+    });
+  }, [graphColumnConfig, dynamicLabel1, dynamicLabel2]);
 
   const generateHeader = () => {
     return (
@@ -177,15 +189,18 @@ const OTAndIFTrendsGraph = (props: any) => {
     );
   };
 
-  useEffect(() => {
+useEffect(() => {
     if (graphData) {
-      // setStartDate(format(new Date(graphData.start), 'dd MMM yyyy'));
-      // setEndDate(format(new Date(graphData.end), 'dd MMM yyyy'));
-      const updatedData = graphData.data?.map((d: any) => ({ ...d, ot: Number(d.ot.toFixed(2)), if: Number(d.if.toFixed(2)) }))
+     
+      const updatedData = graphData?.data?.map((d: any) => ({ 
+        ...d, 
+        ot: Number(d.ot.toFixed(2)), 
+        if: Number(d.if.toFixed(2)) 
+      }));
 
       setRawData(updatedData);
     }
-  }, [graphData])
+  }, [graphData]);
 
   return (
     <div style={{ height: "100%", display: "flex", justifyContent: "left", marginLeft: '10px', paddingBottom: '10px' }}>

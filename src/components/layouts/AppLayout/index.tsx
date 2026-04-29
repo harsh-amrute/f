@@ -117,6 +117,7 @@ const AppLayout = () => {
     "/mta/master-data-management/control-panel/add",
     "/mta/master-data-management/control-panel/delete",
     "/mta/supply-chain-intelligence-hub/bpr",
+    '/mta/supply-chain-intelligence-hub/availability-report',
     "/mta/insights-and-trends/guided-insights",
     "/mta/insights-and-trends/buffer-trend-report",
     "/mta/insights-and-trends/research-insights",

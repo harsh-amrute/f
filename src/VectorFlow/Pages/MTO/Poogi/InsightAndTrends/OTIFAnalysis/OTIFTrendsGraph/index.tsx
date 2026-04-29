@@ -11,9 +11,7 @@ import { useGetDate } from "../../../../../../../VectorFlow/Services/MTO/Product
 import moment from "moment";
 
 const OTIFTrendsGraph = (props: any) => {
-  const { graphData } = props;
-  // const [startDate, setStartDate] = useState('-');
-  // const [endDate, setEndDate] = useState('-');
+  const { graphData,chartTolerances } = props;
   const [hideChart1, toggleChart1] = useState(false);
   const [chartLoading, setChartLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
@@ -21,9 +19,15 @@ const OTIFTrendsGraph = (props: any) => {
   const { data: apiResponseData } = useGetDate();
 
 
+  const dynamicLabel1 = "OTIF % Trends";
+  const dynamicLabel2 = `OTIF % Trends (+${chartTolerances.delivery} Days / +${chartTolerances.mfg} %)`;
+
   function createSeriesData(val: number) {
     const seriesData: any = [];
-    const labels = ["OTIF % Trends", "OTIF % Trends (+3 days)"];
+
+
+   const labels = [dynamicLabel1, dynamicLabel2];
+
     for (let i = 0; i < val; i++) {
       const color = i === 0 ? "#BC3D81" : "#FCADD7";
       const key = i === 0 ? "otif" : "otif_plus";
@@ -112,9 +116,19 @@ const OTIFTrendsGraph = (props: any) => {
     },
   };
 
-  const colDefs = useMemo(() => {
-    return getColumnDefinations(graphColumnConfig?.otif, {}, []);
-  }, []);
+ const colDefs = useMemo(() => {
+    const baseColumns = getColumnDefinations(graphColumnConfig?.otif, {}, []);
+
+    return baseColumns.map((col: any) => {
+      if (col.field === "otif") {
+        return { ...col, headerName: dynamicLabel1 };
+      }
+      if (col.field === "otif_plus") {
+        return { ...col, headerName: dynamicLabel2 };
+      }
+      return col;
+    });
+  }, [graphColumnConfig,dynamicLabel1,dynamicLabel2]);
 
   const generateHeader = () => {
     return (
@@ -176,9 +190,7 @@ const OTIFTrendsGraph = (props: any) => {
 
   useEffect(() => {
     if (graphData) {
-      // setStartDate(format(new Date(graphData.start), 'dd MMM yyyy'));
-      // setEndDate(format(new Date(graphData.end), 'dd MMM yyyy'));
-      setRawData(graphData.data);
+      setRawData(graphData?.data);
     }
   }, [graphData])
 

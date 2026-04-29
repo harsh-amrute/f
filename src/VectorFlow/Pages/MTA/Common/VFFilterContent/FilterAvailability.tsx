@@ -351,15 +351,20 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
     });
   };
 
-  const isBTRReport = window.location.pathname === '/mta/insights-and-trends/buffer-trend-report';
+  const isBTRReport = window.location.pathname === '/mta/insights-and-trends/buffer-trend-report' || window.location.pathname === '/mta/supply-chain-intelligence-hub/availability-report';
 
   const shouldShowColorFilters = currCategory === 'BPR' || currCategory === 'BOR' || currCategory === 'RRR';
 
   const shouldShowTags = currCategory === 'BPR' || currCategory === 'RRR' || currCategory === 'BOR'  || window.location.pathname === '/mta/insights-and-trends/buffer-trends' ;
 
 
+  const isAvailabilityReport = window.location.pathname === '/mta/supply-chain-intelligence-hub/availability-report';
+
+  const visibleFilterOptions = isAvailabilityReport ? [] : availabilityFilterOptions;
+
   return (
     <>
+    {visibleFilterOptions.length > 0 && (
       <div className={filterGroup}>
         <div className={filterColumn} style={{ minWidth: "400px", maxWidth: "none" }}>
           <div className={textWrapper}>Select Operation</div>
@@ -438,7 +443,7 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
           ))}
         </div>
       </div>
-
+    )}
       {(shouldShowColorFilters || isBTRReport) && (
         <div className={filterGroup} style={{ marginTop: "1px" }}>
           <div className={filterColumn}>
