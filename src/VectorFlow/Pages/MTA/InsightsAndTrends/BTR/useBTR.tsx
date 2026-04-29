@@ -64,12 +64,12 @@ const useBTR = () => {
         {
             id: "1",
             value: "on-hand",
-            label: activeTab==='virtualnorm' ? "On-Hand Inv. View" : "Tech View",
+            label: activeTab==='virtualnorm' ? "On-Hand Inv. View" : "Tech Inv. View",
           },
           {
             id: "2",
             value: "pipeline",
-            label: activeTab==='virtualnorm' ? "Pipeline Inv. View" : "Eco View",
+            label: activeTab==='virtualnorm' ? "Pipeline Inv. View" : "Eco Inv. View",
           },
           {
             id: "3",
