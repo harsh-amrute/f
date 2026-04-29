@@ -366,7 +366,7 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
   };
 
   const isBTRReport =
-    window.location.pathname === "/mta/insights-and-trends/buffer-trend-report";
+    window.location.pathname === "/mta/insights-and-trends/buffer-trend-report" || window.location.pathname === '/mta/supply-chain-intelligence-hub/availability-report';
 
   const isToggleTab = ["/mta/insights-and-trends/buffer-trend-report", "/mta/supply-chain-intelligence-hub/bpr"].includes(window.location.pathname);
 
@@ -383,8 +383,13 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
     isToggleTab && activeTab === "virtualnorm";
   const shouldShowNormColors = isToggleTab && activeTab === "norm";
 
+  const isAvailabilityReport = window.location.pathname === '/mta/supply-chain-intelligence-hub/availability-report';
+
+  const visibleFilterOptions = isAvailabilityReport ? [] : availabilityFilterOptions;
+
   return (
     <>
+    {visibleFilterOptions.length > 0 && (
       <div className={filterGroup}>
         <div className={filterColumn} style={{ minWidth: "400px", maxWidth: "none" }}>
           <div className={textWrapper}>Select Operation</div>
@@ -463,7 +468,7 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
           ))}
         </div>
       </div>
-
+    )}
       {(shouldShowColorFilters || isBTRReport) && !isToggleTab && (
         <div className={filterGroup} style={{ marginTop: "1px" }}>
           <div className={filterColumn}>

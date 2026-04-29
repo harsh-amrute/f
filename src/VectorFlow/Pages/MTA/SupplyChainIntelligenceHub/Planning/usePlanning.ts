@@ -999,7 +999,13 @@ const usePlanning = ()=>{
                 id:'9',
                 label: 'Horizon',
                 filters: [],
+            }, 
+            historicalFilter: {
+                id:'10',
+                label: 'Historical',
+                filters: [],
             }
+
         })
         setIsSelectCategoryOpen(true);
         setCurrentCategory('');

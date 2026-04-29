@@ -94,6 +94,7 @@ import ManageUIReportConfig from './components/VectorFLOW/layouts/VectorAdmin/Ma
 import ManageUIMDMConfig from './components/VectorFLOW/layouts/VectorAdmin/ManageUIMDMConfig'
 import { useUserData } from './context'
 import AuditReport from './module-store-transfer/pages/Login-Audit-Report'
+import AvailabilityReport from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/Availability Report'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children?: React.ReactNode) => {
@@ -140,6 +141,7 @@ const lazyLoad = (children?: React.ReactNode) => {
     //
     '/mta/supply-chain-intelligence-hub/bor',
     '/mta/supply-chain-intelligence-hub/bpr',
+    '/mta/supply-chain-intelligence-hub/availability-report',
     '/mta/supply-chain-intelligence-hub/planning',
     '/mta/supply-chain-intelligence-hub/rrr',
     "/mta/supply-chain-intelligence-hub/open-expediting-requests",
@@ -639,6 +641,17 @@ export const initRoutes = (): RouteObject[] => {
         {
           index: true,
           element: lazyLoad(<BPR />  )
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path:'/mta/supply-chain-intelligence-hub/availability-report',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<AvailabilityReport />  )
         },
         ...getStoreTransferModuleRoutes()
       ]

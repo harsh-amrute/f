@@ -1,5 +1,5 @@
 import { Allotment } from "allotment";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
 import OTIFTrendsGraph from "./OTIFTrendsGraph";
 import OTAndIFTrendsGraph from "./OTAndIFTrendsGraph";
@@ -39,6 +39,14 @@ const OTIFAnalysis = () => {
   const [graphData, setGraphData] = useState<any>({});
   const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
   const [filterData, setFilterData] = useState({});
+
+ const chartTolerances = useMemo(() => {
+    const tolerances = graphData?.tolerances || {};
+    return {
+      delivery: tolerances?.delivery_tolerance || 3,
+      mfg: tolerances?.mfg_tolerance || 5,
+    };
+  }, [graphData]);
 
   const {
     state: currFilter,
@@ -153,13 +161,16 @@ useEffect(() => {
         <Allotment vertical={false} separator={false}>
           <Allotment.Pane preferredSize={"50%"}>
             <div className={BTRAllomentSection}>
-              <OTIFTrendsGraph graphData={graphData?.otif} />
+              <OTIFTrendsGraph graphData={graphData?.otif}
+              chartTolerances={chartTolerances} />
             </div>
           </Allotment.Pane>
 
           <Allotment.Pane preferredSize={"50%"}>
             <div className={BTRAllomentSection}>
-              <OTAndIFTrendsGraph graphData={graphData?.ot_n_if} />
+              <OTAndIFTrendsGraph graphData={graphData?.ot_n_if} 
+              chartTolerances={chartTolerances}
+              />
             </div>
           </Allotment.Pane>
         </Allotment>

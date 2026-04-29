@@ -22,6 +22,7 @@ export interface VFFloatingTabProps {
   tabs: Array<VFFloatingTabItemProps>
   defaultTab?: number
   handleClick?: (i: any) => void
+  selectedTabId?: string 
 }
 
 interface ActiveShadowDataType {
@@ -30,14 +31,14 @@ interface ActiveShadowDataType {
 }
 
 const VFFloatingTab = (props: VFFloatingTabProps) => {
-  const { tabs, defaultTab = 0, handleClick } = props
+  const { tabs, defaultTab = 0, handleClick, selectedTabId } = props
   const { user } = useUserData()
   const themeUi = user?.user?.theme_ui ?? 'DEFAULT'
 
   const [activeIndex, setActiveIndex] = useState<number>(defaultTab)
   const [activeShadowData, setActiveShadowData] =
     useState<ActiveShadowDataType | null>(null)
-
+  
   useEffect(() => {
     const el = document.getElementById(tabs[defaultTab].id)
     setActiveShadowData({
@@ -45,6 +46,37 @@ const VFFloatingTab = (props: VFFloatingTabProps) => {
       width: el?.offsetWidth,
     })
   }, [])
+  
+  useEffect(() => {
+    const currentIdx = selectedTabId
+      ? tabs.findIndex((t) => t.id === selectedTabId)
+      : activeIndex
+    const safeIdx = currentIdx === -1 ? 0 : currentIdx
+    const el = document.getElementById(tabs[safeIdx].id)
+    if (el) {
+      setActiveShadowData({
+        left: el.offsetLeft,
+        width: el.offsetWidth,
+      })
+      setActiveIndex(safeIdx)
+    }
+  }, [tabs])
+
+   useEffect(() => {
+    if (selectedTabId) {
+      const idx = tabs.findIndex((t) => t.id === selectedTabId)
+      if (idx !== -1 && idx !== activeIndex) {
+        const el = document.getElementById(tabs[idx].id)
+        if (el) {
+          setActiveShadowData({
+            left: el.offsetLeft,
+            width: el.offsetWidth,
+          })
+          setActiveIndex(idx)
+        }
+      }
+    }
+  }, [selectedTabId])
 
   const onClick = (e: any, index: number) => {
     setActiveShadowData({
@@ -63,7 +95,7 @@ const VFFloatingTab = (props: VFFloatingTabProps) => {
       {tabs.map((t: VFFloatingTabItemProps, index: number) => (
         <button
           id={t.id}
-          key={index}
+          key={t.id}
           type="button"
           className={VFFloatingTabButton}
           onClick={(e) => onClick(e, index)}
