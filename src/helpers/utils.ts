@@ -26,7 +26,6 @@ import {
   BTRDefaultColDefs,
   TaskPendingStopPIPOCustomColumns,
 } from "./MDMConstants";
-const {mutateAsync:getMasterDataExcel} = useGetMasterDataExcel();
 import ActionRenderer from "../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRenderer";
 import { subDays, format, differenceInSeconds, parse } from "date-fns";
 //import { formatMDMDateFromat } from './format';
@@ -5521,30 +5520,34 @@ export const CsvExportNMS = async (payload: any, filename: string) => {
     window.URL.revokeObjectURL(blobUrl);
 
 }
+export const useExcelExportNMS = () => {
+  const {mutateAsync:getMasterDataExcel} = useGetMasterDataExcel();
 
-export const ExcelExportNMS = async (payload: any, activeMaster: string) => {
-  const resultData = await getMasterDataExcel(payload);
-  const blob = new Blob(
-    [resultData.data],
-    {
-      type:
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    }
-  );
+  const ExcelExportNMS = async (payload: any, activeMaster: string) => {
+    const resultData = await getMasterDataExcel(payload);
+    const blob = new Blob(
+      [resultData.data],
+      {
+        type:
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      }
+    );
 
-  const url = window.URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  const masterName = activeMaster;
-  const safeFileName = masterName.replace(/[^a-zA-Z0-9-_ ]/g, "").trim();
-  a.href = url;
-  a.download =  `${safeFileName}.xlsx`;
-  document.body.appendChild(a);
-  a.click();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const masterName = activeMaster;
+    const safeFileName = masterName.replace(/[^a-zA-Z0-9-_ ]/g, "").trim();
+    a.href = url;
+    a.download =  `${safeFileName}.xlsx`;
+    document.body.appendChild(a);
+    a.click();
 
-  a.remove();
-  window.URL.revokeObjectURL(url);
-
+    a.remove();
+    window.URL.revokeObjectURL(url);
+  }
+  return { ExcelExportNMS };
 }
+
 // Optional helper
 const getFileExtensionFromContentType = (contentType: string | null) => {
   switch (contentType) {

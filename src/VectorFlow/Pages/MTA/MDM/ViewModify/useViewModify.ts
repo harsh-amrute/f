@@ -24,7 +24,7 @@ import {
   createErrorRowData,
   MainMenuItemsCustomization,
   CsvExportNMS,
-  ExcelExportNMS,
+  useExcelExportNMS,
 } from "../../../../../helpers/utils";
 import {
   useGetMasterData,
@@ -92,8 +92,6 @@ import { toast } from "react-toastify/unstyled";
 import ConflictErrorCellRenderer from "./ConflictErrorCellRenderer";
 import { v4 as uuidv4 } from "uuid";
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
-import axios from "axios";
-import { format } from "date-fns/format";
 
 const useViewModify = (pageType: string) => {
   const dispatch = useDispatch();
@@ -188,6 +186,8 @@ const useViewModify = (pageType: string) => {
 
   const { mutateAsync: masterUIConfiguration, isLoading } =
     useGetMasterUIConfiguration();
+    
+  const { ExcelExportNMS } = useExcelExportNMS();
 
   // const [TASK_ID, setTaskId] = useState<string>("");
 
@@ -1470,18 +1470,13 @@ const useViewModify = (pageType: string) => {
 
           const toastId = notifyLoader("Preparing Excel…");
 
-          const result = await queryFilteredDataExcel({
+          await queryFilteredDataExcel({
             filters: payloadFilters,
             fields: payloadFields,
             pageType: pageType,
             stream: 1,
             mode: mode
           }, 'EXCEL');
-
-          if (!result || !result.data) {
-            console.warn("No data received for Excel export");
-            return;
-          }
           
           toast.dismiss(toastId);
 
