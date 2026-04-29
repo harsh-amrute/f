@@ -830,7 +830,10 @@ useEffect(() => {
             notifyError("No Data to Export");
             return;
         }
-
+        if(ecoTotalRows > 1048576 || techTotalRows > 1048576){
+            notifyError("Data exceeds Excel limit. Please use CSV export");
+            return;
+        }
         const tempFilter = getPreparedFilter(currFilter)
         const headersData = (page === 'on-hand') ? (techRef?.current?.api?.getColumnState() || []) : (ecoRef?.current?.api?.getColumnState() || []);
         const colDefs = (page === 'on-hand') ? techColDefs : ecoColDefs;
@@ -867,7 +870,7 @@ useEffect(() => {
         }
         catch(error) {
             console.log(error);
-            notifyError("Error Exporting Excel")
+            notifyError("Data too large to export. Please apply filters to reduce the data size.");
         }
         
         
@@ -919,7 +922,7 @@ useEffect(() => {
         }
         catch(error) {
             console.log(error);
-            notifyError("Error Exporting Excel")
+            notifyError("Error Exporting Csv")
         }
         
         

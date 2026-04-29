@@ -53,6 +53,7 @@ const BufferTrendReport = () => {
     lastRunDate,
     showDailyDataGraphModal,
     onResetCallback,
+    onExportToCsvCallBack
   } = useBTR();
 
   return (
@@ -90,6 +91,9 @@ const BufferTrendReport = () => {
           onApplyFilter={onApplyFilter}
           horizon={horizon}
           onChangeHorizon={(value: number) => setHorizon(value)}
+          onExportToCsvCallBack={(pageNumber: number) => {
+            return onExportToCsvCallBack(pageNumber, currentTab.value);
+          }}
         />
       </div>
       {lastRunDate && <LastRunDateComponent lastRunDate={lastRunDate} />}
