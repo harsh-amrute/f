@@ -6,6 +6,7 @@ interface UseChartDownloadOptions {
     fontSize?: number;
     lineHeight?: number;
     padding?: number;
+    titleMarginTop?: number;
 }
 
 export const useChartDownload = ({
@@ -14,6 +15,7 @@ export const useChartDownload = ({
     fontSize = 16,
     lineHeight = 24,
     padding = 10,
+    titleMarginTop = 10,
 }: UseChartDownloadOptions) => {
     const chartWrapperRef = useRef<HTMLDivElement>(null);
 
@@ -58,7 +60,7 @@ export const useChartDownload = ({
         }
         if (currentLine) lines.push(currentLine);
 
-        const headerHeight = lines.length * lineHeight;
+        const headerHeight = titleMarginTop + lines.length * lineHeight + padding;
 
         const combinedCanvas = document.createElement("canvas");
         combinedCanvas.width = chartCanvas.width;
@@ -78,20 +80,20 @@ export const useChartDownload = ({
         lines.forEach((line, i) => {
             const textWidth = ctx.measureText(line).width;
             const x = (combinedCanvas.width - textWidth) / 2;
-            const y = (i + 1) * lineHeight - (lineHeight - fontSize) / 2;
+            const y = titleMarginTop + (i + 1) * lineHeight - (lineHeight - fontSize) / 2;
             ctx.fillText(line, x, y);
         });
 
 
         ctx.drawImage(chartCanvas, 0, headerHeight);
 
-        const sanitizedFilename = (title || fileName)
+        const sanitizedFilename = fileName
             .replace(/[/\\?%*:|"<>]/g, "_")
             .trim();
 
         const link = document.createElement("a");
         link.href = combinedCanvas.toDataURL("image/png");
-        link.download = `${sanitizedFilename}.png`;
+        link.download = `${sanitizedFilename}.png`;  // ← always fileName
         link.click();
     };
 

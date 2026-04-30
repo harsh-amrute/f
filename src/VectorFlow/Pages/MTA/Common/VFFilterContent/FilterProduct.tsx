@@ -92,7 +92,7 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
   const selectRef = useRef<any>(null);
   const { data: skuData, isLoading: isSkuDataLoading } = useGetAllSKUs();
 
-  const { data: searchData, refetch: triggerSearch } =
+  const { data: searchData, refetch: triggerSearch, isFetching: isSearchFetching } =
     useSearchSKUDescription(manualSearchQuery);
 
   const colorStyles = useColorThemeStyles({
@@ -167,7 +167,7 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
 
   const skuOptions = shouldUseLocalData ? localSKUOptions : searchSKUOptions;
 
-  const isLoading = shouldUseLocalData ? isSkuDataLoading : isSearching;
+  const isLoading = shouldUseLocalData ? isSkuDataLoading : isSearchFetching;
 
   const CustomOption = (props: any) => {
     const optionStyles = useColorOptionStyles();
@@ -670,15 +670,18 @@ export const ProductFilters: React.FC<ProductFilterProps> = ({
                 filterOption={
                   shouldUseLocalData ? customFilterOption : undefined
                 }
-                noOptionsMessage={({ inputValue }) =>
-                  shouldUseLocalData
-                    ? inputValue
-                      ? "No SKUs found"
-                      : "Start typing to search SKUs"
-                    : inputValue && hasSearched
-                    ? "No SKUs found. Try a different search term."
-                    : "Type to search and click Search button"
-                }
+                noOptionsMessage={({ inputValue }) => {
+                  if (shouldUseLocalData) {
+                    return inputValue ? "No SKUs found" : "Start typing to search SKUs";
+                  }
+                  if (isLoading) {
+                    return <VFLoader />;
+                  }
+                  if (inputValue && hasSearched) {
+                    return "No SKUs found. Try a different search term.";
+                  }
+                  return "Type to search and click Search button";
+                }}
               />
 
               <div style={{ width: 165, marginTop: -44, marginLeft: 4.5 }}>

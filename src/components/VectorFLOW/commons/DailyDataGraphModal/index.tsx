@@ -43,6 +43,7 @@ import VFFloatingTab from "../VFFloatingTab";
 import { useLocation } from "react-router";
 import { useChartDownload } from "../../../../hooks/useChartDownload";
 import ChartDownloadButton from "../../../../VectorFlow/Pages/MTA/Common/ChartDownloadButton/ChartDownloadButton";
+import DailyDataInfoBar from "./DailyDataInfoBar";
 
 interface DailyDataGraphModalProps {
   rowData: any;
@@ -54,7 +55,9 @@ interface DailyDataGraphModalProps {
   isModalOpen: boolean;
   virtualNormData?: any;
   skuKey: string;
-  whKey: string
+  skuDescKey: string;
+  whKey: string;
+  whDescKey: string;
 }
 
 interface NormData {
@@ -72,7 +75,9 @@ const DailyDataGraphModal = ({
   monitoringData,
   virtualNormData,
   skuKey,
-  whKey
+  skuDescKey,
+  whKey,
+  whDescKey,
 }: DailyDataGraphModalProps) => {
   const { user } = useUserData();
   const themeUi = user.user.theme_ui;
@@ -93,8 +98,12 @@ const DailyDataGraphModal = ({
   const [adjustedChartData, setadjustedChartData] = useState<any[]>([]);
   const [missingData, setMissingData] = useState<any[]>([]);
   const { chartWrapperRef, handleDownload } = useChartDownload({
-    title: "Daily Data Graph",
+    title: `SKU: ${rowData[skuKey] ?? ""} | SKU Desc: ${rowData[skuDescKey] ?? ""} | Location: ${rowData[whKey] ?? ""} | Location Desc: ${rowData[whDescKey] ?? ""}`,
     fileName: "DailyDataGraph",
+    fontSize: 16,
+    lineHeight: 20,
+    padding: 25,
+    titleMarginTop: 25,
   });
 
   const [activeTab, setActiveTab] = useState<'norm' | 'virtualnorm'>('virtualnorm');
@@ -392,7 +401,7 @@ const DailyDataGraphModal = ({
           ${
             stock != null && stock != undefined
               ? `<div class="dailydata-item">
-                  <div class="color-box stock-color"></div>
+                  <div class="dailydata-color-box stock-color"></div>
                   <span class="label">Stock :</span>
                   <span>${stock}</span>
                 </div>`
@@ -813,6 +822,11 @@ const DailyDataGraphModal = ({
   };
   const themeColor =
   user.user.theme_ui === "REGALBLAZE" ? "#14213D" : "#000000";
+
+  const truncate = (text?: string, limit = 15) => {
+    if (!text) return "—";
+    return text.length > limit ? text.slice(0, limit) + "…" : text;
+  };
   return (
     <VFModalCard
       openModal={isModalOpen}
@@ -828,6 +842,27 @@ const DailyDataGraphModal = ({
       <div className={SCSeasonalityContainer}>
         <div ref={chartWrapperRef} className={SCChartContainer}>
           <div className={SCToggleWrapper}>
+            <div style={{ flex: 1, minWidth: 0, overflow: "hidden" }}>  
+              <div style={{ width: "fit-content", maxWidth: "100%" }}>      
+              <DailyDataInfoBar
+                items={[
+                  { label: "SKU", value: rowData[skuKey] ?? "—" },
+                  {
+                    label: "SKU Desc",
+                    value: truncate(rowData[skuDescKey]),
+                    tooltip: rowData[skuDescKey],
+                  }, 
+                  { label: "Location", value: rowData[whKey] ?? "—" },
+                  {
+                    label: "Location Desc",
+                    value: truncate(rowData[whDescKey]),
+                    tooltip: rowData[whDescKey],
+                  },
+                ]}
+              />
+              </div>
+            </div> 
+
             <ChartDownloadButton themeUi={themeUi} onDownload={handleDownload}/>
             <div style={{ zoom: 0.6 }}>
               <VFFloatingTab
@@ -999,71 +1034,8 @@ const DailyDataGraphModal = ({
 
             <hr className={SCHorizontalDivider} />
 
-            {/* SKU */}
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                marginBottom: "20px",
-              }}
-            >
-              <p
-                className={SCText}
-                style={assignInlineVars({
-                  [textFontWeightVar]: "300",
-                  [textFontSizeVar]: "18px",
-                })}
-              >
-                SKU:
-              </p>
-              <p
-                className={`${SCText} ${SCTextNoMargin}`}
-                style={assignInlineVars({
-                  [textFontWeightVar]: "500",
-                  [textFontSizeVar]: "18px",
-                })}
-              >
-                {rowData[skuKey]}
-              </p>
-            </div>
-
-            <hr className={SCHorizontalDivider} />
-
             {/* Location / RLT */}
             <div className={SCDataRow}>
-              <div className={SCDataNode}>
-                <p
-                  className={SCText}
-                  style={assignInlineVars({
-                    [textFontWeightVar]: "300",
-                    [textFontSizeVar]: "16px",
-                  })}
-                >
-                  Location :
-                  <Tooltip
-                    disableStyleInjection="core"
-                    content={
-                      <div style={{ padding: "0.5rem 1rem", fontSize: "12px" }}>
-                        {rowData[whKey]}
-                      </div>
-                    }
-                    tooltipZoom={1}
-                  >
-                    <span
-                      className={`${SCText} ${SCTextNoMargin}`}
-                      style={assignInlineVars({
-                        [textFontWeightVar]: "500",
-                        [textFontSizeVar]: "18px",
-                      })}
-                    >
-                      {rowData[whKey].slice(0, 13) + "…"}
-                    </span>
-                  </Tooltip>
-                </p>
-              </div>
-
-              <div className={SCVerticalDivider} />
-
               <div className={SCDataNode}>
                 <p
                   className={SCText}
@@ -1082,6 +1054,28 @@ const DailyDataGraphModal = ({
                   })}
                 >
                   {masterData?.["rlt"] ?? ""}
+                </p>
+              </div>
+              <div className={SCVerticalDivider} />
+
+              <div className={SCDataNode}>
+                <p
+                  className={SCText}
+                  style={assignInlineVars({
+                    [textFontWeightVar]: "300",
+                    [textFontSizeVar]: "16px",
+                  })}
+                >
+                  Min Norm :
+                </p>
+                <p
+                  className={`${SCText} ${SCTextNoMargin}`}
+                  style={assignInlineVars({
+                    [textFontWeightVar]: "500",
+                    [textFontSizeVar]: "18px",
+                  })}
+                >
+                  {masterData?.["mn"] ?? ""}
                 </p>
               </div>
             </div>
@@ -1121,7 +1115,7 @@ const DailyDataGraphModal = ({
                     [textFontSizeVar]: "16px",
                   })}
                 >
-                  Min Norm :
+                  Virtual Norm :
                 </p>
                 <p
                   className={`${SCText} ${SCTextNoMargin}`}
@@ -1130,7 +1124,7 @@ const DailyDataGraphModal = ({
                     [textFontSizeVar]: "18px",
                   })}
                 >
-                  {masterData?.["mn"] ?? ""}
+                  {virtualNormData[0].vN ?? ""}
                 </p>
               </div>
             </div>
