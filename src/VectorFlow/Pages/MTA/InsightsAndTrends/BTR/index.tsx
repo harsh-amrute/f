@@ -53,6 +53,7 @@ const BufferTrendReport = () => {
     lastRunDate,
     showDailyDataGraphModal,
     onResetCallback,
+    onExportToCsvCallBack,
     onTabChange,
     activeTab,
     tabs
@@ -93,6 +94,9 @@ const BufferTrendReport = () => {
           onApplyFilter={onApplyFilter}
           horizon={horizon}
           onChangeHorizon={(value: number) => setHorizon(value)}
+          onExportToCsvCallBack={(pageNumber: number) => {
+            return onExportToCsvCallBack(pageNumber, currentTab.value);
+          }}
           onTabChange={(val: any) => onTabChange(val)}
           activeTab={activeTab}
         />

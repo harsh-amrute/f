@@ -6,7 +6,7 @@ import { VFFloatingTabItemProps } from "../../../../../components/VectorFLOW/com
 import HorizontalSplitView from "./HorizontalSplitView"
 
 import VerticalSplitView from "./VerticalSplitView"
-import { getColumnsForExcelExport, mapBTRRowData, mapBTRRowDataToColDefs, MainMenuItemsCustomization, getColumnDefinationsMTA, DownloadExcel, DownloadExcelMTA , CsvExportMTA} from "../../../../../helpers/utils"
+import { getColumnsForExcelExport, mapBTRRowData, mapBTRRowDataToColDefs, MainMenuItemsCustomization, getColumnDefinationsMTA, DownloadExcel, DownloadExcelMTA , CsvExportMTA, ExcelExportMTA} from "../../../../../helpers/utils"
 
 import { useGetBTRDataCount, useGetBTRData } from "../../../../../VectorFlow/Services/MTA/InsightsAndTrends/BTR"
 
@@ -847,6 +847,62 @@ useEffect(() => {
             notifyError("No Data to Export");
             return;
         }
+        if(ecoTotalRows > 1048576 || techTotalRows > 1048576){
+            notifyError("Data exceeds Excel limit. Please use CSV export");
+            return;
+        }
+        const tempFilter = getPreparedFilter(currFilter)
+        const headersData = (page === 'on-hand') ? (techRef?.current?.api?.getColumnState() || []) : (ecoRef?.current?.api?.getColumnState() || []);
+        const colDefs = (page === 'on-hand') ? techColDefs : ecoColDefs;
+        const colMap = new Map(colDefs.map((col: any) => [col.colId, col.headerName]));
+        const resultArray = headersData
+        .filter((col: any) => colMap.has(col.colId) && col.colId !== "dailydatagraph")
+        .map((col: any) => ({ Field: col.colId, HeaderName: colMap.get(col.colId) }));
+      
+        const payload = {
+            Headers: resultArray,
+            id: 0,
+            name: page==='on-hand'?'tech':'eco',
+             activeTab,
+            fields: [],
+            filters: tempFilter,
+            paginationParameter: {
+                pageNumber: pageNumber
+            },
+            ISExport:"1",
+            reportName:"BTR",
+            stream:1,
+            responseType: `arraybuffer`
+        }
+        notifyLoader("Downloading Data...")
+        try {
+            // const data = await getBTRData(payload)
+            let filename = "";
+            if (page === "on-hand") {
+                filename =  activeTab==='virtualnorm' ?  "On_Hand_Inventory" : "BTR_Tech";
+            } else {
+                filename = activeTab==='virtualnorm' ?  "Pipeline_Inventory" : "BTR_Eco";
+            }
+            await ExcelExportMTA(payload, filename);
+            notifySuccess(`Data Exported Successfully`);
+        }
+        catch(error) {
+            console.log(error);
+            notifyError("Data too large to export. Please apply filters to reduce the data size.");
+        }
+        
+        
+
+    }
+    
+
+    const onExportToCsvCallBack = async (pageNumber: number, page: string) => {
+        const activeRef = page === 'on-hand' ? techRef : ecoRef;
+        const visibleCount = activeRef.current?.api?.getDisplayedRowCount() ?? 0;
+        if (visibleCount === 0) {
+            notifyError("No Data to Export");
+            return;
+        }
 
         const tempFilter = getPreparedFilter(currFilter)
         const headersData = (page === 'on-hand') ? (techRef?.current?.api?.getColumnState() || []) : (ecoRef?.current?.api?.getColumnState() || []);
@@ -885,7 +941,7 @@ useEffect(() => {
         }
         catch(error) {
             console.log(error);
-            notifyError("Error Exporting Excel")
+            notifyError("Error Exporting Csv")
         }
         
         
@@ -930,6 +986,7 @@ useEffect(() => {
         showDailyDataGraphModal,
         showNormChangeHistoryTable,
         onResetCallback,
+        onExportToCsvCallBack,
         onTabChange,
         activeTab,
         tabs
