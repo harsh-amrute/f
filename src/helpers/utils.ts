@@ -5526,8 +5526,8 @@ export const ExcelExportMTA = async (payload: any, filename = "ReportFile") => {
     window.URL.revokeObjectURL(blobUrl);
   } catch (e) {
     console.error("Error downloading file:", e);
-    notifyError("Something went wrong while exporting");
-    throw e;
+    notifyError("Data too large to export. Please apply filters to reduce the data size.");
+    return;
   }
 };
 
