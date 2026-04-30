@@ -53,7 +53,7 @@ const BufferTrendReport = () => {
     lastRunDate,
     showDailyDataGraphModal,
     onResetCallback,
-    onExportToCsvCallBack
+    onExportToCsvCallBack,
     onTabChange,
     activeTab,
     tabs
