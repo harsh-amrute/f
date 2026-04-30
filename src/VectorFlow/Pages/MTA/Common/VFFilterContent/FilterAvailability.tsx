@@ -31,6 +31,7 @@ interface AvailabilityFilterProps {
   onMultiFilterChange: (newMultiFilter: BPRFilterState) => void;
   currentTab?: string;
   currCategory?: string;
+  activeTab?: "norm" | "virtualnorm";
 }
 interface TagsFilterProps {
   name: string;
@@ -157,6 +158,7 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
   onMultiFilterChange,
   currentTab = "both",
   currCategory,
+  activeTab = "virtualnorm",
 }) => {
   const styles = useThemeStyles();
   const colorStyles = useColorThemeStyles();
@@ -260,10 +262,14 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
     onHandInventoryColor: string[];
     pipelineInventoryColor: string[];
     category: string[];
+    techColor: string[];
+    ecoColor: string[];
   }>({
     onHandInventoryColor: [],
     pipelineInventoryColor: [],
     category: [],
+    techColor: [],
+    ecoColor: [],
   });
 
   useEffect(() => {
@@ -285,6 +291,12 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
       );
       const forCategory = multiFilter.availabilityFilter.filters.filter(
         (f: BPRFilter) => f.name === "AF8"
+      );
+      const forTechColor = multiFilter.availabilityFilter.filters.filter(
+        (f: BPRFilter) => f.name === "AF9"
+      );
+      const forEcoColor = multiFilter.availabilityFilter.filters.filter(
+        (f: BPRFilter) => f.name === "AF10"
       );
 
       availabilityFilterOptions.forEach((column) => {
@@ -312,6 +324,8 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
         onHandInventoryColor: forOnHandInventoryColor.map((f) => f.value),
         pipelineInventoryColor: forPipelineInventoryColor.map((f) => f.value),
         category: forCategory.map((f) => f.value),
+        techColor: forTechColor.map((f) => f.value),
+        ecoColor: forEcoColor.map((f) => f.value),
       });
 
       const activeTags = forTags.map((f) => f.value);
@@ -338,7 +352,7 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
         ...tagStates,
         [name]: checked,
       })
-        .filter(([_, val]) => val) 
+        .filter(([_, val]) => val)
         .map(([key]) => ({ label: key, value: key })),
     ];
 
@@ -351,15 +365,31 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
     });
   };
 
-  const isBTRReport = window.location.pathname === '/mta/insights-and-trends/buffer-trend-report';
+  const isBTRReport =
+    window.location.pathname === "/mta/insights-and-trends/buffer-trend-report" || window.location.pathname === '/mta/supply-chain-intelligence-hub/availability-report';
 
-  const shouldShowColorFilters = currCategory === 'BPR' || currCategory === 'BOR' || currCategory === 'RRR';
+  const isToggleTab = ["/mta/insights-and-trends/buffer-trend-report", "/mta/supply-chain-intelligence-hub/bpr"].includes(window.location.pathname);
 
-  const shouldShowTags = currCategory === 'BPR' || currCategory === 'RRR' || currCategory === 'BOR'  || window.location.pathname === '/mta/insights-and-trends/buffer-trends' ;
+  const shouldShowColorFilters =
+    currCategory === "BPR" || currCategory === "BOR" || currCategory === "RRR";
 
+  const shouldShowTags =
+    currCategory === "BPR" ||
+    currCategory === "RRR" ||
+    currCategory === "BOR" ||
+    window.location.pathname === "/mta/insights-and-trends/buffer-trends";
+
+  const shouldShowVirtualNormColors =
+    isToggleTab && activeTab === "virtualnorm";
+  const shouldShowNormColors = isToggleTab && activeTab === "norm";
+
+  const isAvailabilityReport = window.location.pathname === '/mta/supply-chain-intelligence-hub/availability-report';
+
+  const visibleFilterOptions = isAvailabilityReport ? [] : availabilityFilterOptions;
 
   return (
     <>
+    {visibleFilterOptions.length > 0 && (
       <div className={filterGroup}>
         <div className={filterColumn} style={{ minWidth: "400px", maxWidth: "none" }}>
           <div className={textWrapper}>Select Operation</div>
@@ -438,22 +468,142 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
           ))}
         </div>
       </div>
-
-      {(shouldShowColorFilters || isBTRReport) && (
+    )}
+      {(shouldShowColorFilters || isBTRReport) && !isToggleTab && (
         <div className={filterGroup} style={{ marginTop: "1px" }}>
           <div className={filterColumn}>
-            <div style={{ 
-              display: "flex", 
-              gap: "20px", 
-              alignItems: "flex-start",
-              flexWrap: "wrap" 
-            }}>
-             {(currCategory !== 'BOR' && (currentTab === 'on-hand' || currentTab === 'both' || currCategory === 'BPR' || currCategory === 'RRR' || (isBTRReport && (currentTab === 'on-hand' || currentTab === 'both')))) && (
-                <div style={{ 
-                  flex: (currentTab === 'both') ? 1 : 'auto', 
-                  minWidth: "280px",
-                  maxWidth: (currentTab === 'both') ? "calc(50% - 10px)" : "100%"
-                }}>
+            <div
+              style={{
+                display: "flex",
+                gap: "20px",
+                alignItems: "flex-start",
+                flexWrap: "wrap",
+              }}
+            >
+              {currCategory !== "BOR" &&
+                (currentTab === "on-hand" ||
+                  currentTab === "both" ||
+                  currCategory === "BPR" ||
+                  currCategory === "RRR" ||
+                  (isBTRReport &&
+                    (currentTab === "on-hand" || currentTab === "both"))) && (
+                  <div
+                    style={{
+                      flex: currentTab === "both" ? 1 : "auto",
+                      minWidth: "280px",
+                      maxWidth:
+                        currentTab === "both" ? "calc(50% - 10px)" : "100%",
+                    }}
+                  >
+                    <div className={textWrapper}>On Hand Inventory Color</div>
+                    <div className={dropDownWrapper}>
+                      <Select
+                        options={colorOptions}
+                        isMulti
+                        closeMenuOnSelect={false}
+                        hideSelectedOptions={false}
+                        components={{
+                          Option: CustomOption,
+                          MultiValue: CustomMultiValue,
+                          IndicatorSeparator: () => null,
+                          ClearIndicator: () => null,
+                        }}
+                        styles={colorStyles}
+                        placeholder="Select Color"
+                        value={colorOptions.filter((opt) =>
+                          selectedOptions.onHandInventoryColor.includes(
+                            opt.value
+                          )
+                        )}
+                        onChange={(newValue) =>
+                          handleSelectChange({
+                            newValue,
+                            header: "OHIC",
+                            filterId: "AF5",
+                            parentId: "availabilityFilter",
+                          })
+                        }
+                      />
+                    </div>
+                  </div>
+                )}
+
+              {(currentTab === "pipeline" ||
+                currentTab === "both" ||
+                currCategory === "BOR" ||
+                currCategory === "BPR" ||
+                currCategory === "RRR" ||
+                (isBTRReport &&
+                  (currentTab === "pipeline" || currentTab === "both"))) && (
+                <div
+                  style={{
+                    flex: currentTab === "both" ? 1 : "auto",
+                    minWidth: "280px",
+                    maxWidth:
+                      currentTab === "both" ? "calc(50% - 10px)" : "100%",
+                  }}
+                >
+                  <div className={textWrapper}>Pipeline Inventory Color</div>
+                  <div className={dropDownWrapper}>
+                    <Select
+                      options={colorOptions}
+                      classNamePrefix="rs"
+                      isMulti
+                      closeMenuOnSelect={false}
+                      hideSelectedOptions={false}
+                      components={{
+                        Option: CustomOption,
+                        MultiValue: CustomMultiValue,
+                        IndicatorSeparator: () => null,
+                        ClearIndicator: () => null,
+                      }}
+                      styles={colorStyles}
+                      placeholder="Select Color"
+                      value={colorOptions.filter((opt) =>
+                        selectedOptions.pipelineInventoryColor.includes(
+                          opt.value
+                        )
+                      )}
+                      onChange={(newValue) =>
+                        handleSelectChange({
+                          newValue,
+                          header: "PIC",
+                          filterId: "AF6",
+                          parentId: "availabilityFilter",
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {shouldShowVirtualNormColors && (
+        <div className={filterGroup} style={{ marginTop: "1px" }}>
+          <div className={filterColumn}>
+            <div
+              style={{
+                display: "flex",
+                gap: "20px",
+                alignItems: "flex-start",
+                flexWrap: "wrap",
+              }}
+            >
+              {(currentTab === "on-hand" ||
+                currentTab === "both" ||
+                (isToggleTab &&
+                  (currentTab === "on-hand" || currentTab === "both"))) && (
+                <div
+                  style={{
+                    flex: currentTab === "both" ? 1 : "auto",
+                    minWidth: "280px",
+                    maxWidth:
+                      currentTab === "both" ? "calc(50% - 10px)" : "100%",
+                  }}
+                >
                   <div className={textWrapper}>On Hand Inventory Color</div>
                   <div className={dropDownWrapper}>
                     <Select
@@ -478,6 +628,7 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
                           header: "OHIC",
                           filterId: "AF5",
                           parentId: "availabilityFilter",
+                          attributeName: "ohic",
                         })
                       }
                     />
@@ -485,12 +636,19 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
                 </div>
               )}
 
-              {(currentTab === 'pipeline' || currentTab === 'both' || currCategory === 'BOR' || currCategory === 'BPR' || currCategory === 'RRR' || (isBTRReport && (currentTab === 'pipeline' || currentTab === 'both'))) && (
-                <div style={{ 
-                  flex: (currentTab === 'both') ? 1 : 'auto', 
-                  minWidth: "280px",
-                  maxWidth: (currentTab === 'both') ? "calc(50% - 10px)" : "100%"
-                }}>
+              {(currentTab === "pipeline" ||
+                currentTab === "both" ||
+                (isToggleTab &&
+                  (currentTab === "pipeline" || currentTab === "both"))) && (
+                <div
+                  style={{
+                    flex: currentTab === "both" ? 1 : "auto",
+                    minWidth: "280px",
+                    maxWidth:
+                      currentTab === "both" ? "calc(50% - 10px)" : "100%",
+                  }}
+                >
+                  {" "}
                   <div className={textWrapper}>Pipeline Inventory Color</div>
                   <div className={dropDownWrapper}>
                     <Select
@@ -508,7 +666,9 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
                       styles={colorStyles}
                       placeholder="Select Color"
                       value={colorOptions.filter((opt) =>
-                        selectedOptions.pipelineInventoryColor.includes(opt.value)
+                        selectedOptions.pipelineInventoryColor.includes(
+                          opt.value
+                        )
                       )}
                       onChange={(newValue) =>
                         handleSelectChange({
@@ -516,6 +676,7 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
                           header: "PIC",
                           filterId: "AF6",
                           parentId: "availabilityFilter",
+                          attributeName: "pic",
                         })
                       }
                     />
@@ -527,7 +688,115 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
         </div>
       )}
 
-      {(shouldShowTags || (isBTRReport && (currentTab === 'both' || currentTab === 'pipeline' || currentTab === 'on-hand'))) && (
+      {shouldShowNormColors && (
+        <div className={filterGroup} style={{ marginTop: "1px" }}>
+          <div className={filterColumn}>
+            <div
+              style={{
+                display: "flex",
+                gap: "20px",
+                alignItems: "flex-start",
+                flexWrap: "wrap",
+              }}
+            >
+              {(currentTab === "on-hand" ||
+                currentTab === "both" ||
+                (isToggleTab &&
+                  (currentTab === "on-hand" || currentTab === "both"))) && (
+                <div
+                  style={{
+                    flex: currentTab === "both" ? 1 : "auto",
+                    minWidth: "280px",
+                    maxWidth:
+                      currentTab === "both" ? "calc(50% - 10px)" : "100%",
+                  }}
+                >
+                  <div className={textWrapper}>Tech Color</div>
+                  <div className={dropDownWrapper}>
+                    <Select
+                      options={colorOptions}
+                      isMulti
+                      closeMenuOnSelect={false}
+                      hideSelectedOptions={false}
+                      components={{
+                        Option: CustomOption,
+                        MultiValue: CustomMultiValue,
+                        IndicatorSeparator: () => null,
+                        ClearIndicator: () => null,
+                      }}
+                      styles={colorStyles}
+                      placeholder="Select Color"
+                      value={colorOptions.filter((opt) =>
+                        selectedOptions.techColor.includes(opt.value)
+                      )}
+                      onChange={(newValue) =>
+                        handleSelectChange({
+                          newValue,
+                          header: "Tech Color",
+                          filterId: "AF9",
+                          parentId: "availabilityFilter",
+                          attributeName: "tech",
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+              )}
+
+              {(currentTab === "pipeline" ||
+                currentTab === "both" ||
+                (isToggleTab &&
+                  (currentTab === "pipeline" || currentTab === "both"))) && (
+                <div
+                  style={{
+                    flex: currentTab === "both" ? 1 : "auto",
+                    minWidth: "280px",
+                    maxWidth:
+                      currentTab === "both" ? "calc(50% - 10px)" : "100%",
+                  }}
+                >
+                  <div className={textWrapper}>Eco Color</div>
+                  <div className={dropDownWrapper}>
+                    <Select
+                      options={colorOptions}
+                      classNamePrefix="rs"
+                      isMulti
+                      closeMenuOnSelect={false}
+                      hideSelectedOptions={false}
+                      components={{
+                        Option: CustomOption,
+                        MultiValue: CustomMultiValue,
+                        IndicatorSeparator: () => null,
+                        ClearIndicator: () => null,
+                      }}
+                      styles={colorStyles}
+                      placeholder="Select Color"
+                      value={colorOptions.filter((opt) =>
+                        selectedOptions.ecoColor.includes(opt.value)
+                      )}
+                      onChange={(newValue) =>
+                        handleSelectChange({
+                          newValue,
+                          header: "Eco Color",
+                          filterId: "AF10",
+                          parentId: "availabilityFilter",
+                          attributeName: "eco",
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {(shouldShowTags ||
+        (isBTRReport &&
+          (currentTab === "both" ||
+            currentTab === "pipeline" ||
+            currentTab === "on-hand"))) && (
         <div className={filterGroup} style={{ marginTop: "1px" }}>
           <div className={filterColumn}>
             <div className={textWrapper}>Tags</div>
@@ -563,11 +832,12 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
                 }}
                 styles={{
                   ...colorStyles,
-                  menuList: (base) => ({
-                    ...base,
-                    maxHeight: 150,
-                    overflowY: "auto",
-                  }as CSSObjectWithLabel),
+                  menuList: (base) =>
+                    ({
+                      ...base,
+                      maxHeight: 150,
+                      overflowY: "auto",
+                    } as CSSObjectWithLabel),
                 }}
                 placeholder="Select Category"
                 value={categoryOptions.filter((opt) =>

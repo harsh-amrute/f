@@ -27,6 +27,7 @@ const useBufferTrends = () => {
     const [horizonDays,setHorizondays]=useState(30);
     const [summaryData, setSummaryData]=useState([]);
     const[availability, setAvailability]=useState(0.0);
+    const [activeTab, setActiveTab] = useState<'norm' | 'virtualnorm'>('virtualnorm');
    
     const {mutateAsync:getBufferTrendsGraph,isLoading} = useGetBufferTrendsGraph();
 
@@ -34,6 +35,10 @@ const useBufferTrends = () => {
 
     const {user} = useUserData()
     const themeUI = user.user.theme_ui
+
+    const onTabChange = (tabValue: 'norm' | 'virtualnorm') => {
+        setActiveTab(tabValue);
+    };
 
     const [graphs,setGraphs] = useState<Array<BufferTrendsGraphState>>([
         {
@@ -87,6 +92,7 @@ const useBufferTrends = () => {
             const body = {
                 days:horizonDays,
                 bufferTrendType:currentTab,
+                activeTab,
                 filters:multiFilterState
             }           
             const result:any = await getBufferTrendsGraph(body)
@@ -208,6 +214,7 @@ const useBufferTrends = () => {
             const body = {
                 days:horizonDays,
                 bufferTrendType:currentTab,
+                activeTab,
                 filters:params
             }           
             const result:any = await getBufferTrendsGraph(body)
@@ -259,7 +266,9 @@ const useBufferTrends = () => {
         onDeleteFilter,
         onGoBack,
         themeUI,
-        lastRunDate
+        lastRunDate,
+        onTabChange,
+        activeTab
     }
   
 }

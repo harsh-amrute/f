@@ -1,9 +1,9 @@
 import {
-  BTRLayoutTabsWrapper,
-  BTRLayoutWrapper,
+  ARLayoutTabsWrapper,
+  ARLayoutWrapper,
   ToggleViewBtnWrapper,
 } from "./styles.css";
-import useBTR from "./useBTR";
+import useAR from "./useAR";
 import {
   SCViewBackground,
   SCViewContainer,
@@ -15,11 +15,10 @@ import VFFloatingTab from "../../../../../components/VectorFLOW/commons/VFFloati
 import ActionToolBar from "../../SupplyChainIntelligenceHub/Planning/ActionToolBar";
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
 import LastRunDateComponent from "../../../../../components/commons/lastRundate";
-import DailyDataGraphModal from "../../../../../components/VectorFLOW/commons/DailyDataGraphModal";
 import OverlayLoader from "../../../../../VectorFlow/Pages/MTO/Common/Loader";
-import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons/NormChangeHistoryTable";
 import "./style.css";
-const BufferTrendReport = () => {
+
+const AvailabilityReport = () => {
   const {
     currentTab,
     isLoading,
@@ -37,12 +36,10 @@ const BufferTrendReport = () => {
     setTempDownloadData,
     tempAgGridProps,
     exportExcelRowData,
-    showNormChangeHistoryTable,
     setExportExcelRowData,
     exportExcelColumns,
     setExportExcelColumns,
     currFilter,
-    dailyData,
     setCurrFilter,
     onDeleteFilter,
     onApplyFilter,
@@ -51,19 +48,17 @@ const BufferTrendReport = () => {
     ecoColDefs,
     setHorizon,
     lastRunDate,
-    showDailyDataGraphModal,
     onResetCallback,
-    onExportToCsvCallBack
     onTabChange,
     activeTab,
     tabs
-  } = useBTR();
+  } = useAR();
 
   return (
     <GridStateContext.Provider
       value={{
         ref:
-          currentTab.id === "1" ? techRef : currentTab.id === "2" ? ecoRef : "",
+          currentTab.id === "2" ? techRef : currentTab.id === "3" ? ecoRef : "",
         exportExcelColumns: exportExcelColumns,
         setExportExcelColumns: setExportExcelColumns,
         tempDownloadData: tempDownloadData,
@@ -77,7 +72,7 @@ const BufferTrendReport = () => {
         <ActionToolBar
           view={"grid"}
           setCurrentTab={""}
-          currCategory={"BTR"}
+          currCategory={"AvailabilityReport"}
           currentTab={currentTab.value}
           tabsList={[]}
           onFloatingTabChange={() => console.log("")}
@@ -94,40 +89,21 @@ const BufferTrendReport = () => {
           onApplyFilter={onApplyFilter}
           horizon={horizon}
           onChangeHorizon={(value: number) => setHorizon(value)}
-          onExportToCsvCallBack={(pageNumber: number) => {
-            return onExportToCsvCallBack(pageNumber, currentTab.value);
-          }}
           onTabChange={(val: any) => onTabChange(val)}
           activeTab={activeTab}
         />
       </div>
       {lastRunDate && <LastRunDateComponent lastRunDate={lastRunDate} />}
-      {showDailyDataGraphModal && (
-        <DailyDataGraphModal
-          rowData={dailyData.rowData}
-          chartData={dailyData.chartData}
-          normChangeData={dailyData.normChangeData}
-          masterData={dailyData.masterData}
-          isModalOpen={showDailyDataGraphModal}
-          suggestionData={dailyData.suggestionData}
-          monitoringData={dailyData.monitoringData}
-          virtualNormData={dailyData.virtualNormData}
-          skuKey={"SKUCode"}
-          whKey={"LocationName"}
-        />
-      )}
-      {showNormChangeHistoryTable && (
-        <NormChangeHistoryTable data={dailyData.normChangeData} />
-      )}
-      <div className={BTRLayoutWrapper}>
-        <div className={BTRLayoutTabsWrapper}>
+      <div className={ARLayoutWrapper}>
+        <div className={ARLayoutTabsWrapper}>
           <div style={{ zoom: 0.6 }}>
             <VFFloatingTab
               handleClick={(tab: any) => toggleCurrentTab(tab)}
               tabs={tabs}
+              selectedTabId={currentTab.id}
             />
           </div>
-          {currentTab?.id === "3" && (
+          {currentTab?.id === "4" && (
             <div className={ToggleViewBtnWrapper}>
               <div className={SCViewBackground}>
                 <div
@@ -208,4 +184,4 @@ const BufferTrendReport = () => {
   );
 };
 
-export default BufferTrendReport;
+export default AvailabilityReport;

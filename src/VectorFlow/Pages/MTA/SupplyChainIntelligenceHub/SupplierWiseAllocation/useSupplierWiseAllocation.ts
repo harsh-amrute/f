@@ -152,7 +152,8 @@ export const useSupplierWiseAllocation =()=>{
         normChangeData:data['NormChangeHistoryData'] ? data['NormChangeHistoryData'] : [],
         masterData: Array.isArray(data['MasterData']) && data['MasterData']?.length > 0 ? data['MasterData'][0] : undefined,
         suggestionData:data['SuggestionHistoryData'] ? data['SuggestionHistoryData'] : [],
-        monitoringData:data['MonitoringData'] ? data['MonitoringData'] : []
+        monitoringData:data['MonitoringData'] ? data['MonitoringData'] : [],
+        virtualNormData:data['VirtualNormData'] ? data['VirtualNormData'] : []
       }
       
       dispatch(UPDATE_DAILY_DATA(dailyData));

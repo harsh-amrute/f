@@ -3823,6 +3823,44 @@ export const mapBTRRowData = (
   });
 };
 
+export const mapARRowData = (rows: Array<any>): Array<any> => {
+  const columnsNotBeConverted = [
+    "SKUCode",
+    "SKUDescription",
+    "Whcode",
+    "WhCode",
+    "LocationName",
+    "pc",
+    "pn",
+  ];
+
+  return rows.map((row) => {
+    const transformedRow = Object.keys(row).reduce((acc: any, key) => {
+      let value = row[key];
+
+      if (value === null) {
+        value = "";
+      }
+
+      if (columnsNotBeConverted.includes(key)) {
+        acc[key] = String(value);
+      } else if (typeof value === "string" && !isNaN(parseFloat(value))) {
+        acc[key] = parseFloat(value);
+      } else {
+        acc[key] = value;
+      }
+
+      return acc;
+    }, {});
+
+    return {
+      ...transformedRow,
+      Category: transformedRow.Category,
+      Availability: transformedRow.Availability,
+    };
+  });
+};
+
 export const mapBTRRowDataToColDefs = (
   row: any,
   dateMapper: any,

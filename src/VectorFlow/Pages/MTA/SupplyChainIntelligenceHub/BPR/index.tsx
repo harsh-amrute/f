@@ -137,8 +137,6 @@ const BPR = () => {
           virtualNormData={dailyData.virtualNormData}
           skuKey={"SKUCode"}
           whKey={"WHName"}
-          onTabChange={(val: any) => onTabChange(val)}
-          activeTab={activeTab}
         />
       )}
       {showNormChangeHistoryTable && (

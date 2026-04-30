@@ -160,7 +160,8 @@ const useDBM =()=>{
             normChangeData:data['NormChangeHistoryData'] ? data['NormChangeHistoryData'] : [],
             masterData:data['MasterData'][0],
             suggestionData:data['SuggestionHistoryData'] ? data['SuggestionHistoryData'] : [],
-            monitoringData:data['MonitoringData']
+            monitoringData:data['MonitoringData'],
+            virtualNormData:data['VirtualNormData']
         }
     
         dispatch(UPDATE_DAILY_DATA(dailyData));

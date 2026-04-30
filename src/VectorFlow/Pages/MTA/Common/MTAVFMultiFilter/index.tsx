@@ -45,6 +45,7 @@ interface FilterModalProps {
   currCategory?: any;
   reportName?: any;
   reportType?: string;
+  activeTab?: "norm" | "virtualnorm"
 }
 
 interface SectionType {
@@ -114,6 +115,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
   currCategory,
   reportName,
   reportType,
+  activeTab,
 }) => {
   const { user } = useUserData();
   const EnvConfig = useSelector((state: RootState) => state.mta.EnvConfig);
@@ -163,7 +165,10 @@ const FilterModal: React.FC<FilterModalProps> = ({
     }
     return sections.filter((s) => {
       if (s.key === "FILTER_COVERAGE") return false;
-      if (s.key === "FILTER_AVAILABILITY") return s.values.includes(upperReportCode);
+      if (s.key === "FILTER_AVAILABILITY" || s.key === "FILTER_COLOR" ) {
+        if(currentTab === "summary") return false; 
+        return s.values.includes(upperReportCode)
+      }
       return s.values.includes(upperReportCode);
     });
   }, [EnvConfig, reportCode, reportType]);
@@ -207,6 +212,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
       generalFilter: { id: "7", label: "General", filters: [] },
       customAttributeFilter: { id: "8", label: "Attribute", filters: [] },
       horizonFilter: { id: "9", label: "Horizon", filters: [] },
+      historicalFilter: { id: "10", label: "Historical", filters: [] },
     }
   );
 
@@ -233,6 +239,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
       generalFilter: { id: "7", label: "General", filters: [] },
       customAttributeFilter: { id: "8", label: "Attribute", filters: [] },
       horizonFilter: { id: "9", label: "Horizon", filters: [] },
+      historicalFilter: { id: "10", label: "Historical", filters: [] },
     };
 
     setMultiFilter(resetMultiFilter);
@@ -307,6 +314,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
           onFilterChange={handleInputChange}
           currentTab={currentTab}
           currCategory={currCategory}
+          activeTab={activeTab} 
         />
       );
     }
