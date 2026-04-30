@@ -59,24 +59,23 @@ const useBTR = () => {
     const tempRef = useRef()
     const [techInternalRef,setTechInternalRef] = useState<any>()
     const [ecoInternalRef,setEcoInternalRef] = useState<any>()
+    const [activeTab, setActiveTab] = useState<'norm' | 'virtualnorm'>('virtualnorm');
     const tabs: Array<VFFloatingTabItemProps> = [
         {
             id: "1",
-              value: 'on-hand',
-            label: "On-Hand Inv. View"
-          
-        },
-        {
+            value: "on-hand",
+            label: activeTab==='virtualnorm' ? "On-Hand Inv. View" : "Tech Inv. View",
+          },
+          {
             id: "2",
-             value: 'pipeline',
-            label: "Pipeline Inv. View"
-           
-        },
-        {
+            value: "pipeline",
+            label: activeTab==='virtualnorm' ? "Pipeline Inv. View" : "Eco Inv. View",
+          },
+          {
             id: "3",
-             value: 'both',
-            label: "Both On-Hand & Pipeline View"
-        }
+            value: "both",
+            label: activeTab==='virtualnorm' ? "Both On-Hand & Pipeline View" : "Both Tech & Eco View",
+          },
     ]
 
     const { user } = useUserData()
@@ -141,6 +140,10 @@ const useBTR = () => {
     const savePageSizeTech = async( pageSize:number)=>{
         setUserPageSizeTech(pageSize)
         await getDataTech(currFilter , currentPageTech,pageSize)
+    }
+
+    const onTabChange = (tabValue: 'norm' | 'virtualnorm') => {
+        setActiveTab(tabValue);
     }
 
     const savePageSizeEco = async( pageSize:number)=>{
@@ -316,6 +319,7 @@ const useBTR = () => {
         const payload = {
             id: 0,
             name: 'tech',
+            activeTab,
             fields: [],
             filters: filter,
             paginationParameter: {
@@ -345,6 +349,7 @@ const useBTR = () => {
         const payload = {
             id: 0,
             name: 'eco',
+            activeTab,
             fields: [],
             filters: filter,
             paginationParameter: {
@@ -372,6 +377,7 @@ const useBTR = () => {
         const payload = {
             id: 0,
             name: 'both',
+            activeTab,
             fields: [],
             filters: filter,
             paginationParameter: {
@@ -441,6 +447,7 @@ const useBTR = () => {
         const payload = {
             id: 0,
             name: '',
+            activeTab,
             fields: [],
             filters: tempFilter,
             paginationParameter: {
@@ -503,7 +510,8 @@ const useBTR = () => {
                 normChangeData:data['NormChangeHistoryData'],
                 masterData:data['MasterData']?.[0],
                 suggestionData:data['SuggestionHistoryData'] ? data['SuggestionHistoryData'] : [],
-                monitoringData:data['MonitoringData']
+                monitoringData:data['MonitoringData'],
+                virtualNormData:data['VirtualNormData']
             }
 
             console.log("dailyDataaa",dailyData);
@@ -654,7 +662,7 @@ useEffect(() => {
         if(currentTab.id === "2"  )     getDataEco(currFilter , 1);
         if(currentTab.id === "3" )     getData(currFilter , 1)
         } 
-    },[currentTab]);
+    },[currentTab, activeTab]);
 
     useEffect(() => {
     if (initialColumnState) {
@@ -675,9 +683,14 @@ useEffect(() => {
             case "1":
                 return (
                     <>
+                        {activeTab==='virtualnorm'? 
                         <p className={BTRTableHeader}>
                             On-Hand Inventory View Trend Report
                         </p>
+                        :
+                        <p className={BTRTableHeader}>
+                            Tech View Trend Report
+                        </p>}
                         <div style={{height: '100%'}}>
                         <CustomVFTable
                             height={"90%"}
@@ -714,10 +727,14 @@ useEffect(() => {
             case "2":
                 return (
                     <>
+                        {activeTab==='virtualnorm'? 
                         <p className={BTRTableHeader}>
                             Pipeline Inventory Trend Report
                         </p>
-                        
+                        :
+                        <p className={BTRTableHeader}>
+                            Eco View Trend Report
+                        </p>}
                         <div style={{height:'100%'}}>
                         <CustomVFTable
                             height={"90%"}
@@ -761,7 +778,7 @@ useEffect(() => {
                             techTable={{
                                 columnDefs: techColDefs,
                                 rowData: techRowData,
-                                header: "On-Hand Inventory View Trend Report",
+                                header: activeTab==='virtualnorm'? "On-Hand Inventory View Trend Report": "Tech View Trend Report",
                                 paginationProps: techPaginationPropsForBoth,
                                 ...gridProps
                             }}
@@ -769,7 +786,7 @@ useEffect(() => {
                                 columnDefs: ecoColDefs,
                                 paginationProps: ecoPaginationPropsForBoth,
                                 rowData: ecoRowData,
-                                header: "Pipeline Inventory Trend Report",
+                                header: activeTab==='virtualnorm'? "Pipeline Inventory Trend Report": "Eco Trend Report",
                                 ...gridProps
                             }}
                             isLocked={isLockMode}
@@ -784,14 +801,14 @@ useEffect(() => {
                             techTable={{
                                 columnDefs: techColDefs,
                                 rowData: techRowData,
-                                header: "On-Hand Inventory View Trend Report",
+                                header: activeTab==='virtualnorm'? "On-Hand Inventory View Trend Report": "Tech View Trend Report",
                                 paginationProps: techPaginationPropsForBoth,
                                 ...gridProps
                             }}
                             ecoTable={{
                                 columnDefs: ecoColDefs,
                                 rowData: ecoRowData,
-                                header: "Pipeline Inventory Trend Report",
+                                header: activeTab==='virtualnorm'? "Pipeline Inventory Trend Report": "Eco Trend Report",
                                 paginationProps: ecoPaginationPropsForBoth,
                                 ...gridProps
                             }}
@@ -843,6 +860,7 @@ useEffect(() => {
             Headers: resultArray,
             id: 0,
             name: page==='on-hand'?'tech':'eco',
+            activeTab,
             fields: [],
             filters: tempFilter,
             paginationParameter: {
@@ -858,9 +876,9 @@ useEffect(() => {
             // const data = await getBTRData(payload)
             let filename = "";
             if (page === "on-hand") {
-                filename = "On_Hand_Inventory";
+                filename =  activeTab==='virtualnorm' ?  "On_Hand_Inventory" : "BTR_Tech";
               } else {
-                filename = "Pipeline_Inventory";
+                filename = activeTab==='virtualnorm' ?  "Pipeline_Inventory" : "BTR_Eco";
               }
             await CsvExportMTA(payload, filename);
             notifySuccess(`Data Exported Successfully`);
@@ -911,7 +929,10 @@ useEffect(() => {
         dailyData,
         showDailyDataGraphModal,
         showNormChangeHistoryTable,
-        onResetCallback
+        onResetCallback,
+        onTabChange,
+        activeTab,
+        tabs
     }
 }
 

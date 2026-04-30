@@ -309,6 +309,7 @@ const ActionToolBar = ({
         if (pathname === "/mta/supply-chain-intelligence-hub/bpr") {
           return (
             <MTAVFMultiFilter
+              key={activeTab}
               isOpen={isFilterOpen}
               onApply={handleApplyFilter}
               multiFilter={multiFilter}
@@ -316,6 +317,7 @@ const ActionToolBar = ({
               onReset={handleResetFilters}
               currCategory={currCategory}
               reportName={UIColumnConfigName.BPR}
+              activeTab={activeTab}
             />
           );
         }
@@ -432,6 +434,7 @@ const ActionToolBar = ({
         ) {
           return (
             <MTAVFMultiFilter
+              key={activeTab}
               isOpen={isFilterOpen}
               onApply={handleApplyFilter}
               multiFilter={multiFilter}
@@ -439,6 +442,7 @@ const ActionToolBar = ({
               onReset={handleResetFilters}
               currentTab={currentTab}
               reportName={UIColumnConfigName.BuffertrendReport}
+              activeTab={activeTab}
             />
           );
         }
@@ -947,7 +951,11 @@ const ActionToolBar = ({
             )
           )} */}
           <div className={SCCustomActionsContainer}>
-            {(pathname === "/mta/supply-chain-intelligence-hub/bpr" || pathname === "/mta/supply-chain-intelligence-hub/availability-report") && (
+            {(pathname === "/mta/supply-chain-intelligence-hub/bpr" || 
+              pathname === "/mta/insights-and-trends/buffer-trend-report" || 
+              pathname === "/mta/insights-and-trends/buffer-trends" || 
+              pathname === "/mta/supply-chain-intelligence-hub/availability-report"
+            ) && (
               <div style={{ zoom: 0.9, marginRight: "20px" }}>
                 <VFFloatingTab
                   key={tabKey}
