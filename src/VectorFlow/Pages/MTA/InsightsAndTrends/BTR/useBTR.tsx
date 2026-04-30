@@ -863,6 +863,7 @@ useEffect(() => {
             Headers: resultArray,
             id: 0,
             name: page==='on-hand'?'tech':'eco',
+             activeTab,
             fields: [],
             filters: tempFilter,
             paginationParameter: {
@@ -878,10 +879,10 @@ useEffect(() => {
             // const data = await getBTRData(payload)
             let filename = "";
             if (page === "on-hand") {
-                filename = "On_Hand_Inventory";
-              } else {
-                filename = "Pipeline_Inventory";
-              }
+                filename =  activeTab==='virtualnorm' ?  "On_Hand_Inventory" : "BTR_Tech";
+            } else {
+                filename = activeTab==='virtualnorm' ?  "Pipeline_Inventory" : "BTR_Eco";
+            }
             await ExcelExportMTA(payload, filename);
             notifySuccess(`Data Exported Successfully`);
         }
