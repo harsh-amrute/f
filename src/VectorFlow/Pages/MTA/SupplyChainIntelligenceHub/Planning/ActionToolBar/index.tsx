@@ -1090,7 +1090,7 @@ const ActionToolBar = ({
             {currCategory === "BufferTrend" ? null : (
               <>
                 {currCategory === "GuidedInsightchronicunavailability" ||
-                (currCategory === "BTR" ) ? null : (
+              ( currCategory === "BTR" || ((currCategory === "AvailabilityReport") && (currentTab === "both" || currentTab === "summary"))) ? null : (
                   <>
                     {isFilterButtonVisible && (
                       <div className={SCVerticalDivider} />
