@@ -22,6 +22,7 @@ import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
 import { UIColumnConfigName, UserUIColumnConfigName } from "../../../../../helpers/Enum"
 import { useGetUIConfigData } from "../../../../Services/MTA/Common/UIConfig"
 import { useGetState } from "../../../../Services/MTA/Common/UserUIConfig"
+import IconHeader from "../../Common/HeaderIcon/IconHeader"
 
 const useDBM =()=>{
     //const [DBMApplySelectedNormData,setDBMApplySelectedNormData] = useState<any[]>([])
@@ -78,7 +79,8 @@ const useDBM =()=>{
     const customCellRenderers = useMemo(() => ({
         tickCellRenderer:DBMTickCellRenderer,
         grapCellRenderer:BPRGraphCellRenderer,
-        suggestionCategoryCellRenderer:SuggestionCategoryCellRenderer
+        suggestionCategoryCellRenderer:SuggestionCategoryCellRenderer,
+        iconHeader: IconHeader,
       }), []);
 
     const getDBMUiConfig = async () => {
@@ -238,7 +240,11 @@ const useDBM =()=>{
             suppressColumnsToolPanel: false,
             tooltipField: "DailyDataGraph",
             suppressHeaderMenuButton: true,
-            headerTooltip: "Daily Data Graph",
+            headerComponent: 'iconHeader',
+            headerComponentParams: {
+                iconSrc: '/assets/img/daily bar graph.svg', 
+                tooltip: 'Daily Data Graph',
+            },
 
         },
         // Sleep: {
@@ -271,7 +277,11 @@ const useDBM =()=>{
               return upwards.includes(id) ? "Up" : "Down";
             },
             tooltipField: "Suggestion",
-            headerTooltip: "Suggestion"
+            headerComponent: 'iconHeader',
+            headerComponentParams: {
+                iconSrc: '/assets/img/suggestion.svg', 
+                tooltip: 'Suggestion',
+            },
         },
 
     }

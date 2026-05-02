@@ -61,7 +61,7 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
 
   const { chartWrapperRef, handleDownload } = useChartDownload({
     title: `Technical Trend | Horizon - ${horizon} Days`,
-    fileName: "AvailabilityTrend",
+    fileName: `Technical Trend | Horizon - ${horizon} Days`,
   });
 
   const onChange = (e: any, key: string) => {

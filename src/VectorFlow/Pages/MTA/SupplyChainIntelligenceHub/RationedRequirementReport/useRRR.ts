@@ -18,6 +18,7 @@ import { UIColumnConfigName, UserUIColumnConfigName } from "../../../../../helpe
 import { useSelector } from "react-redux"
 import { RootState } from "../../../../../redux/store/store"
 import { BPRTagsCellRenderer } from "../BPR/BPRCellRenderers"
+import IconHeader from "../../Common/HeaderIcon/IconHeader"
 
  
   
@@ -272,11 +273,18 @@ const useRRR =()=>{
         colorEcoCellRenderer:RRREcoColorCellRenderer,
         colorDispatchRender:RRRDispatchColorCellRenderer,
         TagsCellRenderer: BPRTagsCellRenderer,
+        iconHeader: IconHeader,
       }), []);
 
     const CustomHeader = {
         Tags: {
+            minWidth:80,
             cellRenderer: 'TagsCellRenderer',
+            headerComponent: 'iconHeader',
+            headerComponentParams: {
+                iconSrc: '/assets/img/tag.svg', 
+                tooltip: 'Tags',
+            },
         },
     }
   const defaultColDefObject = useMemo(()=>{

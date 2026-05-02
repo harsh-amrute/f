@@ -11,6 +11,7 @@ import RequestExpeditingModal from '../../../../../BPR/RequestExpeditingModal';
 import { useSubmitOpenExpediteRequest } from '../../../../../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/Planning';
 import { notifyError, notifyLoader, notifySuccess } from '../../../../../../../../../helpers/notify';
 import { toast } from "react-toastify/unstyled";
+import IconHeader from '../../../../../../../../../VectorFlow/Pages/MTA/Common/HeaderIcon/IconHeader';
 
 import { GridStateContext } from '../../../../../../../../../context/GridStateContext';
 
@@ -51,7 +52,8 @@ const ExpediteParentCreateAvailabilityAtParentGrid = ({data,paginationProps,onOp
     const customCellRenderers = useMemo(() => ({
         grapCellRenderer:BPRGraphCellRenderer,
         tagsCellRenderer:BPRTagsCellRenderer,
-        colorCellRenderer:ColorCellRenderer
+        colorCellRenderer:ColorCellRenderer,
+        iconHeader: IconHeader,
       }), []);
 
       const sideBar:SideBarDef = {
@@ -183,8 +185,12 @@ const ExpediteParentCreateAvailabilityAtParentGrid = ({data,paginationProps,onOp
                     resizable: false,
                     floatingFilter: false,
                     suppressMenu:true,
-                    headerTooltip: "Daily Data Graph",
-                    headerName:"Daily Data Graph",
+                    headerName:"",
+                    headerComponent: 'iconHeader',
+                    headerComponentParams: {
+                        iconSrc: '/assets/img/daily bar graph.svg', 
+                        tooltip: 'Daily Data Graph',
+                    },
                     sortable: false,
                 },
                 t: {
@@ -195,6 +201,11 @@ const ExpediteParentCreateAvailabilityAtParentGrid = ({data,paginationProps,onOp
                     pinned: null,
                     filterParams: {
                         buttons: ['reset'], // Adds Apply and Clear buttons
+                    },
+                    headerComponent: 'iconHeader',
+                    headerComponentParams: {
+                        iconSrc: '/assets/img/tag.svg', 
+                        tooltip: 'Tags',
                     },
                 },
                 pin:{

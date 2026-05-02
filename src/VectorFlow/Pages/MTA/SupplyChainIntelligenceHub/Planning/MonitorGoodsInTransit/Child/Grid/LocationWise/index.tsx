@@ -10,6 +10,7 @@ import ColorCellRenderer from '../../../../../../InsightsAndTrends/BTR/ColorCell
 import { AgeingCellRenderer } from '../../../../../../../../../components/VectorFLOW/commons/AgeingCellRenderer';
 
 import { GridStateContext } from '../../../../../../../../../context/GridStateContext';
+import IconHeader from '../../../../../../../../../VectorFlow/Pages/MTA/Common/HeaderIcon/IconHeader';
 
 const MonitorGITChildLocationWiseGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCategory,currentTab}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any,currentCategory:string,currentTab:string})=>{
 
@@ -23,7 +24,8 @@ const MonitorGITChildLocationWiseGrid = ({data,paginationProps,onOpenDailyDataGr
         grapCellRenderer:BPRGraphCellRenderer,
         tagsCellRenderer:BPRTagsCellRenderer,
         colorCellRenderer:ColorCellRenderer,
-        ageingCellRenderer:AgeingCellRenderer
+        ageingCellRenderer:AgeingCellRenderer,
+        iconHeader: IconHeader,
       }), []);
 
       const sideBar:SideBarDef = {
@@ -217,8 +219,12 @@ const MonitorGITChildLocationWiseGrid = ({data,paginationProps,onOpenDailyDataGr
             floatingFilter: false,
             suppressColumnsToolPanel: false,
             suppressMenu:true,
-            headerTooltip: "Daily Data Graph",
-            headerName:"Daily Data Graph",
+            headerName:"",
+            headerComponent: 'iconHeader',
+            headerComponentParams: {
+                iconSrc: '/assets/img/daily bar graph.svg', 
+                tooltip: 'Daily Data Graph',
+            },
             sortable: false,
         },
         t: {
@@ -230,6 +236,11 @@ const MonitorGITChildLocationWiseGrid = ({data,paginationProps,onOpenDailyDataGr
             filterParams: {
                 buttons: ['reset'], // Adds Apply and Clear buttons
             },
+            headerComponent: 'iconHeader',
+            headerComponentParams: {
+                iconSrc: '/assets/img/tag.svg', 
+                tooltip: 'Tags',
+            },  
         },
         pin:{
             cellRenderer:'colorCellRenderer',

@@ -182,7 +182,7 @@ const Planning = () => {
                 </>
             }
             {
-                showDailyDataGraphModal && <DailyDataGraphModal rowData={dailyData.rowData} chartData={dailyData.chartData} normChangeData={dailyData.normChangeData} masterData={dailyData.masterData} isModalOpen={showDailyDataGraphModal} suggestionData={dailyData.suggestionData} monitoringData={dailyData.monitoringData} virtualNormData={dailyData.virtualNormData} skuKey={"sc"} skuDescKey={"sd"} whKey={"wc"} whDescKey={"wcd"} />
+                showDailyDataGraphModal && <DailyDataGraphModal rowData={dailyData.rowData} chartData={dailyData.chartData} normChangeData={dailyData.normChangeData} masterData={dailyData.masterData} isModalOpen={showDailyDataGraphModal} suggestionData={dailyData.suggestionData} monitoringData={dailyData.monitoringData} virtualNormData={dailyData.virtualNormData} skuKey={"sc"} skuDescKey={"skd"} whKey={"wc"} whDescKey={"wcd"} />
             }
             {
                 showNormChangeHistoryTable && <NormChangeHistoryTable data={dailyData.normChangeData} />
