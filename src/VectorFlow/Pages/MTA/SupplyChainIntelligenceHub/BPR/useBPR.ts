@@ -23,6 +23,7 @@ import { useGetUIConfigData } from "../../../../Services/MTA/Common/UIConfig"
 import { UIColumnConfigName, UserUIColumnConfigName } from "../../../../../helpers/Enum"
 import { useGetState } from "../../../../Services/MTA/Common/UserUIConfig"
 import _ from "lodash"
+import IconHeader from "../../Common/HeaderIcon/IconHeader"
 
 
 const useBPR =()=>{
@@ -199,7 +200,8 @@ const useBPR =()=>{
         submitRemarkCellRenderer:BPRSubmitRemarkCellRenderer,
         remarksCellRenderer:BPRRemarksCellRenderer,
         colorPhysicalInventoryPenColorCellRenderer:BPRPhysicalInventoryPenColorCellRenderer,
-        colorDispatchRender: BPRDispatchPenColorCellRenderer
+        colorDispatchRender: BPRDispatchPenColorCellRenderer,
+        iconHeader: IconHeader,
       }), []);
 
 
@@ -594,8 +596,12 @@ const useBPR =()=>{
             resizable: false,
             floatingFilter: false,
             suppressColumnsToolPanel: false,
-            headerTooltip: "Daily Data Graph",
-            headerName:"Daily Data Graph",
+            headerComponent: 'iconHeader',
+            headerComponentParams: {
+                iconSrc: '/assets/img/daily bar graph.svg', 
+                tooltip: 'Daily Data Graph',
+            },
+            headerName:"",
             sortable:false,
             suppressMenu:true,
         },
@@ -640,6 +646,11 @@ const useBPR =()=>{
             pinned: null,
             filterParams: {
                 buttons: ['reset'], // Adds Apply and Clear buttons
+            },
+            headerComponent: 'iconHeader',
+            headerComponentParams: {
+                iconSrc: '/assets/img/tag.svg', 
+                tooltip: 'Tags',
             },
         }
     }

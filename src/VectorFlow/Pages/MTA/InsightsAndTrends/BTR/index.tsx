@@ -113,7 +113,9 @@ const BufferTrendReport = () => {
           monitoringData={dailyData.monitoringData}
           virtualNormData={dailyData.virtualNormData}
           skuKey={"SKUCode"}
-          whKey={"LocationName"}
+          skuDescKey={"SKUDescription"}
+          whKey={"WhCode"}
+          whDescKey={"LocationName"}
         />
       )}
       {showNormChangeHistoryTable && (

@@ -110,7 +110,7 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
   const { data: locationData, isLoading: isLocationDataLoading } =
     useGetAllLocations();
 
-  const { data: searchData, refetch: triggerSearch } =
+  const { data: searchData, refetch: triggerSearch, isFetching: isSearchFetching } =
     useSearchWHDescription(manualSearchQuery);
 
   const targetSize = 2000;
@@ -180,7 +180,7 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
     ? localLocationOptions
     : searchLocationOptions;
 
-  const isLoading = shouldUseLocalData ? isLocationDataLoading : isSearching;
+  const isLoading = shouldUseLocalData ? isLocationDataLoading : isSearchFetching;
 
   const CustomOption = (props: any) => {
     const optionStyles = useColorOptionStyles();
@@ -673,15 +673,18 @@ export const LocationFilters: React.FC<FilterSectionProps> = ({
                 filterOption={
                   shouldUseLocalData ? customFilterOption : undefined
                 }
-                noOptionsMessage={({ inputValue }) =>
-                  shouldUseLocalData
-                    ? inputValue
-                      ? "No locations found"
-                      : "Start typing to search locations"
-                    : inputValue && hasSearched 
-                    ? "No locations found. Try a different search term."
-                    : "Type to search and click Search button"
-                }
+                noOptionsMessage={({ inputValue }) => {
+                  if (shouldUseLocalData) {
+                    return inputValue ? "No locations found" : "Start typing to search locations";
+                  }
+                  if (isLoading) {
+                    return <VFLoader />;
+                  }
+                  if (inputValue && hasSearched) {
+                    return "No locations found. Try a different search term.";
+                  }
+                  return "Type to search and click Search button";
+                }}
               />
 
               <div style={{ width: 165, marginTop: -44, marginLeft: 4.5 }}>

@@ -45,6 +45,7 @@ import { useGetState } from "../../../../Services/MTA/Common/UserUIConfig"
 import { GridRef } from "../../../../../VectorFlow/types/MDM"
 import BTRColorCellRenderer from "./BTRColorCellRenderer";
 import { BPRTagsCellRenderer } from "../../SupplyChainIntelligenceHub/BPR/BPRCellRenderers";
+import IconHeader from "../../Common/HeaderIcon/IconHeader";
 
 const useBTR = () => {
 
@@ -236,7 +237,7 @@ const useBTR = () => {
                     tagsCellRenderer: BPRTagsCellRenderer,
                     availabilityToolTip: AvailabilityToolTip,
                     // paginationPageSize:parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100'),
-
+                    iconHeader: IconHeader,
 
                 },
                 suppressDragLeaveHidesColumns: true,
@@ -533,9 +534,13 @@ const useBTR = () => {
             floatingFilter: false,
             suppressColumnsToolPanel: false,
             pinned: 'left',
-            headerTooltip: "Daily Data Graph",
             sortable:false,
-            headerName:"Daily Data Graph",
+            headerName:"",
+            headerComponent: 'iconHeader',
+            headerComponentParams: {
+                iconSrc: '/assets/img/daily bar graph.svg', 
+                tooltip: 'Daily Data Graph',
+            },
             suppressMenu:true,
         },
         Category: {
@@ -543,16 +548,31 @@ const useBTR = () => {
             tooltipField: "Category",
             tooltipComponent: 'categoryToolTip',
             pinned: 'left',
+            headerComponent: 'iconHeader',
+            headerComponentParams: {
+                iconSrc: '/assets/img/category.svg', 
+                tooltip: 'Category',
+            },
         },
         Availability: {
             cellRenderer: 'availabilityCellRenderer',
             tooltipField: "Availability",
             tooltipComponent: 'availabilityToolTip',
             pinned: 'left',
+            headerComponent: 'iconHeader',
+            headerComponentParams: {
+                iconSrc: '/assets/img/availability.svg', 
+                tooltip: 'Availability',
+            },
         },
         Tags: {
             cellRenderer: 'tagsCellRenderer',
             pinned: 'left',
+            headerComponent: 'iconHeader',
+            headerComponentParams: {
+                iconSrc: '/assets/img/tag.svg', 
+                tooltip: 'Tags',
+            },
         },
         SKUCode: {
             pinned: 'left',

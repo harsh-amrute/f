@@ -525,6 +525,9 @@ const usePlanning = ()=>{
             if(currentTab==='expediteDispatches'){
                 return data.data.data.data.expediteDispatches
             }
+            if(currentTab === "custom"){
+                return data.data.data.data.expediteDispatches
+            }
             return data.data.data.data.createAvailabilityAtParent
         }
         if(currentPageData.category==='expedite' && currentPageData.type==='parent'){

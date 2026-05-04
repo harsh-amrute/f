@@ -136,7 +136,9 @@ const BPR = () => {
           monitoringData={dailyData.monitoringData}
           virtualNormData={dailyData.virtualNormData}
           skuKey={"SKUCode"}
-          whKey={"WHName"}
+          skuDescKey={"SKUName"}
+          whKey={"WHCode"}
+          whDescKey={"WHName"}
         />
       )}
       {showNormChangeHistoryTable && (

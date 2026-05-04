@@ -26,6 +26,7 @@ import { ColDef } from 'ag-grid-enterprise'
 import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
 import { useGetUIConfigData } from '../../../../Services/MTA/Common/UIConfig'
 import { UIColumnConfigName, UserUIColumnConfigName } from '../../../../../helpers/Enum'
+import IconHeader from '../../Common/HeaderIcon/IconHeader'
 
 const useResearchInsights = () => {
 
@@ -196,7 +197,8 @@ const useResearchInsights = () => {
         grapCellRenderer:BPRGraphCellRenderer,
         colorTechCellRenderer:BPRTechColorCellRenderer,
         colorEcoCellRenderer:BPREcoColorCellRenderer,
-        tagsCellRenderer:BPRTagsCellRenderer
+        tagsCellRenderer:BPRTagsCellRenderer,
+        iconHeader: IconHeader,
       }), []);
 
 
@@ -681,20 +683,29 @@ const useResearchInsights = () => {
             resizable: false,
             floatingFilter: false,
             suppressColumnsToolPanel: false,
-            headerTooltip: "Daily Data Graph",
             sortable:false,
             suppressMenu:true,
-            headerName:"Daily Data Graph",
+            headerName:"",
+            headerComponent: 'iconHeader',
+            headerComponentParams: {
+                iconSrc: '/assets/img/daily bar graph.svg', 
+                tooltip: 'Daily Data Graph',
+            },
 
         },
         tags: {
             cellRenderer: 'tagsCellRenderer',
-            width: 100,
-            minWidth: 100,
+            width: 80,
+            minWidth: 80,
             filter: true,
             pinned: null,
             filterParams: {
                 buttons: ['reset'], // Adds Apply and Clear buttons
+            },
+            headerComponent: 'iconHeader',
+            headerComponentParams: {
+                iconSrc: '/assets/img/tag.svg', 
+                tooltip: 'Tags',
             },
         }
     }

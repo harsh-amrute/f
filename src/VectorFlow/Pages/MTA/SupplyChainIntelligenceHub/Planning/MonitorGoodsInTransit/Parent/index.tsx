@@ -12,6 +12,7 @@ import ColorCellRenderer from '../../../../InsightsAndTrends/BTR/ColorCellRender
 // import { RootState } from '../../../../../../../redux/store/store';
 import { AgeingCellRenderer } from '../../../../../../../components/VectorFLOW/commons/AgeingCellRenderer';
 import { GridStateContext } from '../../../../../../../context/GridStateContext';
+import IconHeader from '../../../../../../../VectorFlow/Pages/MTA/Common/HeaderIcon/IconHeader';
 
 const MonitorGITParent = ({data,paginationProps,onOpenDailyDataGraph,currentCategory,currentTab, }:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any,currentCategory:string,currentTab:string})=>{
 
@@ -26,7 +27,8 @@ const MonitorGITParent = ({data,paginationProps,onOpenDailyDataGraph,currentCate
         grapCellRenderer:BPRGraphCellRenderer,
         tagsCellRenderer:BPRTagsCellRenderer,
         colorCellRenderer:ColorCellRenderer,
-        ageingCellRenderer:AgeingCellRenderer
+        ageingCellRenderer:AgeingCellRenderer,
+        iconHeader: IconHeader,
       }), []);
 
       const sideBar:SideBarDef = {
@@ -167,8 +169,12 @@ const MonitorGITParent = ({data,paginationProps,onOpenDailyDataGraph,currentCate
             floatingFilter: false,
             suppressColumnsToolPanel: false,
             suppressMenu:true,
-            headerTooltip: "Daily Data Graph",
-            headerName:"Daily Data Graph",
+            headerName:"",
+            headerComponent: 'iconHeader',
+            headerComponentParams: {
+                iconSrc: '/assets/img/daily bar graph.svg', 
+                tooltip: 'Daily Data Graph',
+            },
             sortable: false,
         },
         t: {

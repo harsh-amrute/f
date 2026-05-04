@@ -192,7 +192,7 @@ export const CustomizedChartComponent = ({chartOptions,chartParams, themeUi}:any
   
   const { chartWrapperRef, handleDownload } = useChartDownload({
     title: chartParams.title,
-    fileName: "AvailabilityTrend",
+    fileName: "ExcessInventoryTrend",
   });
 
   return (

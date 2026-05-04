@@ -315,10 +315,7 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
           };
         }
       });
-      setRowSelections((prev) => ({
-        ...prev,
-        ...restoredRowSelections
-      }));
+      setRowSelections(restoredRowSelections);
 
       setSelectedOptions({
         onHandInventoryColor: forOnHandInventoryColor.map((f) => f.value),
@@ -368,7 +365,7 @@ export const AvailabilityFilters: React.FC<AvailabilityFilterProps> = ({
   const isBTRReport =
     window.location.pathname === "/mta/insights-and-trends/buffer-trend-report" || window.location.pathname === '/mta/supply-chain-intelligence-hub/availability-report';
 
-  const isToggleTab = ["/mta/insights-and-trends/buffer-trend-report", "/mta/supply-chain-intelligence-hub/bpr"].includes(window.location.pathname);
+  const isToggleTab = ["/mta/insights-and-trends/buffer-trend-report", "/mta/supply-chain-intelligence-hub/bpr", "/mta/supply-chain-intelligence-hub/availability-report"].includes(window.location.pathname);
 
   const shouldShowColorFilters =
     currCategory === "BPR" || currCategory === "BOR" || currCategory === "RRR";

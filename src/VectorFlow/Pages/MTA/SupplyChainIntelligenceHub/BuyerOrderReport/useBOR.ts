@@ -25,6 +25,7 @@ import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
 import { useGetUIConfigData } from "../../../../Services/MTA/Common/UIConfig";
 import { UIColumnConfigName, UserUIColumnConfigName } from "../../../../../helpers/Enum"
 import { useGetState } from "../../../../Services/MTA/Common/UserUIConfig"
+import IconHeader from "../../Common/HeaderIcon/IconHeader"
 
 
 export const useBOR =()=>{
@@ -102,6 +103,7 @@ export const useBOR =()=>{
         submitRemarkCellRenderer:BPRSubmitRemarkCellRenderer,
         remarksCellRenderer:BORRemarksCellRenderer,
         TagsCellRenderer: BPRTagsCellRenderer,
+        iconHeader: IconHeader,
         
       }), []);
 
@@ -632,7 +634,13 @@ export const useBOR =()=>{
       floatingFilter: false,
     },
     Tags: {
+      minWidth: 80,
       cellRenderer: 'TagsCellRenderer',
+      headerComponent: 'iconHeader',
+      headerComponentParams: {
+          iconSrc: '/assets/img/tag.svg', 
+          tooltip: 'Tags',
+      },
     },
   }
   
