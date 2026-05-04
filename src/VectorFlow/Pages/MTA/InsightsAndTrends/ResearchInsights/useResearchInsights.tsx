@@ -71,6 +71,8 @@ const useResearchInsights = () => {
     const [expandedGraphId,setExpandedGraphId] = useState<1 | 2>(1)
     const [generalFilterOptions,setGeneralFilterOptions] = useState();
     const [ResearchInsightsColumns,setResearchInsightsColumns] = useState<ColDef[]>([])
+    const [isMasterState , setIsMasterState] = useState<boolean>(false);
+
 
 
     const showDailyDataGraphModal = useSelector((state:RootState) => state.mta.showDailyDataGraphModal);
@@ -162,14 +164,18 @@ const useResearchInsights = () => {
     useEffect(() => {
         if (internalRef && gridState && gridState.columns) {
             const result = internalRef.api.applyColumnState({ state: gridState.columns, applyOrder: true });
-            internalRef?.api.sizeColumnsToFit();
+            if(isMasterState){
+                internalRef?.api.sizeColumnsToFit();
+                setIsMasterState(false);
+            }
             if (!result) {
                 console.error("Failed to apply column state", result);
             }
         }
-    }, [internalRef, gridState]);
+    }, [internalRef, gridState,ResearchInsightsData]);
 
     const onResetCallback = async () => {
+        setIsMasterState(true);
         setGridState({
             charts: [],
             columns: masterUIConfig,
@@ -302,6 +308,7 @@ const useResearchInsights = () => {
     }
 
     const handlePageChange = async (pageNo: number) => {
+        getRIUiConfig()
         resetState()
         setCurrGridPage(pageNo)
         try {

@@ -42,7 +42,8 @@ const RRR = () => {
   onResetCallback,
   lastRunDate,
   userPageSize,
-  savePageSize
+  savePageSize,
+  handleChangePage
 } = useRRR();
 
   const [isDisabled, setIsDisabled]= useState<boolean>(true)
@@ -146,7 +147,7 @@ const RRR = () => {
                 totalRows={RRRDataCount} 
                 currentPage={currentPage} 
                 rowsPerPage={userPageSize}
-                handleChangePage={(e)=>getRRRRowData(e , userPageSize)} 
+                handleChangePage={handleChangePage} 
                 resetGridRef={ref} 
                 isDisabled={isDisabled}
                 customPageSizeEnabled={true}

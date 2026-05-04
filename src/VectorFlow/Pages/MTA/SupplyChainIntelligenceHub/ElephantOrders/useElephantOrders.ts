@@ -47,6 +47,7 @@ const useElephantOrders= ()=>{
     const {mutateAsync:submitDueDates} = useSubmitDueDates();
     const [editedDueDateRows, setEditedDueDateRows] = useState<any[]>([]);
 
+    const [isMasterState , setIsMasterState] = useState<boolean>(false);
 
 
     const handleDueDateChange = (
@@ -297,12 +298,15 @@ const useElephantOrders= ()=>{
     useEffect(() => {
         if (internalRef && gridState && gridState.columns) {
             const result = internalRef?.api.applyColumnState({ state: gridState.columns, applyOrder: true });
-            internalRef?.api.sizeColumnsToFit();
+            if(isMasterState){
+                internalRef?.api.sizeColumnsToFit();
+                setIsMasterState(false);
+            }
             if (!result) {
                 console.error("Failed to apply column state");
             }
         }
-    }, [internalRef, gridState]);
+    }, [internalRef, gridState , RowData]);
  
     const GetDataCount = async (filter?:any)=>{
         const DataCount= await getEODataCount({
@@ -342,11 +346,17 @@ const useElephantOrders= ()=>{
     }
 
     const onResetCallback = async () => {
+        setIsMasterState(true);
         setGridState({
           charts: [],
           columns: masterUIConfig,
           pivot: false,
         })
+    }
+
+    const handleChangePage = async (pageNumber:any)=>{
+        getEOUiConfig();
+        await GetEOData(pageNumber);
     }
 
     const CustomHeader = {
@@ -524,7 +534,8 @@ const useElephantOrders= ()=>{
         onResetCallback,
         onSubmitDueDate,
         savePageSize,
-        userPageSize
+        userPageSize,
+        handleChangePage
     }
     
 

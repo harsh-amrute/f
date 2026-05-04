@@ -65,7 +65,8 @@ const useTotalRequirementReport =()=>{
 
     const [gridState, setGridState] = useState<any>()
     const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
-    
+
+    const [isMasterState , setIsMasterState] = useState<boolean>(false);
 
     // const [rowData,setRowData] = useState([]);
 
@@ -114,14 +115,18 @@ const useTotalRequirementReport =()=>{
     useEffect(() => {
         if (internalRef && gridState && gridState.columns) {
             const result = internalRef.api.applyColumnState({ state: gridState.columns, applyOrder: true });
+            if(isMasterState){
             internalRef?.api.sizeColumnsToFit();
+            setIsMasterState(false);
+            }
             if (!result) {
                 console.error("Failed to apply column state", result);
             }
         }
-    }, [internalRef, gridState]);
+    }, [internalRef, gridState,rowData]);
 
     const onResetCallback = async () => {
+        setIsMasterState(true);
         setGridState({
             charts: [],
             columns: masterUIConfig,

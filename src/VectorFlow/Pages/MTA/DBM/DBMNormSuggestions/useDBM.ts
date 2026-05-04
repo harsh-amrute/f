@@ -44,6 +44,8 @@ const useDBM =()=>{
 
     const [exportExcelRowData,setExportExcelRowData] = useState<Array<any>>([])
 
+    const [isMasterState , setIsMasterState] = useState<boolean>(false);
+
     const exportTimeout = useRef<NodeJS.Timeout | null>(null);
 
     const { mutateAsync: getUiConfig, isLoading: isUIConfigLoading } = useGetUIConfigData();
@@ -141,13 +143,21 @@ const useDBM =()=>{
   
     useEffect(() => {
         if (internalRef && gridState && gridState.columns) {
-            const result = internalRef.api.applyColumnState({ state: gridState.columns, applyOrder: true });
-            internalRef?.api.sizeColumnsToFit();
+            setTimeout(() => {  // small delay ensures grid is fully rendered
+            const result = internalRef.api.applyColumnState({ 
+                state: gridState.columns, 
+                applyOrder: true 
+            });
+            if (isMasterState) {
+                internalRef.api.sizeColumnsToFit();
+                setIsMasterState(false);
+            }
             if (!result) {
                 console.error("Failed to apply column state", result);
             }
+        }, 1000);
         }
-    }, [internalRef, gridState]);
+    }, [internalRef, gridState , DBMRowData]);
 
     const onOpenDailyDataGraph = async (params:any) => {
         const payload:any = {
@@ -196,6 +206,7 @@ const useDBM =()=>{
 
     
     const onResetCallback = async () => {
+        setIsMasterState(true);
         setGridState({
             charts: [],
             columns: masterUIConfig,
@@ -287,6 +298,7 @@ const useDBM =()=>{
     }
 
     const handleChangePage = async (pageNo:any) => {
+        getDBMUiConfig();
         setCurrentPage(pageNo);
         getDBMRowData(currentFilter,pageNo);
     }

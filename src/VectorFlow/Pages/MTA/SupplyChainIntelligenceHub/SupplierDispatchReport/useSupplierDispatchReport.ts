@@ -46,6 +46,7 @@ const useSupplierDispatchReport= ()=>{
     const rowsPerPage = parseInt(SUPPLIER_DISPATCH_REPORT_PER_PAGE || '100');
     const [userPageSize , setUserPageSize]  = useState<number>(SUPPLIER_DISPATCH_REPORT_PER_PAGE?parseInt(SUPPLIER_DISPATCH_REPORT_PER_PAGE):100) 
      
+    const [isMasterState , setIsMasterState] = useState<boolean>(false);
  
 
     const customCellRenderers = useMemo(() => (
@@ -128,12 +129,15 @@ const useSupplierDispatchReport= ()=>{
     useEffect(() => {
         if (internalRef && gridState && gridState.columns) {
             const result = internalRef?.api.applyColumnState({ state: gridState.columns, applyOrder: true });
-            internalRef?.api.sizeColumnsToFit();
+            if(isMasterState){
+                internalRef?.api.sizeColumnsToFit();
+                setIsMasterState(false);
+            }
             if (!result) {
                 console.error("Failed to apply column state", result);
             }
         }
-    }, [internalRef, gridState]);
+    }, [internalRef, gridState , RowData]);
  
     const GetDataCount = async (filter?:any)=>{
         const DataCount= await getSDRDataCount({
@@ -173,6 +177,7 @@ const useSupplierDispatchReport= ()=>{
     }
 
     const onResetCallback = async () => {
+        setIsMasterState(true);
         setGridState({
           charts: [],
           columns: masterUIConfig,

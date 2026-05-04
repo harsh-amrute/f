@@ -106,6 +106,7 @@ const useInTransitWhereAbouts = ()=>{
     const IN_TRANSIT_WHEREABOUTS = EnvConfig['IN_TRANSIT_WHEREABOUTS_ROWS_PER_PAGE']; 
     const [userPageSize , setUserPageSize]  = useState<number>(IN_TRANSIT_WHEREABOUTS?parseInt(IN_TRANSIT_WHEREABOUTS):100) 
 
+    const [isMasterState , setIsMasterState] = useState<boolean>(false);
 
     const customCellRenderers = useMemo(() => ({
         currentLocationCellRenderer:CurrentLocationCellRenderer,
@@ -176,14 +177,18 @@ const useInTransitWhereAbouts = ()=>{
   useEffect(() => {
     if (internalRef && gridState && gridState.columns) {
       const result = internalRef.api.applyColumnState({ state: gridState.columns, applyOrder: true });
-      internalRef?.api.sizeColumnsToFit();
+      if(isMasterState){
+          internalRef?.api.sizeColumnsToFit();
+          setIsMasterState(false);
+      }
       if (!result) {
         console.error("Failed to apply column state", result);
       }
     }
-  }, [internalRef, gridState]);
+  }, [internalRef, gridState , rowData]);
     
   const onResetCallback = async () => {
+    setIsMasterState(true);
     setGridState({
       charts: [],
       columns: masterUIConfig,
