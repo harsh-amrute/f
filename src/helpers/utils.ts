@@ -2354,7 +2354,7 @@ export const generateSesonalityChartData = (row: any, data: any) => {
   });
 
   const pointRadius: any[] = [];
-  let tempNorm = 0; //used for filling data when norm not changed in below function
+  let tempNorm = row.onm; //used for filling data when norm not changed in below function
   // const normData = data.dailyData.map((d:DailyData)=>{
   //   const closestNormChange:NormHistory = data.norm.find((o:NormHistory)=>+(new Date(o.date)) === +(new Date(d.date)));
   //   if(closestNormChange) {
