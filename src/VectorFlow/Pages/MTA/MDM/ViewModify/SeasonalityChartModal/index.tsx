@@ -62,7 +62,15 @@ const SeasonalityChartModal = ({
       const stockDataSet = context.chart.data.datasets.find(
         (data: ChartDataset) => data.label === "Stock"
       );
-      return stockDataSet.data[dataIndex];
+      return stockDataSet.data[dataIndex] ?? "—";
+    };
+
+    const getCurrentNorm = () => {
+      const dataIndex = tooltip.dataPoints[0].dataIndex;
+      const normDataSet = context.chart.data.datasets.find(
+        (data: ChartDataset) => data.label === "Norm"
+      );
+      return normDataSet.data[dataIndex] ?? "—";
     };
 
     const getCurrentGIT = () => {
@@ -70,7 +78,7 @@ const SeasonalityChartModal = ({
       const gitDataSet = context.chart.data.datasets.find(
         (data: ChartDataset) => data.label === "GIT"
       );
-      return gitDataSet.data[dataIndex];
+      return gitDataSet.data[dataIndex] ?? "—";
     };
 
     const getNormChangeReason = () => {
@@ -92,15 +100,17 @@ const SeasonalityChartModal = ({
       if (normObject) {
         return normObject.change_reason;
       }
-      return;
+      return "—";
     };
 
     const { chart, tooltip } = context;
 
-    let tooltipEl: HTMLElement = chart.canvas.parentNode.querySelector("div");
+    // let tooltipEl: HTMLElement = chart.canvas.parentNode.querySelector("div");
+    let tooltipEl: HTMLElement = chart.canvas.parentNode.querySelector(".chartjs-tooltip");
 
     if (!tooltipEl) {
       tooltipEl = document.createElement("div");
+      tooltipEl.className = "chartjs-tooltip";
       tooltipEl.style.width = "160px";
       tooltipEl.style.height = "200px";
       tooltipEl.style.backgroundColor = "#ffffff";
@@ -111,6 +121,8 @@ const SeasonalityChartModal = ({
       tooltipEl.style.flexDirection = "column";
       tooltipEl.style.justifyContent = "space-evenly";
       tooltipEl.style.borderRadius = "4px";
+      tooltipEl.style.pointerEvents = "none"
+      tooltipEl.style.zIndex = '9999';
     }
 
     if (tooltip.opacity === 0) {
@@ -118,6 +130,7 @@ const SeasonalityChartModal = ({
       return;
     }
 
+    if (!tooltip.dataPoints || tooltip.dataPoints.length === 0) return;
     const toolTipHTML = `
     <h3 class="tooltip-title">${getCurrentDate()}</h3>
     <div class="tooltip-row">
@@ -126,7 +139,7 @@ const SeasonalityChartModal = ({
     </div>
     <div class="tooltip-row">
       <p>Norm</p>
-      <p class="font-bold">${tooltip.dataPoints[0].raw}</p>
+      <p class="font-bold">${getCurrentNorm()}</p>
     </div>
     <div class="tooltip-row">
       <p>Original Norm</p>
@@ -253,7 +266,7 @@ const SeasonalityChartModal = ({
         position: "bottom",
       },
       tooltip: {
-        intersect: true,
+        intersect: false,
         enabled: false,
         external: customTooltip,
         position: "nearest",
