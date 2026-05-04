@@ -677,18 +677,13 @@ useEffect(() => {
     const techColDefs = useMemo((): Array<ColDef> => {
         if (initialColumnState) {
             const colDefs = getColumnDefinationsMTA(initialColumnState, CustomHeader, Extras());
-            console.log("coldef 1",colDefs);
-            
             colDefs.map((colDef: any) => {
              if (initialColumnState.find((initialColumnState: any) => initialColumnState.Col_Code === colDef.colId && !['Availability', 'Category', 'Tags', 'dailydatagraph'].includes(initialColumnState.Col_Code))) {
-                    console.log("vpw",colDef.colId);
-                    
                     colDef.minWidth = 80;
                 }
                 return colDef
             })
-            console.log("coldef 2",colDefs);
-            
+
             const result = colDefs.filter((r: any) => (!r.colId?.startsWith('D') || r.colId === 'DailyDataGraph') || (r.colId.startsWith('D') && parseInt(r.colId.slice(1)) > 90 - horizon))
             return result;
         } else return [];
@@ -706,7 +701,7 @@ useEffect(() => {
 
             // Set column width for all columns except date columns
             colDefs.map((colDef: any) => {
-                if (initialColumnState.find((initialColumnState: any) => initialColumnState.Col_Code === colDef.colId)) {
+                if (initialColumnState.find((initialColumnState: any) => initialColumnState.Col_Code === colDef.colId && !['Availability', 'Category', 'Tags', 'dailydatagraph'].includes(initialColumnState.Col_Code))) {
                     colDef.minWidth = 80;
                 }
                 return colDef
@@ -749,7 +744,6 @@ useEffect(() => {
         }
     }, [ecoInternalRef, ecoColDefs, currentTab]);
 
-    console.log("initialcolumns",initialColumnState);
     
     const renderView = () => {
         switch (currentTab.id) {
