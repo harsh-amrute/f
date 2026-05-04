@@ -48,6 +48,8 @@ const BufferTrends = () => {
     onDeleteFilter,
     themeUI,
     lastRunDate,
+    onTabChange,
+    activeTab
   } = useBufferTrends();
 
   const summaryColumnDefs: BPRViewTableColDef[] = [
@@ -186,7 +188,7 @@ const BufferTrends = () => {
 
   useEffect(() => {
     if (currentGraphData?.length) BufferTrendsDataLoad();
-  }, [currentTab]);
+  }, [currentTab, activeTab]);
 
   return (
     <>
@@ -206,6 +208,8 @@ const BufferTrends = () => {
         lastRunDate={lastRunDate}
         setMultiFilter={setMultiFilterState}
         onDelete={onDeleteFilter}
+        onTabChange={(val: any) => onTabChange(val)}
+        activeTab={activeTab}
       />
       {lastRunDate && <LastRunDateComponent lastRunDate={lastRunDate} />}
 
@@ -221,12 +225,12 @@ const BufferTrends = () => {
             tabs={[
               {
                 id: "technical View",
-                label: "On-Hand Inv. Availability Trend",
+                label: activeTab==='virtualnorm' ? "On-Hand Inv. Availability Trend" : "Tech Inv. Availability Trend",
                 value: "tech",
               },
               {
                 id: "economicalView",
-                label: "Pipeline Inv. Availability Trend",
+                label: activeTab==='virtualnorm' ? "Pipeline Inv. Availability Trend" : "Eco Inv. Availability Trend",
                 value: "eco",
               },
             ]}

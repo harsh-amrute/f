@@ -5496,6 +5496,41 @@ export const CsvExportMTA = async (payload: any, filename = "ReportFile") => {
   }
 };
 
+
+export const ExcelExportMTA = async (payload: any, filename = "ReportFile") => {
+  try {
+    const response = await axios.post(
+      process.env.REACT_APP_API_HOST + `api/mta/GetExportDataExcelAsync`,
+      payload,
+      {
+        withCredentials: true, 
+        responseType: 'blob',  
+        headers: {
+            "Content-Type": "application/json" 
+        }
+      }
+    );
+ 
+    const blob = await response.data;
+    const contentType = response.headers['content-type']; 
+    const fileExtension = getFileExtensionFromContentType(contentType);
+    const downloadFileName = `${filename}__${format(Date.now(), "dd-MM-yyyy")}.${fileExtension}`;
+ 
+    const blobUrl = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = blobUrl;
+    link.setAttribute("download", downloadFileName);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(blobUrl);
+  } catch (e) {
+    console.error("Error downloading file:", e);
+    notifyError("Data too large to export. Please apply filters to reduce the data size.");
+    return;
+  }
+};
+
 // Optional helper
 const getFileExtensionFromContentType = (contentType: string | null) => {
   switch (contentType) {

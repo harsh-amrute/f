@@ -116,7 +116,7 @@ const BuyerOrderReport = ()=>{
           
             
               <div style={{ height: '78vh' }}>
-                {showDailyDataGraphModal && <DailyDataGraphModal rowData={dailyData.rowData} chartData={dailyData.chartData} normChangeData={dailyData.normChangeData} masterData={dailyData.masterData} isModalOpen={showDailyDataGraphModal} suggestionData={dailyData.suggestionData} monitoringData={dailyData.monitoringData} skuKey={'SKUCode'} whKey={'WHDescription'} />}
+                {showDailyDataGraphModal && <DailyDataGraphModal rowData={dailyData.rowData} chartData={dailyData.chartData} normChangeData={dailyData.normChangeData} masterData={dailyData.masterData} isModalOpen={showDailyDataGraphModal} suggestionData={dailyData.suggestionData} monitoringData={dailyData.monitoringData} virtualNormData={dailyData.virtualNormData} skuKey={'SKUCode'} whKey={'WHDescription'} />}
                 {showNormChangeHistoryTable && <NormChangeHistoryTable data={dailyData.normChangeData} />}
 
                 <VFTable

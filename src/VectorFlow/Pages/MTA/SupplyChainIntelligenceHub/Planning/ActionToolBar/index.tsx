@@ -5,6 +5,7 @@ import { useState, useMemo, useContext, useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
 import useSaveAllState from "../../../../../../hooks/useSaveAllState";
 import Tooltip from "../../../../../../../src/VectorFlow/Pages/MTO/Common/Tooltip";
+import Select from "react-select";
 import {
   SCTaskBarContainer,
   SCGoBackContainer,
@@ -64,6 +65,7 @@ interface ActionToolBarProps {
   generalFilterOptions?: any;
   onTabChange?: (val: 'norm' | 'virtualnorm') => void;
   activeTab?: 'norm' | 'virtualnorm';
+  onExportToCsvCallBack?:any;
 }
 
 const ActionToolBar = ({
@@ -81,6 +83,7 @@ const ActionToolBar = ({
   handleGoButtonForSleep,
   genericRecordCount,
   onExportToExcelCallBack,
+  onExportToCsvCallBack,
   onApplyFilter,
   multiFilter,
   setMultiFilter,
@@ -152,6 +155,12 @@ const ActionToolBar = ({
     // Handle reset logic if needed beyond the modal
   };
   const [tabKey, setTabKey] = useState(0);
+  const [selectedOption ,setSelectedOption] = useState(null);
+  const themeVariant = themeUi === "REGALBLAZE" ? "regalblaze" : "magenta";
+    const exportOptions = [
+    { value: "Excel", label: "Excel", name: "Excel" },
+    { value: "CSV", label: "CSV", name: "CSV" },
+  ];
 
   useEffect(() => {
     setTabKey(prev => prev + 1);
@@ -309,6 +318,7 @@ const ActionToolBar = ({
         if (pathname === "/mta/supply-chain-intelligence-hub/bpr") {
           return (
             <MTAVFMultiFilter
+              key={activeTab}
               isOpen={isFilterOpen}
               onApply={handleApplyFilter}
               multiFilter={multiFilter}
@@ -316,6 +326,7 @@ const ActionToolBar = ({
               onReset={handleResetFilters}
               currCategory={currCategory}
               reportName={UIColumnConfigName.BPR}
+              activeTab={activeTab}
             />
           );
         }
@@ -432,6 +443,7 @@ const ActionToolBar = ({
         ) {
           return (
             <MTAVFMultiFilter
+              key={activeTab}
               isOpen={isFilterOpen}
               onApply={handleApplyFilter}
               multiFilter={multiFilter}
@@ -439,6 +451,7 @@ const ActionToolBar = ({
               onReset={handleResetFilters}
               currentTab={currentTab}
               reportName={UIColumnConfigName.BuffertrendReport}
+              activeTab={activeTab}
             />
           );
         }
@@ -947,7 +960,11 @@ const ActionToolBar = ({
             )
           )} */}
           <div className={SCCustomActionsContainer}>
-            {(pathname === "/mta/supply-chain-intelligence-hub/bpr" || pathname === "/mta/supply-chain-intelligence-hub/availability-report") && (
+            {(pathname === "/mta/supply-chain-intelligence-hub/bpr" || 
+              pathname === "/mta/insights-and-trends/buffer-trend-report" || 
+              pathname === "/mta/insights-and-trends/buffer-trends" || 
+              pathname === "/mta/supply-chain-intelligence-hub/availability-report"
+            ) && (
               <div style={{ zoom: 0.9, marginRight: "20px" }}>
                 <VFFloatingTab
                   key={tabKey}
@@ -987,11 +1004,93 @@ const ActionToolBar = ({
               )}
 
             {/* <VFButton themeUi={themeUi} onClick={()=>console.log("test")}>   Edit Filter</VFButton> */}
+            {currCategory === "BTR" && currentTab !== "both"  &&
+                <div style={{ width: '130px'}}>
+                <Select
+                    options={exportOptions}
+                    placeholder="Export"
+                    value={selectedOption}
+                    isSearchable={false}
+                    menuPortalTarget={document.body}  // ← renders menu outside clipped containers
+                    menuPosition="fixed"  
+                    onChange={(selected:any) => {
+                    if(selected?.value === "Excel"){
+                      onExportToExcelCallBack();
+                    }
+                    if(selected?.value === "CSV"){
+                      onExportToCsvCallBack();
+                    }
+                      setSelectedOption(null);
+                    }}
+                  styles={{
+                    menuPortal: (baseStyles: any) => ({
+                      ...baseStyles,
+                      zIndex: 9999,
+                      cursor: "pointer",
+                    }),
+                    menuList: (baseStyles: any) => ({
+                      ...baseStyles,
+                      cursor: "pointer",
+                    }),
+                    control: (baseStyles:any) => ({
+                      ...baseStyles,
+                      background: themeVariant === "magenta"
+                        ? "linear-gradient(74deg, #820F4C 0%, #BC3D81 100%)"
+                        : "linear-gradient(261deg, #FCA311 0%, #CB830E 100%)",
+                      borderRadius: "6px",
+                      fontSize: "16px",
+                      fontFamily: "Roboto",
+                      letterSpacing: "0px",
+                      fontWeight: 300,
+                      width: "130px",
+                      color: "#FFFFFF",
+                      border: "none",
+                      boxShadow: "-5px 4px 10px #919191B3",
+                      textAlign:"center",
+                      minHeight: "48px",
+                      height: "48px",
+                    }),
+                    placeholder: (baseStyles:any) => ({
+                      ...baseStyles,
+                      color: "#FFFFFF", 
+                      cursor: "pointer !important",
+                    }),
+                    
+                    dropdownIndicator: (baseStyles:any) => ({
+                      ...baseStyles,
+                      color: "#FFFFFF",
+                      cursor: "pointer !important",
+                      "&:hover": { color: "#FFFFFF"},
+                    }),
+                    
+                    indicatorSeparator: (baseStyles:any) => ({
+                      ...baseStyles,
+                      backgroundColor: "rgba(255, 255, 255, 0.4)", 
+                      cursor: "pointer !important",// A subtle transparent white line
+                    }),
 
+                    option: (baseStyles:any, state:any) => ({
+                      ...baseStyles,
+                      backgroundColor: state.isSelected 
+                        ? (themeVariant === "magenta" ? "#820F4C" : "#FCA311")
+                        : state.isFocused ? "rgba(0,0,0,0.05)" : "white",
+                      cursor: "pointer !important",
+                      "&:hover":{
+                          color: "#FFFFFF",
+                                background: themeVariant === "magenta"
+                        ? "linear-gradient(74deg, #820F4C 0%, #BC3D81 100%)"
+                        : "linear-gradient(261deg, #FCA311 0%, #CB830E 100%)",
+                      },
+                      fontSize:"9px"
+                    })
+                  }}
+                />
+              </div>
+              }
             {currCategory === "BufferTrend" ? null : (
               <>
                 {currCategory === "GuidedInsightchronicunavailability" ||
-                ((currCategory === "BTR" || currCategory === "AvailabilityReport") && (currentTab === "both" || currentTab === "summary")) ? null : (
+              ( currCategory === "BTR" || ((currCategory === "AvailabilityReport") && (currentTab === "both" || currentTab === "summary"))) ? null : (
                   <>
                     {isFilterButtonVisible && (
                       <div className={SCVerticalDivider} />
@@ -1016,7 +1115,7 @@ const ActionToolBar = ({
                           alt=""
                         />
                         <p>
-                          {currCategory === "BTR" ||
+                          {
                           currCategory === "AvailabilityReport" ||
                           currCategory === "BPR" ||
                           currCategory === "RRR" ||
