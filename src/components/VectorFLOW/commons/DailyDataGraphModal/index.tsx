@@ -825,7 +825,7 @@ const DailyDataGraphModal = ({
 
   const truncate = (text?: string, limit = 15) => {
     if (!text) return "—";
-    return text.length > limit ? text.slice(0, limit) + "…" : text;
+    return text?.length > limit ? text.slice(0, limit) + "…" : text;
   };
   return (
     <VFModalCard

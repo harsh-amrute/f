@@ -15,7 +15,7 @@ interface InfoBarProps {
 const DailyDataInfoBar = ({ items }: InfoBarProps) => {
   return (
     <div className={SCDailyDataInfoBar}>
-      {items.map((item, index) => (
+      {items?.map((item, index) => (
         <React.Fragment key={index}>
           <span
             style={{
