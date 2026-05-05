@@ -38,7 +38,8 @@ const RRRColorBandwise = () => {
   generalFilterOptions,
   onResetCallback,
   savePageSize,
-  userPageSize
+  userPageSize,
+  handleChangePage
 } = useRRRColorBandwise();
 
   const [isDisabled, setIsDisabled]= useState<boolean>(true)
@@ -140,7 +141,7 @@ const RRRColorBandwise = () => {
                 totalRows={recordsCount} 
                 currentPage={currentPage} 
                 rowsPerPage={userPageSize || parseInt(RRR_ROWS_PER_PAGE || '100')}
-                handleChangePage={(e)=>getRRRBandwiseRowData(e,userPageSize)} 
+                handleChangePage={handleChangePage} 
                 resetGridRef={ref} 
                 isDisabled={isDisabled}
                 customPageSizeEnabled={true}

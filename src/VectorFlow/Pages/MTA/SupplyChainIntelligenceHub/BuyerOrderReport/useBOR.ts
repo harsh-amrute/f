@@ -76,6 +76,7 @@ export const useBOR =()=>{
      const {mutateAsync:submitRemark} = useSubmitBORRemark()
      const {date:lastRunDate} = useGetLastRunData()
 
+     const [isMasterState , setIsMasterState] = useState<boolean>(false);
 
 
 
@@ -88,6 +89,7 @@ export const useBOR =()=>{
      const rowsPerPage = parseInt(BOR_ROWS_PER_PAGE || '100');
     const [userPageSize , setUserPageSize]  = useState<number>(BOR_ROWS_PER_PAGE?parseInt(BOR_ROWS_PER_PAGE):50)  
      const handleChangePage = async (pageNo:any) => {
+        getBORUiConfig();
          setCurrentPage(pageNo);
          loadGridData(pageNo,currFilter);
       }
@@ -338,13 +340,18 @@ export const useBOR =()=>{
   
   useEffect(() => {
     if (internalRef && gridState && gridState.columns) {
+       setTimeout(() => {
       const result = internalRef.api.applyColumnState({ state: gridState.columns, applyOrder: true });
-      internalRef?.api.sizeColumnsToFit();
+      if(isMasterState){
+        internalRef?.api.sizeColumnsToFit();
+        setIsMasterState(false);
+      }
       if (!result) {
         console.error("Failed to apply column state", result);
       }
+      },1000);
     }
-  }, [internalRef, gridState]);
+  }, [internalRef, gridState , rowData ]);
 
     const onColumnVisible = (event: any) => {
       const { column, visible , columns } = event;
@@ -578,6 +585,7 @@ export const useBOR =()=>{
 
 
   const onResetCallback = async () => {
+    setIsMasterState(true);
     setGridState({
       charts: [],
       columns: masterUIConfig,

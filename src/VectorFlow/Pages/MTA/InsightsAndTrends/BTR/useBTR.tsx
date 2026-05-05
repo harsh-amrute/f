@@ -136,7 +136,8 @@ const useBTR = () => {
     const [techMasterUIConfig, setTechMasterUIConfig] = useState<any>([]);
     const [ecoMasterUIConfig, setEcoMasterUIConfig] = useState<any>([]);
     const [isDisabled, setIsDisabled]= useState<boolean>(true)
-
+    const [isMasterTechState, setIsMasterTechState] = useState<boolean>(false);
+    const [isMasterEcoState, setIsMasterEcoState] = useState<boolean>(false);
     const RowsPerPageCurrTab = currentTab?.value === "on-hand"?userPageSizeTech:currentTab?.value === "pipeline"?userPageSizeEco:rowsPerPage 
     const savePageSizeTech = async( pageSize:number)=>{
         setUserPageSizeTech(pageSize)
@@ -299,14 +300,14 @@ const useBTR = () => {
 
     const onResetCallback = async () => {
         if (currentTab.id === "1") {
-
+            setIsMasterTechState(true);
             setTechGridState({
                 charts: [],
                 columns: techMasterUIConfig,
                 pivot: false,
             })
         } else if (currentTab.id === "2") {
-
+            setIsMasterEcoState(true)
             setEcoGridState({
                 charts: [],
                 columns: ecoMasterUIConfig,
@@ -487,7 +488,8 @@ const useBTR = () => {
                             colorValue: params.data[item[0]]
                         }
                     },
-                    minWidth: 100,
+                    headerTooltip: item[1],
+                    minWidth:50,
                     position: (index + initialColumnState.length),  //column should be at position onwards main columns
                     ...(item[0].startsWith('D') && parseInt(item[0].slice(1)) >= 1 && parseInt(item[0].slice(1)) <= 90 ? { filter: 'agNumberColumnFilter' } : {}),
                 }
@@ -524,8 +526,8 @@ const useBTR = () => {
     
     const CustomHeader = {
         dailydatagraph: {
-            width: 45,
-            minWidth: 45,
+            width: 52,
+            minWidth: 52,
             filter: false,
             cellRenderer: 'grapCellRenderer',
             cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph },
@@ -546,6 +548,8 @@ const useBTR = () => {
         Category: {
             cellRenderer: 'categoryCellRenderer',
             tooltipField: "Category",
+            width: 70,
+            minWidth: 70,
             tooltipComponent: 'categoryToolTip',
             pinned: 'left',
             headerComponent: 'iconHeader',
@@ -559,6 +563,8 @@ const useBTR = () => {
             tooltipField: "Availability",
             tooltipComponent: 'availabilityToolTip',
             pinned: 'left',
+            width: 55,
+            minWidth: 55,
             headerComponent: 'iconHeader',
             headerComponentParams: {
                 iconSrc: '/assets/img/availability.svg', 
@@ -568,6 +574,8 @@ const useBTR = () => {
         Tags: {
             cellRenderer: 'tagsCellRenderer',
             pinned: 'left',
+            width: 50,
+            minWidth: 50,
             headerComponent: 'iconHeader',
             headerComponentParams: {
                 iconSrc: '/assets/img/tag.svg', 
@@ -576,22 +584,56 @@ const useBTR = () => {
         },
         SKUCode: {
             pinned: 'left',
+            headerTooltip: initialColumnState?.find((column :any)=> column.Col_Code === "SKUCode")?.Header,
         },
         SKUDescription: {
             pinned: 'left',
+            headerTooltip: initialColumnState?.find((column :any)=> column.Col_Code === "SKUDescription")?.Header,        
         },
         WhCode: {
             pinned: 'left',
+            headerTooltip: initialColumnState?.find((column :any)=> column.Col_Code === "WhCode")?.Header,
+
         },
         LocationName: {
             pinned: 'left',
+            headerTooltip: initialColumnState?.find((column :any)=> column.Col_Code === "LocationName")?.Header,
         },
         Norm: {
             pinned: 'left',
+            headerTooltip: initialColumnState?.find((column :any)=> column.Col_Code === "Norm")?.Header,
         },
         VirtualNorm: {
             pinned: 'left',
+            headerTooltip: initialColumnState?.find((column :any)=> column.Col_Code === "VirtualNorm")?.Header,
         },
+        pc: {
+            headerTooltip: initialColumnState?.find((column :any)=> column.Col_Code === "pc")?.Header,
+        },
+        pn: {
+            headerTooltip: initialColumnState?.find((column :any)=> column.Col_Code === "pn")?.Header,
+        },
+        bc :{
+            headerTooltip: initialColumnState?.find((column :any)=> column.Col_Code === "bc")?.Header,
+        },
+        yc :{
+            headerTooltip: initialColumnState?.find((column :any)=> column.Col_Code === "yc")?.Header,
+        },
+        gc :{
+            headerTooltip: initialColumnState?.find((column :any)=> column.Col_Code === "gc")?.Header,
+        },
+        blc :{
+            headerTooltip: initialColumnState?.find((column :any)=> column.Col_Code === "blc")?.Header,
+        },
+        wc :{
+            headerTooltip: initialColumnState?.find((column :any)=> column.Col_Code === "wc")?.Header,
+        },
+        rc :{
+            headerTooltip: initialColumnState?.find((column :any)=> column.Col_Code === "rc")?.Header,
+        },
+        age :{
+            headerTooltip: initialColumnState?.find((column :any)=> column.Col_Code === "age")?.Header,
+        }
     };
 useEffect(() => {
     if (techInternalRef && techGridState?.columns) {
@@ -600,9 +642,10 @@ useEffect(() => {
                 state: techGridState.columns,
                 applyOrder: true
             });
-
-            techInternalRef.api.sizeColumnsToFit();
-
+            if(isMasterTechState){
+             techInternalRef.api.sizeColumnsToFit();
+             setIsMasterTechState(false);
+            }
             if (!result) {
                 console.error("Failed to apply column state", result);
             }
@@ -618,8 +661,10 @@ useEffect(() => {
                 state: ecoGridState.columns,
                 applyOrder: true
             });
-
-            ecoInternalRef.api.sizeColumnsToFit();
+            if(isMasterEcoState){
+             ecoInternalRef.api.sizeColumnsToFit();
+             setIsMasterEcoState(false);
+            }
 
             if (!result) {
                 console.error("Failed to apply column state", result);
@@ -633,11 +678,12 @@ useEffect(() => {
         if (initialColumnState) {
             const colDefs = getColumnDefinationsMTA(initialColumnState, CustomHeader, Extras());
             colDefs.map((colDef: any) => {
-                if (initialColumnState.find((initialColumnState: any) => initialColumnState.Col_Code === colDef.colId)) {
+             if (initialColumnState.find((initialColumnState: any) => initialColumnState.Col_Code === colDef.colId && !['Availability', 'Category', 'Tags', 'dailydatagraph'].includes(initialColumnState.Col_Code))) {
                     colDef.minWidth = 80;
                 }
                 return colDef
             })
+
             const result = colDefs.filter((r: any) => (!r.colId?.startsWith('D') || r.colId === 'DailyDataGraph') || (r.colId.startsWith('D') && parseInt(r.colId.slice(1)) > 90 - horizon))
             return result;
         } else return [];
@@ -655,7 +701,7 @@ useEffect(() => {
 
             // Set column width for all columns except date columns
             colDefs.map((colDef: any) => {
-                if (initialColumnState.find((initialColumnState: any) => initialColumnState.Col_Code === colDef.colId)) {
+                if (initialColumnState.find((initialColumnState: any) => initialColumnState.Col_Code === colDef.colId && !['Availability', 'Category', 'Tags', 'dailydatagraph'].includes(initialColumnState.Col_Code))) {
                     colDef.minWidth = 80;
                 }
                 return colDef
@@ -698,6 +744,7 @@ useEffect(() => {
         }
     }, [ecoInternalRef, ecoColDefs, currentTab]);
 
+    
     const renderView = () => {
         switch (currentTab.id) {
             case "1":

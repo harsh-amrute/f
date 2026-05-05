@@ -54,7 +54,7 @@ const useBPR =()=>{
     const [activeRow,setActiveRow] = useState<any>()
     const [BPRRowData,setBPRRowData] = useState<any[]>([])
     const [BPRColumns,setBPRColumns] = useState<any[]>([])
-
+    const [isMasterState , setIsMasterState] = useState<boolean>(false);
 
     const [submitRemarkToolTipPosition,setSubmitRemarkToolipPosition] = useState<CSSProperties>({})
     const [remarkHistoryToolipPosition,setRemarkHistoryToolipPosition] = useState<CSSProperties>({})
@@ -179,8 +179,12 @@ const useBPR =()=>{
 
     useEffect(()=>{
         if (internalRef && gridState && gridState.columns) {
+            setTimeout(() => {
             const result = internalRef?.api.applyColumnState({ state: gridState.columns, applyOrder: true });
+            if(isMasterState){
             internalRef?.api.sizeColumnsToFit();
+            setIsMasterState(false);
+            }
             if (!result) {
                 console.error("Failed to apply column state", result);
             }
@@ -189,8 +193,9 @@ const useBPR =()=>{
             const columnsToHide = allTabColumns.filter(col => !columnsToShow.includes(col));
             internalRef.api.setColumnsVisible(columnsToShow, true);
             internalRef.api.setColumnsVisible(columnsToHide, false);
+            },1000);
         }
-    }, [internalRef, gridState])
+    }, [internalRef, gridState,BPRRowData])
 
     const customCellRenderers = useMemo(() => ({
         grapCellRenderer:BPRGraphCellRenderer,
@@ -576,6 +581,7 @@ const useBPR =()=>{
     }
 
     const onResetCallback = async () => {
+        setIsMasterState(true);
         setGridState({
           charts: [],
           columns: masterUIConfig,
@@ -658,6 +664,7 @@ const useBPR =()=>{
     const handleOnPageChange = async(pageNumber:number)=>{
         setCurrGridPage(pageNumber)
         await getBPRRowData(currFilter,pageNumber,userPageSize)
+        getBPRUiConfig()
     }
     const savePageSize = async( pageSize:number)=>{
         setUserPageSize(pageSize)

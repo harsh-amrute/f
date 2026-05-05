@@ -74,10 +74,13 @@ export const useSupplierWiseAllocation =()=>{
     const SUPPLY_WISE_ALLOCATION_HUB_ROWS_PER_PAGE = EnvConfig['SUPPLY_WISE_ALLOCATION_HUB_ROWS_PER_PAGE'];   
      const rowsPerPage = parseInt(SUPPLY_WISE_ALLOCATION_HUB_ROWS_PER_PAGE || '5000');
     const [userPageSize , setUserPageSize]  = useState<number>(SUPPLY_WISE_ALLOCATION_HUB_ROWS_PER_PAGE?parseInt(SUPPLY_WISE_ALLOCATION_HUB_ROWS_PER_PAGE):50)  
+    
+    const [isMasterState , setIsMasterState] = useState<boolean>(false);
 
      const {date:lastRunDate} = useGetLastRunData()
 
      const handleChangePage = async (pageNo:any) => {
+         getSupplierWiseAllocationUIConfig();
          setCurrentPage(pageNo);
          loadGridData(pageNo,currFilter);
       }
@@ -235,13 +238,18 @@ export const useSupplierWiseAllocation =()=>{
   
   useEffect(() => {
     if (internalRef && gridState && gridState.columns) {
+       setTimeout(() => {
       const result = internalRef.api.applyColumnState({ state: gridState.columns, applyOrder: true });
-      internalRef?.api.sizeColumnsToFit();
+      if(isMasterState){
+            internalRef?.api.sizeColumnsToFit();
+            setIsMasterState(false);
+      }
       if (!result) {
         console.error("Failed to apply column state", result);
       }
+      },1000);
     }
-  }, [internalRef, gridState]);
+  }, [internalRef, gridState , rowData]);
 
       useEffect(()=>{       
         const fetchData = async () => {
@@ -289,6 +297,7 @@ export const useSupplierWiseAllocation =()=>{
 
 
   const onResetCallback = async () => {
+    setIsMasterState(true);
     setGridState({
       charts: [],
       columns: masterUIConfig,

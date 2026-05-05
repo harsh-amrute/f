@@ -38,7 +38,8 @@ const ElephantOrder = () => {
     onResetCallback,
     onSubmitDueDate,
      savePageSize,
-        userPageSize
+        userPageSize,
+        handleChangePage
   } = useElephantOrders();
 
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
@@ -120,7 +121,7 @@ const ElephantOrder = () => {
               rowsPerPage={userPageSize || parseInt(
                 ELEPHANT_ORDER_ROWS_PER_PAGE || "100"
               )}
-              handleChangePage={(e) => GetEOData(e)}
+              handleChangePage={handleChangePage}
               resetGridRef={ref}
               isDisabled={isDisabled}
               customPageSizeEnabled={true}
