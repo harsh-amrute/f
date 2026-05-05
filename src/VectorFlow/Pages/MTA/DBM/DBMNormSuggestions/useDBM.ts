@@ -1,7 +1,7 @@
 import { useState,useMemo,useEffect,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import { useGetDBMData,useGetDBMDataCount,useGetDBMApplySelectedNorm, useGetDBMUpdateSleepTbl} from "../../../../Services/MTA/DBM"
-import { convertUiConfigToOptions, getColumnDefinationsMTA  } from "../../../../../helpers/utils"
+import { convertUiConfigToOptions, getColumnDefinationsMTA,MainMenuItemsCustomization  } from "../../../../../helpers/utils"
 //import { useRef } from "react"
 // import {DBMSleepCellRenderer} from "./Sleep"
 import BPRGraphCellRenderer from "../../SupplyChainIntelligenceHub/BPR/BPRGraphCellRenderer"
@@ -443,6 +443,7 @@ const useDBM =()=>{
             tooltipShowDelay:0,
             tooltipTrigger:"focus",
             readOnlyEdit:true,
+            getMainMenuItems: MainMenuItemsCustomization,
             suppressRowClickSelection:true,
             components:customCellRenderers,
             enableBrowserTooltips:true,

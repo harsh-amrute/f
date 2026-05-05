@@ -3399,7 +3399,7 @@ export const mapBPRFieldsToColDefs = (
 export const MainMenuItemsCustomization = (params: any) => {
   const defaultItems = params.defaultItems;
   const conditionalItemsToRemove = ["remarks", "rh"];
-  const itemsToRemove = ["columnChooser", "resetColumns"]; // Example items to remove
+  const itemsToRemove = ["columnChooser", "resetColumns","rowUnGroup","rowGroup"]; // Example items to remove
   if (conditionalItemsToRemove.includes(params.column.colId)) {
     // itemsToRemove.push()
     itemsToRemove.push("pinSubMenu");

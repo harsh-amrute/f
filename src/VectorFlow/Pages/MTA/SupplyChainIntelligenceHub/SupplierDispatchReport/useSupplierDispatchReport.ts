@@ -1,6 +1,6 @@
 
 import { useGetSDRUIConfiguration ,useGetSDRData,useGetSDRDataCount} from '../../../../Services/MTA/SupplyChainIntelligenceHub/SupplierDispatchReport/index';
-import { convertUiConfigToOptions, getColumnDefinationsMTA, mapVDRFieldsToColDefs } from '../../../../../helpers/utils';
+import { convertUiConfigToOptions, getColumnDefinationsMTA, mapVDRFieldsToColDefs,MainMenuItemsCustomization } from '../../../../../helpers/utils';
 import { useEffect, useState,useRef,useMemo } from 'react';
 import { notifyError,notifyLoader, notifySuccess} from '../../../../../helpers/notify';
 import useBPRFilter from '../../../../../hooks/useBPRFilter';
@@ -205,7 +205,7 @@ const useSupplierDispatchReport= ()=>{
             tooltipTrigger: "focus",
             tooltipInteraction: true,
             readOnlyEdit: true,
-        
+            getMainMenuItems: MainMenuItemsCustomization,
             gridOptions: {
                 sideBar: defaultAgGridSideBarForBPR,
                 rowHeight: 50,

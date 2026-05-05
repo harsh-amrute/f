@@ -4,7 +4,7 @@ import { BPRTagsCellRenderer } from "../../../BPR/BPRCellRenderers";
 import { AgGridReactProps } from "ag-grid-react";
 import { VFPaginationProps } from "../../../../../../../components/VectorFLOW/commons/VFPagination";
 import { SideBarDef } from 'ag-grid-enterprise';
-import {  getColumnDefinationsMTA } from '../../../../../../../helpers/utils';
+import {  getColumnDefinationsMTA,MainMenuItemsCustomization } from '../../../../../../../helpers/utils';
 import BPRGraphCellRenderer from '../../../BPR/BPRGraphCellRenderer';
 import ColorCellRenderer from '../../../../InsightsAndTrends/BTR/ColorCellRenderer';
 import { GridStateContext } from '../../../../../../../context/GridStateContext';
@@ -49,6 +49,7 @@ const ExcessInventoryGrid = ({data,paginationProps,onOpenDailyDataGraph,currentC
         tooltipInteraction:true,
         // rowSelection:'single',
         readOnlyEdit:true,
+        getMainMenuItems: MainMenuItemsCustomization,
         enableRangeSelection: true,
         rowSelection: "multiple",
         statusBar: {
