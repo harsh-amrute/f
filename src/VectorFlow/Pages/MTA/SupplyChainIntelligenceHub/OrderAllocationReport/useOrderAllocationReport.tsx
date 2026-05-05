@@ -66,11 +66,15 @@ const useOrderAllocation =()=>{
 
      const dailyData = useSelector((state:RootState) => state.mta.dailyData);
 
+     const [isMasterState , setIsMasterState] = useState<boolean>(false);
+
+
      const rowsPerPage = parseInt(ORDER_ALLOCATION_ROWS_PER_PAGE|| '100');
 
      const handleChangePage = async (pageNo:any) => {
          setCurrentPage(pageNo);
          loadGridData(pageNo,currFilter);
+         getOrderAllocationReportUiConfig();
       }
 
      const {mutateAsync:getData, isLoading: isRowDataLoading} = useGetOrderAllocationReportData();
@@ -138,20 +142,25 @@ const useOrderAllocation =()=>{
     if (internalRef && gridState && gridState.columns) {
        setTimeout(() => {
       const result = internalRef.api.applyColumnState({ state: gridState.columns, applyOrder: true });
+      if(isMasterState){
       internalRef?.api.sizeColumnsToFit();
+      setIsMasterState(false);
+      }
       if (!result) {
         console.error("Failed to apply column state", result);
       }
       },1000);
     }
-  }, [internalRef, gridState]);
+  }, [internalRef, gridState,rowData]);
   
   const onResetCallback = async () => {
+    setIsMasterState(true);
     setGridState({
       charts: [],
       columns: masterUIConfig,
       pivot: false,
     })
+    await getOrderAllocationReportUiConfig();
   };
 
       useEffect(()=>{       
