@@ -258,6 +258,7 @@ const useRRRColorBandwise = () => {
   }
 
  const handleChangePage = async (pageNumber: number) => {
+   getRRRColorBandWiseUiConfig();
    await getRRRBandwiseRowData(pageNumber , userPageSize);
 }
 
