@@ -23,10 +23,11 @@ import {
   createConflictRowData,
   createErrorRowData,
   MainMenuItemsCustomization,
+  CsvExportNMS,
+  useExcelExportNMS,
 } from "../../../../../helpers/utils";
 import {
   useGetMasterData,
-  useGetMasterData1,
   useGetMasterUIConfiguration,
   useGetCount,
   useCreateDraft,
@@ -185,6 +186,8 @@ const useViewModify = (pageType: string) => {
 
   const { mutateAsync: masterUIConfiguration, isLoading } =
     useGetMasterUIConfiguration();
+    
+  const { ExcelExportNMS } = useExcelExportNMS();
 
   // const [TASK_ID, setTaskId] = useState<string>("");
 
@@ -203,8 +206,6 @@ const useViewModify = (pageType: string) => {
   const { mutateAsync: getSeasonalityDetails } = useGetSeasonalityDetails();
 
   const { mutateAsync: getMasterData } = useGetMasterData();
-
-  const {mutateAsync:getMasterData1} = useGetMasterData1();
 
   const { mutateAsync: getMasterDataRetail } = useGetMasterDataRetail();
 
@@ -743,7 +744,7 @@ const useViewModify = (pageType: string) => {
     return resultData;
   };
   
-  const queryFilteredDataExcel = async (configs:QueryFilteredDataConfigsExcel) => {
+  const queryFilteredDataExcel = async (configs:QueryFilteredDataConfigsExcel, format: 'EXCEL' | 'CSV') => {
     const {filters,fields,count,mode} = configs;
     const payload:GetMasterDataPayloadExcel = {
       id:activeMaster.id,
@@ -751,7 +752,7 @@ const useViewModify = (pageType: string) => {
       filters:filters,
       fields:fields,
       pageType: pageType,
-      Stream:1,
+      stream:1,
       mode: mode
     }
     let resultData;
@@ -768,13 +769,17 @@ const useViewModify = (pageType: string) => {
         resultData = await getMasterDataRetail(payload); 
       }
       else{
-        resultData = await getMasterData1(payload); 
+        if (format === 'CSV') {
+          resultData = await CsvExportNMS(payload, activeMaster.name);
+        }
+        else{
+          resultData = await ExcelExportNMS(payload, activeMaster.name);
+        } 
       }
     }
 
     return resultData;
   }
-
   const queryAllData = async (configs: QueryFilteredDataConfigs) => {
     const { pagination, fields, count, currentPage, rowsPerPage } = configs;
     const payload: GetMasterDataPayload = {
@@ -1423,57 +1428,66 @@ const useViewModify = (pageType: string) => {
 
   const exportToExcel = async (mode: ExportMode, fromUploadModal?: boolean) => {
     try {
-      const currMasterFilters = activeMaster.filters;
-      const payloadFilters = areMasterFiltersValid(currMasterFilters)
-        ? mapStateFiltersToPayload(currMasterFilters)
-        : [];
+      if(recordCount > 1000000 && mode === "EXPORT")
+      {
+        const currMasterFilters = activeMaster.filters;
+        const payloadFilters = areMasterFiltersValid(currMasterFilters)
+          ? mapStateFiltersToPayload(currMasterFilters)
+          : [];
 
-      const payloadFields: any = getCurrentVisbileColumns();
+        const payloadFields: any = getCurrentVisbileColumns();
 
-      const toastId = notifyLoader("Preparing Excel…");
+        const toastId = notifyLoader("Preparing CSV…");
 
-      const result = await queryFilteredDataExcel({
-        filters: payloadFilters,
-        fields: payloadFields,
-        pageType: pageType,
-        Stream: 1,
-        mode: mode
-      });
+        await queryFilteredDataExcel({
+          filters: payloadFilters,
+          fields: payloadFields,
+          pageType: pageType,
+          stream: 1,
+          mode: mode
+        }, 'CSV');
 
-      const blob = new Blob(
-        [result.data],
-        {
-          type:
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        toast.dismiss(toastId);
+
+        if (fromUploadModal) {
+          setIsUploadButtonDisabled(false);
+          notifySuccess("Data Downloaded Successfully");
+          return;
         }
-      );
 
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      const masterName = activeMaster?.name || activeMaster?.name || "MasterData";
-      const safeFileName = masterName.replace(/[^a-zA-Z0-9-_ ]/g, "").trim();
-      a.href = url;
-      if(downloadFileName){
-        a.download = `${downloadFileName}.xlsx`
+        notifySuccess("Data Exported Successfully");
+
       }
-      else{
-      a.download =  `${safeFileName}.xlsx`;
-      }
-      document.body.appendChild(a);
-      a.click();
+      
+      else
+      {
+        const currMasterFilters = activeMaster.filters;
+          const payloadFilters = areMasterFiltersValid(currMasterFilters)
+            ? mapStateFiltersToPayload(currMasterFilters)
+            : [];
 
-      a.remove();
-      window.URL.revokeObjectURL(url);
+          const payloadFields: any = getCurrentVisbileColumns();
 
-      toast.dismiss(toastId);
+          const toastId = notifyLoader("Preparing Excel…");
 
-      if (fromUploadModal) {
-        setIsUploadButtonDisabled(false);
-        notifySuccess("Data Downloaded Successfully");
-        return;
-      }
+          await queryFilteredDataExcel({
+            filters: payloadFilters,
+            fields: payloadFields,
+            pageType: pageType,
+            stream: 1,
+            mode: mode
+          }, 'EXCEL');
+          
+          toast.dismiss(toastId);
 
-      notifySuccess("Data Exported Successfully");
+          if (fromUploadModal) {
+            setIsUploadButtonDisabled(false);
+            notifySuccess("Data Downloaded Successfully");
+            return;
+          }
+
+          notifySuccess("Data Exported Successfully");
+        }
     }
     catch (error) {
       toast.dismiss();
