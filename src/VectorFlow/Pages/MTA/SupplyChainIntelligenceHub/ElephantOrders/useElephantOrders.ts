@@ -1,6 +1,6 @@
 
 import { useGetEOData,useGetEODataCount, useSubmitDueDates} from '../../../../Services/MTA/SupplyChainIntelligenceHub/ElephantOrders/index';
-import { convertUiConfigToOptions, getColumnDefinationsMTA } from '../../../../../helpers/utils';
+import { convertUiConfigToOptions, getColumnDefinationsMTA,MainMenuItemsCustomization } from '../../../../../helpers/utils';
 import { useEffect, useState,useRef,useMemo } from 'react';
 import { notifyError,notifyLoader, notifySuccess} from '../../../../../helpers/notify';
 import useBPRFilter from '../../../../../hooks/useBPRFilter';
@@ -396,6 +396,7 @@ const useElephantOrders= ()=>{
             tooltipTrigger: "focus",
             tooltipInteraction: true,
             readOnlyEdit: false,
+            getMainMenuItems: MainMenuItemsCustomization,
             enableBrowserTooltips:true,
             gridOptions: {
                 sideBar: defaultAgGridSideBarForBPR,

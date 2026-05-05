@@ -4,7 +4,7 @@ import { BPRTagsCellRenderer } from "../../../../BPR/BPRCellRenderers";
 import { AgGridReactProps } from "ag-grid-react";
 import { VFPaginationProps } from "../../../../../../../../components/VectorFLOW/commons/VFPagination";
 import { SideBarDef } from 'ag-grid-enterprise';
-import { createIconColumn,getProductAndLocationHeirarchiesFromEnv } from '../../../../../../../../helpers/utils';
+import { createIconColumn,getProductAndLocationHeirarchiesFromEnv,MainMenuItemsCustomization } from '../../../../../../../../helpers/utils';
 import BPRGraphCellRenderer from '../../../../BPR/BPRGraphCellRenderer';
 import ColorCellRenderer from '../../../../../InsightsAndTrends/BTR/ColorCellRenderer';
 import RequestExpeditingModal from '../../../../BPR/RequestExpeditingModal';
@@ -95,6 +95,7 @@ const ExpediteChildGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCat
         tooltipInteraction:true,
         // rowSelection:'single',
         readOnlyEdit:true,
+        getMainMenuItems: MainMenuItemsCustomization,
         onRowClicked:(params:any)=>{
             if(params.data.intransit && params.data.intransit.length>0){
                 setCurrentRowData(params.data)
