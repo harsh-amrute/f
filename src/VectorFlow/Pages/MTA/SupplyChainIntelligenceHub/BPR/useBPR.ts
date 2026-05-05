@@ -179,6 +179,7 @@ const useBPR =()=>{
 
     useEffect(()=>{
         if (internalRef && gridState && gridState.columns) {
+            setTimeout(() => {
             const result = internalRef?.api.applyColumnState({ state: gridState.columns, applyOrder: true });
             if(isMasterState){
             internalRef?.api.sizeColumnsToFit();
@@ -192,6 +193,7 @@ const useBPR =()=>{
             const columnsToHide = allTabColumns.filter(col => !columnsToShow.includes(col));
             internalRef.api.setColumnsVisible(columnsToShow, true);
             internalRef.api.setColumnsVisible(columnsToHide, false);
+            },1000);
         }
     }, [internalRef, gridState,BPRRowData])
 

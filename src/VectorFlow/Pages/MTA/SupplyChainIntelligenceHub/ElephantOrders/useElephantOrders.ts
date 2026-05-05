@@ -297,6 +297,7 @@ const useElephantOrders= ()=>{
     
     useEffect(() => {
         if (internalRef && gridState && gridState.columns) {
+             setTimeout(() => {
             const result = internalRef?.api.applyColumnState({ state: gridState.columns, applyOrder: true });
             if(isMasterState){
                 internalRef?.api.sizeColumnsToFit();
@@ -305,6 +306,7 @@ const useElephantOrders= ()=>{
             if (!result) {
                 console.error("Failed to apply column state");
             }
+            },1000);
         }
     }, [internalRef, gridState , RowData]);
  

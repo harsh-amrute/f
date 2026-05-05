@@ -138,11 +138,13 @@ const useOpenExpeditingRequests = () => {
 
   useEffect(() => {
     if (internalRef && gridState && gridState.columns) {
+       setTimeout(() => {
       const result = internalRef.api.applyColumnState({ state: gridState.columns, applyOrder: true });
       internalRef?.api.sizeColumnsToFit();
       if (!result) {
         console.error("Failed to apply column state", result);
       }
+      },1000);
     }
   }, [internalRef, gridState]);
   

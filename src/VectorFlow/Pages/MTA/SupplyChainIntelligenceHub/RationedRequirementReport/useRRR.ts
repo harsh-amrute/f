@@ -135,6 +135,7 @@ const useRRR =()=>{
 
     useEffect(() => {
     if (internalRef && gridState && gridState.columns) {
+        setTimeout(() => {
         const result = internalRef?.api.applyColumnState({ 
             state: gridState.columns, 
             applyOrder: true 
@@ -151,6 +152,7 @@ const useRRR =()=>{
                 });
             }, 0);
         }
+        },1000);
     }
 }, [internalRef, gridState, hasSavedConfig,RRRRowData]);
 
