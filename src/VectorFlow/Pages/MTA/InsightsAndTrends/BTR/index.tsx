@@ -53,6 +53,10 @@ const BufferTrendReport = () => {
     lastRunDate,
     showDailyDataGraphModal,
     onResetCallback,
+    onExportToCsvCallBack,
+    onTabChange,
+    activeTab,
+    tabs
   } = useBTR();
 
   return (
@@ -90,6 +94,11 @@ const BufferTrendReport = () => {
           onApplyFilter={onApplyFilter}
           horizon={horizon}
           onChangeHorizon={(value: number) => setHorizon(value)}
+          onExportToCsvCallBack={(pageNumber: number) => {
+            return onExportToCsvCallBack(pageNumber, currentTab.value);
+          }}
+          onTabChange={(val: any) => onTabChange(val)}
+          activeTab={activeTab}
         />
       </div>
       {lastRunDate && <LastRunDateComponent lastRunDate={lastRunDate} />}
@@ -102,8 +111,11 @@ const BufferTrendReport = () => {
           isModalOpen={showDailyDataGraphModal}
           suggestionData={dailyData.suggestionData}
           monitoringData={dailyData.monitoringData}
+          virtualNormData={dailyData.virtualNormData}
           skuKey={"SKUCode"}
-          whKey={"LocationName"}
+          skuDescKey={"SKUDescription"}
+          whKey={"WhCode"}
+          whDescKey={"LocationName"}
         />
       )}
       {showNormChangeHistoryTable && (
@@ -114,23 +126,7 @@ const BufferTrendReport = () => {
           <div style={{ zoom: 0.6 }}>
             <VFFloatingTab
               handleClick={(tab: any) => toggleCurrentTab(tab)}
-              tabs={[
-                {
-                  id: "1",
-                  value: "on-hand",
-                  label: "On-Hand Inv. View",
-                },
-                {
-                  id: "2",
-                  value: "pipeline",
-                  label: "Pipeline Inv. View",
-                },
-                {
-                  id: "3",
-                  value: "both",
-                  label: "Both On-Hand & Pipeline View",
-                },
-              ]}
+              tabs={tabs}
             />
           </div>
           {currentTab?.id === "3" && (

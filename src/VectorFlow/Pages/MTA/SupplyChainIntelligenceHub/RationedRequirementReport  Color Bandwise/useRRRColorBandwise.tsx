@@ -99,6 +99,8 @@ const useRRRColorBandwise = () => {
 
   const [initialColumnState, setInitialColumnState] = useState<any>(undefined);
   const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
+  const [isMasterState , setIsMasterState] = useState<boolean>(false);
+
 
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -167,13 +169,18 @@ const useRRRColorBandwise = () => {
 
   useEffect(() => {
     if (internalRef && gridState && gridState.columns) {
+       setTimeout(() => {
       const result = internalRef.api.applyColumnState({ state: gridState.columns, applyOrder: true });
-      internalRef?.api.sizeColumnsToFit();
+      if(isMasterState){
+        internalRef?.api.sizeColumnsToFit();
+        setIsMasterState(false);
+      }
       if (!result) {
         console.error("Failed to apply column state", result);
       }
+      },1000);
     }
-  }, [internalRef, gridState]);
+  }, [internalRef, gridState , rowData]);
 
   const onResetCallback = async () => {
     setGridState({
@@ -249,6 +256,11 @@ const useRRRColorBandwise = () => {
       cellRenderer: 'colorCellRenderer',
     },
   }
+
+ const handleChangePage = async (pageNumber: number) => {
+   getRRRColorBandWiseUiConfig();
+   await getRRRBandwiseRowData(pageNumber , userPageSize);
+}
 
   const onApplyFilter = async (filter: any) => {
     notifyLoader("Loading Grid Data");
@@ -431,7 +443,8 @@ const onExportToExcelCallBack=async(pageNumber:number)=>{
     setCurrentPage,
     onResetCallback,
     savePageSize,
-    userPageSize
+    userPageSize,
+    handleChangePage
   };
 };
 

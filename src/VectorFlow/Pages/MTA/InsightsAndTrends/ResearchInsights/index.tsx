@@ -196,8 +196,11 @@ const ResearchInsights = () => {
             isModalOpen={showDailyDataGraphModal}
             suggestionData={dailyData.suggestionData}
             monitoringData={dailyData.monitoringData}
+            virtualNormData={dailyData.virtualNormData}
             skuKey={"SKUCode"}
-            whKey={"WHName"}
+            skuDescKey={"SKUName"}
+            whKey={"WHCode"}
+            whDescKey={"WHName"}
           />
         )}
         {showNormChangeHistoryTable && (

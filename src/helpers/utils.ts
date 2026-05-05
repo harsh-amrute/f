@@ -2355,7 +2355,7 @@ export const generateSesonalityChartData = (row: any, data: any) => {
   });
 
   const pointRadius: any[] = [];
-  let tempNorm = 0; //used for filling data when norm not changed in below function
+  let tempNorm = row.onm; //used for filling data when norm not changed in below function
   // const normData = data.dailyData.map((d:DailyData)=>{
   //   const closestNormChange:NormHistory = data.norm.find((o:NormHistory)=>+(new Date(o.date)) === +(new Date(d.date)));
   //   if(closestNormChange) {
@@ -5547,6 +5547,39 @@ export const useExcelExportNMS = () => {
   }
   return { ExcelExportNMS };
 }
+
+export const ExcelExportMTA = async (payload: any, filename = "ReportFile") => {
+  try {
+    const response = await axios.post(
+      process.env.REACT_APP_API_HOST + `api/mta/GetExportDataExcelAsync`,
+      payload,
+      {
+        withCredentials: true, 
+        responseType: 'blob',  
+        headers: {
+            "Content-Type": "application/json" 
+        }
+      }
+    );
+ 
+    const blob = await response.data;
+    const contentType = response.headers['content-type']; 
+    const fileExtension = getFileExtensionFromContentType(contentType);
+    const downloadFileName = `${filename}__${format(Date.now(), "dd-MM-yyyy")}.${fileExtension}`;
+ 
+    const blobUrl = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = blobUrl;
+    link.setAttribute("download", downloadFileName);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(blobUrl);
+  } catch (e) {
+    console.error("Error downloading file:", e);
+    return;
+  }
+};
 
 // Optional helper
 const getFileExtensionFromContentType = (contentType: string | null) => {

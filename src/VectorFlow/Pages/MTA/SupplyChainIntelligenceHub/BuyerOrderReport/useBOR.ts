@@ -25,6 +25,7 @@ import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
 import { useGetUIConfigData } from "../../../../Services/MTA/Common/UIConfig";
 import { UIColumnConfigName, UserUIColumnConfigName } from "../../../../../helpers/Enum"
 import { useGetState } from "../../../../Services/MTA/Common/UserUIConfig"
+import IconHeader from "../../Common/HeaderIcon/IconHeader"
 
 
 export const useBOR =()=>{
@@ -75,6 +76,7 @@ export const useBOR =()=>{
      const {mutateAsync:submitRemark} = useSubmitBORRemark()
      const {date:lastRunDate} = useGetLastRunData()
 
+     const [isMasterState , setIsMasterState] = useState<boolean>(false);
 
 
 
@@ -87,6 +89,7 @@ export const useBOR =()=>{
      const rowsPerPage = parseInt(BOR_ROWS_PER_PAGE || '100');
     const [userPageSize , setUserPageSize]  = useState<number>(BOR_ROWS_PER_PAGE?parseInt(BOR_ROWS_PER_PAGE):50)  
      const handleChangePage = async (pageNo:any) => {
+        getBORUiConfig();
          setCurrentPage(pageNo);
          loadGridData(pageNo,currFilter);
       }
@@ -102,6 +105,7 @@ export const useBOR =()=>{
         submitRemarkCellRenderer:BPRSubmitRemarkCellRenderer,
         remarksCellRenderer:BORRemarksCellRenderer,
         TagsCellRenderer: BPRTagsCellRenderer,
+        iconHeader: IconHeader,
         
       }), []);
 
@@ -118,7 +122,8 @@ export const useBOR =()=>{
             normChangeData:data['NormChangeHistoryData'],
             masterData:data['MasterData'][0],
             suggestionData:data['SuggestionHistoryData'] ? data['SuggestionHistoryData'] : [],
-            monitoringData:data['MonitoringData']
+            monitoringData:data['MonitoringData'],
+            virtualNormData:data['VirtualNormData']
         }
   
         dispatch(UPDATE_DAILY_DATA(dailyData));
@@ -335,13 +340,18 @@ export const useBOR =()=>{
   
   useEffect(() => {
     if (internalRef && gridState && gridState.columns) {
+       setTimeout(() => {
       const result = internalRef.api.applyColumnState({ state: gridState.columns, applyOrder: true });
-      internalRef?.api.sizeColumnsToFit();
+      if(isMasterState){
+        internalRef?.api.sizeColumnsToFit();
+        setIsMasterState(false);
+      }
       if (!result) {
         console.error("Failed to apply column state", result);
       }
+      },1000);
     }
-  }, [internalRef, gridState]);
+  }, [internalRef, gridState , rowData ]);
 
     const onColumnVisible = (event: any) => {
       const { column, visible , columns } = event;
@@ -575,6 +585,7 @@ export const useBOR =()=>{
 
 
   const onResetCallback = async () => {
+    setIsMasterState(true);
     setGridState({
       charts: [],
       columns: masterUIConfig,
@@ -631,7 +642,13 @@ export const useBOR =()=>{
       floatingFilter: false,
     },
     Tags: {
+      minWidth: 80,
       cellRenderer: 'TagsCellRenderer',
+      headerComponent: 'iconHeader',
+      headerComponentParams: {
+          iconSrc: '/assets/img/tag.svg', 
+          tooltip: 'Tags',
+      },
     },
   }
   

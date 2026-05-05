@@ -9,6 +9,7 @@ import { OrderCoverageCellRenderer } from '../../../../../../../components/Vecto
 import { BPRViewTableColDef } from '../../../BPR/BPRViewTable';
 import { defaultAgGridSideBarForBPR } from '../../../../../../../helpers/BPRConstants';
 import { GridStateContext } from '../../../../../../../context/GridStateContext';
+import IconHeader from '../../../../../../../VectorFlow/Pages/MTA/Common/HeaderIcon/IconHeader';
 
 const OrderFulfillmentGrid = ({data, paginationProps, onOpenDailyDataGraph, currentCategory, currentTab}:any) => {
 
@@ -22,7 +23,8 @@ const OrderFulfillmentGrid = ({data, paginationProps, onOpenDailyDataGraph, curr
         grapCellRenderer: BPRGraphCellRenderer,
         tagsCellRenderer: BPRTagsCellRenderer,
         colorCellRenderer: ColorCellRenderer,
-        orderCoverageCellRenderer: OrderCoverageCellRenderer
+        orderCoverageCellRenderer: OrderCoverageCellRenderer,
+        iconHeader: IconHeader,
     }), []);
 
 
@@ -147,10 +149,13 @@ const OrderFulfillmentGrid = ({data, paginationProps, onOpenDailyDataGraph, curr
             resizable: false,
             floatingFilter: false,
             suppressColumnsToolPanel: false,
-            headerTooltip: "Daily Data Graph",
             sortable:false,
             suppressMenu:true,
-            headerName:"Daily Data Graph",
+            headerComponent: 'iconHeader',
+            headerComponentParams: {
+                iconSrc: '/assets/img/daily bar graph.svg', 
+                tooltip: 'Daily Data Graph',
+            },
         },
         t: {
             cellRenderer: 'tagsCellRenderer',
@@ -160,6 +165,11 @@ const OrderFulfillmentGrid = ({data, paginationProps, onOpenDailyDataGraph, curr
             pinned: null,
             filterParams: {
                 buttons: ['reset'], // Adds Apply and Clear buttons
+            },
+            headerComponent: 'iconHeader',
+            headerComponentParams: {
+                iconSrc: '/assets/img/tag.svg', 
+                tooltip: 'Tags',
             },
         },
         c:{

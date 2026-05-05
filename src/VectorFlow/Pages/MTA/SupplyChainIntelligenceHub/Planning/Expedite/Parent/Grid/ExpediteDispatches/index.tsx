@@ -11,6 +11,7 @@ import RequestExpeditingModal from '../../../../../BPR/RequestExpeditingModal';
 import { useSubmitOpenExpediteRequest } from '../../../../../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/Planning';
 import { notifyError, notifyLoader, notifySuccess } from '../../../../../../../../../helpers/notify';
 import { toast } from "react-toastify/unstyled";
+import IconHeader from '../../../../../../../../../VectorFlow/Pages/MTA/Common/HeaderIcon/IconHeader';
 
 import { GridStateContext } from '../../../../../../../../../context/GridStateContext';
 
@@ -80,7 +81,8 @@ const ExpediteParentExpediteDispatchesGrid = ({data,paginationProps,onOpenDailyD
     const customCellRenderers = useMemo(() => ({
         grapCellRenderer:BPRGraphCellRenderer,
         tagsCellRenderer:BPRTagsCellRenderer,
-        colorCellRenderer:ColorCellRenderer
+        colorCellRenderer:ColorCellRenderer,
+        iconHeader: IconHeader,
       }), []);
 
       const sideBar:SideBarDef = {
@@ -208,8 +210,12 @@ const ExpediteParentExpediteDispatchesGrid = ({data,paginationProps,onOpenDailyD
             floatingFilter: false,
             suppressColumnsToolPanel: false,
             suppressMenu:true,
-            headerTooltip: "Daily Data Graph",
-            headerName:"Daily Data Graph",
+            headerName:"",
+            headerComponent: 'iconHeader',
+            headerComponentParams: {
+                iconSrc: '/assets/img/daily bar graph.svg', 
+                tooltip: 'Daily Data Graph',
+            },
             sortable: false,
         },
         t: {
@@ -220,6 +226,11 @@ const ExpediteParentExpediteDispatchesGrid = ({data,paginationProps,onOpenDailyD
             pinned: null,
             filterParams: {
                 buttons: ['reset'], // Adds Apply and Clear buttons
+            },
+            headerComponent: 'iconHeader',
+            headerComponentParams: {
+                iconSrc: '/assets/img/tag.svg', 
+                tooltip: 'Tags',
             },
         },
         pin:{

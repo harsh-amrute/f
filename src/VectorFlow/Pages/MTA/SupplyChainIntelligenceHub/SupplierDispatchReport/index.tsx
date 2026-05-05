@@ -35,7 +35,8 @@ const SupplierDispatchReport = () => {
     generalFilterOptions,
     onResetCallback,     
   savePageSize,
-  userPageSize
+  userPageSize,
+  handleChangePage
   } = useSupplierDispatchReport();
 
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
@@ -105,7 +106,7 @@ const SupplierDispatchReport = () => {
                 totalRows={SDRCount} 
                 currentPage={currentPage} 
                 rowsPerPage={userPageSize}
-                handleChangePage={(e)=>GetSDRData(e)} 
+                handleChangePage={handleChangePage} 
                 resetGridRef={ref} 
                 isDisabled={isDisabled}
                 customPageSizeEnabled={true}

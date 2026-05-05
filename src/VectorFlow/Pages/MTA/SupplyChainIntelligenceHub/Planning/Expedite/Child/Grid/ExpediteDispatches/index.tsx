@@ -12,6 +12,7 @@ import { useSubmitOpenExpediteRequest } from '../../../../../../../../../VectorF
 import { notifyError, notifyLoader, notifySuccess } from '../../../../../../../../../helpers/notify';
 import { toast } from "react-toastify/unstyled";
 import { GridStateContext } from '../../../../../../../../../context/GridStateContext';
+import IconHeader from '../../../../../../../../../VectorFlow/Pages/MTA/Common/HeaderIcon/IconHeader';
 
 
 const ExpediteChildExpediteDispatchesGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCategory,currentTab}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any,currentCategory:string,currentTab:string})=>{
@@ -50,7 +51,8 @@ const ExpediteChildExpediteDispatchesGrid = ({data,paginationProps,onOpenDailyDa
     const customCellRenderers = useMemo(() => ({
         grapCellRenderer:BPRGraphCellRenderer,
         tagsCellRenderer:BPRTagsCellRenderer,
-        colorCellRenderer:ColorCellRenderer
+        colorCellRenderer:ColorCellRenderer,
+        iconHeader: IconHeader,
       }), []);
 
       const sideBar:SideBarDef = {
@@ -188,9 +190,13 @@ const ExpediteChildExpediteDispatchesGrid = ({data,paginationProps,onOpenDailyDa
             resizable: false,
             floatingFilter: false,
             suppressMenu:true,
-            headerTooltip: "Daily Data Graph",
-            headerName:"Daily Data Graph",
             sortable: false,
+            headerName: "",
+            headerComponent: 'iconHeader',
+            headerComponentParams: {
+                iconSrc: '/assets/img/daily bar graph.svg', 
+                tooltip: 'Daily Data Graph',
+            },
         },
         t: {
             cellRenderer: 'tagsCellRenderer',
@@ -201,6 +207,12 @@ const ExpediteChildExpediteDispatchesGrid = ({data,paginationProps,onOpenDailyDa
             filterParams: {
                 buttons: ['reset'], // Adds Apply and Clear buttons
             },
+            headerComponent: 'iconHeader',
+            headerComponentParams: {
+                iconSrc: '/assets/img/tag.svg', 
+                tooltip: 'Tags',
+            },
+
         },
         pin:{
             cellRenderer:'colorCellRenderer',

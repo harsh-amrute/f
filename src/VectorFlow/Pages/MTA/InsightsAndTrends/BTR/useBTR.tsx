@@ -6,7 +6,7 @@ import { VFFloatingTabItemProps } from "../../../../../components/VectorFLOW/com
 import HorizontalSplitView from "./HorizontalSplitView"
 
 import VerticalSplitView from "./VerticalSplitView"
-import { getColumnsForExcelExport, mapBTRRowData, mapBTRRowDataToColDefs, MainMenuItemsCustomization, getColumnDefinationsMTA, DownloadExcel, DownloadExcelMTA , CsvExportMTA} from "../../../../../helpers/utils"
+import { getColumnsForExcelExport, mapBTRRowData, mapBTRRowDataToColDefs, MainMenuItemsCustomization, getColumnDefinationsMTA, DownloadExcel, DownloadExcelMTA , CsvExportMTA, ExcelExportMTA} from "../../../../../helpers/utils"
 
 import { useGetBTRDataCount, useGetBTRData } from "../../../../../VectorFlow/Services/MTA/InsightsAndTrends/BTR"
 
@@ -45,6 +45,7 @@ import { useGetState } from "../../../../Services/MTA/Common/UserUIConfig"
 import { GridRef } from "../../../../../VectorFlow/types/MDM"
 import BTRColorCellRenderer from "./BTRColorCellRenderer";
 import { BPRTagsCellRenderer } from "../../SupplyChainIntelligenceHub/BPR/BPRCellRenderers";
+import IconHeader from "../../Common/HeaderIcon/IconHeader";
 
 const useBTR = () => {
 
@@ -59,24 +60,23 @@ const useBTR = () => {
     const tempRef = useRef()
     const [techInternalRef,setTechInternalRef] = useState<any>()
     const [ecoInternalRef,setEcoInternalRef] = useState<any>()
+    const [activeTab, setActiveTab] = useState<'norm' | 'virtualnorm'>('virtualnorm');
     const tabs: Array<VFFloatingTabItemProps> = [
         {
             id: "1",
-              value: 'on-hand',
-            label: "On-Hand Inv. View"
-          
-        },
-        {
+            value: "on-hand",
+            label: activeTab==='virtualnorm' ? "On-Hand Inv. View" : "Tech Inv. View",
+          },
+          {
             id: "2",
-             value: 'pipeline',
-            label: "Pipeline Inv. View"
-           
-        },
-        {
+            value: "pipeline",
+            label: activeTab==='virtualnorm' ? "Pipeline Inv. View" : "Eco Inv. View",
+          },
+          {
             id: "3",
-             value: 'both',
-            label: "Both On-Hand & Pipeline View"
-        }
+            value: "both",
+            label: activeTab==='virtualnorm' ? "Both On-Hand & Pipeline View" : "Both Tech & Eco View",
+          },
     ]
 
     const { user } = useUserData()
@@ -136,11 +136,16 @@ const useBTR = () => {
     const [techMasterUIConfig, setTechMasterUIConfig] = useState<any>([]);
     const [ecoMasterUIConfig, setEcoMasterUIConfig] = useState<any>([]);
     const [isDisabled, setIsDisabled]= useState<boolean>(true)
-
+    const [isMasterTechState, setIsMasterTechState] = useState<boolean>(false);
+    const [isMasterEcoState, setIsMasterEcoState] = useState<boolean>(false);
     const RowsPerPageCurrTab = currentTab?.value === "on-hand"?userPageSizeTech:currentTab?.value === "pipeline"?userPageSizeEco:rowsPerPage 
     const savePageSizeTech = async( pageSize:number)=>{
         setUserPageSizeTech(pageSize)
         await getDataTech(currFilter , currentPageTech,pageSize)
+    }
+
+    const onTabChange = (tabValue: 'norm' | 'virtualnorm') => {
+        setActiveTab(tabValue);
     }
 
     const savePageSizeEco = async( pageSize:number)=>{
@@ -233,7 +238,7 @@ const useBTR = () => {
                     tagsCellRenderer: BPRTagsCellRenderer,
                     availabilityToolTip: AvailabilityToolTip,
                     // paginationPageSize:parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100'),
-
+                    iconHeader: IconHeader,
 
                 },
                 suppressDragLeaveHidesColumns: true,
@@ -295,14 +300,14 @@ const useBTR = () => {
 
     const onResetCallback = async () => {
         if (currentTab.id === "1") {
-
+            setIsMasterTechState(true);
             setTechGridState({
                 charts: [],
                 columns: techMasterUIConfig,
                 pivot: false,
             })
         } else if (currentTab.id === "2") {
-
+            setIsMasterEcoState(true)
             setEcoGridState({
                 charts: [],
                 columns: ecoMasterUIConfig,
@@ -316,6 +321,7 @@ const useBTR = () => {
         const payload = {
             id: 0,
             name: 'tech',
+            activeTab,
             fields: [],
             filters: filter,
             paginationParameter: {
@@ -345,6 +351,7 @@ const useBTR = () => {
         const payload = {
             id: 0,
             name: 'eco',
+            activeTab,
             fields: [],
             filters: filter,
             paginationParameter: {
@@ -372,6 +379,7 @@ const useBTR = () => {
         const payload = {
             id: 0,
             name: 'both',
+            activeTab,
             fields: [],
             filters: filter,
             paginationParameter: {
@@ -441,6 +449,7 @@ const useBTR = () => {
         const payload = {
             id: 0,
             name: '',
+            activeTab,
             fields: [],
             filters: tempFilter,
             paginationParameter: {
@@ -479,7 +488,8 @@ const useBTR = () => {
                             colorValue: params.data[item[0]]
                         }
                     },
-                    minWidth: 100,
+                    headerTooltip: item[1],
+                    minWidth:50,
                     position: (index + initialColumnState.length),  //column should be at position onwards main columns
                     ...(item[0].startsWith('D') && parseInt(item[0].slice(1)) >= 1 && parseInt(item[0].slice(1)) <= 90 ? { filter: 'agNumberColumnFilter' } : {}),
                 }
@@ -503,7 +513,8 @@ const useBTR = () => {
                 normChangeData:data['NormChangeHistoryData'],
                 masterData:data['MasterData']?.[0],
                 suggestionData:data['SuggestionHistoryData'] ? data['SuggestionHistoryData'] : [],
-                monitoringData:data['MonitoringData']
+                monitoringData:data['MonitoringData'],
+                virtualNormData:data['VirtualNormData']
             }
 
             console.log("dailyDataaa",dailyData);
@@ -515,8 +526,8 @@ const useBTR = () => {
     
     const CustomHeader = {
         dailydatagraph: {
-            width: 45,
-            minWidth: 45,
+            width: 52,
+            minWidth: 52,
             filter: false,
             cellRenderer: 'grapCellRenderer',
             cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph },
@@ -525,45 +536,104 @@ const useBTR = () => {
             floatingFilter: false,
             suppressColumnsToolPanel: false,
             pinned: 'left',
-            headerTooltip: "Daily Data Graph",
             sortable:false,
-            headerName:"Daily Data Graph",
+            headerName:"",
+            headerComponent: 'iconHeader',
+            headerComponentParams: {
+                iconSrc: '/assets/img/daily bar graph.svg', 
+                tooltip: 'Daily Data Graph',
+            },
             suppressMenu:true,
         },
         Category: {
             cellRenderer: 'categoryCellRenderer',
             tooltipField: "Category",
+            width: 70,
+            minWidth: 70,
             tooltipComponent: 'categoryToolTip',
             pinned: 'left',
+            headerComponent: 'iconHeader',
+            headerComponentParams: {
+                iconSrc: '/assets/img/category.svg', 
+                tooltip: 'Category',
+            },
         },
         Availability: {
             cellRenderer: 'availabilityCellRenderer',
             tooltipField: "Availability",
             tooltipComponent: 'availabilityToolTip',
             pinned: 'left',
+            width: 55,
+            minWidth: 55,
+            headerComponent: 'iconHeader',
+            headerComponentParams: {
+                iconSrc: '/assets/img/availability.svg', 
+                tooltip: 'Availability',
+            },
         },
         Tags: {
             cellRenderer: 'tagsCellRenderer',
             pinned: 'left',
+            width: 50,
+            minWidth: 50,
+            headerComponent: 'iconHeader',
+            headerComponentParams: {
+                iconSrc: '/assets/img/tag.svg', 
+                tooltip: 'Tags',
+            },
         },
         SKUCode: {
             pinned: 'left',
+            headerTooltip: initialColumnState?.find((column :any)=> column.Col_Code === "SKUCode")?.Header,
         },
         SKUDescription: {
             pinned: 'left',
+            headerTooltip: initialColumnState?.find((column :any)=> column.Col_Code === "SKUDescription")?.Header,        
         },
         WhCode: {
             pinned: 'left',
+            headerTooltip: initialColumnState?.find((column :any)=> column.Col_Code === "WhCode")?.Header,
+
         },
         LocationName: {
             pinned: 'left',
+            headerTooltip: initialColumnState?.find((column :any)=> column.Col_Code === "LocationName")?.Header,
         },
         Norm: {
             pinned: 'left',
+            headerTooltip: initialColumnState?.find((column :any)=> column.Col_Code === "Norm")?.Header,
         },
         VirtualNorm: {
             pinned: 'left',
+            headerTooltip: initialColumnState?.find((column :any)=> column.Col_Code === "VirtualNorm")?.Header,
         },
+        pc: {
+            headerTooltip: initialColumnState?.find((column :any)=> column.Col_Code === "pc")?.Header,
+        },
+        pn: {
+            headerTooltip: initialColumnState?.find((column :any)=> column.Col_Code === "pn")?.Header,
+        },
+        bc :{
+            headerTooltip: initialColumnState?.find((column :any)=> column.Col_Code === "bc")?.Header,
+        },
+        yc :{
+            headerTooltip: initialColumnState?.find((column :any)=> column.Col_Code === "yc")?.Header,
+        },
+        gc :{
+            headerTooltip: initialColumnState?.find((column :any)=> column.Col_Code === "gc")?.Header,
+        },
+        blc :{
+            headerTooltip: initialColumnState?.find((column :any)=> column.Col_Code === "blc")?.Header,
+        },
+        wc :{
+            headerTooltip: initialColumnState?.find((column :any)=> column.Col_Code === "wc")?.Header,
+        },
+        rc :{
+            headerTooltip: initialColumnState?.find((column :any)=> column.Col_Code === "rc")?.Header,
+        },
+        age :{
+            headerTooltip: initialColumnState?.find((column :any)=> column.Col_Code === "age")?.Header,
+        }
     };
 useEffect(() => {
     if (techInternalRef && techGridState?.columns) {
@@ -572,9 +642,10 @@ useEffect(() => {
                 state: techGridState.columns,
                 applyOrder: true
             });
-
-            techInternalRef.api.sizeColumnsToFit();
-
+            if(isMasterTechState){
+             techInternalRef.api.sizeColumnsToFit();
+             setIsMasterTechState(false);
+            }
             if (!result) {
                 console.error("Failed to apply column state", result);
             }
@@ -590,8 +661,10 @@ useEffect(() => {
                 state: ecoGridState.columns,
                 applyOrder: true
             });
-
-            ecoInternalRef.api.sizeColumnsToFit();
+            if(isMasterEcoState){
+             ecoInternalRef.api.sizeColumnsToFit();
+             setIsMasterEcoState(false);
+            }
 
             if (!result) {
                 console.error("Failed to apply column state", result);
@@ -605,11 +678,12 @@ useEffect(() => {
         if (initialColumnState) {
             const colDefs = getColumnDefinationsMTA(initialColumnState, CustomHeader, Extras());
             colDefs.map((colDef: any) => {
-                if (initialColumnState.find((initialColumnState: any) => initialColumnState.Col_Code === colDef.colId)) {
+             if (initialColumnState.find((initialColumnState: any) => initialColumnState.Col_Code === colDef.colId && !['Availability', 'Category', 'Tags', 'dailydatagraph'].includes(initialColumnState.Col_Code))) {
                     colDef.minWidth = 80;
                 }
                 return colDef
             })
+
             const result = colDefs.filter((r: any) => (!r.colId?.startsWith('D') || r.colId === 'DailyDataGraph') || (r.colId.startsWith('D') && parseInt(r.colId.slice(1)) > 90 - horizon))
             return result;
         } else return [];
@@ -627,7 +701,7 @@ useEffect(() => {
 
             // Set column width for all columns except date columns
             colDefs.map((colDef: any) => {
-                if (initialColumnState.find((initialColumnState: any) => initialColumnState.Col_Code === colDef.colId)) {
+                if (initialColumnState.find((initialColumnState: any) => initialColumnState.Col_Code === colDef.colId && !['Availability', 'Category', 'Tags', 'dailydatagraph'].includes(initialColumnState.Col_Code))) {
                     colDef.minWidth = 80;
                 }
                 return colDef
@@ -654,7 +728,7 @@ useEffect(() => {
         if(currentTab.id === "2"  )     getDataEco(currFilter , 1);
         if(currentTab.id === "3" )     getData(currFilter , 1)
         } 
-    },[currentTab]);
+    },[currentTab, activeTab]);
 
     useEffect(() => {
     if (initialColumnState) {
@@ -670,14 +744,20 @@ useEffect(() => {
         }
     }, [ecoInternalRef, ecoColDefs, currentTab]);
 
+    
     const renderView = () => {
         switch (currentTab.id) {
             case "1":
                 return (
                     <>
+                        {activeTab==='virtualnorm'? 
                         <p className={BTRTableHeader}>
                             On-Hand Inventory View Trend Report
                         </p>
+                        :
+                        <p className={BTRTableHeader}>
+                            Tech View Trend Report
+                        </p>}
                         <div style={{height: '100%'}}>
                         <CustomVFTable
                             height={"90%"}
@@ -714,10 +794,14 @@ useEffect(() => {
             case "2":
                 return (
                     <>
+                        {activeTab==='virtualnorm'? 
                         <p className={BTRTableHeader}>
                             Pipeline Inventory Trend Report
                         </p>
-                        
+                        :
+                        <p className={BTRTableHeader}>
+                            Eco View Trend Report
+                        </p>}
                         <div style={{height:'100%'}}>
                         <CustomVFTable
                             height={"90%"}
@@ -761,7 +845,7 @@ useEffect(() => {
                             techTable={{
                                 columnDefs: techColDefs,
                                 rowData: techRowData,
-                                header: "On-Hand Inventory View Trend Report",
+                                header: activeTab==='virtualnorm'? "On-Hand Inventory View Trend Report": "Tech View Trend Report",
                                 paginationProps: techPaginationPropsForBoth,
                                 ...gridProps
                             }}
@@ -769,7 +853,7 @@ useEffect(() => {
                                 columnDefs: ecoColDefs,
                                 paginationProps: ecoPaginationPropsForBoth,
                                 rowData: ecoRowData,
-                                header: "Pipeline Inventory Trend Report",
+                                header: activeTab==='virtualnorm'? "Pipeline Inventory Trend Report": "Eco Trend Report",
                                 ...gridProps
                             }}
                             isLocked={isLockMode}
@@ -784,14 +868,14 @@ useEffect(() => {
                             techTable={{
                                 columnDefs: techColDefs,
                                 rowData: techRowData,
-                                header: "On-Hand Inventory View Trend Report",
+                                header: activeTab==='virtualnorm'? "On-Hand Inventory View Trend Report": "Tech View Trend Report",
                                 paginationProps: techPaginationPropsForBoth,
                                 ...gridProps
                             }}
                             ecoTable={{
                                 columnDefs: ecoColDefs,
                                 rowData: ecoRowData,
-                                header: "Pipeline Inventory Trend Report",
+                                header: activeTab==='virtualnorm'? "Pipeline Inventory Trend Report": "Eco Trend Report",
                                 paginationProps: ecoPaginationPropsForBoth,
                                 ...gridProps
                             }}
@@ -830,7 +914,10 @@ useEffect(() => {
             notifyError("No Data to Export");
             return;
         }
-
+        if(ecoTotalRows > 1048576 || techTotalRows > 1048576){
+            notifyError("Data exceeds Excel limit. Please use CSV export");
+            return;
+        }
         const tempFilter = getPreparedFilter(currFilter)
         const headersData = (page === 'on-hand') ? (techRef?.current?.api?.getColumnState() || []) : (ecoRef?.current?.api?.getColumnState() || []);
         const colDefs = (page === 'on-hand') ? techColDefs : ecoColDefs;
@@ -843,6 +930,7 @@ useEffect(() => {
             Headers: resultArray,
             id: 0,
             name: page==='on-hand'?'tech':'eco',
+             activeTab,
             fields: [],
             filters: tempFilter,
             paginationParameter: {
@@ -858,16 +946,69 @@ useEffect(() => {
             // const data = await getBTRData(payload)
             let filename = "";
             if (page === "on-hand") {
-                filename = "On_Hand_Inventory";
+                filename =  activeTab==='virtualnorm' ?  "On_Hand_Inventory" : "BTR_Tech";
+            } else {
+                filename = activeTab==='virtualnorm' ?  "Pipeline_Inventory" : "BTR_Eco";
+            }
+            await ExcelExportMTA(payload, filename);
+            notifySuccess(`Data Exported Successfully`);
+        }
+        catch(error) {
+            console.log(error);
+            notifyError("Data too large to export. Please apply filters to reduce the data size.");
+        }
+        
+        
+
+    }
+    
+
+    const onExportToCsvCallBack = async (pageNumber: number, page: string) => {
+        const activeRef = page === 'on-hand' ? techRef : ecoRef;
+        const visibleCount = activeRef.current?.api?.getDisplayedRowCount() ?? 0;
+        if (visibleCount === 0) {
+            notifyError("No Data to Export");
+            return;
+        }
+
+        const tempFilter = getPreparedFilter(currFilter)
+        const headersData = (page === 'on-hand') ? (techRef?.current?.api?.getColumnState() || []) : (ecoRef?.current?.api?.getColumnState() || []);
+        const colDefs = (page === 'on-hand') ? techColDefs : ecoColDefs;
+        const colMap = new Map(colDefs.map((col: any) => [col.colId, col.headerName]));
+        const resultArray = headersData
+        .filter((col: any) => colMap.has(col.colId) && col.colId !== "dailydatagraph")
+        .map((col: any) => ({ Field: col.colId, HeaderName: colMap.get(col.colId) }));
+      
+        const payload = {
+            Headers: resultArray,
+            id: 0,
+            name: page==='on-hand'?'tech':'eco',
+            activeTab,
+            fields: [],
+            filters: tempFilter,
+            paginationParameter: {
+                pageNumber: pageNumber
+            },
+            ISExport:"1",
+            reportName:"BTR",
+            stream:1,
+            responseType: `arraybuffer`
+        }
+        notifyLoader("Downloading Data...")
+        try {
+            // const data = await getBTRData(payload)
+            let filename = "";
+            if (page === "on-hand") {
+                filename =  activeTab==='virtualnorm' ?  "On_Hand_Inventory" : "BTR_Tech";
               } else {
-                filename = "Pipeline_Inventory";
+                filename = activeTab==='virtualnorm' ?  "Pipeline_Inventory" : "BTR_Eco";
               }
             await CsvExportMTA(payload, filename);
             notifySuccess(`Data Exported Successfully`);
         }
         catch(error) {
             console.log(error);
-            notifyError("Error Exporting Excel")
+            notifyError("Error Exporting Csv")
         }
         
         
@@ -911,7 +1052,11 @@ useEffect(() => {
         dailyData,
         showDailyDataGraphModal,
         showNormChangeHistoryTable,
-        onResetCallback
+        onResetCallback,
+        onExportToCsvCallBack,
+        onTabChange,
+        activeTab,
+        tabs
     }
 }
 
