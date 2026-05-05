@@ -128,6 +128,7 @@ const useSupplierDispatchReport= ()=>{
     
     useEffect(() => {
         if (internalRef && gridState && gridState.columns) {
+        setTimeout(() => {
             const result = internalRef?.api.applyColumnState({ state: gridState.columns, applyOrder: true });
             if(isMasterState){
                 internalRef?.api.sizeColumnsToFit();
@@ -136,6 +137,7 @@ const useSupplierDispatchReport= ()=>{
             if (!result) {
                 console.error("Failed to apply column state", result);
             }
+        },1000);
         }
     }, [internalRef, gridState , RowData]);
  
@@ -311,6 +313,12 @@ const useSupplierDispatchReport= ()=>{
       await GetSDRData(currentPage , pageSize)
     }
 
+    const handleChangePage = async (pageNumber:any) => {
+        getBPRUiConfig();
+        await GetSDRData(pageNumber,userPageSize)
+    }
+
+
     return{
         VDRColumns,
         RowData,
@@ -339,7 +347,8 @@ const useSupplierDispatchReport= ()=>{
         generalFilterOptions,
         onResetCallback,
         savePageSize,
-        userPageSize
+        userPageSize,
+        handleChangePage
     }
     
 
