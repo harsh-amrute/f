@@ -86,6 +86,8 @@ const useOpenExpeditingRequests = () => {
   const { mutateAsync: getUiConfig, isLoading: isUIConfigLoading } = useGetUIConfigData();
   const [initialColumnState, setInitialColumnState] = useState<any>(undefined);
   const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
+  const [isMasterState , setIsMasterState] = useState<boolean>(false);
+
   
     // const {currentGridState} = useSelector((state:RootState)=>state.mta)
 
@@ -140,13 +142,16 @@ const useOpenExpeditingRequests = () => {
     if (internalRef && gridState && gridState.columns) {
        setTimeout(() => {
       const result = internalRef.api.applyColumnState({ state: gridState.columns, applyOrder: true });
+       if(isMasterState){
       internalRef?.api.sizeColumnsToFit();
+      setIsMasterState(false);
+       }
       if (!result) {
         console.error("Failed to apply column state", result);
       }
       },1000);
     }
-  }, [internalRef, gridState]);
+  }, [internalRef, gridState , rowData]);
   
   const getOERUiConfig = async () => {
     try {
@@ -468,6 +473,7 @@ const useOpenExpeditingRequests = () => {
 
     
   const onResetCallback = async () => {
+    setIsMasterState(true);
     setGridState({
       charts: [],
       columns: masterUIConfig,
