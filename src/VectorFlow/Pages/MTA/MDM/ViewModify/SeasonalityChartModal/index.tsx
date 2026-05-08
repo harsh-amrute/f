@@ -1,5 +1,6 @@
 import Chart from "../../../../../../components/VectorFLOW/commons/Chart";
 import VFModalCard from "../../../../../../components/VectorFLOW/commons/VFModalCard";
+import  DailyDataInfoBar from "../../../../../../components/VectorFLOW/commons/DailyDataGraphModal/DailyDataInfoBar";
 import {
   Chart as ChartJS,
   ChartData,
@@ -17,6 +18,7 @@ import {
   SCCheckBoxContainer,
   SCHorizontalDivider,
   SCDataRow,
+  SCToggleWrapper,
   SCDataNode,
   SCVerticalDivider,
   vTitleBg,
@@ -30,6 +32,8 @@ import { DailyData } from "../../../../../types/MDM";
 import { useUserData } from "../../../../../../context";
 import * as globalStyles from "../../../../../../styles/global";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
+import ChartDownloadButton from "../../../Common/ChartDownloadButton/ChartDownloadButton";
+import { useChartDownload } from "../../../../../../hooks/useChartDownload";
 
 interface SeasonalityChartModalProps {
   rowData: any;
@@ -46,8 +50,17 @@ const SeasonalityChartModal = ({
   isModalOpen,
   closeModal,
 }: SeasonalityChartModalProps) => {
+  
   const { user } = useUserData();
   const { theme_ui } = user.user;
+  const { chartWrapperRef, handleDownload } = useChartDownload({
+      title: `SKU: ${rowData.sc ?? ""} (${rowData.skd ?? ""}) | Location: ${rowData.wc ?? ""} (${rowData.wd ?? ""})`,
+      fileName: "SeasonalityGraph",
+      fontSize: 16,
+      lineHeight: 20,
+      padding: 25,
+      titleMarginTop: 25,
+    });
 
   const customTooltip = (context: any) => {
     const getCurrentDate = () => {
@@ -274,6 +287,10 @@ const SeasonalityChartModal = ({
     },
   };
 
+  const truncate = (text?: string, limit = 15) => {
+    if (!text) return "—";
+    return text?.length > limit ? text.slice(0, limit) + "…" : text;
+  };
   const chartRef = useRef<ChartJS>();
   const [visibleDataSets, setVisibleDataSets] = useState<number[]>(() => {
     return chartData.datasets.map((_: any, index: number) => index);
@@ -324,7 +341,30 @@ const SeasonalityChartModal = ({
       closeIcon="/assets/img/VectorFLOW/NMS/close-dark.svg"
     >
       <div className={SCSeasonalityContainer}>
-        <div className={SCChartContainer}>
+        <div ref={chartWrapperRef} className={SCChartContainer}>
+          <div className={SCToggleWrapper}>
+            <div style={{ flex: 1, minWidth: 0, overflow: "hidden" }}>  
+              <div style={{ width: "fit-content", maxWidth: "100%" }}>      
+                <DailyDataInfoBar
+                  items={[
+                    { label: "SKU", value: rowData.sc ?? "—" },
+                    {
+                      label: "SKU Name",
+                      value: truncate(rowData.skd),
+                      tooltip: rowData.skd,
+                    }, 
+                    { label: "Location", value: rowData.wc ?? "—" },
+                    {
+                      label: "Location Name",
+                      value: truncate(rowData.wd),
+                      tooltip: rowData.wd,
+                    },
+                  ]}
+                />
+              </div>
+            </div>
+            <ChartDownloadButton themeUi={theme_ui} onDownload={handleDownload}/>
+          </div>
           <Chart
             type="bar"
             data={chartData}
@@ -416,98 +456,6 @@ const SeasonalityChartModal = ({
                   Stock
                 </p>
               </label>
-            </div>
-
-            <hr className={SCHorizontalDivider} />
-
-            <div className={SCDataRow}>
-              <div className={SCDataNode}>
-                <p
-                  className={SCText}
-                  style={assignInlineVars({
-                    [vTextSize]: "16px",
-                    [vTextWeight]: "300",
-                  })}
-                >
-                  SKU Code:
-                </p>
-                <p
-                  className={SCText}
-                  style={assignInlineVars({
-                    [vTextSize]: "18px",
-                    [vTextWeight]: "500",
-                  })}
-                >
-                  {rowData.sc}
-                </p>
-              </div>
-              <div className={SCVerticalDivider} />
-              <div className={SCDataNode}>
-                <p
-                  className={SCText}
-                  style={assignInlineVars({
-                    [vTextSize]: "16px",
-                    [vTextWeight]: "300",
-                  })}
-                >
-                  SKU Name:
-                </p>
-                <p
-                  className={SCText}
-                  style={assignInlineVars({
-                    [vTextSize]: "18px",
-                    [vTextWeight]: "500",
-                  })}
-                >
-                  {rowData.skd}
-                </p>
-              </div>
-            </div>
-
-            <hr className={SCHorizontalDivider} />
-
-            <div className={SCDataRow}>
-              <div className={SCDataNode}>
-                <p
-                  className={SCText}
-                  style={assignInlineVars({
-                    [vTextSize]: "16px",
-                    [vTextWeight]: "300",
-                  })}
-                >
-                  Location Code:
-                </p>
-                <p
-                  className={SCText}
-                  style={assignInlineVars({
-                    [vTextSize]: "18px",
-                    [vTextWeight]: "500",
-                  })}
-                >
-                  {rowData.wc}
-                </p>
-              </div>
-              <div className={SCVerticalDivider} />
-              <div className={SCDataNode}>
-                <p
-                  className={SCText}
-                  style={assignInlineVars({
-                    [vTextSize]: "16px",
-                    [vTextWeight]: "300",
-                  })}
-                >
-                  Location Name:
-                </p>
-                <p
-                  className={SCText}
-                  style={assignInlineVars({
-                    [vTextSize]: "18px",
-                    [vTextWeight]: "500",
-                  })}
-                >
-                  {rowData.wd}
-                </p>
-              </div>
             </div>
 
             <hr className={SCHorizontalDivider} />
