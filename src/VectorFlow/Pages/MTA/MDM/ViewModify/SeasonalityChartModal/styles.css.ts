@@ -24,22 +24,22 @@ export const SCSeasonalityContainer = style({
   paddingBottom: '20px',
   display: 'flex',
   width: '1810px',
-  height: '850px',
+  height: '100%',
   '@media': {
     'screen and (min-width:1024px) and (max-width:1688px)': {
       width: '1100px',
-      height: '520px',
+      height: '100%',
     },
   },
 });
 
 export const SCChartContainer = style({
   marginRight: '33px',
-  width: '71%',
+  width: '80%',
 });
 
 export const SCSeasonalityStatusDetails = style({
-  width: '20%',
+  flex: 1,
   height: '100%',
   boxShadow: '-6px 6px 16px #0000000F',
   '@media': {
@@ -73,6 +73,15 @@ export const SCSeasonalityDetailsBody = style({
       zoom: 0.8 as unknown as string | number,
     },
   },
+});
+
+export const SCToggleWrapper = style({
+  display: "flex",
+  justifyContent: "flex-end",
+  alignItems: "center",
+  gap: "8px",
+  // marginTop: '14px',
+  marginBottom: "4px",
 });
 
 export const SCText = style({
