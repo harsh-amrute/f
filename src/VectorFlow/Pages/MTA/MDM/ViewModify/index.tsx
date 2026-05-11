@@ -30,7 +30,7 @@ import {
   operators,
   seasonalityQuickFilterData,
 } from "../../../../../helpers/MDMConstants";
-import { SeasonalityQuickFilterType, type Filter } from "../../../../types/MDM";
+import { SeasonalityQuickFilterType, type Filter, type Option } from "../../../../types/MDM";
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
 import WarningModal from "./WarningModal";
 import UploadModal from "./UploadModal";
@@ -250,12 +250,16 @@ const ViewModify = () => {
                     <legend className={SCLegend}>Filter</legend>
                     {activeMaster.filters.map((f: Filter) => {
                       if (f.masterId == activeMaster?.id) {
+                        const fieldOptions = generateOptions([activeMaster]).filter(
+                          (option: Option) => !(f.masterId == 10 && option.value === 'sts')
+                        );
                         return (
                           <VFFilter
                             onDelete={() => handleOnDeleteFilter(f.id)}
                             operators={operators}
                             filters={activeMaster.filters}
-                            fields={generateOptions([activeMaster])}
+                            // fields={generateOptions([activeMaster])}
+                            fields={fieldOptions}
                             currFilter={f}
                             key={f.id}
                             isDisabled={false}

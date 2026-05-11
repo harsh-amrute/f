@@ -18,6 +18,7 @@ import { UIColumnConfigName, UserUIColumnConfigName } from "../../../../../helpe
 import { useSelector } from "react-redux"
 import { RootState } from "../../../../../redux/store/store"
 import { BPRTagsCellRenderer } from "../BPR/BPRCellRenderers"
+import IconHeader from "../../Common/HeaderIcon/IconHeader"
 
  
   
@@ -54,6 +55,7 @@ const useRRR =()=>{
     const [initialColumnState, setInitialColumnState] = useState<any>(undefined);
     const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
     const [hasSavedConfig, setHasSavedConfig] = useState<boolean>(false);
+    const [isMasterState , setIsMasterState] = useState<boolean>(false);
 
           
     const getRRRUiConfig = async () => {
@@ -133,12 +135,15 @@ const useRRR =()=>{
 
     useEffect(() => {
     if (internalRef && gridState && gridState.columns) {
+        setTimeout(() => {
         const result = internalRef?.api.applyColumnState({ 
             state: gridState.columns, 
             applyOrder: true 
         });
-        internalRef?.api.sizeColumnsToFit();
-        
+        if(isMasterState){
+            internalRef?.api.sizeColumnsToFit();
+            setIsMasterState(false);
+        }
         if (hasSavedConfig && result) {
             setTimeout(() => {
                 internalRef?.api.applyColumnState({ 
@@ -147,8 +152,9 @@ const useRRR =()=>{
                 });
             }, 0);
         }
+        },1000);
     }
-}, [internalRef, gridState, hasSavedConfig]);
+}, [internalRef, gridState, hasSavedConfig,RRRRowData]);
 
     
     // const getRecordsCount=async(filter?:any)=>{
@@ -175,6 +181,7 @@ const useRRR =()=>{
     // }
 
     const onResetCallback = async () => {
+        setIsMasterState(true);
         setGridState({
             charts: [],
             columns: masterUIConfig,
@@ -216,6 +223,11 @@ const useRRR =()=>{
         }catch(err:any){
             notifyError(err)
         }
+    }
+    
+    const handleChangePage = async (pageNumber:any) => {
+        getRRRUiConfig();
+        await getRRRRowData(pageNumber,userPageSize)
     }
 
     const onApplyFilter = async(filter:any)=>{
@@ -272,11 +284,18 @@ const useRRR =()=>{
         colorEcoCellRenderer:RRREcoColorCellRenderer,
         colorDispatchRender:RRRDispatchColorCellRenderer,
         TagsCellRenderer: BPRTagsCellRenderer,
+        iconHeader: IconHeader,
       }), []);
 
     const CustomHeader = {
         Tags: {
+            minWidth:80,
             cellRenderer: 'TagsCellRenderer',
+            headerComponent: 'iconHeader',
+            headerComponentParams: {
+                iconSrc: '/assets/img/tag.svg', 
+                tooltip: 'Tags',
+            },
         },
     }
   const defaultColDefObject = useMemo(()=>{
@@ -419,7 +438,8 @@ const useRRR =()=>{
         onResetCallback,
         lastRunDate,
         savePageSize,
-        userPageSize
+        userPageSize,
+        handleChangePage
     }
 }
 

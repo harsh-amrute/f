@@ -106,7 +106,9 @@ const DBM = () => {
                 monitoringData={dailyData.monitoringData}
                 virtualNormData={dailyData.virtualNormData}
                 skuKey={"SKUCode"}
-                whKey={"LocName"}
+                skuDescKey={"SKUName"}
+                whKey={"LocCode"}
+                whDescKey={"LocName"}
               />
             )}
             {showNormChangeHistoryTable && (

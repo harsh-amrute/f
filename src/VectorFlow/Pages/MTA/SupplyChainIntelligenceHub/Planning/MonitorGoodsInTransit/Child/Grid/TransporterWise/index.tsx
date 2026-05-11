@@ -8,6 +8,7 @@ import ColorCellRenderer from '../../../../../../InsightsAndTrends/BTR/ColorCell
 import { AgeingCellRenderer } from '../../../../../../../../../components/VectorFLOW/commons/AgeingCellRenderer';
 import { getColumnDefinationsMTA, MainMenuItemsCustomization } from '../../../../../../../../../helpers/utils';
 import { GridStateContext } from '../../../../../../../../../context/GridStateContext';
+import IconHeader from '../../../../../../../../../VectorFlow/Pages/MTA/Common/HeaderIcon/IconHeader';
 
 const MonitorGITChildTransporterWiseGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCategory,currentTab}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any,currentCategory:string,currentTab:string})=>{
 
@@ -20,7 +21,8 @@ const MonitorGITChildTransporterWiseGrid = ({data,paginationProps,onOpenDailyDat
     const customCellRenderers = useMemo(() => ({
         tagsCellRenderer:BPRTagsCellRenderer,
         colorCellRenderer:ColorCellRenderer,
-        ageingCellRenderer:AgeingCellRenderer
+        ageingCellRenderer:AgeingCellRenderer,
+        iconHeader: IconHeader,
       }), []);
 
       const sideBar:SideBarDef = {
@@ -196,8 +198,12 @@ const MonitorGITChildTransporterWiseGrid = ({data,paginationProps,onOpenDailyDat
             floatingFilter: false,
             suppressColumnsToolPanel: false,
             suppressMenu:true,
-            headerTooltip: "Daily Data Graph",
-            headerName:"Daily Data Graph",
+            headerName:"",
+            headerComponent: 'iconHeader',
+            headerComponentParams: {
+                iconSrc: '/assets/img/daily bar graph.svg', 
+                tooltip: 'Daily Data Graph',
+            },
             sortable: false,
         },
         t: {
@@ -208,6 +214,11 @@ const MonitorGITChildTransporterWiseGrid = ({data,paginationProps,onOpenDailyDat
             pinned: null,
             filterParams: {
                 buttons: ['reset'], // Adds Apply and Clear buttons
+            },
+            headerComponent: 'iconHeader',
+            headerComponentParams: {
+                iconSrc: '/assets/img/tag.svg', 
+                tooltip: 'Tags',
             },
         },
         pin:{

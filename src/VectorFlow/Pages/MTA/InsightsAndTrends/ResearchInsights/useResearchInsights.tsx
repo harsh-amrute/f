@@ -26,6 +26,7 @@ import { ColDef } from 'ag-grid-enterprise'
 import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
 import { useGetUIConfigData } from '../../../../Services/MTA/Common/UIConfig'
 import { UIColumnConfigName, UserUIColumnConfigName } from '../../../../../helpers/Enum'
+import IconHeader from '../../Common/HeaderIcon/IconHeader'
 
 const useResearchInsights = () => {
 
@@ -70,6 +71,8 @@ const useResearchInsights = () => {
     const [expandedGraphId,setExpandedGraphId] = useState<1 | 2>(1)
     const [generalFilterOptions,setGeneralFilterOptions] = useState();
     const [ResearchInsightsColumns,setResearchInsightsColumns] = useState<ColDef[]>([])
+    const [isMasterState , setIsMasterState] = useState<boolean>(false);
+
 
 
     const showDailyDataGraphModal = useSelector((state:RootState) => state.mta.showDailyDataGraphModal);
@@ -160,15 +163,21 @@ const useResearchInsights = () => {
   
     useEffect(() => {
         if (internalRef && gridState && gridState.columns) {
+            setTimeout(() => {
             const result = internalRef.api.applyColumnState({ state: gridState.columns, applyOrder: true });
-            internalRef?.api.sizeColumnsToFit();
+            if(isMasterState){
+                internalRef?.api.sizeColumnsToFit();
+                setIsMasterState(false);
+            }
             if (!result) {
                 console.error("Failed to apply column state", result);
             }
-        }
-    }, [internalRef, gridState]);
+        },1000);
+        }    
+    }, [internalRef, gridState,ResearchInsightsData]);
 
     const onResetCallback = async () => {
+        setIsMasterState(true);
         setGridState({
             charts: [],
             columns: masterUIConfig,
@@ -196,7 +205,8 @@ const useResearchInsights = () => {
         grapCellRenderer:BPRGraphCellRenderer,
         colorTechCellRenderer:BPRTechColorCellRenderer,
         colorEcoCellRenderer:BPREcoColorCellRenderer,
-        tagsCellRenderer:BPRTagsCellRenderer
+        tagsCellRenderer:BPRTagsCellRenderer,
+        iconHeader: IconHeader,
       }), []);
 
 
@@ -300,6 +310,7 @@ const useResearchInsights = () => {
     }
 
     const handlePageChange = async (pageNo: number) => {
+        getRIUiConfig()
         resetState()
         setCurrGridPage(pageNo)
         try {
@@ -681,20 +692,29 @@ const useResearchInsights = () => {
             resizable: false,
             floatingFilter: false,
             suppressColumnsToolPanel: false,
-            headerTooltip: "Daily Data Graph",
             sortable:false,
             suppressMenu:true,
-            headerName:"Daily Data Graph",
+            headerName:"",
+            headerComponent: 'iconHeader',
+            headerComponentParams: {
+                iconSrc: '/assets/img/daily bar graph.svg', 
+                tooltip: 'Daily Data Graph',
+            },
 
         },
         tags: {
             cellRenderer: 'tagsCellRenderer',
-            width: 100,
-            minWidth: 100,
+            width: 80,
+            minWidth: 80,
             filter: true,
             pinned: null,
             filterParams: {
                 buttons: ['reset'], // Adds Apply and Clear buttons
+            },
+            headerComponent: 'iconHeader',
+            headerComponentParams: {
+                iconSrc: '/assets/img/tag.svg', 
+                tooltip: 'Tags',
             },
         }
     }

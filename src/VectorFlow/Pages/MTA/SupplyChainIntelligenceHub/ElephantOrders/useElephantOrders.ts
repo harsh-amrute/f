@@ -1,6 +1,6 @@
 
 import { useGetEOData,useGetEODataCount, useSubmitDueDates} from '../../../../Services/MTA/SupplyChainIntelligenceHub/ElephantOrders/index';
-import { convertUiConfigToOptions, getColumnDefinationsMTA } from '../../../../../helpers/utils';
+import { convertUiConfigToOptions, getColumnDefinationsMTA,MainMenuItemsCustomization } from '../../../../../helpers/utils';
 import { useEffect, useState,useRef,useMemo } from 'react';
 import { notifyError,notifyLoader, notifySuccess} from '../../../../../helpers/notify';
 import useBPRFilter from '../../../../../hooks/useBPRFilter';
@@ -47,6 +47,7 @@ const useElephantOrders= ()=>{
     const {mutateAsync:submitDueDates} = useSubmitDueDates();
     const [editedDueDateRows, setEditedDueDateRows] = useState<any[]>([]);
 
+    const [isMasterState , setIsMasterState] = useState<boolean>(false);
 
 
     const handleDueDateChange = (
@@ -296,13 +297,18 @@ const useElephantOrders= ()=>{
     
     useEffect(() => {
         if (internalRef && gridState && gridState.columns) {
+             setTimeout(() => {
             const result = internalRef?.api.applyColumnState({ state: gridState.columns, applyOrder: true });
-            internalRef?.api.sizeColumnsToFit();
+            if(isMasterState){
+                internalRef?.api.sizeColumnsToFit();
+                setIsMasterState(false);
+            }
             if (!result) {
                 console.error("Failed to apply column state");
             }
+            },1000);
         }
-    }, [internalRef, gridState]);
+    }, [internalRef, gridState , RowData]);
  
     const GetDataCount = async (filter?:any)=>{
         const DataCount= await getEODataCount({
@@ -342,11 +348,17 @@ const useElephantOrders= ()=>{
     }
 
     const onResetCallback = async () => {
+        setIsMasterState(true);
         setGridState({
           charts: [],
           columns: masterUIConfig,
           pivot: false,
         })
+    }
+
+    const handleChangePage = async (pageNumber:any)=>{
+        getEOUiConfig();
+        await GetEOData(pageNumber);
     }
 
     const CustomHeader = {
@@ -384,6 +396,7 @@ const useElephantOrders= ()=>{
             tooltipTrigger: "focus",
             tooltipInteraction: true,
             readOnlyEdit: false,
+            getMainMenuItems: MainMenuItemsCustomization,
             enableBrowserTooltips:true,
             gridOptions: {
                 sideBar: defaultAgGridSideBarForBPR,
@@ -524,7 +537,8 @@ const useElephantOrders= ()=>{
         onResetCallback,
         onSubmitDueDate,
         savePageSize,
-        userPageSize
+        userPageSize,
+        handleChangePage
     }
     
 

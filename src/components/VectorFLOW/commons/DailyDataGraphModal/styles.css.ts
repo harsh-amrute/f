@@ -119,3 +119,21 @@ export const SCVerticalDivider = style({
   marginRight: '16px',
   marginLeft: '16px',
 });
+
+export const SCDailyDataInfoBar = style({
+  fontFamily: "Roboto",
+  display: "flex",
+  flexDirection: "row",    
+  flexWrap: "nowrap",
+  alignItems: "center",
+  marginLeft: "50px",
+  gap: "0px",
+  padding: "8px 12px",
+  fontSize: "9px",
+  backgroundColor: "#FAFAFA",
+  border: "1px solid #e0e0e0",
+  borderRadius: "6px",
+  color: "#333",
+  overflow: "visible",
+  whiteSpace: "nowrap",
+});

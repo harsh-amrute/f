@@ -1,7 +1,7 @@
 import { useState,useMemo,useEffect,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import { useGetDBMData,useGetDBMDataCount,useGetDBMApplySelectedNorm, useGetDBMUpdateSleepTbl} from "../../../../Services/MTA/DBM"
-import { convertUiConfigToOptions, getColumnDefinationsMTA  } from "../../../../../helpers/utils"
+import { convertUiConfigToOptions, getColumnDefinationsMTA,MainMenuItemsCustomization  } from "../../../../../helpers/utils"
 //import { useRef } from "react"
 // import {DBMSleepCellRenderer} from "./Sleep"
 import BPRGraphCellRenderer from "../../SupplyChainIntelligenceHub/BPR/BPRGraphCellRenderer"
@@ -22,6 +22,7 @@ import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
 import { UIColumnConfigName, UserUIColumnConfigName } from "../../../../../helpers/Enum"
 import { useGetUIConfigData } from "../../../../Services/MTA/Common/UIConfig"
 import { useGetState } from "../../../../Services/MTA/Common/UserUIConfig"
+import IconHeader from "../../Common/HeaderIcon/IconHeader"
 
 const useDBM =()=>{
     //const [DBMApplySelectedNormData,setDBMApplySelectedNormData] = useState<any[]>([])
@@ -42,6 +43,8 @@ const useDBM =()=>{
     const [exportExcelColumns,setExportExcelColumns] = useState<Array<any>>([])
 
     const [exportExcelRowData,setExportExcelRowData] = useState<Array<any>>([])
+
+    const [isMasterState , setIsMasterState] = useState<boolean>(false);
 
     const exportTimeout = useRef<NodeJS.Timeout | null>(null);
 
@@ -78,7 +81,8 @@ const useDBM =()=>{
     const customCellRenderers = useMemo(() => ({
         tickCellRenderer:DBMTickCellRenderer,
         grapCellRenderer:BPRGraphCellRenderer,
-        suggestionCategoryCellRenderer:SuggestionCategoryCellRenderer
+        suggestionCategoryCellRenderer:SuggestionCategoryCellRenderer,
+        iconHeader: IconHeader,
       }), []);
 
     const getDBMUiConfig = async () => {
@@ -139,13 +143,21 @@ const useDBM =()=>{
   
     useEffect(() => {
         if (internalRef && gridState && gridState.columns) {
-            const result = internalRef.api.applyColumnState({ state: gridState.columns, applyOrder: true });
-            internalRef?.api.sizeColumnsToFit();
+            setTimeout(() => {  // small delay ensures grid is fully rendered
+            const result = internalRef.api.applyColumnState({ 
+                state: gridState.columns, 
+                applyOrder: true 
+            });
+            if (isMasterState) {
+                internalRef.api.sizeColumnsToFit();
+                setIsMasterState(false);
+            }
             if (!result) {
                 console.error("Failed to apply column state", result);
             }
+        }, 1000);
         }
-    }, [internalRef, gridState]);
+    }, [internalRef, gridState , DBMRowData]);
 
     const onOpenDailyDataGraph = async (params:any) => {
         const payload:any = {
@@ -194,6 +206,7 @@ const useDBM =()=>{
 
     
     const onResetCallback = async () => {
+        setIsMasterState(true);
         setGridState({
             charts: [],
             columns: masterUIConfig,
@@ -238,7 +251,11 @@ const useDBM =()=>{
             suppressColumnsToolPanel: false,
             tooltipField: "DailyDataGraph",
             suppressHeaderMenuButton: true,
-            headerTooltip: "Daily Data Graph",
+            headerComponent: 'iconHeader',
+            headerComponentParams: {
+                iconSrc: '/assets/img/daily bar graph.svg', 
+                tooltip: 'Daily Data Graph',
+            },
 
         },
         // Sleep: {
@@ -271,12 +288,17 @@ const useDBM =()=>{
               return upwards.includes(id) ? "Up" : "Down";
             },
             tooltipField: "Suggestion",
-            headerTooltip: "Suggestion"
+            headerComponent: 'iconHeader',
+            headerComponentParams: {
+                iconSrc: '/assets/img/suggestion.svg', 
+                tooltip: 'Suggestion',
+            },
         },
 
     }
 
     const handleChangePage = async (pageNo:any) => {
+        getDBMUiConfig();
         setCurrentPage(pageNo);
         getDBMRowData(currentFilter,pageNo);
     }
@@ -421,6 +443,7 @@ const useDBM =()=>{
             tooltipShowDelay:0,
             tooltipTrigger:"focus",
             readOnlyEdit:true,
+            getMainMenuItems: MainMenuItemsCustomization,
             suppressRowClickSelection:true,
             components:customCellRenderers,
             enableBrowserTooltips:true,

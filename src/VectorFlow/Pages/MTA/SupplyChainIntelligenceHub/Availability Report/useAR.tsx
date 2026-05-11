@@ -45,6 +45,7 @@ import { GridRef } from "../../../../types/MDM";
 import Summary from "./Summary";
 import TodaysColorCellRenderer from "./TodaysColorCellRenderer";
 import _ from "lodash";
+import IconHeader from "../../Common/HeaderIcon/IconHeader";
 const useAR = () => {
   const ecoRef = useRef<GridRef>();
   const techRef = useRef<GridRef>();
@@ -278,6 +279,7 @@ const useAR = () => {
           tagsCellRenderer: BPRTagsCellRenderer,
           availabilityToolTip: AvailabilityToolTip,
           todaysColorCellRenderer: TodaysColorCellRenderer,
+          iconHeader: IconHeader,
         },
         suppressDragLeaveHidesColumns: true,
         getRowStyle: (params: any) => {
@@ -619,15 +621,27 @@ const useAR = () => {
 
   const CustomHeader = {
     Category: {
+      minWidth: 80,
       cellRenderer: "categoryCellRenderer",
       tooltipField: "Category",
       tooltipComponent: "categoryToolTip",
+      headerComponent: 'iconHeader',
+      headerComponentParams: {
+          iconSrc: '/assets/img/category.svg', 
+          tooltip: 'Category',
+      },
     },
     Availability: {
+      minWidth: 80,
       field: "Availability",
       cellRenderer: "availabilityCellRenderer",
       tooltipField: "Availability",
       tooltipComponent: "availabilityToolTip",
+      headerComponent: 'iconHeader',
+      headerComponentParams: {
+          iconSrc: '/assets/img/availability.svg', 
+          tooltip: 'Availability',
+      },
     },
     aa: {
       field: "Availability",
@@ -642,7 +656,13 @@ const useAR = () => {
       cellRenderer: "todaysColorCellRenderer",
     },
     Tags: {
+      minWidth: 80,
       cellRenderer: "tagsCellRenderer",
+      headerComponent: 'iconHeader',
+      headerComponentParams: {
+          iconSrc: '/assets/img/tag.svg', 
+          tooltip: 'Tags',
+      },
     },
   };
 

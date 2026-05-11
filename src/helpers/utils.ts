@@ -57,6 +57,7 @@ import { getNumberFormat } from "./numberFormat";
 import axios from 'axios';
 import { loadCaptchaEnginge } from "react-simple-captcha";
 import { v4 as uuidv4 } from "uuid";
+import { useGetMasterDataExcel } from "../VectorFlow/Services/MTA/MDM";
 
 const keyboardCharacters = [
   // '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -2354,7 +2355,7 @@ export const generateSesonalityChartData = (row: any, data: any) => {
   });
 
   const pointRadius: any[] = [];
-  let tempNorm = 0; //used for filling data when norm not changed in below function
+  let tempNorm = row.onm; //used for filling data when norm not changed in below function
   // const normData = data.dailyData.map((d:DailyData)=>{
   //   const closestNormChange:NormHistory = data.norm.find((o:NormHistory)=>+(new Date(o.date)) === +(new Date(d.date)));
   //   if(closestNormChange) {
@@ -3398,7 +3399,7 @@ export const mapBPRFieldsToColDefs = (
 export const MainMenuItemsCustomization = (params: any) => {
   const defaultItems = params.defaultItems;
   const conditionalItemsToRemove = ["remarks", "rh"];
-  const itemsToRemove = ["columnChooser", "resetColumns"]; // Example items to remove
+  const itemsToRemove = ["columnChooser", "resetColumns","rowUnGroup","rowGroup"]; // Example items to remove
   if (conditionalItemsToRemove.includes(params.column.colId)) {
     // itemsToRemove.push()
     itemsToRemove.push("pinSubMenu");
@@ -5496,6 +5497,56 @@ export const CsvExportMTA = async (payload: any, filename = "ReportFile") => {
   }
 };
 
+export const CsvExportNMS = async (payload: any, filename: string) => {
+  const response = await axios.post(process.env.REACT_APP_API_HOST + `api/mta/GetNMSCSVDataAsync`,
+      payload,{
+        withCredentials: true, 
+        responseType: "blob",
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
+
+    const blob = await response.data;
+    const fileExtension = "csv";
+    const downloadFileName = `${filename}__${format(Date.now(), "dd-MM-yyyy")}.${fileExtension}`;
+
+    const blobUrl = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = blobUrl;
+    link.setAttribute("download", downloadFileName);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(blobUrl);
+
+}
+export const useExcelExportNMS = () => {
+  const {mutateAsync:getMasterDataExcel} = useGetMasterDataExcel();
+
+  const ExcelExportNMS = async (payload: any, activeMaster: string) => {
+    const resultData = await getMasterDataExcel(payload);
+    const blob = new Blob(
+      [resultData.data],
+      {
+        type:
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      }
+    );
+
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const masterName = activeMaster;
+    const safeFileName = masterName.replace(/[^a-zA-Z0-9-_ ]/g, "").trim();
+    a.href = url;
+    a.download =  `${safeFileName}.xlsx`;
+    document.body.appendChild(a);
+    a.click();
+
+    a.remove();
+    window.URL.revokeObjectURL(url);
+  }
+  return { ExcelExportNMS };
+}
 
 export const ExcelExportMTA = async (payload: any, filename = "ReportFile") => {
   try {
@@ -5526,7 +5577,6 @@ export const ExcelExportMTA = async (payload: any, filename = "ReportFile") => {
     window.URL.revokeObjectURL(blobUrl);
   } catch (e) {
     console.error("Error downloading file:", e);
-    notifyError("Data too large to export. Please apply filters to reduce the data size.");
     return;
   }
 };

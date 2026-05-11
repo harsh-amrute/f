@@ -76,6 +76,7 @@ export const useBORColorBandwise =()=>{
      const {date:lastRunDate} = useGetLastRunData()
 
      const handleChangePage = async (pageNo:any) => {
+      getBORColorBandWiseUiConfig();
          setCurrentPage(pageNo);
          loadGridData(pageNo,currFilter);
       }
@@ -90,6 +91,7 @@ export const useBORColorBandwise =()=>{
   const [BORCBColumns, setBORCBColumns] = useState<ColDef[]>([])
      const [isRemarkHistoryToolTipOpen,setIsRemarkHistoryToolTipOpen] = useState<boolean>(false)
      const [remarkHistory,setRemarkHistory] = useState<any[]>([])
+    const [isMasterState , setIsMasterState] = useState<boolean>(false);
         
      const {getGridZoom,getScreenZoomValue} = useViewPort()
      const screenZoom = getScreenZoomValue() 
@@ -233,13 +235,18 @@ export const useBORColorBandwise =()=>{
   
   useEffect(() => {
     if (internalRef && gridState && gridState.columns) {
+       setTimeout(() => {
       const result = internalRef.api.applyColumnState({ state: gridState.columns, applyOrder: true });
-      internalRef?.api.sizeColumnsToFit();
+      if(isMasterState){
+        internalRef?.api.sizeColumnsToFit();
+        setIsMasterState(false);
+      }
       if (!result) {
         console.error("Failed to apply column state", result);
       }
+      },1000);
     }
-  }, [internalRef, gridState]);
+  }, [internalRef, gridState,rowData]);
 
     //   useEffect(()=>{       
     //     const fetchData = async () => {
@@ -288,6 +295,7 @@ export const useBORColorBandwise =()=>{
 
 
   const onResetCallback = async () => {
+    setIsMasterState(true);
     setGridState({
       charts: [],
       columns: masterUIConfig,

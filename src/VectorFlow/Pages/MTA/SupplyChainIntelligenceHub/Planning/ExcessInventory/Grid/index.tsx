@@ -4,10 +4,11 @@ import { BPRTagsCellRenderer } from "../../../BPR/BPRCellRenderers";
 import { AgGridReactProps } from "ag-grid-react";
 import { VFPaginationProps } from "../../../../../../../components/VectorFLOW/commons/VFPagination";
 import { SideBarDef } from 'ag-grid-enterprise';
-import {  getColumnDefinationsMTA } from '../../../../../../../helpers/utils';
+import {  getColumnDefinationsMTA,MainMenuItemsCustomization } from '../../../../../../../helpers/utils';
 import BPRGraphCellRenderer from '../../../BPR/BPRGraphCellRenderer';
 import ColorCellRenderer from '../../../../InsightsAndTrends/BTR/ColorCellRenderer';
 import { GridStateContext } from '../../../../../../../context/GridStateContext';
+import IconHeader from '../../../../../../../VectorFlow/Pages/MTA/Common/HeaderIcon/IconHeader';
 
 const ExcessInventoryGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCategory,currentTab}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any,currentCategory:string,currentTab:string})=>{
 
@@ -18,6 +19,7 @@ const ExcessInventoryGrid = ({data,paginationProps,onOpenDailyDataGraph,currentC
         grapCellRenderer:BPRGraphCellRenderer,
         tagsCellRenderer:BPRTagsCellRenderer,
         colorCellRenderer:ColorCellRenderer,
+        iconHeader: IconHeader,
       }), []);
 
       const sideBar:SideBarDef = {
@@ -47,6 +49,7 @@ const ExcessInventoryGrid = ({data,paginationProps,onOpenDailyDataGraph,currentC
         tooltipInteraction:true,
         // rowSelection:'single',
         readOnlyEdit:true,
+        getMainMenuItems: MainMenuItemsCustomization,
         enableRangeSelection: true,
         rowSelection: "multiple",
         statusBar: {
@@ -139,8 +142,11 @@ const ExcessInventoryGrid = ({data,paginationProps,onOpenDailyDataGraph,currentC
             floatingFilter: false,
             suppressColumnsToolPanel: false,
             suppressMenu:true,
-            headerTooltip: "Daily Data Graph",
-            headerName:"Daily Data Graph",
+            headerComponent: 'iconHeader',
+            headerComponentParams: {
+                iconSrc: '/assets/img/daily bar graph.svg', 
+                tooltip: 'Daily Data Graph',
+            },
             sortable: false,
         },
         t: {
@@ -151,6 +157,11 @@ const ExcessInventoryGrid = ({data,paginationProps,onOpenDailyDataGraph,currentC
             pinned: null,
             filterParams: {
                 buttons: ['reset'], // Adds Apply and Clear buttons
+            },
+            headerComponent: 'iconHeader',
+            headerComponentParams: {
+                iconSrc: '/assets/img/tag.svg', 
+                tooltip: 'Tags',
             },
         },
         pin:{
