@@ -213,7 +213,9 @@ const ActionToolBar = ({
       pathname === "/mta/supply-chain-intelligence-hub/rrr" ||
       pathname === "/mta/supply-chain-intelligence-hub/bor" ||
       pathname === "/mta/supply-chain-intelligence-hub/bor-color-bandwise" ||
-      pathname === "/mta/supply-chain-intelligence-hub/rrr-color-bandwise"
+      pathname === "/mta/supply-chain-intelligence-hub/rrr-color-bandwise" ||
+      pathname === "/mta/dbm/dbm-norm-suggestions"
+
     ) {
       onExportToExcelCallBack();
     } else {
@@ -1123,7 +1125,8 @@ const ActionToolBar = ({
                           currCategory === "RRR" ||
                           currCategory === "BOR" ||
                           currCategory === "BORColorBandwise" ||
-                          currCategory === "RRRColorBandwise"
+                          currCategory === "RRRColorBandwise" || 
+                          currCategory === "DBMNorm"
                             ? "CSV Export"
                             : "Excel Export"}
                         </p>

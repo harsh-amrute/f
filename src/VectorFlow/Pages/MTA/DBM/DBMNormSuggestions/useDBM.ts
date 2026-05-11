@@ -1,7 +1,7 @@
 import { useState,useMemo,useEffect,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import { useGetDBMData,useGetDBMDataCount,useGetDBMApplySelectedNorm, useGetDBMUpdateSleepTbl} from "../../../../Services/MTA/DBM"
-import { convertUiConfigToOptions, getColumnDefinationsMTA,MainMenuItemsCustomization  } from "../../../../../helpers/utils"
+import { convertUiConfigToOptions, CsvExportMTA, getColumnDefinationsMTA,MainMenuItemsCustomization  } from "../../../../../helpers/utils"
 //import { useRef } from "react"
 // import {DBMSleepCellRenderer} from "./Sleep"
 import BPRGraphCellRenderer from "../../SupplyChainIntelligenceHub/BPR/BPRGraphCellRenderer"
@@ -423,18 +423,36 @@ const useDBM =()=>{
         handleApplyFilter(updatedFilter)
     }
 
-    const onExportToExcelCallBack= async(pageNo:any)=>{
-        const rowData =await getDBMDataForExcelExport({
-            filters:currentFilter,
-            paginationParameter:{
-                pageNumber:pageNo,
-                recordsPerPage:5000
-            }
-        })
-
-        // getDBMUiConfig()
-        // console.log(rowData.data.data)
-        return rowData.data.data
+    const onExportToExcelCallBack=async(pageNumber:number)=>{
+        if ((gridRef.current?.api?.getDisplayedRowCount() ?? 0) === 0) {
+            notifyError("No Data to Export");
+            return;
+        }
+        
+        const payload = {
+            id: 1,
+            name: '',
+            fields: [],
+            filters: currentFilter,
+            paginationParameter: {
+                pageNumber: pageNumber,
+                recordsPerPage: 5000
+            },
+            ISExport:"1",
+            reportName:"NormSuggestion",
+            stream:1,
+            responseType: `arraybuffer`
+        }
+        notifyLoader("Downloading Data...")
+        try {
+            await CsvExportMTA(payload, "NormSuggestion");
+            notifySuccess(`Data Exported Successfully`);
+        }
+        catch(error) {
+            console.log(error);
+            notifyError("Error Exporting Excel")
+            throw error;
+        }
     }
 
 
